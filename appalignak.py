@@ -4,7 +4,7 @@ from gi.repository import AppIndicator3 as appindicator
 
 
 APPINDICATOR_ID = 'appalignak'
-img = os.path.abspath('alignak.png')
+img = os.path.abspath('images/alignak.png')
 
 def main():
     indicator = appindicator.Indicator.new(APPINDICATOR_ID, img, appindicator.IndicatorCategory.SYSTEM_SERVICES)
@@ -20,7 +20,7 @@ def build_menu():
     menu.show_all()
     return menu
 
-def quit_app():
+def quit_app(source):
     gtk.main_quit()
 
 
