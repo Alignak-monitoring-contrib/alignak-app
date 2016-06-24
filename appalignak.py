@@ -1,6 +1,7 @@
 import signal, os
 from gi.repository import Gtk as gtk
 from gi.repository import AppIndicator3 as appindicator
+import alignak_data
 
 
 APPINDICATOR_ID = 'appalignak'
