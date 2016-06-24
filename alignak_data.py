@@ -2,7 +2,7 @@ import json, requests
 
 url = 'http://94.76.229.155:90'
 headers = {'Content-Type': 'application/json'}
-params = {'username': 'admin', 'password': 'admin', 'action': 'generate'}
+params = {'username': 'admin', 'password': 'admin'}
 
 def alignak_backend_data():
 
