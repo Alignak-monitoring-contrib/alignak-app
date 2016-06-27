@@ -6,15 +6,16 @@ from gi.repository import AppIndicator3 as appindicator
 gi.require_version('Notify', '0.7')
 from gi.repository import Notify as notify
 from gi.repository import GLib as glib
+import configparser as cfg
 
-import alignak_data as ad
+import alignakdata as ad
 
 # Alignak Variables
-APPINDICATOR_ID = 'appalignak'
+# APPINDICATOR_ID = 'appalignak'
 img = os.path.abspath('images/alignak.png')
-auth = ad.alignak_backend_auth()
-webui_url = 'http://94.76.229.155:91'
-check_interval = 30
+Config = cfg.ConfigParser()
+Config.read('settings.cfg')
+auth = ad.alignak_backend_auth(Config)
 
 # Gtk Objects
 menu = gtk.Menu()
@@ -37,7 +38,6 @@ menu.append(down_item)
 def main():
     app = set_indicator()
 
-    # Start Process
     update_menu()
 
     gtk.main()
@@ -54,19 +54,28 @@ def build_menu():
     return menu
 
 def open_url(source):
+    webui_url = Config.get('Webui', 'webui_url')
     webbrowser.open(webui_url + '/hosts')
 
 up_item.connect("activate", open_url)
 down_item.connect("activate", open_url)
 
 def set_indicator():
+    # Define ID
+    APPINDICATOR_ID = 'appalignak'
+
     indicator = appindicator.Indicator.new(APPINDICATOR_ID, img, appindicator.IndicatorCategory.SYSTEM_SERVICES)
     indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
+
+    # Create Menu
     indicator.set_menu(build_menu())
+
+    # Init notify
     notify.init(APPINDICATOR_ID)
     return indicator
 
 def update_menu():
+    check_interval = int(Config.get('Alignak-App', 'check_interval'))
     glib.timeout_add_seconds(check_interval, notify_change)
 
 def notify_change():
@@ -90,7 +99,7 @@ def update_hosts_menu(UP,DOWN):
 def check():
     UP = 0
     DOWN = 0
-    data = ad.get_host_state(auth)
+    data = ad.get_host_state(auth, Config)
 
     for key, v in data.items():
         if 'UP' in v:
