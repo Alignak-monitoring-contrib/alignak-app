@@ -1,4 +1,4 @@
-import signal, os, webbrowser, gi, thread
+import signal, os, webbrowser, gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk
 gi.require_version('AppIndicator3', '0.1')
