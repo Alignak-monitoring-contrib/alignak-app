@@ -16,7 +16,7 @@ import alignakdata as ad
 Config = cfg.ConfigParser()
 Config.read('settings.cfg')
 
-# General Variables
+# General Variables
 img = os.path.abspath('images/' + Config.get('Alignak-App', 'icon'))
 auth = ad.alignak_backend_auth(Config)
 
