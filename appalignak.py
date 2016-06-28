@@ -68,6 +68,7 @@ def set_indicator():
     # Define ID
     APPINDICATOR_ID = 'appalignak'
 
+    # TODO : change icon if hosts are down
     indicator = appindicator.Indicator.new(APPINDICATOR_ID, img, appindicator.IndicatorCategory.SYSTEM_SERVICES)
     indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
 
@@ -88,6 +89,7 @@ def notify_change():
         message = "ALERT : Hosts are DOWN !"
     else:
         message = "All is OK :)"
+    # TODO : let notifications optional with configuration.
     notify.Notification.new(str(message), update_hosts_menu(UP, DOWN), None).show()
     return True
 
