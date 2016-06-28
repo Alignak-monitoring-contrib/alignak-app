@@ -20,6 +20,8 @@ If some of them change to DOWN, you'll have a notification on your desktop.
 
 `pip install -r requirements.txt`
 
+> **WARNING:** currently you have to install `alignak_backend_client` by running `setup.py` of [Github Project](https://github.com/Alignak-monitoring-contrib/alignak-backend-client).
+
 # Launch App
 
 Just run :
