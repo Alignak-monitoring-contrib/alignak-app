@@ -10,14 +10,18 @@ import configparser as cfg
 
 import alignakdata as ad
 
-# Alignak Variables
-# APPINDICATOR_ID = 'appalignak'
-img = os.path.abspath('images/alignak.png')
+# TODO : make a class
+# TODO : add services to app
+# Read config
 Config = cfg.ConfigParser()
 Config.read('settings.cfg')
+
+# General Variables
+img = os.path.abspath('images/' + Config.get('Alignak-App', 'icon'))
 auth = ad.alignak_backend_auth(Config)
 
 # Gtk Objects
+# TODO : make following objects in function
 menu = gtk.Menu()
 
 img_up = gtk.Image()
