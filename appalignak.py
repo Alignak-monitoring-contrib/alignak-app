@@ -18,51 +18,69 @@ Config.read('settings.cfg')
 
 # General Variables
 img = os.path.abspath('images/' + Config.get('Alignak-App', 'icon'))
-auth = ad.alignak_backend_auth(Config)
+backend = ad.login_backend(Config)
 
-# Gtk Objects
-# TODO : make following objects in function
-menu = gtk.Menu()
-
-img_up = gtk.Image()
-img_up.set_from_stock(gtk.STOCK_YES, 2)
+# Up and Down Items
 up_item = gtk.ImageMenuItem('')
-up_item.set_image(img_up)
-up_item.set_always_show_image(True)
-
-img_down = gtk.Image()
-img_down.set_from_stock(gtk.STOCK_CANCEL, 2)
 down_item = gtk.ImageMenuItem('')
-down_item.set_image(img_down)
-down_item.set_always_show_image(True)
-
-menu.append(up_item)
-menu.append(down_item)
 
 def main():
+    # Set Indicator
     app = set_indicator()
 
+    # Update Menu
     update_menu()
 
+    # Main Gtk
     gtk.main()
 
-def build_menu():
-    # Add menu for hosts
-    UP, DOWN = check()
-    update_hosts_menu(UP, DOWN)
-
-    # Add menu for Quit
-    build_menu_quit()
-
-    menu.show_all()
-    return menu
 
 def open_url(source):
+    # Function to make link on Items
     webui_url = Config.get('Webui', 'webui_url')
     webbrowser.open(webui_url + '/hosts')
 
-up_item.connect("activate", open_url)
-down_item.connect("activate", open_url)
+def build_menu_item():
+    # Decorate items
+    img_up = gtk.Image()
+    img_up.set_from_stock(gtk.STOCK_YES, 2)
+    up_item.set_image(img_up)
+    up_item.set_always_show_image(True)
+
+    img_down = gtk.Image()
+    img_down.set_from_stock(gtk.STOCK_CANCEL, 2)
+    down_item.set_image(img_down)
+    down_item.set_always_show_image(True)
+
+    # Create Quit item
+    item_quit = gtk.ImageMenuItem('Quit')
+    img_quit = gtk.Image()
+    img_quit.set_from_stock(gtk.STOCK_CLOSE, 2)
+    item_quit.connect('activate', quit_app)
+    item_quit.set_image(img_quit)
+    item_quit.set_always_show_image(True)
+
+    up_item.connect("activate", open_url)
+    down_item.connect("activate", open_url)
+
+    return up_item, down_item, item_quit
+
+
+def build_menu():
+    # Get first states
+    UP, DOWN = get_state()
+    update_hosts_menu(UP, DOWN)
+
+    # Create Menu with Items
+    menu = gtk.Menu()
+    up_item, down_item, item_quit = build_menu_item()
+
+    menu.append(up_item)
+    menu.append(down_item)
+    menu.append(item_quit)
+    menu.show_all()
+
+    return menu
 
 def set_indicator():
     # Define ID
@@ -83,29 +101,10 @@ def update_menu():
     check_interval = int(Config.get('Alignak-App', 'check_interval'))
     glib.timeout_add_seconds(check_interval, notify_change)
 
-def notify_change():
-    UP, DOWN = check()
-    if DOWN > 0:
-        message = "ALERT : Hosts are DOWN !"
-    else:
-        message = "All is OK :)"
-    # TODO : let notifications optional with configuration.
-    notify.Notification.new(str(message), update_hosts_menu(UP, DOWN), None).show()
-    return True
-
-def update_hosts_menu(UP,DOWN):
-    if UP > 0:
-        str_UP = 'Hosts UP (' + str(UP) + ')'
-        up_item.set_label(str_UP)
-
-    if DOWN > 0:
-        str_NOK = 'Hosts DOWN (' + str(DOWN) + ')'
-        down_item.set_label(str_NOK)
-
-def check():
+def get_state():
     UP = 0
     DOWN = 0
-    data = ad.get_host_state(auth, Config)
+    data = ad.get_host_state(backend)
 
     for key, v in data.items():
         if 'UP' in v:
@@ -114,14 +113,24 @@ def check():
             DOWN += 1
     return UP, DOWN
 
-def build_menu_quit():
-    item_quit = gtk.ImageMenuItem('Quit')
-    img_quit = gtk.Image()
-    img_quit.set_from_stock(gtk.STOCK_CLOSE, 2)
-    item_quit.connect('activate', quit_app)
-    item_quit.set_image(img_quit)
-    item_quit.set_always_show_image(True)
-    menu.append(item_quit)
+def notify_change():
+    UP, DOWN = get_state()
+    if DOWN > 0:
+        message = "ALERT : Hosts are DOWN !"
+    else:
+        message = "All is OK :)"
+    # TODO : let notifications optional with configuration.
+    notify.Notification.new(str(message), update_hosts_menu(UP, DOWN), None).show()
+    return True
+
+def update_hosts_menu(UP, DOWN):
+    if UP > 0:
+        str_UP = 'Hosts UP (' + str(UP) + ')'
+        up_item.set_label(str_UP)
+
+    if DOWN > 0:
+        str_NOK = 'Hosts DOWN (' + str(DOWN) + ')'
+        down_item.set_label(str_NOK)
 
 def quit_app(source):
     notify.uninit()

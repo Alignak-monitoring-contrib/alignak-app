@@ -1,38 +1,43 @@
-import requests
+from alignak_backend_client.client import Backend
 
-headers = {'Content-Type': 'application/json'}
-
-def alignak_backend_auth(Config):
+def login_backend(Config):
     # Credentials
     username = Config.get('Backend', 'username')
     password = Config.get('Backend', 'password')
-    params = {
-        'username': username,
-        'password': password
-    }
 
-    # Token
+    # Backend login
     backend_url = Config.get('Backend', 'backend_url')
-    response = requests.post(backend_url + '/login', json=params, headers=headers)
-    resp = response.json()
-    token = resp['token']
+    backend = Backend(backend_url)
+    backend.login(username, password)
 
-    # Basic auth
-    backend_auth = requests.auth.HTTPBasicAuth(token, '')
+    return backend
 
-    return backend_auth
-
-def get_host_state(authentication, Config):
+def get_host_state(backend):
     # Request
-    hosts = requests.get(
-        Config.get('Backend', 'backend_url') + '/livestate?where={"type":"host"}',
-        auth=authentication
-    )
-    s = hosts.json()
+    all_host = backend.get_all(backend.url_endpoint_root + '/livestate?where={"type":"host"}')
 
     # Store Data
-    alignak_data = {}
-    for host in s['_items']:
-        alignak_data[host['name']] = host['state']
+    current_hosts = {}
+    for host in all_host['_items']:
+        current_hosts[host['name']] = host['state']
+        print(host['name'], '->', host['state'])
 
-    return alignak_data
+    return current_hosts
+
+def get_service_state(backend):
+    # Request
+    all_services = backend.get_all(backend.url_endpoint_root + '/livestate?where={"type":"service"}')
+
+    # Store Data
+    current_service = {}
+    for host in all_services['_items']:
+        current_service[host['name']] = host['state']
+        print(host['name'], '->', host['state'])
+
+    return current_service
+
+def test_client(backend):
+    print('object:', backend)
+    print('authenticated:', backend.authenticated)
+    print('endpoint:', backend.url_endpoint_root)
+    print('token:', backend.token)
