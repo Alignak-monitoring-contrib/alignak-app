@@ -42,7 +42,6 @@ class alignak_app(object):
         # Set Indicator
         app = self.set_indicator()
 
-        # Update Menu
         self.start_process()
 
         # Main Gtk
@@ -79,7 +78,6 @@ class alignak_app(object):
         """
         # Build Menu
         menu = gtk.Menu()
-        # self.build_menu_item()
         menu.append(self.up_item)
         menu.append(self.down_item)
         menu.append(self.quit_item)
@@ -194,7 +192,6 @@ class alignak_app(object):
         """
         Run application
         """
-        # Launch the app
         signal.signal(signal.SIGINT, signal.SIG_DFL)
         self.main()
 
