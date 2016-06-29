@@ -17,20 +17,14 @@ from gi.repository import GLib as glib
 
 from alignak_app import alignak_data as ad
 
-class alignak_app(object):
+class AlignakApp(object):
     """
         App application
     """
 
     def __init__(self):
-        # Read config
-        self.Config = cfg.ConfigParser()
-        self.Config.read('etc/settings.cfg')
-
-        # Get Backend
-        self.backend = ad.login_backend(self.Config)
-
-        # Menu Items
+        self.Config = None
+        self.backend = None
         self.up_item = self.create_items('down')
         self.down_item = self.create_items('up')
         self.quit_item = self.create_items(None)
@@ -39,6 +33,11 @@ class alignak_app(object):
         """
         Create indicator, menu and main Gtk
         """
+        self.read_configuration()
+
+        # Get configuration
+        self.backend = ad.login_backend(self.Config)
+
         # Set Indicator
         app = self.set_indicator()
 
@@ -46,6 +45,10 @@ class alignak_app(object):
 
         # Main Gtk
         gtk.main()
+
+    def read_configuration(self):
+        self.Config = cfg.ConfigParser()
+        self.Config.read('etc/settings.cfg')
 
     def set_indicator(self):
         """

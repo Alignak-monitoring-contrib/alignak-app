@@ -3,5 +3,5 @@
 
 import alignak_app.application as app
 
-app.alignak_app().run()
+app.AlignakApp().run()
 
