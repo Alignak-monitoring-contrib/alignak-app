@@ -27,14 +27,13 @@ class alignak_app(object):
         self.Config = cfg.ConfigParser()
         self.Config.read('etc/settings.cfg')
 
-        # General Variables
-        self.img = os.path.abspath('images/' + self.Config.get('Alignak-App', 'icon'))
+        # Get Backend
         self.backend = ad.login_backend(self.Config)
 
         # Menu Items
-        self.up_item = gtk.ImageMenuItem('')
-        self.down_item = gtk.ImageMenuItem('')
-        self.item_quit = gtk.ImageMenuItem('Quit')
+        self.up_item = self.create_items('down')
+        self.down_item = self.create_items('up')
+        self.quit_item = self.create_items(None)
 
     def main(self):
         """
@@ -58,7 +57,9 @@ class alignak_app(object):
         """
         # Define ID and build Indicator
         APPINDICATOR_ID = 'appalignak'
-        indicator = appindicator.Indicator.new(APPINDICATOR_ID, self.img, appindicator.IndicatorCategory.SYSTEM_SERVICES)
+        img = os.path.abspath('images/' + self.Config.get('Alignak-App', 'icon'))
+
+        indicator = appindicator.Indicator.new(APPINDICATOR_ID, img, appindicator.IndicatorCategory.SYSTEM_SERVICES)
         indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
 
         # Create Menu
@@ -76,60 +77,52 @@ class alignak_app(object):
         :return: menu
         :rtype: gtk.Menu
         """
+        # Build Menu
+        menu = gtk.Menu()
+        # self.build_menu_item()
+        menu.append(self.up_item)
+        menu.append(self.down_item)
+        menu.append(self.quit_item)
+        menu.show_all()
+
         # Get first states
         UP, DOWN = self.get_state()
         self.update_hosts_menu(UP, DOWN)
-
-        # Create Menu with Items
-        menu = gtk.Menu()
-        self.build_menu_item(self.up_item, self.down_item, self.item_quit)
-
-        menu.append(self.up_item)
-        menu.append(self.down_item)
-        menu.append(self.item_quit)
-        menu.show_all()
 
         return menu
 
     def open_url(self, source):
         """
-        Add a web link on menu
+        Add a web link on every menu
 
         :param source: source of connector
         """
-
         webui_url = self.Config.get('Webui', 'webui_url')
         webbrowser.open(webui_url + '/hosts')
 
-    def build_menu_item(self, up_item, down_item, item_quit):
+    def create_items(self, style):
         """
-        Decorate each Menu items and add connectors.
-
-        :param up_item: menu for hosts who are UP
-        :param down_item: menu for hosts who are DOWN
-        :param item_quit: menu to quit application
+        Create each item for menu. Possible values: down, up, None
+        :param style: style of menu to create
+        :return: gtk.ImageMenuItem
         """
-        # UP Item
-        img_up = gtk.Image()
-        img_up.set_from_stock(gtk.STOCK_YES, 2)
-        up_item.set_image(img_up)
-        up_item.set_always_show_image(True)
+        item = gtk.ImageMenuItem('')
+        img = gtk.Image()
+        if 'down' == style:
+            img.set_from_stock(gtk.STOCK_YES, 2)
+            item.connect("activate", self.open_url)
+        elif 'up' == style:
+            img.set_from_stock(gtk.STOCK_CANCEL, 2)
+            item.connect("activate", self.open_url)
+        else:
+            img.set_from_stock(gtk.STOCK_CLOSE, 2)
+            item.connect('activate', self.quit_app)
 
-        # Down Item
-        img_down = gtk.Image()
-        img_down.set_from_stock(gtk.STOCK_CANCEL, 2)
-        down_item.set_image(img_down)
-        down_item.set_always_show_image(True)
+        item.set_image(img)
+        item.set_always_show_image(True)
 
-        # Quit item
-        img_quit = gtk.Image()
-        img_quit.set_from_stock(gtk.STOCK_CLOSE, 2)
-        item_quit.connect('activate', self.quit_app)
-        item_quit.set_image(img_quit)
-        item_quit.set_always_show_image(True)
+        return item
 
-        up_item.connect("activate", self.open_url)
-        down_item.connect("activate", self.open_url)
 
     def start_process(self):
         """
