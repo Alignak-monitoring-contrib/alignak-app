@@ -20,7 +20,6 @@ def get_host_state(backend):
     current_hosts = {}
     for host in all_host['_items']:
         current_hosts[host['name']] = host['state']
-        print(host['name'], '->', host['state'])
 
     return current_hosts
 
@@ -32,6 +31,5 @@ def get_service_state(backend):
     current_services = {}
     for service in all_services['_items']:
         current_services[service['name']] = service['state']
-        print(service['name'], '->', service['state'])
 
     return current_services
