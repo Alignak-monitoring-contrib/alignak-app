@@ -6,12 +6,12 @@
 Welcome to Alignak-App's documentation!
 =======================================
 
-Contents:
+Documentation content:
 
 .. toctree::
    :maxdepth: 2
 
-    intro
+   intro
 
 
 
