@@ -6,20 +6,39 @@ Installation
 Requirements
 ------------
 
-1. You must have `alignak-backend`_ and `alignak-webui`_ installed before running this app.
+Alignak Suite
+~~~~~~~~~~~~~
 
-2. **You must have a system compatible with GTK to run it !**
+You must have Alignak Suite installed before using this app :
 
-3. Install python and pip::
+* `alignak`_
+* `alignak-backend`_
+* `alignak-webui`_ 
+
+System Compatibility
+~~~~~~~~~~~~~~~~~~~~
+
+Actually, you must have a system compatible with **GTK** to run it !
+
+Python and Libraries
+~~~~~~~~~~~~~~~~~~~~
+
+You should have ``python`` and ``pip`` installed::
 
    sudo apt-get install python python-pip
 
-4. You have to install requirements with pip::
+Then simply install Python modules that are listed in ``requirements.txt`` with pip::
 
-   pip install -r requirements.txt
+   .. literalinclude:: ../requirements.txt
 
-**WARNING:** if you encounter problems with `alignak_backend_client`_, download it an run *setup.py*
+**Tips:** if you encounter problems with `alignak_backend_client`_, download it, install requirements as above and run ``sudo setup.py install``.
 
+Installation
+------------
+
+Actually there is no specific step (and no need) to install this app. So there is no ``setup.py`` file.
+
+.. _alignak: http://alignak-monitoring.github.io/
 .. _alignak-backend: http://alignak-backend.readthedocs.io/en/latest/
 .. _alignak-webui: http://alignak-web-ui.readthedocs.io/en/latest/
 .. _alignak_backend_client: https://github.com/Alignak-monitoring-contrib/alignak-backend-client
