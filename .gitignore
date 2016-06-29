@@ -1,3 +1,8 @@
+# PyCharm
 *.idea
+
 *.pyc
-__pycache__/*
+__pycache__/
+
+# Sphinx documentation
+docs/_build/
