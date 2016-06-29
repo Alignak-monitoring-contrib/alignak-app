@@ -18,7 +18,7 @@ Requirements
 
    pip install -r requirements.txt
 
-| **WARNING:** if you encounter problems with `alignak_backend_client`_, download it an run *setup.py*
+**WARNING:** if you encounter problems with `alignak_backend_client`_, download it an run *setup.py*
 
 .. _alignak-backend: http://alignak-backend.readthedocs.io/en/latest/
 .. _alignak-webui: http://alignak-web-ui.readthedocs.io/en/latest/

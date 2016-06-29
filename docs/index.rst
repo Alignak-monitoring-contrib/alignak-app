@@ -13,6 +13,8 @@ Documentation content:
 
    intro
    install
+   conf
+   launch
 
 
 Indices and tables
