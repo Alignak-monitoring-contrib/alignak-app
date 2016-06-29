@@ -113,7 +113,7 @@ def get_state():
 
 def notify_change():
     UP, DOWN = get_state()
-    DOWN = 0
+   
     if DOWN > 0:
         message = "Alignak ALERT: Hosts are DOWN !"
     else:
