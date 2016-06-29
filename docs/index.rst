@@ -13,7 +13,7 @@ Documentation content:
 
    intro
    install
-   conf
+   config
    launch
 
 
