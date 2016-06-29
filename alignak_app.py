@@ -12,9 +12,10 @@ import alignakdata as ad
 
 # TODO : make a class
 # TODO : add services to app
+
 # Read config
 Config = cfg.ConfigParser()
-Config.read('settings.cfg')
+Config.read('etc/settings.cfg')
 
 # General Variables
 img = os.path.abspath('images/' + Config.get('Alignak-App', 'icon'))
@@ -33,7 +34,6 @@ def main():
 
     # Main Gtk
     gtk.main()
-
 
 def open_url(source):
     # Function to make link on Items

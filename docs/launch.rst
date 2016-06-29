@@ -1,11 +1,11 @@
 .. _launch:
 
-Launch the Alignak-App
+Launch Alignak-App
 ======================
 
 To launch the app, you have just to do::
 
-    python appalignak.py &
+    python alignak_app.py &
 
 An icon of Alignak should normally appear in your notification bar.
 

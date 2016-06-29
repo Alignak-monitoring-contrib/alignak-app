@@ -30,14 +30,8 @@ def get_service_state(backend):
 
     # Store Data
     current_services = {}
-    for host in all_services['_items']:
-        current_services[host['name']] = host['state']
-        print(host['name'], '->', host['state'])
+    for service in all_services['_items']:
+        current_services[service['name']] = service['state']
+        print(service['name'], '->', service['state'])
 
     return current_services
-
-def test_client(backend):
-    print('object:', backend)
-    print('authenticated:', backend.authenticated)
-    print('endpoint:', backend.url_endpoint_root)
-    print('token:', backend.token)
