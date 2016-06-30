@@ -15,9 +15,9 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
 
 install:
-    #./test/setup_test.sh
-    pip3 install -r requirements.txt
-    pip3 install -r test/requirements.txt
+    ./test/setup_test.sh
+    #pip3 install -r requirements.txt
+    #pip3 install -r test/requirements.txt
 
 script:
   # so to help eventual debug: knowing what exact versions are in use can be rather useful.
