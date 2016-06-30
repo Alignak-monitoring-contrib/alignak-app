@@ -1,5 +1,7 @@
 # AppAlignak
 
+[![Build Status](https://travis-ci.org/Alignak-monitoring-contrib/alignak-app.svg?branch=develop)](https://travis-ci.org/Alignak-monitoring-contrib/alignak-app)
+
 # Introduction
 
 Alignak-App is an appindicator for [Alignak](https://alignak-monitoring.github.io). It will display number of Hosts (and in future version number of Services) who are DOWN or UP.
