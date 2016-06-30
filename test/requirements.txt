@@ -1,0 +1,5 @@
+-r ../requirements.txt
+unittest
+nose
+nose-cov
+coverage

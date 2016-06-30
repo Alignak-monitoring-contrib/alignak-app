@@ -4,7 +4,7 @@
 
 # Introduction
 
-Alignak-App is an appindicator for [Alignak](https://alignak-monitoring.github.io). It will display number of Hosts (and in future version number of Services) who are DOWN or UP.
+Alignak-App is an appindicator for [Alignak](https://alignak-monitoring.github.io). It will display number of Hosts (and in future version number of Services) who are DOWN, UNKNOWN or UP.
 
 If some of them change to DOWN, you'll be notified on your desktop.
 
