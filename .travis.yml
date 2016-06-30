@@ -1,17 +1,19 @@
 language: python
 sudo: required
 python:
-  - 2.7
-  - "2.7_with_system_site_packages"
+  # - 2.7
   - 3.4
-  - "3.2_with_system_site_packages"
+
+virtualenv:
+  system_site_packages: true
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -qq python-gi gir1.2-gtk-3.0
-
-#virtualenv:
-#  system_site_packages: true
+  - sudo apt-get install -qq ibus python3-gi gir1.2-ibus-1.0 gir1.2-wnck-3.0
+  - pip install coveralls
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
 
 install:
   ./test/setup_test.sh
