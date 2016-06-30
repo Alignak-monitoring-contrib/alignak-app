@@ -9,7 +9,7 @@ virtualenv:
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -qq ibus python-gi
+  - sudo apt-get install -qq ibus python-gi python-gi-dev
   - sudo pip install gi
 before_script:
   - "export DISPLAY=:99.0"
