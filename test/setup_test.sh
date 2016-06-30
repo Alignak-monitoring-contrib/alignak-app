@@ -10,7 +10,7 @@ cd $BASE_PATH
 #pip install --upgrade pip
 
 # install prog AND tests requirements :
-pip install -r requirements.txt
+pip install --upgrade -r requirements.txt
 # pip install -e .
 pip install --upgrade -r test/requirements.txt
 

@@ -9,7 +9,8 @@ virtualenv:
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -qq ibus python-gi python-gtk2 gir1.2-ibus-1.0 gir1.2-wnck-3.0
+  - sudo apt-get install -qq ibus python-gi
+  - sudo pip install gi
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
