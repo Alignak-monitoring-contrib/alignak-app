@@ -1,5 +1,5 @@
 -r ../requirements.txt
-unittest
+unittest2
 nose
 nose-cov
 coverage

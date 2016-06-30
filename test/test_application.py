@@ -1,8 +1,10 @@
-import unittest
+import unittest2
 
+from nose import with_setup
+from nose.tools import *
 from alignak_app.application import AlignakApp
 
-class TestAlignakData(unittest.TestCase):
+class TestAlignakData(unittest2.TestCase):
 
     def test_initialization(self):
         under_test = AlignakApp()
