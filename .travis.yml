@@ -2,14 +2,16 @@ language: python
 sudo: required
 python:
   - 2.7
-  - 3.5
+  - "2.7_with_system_site_packages"
+  - 3.4
+  - "3.2_with_system_site_packages"
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -qq python3-gi gir1.2-gtk-3.0
+  - sudo apt-get install -qq python-gi gir1.2-gtk-3.0
 
-virtualenv:
-  system_site_packages: true
+#virtualenv:
+#  system_site_packages: true
 
 install:
   ./test/setup_test.sh
