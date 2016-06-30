@@ -1,11 +1,11 @@
 import unittest
 
-from alignak_app import application as app
+from alignak_app.application import AlignakApp
 
 class TestAlignakData(unittest.TestCase):
 
     def test_initialization(self):
-        under_test = app.AlignakApp()
+        under_test = AlignakApp()
 
         self.assertIsNone(under_test.Config)
         self.assertIsNone(under_test.backend)
