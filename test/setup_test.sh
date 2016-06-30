@@ -7,7 +7,7 @@ BASE_PATH=$(dirname "$THIS_PATH")
 
 cd $BASE_PATH
 
-pip install --upgrade pip
+#pip install --upgrade pip
 
 # install prog AND tests requirements :
 pip install -r requirements.txt
