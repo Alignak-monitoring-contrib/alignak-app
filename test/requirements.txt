@@ -3,3 +3,5 @@ unittest
 nose
 nose-cov
 coverage
+coveralls
+pep8
