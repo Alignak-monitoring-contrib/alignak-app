@@ -4,13 +4,13 @@ import webbrowser
 import configparser as cfg
 import gi
 
-#gi.require_version('Gtk', '3.0')
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk
 
-#gi.require_version('AppIndicator3', '0.1')
+gi.require_version('AppIndicator3', '0.1')
 from gi.repository import AppIndicator3 as appindicator
 
-#gi.require_version('Notify', '0.7')
+gi.require_version('Notify', '0.7')
 from gi.repository import Notify as notify
 
 from gi.repository import GLib as glib
