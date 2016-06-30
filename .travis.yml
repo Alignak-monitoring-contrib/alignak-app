@@ -4,6 +4,9 @@ python:
   - 2.7
   - 3.5
 
+install:
+  ./test/setup_test.sh
+
 script:
   # so to help eventual debug: knowing what exact versions are in use can be rather useful.
   # - pip freeze
