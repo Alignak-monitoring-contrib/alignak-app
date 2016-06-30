@@ -18,7 +18,7 @@ script:
   # Code dynamic analysis
   - cd test
   # - coverage erase
-  - nosetests -xv --nologcapture --process-restartworker --processes=1 --process-timeout=300 --with-coverage --cover-package=alignak_app test/test_*.py
+  - nosetests -xv --nologcapture --process-restartworker --processes=1 --process-timeout=300 --with-coverage --cover-package=alignak_app test_application.py
 #  - coverage combine
 #  - coverage report -m
   - cd ..
