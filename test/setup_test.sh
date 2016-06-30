@@ -11,11 +11,11 @@ pip install --upgrade pip
 
 # install prog AND tests requirements :
 pip install -r requirements.txt
-pip install -e .
+# pip install -e .
 pip install --upgrade -r test/requirements.txt
 
-pyversion=$(python -c "import sys; print(''.join(map(str, sys.version_info[:2])))")
-if test -e "test/requirements.py${pyversion}.txt"
-then
-    pip install -r "test/requirements.py${pyversion}.txt"
-fi
+#pyversion=$(python -c "import sys; print(''.join(map(str, sys.version_info[:2])))")
+#if test -e "test/requirements.py${pyversion}.txt"
+#then
+#    pip install -r "test/requirements.py${pyversion}.txt"
+#fi
