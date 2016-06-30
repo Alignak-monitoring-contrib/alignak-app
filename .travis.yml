@@ -7,22 +7,20 @@ python:
 virtualenv:
   system_site_packages: true
 
+cache:
+  directories:
+  - $HOME/.cache/pip
+
 before_install:
   - sudo apt-get update
-  - sudo apt-get install libgtk-3-0 libgirepository1.0-dev
-  - sudo pip install gi
-#before_script:
-#  - "export DISPLAY=:99.0"
-#  - "sh -e /etc/init.d/xvfb start"
+  - sudo apt-get install libgtk-3-0 libgirepository1.0-dev gir1.2-gtk-3.0
 
 install:
     ./test/setup_test.sh
-    #pip3 install -r requirements.txt
-    #pip3 install -r test/requirements.txt
 
 script:
   # so to help eventual debug: knowing what exact versions are in use can be rather useful.
-  # - pip freeze
+  - pip freeze
   # Code static analysis
   # - pep8 --max-line-length=100 --exclude='*.pyc, *.cfg, *.log' --ignore='E402' alignak_app/*
   #- pylint --rcfile=.pylintrc alignak_webui/
