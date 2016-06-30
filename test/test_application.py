@@ -1,7 +1,6 @@
 import unittest
-import configparser as cfg
 
-import alignak_app.application as app
+from alignak_app import application as app
 
 class TestAlignakData(unittest.TestCase):
 

@@ -3,3 +3,5 @@ sudo: required
 python:
   - 2.7
   - 3.5
+
+script: python test*.py
