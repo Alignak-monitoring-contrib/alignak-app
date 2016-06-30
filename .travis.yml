@@ -9,6 +9,7 @@ virtualenv:
 
 before_install:
   - sudo apt-get update
+  - sudo apt-get install libgtk-3-0 libgirepository1.0-dev
   - sudo pip install gi
 #before_script:
 #  - "export DISPLAY=:99.0"
