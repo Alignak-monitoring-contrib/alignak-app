@@ -17,7 +17,7 @@ before_script:
 
 install:
     #./test/setup_test.sh
-    pip3 install -r requirements.txt
+    #pip3 install -r requirements.txt
     pip3 install -r test/requirements.txt
 
 script:
