@@ -16,12 +16,12 @@ script:
   # No pep257 currently (Code doc compliance)
   # - pep257 --select=D300 alignak_webui
   # Code dynamic analysis
-  - cd test
+  # - cd test
   # - coverage erase
-  - nosetests -xv --nologcapture --process-restartworker --processes=1 --process-timeout=300 --with-coverage --cover-package=alignak_app test_application.py
-#  - coverage combine
-#  - coverage report -m
-  - cd ..
+  - nosetests -xv --nologcapture --with-coverage --cover-package=alignak_app test/test_application.py
+  # - coverage combine
+  # - coverage report -m
+  # - cd ..
 
 # specific call to launch coverage data into coveralls.io
 # after_success:
