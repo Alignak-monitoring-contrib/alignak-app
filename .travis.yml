@@ -9,9 +9,13 @@ before_install:
   - sudo apt-get install -qq python2.7 python-pip
 
 install:
-  - echo ${PATH}
-
-  - ./test/setup_test.sh
+  - pip3 install -r requirements.txt
+  - pip2.7 install -v --user gi
+  - export PYTHONPATH=$PYTHONPATH:/home/travis/.local/lib/python2.7/site-packages/
+  - echo $PYTHONPATH
+  - pip3 install --upgrade -r test/requirements.txt
+  - locate nosetests
+  - ln -s `pwd` $(dirname `which python2.7`)/../lib/python2.7/site-packages/gi
 
 script:
   # so to help eventual debug: knowing what exact versions are in use can be rather useful.
