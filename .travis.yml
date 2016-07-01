@@ -2,10 +2,7 @@ language: python
 sudo: true
 python:
   - "2.7_with_system_site_packages"
-  - "3.5" #python3-gi is bugged and Travis not let to access to python-gi (py2.7)
-
-#virtualenv:
-#  system_site_packages: true
+  # - "3.5" #python3-gi is bugged and Travis not let to access to python-gi (py2.7)
 
 before_install:
   - sudo apt-get update
