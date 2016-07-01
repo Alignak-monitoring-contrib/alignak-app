@@ -4,3 +4,4 @@ nose-cov
 coverage
 coveralls
 pep8
+future
