@@ -1,9 +1,7 @@
 # AppAlignak
 
 [![Build Status](https://travis-ci.org/Alignak-monitoring-contrib/alignak-app.svg?branch=develop)](https://travis-ci.org/Alignak-monitoring-contrib/alignak-app)
-
 [![Coverage Status](https://coveralls.io/repos/github/Alignak-monitoring-contrib/alignak-app/badge.svg?branch=develop)](https://coveralls.io/github/Alignak-monitoring-contrib/alignak-app?branch=develop)
-
 [![Documentation Status](https://readthedocs.org/projects/alignak-app/badge/?version=latest)](http://alignak-app.readthedocs.io/en/latest/?badge=latest)
 
 # Introduction
