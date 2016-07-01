@@ -15,7 +15,7 @@ install:
   - pip3 --version
   - ./test/setup_test.sh
   - pip3 uninstall -y gi
-  - pip install gi
+  - pip2.7 install gi
 
 
 script:
