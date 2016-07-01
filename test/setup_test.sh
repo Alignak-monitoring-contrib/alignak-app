@@ -11,7 +11,7 @@ cd $BASE_PATH
 
 # install prog AND tests requirements :
 pip install -r requirements.txt
-pip install -e .
+#pip install -e .
 pip install --upgrade -r test/requirements.txt
 
 #pyversion=$(python -c "import sys; print(''.join(map(str, sys.version_info[:2])))")
