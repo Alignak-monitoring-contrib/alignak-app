@@ -6,10 +6,10 @@ python:
 
 virtualenv:
   system_site_packages: true
-  
+
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -qq python-gi
+  - sudo apt-get install -qq python-gi gir1.2-gtk-3.0
 
 install:
   - pip install -r requirements.txt
