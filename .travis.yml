@@ -6,7 +6,7 @@ python:
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -qq -f libgtk-3-0 gir1.2-gtk-3.0 ibus gir1.2-ibus-1.0 gir1.2-wnck-3.0 python-enchant python-mock python2.7 python2.7-pip
+  - sudo apt-get install -qq -f libgtk-3-0 gir1.2-gtk-3.0 ibus gir1.2-ibus-1.0 gir1.2-wnck-3.0 python-enchant python-mock python2.7 python-pip
 
 install:
   - ./test/setup_test.sh
