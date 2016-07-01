@@ -6,7 +6,10 @@ import unittest2
 from alignak_app.application import AlignakApp
 from alignak_app.alignak_data import AlignakData
 
-class TestAlignakApp(unittest2.TestCase):
+class TestApplication(unittest2.TestCase):
+    """
+        This file test methods of AlignakApp class.
+    """
 
     def test_initialization(self):
         under_test = AlignakApp()
