@@ -14,7 +14,6 @@ install:
   - export PYTHONPATH=$PYTHONPATH:/home/travis/.local/lib/python2.7/site-packages/
   - echo $PYTHONPATH
   - pip3 install --upgrade -r test/requirements.txt
-  - locate nosetests
   - ln -s `pwd` $(dirname `which python2.7`)/../lib/python2.7/site-packages/gi
 
 script:
