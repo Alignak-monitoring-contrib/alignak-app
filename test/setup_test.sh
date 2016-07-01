@@ -13,7 +13,7 @@ cd $BASE_PATH
 pip install -r requirements.txt
 #pip install -r requirements2.7.txt
 #pip install -e .
-pip3 install --upgrade -r test/requirements.txt
+pip install --upgrade -r test/requirements.txt
 
 #pyversion=$(python -c "import sys; print(''.join(map(str, sys.version_info[:2])))")
 #if test -e "test/requirements.py${pyversion}.txt"
