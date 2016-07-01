@@ -15,7 +15,7 @@ from gi.repository import Notify as notify
 
 from gi.repository import GLib as glib
 
-from alignak_app import alignak_data as ad
+from alignak_app.alignak_data import AlignakData
 
 class AlignakApp(object):
     """
@@ -24,7 +24,7 @@ class AlignakApp(object):
 
     def __init__(self):
         self.Config = None
-        self.backend = None
+        self.backend_data = None
         self.up_item = self.create_items('down')
         self.down_item = self.create_items('up')
         self.quit_item = self.create_items(None)
@@ -33,10 +33,12 @@ class AlignakApp(object):
         """
         Create indicator, menu and main Gtk
         """
+        # Get configuration
         self.read_configuration()
 
-        # Get configuration
-        self.backend = ad.login_backend(self.Config)
+        # Connect to Backend
+        self.backend_data = AlignakData()
+        self.backend_data.log_to_backend(self.Config)
 
         # Set Indicator
         app = self.set_indicator()
@@ -140,7 +142,7 @@ class AlignakApp(object):
         """
         UP = 0
         DOWN = 0
-        data = ad.get_host_state(self.backend)
+        data = self.backend_data.get_host_state()
 
         for key, v in data.items():
             if 'UP' in v:

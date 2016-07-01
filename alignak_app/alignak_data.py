@@ -1,35 +1,37 @@
 from alignak_backend_client.client import Backend
 
-def login_backend(Config):
-    # Credentials
-    username = Config.get('Backend', 'username')
-    password = Config.get('Backend', 'password')
+class AlignakData(object):
 
-    # Backend login
-    backend_url = Config.get('Backend', 'backend_url')
-    backend = Backend(backend_url)
-    backend.login(username, password)
+    def __init__(self):
+        self.current_hosts = {}
+        self.current_services = {}
+        self.username = ''
+        self.backend = None
 
-    return backend
+    def log_to_backend(self, Config):
+        # Credentials
+        self.username = Config.get('Backend', 'username')
+        password = Config.get('Backend', 'password')
 
-def get_host_state(backend):
-    # Request
-    all_host = backend.get_all(backend.url_endpoint_root + '/livestate?where={"type":"host"}')
+        # Backend login
+        backend_url = Config.get('Backend', 'backend_url')
+        self.backend = Backend(backend_url)
+        self.backend.login(self.username, password)
 
-    # Store Data
-    current_hosts = {}
-    for host in all_host['_items']:
-        current_hosts[host['name']] = host['state']
+    def get_host_state(self):
+        # Request
+        all_host = self.backend.get_all(self.backend.url_endpoint_root + '/livestate?where={"type":"host"}')
 
-    return current_hosts
+        # Store Data
+        for host in all_host['_items']:
+            self.current_hosts[host['name']] = host['state']
+        return self.current_hosts
 
-def get_service_state(backend):
-    # Request
-    all_services = backend.get_all(backend.url_endpoint_root + '/livestate?where={"type":"service"}')
+    def get_service_state(self):
+        # Request
+        all_services = self.backend.get_all(self.backend.url_endpoint_root + '/livestate?where={"type":"service"}')
 
-    # Store Data
-    current_services = {}
-    for service in all_services['_items']:
-        current_services[service['name']] = service['state']
-
-    return current_services
+        # Store Data
+        for service in all_services['_items']:
+            self.current_services[service['name']] = service['state']
+        return self.current_services

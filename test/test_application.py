@@ -4,7 +4,7 @@
 import unittest2
 
 from alignak_app.application import AlignakApp
-from alignak_app import alignak_data
+from alignak_app.alignak_data import AlignakData
 
 class TestAlignakApp(unittest2.TestCase):
 
@@ -13,7 +13,7 @@ class TestAlignakApp(unittest2.TestCase):
 
         # Test initialization of Class and assert items are created.
         self.assertIsNone(under_test.Config)
-        self.assertIsNone(under_test.backend)
+        self.assertIsNone(under_test.backend_data)
         self.assertIsNotNone(under_test.up_item)
         self.assertIsNotNone(under_test.down_item)
         self.assertIsNotNone(under_test.quit_item)
@@ -30,7 +30,8 @@ class TestAlignakApp(unittest2.TestCase):
     def test_get_state(self):
         under_test = AlignakApp()
         under_test.read_configuration()
-        under_test.backend = alignak_data.login_backend(under_test.Config)
+        under_test.backend_data = AlignakData()
+        under_test.backend_data.log_to_backend(under_test.Config)
 
         # UP and DOWN must be Integer and positive
         UP, DOWN = under_test.get_state()
