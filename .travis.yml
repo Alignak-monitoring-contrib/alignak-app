@@ -9,8 +9,12 @@ virtualenv:
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -qq python-gi gir1.2-gtk-3.0
+  - sudo apt-get install -qq python-gi gir1.2-gtk-3.0 ibus
 
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  
 install:
   - pip install -r requirements.txt
   - pip install -r test/requirements.txt
