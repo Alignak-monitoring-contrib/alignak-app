@@ -9,7 +9,9 @@ before_install:
   - sudo apt-get install -qq python2.7 python-pip
 
 install:
+  - ls -la /usr/bin/
   - pip --version
+  - pip2.7 --version
   - pip3 --version
   - ./test/setup_test.sh
   - pip3 uninstall -y gi
