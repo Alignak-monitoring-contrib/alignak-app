@@ -9,8 +9,8 @@ before_install:
   - sudo apt-get install -qq python2.7 python-pip
 
 install:
-  - pip3 uninstall gi
   - ./test/setup_test.sh
+  - pip3 uninstall gi
 
 
 script:
