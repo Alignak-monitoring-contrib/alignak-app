@@ -12,7 +12,7 @@ cd $BASE_PATH
 # install prog AND tests requirements :
 pip3 install -r requirements.txt
 pip2.7 install -v --user gi
-export PATH=$PATH:/home/travis/.local/lib/python2.7/site-packages/
+export PYTHONPATH=$PYTHONPATH:/home/travis/.local/lib/python2.7/site-packages/
 echo $PATH
 #pip install -e .
 pip3 install --upgrade -r test/requirements.txt
