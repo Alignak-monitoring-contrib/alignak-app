@@ -9,6 +9,8 @@ before_install:
   - sudo apt-get install -qq python2.7 python-pip
 
 install:
+  - echo ${PATH}
+
   - ./test/setup_test.sh
 
 script:
