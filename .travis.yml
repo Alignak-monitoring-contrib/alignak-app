@@ -27,7 +27,7 @@ script:
   # Code dynamic analysis
   # - cd test
   - coverage erase
-  - nosetests -xv --nologcapture --with-coverage --cover-package=alignak_app test/test_application.py
+  - nosetests -xv --nologcapture --with-coverage --cover-package=alignak_app test/test_*.py
   - coverage combine
   - coverage report -m
   # - cd ..
