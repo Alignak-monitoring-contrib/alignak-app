@@ -1,3 +1,2 @@
-gi
 configparser
 -e git+git://github.com/Alignak-monitoring-contrib/alignak-backend-client.git@develop#egg=alignak_backend_client 
