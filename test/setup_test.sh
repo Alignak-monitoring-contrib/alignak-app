@@ -11,8 +11,9 @@ cd $BASE_PATH
 
 # install prog AND tests requirements :
 pip3 install -r requirements.txt
-sudo pip2.7 install --install-option="--prefix=/home/travis/.local" gi
-export PATH=$PATH:/home/travis/.local
+pip2.7 install -v --install-option="--prefix=/home/travis/.local/" gi
+export PATH=$PATH:/home/travis/.local/
+echo $PATH
 #pip install -e .
 pip3 install --upgrade -r test/requirements.txt
 
