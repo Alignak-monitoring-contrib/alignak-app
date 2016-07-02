@@ -56,7 +56,7 @@ class AlignakApp(object):
 
     def read_configuration(self):
         self.Config = cfg.ConfigParser()
-        self.Config.read('etc/settings.cfg')
+        self.Config.read('/etc/alignak_app/settings.cfg')
 
     def set_indicator(self):
         """
@@ -67,7 +67,7 @@ class AlignakApp(object):
         """
         # Define ID and build Indicator
         APPINDICATOR_ID = 'appalignak'
-        img = os.path.abspath('images/' + self.Config.get('Alignak-App', 'icon'))
+        img = os.path.abspath('/etc/alignak_app/images/' + self.Config.get('Alignak-App', 'icon'))
 
         indicator = appindicator.Indicator.new(
             APPINDICATOR_ID,
