@@ -15,10 +15,6 @@ class TestApplication(unittest2.TestCase):
     def test_initialization(self):
         under_test = AlignakApp()
 
-        Config = cfg.ConfigParser()
-        Config.read('./etc/settings.cfg')
-        under_test.Config = Config
-
         # Test initialization of Class and assert items are created.
         self.assertIsNone(under_test.Config)
         self.assertIsNone(under_test.backend_data)
