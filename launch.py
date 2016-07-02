@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import alignak_app.application as app
+from alignak_app.application import AlignakApp as App
 
-app.AlignakApp().run()
+App().run()
 
