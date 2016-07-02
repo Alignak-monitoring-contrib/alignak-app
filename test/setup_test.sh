@@ -8,6 +8,9 @@ BASE_PATH=$(dirname "$THIS_PATH")
 
 cd $BASE_PATH
 
+sudo apt-get update
+sudo apt-get install -qq python-gi gir1.2-gtk-3.0 ibus gir1.2-appindicator3-0.1 gir1.2-notify-0.7 gir1.2-glib-2.0
+
 export DISPLAY=:99.0
 sh -e /etc/init.d/xvfb start
 
