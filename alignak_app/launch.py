@@ -3,7 +3,11 @@
 
 from alignak_app.application import AlignakApp as App
 
+
 def launch():
+    """
+        Launch Alignak-App.
+    """
     App().run()
 
 if __name__ == "__main__":
