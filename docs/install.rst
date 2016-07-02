@@ -33,11 +33,13 @@ Then simply install Python modules that are listed in ``requirements.txt`` with 
 
 **Tips:** if you encounter problems with `alignak_backend_client`_, download it, install requirements as above and run ``sudo setup.py install``.
 
-Python3 Tips
+Python-gi
 ~~~~~~~~~~~~
 
-If you try to install app with python3, you'll probably encounter difficulties with ``python3-gi`` library. Try install ``python-gi`` instead.
+It seems install ``gi`` with pip not work (on Debian-like). So please install with your package::
 
+   sudo apt-get install python-gi
+ 
 Installation
 ------------
 
