@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import os
 import signal
 import webbrowser
@@ -20,6 +23,8 @@ from alignak_app.alignak_data import AlignakData
 class AlignakApp(object):
     """
         App application
+
+        This is the main class of Alignak-App.
     """
 
     def __init__(self):

@@ -1,6 +1,16 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from alignak_backend_client.client import Backend
+import future
 
 class AlignakData(object):
+    """
+        Alignak Bridge
+
+        This class collect informations with Backend-Client and return essential things for
+        Alignak-App.
+    """
 
     def __init__(self):
         self.current_hosts = {}

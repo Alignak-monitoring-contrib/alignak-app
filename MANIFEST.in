@@ -1,0 +1,4 @@
+include README.md
+include etc/setttings.cfg
+recursive-include alignak_app *.*
+global-exclude *pyc
