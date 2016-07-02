@@ -4,10 +4,6 @@ python:
   - "2.7_with_system_site_packages"
   # - "3.5" #python3-gi is bugged and Travis not let to access to python-gi (py2.7)
 
-before_install:
-#  - sudo apt-get update
-#  - sudo apt-get install -qq python-gi gir1.2-gtk-3.0 ibus gir1.2-appindicator3-0.1 gir1.2-notify-0.7 gir1.2-glib-2.0
-
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
@@ -15,10 +11,6 @@ before_script:
 
 install:
   - bash test/setup_test.sh
-#  - pip install --upgrade pip
-#  - pip install -r requirements.txt
-#  - pip install -r test/requirements.txt
-#  - pip install -v -e .
 
 script:
   # so to help eventual debug: knowing what exact versions are in use can be rather useful.
