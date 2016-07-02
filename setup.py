@@ -66,8 +66,8 @@ name=__pkg_name__,
     include_package_data=True,
 
     data_files = [
-        (paths['etc'], ['/etc/alignak_app/settings.cfg']),
-        (paths['etc'], ['/etc/alignak_app/images/alignak.svg'])
+        (paths['etc'], ['etc/settings.cfg']),
+        (paths['etc'] + '/images', ['etc/images/alignak.svg'])
     ],
 
     install_requires=install_requires,

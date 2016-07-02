@@ -1,4 +1,5 @@
 include README.md
-include etc/setttings.cfg
+include etc/settings.cfg
+include etc/images/alignak.svg
 recursive-include alignak_app *.*
 global-exclude *pyc
