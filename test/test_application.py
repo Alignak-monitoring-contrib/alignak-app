@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest2
+import configparser as cfg
 
 from alignak_app.application import AlignakApp
 from alignak_app.alignak_data import AlignakData
@@ -13,6 +14,10 @@ class TestApplication(unittest2.TestCase):
 
     def test_initialization(self):
         under_test = AlignakApp()
+
+        Config = cfg.ConfigParser()
+        Config.read('./etc/settings.cfg')
+        under_test.Config = Config
 
         # Test initialization of Class and assert items are created.
         self.assertIsNone(under_test.Config)
@@ -32,7 +37,11 @@ class TestApplication(unittest2.TestCase):
 
     def test_get_state(self):
         under_test = AlignakApp()
-        under_test.read_configuration()
+
+        Config = cfg.ConfigParser()
+        Config.read('./etc/settings.cfg')
+        under_test.Config = Config
+
         under_test.backend_data = AlignakData()
         under_test.backend_data.log_to_backend(under_test.Config)
 

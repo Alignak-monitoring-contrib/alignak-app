@@ -16,8 +16,6 @@ class TestAlignakData(unittest2.TestCase):
 
         Config = cfg.ConfigParser()
         Config.read('./etc/settings.cfg')
-        for conf in Config:
-            print(Config.items(conf))
 
         under_test.log_to_backend(Config)
 
