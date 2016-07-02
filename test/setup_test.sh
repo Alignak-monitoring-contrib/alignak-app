@@ -8,6 +8,9 @@ BASE_PATH=$(dirname "$THIS_PATH")
 
 cd $BASE_PATH
 
+export DISPLAY=:99.0
+sh -e /etc/init.d/xvfb start
+
 echo 'Upgrade pip ...'
 pip install --upgrade pip
 
