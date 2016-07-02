@@ -16,7 +16,7 @@ except:
 if python_version < (2, 7):
     sys.exit("This application requires a minimum Python 2.7.x, sorry!")
 
-package = import_module('alignak_app')
+#package = import_module('alignak_app')
 
 # Requirements
 install_requires = [
@@ -40,7 +40,7 @@ else:
     print("Unsupported platform, sorry!")
     exit(1)
 
-from alignak_app import __application__, __version__, __copyright__
+from alignak_app import __description__, __version__, __copyright__
 from alignak_app import __releasenotes__, __license__, __doc_url__
 from alignak_app import __name__ as __pkg_name__
 
@@ -57,7 +57,7 @@ name=__pkg_name__,
     author_email="ttamalfor@gmail.com",
     keywords="alignak app indicator",
     url="https://github.com/Alignak-monitoring-contrib/alignak-app",
-    description=package.__doc__.strip(),
+    description=__description__,
     long_description=open('README.md').read(),
 
     zip_safe=False,
