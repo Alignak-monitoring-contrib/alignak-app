@@ -20,6 +20,7 @@ from gi.repository import GLib as glib
 
 from alignak_app.alignak_data import AlignakData
 
+
 class AlignakApp(object):
     """
         App application
@@ -68,7 +69,11 @@ class AlignakApp(object):
         APPINDICATOR_ID = 'appalignak'
         img = os.path.abspath('images/' + self.Config.get('Alignak-App', 'icon'))
 
-        indicator = appindicator.Indicator.new(APPINDICATOR_ID, img, appindicator.IndicatorCategory.SYSTEM_SERVICES)
+        indicator = appindicator.Indicator.new(
+            APPINDICATOR_ID,
+            img,
+            appindicator.IndicatorCategory.SYSTEM_SERVICES
+        )
         indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
 
         # Create Menu
@@ -130,7 +135,6 @@ class AlignakApp(object):
         item.set_always_show_image(True)
 
         return item
-
 
     def start_process(self):
         """
@@ -204,4 +208,3 @@ class AlignakApp(object):
         """
         signal.signal(signal.SIGINT, signal.SIG_DFL)
         self.main()
-

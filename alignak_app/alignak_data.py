@@ -4,6 +4,7 @@
 from alignak_backend_client.client import Backend
 import future
 
+
 class AlignakData(object):
     """
         Alignak Bridge
@@ -30,7 +31,8 @@ class AlignakData(object):
 
     def get_host_state(self):
         # Request
-        all_host = self.backend.get_all(self.backend.url_endpoint_root + '/livestate?where={"type":"host"}')
+        all_host = self.backend.get_all(self.backend.url_endpoint_root +
+                                        '/livestate?where={"type":"host"}')
 
         # Store Data
         for host in all_host['_items']:
@@ -39,7 +41,8 @@ class AlignakData(object):
 
     def get_service_state(self):
         # Request
-        all_services = self.backend.get_all(self.backend.url_endpoint_root + '/livestate?where={"type":"service"}')
+        all_services = self.backend.get_all(self.backend.url_endpoint_root +
+                                            '/livestate?where={"type":"service"}')
 
         # Store Data
         for service in all_services['_items']:
