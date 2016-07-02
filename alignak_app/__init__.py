@@ -7,9 +7,6 @@
     This module is an Alignak App Indicator
 """
 
-# Specific Application
-from alignak_app import alignak_data, application, launch
-
 # Application version and manifest
 VERSION = (0, 2, 0)
 __application__ = u"Alignak-App"
