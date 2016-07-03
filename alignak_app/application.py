@@ -49,8 +49,8 @@ class AlignakApp(object):
     def __init__(self):
         self.Config = None
         self.backend_data = None
-        self.up_item = self.create_items('down')
-        self.down_item = self.create_items('up')
+        self.hosts_up_item = self.create_items('up')
+        self.hosts_down_item = self.create_items('down')
         self.quit_item = self.create_items(None)
 
     def main(self):
@@ -111,8 +111,8 @@ class AlignakApp(object):
         """
         # Build Menu
         menu = gtk.Menu()
-        menu.append(self.up_item)
-        menu.append(self.down_item)
+        menu.append(self.hosts_up_item)
+        menu.append(self.hosts_down_item)
         menu.append(self.quit_item)
         menu.show_all()
 
@@ -139,10 +139,10 @@ class AlignakApp(object):
         """
         item = gtk.ImageMenuItem('')
         img = gtk.Image()
-        if 'down' == style:
+        if 'up' == style:
             img.set_from_stock(gtk.STOCK_YES, 2)
             item.connect("activate", self.open_url)
-        elif 'up' == style:
+        elif 'down' == style:
             img.set_from_stock(gtk.STOCK_CANCEL, 2)
             item.connect("activate", self.open_url)
         else:
@@ -204,11 +204,11 @@ class AlignakApp(object):
         """
         if UP > 0:
             str_UP = 'Hosts UP (' + str(UP) + ')'
-            self.up_item.set_label(str_UP)
+            self.hosts_up_item.set_label(str_UP)
 
         if DOWN > 0:
             str_NOK = 'Hosts DOWN (' + str(DOWN) + ')'
-            self.down_item.set_label(str_NOK)
+            self.hosts_down_item.set_label(str_NOK)
 
     @staticmethod
     def quit_app(source):
