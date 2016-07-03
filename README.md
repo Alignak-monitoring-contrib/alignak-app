@@ -29,3 +29,9 @@ Please open any issue on this [repository](https://github.com/Alignak-monitoring
 ## License
 
 Alignak App is available under the [GPL version 3](http://opensource.org/licenses/GPL-3.0).
+
+## Preview
+
+(Sorry for quality of screenshot)
+
+[!alt tag](https://github.com/Alignak-monitoring-contrib/alignak-app/blob/develop/docs/image/preview.png)
