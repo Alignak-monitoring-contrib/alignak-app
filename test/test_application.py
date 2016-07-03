@@ -60,12 +60,18 @@ class TestApplication(unittest2.TestCase):
         under_test.backend_data.log_to_backend(under_test.Config)
 
         # UP and DOWN must be Integer and positive
-        UP, DOWN = under_test.get_state()
+        hosts_states, services_states = under_test.get_state()
 
-        self.assertIsInstance(UP, int)
-        self.assertIsInstance(DOWN, int)
-        self.assertGreater(UP, -1)
-        self.assertGreater(DOWN, -1)
+        self.assertIsInstance(hosts_states[0], int)
+        self.assertIsInstance(hosts_states[1], int)
+        self.assertGreater(hosts_states[0], -1)
+        self.assertGreater(hosts_states[1], -1)
+
+        self.assertIsInstance(services_states[0], int)
+        self.assertIsInstance(services_states[1], int)
+        self.assertGreater(services_states[0], -1)
+        self.assertGreater(services_states[1], -1)
+        self.assertGreater(services_states[2], -1)
 
 
 
