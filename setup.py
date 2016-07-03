@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from importlib import import_module
 
 try:
     from setuptools import setup, find_packages
@@ -16,16 +15,14 @@ except:
 if python_version < (2, 7):
     sys.exit("This application requires a minimum Python 2.7.x, sorry!")
 
-#package = import_module('alignak_app')
-
 # Requirements
 install_requires = [
     'future',
     'configparser'
 ]
 
-paths = {}
 # Define paths
+paths = {}
 if 'linux' in sys.platform or 'sunos5' in sys.platform:
     paths = {
         'bin':     "/usr/bin",
@@ -40,14 +37,13 @@ else:
     print("Unsupported platform, sorry!")
     exit(1)
 
-from alignak_app import __description__, __version__, __copyright__
-from alignak_app import __releasenotes__, __license__, __doc_url__
+from alignak_app import __description__, __version__, __license__
 from alignak_app import __name__ as __pkg_name__
 
 
 
 setup(
-name=__pkg_name__,
+    name=__pkg_name__,
     version=__version__,
 
     license=__license__,
