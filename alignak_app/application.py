@@ -51,6 +51,9 @@ class AlignakApp(object):
         self.backend_data = None
         self.hosts_up_item = self.create_items('up')
         self.hosts_down_item = self.create_items('down')
+        self.services_up_item = self.create_items('up')
+        self.services_down_item = self.create_items('down')
+        self.services_unknown_item = self.create_items('unknown')
         self.quit_item = self.create_items(None)
 
     def main(self):
@@ -113,12 +116,15 @@ class AlignakApp(object):
         menu = gtk.Menu()
         menu.append(self.hosts_up_item)
         menu.append(self.hosts_down_item)
+        menu.append(self.services_up_item)
+        menu.append(self.services_down_item)
+        menu.append(self.services_unknown_item)
         menu.append(self.quit_item)
         menu.show_all()
 
         # Get first states
-        UP, DOWN = self.get_state()
-        self.update_hosts_menu(UP, DOWN)
+        hosts_states, services_states = self.get_state()
+        self.update_hosts_menu(hosts_states, services_states)
 
         return menu
 
@@ -140,10 +146,13 @@ class AlignakApp(object):
         item = gtk.ImageMenuItem('')
         img = gtk.Image()
         if 'up' == style:
-            img.set_from_stock(gtk.STOCK_YES, 2)
+            img.set_from_stock(gtk.STOCK_OK, 2)
             item.connect("activate", self.open_url)
         elif 'down' == style:
-            img.set_from_stock(gtk.STOCK_CANCEL, 2)
+            img.set_from_stock(gtk.STOCK_STOP, 2)
+            item.connect("activate", self.open_url)
+        elif 'unknown' == style:
+            img.set_from_stock(gtk.STOCK_HELP, 2)
             item.connect("activate", self.open_url)
         else:
             img.set_from_stock(gtk.STOCK_CLOSE, 2)
@@ -165,18 +174,30 @@ class AlignakApp(object):
         """
         Check the hosts states.
 
-        :return: number of UP and DOWN
+        :return: number of hosts and services UP, UNKNOWN and DOWN
         """
-        UP = 0
-        DOWN = 0
-        data = self.backend_data.get_host_state()
+        hosts_states = [0, 0]
+        services_states = [0, 0, 0]
 
-        for key, v in data.items():
+        # Collect Hosts state
+        hosts_data = self.backend_data.get_host_state()
+        for key, v in hosts_data.items():
             if 'UP' in v:
-                UP += 1
+                hosts_states[0] += 1
             if 'DOWN' in v:
-                DOWN += 1
-        return UP, DOWN
+                hosts_states[1] += 1
+
+        # Collect Services state
+        services_data = self.backend_data.get_service_state()
+        for key, v in services_data.items():
+            if 'OK' in v:
+                services_states[0] += 1
+            if 'CRITICAL' in v:
+                services_states[1] += 1
+            if 'UNKNOWN' in v:
+                services_states[2] += 1
+
+        return hosts_states, services_states
 
     def notify_change(self):
         """
@@ -184,31 +205,40 @@ class AlignakApp(object):
 
         :return: True to continue process
         """
-        UP, DOWN = self.get_state()
+        hosts_states, services_states = self.get_state()
 
-        if DOWN > 0:
-            message = "Alignak ALERT: Hosts are DOWN !"
+        if (services_states[1] > 0) or (services_states[1] > 0):
+            message = "Alignak ALERT: Hosts or Services are DOWN !"
         else:
             message = "Alignak INFO: all is OK :)"
 
-        notify.Notification.new(str(message), self.update_hosts_menu(UP, DOWN), None).show()
+        notify.Notification.new(str(message), self.update_hosts_menu(hosts_states, services_states), None).show()
 
         return True
 
-    def update_hosts_menu(self, UP, DOWN):
+    def update_hosts_menu(self, hosts_states, services_states):
         """
         Update items Menu
 
-        :param UP: number of hosts UP
-        :param DOWN: number of hosts DOWN
+        :param hosts_states: number of hosts UP or DOWN
+        :param services_states: number of services UP, UNKNOWN or DOWN
         """
-        if UP > 0:
-            str_UP = 'Hosts UP (' + str(UP) + ')'
-            self.hosts_up_item.set_label(str_UP)
+        if hosts_states[0] > 0:
+            str_host_UP = 'Hosts UP (' + str(hosts_states[0]) + ')'
+            self.hosts_up_item.set_label(str_host_UP)
+        if hosts_states[1] > 0:
+            str_host_NOK = 'Hosts DOWN (' + str(services_states[0]) + ')'
+            self.hosts_down_item.set_label(str_host_NOK)
 
-        if DOWN > 0:
-            str_NOK = 'Hosts DOWN (' + str(DOWN) + ')'
-            self.hosts_down_item.set_label(str_NOK)
+        if services_states[0] > 0:
+            str_service_UP = 'Services UP (' + str(hosts_states[1]) + ')'
+            self.services_up_item.set_label(str_service_UP)
+        if services_states[1] > 0:
+            str_service_NOK = 'Services DOWN (' + str(services_states[1]) + ')'
+            self.services_down_item.set_label(str_service_NOK)
+        if services_states[2] > 0:
+            str_service_UNK = 'Services UNKNOWN (' + str(services_states[2]) + ')'
+            self.services_unknown_item.set_label(str_service_UNK)
 
     @staticmethod
     def quit_app(source):
