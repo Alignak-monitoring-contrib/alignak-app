@@ -32,4 +32,4 @@ Alignak App is available under the [GPL version 3](http://opensource.org/license
 
 ## Preview
 
-[!alt tag](https://github.com/Alignak-monitoring-contrib/alignak-app/blob/develop/docs/image/preview.png)
+[![preview](https://raw.githubusercontent.com/Alignak-monitoring-contrib/alignak-app/develop/docs/image/preview.png)](https://raw.githubusercontent.com/Alignak-monitoring-contrib/alignak-app/develop/docs/image/preview.png)
