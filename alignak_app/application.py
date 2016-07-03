@@ -212,7 +212,13 @@ class AlignakApp(object):
         else:
             message = "Alignak INFO: all is OK :)"
 
-        notify.Notification.new(str(message), self.update_hosts_menu(hosts_states, services_states), None).show()
+        notify.Notification.new(
+            str(message),
+            self.update_hosts_menu(
+                hosts_states,
+                services_states
+            ), None
+        ).show()
 
         return True
 
