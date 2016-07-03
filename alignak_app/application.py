@@ -112,13 +112,18 @@ class AlignakApp(object):
         :return: menu
         :rtype: gtk.Menu
         """
+        separator_host = gtk.SeparatorMenuItem()
+        separator_service = gtk.SeparatorMenuItem()
+
         # Build Menu
         menu = gtk.Menu()
         menu.append(self.hosts_up_item)
         menu.append(self.hosts_down_item)
+        menu.append(separator_host)
         menu.append(self.services_up_item)
         menu.append(self.services_down_item)
         menu.append(self.services_unknown_item)
+        menu.append(separator_service)
         menu.append(self.quit_item)
         menu.show_all()
 
