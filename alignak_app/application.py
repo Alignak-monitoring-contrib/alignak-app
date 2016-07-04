@@ -26,15 +26,15 @@ import configparser as cfg
 import gi
 
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk as gtk
+from gi.repository import Gtk
 
 gi.require_version('AppIndicator3', '0.1')
-from gi.repository import AppIndicator3 as appindicator
+from gi.repository import AppIndicator3 as AppIndicator
 
 gi.require_version('Notify', '0.7')
-from gi.repository import Notify as notify
+from gi.repository import Notify
 
-from gi.repository import GLib as glib
+from gi.repository import GLib
 
 from alignak_app.alignak_data import AlignakData
 
@@ -68,12 +68,13 @@ class AlignakApp(object):
         self.backend_data.log_to_backend(self.Config)
 
         # Set Indicator
-        app = self.set_indicator()
+        indicator = self.set_indicator()
+        indicator.set_menu(self.build_menu())
 
         self.start_process()
 
         # Main Gtk
-        gtk.main()
+        Gtk.main()
 
     def read_configuration(self):
         self.Config = cfg.ConfigParser()
@@ -87,21 +88,21 @@ class AlignakApp(object):
         :rtype: Indicator
         """
         # Define ID and build Indicator
-        APPINDICATOR_ID = 'appalignak'
+        app_id = 'appalignak'
         img = os.path.abspath('/etc/alignak_app/images/' + self.Config.get('Alignak-App', 'icon'))
 
-        indicator = appindicator.Indicator.new(
-            APPINDICATOR_ID,
+        indicator = AppIndicator.Indicator.new(
+            app_id,
             img,
-            appindicator.IndicatorCategory.SYSTEM_SERVICES
+            AppIndicator.IndicatorCategory.APPLICATION_STATUS
         )
-        indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
+        indicator.set_status(AppIndicator.IndicatorStatus.ACTIVE)
 
         # Create Menu
-        indicator.set_menu(self.build_menu())
+        # indicator.set_menu(self.build_menu())
 
         # Init notify
-        notify.init(APPINDICATOR_ID)
+        Notify.init(app_id)
 
         return indicator
 
@@ -112,11 +113,11 @@ class AlignakApp(object):
         :return: menu
         :rtype: gtk.Menu
         """
-        separator_host = gtk.SeparatorMenuItem()
-        separator_service = gtk.SeparatorMenuItem()
+        separator_host = Gtk.SeparatorMenuItem()
+        separator_service = Gtk.SeparatorMenuItem()
 
         # Build Menu
-        menu = gtk.Menu()
+        menu = Gtk.Menu()
         menu.append(self.hosts_up_item)
         menu.append(self.hosts_down_item)
         menu.append(separator_host)
@@ -148,21 +149,23 @@ class AlignakApp(object):
         :param style: style of menu to create
         :return: gtk.ImageMenuItem
         """
-        item = gtk.ImageMenuItem('')
-        img = gtk.Image()
+        item = Gtk.ImageMenuItem('')
+        img = Gtk.Image()
         if 'up' == style:
-            img.set_from_stock(gtk.STOCK_OK, 2)
+            # img.set_from_stock(Gtk.STOCK_OK, 2)
+            img.set_from_file('../etc/images/host_up.png')
             item.connect("activate", self.open_url)
         elif 'down' == style:
-            img.set_from_stock(gtk.STOCK_STOP, 2)
+            # img.set_from_stock(Gtk.STOCK_STOP, 2)
+            img.set_from_file('../etc/images/host_down.png')
             item.connect("activate", self.open_url)
         elif 'unknown' == style:
-            img.set_from_stock(gtk.STOCK_HELP, 2)
+            # img.set_from_stock(Gtk.STOCK_HELP, 2)
+            img.set_from_file('../etc/images/service_unknown.png')
             item.connect("activate", self.open_url)
         else:
-            img.set_from_stock(gtk.STOCK_CLOSE, 2)
+            img.set_from_stock(Gtk.STOCK_CLOSE, 2)
             item.connect('activate', self.quit_app)
-
         item.set_image(img)
         item.set_always_show_image(True)
 
@@ -173,7 +176,7 @@ class AlignakApp(object):
         Start process loop.
         """
         check_interval = int(self.Config.get('Alignak-App', 'check_interval'))
-        glib.timeout_add_seconds(check_interval, self.notify_change)
+        GLib.timeout_add_seconds(check_interval, self.notify_change)
 
     def get_state(self):
         """
@@ -217,7 +220,7 @@ class AlignakApp(object):
         else:
             message = "Alignak INFO: all is OK :)"
 
-        notify.Notification.new(
+        Notify.Notification.new(
             str(message),
             self.update_hosts_menu(
                 hosts_states,
@@ -235,21 +238,21 @@ class AlignakApp(object):
         :param services_states: number of services UP, UNKNOWN or DOWN
         """
         if hosts_states[0] > 0:
-            str_host_UP = 'Hosts UP (' + str(hosts_states[0]) + ')'
-            self.hosts_up_item.set_label(str_host_UP)
+            str_host_up = 'Hosts UP (' + str(hosts_states[0]) + ')'
+            self.hosts_up_item.set_label(str_host_up)
         if hosts_states[1] > 0:
-            str_host_NOK = 'Hosts DOWN (' + str(services_states[0]) + ')'
-            self.hosts_down_item.set_label(str_host_NOK)
+            str_host_nok = 'Hosts DOWN (' + str(services_states[0]) + ')'
+            self.hosts_down_item.set_label(str_host_nok)
 
         if services_states[0] > 0:
-            str_service_UP = 'Services UP (' + str(hosts_states[1]) + ')'
-            self.services_up_item.set_label(str_service_UP)
+            str_service_up = 'Services UP (' + str(hosts_states[1]) + ')'
+            self.services_up_item.set_label(str_service_up)
         if services_states[1] > 0:
-            str_service_NOK = 'Services DOWN (' + str(services_states[1]) + ')'
-            self.services_down_item.set_label(str_service_NOK)
+            str_service_nok = 'Services DOWN (' + str(services_states[1]) + ')'
+            self.services_down_item.set_label(str_service_nok)
         if services_states[2] > 0:
-            str_service_UNK = 'Services UNKNOWN (' + str(services_states[2]) + ')'
-            self.services_unknown_item.set_label(str_service_UNK)
+            str_service_unk = 'Services UNKNOWN (' + str(services_states[2]) + ')'
+            self.services_unknown_item.set_label(str_service_unk)
 
     @staticmethod
     def quit_app(source):
@@ -258,8 +261,8 @@ class AlignakApp(object):
 
         :param source: source of connector
         """
-        notify.uninit()
-        gtk.main_quit()
+        Notify.uninit()
+        Gtk.main_quit()
 
     def run(self):
         """
