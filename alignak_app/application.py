@@ -49,12 +49,12 @@ class AlignakApp(object):
     def __init__(self):
         self.Config = None
         self.backend_data = None
-        self.hosts_up_item = self.create_items('up')
-        self.hosts_down_item = self.create_items('down')
-        self.services_up_item = self.create_items('up')
-        self.services_down_item = self.create_items('down')
-        self.services_unknown_item = self.create_items('unknown')
-        self.quit_item = self.create_items(None)
+        self.hosts_up_item = None
+        self.hosts_down_item = None
+        self.services_up_item = None
+        self.services_down_item = None
+        self.services_unknown_item =None
+        self.quit_item = None
 
     def main(self):
         """
@@ -62,6 +62,7 @@ class AlignakApp(object):
         """
         # Get configuration
         self.read_configuration()
+        self.build_items()
 
         # Connect to Backend
         self.backend_data = AlignakData()
@@ -80,6 +81,18 @@ class AlignakApp(object):
         self.Config = cfg.ConfigParser()
         self.Config.read('/etc/alignak_app/settings.cfg')
 
+    def build_items(self):
+        """
+        Initialize and create each items
+        :return:
+        """
+        self.hosts_up_item = self.create_items('up')
+        self.hosts_down_item = self.create_items('down')
+        self.services_up_item = self.create_items('up')
+        self.services_down_item = self.create_items('down')
+        self.services_unknown_item = self.create_items('unknown')
+        self.quit_item = self.create_items('')
+
     def set_indicator(self):
         """
         Initialize a new Indicator and his notifications
@@ -89,7 +102,11 @@ class AlignakApp(object):
         """
         # Define ID and build Indicator
         app_id = 'appalignak'
-        img = os.path.abspath('/etc/alignak_app/images/' + self.Config.get('Alignak-App', 'icon'))
+        img = os.path.abspath(
+            self.Config.get('Config', 'path')
+            + self.Config.get('Config', 'img')
+            + '/'
+            + self.Config.get('Config', 'icon'))
 
         indicator = AppIndicator.Indicator.new(
             app_id,
@@ -149,17 +166,16 @@ class AlignakApp(object):
         """
         item = Gtk.ImageMenuItem('')
         img = Gtk.Image()
+        img_path = self.Config.get('Config', 'path') + self.Config.get('Config', 'img')
+
         if 'up' == style:
-            # img.set_from_stock(Gtk.STOCK_OK, 2)
-            img.set_from_file('../etc/images/host_up.png')
+            img.set_from_file(img_path + '/' + self.Config.get('Config', 'up'))
             item.connect("activate", self.open_url)
         elif 'down' == style:
-            # img.set_from_stock(Gtk.STOCK_STOP, 2)
-            img.set_from_file('../etc/images/host_down.png')
+            img.set_from_file(img_path + '/' + self.Config.get('Config', 'down'))
             item.connect("activate", self.open_url)
         elif 'unknown' == style:
-            # img.set_from_stock(Gtk.STOCK_HELP, 2)
-            img.set_from_file('../etc/images/service_unknown.png')
+            img.set_from_file(img_path + '/' + self.Config.get('Config', 'unknown'))
             item.connect("activate", self.open_url)
         else:
             img.set_from_stock(Gtk.STOCK_CLOSE, 2)
@@ -223,7 +239,8 @@ class AlignakApp(object):
             self.update_hosts_menu(
                 hosts_states,
                 services_states
-            ), None
+            ),
+            Gtk.STOCK_DIALOG_WARNING
         ).show()
 
         return True

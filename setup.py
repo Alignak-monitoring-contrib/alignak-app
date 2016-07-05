@@ -81,7 +81,10 @@ setup(
 
     data_files = [
         (paths['etc'], ['etc/settings.cfg']),
-        (paths['etc'] + '/images', ['etc/images/alignak.svg'])
+        (paths['etc'] + '/images', ['etc/images/alignak.svg']),
+        (paths['etc'] + '/images', ['etc/images/down.png']),
+        (paths['etc'] + '/images', ['etc/images/up.png']),
+        (paths['etc'] + '/images', ['etc/images/unknown.png'])
     ],
 
     install_requires=install_requires,

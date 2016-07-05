@@ -36,9 +36,9 @@ class TestApplication(unittest2.TestCase):
         # Test initialization of Class and assert items are created.
         self.assertIsNone(under_test.Config)
         self.assertIsNone(under_test.backend_data)
-        self.assertIsNotNone(under_test.hosts_up_item)
-        self.assertIsNotNone(under_test.hosts_down_item)
-        self.assertIsNotNone(under_test.quit_item)
+        self.assertIsNone(under_test.hosts_up_item)
+        self.assertIsNone(under_test.hosts_down_item)
+        self.assertIsNone(under_test.quit_item)
 
     def test_alignak_config(self):
         # Assert Config is None before read
