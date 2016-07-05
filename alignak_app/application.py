@@ -67,7 +67,7 @@ class AlignakApp(object):
         self.backend_data = AlignakData()
         self.backend_data.log_to_backend(self.Config)
 
-        # Set Indicator
+        # Build Menu
         indicator = self.set_indicator()
         indicator.set_menu(self.build_menu())
 
@@ -98,9 +98,6 @@ class AlignakApp(object):
         )
         indicator.set_status(AppIndicator.IndicatorStatus.ACTIVE)
 
-        # Create Menu
-        # indicator.set_menu(self.build_menu())
-
         # Init notify
         Notify.init(app_id)
 
@@ -116,7 +113,7 @@ class AlignakApp(object):
         separator_host = Gtk.SeparatorMenuItem()
         separator_service = Gtk.SeparatorMenuItem()
 
-        # Build Menu
+        # Building Menu
         menu = Gtk.Menu()
         menu.append(self.hosts_up_item)
         menu.append(self.hosts_down_item)
@@ -126,6 +123,7 @@ class AlignakApp(object):
         menu.append(self.services_unknown_item)
         menu.append(separator_service)
         menu.append(self.quit_item)
+
         menu.show_all()
 
         # Get first states
