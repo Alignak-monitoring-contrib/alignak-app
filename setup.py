@@ -82,9 +82,11 @@ setup(
     data_files = [
         (paths['etc'], ['etc/settings.cfg']),
         (paths['etc'] + '/images', ['etc/images/alignak.svg']),
-        (paths['etc'] + '/images', ['etc/images/down.png']),
-        (paths['etc'] + '/images', ['etc/images/up.png']),
-        (paths['etc'] + '/images', ['etc/images/unknown.png'])
+        (paths['etc'] + '/images', ['etc/images/host_down.png']),
+        (paths['etc'] + '/images', ['etc/images/host_up.png']),
+        (paths['etc'] + '/images', ['etc/images/service_up.png']),
+        (paths['etc'] + '/images', ['etc/images/service_down.png']),
+        (paths['etc'] + '/images', ['etc/images/service_unknown.png']),
     ],
 
     install_requires=install_requires,
@@ -96,16 +98,18 @@ setup(
     },
 
     classifiers = [
-        'Development Status :: 2 - Beta',
-        'Environment :: Desktop Environment',
+        'Development Status :: 4 - Beta',
+        'Environment :: X11 Applications :: GTK',
         'Intended Audience :: Developers',
         'Intended Audience :: Customer Service',
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Natural Language :: English',
-        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
         'Topic :: System :: Monitoring',
-        'Topic :: System :: Systems Administration'
+        'Topic :: System :: Systems Administration',
+        'Topic :: Desktop Environment'
     ]
 
 )

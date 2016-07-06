@@ -168,13 +168,13 @@ class AlignakApp(object):
         img_path = self.Config.get('Config', 'path') + self.Config.get('Config', 'img')
 
         if 'up' == style:
-            img.set_from_file(img_path + '/' + self.Config.get('Config', 'up'))
+            img.set_from_file(img_path + '/' + self.Config.get('Config', 'host_up'))
             item.connect("activate", self.open_url)
         elif 'down' == style:
-            img.set_from_file(img_path + '/' + self.Config.get('Config', 'down'))
+            img.set_from_file(img_path + '/' + self.Config.get('Config', 'host_down'))
             item.connect("activate", self.open_url)
         elif 'unknown' == style:
-            img.set_from_file(img_path + '/' + self.Config.get('Config', 'unknown'))
+            img.set_from_file(img_path + '/' + self.Config.get('Config', 'service_unknown'))
             item.connect("activate", self.open_url)
         else:
             img.set_from_stock(Gtk.STOCK_CLOSE, 2)
