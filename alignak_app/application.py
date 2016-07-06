@@ -53,7 +53,7 @@ class AlignakApp(object):
         self.hosts_down_item = None
         self.services_up_item = None
         self.services_down_item = None
-        self.services_unknown_item =None
+        self.services_unknown_item = None
         self.quit_item = None
 
     def main(self):
@@ -84,7 +84,6 @@ class AlignakApp(object):
     def build_items(self):
         """
         Initialize and create each items
-        :return:
         """
         self.hosts_up_item = self.create_items('up')
         self.hosts_down_item = self.create_items('down')
@@ -103,10 +102,10 @@ class AlignakApp(object):
         # Define ID and build Indicator
         app_id = 'appalignak'
         img = os.path.abspath(
-            self.Config.get('Config', 'path')
-            + self.Config.get('Config', 'img')
-            + '/'
-            + self.Config.get('Config', 'icon'))
+            self.Config.get('Config', 'path') +
+            self.Config.get('Config', 'img') +
+            '/' +
+            self.Config.get('Config', 'icon'))
 
         indicator = AppIndicator.Indicator.new(
             app_id,
