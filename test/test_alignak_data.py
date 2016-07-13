@@ -32,13 +32,13 @@ class TestAlignakData(unittest2.TestCase):
     def test_connection(self):
         under_test = AlignakData()
 
-        Config = cfg.ConfigParser()
-        Config.read('./etc/settings.cfg')
+        config = cfg.ConfigParser()
+        config.read('./etc/settings.cfg')
 
-        under_test.log_to_backend(Config)
+        under_test.log_to_backend(config)
 
         # Compare config url and backend
-        self.assertEquals(under_test.backend.url_endpoint_root, Config.get('Backend', 'backend_url'))
+        self.assertEquals(under_test.backend.url_endpoint_root, config.get('Backend', 'backend_url'))
         # Test if all is empty
         self.assertFalse(under_test.current_hosts)
         self.assertFalse(under_test.current_services)

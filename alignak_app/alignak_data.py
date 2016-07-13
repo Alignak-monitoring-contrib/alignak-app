@@ -37,13 +37,13 @@ class AlignakData(object):
         self.username = ''
         self.backend = None
 
-    def log_to_backend(self, Config):
+    def log_to_backend(self, config):
         # Credentials
-        self.username = Config.get('Backend', 'username')
-        password = Config.get('Backend', 'password')
+        self.username = config.get('Backend', 'username')
+        password = config.get('Backend', 'password')
 
         # Backend login
-        backend_url = Config.get('Backend', 'backend_url')
+        backend_url = config.get('Backend', 'backend_url')
         self.backend = Backend(backend_url)
         self.backend.login(self.username, password)
 
