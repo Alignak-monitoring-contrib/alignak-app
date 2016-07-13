@@ -255,11 +255,11 @@ class AlignakApp(object):
             str_host_up = 'Hosts UP (' + str(hosts_states[0]) + ')'
             self.hosts_up_item.set_label(str_host_up)
         if hosts_states[1] > 0:
-            str_host_nok = 'Hosts DOWN (' + str(services_states[0]) + ')'
+            str_host_nok = 'Hosts DOWN (' + str(hosts_states[1]) + ')'
             self.hosts_down_item.set_label(str_host_nok)
 
         if services_states[0] > 0:
-            str_service_up = 'Services UP (' + str(hosts_states[1]) + ')'
+            str_service_up = 'Services UP (' + str(services_states[0]) + ')'
             self.services_up_item.set_label(str_service_up)
         if services_states[1] > 0:
             str_service_nok = 'Services DOWN (' + str(services_states[1]) + ')'
