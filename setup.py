@@ -82,6 +82,9 @@ setup(
     data_files = [
         (paths['etc'], ['etc/settings.cfg']),
         (paths['etc'] + '/images', ['etc/images/alignak.svg']),
+        (paths['etc'] + '/images', ['etc/images/ok.svg']),
+        (paths['etc'] + '/images', ['etc/images/warning.svg']),
+        (paths['etc'] + '/images', ['etc/images/alert.svg']),
         (paths['etc'] + '/images', ['etc/images/host_down.png']),
         (paths['etc'] + '/images', ['etc/images/host_up.png']),
         (paths['etc'] + '/images', ['etc/images/service_up.png']),
