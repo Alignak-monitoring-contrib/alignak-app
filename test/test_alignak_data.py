@@ -33,7 +33,7 @@ class TestAlignakData(unittest2.TestCase):
         under_test = AlignakData()
 
         config = cfg.ConfigParser()
-        config.read('./etc/settings.cfg')
+        config.read('etc/settings.cfg')
 
         under_test.log_to_backend(config)
 
@@ -47,7 +47,7 @@ class TestAlignakData(unittest2.TestCase):
         under_test = AlignakData()
 
         config = cfg.ConfigParser()
-        config.read('./etc/settings.cfg')
+        config.read('etc/settings.cfg')
 
         under_test.log_to_backend(config)
 
