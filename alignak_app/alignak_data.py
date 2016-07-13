@@ -34,24 +34,22 @@ class AlignakData(object):
     def __init__(self):
         self.current_hosts = {}
         self.current_services = {}
-        self.username = ''
         self.backend = None
 
     def log_to_backend(self, config):
         # Credentials
-        self.username = config.get('Backend', 'username')
+        username = config.get('Backend', 'username')
         password = config.get('Backend', 'password')
 
         # Backend login
         backend_url = config.get('Backend', 'backend_url')
         self.backend = Backend(backend_url)
-        self.backend.login(self.username, password)
+        self.backend.login(username, password)
 
     def get_host_state(self):
         # Request
         all_host = self.backend.get_all(self.backend.url_endpoint_root +
                                         '/livestate?where={"type":"host"}')
-
         # Store Data
         for host in all_host['_items']:
             self.current_hosts[host['name']] = host['state']
