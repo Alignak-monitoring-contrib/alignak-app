@@ -20,7 +20,7 @@ Application notify you when you have hosts / services DOWN. You'll be notified o
 
 ## Documentation
 
-Documentation is available on [Read The Docs](http://alignak-app.readthedocs.io/en/latest/index.html) and in the /docs directory.
+Documentation is available on [Read The Docs](http://alignak-app.readthedocs.io/en/develop/index.html) and in the /docs directory.
 
 ## Bugs / Enhancements
 

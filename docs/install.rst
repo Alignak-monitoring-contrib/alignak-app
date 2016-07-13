@@ -26,7 +26,7 @@ Python and Libraries
 You should have ``python`` and ``pip`` installed::
 
     sudo apt-get update
-    sudo apt-get install python python-pip
+    sudo apt-get install python python-pip python-gi
     pip install --upgrade pip
 
 Then, simply install Python modules that are listed in ``requirements.txt`` with pip:

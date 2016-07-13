@@ -5,7 +5,7 @@ Configuration
 
 The application must be configure before running. Especially at the address of your **alignak-backend** and your **alignak-webui** to get all function of Alignak-App.
 
-You can configure application in file ``settings.cfg``, in ``i/etc/alignak_app/`` folder.
+You can configure application in file ``settings.cfg``, in ``/etc/alignak_app/`` folder.
 
 Configuration Parameters
 ========================
