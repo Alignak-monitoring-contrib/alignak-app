@@ -29,9 +29,7 @@ You should have ``python`` and ``pip`` installed::
     sudo apt-get install python python-pip python-gi
     pip install --upgrade pip
 
-Then, simply install Python modules that are listed in ``requirements.txt`` with pip:
-
-   .. literalinclude:: ../requirements.txt
+Then, simply install Python modules that are listed in ``requirements.txt`` with pip::
 
     pip install -r requirements.txt
 

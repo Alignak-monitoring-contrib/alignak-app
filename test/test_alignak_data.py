@@ -46,10 +46,10 @@ class TestAlignakData(unittest2.TestCase):
     def test_if_hosts_and_services(self):
         under_test = AlignakData()
 
-        Config = cfg.ConfigParser()
-        Config.read('./etc/settings.cfg')
+        config = cfg.ConfigParser()
+        config.read('./etc/settings.cfg')
 
-        under_test.log_to_backend(Config)
+        under_test.log_to_backend(config)
 
         self.assertTrue(under_test.get_host_state())
         self.assertTrue(under_test.get_service_state())
