@@ -4,13 +4,13 @@
 
 [![Build Status](https://travis-ci.org/Alignak-monitoring-contrib/alignak-app.svg?branch=master)](https://travis-ci.org/Alignak-monitoring-contrib/alignak-app)
 [![Coverage Status](https://coveralls.io/repos/github/Alignak-monitoring-contrib/alignak-app/badge.svg?branch=master)](https://coveralls.io/github/Alignak-monitoring-contrib/alignak-app?branch=master)
-[![Documentation Status](https://readthedocs.org/projects/alignak-app/badge/?version=latest)](http://alignak-app.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/alignak-app/badge/?version=latest)](http://alignak-app.readthedocs.io/?badge=latest)
 
 ## Build status (development release)
 
 [![Build Status](https://travis-ci.org/Alignak-monitoring-contrib/alignak-app.svg?branch=develop)](https://travis-ci.org/Alignak-monitoring-contrib/alignak-app)
 [![Coverage Status](https://coveralls.io/repos/github/Alignak-monitoring-contrib/alignak-app/badge.svg?branch=develop)](https://coveralls.io/github/Alignak-monitoring-contrib/alignak-app?branch=develop)
-[![Documentation Status](https://readthedocs.org/projects/alignak-app/badge/?version=develop)](http://alignak-app.readthedocs.io/en/develop/?badge=develop)
+[![Documentation Status](https://readthedocs.org/projects/alignak-app/badge/?version=develop)](http://alignak-app.readthedocs.io/?badge=develop)
 
 ## Introduction
 
