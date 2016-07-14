@@ -114,14 +114,14 @@ class AlignakApp(object):
         """
         Initialize and create each items
         """
-        self.hosts_up_item = self.create_items('up')
-        self.hosts_down_item = self.create_items('down')
-        self.hosts_unreach_item = self.create_items('down')
+        self.hosts_up_item = self.create_items('h_up')
+        self.hosts_down_item = self.create_items('h_down')
+        self.hosts_unreach_item = self.create_items('h_unreach')
 
-        self.services_up_item = self.create_items('up')
-        self.services_down_item = self.create_items('down')
-        self.services_unknown_item = self.create_items('unknown')
-        self.services_warning_item = self.create_items('unknown')
+        self.services_up_item = self.create_items('s_ok')
+        self.services_down_item = self.create_items('s_critical')
+        self.services_unknown_item = self.create_items('s_warning')
+        self.services_warning_item = self.create_items('s_unknown')
         self.quit_item = self.create_items('')
 
     def build_menu(self):
@@ -174,13 +174,25 @@ class AlignakApp(object):
         img = Gtk.Image()
         img_path = self.Config.get('Config', 'path') + self.Config.get('Config', 'img')
 
-        if 'up' == style:
+        if 'h_up' == style:
             img.set_from_file(img_path + '/' + self.Config.get('Config', 'host_up'))
             item.connect("activate", self.open_url)
-        elif 'down' == style:
+        elif 'h_down' == style:
             img.set_from_file(img_path + '/' + self.Config.get('Config', 'host_down'))
             item.connect("activate", self.open_url)
-        elif 'unknown' == style:
+        elif 'h_unreach' == style:
+            img.set_from_file(img_path + '/' + self.Config.get('Config', 'host_unreach'))
+            item.connect("activate", self.open_url)
+        elif 's_ok' == style:
+            img.set_from_file(img_path + '/' + self.Config.get('Config', 'service_ok'))
+            item.connect("activate", self.open_url)
+        elif 's_critical' == style:
+            img.set_from_file(img_path + '/' + self.Config.get('Config', 'service_critical'))
+            item.connect("activate", self.open_url)
+        elif 's_warning' == style:
+            img.set_from_file(img_path + '/' + self.Config.get('Config', 'service_warning'))
+            item.connect("activate", self.open_url)
+        elif 's_unknown' == style:
             img.set_from_file(img_path + '/' + self.Config.get('Config', 'service_unknown'))
             item.connect("activate", self.open_url)
         else:
