@@ -57,6 +57,7 @@ class AlignakApp(object):
         self.services_unknown_item = None
         self.services_warning_item = None
         self.quit_item = None
+        self.indicator = None
 
     def main(self):
         """
@@ -98,17 +99,21 @@ class AlignakApp(object):
             '/' +
             self.Config.get('Config', 'icon'))
 
-        indicator = AppIndicator.Indicator.new(
+        self.indicator = AppIndicator.Indicator.new(
             app_id,
             img,
             AppIndicator.IndicatorCategory.APPLICATION_STATUS
         )
-        indicator.set_status(AppIndicator.IndicatorStatus.ACTIVE)
+        self.indicator.set_status(AppIndicator.IndicatorStatus.ACTIVE)
+
+
 
         # Init notify
         Notify.init(app_id)
 
-        return indicator
+        return self.indicator
+
+
 
     def build_items(self):
         """
@@ -252,6 +257,24 @@ class AlignakApp(object):
 
         return hosts_states, services_states
 
+    def change_icon(self, state):
+        if "ok" in state:
+            icon = self.Config.get('Config', 'ok')
+        elif "alert" in state:
+            icon = self.Config.get('Config', 'alert')
+        elif "warning" in state:
+            icon = self.Config.get('Config', 'warning')
+        else:
+            icon = self.Config.get('Config', 'alignak')
+
+        img = os.path.abspath(
+            self.Config.get('Config', 'path') +
+            self.Config.get('Config', 'img') +
+            '/' +
+            icon)
+
+        self.indicator.set_icon(img)
+
     def notify_change(self):
         """
         Send a notification if DOWN
@@ -266,9 +289,11 @@ class AlignakApp(object):
             self.Config.get('Config', 'img') +
             '/' +
             self.Config.get('Config', 'ok'))
+        self.change_icon("ok")
 
         if services_states['critical'] <= 0 and hosts_states['down'] <= 0:
             if services_states['unknown'] > 0 or services_states['warning'] > 0:
+                self.change_icon("warning")
                 message = "Warning: some Services are unknown or warning."
                 img = os.path.abspath(
                     self.Config.get('Config', 'path') +
@@ -276,6 +301,7 @@ class AlignakApp(object):
                     '/' +
                     self.Config.get('Config', 'warning'))
         elif (services_states['critical'] > 0) or (hosts_states['down'] > 0):
+            self.change_icon("alert")
             message = "Alert: Hosts or Services are DOWN !"
             img = os.path.abspath(
                 self.Config.get('Config', 'path') +
