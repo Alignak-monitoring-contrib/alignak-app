@@ -323,6 +323,9 @@ class AlignakApp(object):
         :param hosts_states: number of hosts UP or DOWN
         :param services_states: number of services UP, UNKNOWN or DOWN
         """
+        assert isinstance(self.hosts_up_item, Gtk.ImageMenuItem)
+        assert isinstance(self.services_up_item, Gtk.ImageMenuItem)
+
         self.hosts_up_item.set_label(
             'Hosts UP (' + str(hosts_states['up']) + ')')
         self.hosts_down_item.set_label(

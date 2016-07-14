@@ -19,14 +19,22 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-from alignak_app.application import AlignakApp as App
+import os, sys
 
+from alignak_app.application import AlignakApp as App
 
 def launch():
     """
         Launch Alignak-App.
     """
+    # Actually, we must verify we are in DESKTOP_SESSION or not
+    try:
+        os.environ['DESKTOP_SESSION']
+    except KeyError as e:
+        sys.exit('--> ERROR: you must be in desktop session to launch alignak-app : ' + str(e))
+
     App().run()
+
 
 if __name__ == "__main__":
     launch()
