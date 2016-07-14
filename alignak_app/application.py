@@ -51,9 +51,11 @@ class AlignakApp(object):
         self.backend_data = None
         self.hosts_up_item = None
         self.hosts_down_item = None
+        self.hosts_unreach_item = None
         self.services_up_item = None
         self.services_down_item = None
         self.services_unknown_item = None
+        self.services_warning_item = None
         self.quit_item = None
 
     def main(self):
@@ -80,17 +82,6 @@ class AlignakApp(object):
     def read_configuration(self):
         self.Config = cfg.ConfigParser()
         self.Config.read('/etc/alignak_app/settings.cfg')
-
-    def build_items(self):
-        """
-        Initialize and create each items
-        """
-        self.hosts_up_item = self.create_items('up')
-        self.hosts_down_item = self.create_items('down')
-        self.services_up_item = self.create_items('up')
-        self.services_down_item = self.create_items('down')
-        self.services_unknown_item = self.create_items('unknown')
-        self.quit_item = self.create_items('')
 
     def set_indicator(self):
         """
@@ -119,6 +110,20 @@ class AlignakApp(object):
 
         return indicator
 
+    def build_items(self):
+        """
+        Initialize and create each items
+        """
+        self.hosts_up_item = self.create_items('up')
+        self.hosts_down_item = self.create_items('down')
+        self.hosts_unreach_item = self.create_items('down')
+
+        self.services_up_item = self.create_items('up')
+        self.services_down_item = self.create_items('down')
+        self.services_unknown_item = self.create_items('unknown')
+        self.services_warning_item = self.create_items('unknown')
+        self.quit_item = self.create_items('')
+
     def build_menu(self):
         """
         Create Main Menu with its Items. Make a first check for Hosts
@@ -133,9 +138,11 @@ class AlignakApp(object):
         menu = Gtk.Menu()
         menu.append(self.hosts_up_item)
         menu.append(self.hosts_down_item)
+        menu.append(self.hosts_unreach_item)
         menu.append(separator_host)
         menu.append(self.services_up_item)
         menu.append(self.services_down_item)
+        menu.append(self.services_warning_item)
         menu.append(self.services_unknown_item)
         menu.append(separator_service)
         menu.append(self.quit_item)
@@ -197,26 +204,39 @@ class AlignakApp(object):
 
         :return: number of hosts and services UP, UNKNOWN and DOWN
         """
-        hosts_states = [0, 0]
-        services_states = [0, 0, 0]
+        hosts_states = {
+            'up': 0,
+            'down': 0,
+            'unreachable': 0
+        }
+        services_states = {
+            'ok': 0,
+            'critical': 0,
+            'unknown': 0,
+            'warning': 0
+        }
 
         # Collect Hosts state
         hosts_data = self.backend_data.get_host_state()
         for key, v in hosts_data.items():
             if 'UP' in v:
-                hosts_states[0] += 1
+                hosts_states['up'] += 1
             if 'DOWN' in v:
-                hosts_states[1] += 1
+                hosts_states['down'] += 1
+            if 'UNREACHABLE' in v:
+                hosts_states['unreachable'] += 1
 
         # Collect Services state
         services_data = self.backend_data.get_service_state()
         for key, v in services_data.items():
             if 'OK' in v:
-                services_states[0] += 1
+                services_states['ok'] += 1
             if 'CRITICAL' in v:
-                services_states[1] += 1
+                services_states['critical'] += 1
             if 'UNKNOWN' in v:
-                services_states[2] += 1
+                services_states['unknown'] += 1
+            if 'WARNING' in v:
+                services_states['warning'] += 1
 
         return hosts_states, services_states
 
@@ -235,15 +255,15 @@ class AlignakApp(object):
             '/' +
             self.Config.get('Config', 'ok'))
 
-        if services_states[1] <= 0 and hosts_states[1] <= 0:
-            if services_states[2] > 0:
-                message = "Warning: some Services are unknown..."
+        if services_states['critical'] <= 0 and hosts_states['down'] <= 0:
+            if services_states['unknown'] > 0 or services_states['warning'] > 0:
+                message = "Warning: some Services are unknown or warning."
                 img = os.path.abspath(
                     self.Config.get('Config', 'path') +
                     self.Config.get('Config', 'img') +
                     '/' +
                     self.Config.get('Config', 'warning'))
-        elif (services_states[1] > 0) or (hosts_states[1] > 0):
+        elif (services_states['critical'] > 0) or (hosts_states['down'] > 0):
             message = "Alert: Hosts or Services are DOWN !"
             img = os.path.abspath(
                 self.Config.get('Config', 'path') +
@@ -269,22 +289,21 @@ class AlignakApp(object):
         :param hosts_states: number of hosts UP or DOWN
         :param services_states: number of services UP, UNKNOWN or DOWN
         """
-        if hosts_states[0] > 0:
-            str_host_up = 'Hosts UP (' + str(hosts_states[0]) + ')'
-            self.hosts_up_item.set_label(str_host_up)
-        if hosts_states[1] > 0:
-            str_host_nok = 'Hosts DOWN (' + str(hosts_states[1]) + ')'
-            self.hosts_down_item.set_label(str_host_nok)
+        self.hosts_up_item.set_label(
+            'Hosts UP (' + str(hosts_states['up']) + ')')
+        self.hosts_down_item.set_label(
+            'Hosts DOWN (' + str(hosts_states['down']) + ')')
+        self.hosts_unreach_item.set_label(
+            'Hosts UNREACHABLE (' + str(hosts_states['unreachable']) + ')')
 
-        if services_states[0] > 0:
-            str_service_up = 'Services UP (' + str(services_states[0]) + ')'
-            self.services_up_item.set_label(str_service_up)
-        if services_states[1] > 0:
-            str_service_nok = 'Services DOWN (' + str(services_states[1]) + ')'
-            self.services_down_item.set_label(str_service_nok)
-        if services_states[2] > 0:
-            str_service_unk = 'Services UNKNOWN (' + str(services_states[2]) + ')'
-            self.services_unknown_item.set_label(str_service_unk)
+        self.services_up_item.set_label(
+            'Services OK (' + str(services_states['ok']) + ')')
+        self.services_down_item.set_label(
+            'Services CRITICAL (' + str(services_states['critical']) + ')')
+        self.services_warning_item.set_label(
+            'Services WARNING (' + str(services_states['warning']) + ')')
+        self.services_unknown_item.set_label(
+            'Services UNKNOWN (' + str(services_states['unknown']) + ')')
 
     @staticmethod
     def quit_app(source):
