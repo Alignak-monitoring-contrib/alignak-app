@@ -228,27 +228,28 @@ class AlignakApp(object):
         """
         hosts_states, services_states = self.get_state()
 
-        if services_states[2] > 0:
+        message = "Info: all is OK.)"
+        img = os.path.abspath(
+            self.Config.get('Config', 'path') +
+            self.Config.get('Config', 'img') +
+            '/' +
+            self.Config.get('Config', 'ok'))
+
+        if services_states[1] <= 0 and hosts_states[1] <= 0:
+            if services_states[2] > 0:
+                message = "Warning: some Services are unknown..."
+                img = os.path.abspath(
+                    self.Config.get('Config', 'path') +
+                    self.Config.get('Config', 'img') +
+                    '/' +
+                    self.Config.get('Config', 'warning'))
+        elif (services_states[1] > 0) or (hosts_states[1] > 0):
             message = "Alert: Hosts or Services are DOWN !"
             img = os.path.abspath(
                 self.Config.get('Config', 'path') +
                 self.Config.get('Config', 'img') +
                 '/' +
                 self.Config.get('Config', 'alert'))
-        elif (services_states[1] > 0) or (hosts_states[1] > 0):
-            message = "Warning: some Services are unknown..."
-            img = os.path.abspath(
-                self.Config.get('Config', 'path') +
-                self.Config.get('Config', 'img') +
-                '/' +
-                self.Config.get('Config', 'warning'))
-        else:
-            message = "Info: all is OK.)"
-            img = os.path.abspath(
-                self.Config.get('Config', 'path') +
-                self.Config.get('Config', 'img') +
-                '/' +
-                self.Config.get('Config', 'ok'))
 
         Notify.Notification.new(
             str(message),
