@@ -106,14 +106,10 @@ class AlignakApp(object):
         )
         self.indicator.set_status(AppIndicator.IndicatorStatus.ACTIVE)
 
-
-
         # Init notify
         Notify.init(app_id)
 
         return self.indicator
-
-
 
     def build_items(self):
         """
