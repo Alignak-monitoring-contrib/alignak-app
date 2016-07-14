@@ -52,9 +52,9 @@ class TestApplication(unittest2.TestCase):
     def test_get_state(self):
         under_test = AlignakApp()
 
-        Config = cfg.ConfigParser()
-        Config.read('./etc/settings.cfg')
-        under_test.Config = Config
+        config = cfg.ConfigParser()
+        config.read('./etc/settings.cfg')
+        under_test.Config = config
 
         under_test.backend_data = AlignakData()
         under_test.backend_data.log_to_backend(under_test.Config)
@@ -62,16 +62,21 @@ class TestApplication(unittest2.TestCase):
         # UP and DOWN must be Integer and positive
         hosts_states, services_states = under_test.get_state()
 
-        self.assertIsInstance(hosts_states[0], int)
-        self.assertIsInstance(hosts_states[1], int)
-        self.assertGreater(hosts_states[0], -1)
-        self.assertGreater(hosts_states[1], -1)
+        self.assertIsInstance(hosts_states['up'], int)
+        self.assertIsInstance(hosts_states['down'], int)
+        self.assertIsInstance(hosts_states['unreachable'], int)
+        self.assertGreater(hosts_states['up'], -1)
+        self.assertGreater(hosts_states['down'], -1)
+        self.assertGreater(hosts_states['unreachable'], -1)
 
-        self.assertIsInstance(services_states[0], int)
-        self.assertIsInstance(services_states[1], int)
-        self.assertGreater(services_states[0], -1)
-        self.assertGreater(services_states[1], -1)
-        self.assertGreater(services_states[2], -1)
+        self.assertIsInstance(services_states['ok'], int)
+        self.assertIsInstance(services_states['critical'], int)
+        self.assertIsInstance(services_states['unknown'], int)
+        self.assertIsInstance(services_states['warning'], int)
+        self.assertGreater(services_states['ok'], -1)
+        self.assertGreater(services_states['critical'], -1)
+        self.assertGreater(services_states['unknown'], -1)
+        self.assertGreater(services_states['warning'], -1)
 
 
 
