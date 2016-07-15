@@ -285,16 +285,19 @@ class AlignakApp(object):
         hosts_states, services_states = self.get_state()
 
         message = "Info: all is OK.)"
+        icon = 'ok'
+
         img = os.path.abspath(
             self.Config.get('Config', 'path') +
             self.Config.get('Config', 'img') +
             '/' +
             self.Config.get('Config', 'ok'))
-        self.change_icon("ok")
+
+        # self.change_icon(icon)
 
         if services_states['critical'] <= 0 and hosts_states['down'] <= 0:
             if services_states['unknown'] > 0 or services_states['warning'] > 0:
-                self.change_icon("warning")
+                icon = 'warning'
                 message = "Warning: some Services are unknown or warning."
                 img = os.path.abspath(
                     self.Config.get('Config', 'path') +
@@ -302,7 +305,7 @@ class AlignakApp(object):
                     '/' +
                     self.Config.get('Config', 'warning'))
         elif (services_states['critical'] > 0) or (hosts_states['down'] > 0):
-            self.change_icon("alert")
+            icon = 'alert'
             message = "Alert: Hosts or Services are DOWN !"
             img = os.path.abspath(
                 self.Config.get('Config', 'path') +
@@ -310,14 +313,24 @@ class AlignakApp(object):
                 '/' +
                 self.Config.get('Config', 'alert'))
 
-        Notify.Notification.new(
-            str(message),
+        if 'true' in self.Config.get('Alignak-App', 'notifications'):
+            Notify.Notification.new(
+                str(message),
+                self.update_hosts_menu(
+                    hosts_states,
+                    services_states
+                ),
+                img,
+            ).show()
+            self.change_icon(icon)
+        elif 'false' in self.Config.get('Alignak-App', 'notifications'):
             self.update_hosts_menu(
                 hosts_states,
                 services_states
-            ),
-            img,
-        ).show()
+            )
+            self.change_icon(icon)
+        else:
+            print('Bad parameters in config file, [notifications]')
 
         return True
 
