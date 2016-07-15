@@ -162,8 +162,12 @@ class AlignakApp(object):
 
         :param source: source of connector
         """
+        assert isinstance(source, Gtk.ImageMenuItem)
         webui_url = self.Config.get('Webui', 'webui_url')
-        webbrowser.open(webui_url + '/hosts')
+        if "Hosts" in source.get_label():
+            webbrowser.open(webui_url + '/hosts_table')
+        if "Services" in source.get_label():
+            webbrowser.open(webui_url + '/services_table')
 
     def create_items(self, style):
         """
@@ -199,6 +203,7 @@ class AlignakApp(object):
         else:
             img.set_from_stock(Gtk.STOCK_CLOSE, 2)
             item.connect('activate', self.quit_app)
+
         item.set_image(img)
         item.set_always_show_image(True)
 
