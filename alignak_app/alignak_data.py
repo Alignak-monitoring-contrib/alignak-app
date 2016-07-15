@@ -19,8 +19,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-from alignak_backend_client.client import Backend
+from alignak_backend_client.client import Backend, BackendException
 import future
+import sys
 
 
 class AlignakData(object):
@@ -44,7 +45,12 @@ class AlignakData(object):
         # Backend login
         backend_url = config.get('Backend', 'backend_url')
         self.backend = Backend(backend_url)
-        self.backend.login(username, password)
+        try:
+            self.backend.login(username, password)
+        except BackendException as e:
+            sys.exit('--> ERROR: ' +
+                     str(e) +
+                     ' - Please check backend state, url and your credential.')
 
     def get_host_state(self):
         # Request
