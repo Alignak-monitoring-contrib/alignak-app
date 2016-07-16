@@ -165,10 +165,25 @@ class AlignakApp(object):
         assert isinstance(item, Gtk.ImageMenuItem)
 
         webui_url = self.Config.get('Webui', 'webui_url')
-        if "Hosts" in item.get_label():
-            webbrowser.open(webui_url + '/hosts_table')
-        if "Services" in item.get_label():
-            webbrowser.open(webui_url + '/services_table')
+
+        if "UP" in item.get_label():
+            endurl = '/livestate_table?search=type:host%20state:UP'
+        elif "DOWN" in item.get_label():
+            endurl = '/livestate_table?search=type:host%20state:DOWN'
+        elif "UNREACHABLE" in item.get_label():
+            endurl = '/livestate_table?search=type:host%20state:UNREACHABLE'
+        elif 'OK' in item.get_label():
+            endurl = '/livestate_table?search=type:service%20state:OK'
+        elif 'CRITICAL' in item.get_label():
+            endurl = '/livestate_table?search=type:service%20state:CRITICAL'
+        elif 'WARNING' in item.get_label():
+            endurl = '/livestate_table?search=type:service%20state:WARNING'
+        elif 'UNKNOWN' in item.get_label():
+            endurl = '/livestate_table?search=type:service%20state:UNKNOWN'
+        else:
+            endurl = '/livestate_table'
+
+        webbrowser.open(webui_url + endurl)
 
     def create_items(self, style):
         """
