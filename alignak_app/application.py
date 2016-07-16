@@ -156,17 +156,18 @@ class AlignakApp(object):
 
         return menu
 
-    def open_url(self, source):
+    def open_url(self, item):
         """
         Add a web link on every menu
 
-        :param source: source of connector
+        :param item: items of menu
         """
-        assert isinstance(source, Gtk.ImageMenuItem)
+        assert isinstance(item, Gtk.ImageMenuItem)
+
         webui_url = self.Config.get('Webui', 'webui_url')
-        if "Hosts" in source.get_label():
+        if "Hosts" in item.get_label():
             webbrowser.open(webui_url + '/hosts_table')
-        if "Services" in source.get_label():
+        if "Services" in item.get_label():
             webbrowser.open(webui_url + '/services_table')
 
     def create_items(self, style):
