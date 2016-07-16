@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 from alignak_backend_client.client import Backend, BackendException
-import future
+import requests
 import sys
 
 
@@ -48,14 +48,20 @@ class AlignakData(object):
         try:
             self.backend.login(username, password)
         except BackendException as e:
-            sys.exit('--> ERROR: ' +
-                     str(e) +
-                     ' - Please check backend state, url and your credential.')
+            sys.exit('--> ERROR: Can\'t connect to Backend.\n' +
+                 str(e) +
+                 '\n - Please check backend state, url or your credentials.')
 
     def get_host_state(self):
         # Request
-        all_host = self.backend.get_all(self.backend.url_endpoint_root +
-                                        '/livestate?where={"type":"host"}')
+        try:
+            all_host = self.backend.get_all(
+                self.backend.url_endpoint_root +
+                '/livestate?where={"type":"host"}')
+        except requests.exceptions.ConnectionError as e:
+            print('--> ERROR: Can\'t get hosts state \n' +
+                 str(e) +
+                 '\n - Please check backend state, url or your credentials.')
         # Store Data
         for host in all_host['_items']:
             self.current_hosts[host['name']] = host['state']
@@ -63,8 +69,13 @@ class AlignakData(object):
 
     def get_service_state(self):
         # Request
-        all_services = self.backend.get_all(self.backend.url_endpoint_root +
-                                            '/livestate?where={"type":"service"}')
+        try:
+            all_services = self.backend.get_all(self.backend.url_endpoint_root +
+                '/livestate?where={"type":"service"}')
+        except requests.exceptions.ConnectionError as e:
+            print('--> ERROR: Can\'t get services state \n' +
+                     str(e) +
+                     '\n - Please check backend state, url or your credentials.')
 
         # Store Data
         for service in all_services['_items']:
