@@ -21,7 +21,6 @@
 
 import os
 import signal
-import webbrowser
 import configparser as cfg
 import gi
 
@@ -37,6 +36,7 @@ from gi.repository import Notify
 from gi.repository import GLib
 
 from alignak_app.alignak_data import AlignakData
+from alignak_app.app_menu import AppMenu
 
 
 class AlignakApp(object):
@@ -47,17 +47,10 @@ class AlignakApp(object):
     """
 
     def __init__(self):
-        self.Config = None
+        self.config = None
         self.backend_data = None
-        self.hosts_up_item = None
-        self.hosts_down_item = None
-        self.hosts_unreach_item = None
-        self.services_up_item = None
-        self.services_down_item = None
-        self.services_unknown_item = None
-        self.services_warning_item = None
-        self.quit_item = None
         self.indicator = None
+        self.app_menu = None
 
     def main(self):
         """
@@ -65,24 +58,22 @@ class AlignakApp(object):
         """
         # Get configuration
         self.read_configuration()
-        self.build_items()
+
+        # Create Menus
+        self.app_menu = AppMenu(self.config)
+        self.app_menu.build_items()
 
         # Connect to Backend
         self.backend_data = AlignakData()
-        self.backend_data.log_to_backend(self.Config)
+        self.backend_data.log_to_backend(self.config)
 
-        # Build Menu
+        # Add menu to AppIndicator
         indicator = self.set_indicator()
-        indicator.set_menu(self.build_menu())
-
-        self.start_process()
-
-        # Main Gtk
-        Gtk.main()
+        indicator.set_menu(self.create_menu())
 
     def read_configuration(self):
-        self.Config = cfg.ConfigParser()
-        self.Config.read('/etc/alignak_app/settings.cfg')
+        self.config = cfg.ConfigParser()
+        self.config.read('/etc/alignak_app/settings.cfg')
 
     def set_indicator(self):
         """
@@ -94,10 +85,10 @@ class AlignakApp(object):
         # Define ID and build Indicator
         app_id = 'appalignak'
         img = os.path.abspath(
-            self.Config.get('Config', 'path') +
-            self.Config.get('Config', 'img') +
+            self.config.get('Config', 'path') +
+            self.config.get('Config', 'img') +
             '/' +
-            self.Config.get('Config', 'icon'))
+            self.config.get('Config', 'icon'))
 
         self.indicator = AppIndicator.Indicator.new(
             app_id,
@@ -111,126 +102,79 @@ class AlignakApp(object):
 
         return self.indicator
 
-    def build_items(self):
-        """
-        Initialize and create each items
-        """
-        self.hosts_up_item = self.create_items('h_up')
-        self.hosts_down_item = self.create_items('h_down')
-        self.hosts_unreach_item = self.create_items('h_unreach')
-
-        self.services_up_item = self.create_items('s_ok')
-        self.services_down_item = self.create_items('s_critical')
-        self.services_unknown_item = self.create_items('s_warning')
-        self.services_warning_item = self.create_items('s_unknown')
-        self.quit_item = self.create_items('')
-
-    def build_menu(self):
-        """
-        Create Main Menu with its Items. Make a first check for Hosts
-
-        :return: menu
-        :rtype: gtk.Menu
-        """
-        separator_host = Gtk.SeparatorMenuItem()
-        separator_service = Gtk.SeparatorMenuItem()
-
-        # Building Menu
+    def create_menu(self):
         menu = Gtk.Menu()
-        menu.append(self.hosts_up_item)
-        menu.append(self.hosts_down_item)
-        menu.append(self.hosts_unreach_item)
-        menu.append(separator_host)
-        menu.append(self.services_up_item)
-        menu.append(self.services_down_item)
-        menu.append(self.services_warning_item)
-        menu.append(self.services_unknown_item)
-        menu.append(separator_service)
-        menu.append(self.quit_item)
-
-        menu.show_all()
+        self.app_menu.build_menu(menu)
 
         # Get first states
         hosts_states, services_states = self.get_state()
-        self.update_hosts_menu(hosts_states, services_states)
+        self.app_menu.update_hosts_menu(hosts_states, services_states)
 
         return menu
-
-    def open_url(self, item):
-        """
-        Add a web link on every menu
-
-        :param item: items of menu
-        """
-        assert isinstance(item, Gtk.ImageMenuItem)
-
-        webui_url = self.Config.get('Webui', 'webui_url')
-
-        if "UP" in item.get_label():
-            endurl = '/livestate_table?search=type:host%20state:UP'
-        elif "DOWN" in item.get_label():
-            endurl = '/livestate_table?search=type:host%20state:DOWN'
-        elif "UNREACHABLE" in item.get_label():
-            endurl = '/livestate_table?search=type:host%20state:UNREACHABLE'
-        elif 'OK' in item.get_label():
-            endurl = '/livestate_table?search=type:service%20state:OK'
-        elif 'CRITICAL' in item.get_label():
-            endurl = '/livestate_table?search=type:service%20state:CRITICAL'
-        elif 'WARNING' in item.get_label():
-            endurl = '/livestate_table?search=type:service%20state:WARNING'
-        elif 'UNKNOWN' in item.get_label():
-            endurl = '/livestate_table?search=type:service%20state:UNKNOWN'
-        else:
-            endurl = '/livestate_table'
-
-        webbrowser.open(webui_url + endurl)
-
-    def create_items(self, style):
-        """
-        Create each item for menu. Possible values: down, up, None
-        :param style: style of menu to create
-        :return: gtk.ImageMenuItem
-        """
-        item = Gtk.ImageMenuItem('')
-        img = Gtk.Image()
-        img_path = self.Config.get('Config', 'path') + self.Config.get('Config', 'img')
-
-        if 'h_up' == style:
-            img.set_from_file(img_path + '/' + self.Config.get('Config', 'host_up'))
-            item.connect("activate", self.open_url)
-        elif 'h_down' == style:
-            img.set_from_file(img_path + '/' + self.Config.get('Config', 'host_down'))
-            item.connect("activate", self.open_url)
-        elif 'h_unreach' == style:
-            img.set_from_file(img_path + '/' + self.Config.get('Config', 'host_unreach'))
-            item.connect("activate", self.open_url)
-        elif 's_ok' == style:
-            img.set_from_file(img_path + '/' + self.Config.get('Config', 'service_ok'))
-            item.connect("activate", self.open_url)
-        elif 's_critical' == style:
-            img.set_from_file(img_path + '/' + self.Config.get('Config', 'service_critical'))
-            item.connect("activate", self.open_url)
-        elif 's_warning' == style:
-            img.set_from_file(img_path + '/' + self.Config.get('Config', 'service_warning'))
-            item.connect("activate", self.open_url)
-        elif 's_unknown' == style:
-            img.set_from_file(img_path + '/' + self.Config.get('Config', 'service_unknown'))
-            item.connect("activate", self.open_url)
-        else:
-            img.set_from_stock(Gtk.STOCK_CLOSE, 2)
-            item.connect('activate', self.quit_app)
-
-        item.set_image(img)
-        item.set_always_show_image(True)
-
-        return item
 
     def start_process(self):
         """
         Start process loop.
         """
-        check_interval = int(self.Config.get('Alignak-App', 'check_interval'))
+        check_interval = int(self.config.get('Alignak-App', 'check_interval'))
         GLib.timeout_add_seconds(check_interval, self.notify_change)
+
+    def notify_change(self):
+        """
+        Send a notification if DOWN
+
+        :return: True to continue process
+        """
+        hosts_states, services_states = self.get_state()
+
+        message = "Info: all is OK.)"
+        icon = 'ok'
+
+        img = os.path.abspath(
+            self.config.get('Config', 'path') +
+            self.config.get('Config', 'img') +
+            '/' +
+            self.config.get('Config', 'ok'))
+
+        if services_states['critical'] <= 0 and hosts_states['down'] <= 0:
+            if services_states['unknown'] > 0 or services_states['warning'] > 0:
+                icon = 'warning'
+                message = "Warning: some Services are unknown or warning."
+                img = os.path.abspath(
+                    self.config.get('Config', 'path') +
+                    self.config.get('Config', 'img') +
+                    '/' +
+                    self.config.get('Config', 'warning'))
+        elif (services_states['critical'] > 0) or (hosts_states['down'] > 0):
+            icon = 'alert'
+            message = "Alert: Hosts or Services are DOWN !"
+            img = os.path.abspath(
+                self.config.get('Config', 'path') +
+                self.config.get('Config', 'img') +
+                '/' +
+                self.config.get('Config', 'alert'))
+
+        # If [notifications] is 'true' or 'false'
+        if 'true' in self.config.get('Alignak-App', 'notifications'):
+            Notify.Notification.new(
+                str(message),
+                self.app_menu.update_hosts_menu(
+                    hosts_states,
+                    services_states
+                ),
+                img,
+            ).show()
+            self.change_icon(icon)
+        elif 'false' in self.config.get('Alignak-App', 'notifications'):
+            self.app_menu.update_hosts_menu(
+                hosts_states,
+                services_states
+            )
+            self.change_icon(icon)
+        else:
+            print('Bad parameters in config file, [notifications]')
+
+        return True
 
     def get_state(self):
         """
@@ -238,6 +182,8 @@ class AlignakApp(object):
 
         :return: number of hosts and services UP, UNKNOWN and DOWN
         """
+
+        # Dicts for states
         hosts_states = {
             'up': 0,
             'down': 0,
@@ -276,119 +222,32 @@ class AlignakApp(object):
 
     def change_icon(self, state):
         if "ok" in state:
-            icon = self.Config.get('Config', 'ok')
+            icon = self.config.get('Config', 'ok')
         elif "alert" in state:
-            icon = self.Config.get('Config', 'alert')
+            icon = self.config.get('Config', 'alert')
         elif "warning" in state:
-            icon = self.Config.get('Config', 'warning')
+            icon = self.config.get('Config', 'warning')
         else:
-            icon = self.Config.get('Config', 'alignak')
+            icon = self.config.get('Config', 'alignak')
 
         img = os.path.abspath(
-            self.Config.get('Config', 'path') +
-            self.Config.get('Config', 'img') +
+            self.config.get('Config', 'path') +
+            self.config.get('Config', 'img') +
             '/' +
             icon)
 
         self.indicator.set_icon(img)
 
-    def notify_change(self):
-        """
-        Send a notification if DOWN
-
-        :return: True to continue process
-        """
-        hosts_states, services_states = self.get_state()
-
-        message = "Info: all is OK.)"
-        icon = 'ok'
-
-        img = os.path.abspath(
-            self.Config.get('Config', 'path') +
-            self.Config.get('Config', 'img') +
-            '/' +
-            self.Config.get('Config', 'ok'))
-
-        # self.change_icon(icon)
-
-        if services_states['critical'] <= 0 and hosts_states['down'] <= 0:
-            if services_states['unknown'] > 0 or services_states['warning'] > 0:
-                icon = 'warning'
-                message = "Warning: some Services are unknown or warning."
-                img = os.path.abspath(
-                    self.Config.get('Config', 'path') +
-                    self.Config.get('Config', 'img') +
-                    '/' +
-                    self.Config.get('Config', 'warning'))
-        elif (services_states['critical'] > 0) or (hosts_states['down'] > 0):
-            icon = 'alert'
-            message = "Alert: Hosts or Services are DOWN !"
-            img = os.path.abspath(
-                self.Config.get('Config', 'path') +
-                self.Config.get('Config', 'img') +
-                '/' +
-                self.Config.get('Config', 'alert'))
-
-        if 'true' in self.Config.get('Alignak-App', 'notifications'):
-            Notify.Notification.new(
-                str(message),
-                self.update_hosts_menu(
-                    hosts_states,
-                    services_states
-                ),
-                img,
-            ).show()
-            self.change_icon(icon)
-        elif 'false' in self.Config.get('Alignak-App', 'notifications'):
-            self.update_hosts_menu(
-                hosts_states,
-                services_states
-            )
-            self.change_icon(icon)
-        else:
-            print('Bad parameters in config file, [notifications]')
-
-        return True
-
-    def update_hosts_menu(self, hosts_states, services_states):
-        """
-        Update items Menu
-
-        :param hosts_states: number of hosts UP or DOWN
-        :param services_states: number of services UP, UNKNOWN or DOWN
-        """
-        assert isinstance(self.hosts_up_item, Gtk.ImageMenuItem)
-        assert isinstance(self.services_up_item, Gtk.ImageMenuItem)
-
-        self.hosts_up_item.set_label(
-            'Hosts UP (' + str(hosts_states['up']) + ')')
-        self.hosts_down_item.set_label(
-            'Hosts DOWN (' + str(hosts_states['down']) + ')')
-        self.hosts_unreach_item.set_label(
-            'Hosts UNREACHABLE (' + str(hosts_states['unreachable']) + ')')
-
-        self.services_up_item.set_label(
-            'Services OK (' + str(services_states['ok']) + ')')
-        self.services_down_item.set_label(
-            'Services CRITICAL (' + str(services_states['critical']) + ')')
-        self.services_warning_item.set_label(
-            'Services WARNING (' + str(services_states['warning']) + ')')
-        self.services_unknown_item.set_label(
-            'Services UNKNOWN (' + str(services_states['unknown']) + ')')
-
-    @staticmethod
-    def quit_app(source):
-        """
-        Quit application
-
-        :param source: source of connector
-        """
-        Notify.uninit()
-        Gtk.main_quit()
-
     def run(self):
         """
         Run application
         """
-        signal.signal(signal.SIGINT, signal.SIG_DFL)
+        # Run main to initialize app
         self.main()
+
+        # Start loop process
+        self.start_process()
+
+        # Start main Gtk
+        Gtk.main()
+        signal.signal(signal.SIGINT, signal.SIG_DFL)

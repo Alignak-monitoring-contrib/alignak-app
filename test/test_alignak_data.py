@@ -22,7 +22,7 @@
 import unittest2
 import configparser as cfg
 
-from alignak_app.alignak_data import AlignakData, Backend
+from alignak_app.alignak_data import AlignakData
 
 class TestAlignakData(unittest2.TestCase):
     """
@@ -53,4 +53,3 @@ class TestAlignakData(unittest2.TestCase):
 
         self.assertTrue(under_test.get_host_state())
         self.assertTrue(under_test.get_service_state())
-

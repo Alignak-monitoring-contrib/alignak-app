@@ -30,34 +30,39 @@ class TestApplication(unittest2.TestCase):
         This file test methods of AlignakApp class.
     """
 
-    def test_initialization(self):
+    def test_main(self):
         under_test = AlignakApp()
 
-        # Test initialization of Class and assert items are created.
-        self.assertIsNone(under_test.Config)
+        self.assertIsNone(under_test.config)
         self.assertIsNone(under_test.backend_data)
-        self.assertIsNone(under_test.hosts_up_item)
-        self.assertIsNone(under_test.hosts_down_item)
-        self.assertIsNone(under_test.quit_item)
+        self.assertIsNone(under_test.indicator)
+
+        under_test.main()
+
+        self.assertIsNotNone(under_test.config)
+        self.assertIsNotNone(under_test.backend_data)
+        # self.assertIsNotNone(under_test.app_menu.hosts_up_item)
+        # self.assertIsNotNone(under_test.app_menu.hosts_down_item)
+        # self.assertIsNotNone(under_test.app_menu.quit_item)
 
     def test_alignak_config(self):
         # Assert Config is None before read
         under_test = AlignakApp()
-        self.assertIsNone(under_test.Config)
+        self.assertIsNone(under_test.config)
 
         # Assert Config is NOT None after read
         under_test.read_configuration()
-        self.assertIsNotNone(under_test.Config)
+        self.assertIsNotNone(under_test.config)
 
     def test_get_state(self):
         under_test = AlignakApp()
 
         config = cfg.ConfigParser()
         config.read('./etc/settings.cfg')
-        under_test.Config = config
+        under_test.config = config
 
         under_test.backend_data = AlignakData()
-        under_test.backend_data.log_to_backend(under_test.Config)
+        under_test.backend_data.log_to_backend(under_test.config)
 
         # UP and DOWN must be Integer and positive
         hosts_states, services_states = under_test.get_state()
