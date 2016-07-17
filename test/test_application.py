@@ -37,13 +37,14 @@ class TestApplication(unittest2.TestCase):
         self.assertIsNone(under_test.backend_data)
         self.assertIsNone(under_test.indicator)
 
+        config = cfg.ConfigParser()
+        config.read('./etc/settings.cfg')
+        under_test.config = config
+
         under_test.main()
 
         self.assertIsNotNone(under_test.config)
         self.assertIsNotNone(under_test.backend_data)
-        # self.assertIsNotNone(under_test.app_menu.hosts_up_item)
-        # self.assertIsNotNone(under_test.app_menu.hosts_down_item)
-        # self.assertIsNotNone(under_test.app_menu.quit_item)
 
     def test_alignak_config(self):
         # Assert Config is None before read
