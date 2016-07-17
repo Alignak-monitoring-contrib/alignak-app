@@ -18,25 +18,38 @@ You must have Alignak Suite installed before using this app :
 System Compatibility
 ~~~~~~~~~~~~~~~~~~~~
 
-Actually, you must have a system compatible with **GTK** to run it !
+You must have a system compatible with **GTK** to run it !
 
 Python and Libraries
 ~~~~~~~~~~~~~~~~~~~~
 
 You should have ``python`` and ``pip`` installed::
 
-   sudo apt-get install python python-pip
+    sudo apt-get update
+    sudo apt-get install python python-pip python-gi
+    pip install --upgrade pip
 
-Then simply install Python modules that are listed in ``requirements.txt`` with pip:
+Then, simply install Python modules that are listed in ``requirements.txt`` with pip::
 
-   .. literalinclude:: ../requirements.txt
+    pip install -r requirements.txt
 
 **Tips:** if you encounter problems with `alignak_backend_client`_, download it, install requirements as above and run ``sudo setup.py install``.
 
+Python-gi
+~~~~~~~~~~~~
+
+It seems install ``gi`` with pip not work (on Debian-like). So please install with your package::
+
+   sudo apt-get install python-gi
+ 
 Installation
 ------------
 
-Actually there is no specific step (and no need) to install this app. So there is no ``setup.py`` file.
+Now you have all requires, let's install::
+
+    sudo setup.py install
+
+Normally, Alignak-App is installed.
 
 .. _alignak: http://alignak-monitoring.github.io/
 .. _alignak-backend: http://alignak-backend.readthedocs.io/en/latest/

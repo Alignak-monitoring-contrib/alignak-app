@@ -5,6 +5,14 @@
 # Binaries
 *.pyc
 __pycache__/
+.coverage
 
 # Sphinx documentation
 docs/_build/
+
+# Setup
+*.egg
+*.egg-info
+build/
+dist/
+src/

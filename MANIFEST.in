@@ -1,0 +1,5 @@
+include README.md
+include etc/settings.cfg
+recursive-include etc/images *.svg
+recursive-include alignak_app *.*
+global-exclude *pyc
