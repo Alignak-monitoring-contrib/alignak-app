@@ -56,9 +56,6 @@ class AlignakApp(object):
         """
         Create indicator, menu and main Gtk
         """
-        # Get configuration
-        self.read_configuration()
-
         # Create Menus
         self.app_menu = AppMenu(self.config)
         self.app_menu.build_items()
@@ -242,6 +239,10 @@ class AlignakApp(object):
         """
         Run application
         """
+
+        # Read settings.cfg
+        self.read_configuration()
+
         # Run main to initialize app
         self.main()
 
