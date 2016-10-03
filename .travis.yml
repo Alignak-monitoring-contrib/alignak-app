@@ -27,7 +27,8 @@ script:
   - nosetests -xv --nologcapture --with-coverage --cover-package=alignak_app test_*.py
   - ls -la
   - coverage combine
-  - coverage report -m
+  - cd ..
+  # - coverage report -m
   # - cd ..
 
 # specific call to launch coverage data into coveralls.io
@@ -36,5 +37,5 @@ after_success:
   # execute coveralls from the base directory of the project,
   # so we need to move the .coverage file here :
   # mv test/.coverage . && coveralls --rcfile=test/.coveragerc -v
-  coveralls -v
+  mv test/.coverage . && coveralls -v
   
