@@ -22,6 +22,7 @@
 from alignak_backend_client.client import Backend, BackendException
 import requests
 import sys
+import json
 
 
 class AlignakData(object):
@@ -54,29 +55,29 @@ class AlignakData(object):
     def get_host_state(self):
         # Request
         try:
+            params = {'where': json.dumps({'_is_template': False})}
             all_host = self.backend.get_all(
-                self.backend.url_endpoint_root +
-                '/livestate?where={"type":"host"}')
+                self.backend.url_endpoint_root + '/host', params)
         except requests.exceptions.ConnectionError as e:
             print('--> ERROR: Can\'t get hosts state \n' + str(e) +
                   '\n - Please check backend state, url or your credentials.')
 
         # Store Data
         for host in all_host['_items']:
-            self.current_hosts[host['name']] = host['state']
+            self.current_hosts[host['name']] = host['ls_state']
         return self.current_hosts
 
     def get_service_state(self):
         # Request
         try:
+            params = {'where': json.dumps({'_is_template': False})}
             all_services = self.backend.get_all(
-                self.backend.url_endpoint_root +
-                '/livestate?where={"type":"service"}')
+                self.backend.url_endpoint_root + '/service', params)
         except requests.exceptions.ConnectionError as e:
             print('--> ERROR: Can\'t get services state \n' + str(e) +
                   '\n - Please check backend state, url or your credentials.')
 
         # Store Data
         for service in all_services['_items']:
-            self.current_services[service['name']] = service['state']
+            self.current_services[service['name']] = service['ls_state']
         return self.current_services
