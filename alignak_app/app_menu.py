@@ -136,21 +136,21 @@ class AppMenu(object):
 
         # Define each filter for items
         if "UP" in item.get_label():
-            endurl = '/livestate_table?search=type:host%20state:UP'
+            endurl = '/hosts/table?search=ls_state:UP'
         elif "DOWN" in item.get_label():
-            endurl = '/livestate_table?search=type:host%20state:DOWN'
+            endurl = '/hosts/table?search=ls_state:DOWN'
         elif "UNREACHABLE" in item.get_label():
-            endurl = '/livestate_table?search=type:host%20state:UNREACHABLE'
+            endurl = '/hosts/table?search=ls_state:UNREACHABLE'
         elif 'OK' in item.get_label():
-            endurl = '/livestate_table?search=type:service%20state:OK'
+            endurl = '/services/table?search=ls_state:OK'
         elif 'CRITICAL' in item.get_label():
-            endurl = '/livestate_table?search=type:service%20state:CRITICAL'
+            endurl = '/services/table?search=ls_state:CRITICAL'
         elif 'WARNING' in item.get_label():
-            endurl = '/livestate_table?search=type:service%20state:WARNING'
+            endurl = '/services/table?search=ls_state:WARNING'
         elif 'UNKNOWN' in item.get_label():
-            endurl = '/livestate_table?search=type:service%20state:UNKNOWN'
+            endurl = '/services/table?search=ls_state:UNKNOWN'
         else:
-            endurl = '/livestate_table'
+            endurl = '/dashboard'
 
         webbrowser.open(webui_url + endurl)
 
