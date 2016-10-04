@@ -85,6 +85,7 @@ setup(
         (paths['etc'] + '/images', ['etc/images/ok.svg']),
         (paths['etc'] + '/images', ['etc/images/warning.svg']),
         (paths['etc'] + '/images', ['etc/images/alert.svg']),
+        (paths['etc'] + '/images', ['etc/images/error.svg']),
         (paths['etc'] + '/images', ['etc/images/host_up.svg']),
         (paths['etc'] + '/images', ['etc/images/host_down.svg']),
         (paths['etc'] + '/images', ['etc/images/host_unreach.svg']),

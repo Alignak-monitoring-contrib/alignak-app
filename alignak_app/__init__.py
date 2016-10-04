@@ -29,6 +29,13 @@
     from this application.
 """
 
+from logging import getLogger
+from alignak_app.logs import create_logger
+
+logger = getLogger(__name__)
+
+create_logger(logger)
+
 # Application version and manifest
 VERSION = (0, 2, 0)
 __application__ = u"Alignak-App"

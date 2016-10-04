@@ -20,6 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import sys
 import signal
 import configparser as cfg
 import gi
@@ -34,9 +35,13 @@ gi.require_version('Notify', '0.7')
 from gi.repository import Notify
 
 from gi.repository import GLib
+from logging import getLogger
 
 from alignak_app.alignak_data import AlignakData
 from alignak_app.app_menu import AppMenu
+
+
+logger = getLogger(__name__)
 
 
 class AlignakApp(object):
@@ -51,6 +56,7 @@ class AlignakApp(object):
         self.backend_data = None
         self.indicator = None
         self.app_menu = None
+        self.logger = None
 
     def main(self):
         """
@@ -77,7 +83,14 @@ class AlignakApp(object):
         """
 
         self.config = cfg.ConfigParser()
-        self.config.read('/etc/alignak_app/settings.cfg')
+        logger.info('Read configuration file...')
+
+        if os.path.isfile('/etc/alignak_app/settings.cfg'):
+            self.config.read('/etc/alignak_app/settings.cfg')
+            logger.info('Configuration file is OK.')
+        else:
+            logger.error('Configuration file is missing in [/etc/alignak_app/] !')
+            sys.exit()
 
     def set_indicator(self):
         """
@@ -114,6 +127,7 @@ class AlignakApp(object):
         :return: menu
         :rtype: :class:`~gi.repository.Gtk.Menu()`
         """
+        logger.info('Build menus...')
         menu = Gtk.Menu()
         self.app_menu.build_menu(menu)
 
@@ -150,7 +164,15 @@ class AlignakApp(object):
             '/' +
             self.config.get('Config', 'ok'))
 
-        if services_states['critical'] <= 0 and hosts_states['down'] <= 0:
+        if (services_states['ok'] < 0) or (hosts_states['up'] < 0):
+            icon = 'error'
+            message = "AlignakApp has something broken. Check your logs."
+            img = os.path.abspath(
+                self.config.get('Config', 'path') +
+                self.config.get('Config', 'img') +
+                '/' +
+                self.config.get('Config', 'error'))
+        elif services_states['critical'] <= 0 and hosts_states['down'] <= 0:
             if services_states['unknown'] > 0 or services_states['warning'] > 0:
                 icon = 'warning'
                 message = "Warning: some Services are unknown or warning."
@@ -168,7 +190,7 @@ class AlignakApp(object):
                 '/' +
                 self.config.get('Config', 'alert'))
 
-        # If [notifications] is 'true' or 'false'
+        # Notify or Not
         if 'true' in self.config.get('Alignak-App', 'notifications'):
             Notify.Notification.new(
                 str(message),
@@ -186,7 +208,7 @@ class AlignakApp(object):
             )
             self.change_icon(icon)
         else:
-            print('Bad parameters in config file, [notifications]')
+            logger.error('Bad parameters in config file, [notifications]')
 
         return True
 
@@ -198,6 +220,7 @@ class AlignakApp(object):
         :rtype: dict
         """
 
+        logger.info('Get state of Host and Services...')
         # Dicts for states
         hosts_states = {
             'up': 0,
@@ -213,26 +236,40 @@ class AlignakApp(object):
 
         # Collect Hosts state
         hosts_data = self.backend_data.get_host_state()
-        for key, v in hosts_data.items():
-            if 'UP' in v:
-                hosts_states['up'] += 1
-            if 'DOWN' in v:
-                hosts_states['down'] += 1
-            if 'UNREACHABLE' in v:
-                hosts_states['unreachable'] += 1
+        if not hosts_data:
+            hosts_states['up'] = -1
+        else:
+            for key, v in hosts_data.items():
+                if 'UP' in v:
+                    hosts_states['up'] += 1
+                if 'DOWN' in v:
+                    hosts_states['down'] += 1
+                if 'UNREACHABLE' in v:
+                    hosts_states['unreachable'] += 1
+            hosts_log = str(hosts_states['up']) + ' host(s) Up, ' \
+                + str(hosts_states['down']) + ' host(s) Down, ' \
+                + str(hosts_states['unreachable']) + ' host(s) unreachable, '
+            logger.info(hosts_log)
 
         # Collect Services state
         services_data = self.backend_data.get_service_state()
-        for key, v in services_data.items():
-            if 'OK' in v:
-                services_states['ok'] += 1
-            if 'CRITICAL' in v:
-                services_states['critical'] += 1
-            if 'UNKNOWN' in v:
-                services_states['unknown'] += 1
-            if 'WARNING' in v:
-                services_states['warning'] += 1
-
+        if not services_data:
+            services_states['ok'] = -1
+        else:
+            for key, v in services_data.items():
+                if 'OK' in v:
+                    services_states['ok'] += 1
+                if 'CRITICAL' in v:
+                    services_states['critical'] += 1
+                if 'UNKNOWN' in v:
+                    services_states['unknown'] += 1
+                if 'WARNING' in v:
+                    services_states['warning'] += 1
+            services_log = str(services_states['ok']) + ' service(s) Ok, ' \
+                + str(services_states['warning']) + ' service(s) Warning, ' \
+                + str(services_states['critical']) + ' service(s) Critical, ' \
+                + str(services_states['unknown']) + ' service(s) Unknown.'
+            logger.info(services_log)
         return hosts_states, services_states
 
     def change_icon(self, state):
@@ -249,8 +286,10 @@ class AlignakApp(object):
             icon = self.config.get('Config', 'alert')
         elif "warning" in state:
             icon = self.config.get('Config', 'warning')
+        elif "error" in state:
+            icon = self.config.get('Config', 'error')
         else:
-            icon = self.config.get('Config', 'alignak')
+            icon = self.config.get('Config', 'icon')
 
         img = os.path.abspath(
             self.config.get('Config', 'path') +
@@ -265,6 +304,8 @@ class AlignakApp(object):
         Run application. read configuration, create menus and start process.
 
         """
+
+        logger.info('Alignak-App start :)')
 
         # Read settings.cfg
         self.read_configuration()

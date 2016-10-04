@@ -19,29 +19,41 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import sys
+"""
+    Application logs
+"""
 
-from alignak_app.application import AlignakApp as App
-from logging import getLogger
+from logging import Formatter
+from logging import DEBUG
+from logging import StreamHandler
+from logging.handlers import TimedRotatingFileHandler
 
 
-logger = getLogger(__name__)
-
-
-def launch():
+def create_logger(logger):
     """
-        Check environment and launch Alignak-App.
+    Create th logger for Alignak-App
+
+    :param logger: the main logger.
+    :type logger: :class:`~`
     """
 
-    # Actually, we must verify we are in DESKTOP_SESSION or not
-    try:
-        os.environ['DESKTOP_SESSION']
-    except KeyError as e:
-        logger.critical('You must be in desktop session to launch Alignak-App : ' + str(e))
-        sys.exit()
+    formatter = Formatter('[%(asctime)s] - %(name)-12s - %(levelname)s - %(message)s')
 
-    App().run()
+    file_handler = TimedRotatingFileHandler(
+        'alignakapp.log',
+        when="D",
+        interval=1,
+        backupCount=6
+    )
 
-if __name__ == "__main__":
-    launch()
+    file_handler.setLevel(DEBUG)
+    file_handler.setFormatter(formatter)
+
+    logger.addHandler(file_handler)
+
+    # TEMPORARY: create a second handler for console output.
+    steam_handler = StreamHandler()
+    steam_handler.setLevel(DEBUG)
+
+    logger.setLevel(DEBUG)
+    logger.addHandler(steam_handler)

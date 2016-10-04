@@ -27,6 +27,10 @@ from gi.repository import Gtk
 
 gi.require_version('Notify', '0.7')
 from gi.repository import Notify
+from logging import getLogger
+
+
+logger = getLogger(__name__)
 
 
 class AppMenu(object):
@@ -51,6 +55,7 @@ class AppMenu(object):
         Initialize and create each item of menu.
 
         """
+        logger.info('Create menu items ...')
         self.hosts_up_item = self.create_items('h_up')
         self.hosts_down_item = self.create_items('h_down')
         self.hosts_unreach_item = self.create_items('h_unreach')
@@ -117,6 +122,7 @@ class AppMenu(object):
         separator_service = Gtk.SeparatorMenuItem()
 
         # Building Menu
+        logger.info('Add menus to application...')
         menu.append(self.hosts_up_item)
         menu.append(self.hosts_down_item)
         menu.append(self.hosts_unreach_item)
@@ -161,8 +167,8 @@ class AppMenu(object):
 
         webbrowser.open(webui_url + endurl)
 
-    @staticmethod
-    def quit_app(item):
+    # @staticmethod
+    def quit_app(self, item):
         """
         Quit application
 
@@ -171,6 +177,7 @@ class AppMenu(object):
         """
         assert isinstance(item, Gtk.ImageMenuItem)
 
+        logger.warn('Alignak-App stop.')
         Notify.uninit()
         Gtk.main_quit()
 
@@ -184,6 +191,7 @@ class AppMenu(object):
         :type services_states: dict
         """
 
+        logger.info('Update menus...')
         self.hosts_up_item.set_label(
             'Hosts UP (' + str(hosts_states['up']) + ')')
         self.hosts_down_item.set_label(
