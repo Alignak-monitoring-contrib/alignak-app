@@ -24,7 +24,9 @@
 
     This module is an appindicator for Alignak.
 
-    Application notify you when you have hosts / services DOWN. You'll be notified on your desktop and you can reach your Hosts and Services on your WebUI from this application.
+    Application notify you when you have hosts / services DOWN.
+    You'll be notified on your desktop and you can reach your Hosts and Services on your WebUI
+    from this application.
 """
 
 # Application version and manifest
