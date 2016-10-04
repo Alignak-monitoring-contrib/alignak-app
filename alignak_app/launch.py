@@ -27,8 +27,9 @@ from alignak_app.application import AlignakApp as App
 
 def launch():
     """
-        Launch Alignak-App.
+        Check environment and launch Alignak-App.
     """
+
     # Actually, we must verify we are in DESKTOP_SESSION or not
     try:
         os.environ['DESKTOP_SESSION']

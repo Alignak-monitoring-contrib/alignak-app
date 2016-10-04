@@ -55,7 +55,9 @@ class AlignakApp(object):
     def main(self):
         """
         Create indicator, menu and main Gtk
+
         """
+
         # Create Menus
         self.app_menu = AppMenu(self.config)
         self.app_menu.build_items()
@@ -69,6 +71,11 @@ class AlignakApp(object):
         indicator.set_menu(self.create_menu())
 
     def read_configuration(self):
+        """
+        Read the configuration file.
+
+        """
+
         self.config = cfg.ConfigParser()
         self.config.read('/etc/alignak_app/settings.cfg')
 
@@ -76,9 +83,10 @@ class AlignakApp(object):
         """
         Initialize a new Indicator and his notifications
 
-        :return: indicator
-        :rtype: Indicator
+        :return: Indicator
+        :rtype: :py:class:`~gi.repository.AppIndicator3.Indicator`
         """
+
         # Define ID and build Indicator
         app_id = 'appalignak'
         img = os.path.abspath(
@@ -100,6 +108,12 @@ class AlignakApp(object):
         return self.indicator
 
     def create_menu(self):
+        """
+        Create the menu, and get first states.
+
+        :return: menu
+        :rtype: :class:`~gi.repository.Gtk.Menu()`
+        """
         menu = Gtk.Menu()
         self.app_menu.build_menu(menu)
 
@@ -112,6 +126,7 @@ class AlignakApp(object):
     def start_process(self):
         """
         Start process loop.
+
         """
         check_interval = int(self.config.get('Alignak-App', 'check_interval'))
         GLib.timeout_add_seconds(check_interval, self.notify_change)
@@ -121,7 +136,9 @@ class AlignakApp(object):
         Send a notification if DOWN
 
         :return: True to continue process
+        :rtype: bool
         """
+
         hosts_states, services_states = self.get_state()
 
         message = "Info: all is OK.)"
@@ -177,7 +194,8 @@ class AlignakApp(object):
         """
         Check the hosts states.
 
-        :return: number of hosts and services UP, UNKNOWN and DOWN
+        :return: number of hosts and services UP, UNKNOWN and DOWN in two dict.
+        :rtype: dict
         """
 
         # Dicts for states
@@ -218,6 +236,13 @@ class AlignakApp(object):
         return hosts_states, services_states
 
     def change_icon(self, state):
+        """
+        Change icon depending on the hosts / services status
+
+        :param state: icon wanted
+        :type state: str
+        """
+
         if "ok" in state:
             icon = self.config.get('Config', 'ok')
         elif "alert" in state:
@@ -237,7 +262,8 @@ class AlignakApp(object):
 
     def run(self):
         """
-        Run application
+        Run application. read configuration, create menus and start process.
+
         """
 
         # Read settings.cfg

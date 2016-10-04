@@ -33,7 +33,8 @@ class AppMenu(object):
     def __init__(self, config):
         """
 
-        :param config: config file of AlignakApp
+        :param config: parser config who contains settings
+        :type config: :class:`~configparser.ConfigParser`
         """
         self.hosts_up_item = None
         self.hosts_down_item = None
@@ -47,7 +48,8 @@ class AppMenu(object):
 
     def build_items(self):
         """
-        Initialize and create each items
+        Initialize and create each item of menu.
+
         """
         self.hosts_up_item = self.create_items('h_up')
         self.hosts_down_item = self.create_items('h_down')
@@ -62,8 +64,10 @@ class AppMenu(object):
     def create_items(self, style):
         """
         Create each item for menu. Possible values: down, up, None
+
         :param style: style of menu to create
-        :return: gtk.ImageMenuItem
+        :type style: str
+        :return: :class:`~gi.repository.gtk.ImageMenuItem`
         """
         item = Gtk.ImageMenuItem('')
         img = Gtk.Image()
@@ -103,8 +107,10 @@ class AppMenu(object):
         """
         Create Main Menu with its Items. Make a first check for Hosts
 
-        :return: menu
-        :rtype: gtk.Menu
+        :param menu: Gtk Menu
+        :type menu: :class:`~gi.repository.Gtk.Menu`
+        :return: menu with all items.
+        :rtype: :class:`~gi.repository.gtk.Menu`
         """
         # Separators
         separator_host = Gtk.SeparatorMenuItem()
@@ -126,9 +132,10 @@ class AppMenu(object):
 
     def open_url(self, item):
         """
-        Add a web link on every menu
+        Add a link to WebUI on every menu
 
         :param item: items of Gtk menu
+        :type item: :class:`~gi.repository.Gtk.ImageMenuItem`
         """
         assert isinstance(item, Gtk.ImageMenuItem)
 
@@ -159,7 +166,8 @@ class AppMenu(object):
         """
         Quit application
 
-        :param item: item of Gtk menu
+        :param item: item of Gtk menu. Required by :class:`~Gtk.ImageMenuItem().connect`.
+        :type item: :class:`~Gtk.ImageMenuItem`
         """
         assert isinstance(item, Gtk.ImageMenuItem)
 
@@ -171,7 +179,9 @@ class AppMenu(object):
         Update items Menu
 
         :param hosts_states: number of hosts UP, DOWN or UNREACHABLE
+        :type hosts_states: dict
         :param services_states: number of services OK, CRITICAL, WARNING or UNKNOWN
+        :type services_states: dict
         """
 
         self.hosts_up_item.set_label(

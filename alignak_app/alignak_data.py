@@ -27,9 +27,9 @@ import json
 
 class AlignakData(object):
     """
-        Alignak Bridge
+        Alignak Data
 
-        This class collect informations with Backend-Client and return essential things for
+        This class collect informations with Backend-Client and return essential data for
         Alignak-App.
     """
 
@@ -39,6 +39,12 @@ class AlignakData(object):
         self.backend = None
 
     def log_to_backend(self, config):
+        """
+        Connect to backend with your credentials.
+
+        :param config: parser config who contains settings
+        :type config: :class:`~configparser.ConfigParser`
+        """
         # Credentials
         username = config.get('Backend', 'username')
         password = config.get('Backend', 'password')
@@ -53,6 +59,10 @@ class AlignakData(object):
                      '\n - Please check backend state, url or your credentials.')
 
     def get_host_state(self):
+        """
+        Collect state of Hosts, via backend API.
+
+        """
         # Request
         try:
             params = {'where': json.dumps({'_is_template': False})}
@@ -68,6 +78,10 @@ class AlignakData(object):
         return self.current_hosts
 
     def get_service_state(self):
+        """
+        Collect state of Services, via backend API.
+
+        """
         # Request
         try:
             params = {'where': json.dumps({'_is_template': False})}
