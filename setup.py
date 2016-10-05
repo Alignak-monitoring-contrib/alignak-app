@@ -20,6 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
+from importlib import import_module
 
 try:
     from setuptools import setup, find_packages
@@ -36,20 +37,16 @@ if python_version < (2, 7):
 # Requirements
 install_requires = [
     'future',
-    'configparser'
+    'configparser',
+    'alignak_backend_client'
 ]
 
 # Define paths
 paths = {}
 if 'linux' in sys.platform or 'sunos5' in sys.platform:
     paths = {
-        'bin':     "/usr/bin",
-        'var':     "/var/lib/alignak_app/",
-        'share':   "/var/lib/alignak_app/share",
         'etc':     "/etc/alignak_app",
-        'run':     "/var/run/alignak_app",
         'log':     "/var/log/alignak_app",
-        'libexec': "/var/lib/alignak_app/libexec",
     }
 else:
     print("Unsupported platform, sorry!")
@@ -57,7 +54,6 @@ else:
 
 from alignak_app import __description__, __version__, __license__
 from alignak_app import __name__ as __pkg_name__
-
 
 
 setup(
@@ -98,7 +94,7 @@ setup(
     install_requires=install_requires,
 
     entry_points={
-        'console_scripts': [
+        'gui_scripts': [
             'alignak_app = alignak_app.launch:launch',
         ],
     },

@@ -27,6 +27,7 @@ from logging import Formatter
 from logging import DEBUG
 from logging import StreamHandler
 from logging.handlers import TimedRotatingFileHandler
+import os
 
 
 def create_logger(logger):
@@ -36,11 +37,23 @@ def create_logger(logger):
     :param logger: the main logger.
     :type logger: :class:`~`
     """
+    path = 'logs'
+    filename = 'alignakapp.log'
+    if not os.path.isdir(path):
+        # noinspection PyBroadException
+        try:  # pragma: no cover - not testable
+            os.makedirs(path)
+        except Exception:
+            path = '.'
+
+    if not os.access(path, os.W_OK):
+        path = '.'
+
 
     formatter = Formatter('[%(asctime)s] - %(name)-12s - %(levelname)s - %(message)s')
 
     file_handler = TimedRotatingFileHandler(
-        'alignakapp.log',
+        filename=os.path.join(path, filename),
         when="D",
         interval=1,
         backupCount=6
