@@ -145,7 +145,7 @@ class AlignakApp(object):
         check_interval = int(self.config.get('Alignak-App', 'check_interval'))
         GLib.timeout_add_seconds(check_interval, self.notify_change)
 
-    def notify_change(self): # pragma: no cover
+    def notify_change(self):  # pragma: no cover
         """
         Send a notification if DOWN
 
