@@ -46,15 +46,6 @@ class TestApplication(unittest2.TestCase):
         self.assertIsNotNone(under_test.config)
         self.assertIsNotNone(under_test.backend_data)
 
-    def test_alignak_config(self):
-        # Assert Config is None before read
-        under_test = AlignakApp()
-        self.assertIsNone(under_test.config)
-
-        # Assert Config is NOT None after read
-        under_test.read_configuration()
-        self.assertIsNotNone(under_test.config)
-
     def test_get_state(self):
         under_test = AlignakApp()
 
