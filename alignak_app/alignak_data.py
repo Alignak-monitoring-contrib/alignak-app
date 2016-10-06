@@ -19,20 +19,23 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-from alignak_backend_client.client import Backend, BackendException
-import requests
+"""
+    Alignak_data manage connexion with backend and his data.
+"""
+
 import sys
 import json
+
 from logging import getLogger
+from alignak_backend_client.client import Backend, BackendException
+
 
 logger = getLogger(__name__)
 
 
 class AlignakData(object):
     """
-        Alignak Data
-
-        This class collect informations with Backend-Client and return essential data for
+        Class who collect informations with Backend-Client and returns data for
         Alignak-App.
     """
 
@@ -43,7 +46,7 @@ class AlignakData(object):
 
     def log_to_backend(self, config):
         """
-        Connect to backend with your credentials.
+        Connect to backend with credentials in settings.cfg.
 
         :param config: parser config who contains settings
         :type config: :class:`~configparser.ConfigParser`

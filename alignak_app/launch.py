@@ -19,11 +19,15 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+    Launch is launching application.
+"""
+
 import os
 import sys
 
-from alignak_app.application import AlignakApp as App
 from logging import getLogger
+from alignak_app.application import AlignakApp as App
 
 
 logger = getLogger(__name__)

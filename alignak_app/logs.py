@@ -32,7 +32,7 @@ import os
 
 def create_logger(logger):
     """
-    Create th logger for Alignak-App
+    Create the logger for Alignak-App
 
     :param logger: the main logger.
     :type logger: :class:`~`

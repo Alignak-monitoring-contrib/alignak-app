@@ -19,9 +19,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+    Application manage process, configuration and global application.
+"""
+
 import os
 import sys
 import signal
+from logging import getLogger
 import configparser as cfg
 import gi
 
@@ -35,7 +40,6 @@ gi.require_version('Notify', '0.7')
 from gi.repository import Notify
 
 from gi.repository import GLib
-from logging import getLogger
 
 from alignak_app.alignak_data import AlignakData
 from alignak_app.app_menu import AppMenu
@@ -46,9 +50,7 @@ logger = getLogger(__name__)
 
 class AlignakApp(object):
     """
-        App application
-
-        This is the main class of Alignak-App.
+        Class who create AlignakApp application.
     """
 
     def __init__(self):
@@ -239,7 +241,7 @@ class AlignakApp(object):
         if not hosts_data:
             hosts_states['up'] = -1
         else:
-            for key, v in hosts_data.items():
+            for _, v in hosts_data.items():
                 if 'UP' in v:
                     hosts_states['up'] += 1
                 if 'DOWN' in v:
@@ -256,7 +258,7 @@ class AlignakApp(object):
         if not services_data:
             services_states['ok'] = -1
         else:
-            for key, v in services_data.items():
+            for _, v in services_data.items():
                 if 'OK' in v:
                     services_states['ok'] += 1
                 if 'CRITICAL' in v:

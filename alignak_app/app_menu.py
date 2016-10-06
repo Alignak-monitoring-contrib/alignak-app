@@ -19,6 +19,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+    App_menu manage menu of application and update values.
+"""
+
+from logging import getLogger
 import webbrowser
 import gi
 
@@ -27,13 +32,16 @@ from gi.repository import Gtk
 
 gi.require_version('Notify', '0.7')
 from gi.repository import Notify
-from logging import getLogger
 
 
 logger = getLogger(__name__)
 
 
 class AppMenu(object):
+    """
+        Class who build items, menus and update them.
+    """
+
     def __init__(self, config):
         """
 
@@ -78,25 +86,25 @@ class AppMenu(object):
         img = Gtk.Image()
         img_path = self.config.get('Config', 'path') + self.config.get('Config', 'img')
 
-        if 'h_up' == style:
+        if style == 'h_up':
             img.set_from_file(img_path + '/' + self.config.get('Config', 'host_up'))
             item.connect("activate", self.open_url)
-        elif 'h_down' == style:
+        elif style == 'h_down':
             img.set_from_file(img_path + '/' + self.config.get('Config', 'host_down'))
             item.connect("activate", self.open_url)
-        elif 'h_unreach' == style:
+        elif style == 'h_unreach':
             img.set_from_file(img_path + '/' + self.config.get('Config', 'host_unreach'))
             item.connect("activate", self.open_url)
-        elif 's_ok' == style:
+        elif style == 's_ok':
             img.set_from_file(img_path + '/' + self.config.get('Config', 'service_ok'))
             item.connect("activate", self.open_url)
-        elif 's_critical' == style:
+        elif style == 's_critical':
             img.set_from_file(img_path + '/' + self.config.get('Config', 'service_critical'))
             item.connect("activate", self.open_url)
-        elif 's_warning' == style:
+        elif style == 's_warning':
             img.set_from_file(img_path + '/' + self.config.get('Config', 'service_warning'))
             item.connect("activate", self.open_url)
-        elif 's_unknown' == style:
+        elif style == 's_unknown':
             img.set_from_file(img_path + '/' + self.config.get('Config', 'service_unknown'))
             item.connect("activate", self.open_url)
         else:

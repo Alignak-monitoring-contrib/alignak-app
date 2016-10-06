@@ -17,9 +17,9 @@ script:
   - pip freeze
   # Code static analysis
   - pep8 --max-line-length=100 --exclude='*.pyc, *.cfg, *.log' --ignore='E402' alignak_app/*
-  #- pylint --rcfile=.pylintrc alignak_webui/
+  - pylint --rcfile=.pylintrc alignak_app/
   # No pep257 currently (Code doc compliance)
-  # - pep257 --select=D300 alignak_webui
+  # - pep257 --select=D300 alignak_app
   # Code dynamic analysis
   # - cd test
   - coverage erase
