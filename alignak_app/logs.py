@@ -49,7 +49,6 @@ def create_logger(logger):
     if not os.access(path, os.W_OK):
         path = '.'
 
-
     formatter = Formatter('[%(asctime)s] - %(name)-12s - %(levelname)s - %(message)s')
 
     file_handler = TimedRotatingFileHandler(
