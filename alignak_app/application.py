@@ -145,7 +145,7 @@ class AlignakApp(object):
         check_interval = int(self.config.get('Alignak-App', 'check_interval'))
         GLib.timeout_add_seconds(check_interval, self.notify_change)
 
-    def notify_change(self):
+    def notify_change(self): # pragma: no cover
         """
         Send a notification if DOWN
 
@@ -272,7 +272,7 @@ class AlignakApp(object):
             logger.info(services_log)
         return hosts_states, services_states
 
-    def change_icon(self, state):
+    def change_icon(self, state):  # pragma: no cover
         """
         Change icon depending on the hosts / services status
 
@@ -299,7 +299,7 @@ class AlignakApp(object):
 
         self.indicator.set_icon(img)
 
-    def run(self):
+    def run(self):  # pragma: no cover
         """
         Run application. read configuration, create menus and start process.
 
