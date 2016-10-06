@@ -27,6 +27,7 @@ script:
   - nosetests -xv --nologcapture --with-coverage --cover-package=alignak_app test_*.py
   - ls -la
   - coverage combine
+  - cat .coverage
   - cd ..
   # - coverage report -m
   # - cd ..
