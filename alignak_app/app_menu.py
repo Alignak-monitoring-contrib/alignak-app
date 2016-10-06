@@ -23,15 +23,15 @@
     App_menu manage menu of application and update values.
 """
 
-from logging import getLogger
 import webbrowser
+from logging import getLogger
+
 import gi
+from gi.repository import Gtk
+from gi.repository import Notify
 
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
-
 gi.require_version('Notify', '0.7')
-from gi.repository import Notify
 
 
 logger = getLogger(__name__)
