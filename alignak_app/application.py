@@ -97,7 +97,7 @@ class AlignakApp(object):
         Initialize a new Indicator and his notifications
 
         :return: Indicator
-        :rtype: :py:class:`~gi.repository.AppIndicator3.Indicator`
+        :rtype: **gi.repository.AppIndicator3.Indicator**
         """
 
         # Define ID and build Indicator
@@ -125,7 +125,7 @@ class AlignakApp(object):
         Create the menu, and get first states.
 
         :return: menu
-        :rtype: :class:`~gi.repository.Gtk.Menu()`
+        :rtype: **gi.repository.Gtk.Menu**
         """
         logger.info('Build menus...')
         menu = Gtk.Menu()

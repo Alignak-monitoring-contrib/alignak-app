@@ -79,7 +79,7 @@ class AppMenu(object):
 
         :param style: style of menu to create
         :type style: str
-        :return: :class:`~gi.repository.gtk.ImageMenuItem`
+        :return: **gi.repository.gtk.ImageMenuItem**
         """
         item = Gtk.ImageMenuItem('')
         img = Gtk.Image()
@@ -122,7 +122,7 @@ class AppMenu(object):
         :param menu: Gtk Menu
         :type menu: :class:`~gi.repository.Gtk.Menu`
         :return: menu with all items.
-        :rtype: :class:`~gi.repository.gtk.Menu`
+        :rtype: **gi.repository.gtk.Menu**
         """
         # Separators
         separator_host = Gtk.SeparatorMenuItem()
@@ -148,7 +148,7 @@ class AppMenu(object):
         Add a link to WebUI on every menu
 
         :param item: items of Gtk menu
-        :type item: :class:`~gi.repository.Gtk.ImageMenuItem`
+        :type item: **gi.repository.Gtk.ImageMenuItem**
         """
         assert isinstance(item, Gtk.ImageMenuItem)
 
@@ -174,12 +174,12 @@ class AppMenu(object):
 
         webbrowser.open(webui_url + endurl)
 
-    # @staticmethod
-    def quit_app(self, item):
+    @staticmethod
+    def quit_app(item):
         """
         Quit application
 
-        :param item: item of Gtk menu. Required by :class:`~Gtk.ImageMenuItem().connect`.
+        :param item: item of Gtk menu. Required by **connect**.
         :type item: :class:`~Gtk.ImageMenuItem`
         """
         assert isinstance(item, Gtk.ImageMenuItem)
