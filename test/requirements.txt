@@ -1,3 +1,4 @@
+# Python requirements for unit tests
 unittest2
 nose
 nose-cov
@@ -5,3 +6,4 @@ coverage
 coveralls
 pep8
 future
+pylint
