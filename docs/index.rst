@@ -15,7 +15,6 @@ Documentation content:
    install
    config
    launch
-   alignak_app
 
 
 Indices and tables
