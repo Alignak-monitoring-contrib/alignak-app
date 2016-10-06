@@ -46,4 +46,11 @@ alignak_app.launch
     :undoc-members:
     :show-inheritance:
 
+alignak_app.logs
+----------------
+
+.. automodule:: alignak_app.logs
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
