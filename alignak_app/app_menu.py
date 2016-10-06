@@ -27,11 +27,12 @@ import webbrowser
 from logging import getLogger
 
 import gi
-from gi.repository import Gtk
-from gi.repository import Notify
-
 gi.require_version('Gtk', '3.0')
 gi.require_version('Notify', '0.7')
+from gi.repository import Gtk  # pylint: disable=wrong-import-position
+from gi.repository import Notify  # pylint: disable=wrong-import-position
+
+
 
 
 logger = getLogger(__name__)

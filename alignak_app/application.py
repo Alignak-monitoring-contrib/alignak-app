@@ -28,20 +28,19 @@ import sys
 import signal
 from logging import getLogger
 
-import gi
-from gi.repository import Gtk
-from gi.repository import AppIndicator3 as AppIndicator
-from gi.repository import Notify
-from gi.repository import GLib
-
 from alignak_app.alignak_data import AlignakData
 from alignak_app.app_menu import AppMenu
 
 import configparser as cfg
 
+import gi
+from gi.repository import GLib  # pylint: disable=no-name-in-module
 gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk  # pylint: disable=wrong-import-position
 gi.require_version('AppIndicator3', '0.1')
+from gi.repository import AppIndicator3 as AppIndicator  # pylint: disable=wrong-import-position
 gi.require_version('Notify', '0.7')
+from gi.repository import Notify  # pylint: disable=wrong-import-position
 
 
 logger = getLogger(__name__)
