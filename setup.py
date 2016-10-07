@@ -106,7 +106,7 @@ setup(
         (paths['etc'] + '/images', ['etc/images/service_warning.svg']),
         (paths['etc'] + '/images', ['etc/images/service_unknown.svg']),
         (paths['bin'], ['etc/bin/alignak-app']),
-        (paths['bin'] + '/alignak_app', ['alignak_app/launch.py']),
+        (paths['bin'] + '/alignak_app', ['etc/bin/launch.py']),
     ],
 
     install_requires=install_requires,
