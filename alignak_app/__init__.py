@@ -37,7 +37,7 @@ logger = getLogger(__name__)
 create_logger(logger)
 
 # Application version and manifest
-VERSION = (0, 2, 0)
+VERSION = (0, 3, 0)
 __application__ = u"Alignak-App"
 __short_version__ = '.'.join((str(each) for each in VERSION[:2]))
 __version__ = '.'.join((str(each) for each in VERSION[:4]))
