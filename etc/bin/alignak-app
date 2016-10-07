@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Alignak-app start !"
+python $HOME/bin/alignak_app/launch.py &

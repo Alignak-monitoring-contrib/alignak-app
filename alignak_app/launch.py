@@ -39,11 +39,11 @@ def launch():
     """
 
     # Actually, we must verify we are in DESKTOP_SESSION or not
-    try:
-        os.environ['DESKTOP_SESSION']
-    except KeyError as e:
-        logger.critical('You must be in desktop session to launch Alignak-App : ' + str(e))
-        sys.exit()
+    # try:
+    #     os.environ['DESKTOP_SESSION']
+    # except KeyError as e:
+    #     logger.critical('You must be in desktop session to launch Alignak-App : ' + str(e))
+    #     sys.exit()
 
     App().run()
 

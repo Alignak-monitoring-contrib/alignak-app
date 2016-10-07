@@ -20,7 +20,8 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
-from importlib import import_module
+import os
+import subprocess
 
 try:
     from setuptools import setup, find_packages
@@ -41,12 +42,27 @@ install_requires = [
     'alignak_backend_client'
 ]
 
+# Get HOME and USER
+home = os.environ['HOME']
+if 'root' in home or not home:
+    sys.exit('Application can\'t find the user HOME or maybe you are connected as ROOT.')
+if home.endswith('/'):
+    home = home[:-1]
+home += '/bin'
+
+print('HOME = ' + home)
+
+user = home.split('/')[2]
+
+print('USER = ' + user)
+
 # Define paths
 paths = {}
 if 'linux' in sys.platform or 'sunos5' in sys.platform:
     paths = {
-        'etc':     "/etc/alignak_app",
-        'log':     "/var/log/alignak_app",
+        'etc': "/etc/alignak_app",
+        'log': home + "alignak_app/logs",
+        'bin': home,
     }
 else:
     print("Unsupported platform, sorry!")
@@ -89,15 +105,17 @@ setup(
         (paths['etc'] + '/images', ['etc/images/service_critical.svg']),
         (paths['etc'] + '/images', ['etc/images/service_warning.svg']),
         (paths['etc'] + '/images', ['etc/images/service_unknown.svg']),
+        (paths['bin'], ['etc/bin/alignak-app']),
+        (paths['bin'] + '/alignak_app', ['alignak_app/launch.py']),
     ],
 
     install_requires=install_requires,
 
-    entry_points={
-        'gui_scripts': [
-            'alignak_app = alignak_app.launch:launch',
-        ],
-    },
+    # entry_points={
+    #     'gui_scripts': [
+    #         'alignak_app = alignak_app.launch:launch',
+    #     ],
+    # },
 
     classifiers = [
         'Development Status :: 4 - Beta',
@@ -115,4 +133,13 @@ setup(
     ]
 
 )
+
+cmd = 'sudo chown -R ' + user + ':' + user + ' ~/bin'
+try:
+    subprocess.Popen(cmd,
+        shell=True, stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+except Exception:
+    print('ERROR : Alignak-app failed to give the necessary rights !')
 

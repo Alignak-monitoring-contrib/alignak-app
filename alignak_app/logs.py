@@ -25,9 +25,9 @@
 
 from logging import Formatter
 from logging import DEBUG
-from logging import StreamHandler
 from logging.handlers import TimedRotatingFileHandler
 import os
+import sys
 
 
 def create_logger(logger):
@@ -37,8 +37,17 @@ def create_logger(logger):
     :param logger: the main logger.
     :type logger: :class:`~`
     """
-    path = 'logs'
+
+    # Get HOME to make log dir
+    home = os.environ['HOME']
+    if 'root' in home or not home:
+        sys.exit('Application can\'t find the user HOME or maybe you are connected as ROOT.')
+    if home.endswith('/'):
+        home = home[:-1]
+
+    path = home + '/bin/alignak_app/'
     filename = 'alignakapp.log'
+
     if not os.path.isdir(path):
         # noinspection PyBroadException
         try:  # pragma: no cover - not testable
@@ -62,10 +71,4 @@ def create_logger(logger):
     file_handler.setFormatter(formatter)
 
     logger.addHandler(file_handler)
-
-    # TEMPORARY: create a second handler for console output.
-    steam_handler = StreamHandler()
-    steam_handler.setLevel(DEBUG)
-
     logger.setLevel(DEBUG)
-    logger.addHandler(steam_handler)
