@@ -84,7 +84,7 @@ setup(
     keywords="alignak app indicator",
     url="https://github.com/Alignak-monitoring-contrib/alignak-app",
     description=__description__,
-    long_description=open('README.md').read(),
+    long_description=open('README.rst').read(),
 
     zip_safe=False,
 
