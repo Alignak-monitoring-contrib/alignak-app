@@ -30,7 +30,7 @@ import os
 import sys
 
 
-def create_logger(logger):
+def create_logger(logger):  # pragma: no cover
     """
     Create the logger for Alignak-App
 
@@ -69,7 +69,7 @@ def create_logger(logger):
     logger.setLevel(DEBUG)
 
 
-def get_home_user():
+def get_home_user():  # pragma: no cover
     """
     Return user home.
     """
