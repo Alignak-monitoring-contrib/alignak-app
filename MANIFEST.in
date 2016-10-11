@@ -1,4 +1,4 @@
-include README.md
+include README.rst
 include etc/settings.cfg
 include etc/bin/alignak-app
 include etc/bin/launch.py
