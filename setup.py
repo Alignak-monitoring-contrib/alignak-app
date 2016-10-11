@@ -43,7 +43,7 @@ install_requires = [
 ]
 
 # Get HOME and USER
-from alignak_app.logs import get_home_user
+from alignak_app.utils import get_home_user
 home = get_home_user()
 home += '/.alignak_app'
 
