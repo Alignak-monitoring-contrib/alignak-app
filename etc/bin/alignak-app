@@ -18,4 +18,4 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 echo "Alignak-app start !"
-python $HOME/bin/alignak_app/launch.py &
+python $HOME/.alignak_app/bin/launch.py &
