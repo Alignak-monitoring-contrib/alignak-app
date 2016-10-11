@@ -30,7 +30,7 @@ from logging import getLogger
 
 from alignak_app.alignak_data import AlignakData
 from alignak_app.app_menu import AppMenu
-from alignak_app.logs import get_home_user
+from alignak_app.utils import get_home_user
 
 import configparser as cfg
 
@@ -166,7 +166,7 @@ class AlignakApp(object):
             + self.config.get('Config', 'path') \
             + self.config.get('Config', 'img') \
             + '/'
-        logger.info("Image Path = " + img_path)
+
         # Initialize img to default
         img = os.path.abspath(img_path + self.config.get('Config', 'ok'))
 

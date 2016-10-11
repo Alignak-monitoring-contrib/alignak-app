@@ -30,7 +30,7 @@
 """
 
 from logging import getLogger
-from alignak_app.logs import create_logger
+from alignak_app.utils import create_logger
 
 logger = getLogger(__name__)
 

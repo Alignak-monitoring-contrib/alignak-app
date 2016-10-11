@@ -25,7 +25,7 @@
 
 import webbrowser
 from logging import getLogger
-from alignak_app.logs import get_home_user
+from alignak_app.utils import get_home_user
 
 import gi
 gi.require_version('Gtk', '3.0')
