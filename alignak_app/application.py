@@ -30,6 +30,7 @@ from logging import getLogger
 
 from alignak_app.alignak_data import AlignakData
 from alignak_app.app_menu import AppMenu
+from alignak_app.logs import get_home_user
 
 import configparser as cfg
 
@@ -44,6 +45,7 @@ from gi.repository import Notify  # pylint: disable=wrong-import-position
 
 
 logger = getLogger(__name__)
+home_user = get_home_user()
 
 
 class AlignakApp(object):
@@ -82,15 +84,17 @@ class AlignakApp(object):
 
         """
 
+        config_file = get_home_user() + '/.alignak_app/settings.cfg'
+
         self.config = cfg.ConfigParser()
         logger.info('Read configuration file...')
 
-        if os.path.isfile('/etc/alignak_app/settings.cfg'):
-            self.config.read('/etc/alignak_app/settings.cfg')
+        if os.path.isfile(config_file):
+            self.config.read(config_file)
             logger.info('Configuration file is OK.')
         else:
-            logger.error('Configuration file is missing in [/etc/alignak_app/] !')
-            sys.exit()
+            logger.error('Configuration file is missing in [' + config_file + '] !')
+            sys.exit('Configuration file is missing in [' + config_file + '] !')
 
     def set_indicator(self):
         """
@@ -102,11 +106,11 @@ class AlignakApp(object):
 
         # Define ID and build Indicator
         app_id = 'appalignak'
-        img = os.path.abspath(
-            self.config.get('Config', 'path') +
-            self.config.get('Config', 'img') +
-            '/' +
-            self.config.get('Config', 'icon'))
+        img_path = home_user \
+            + self.config.get('Config', 'path') \
+            + self.config.get('Config', 'img') \
+            + '/'
+        img = os.path.abspath(img_path + self.config.get('Config', 'icon'))
 
         self.indicator = AppIndicator.Indicator.new(
             app_id,
@@ -158,37 +162,27 @@ class AlignakApp(object):
         message = "Info: all is OK.)"
         icon = 'ok'
 
-        img = os.path.abspath(
-            self.config.get('Config', 'path') +
-            self.config.get('Config', 'img') +
-            '/' +
-            self.config.get('Config', 'ok'))
+        img_path = home_user \
+            + self.config.get('Config', 'path') \
+            + self.config.get('Config', 'img') \
+            + '/'
+        logger.info("Image Path = " + img_path)
+        # Initialize img to default
+        img = os.path.abspath(img_path + self.config.get('Config', 'ok'))
 
         if (services_states['ok'] < 0) or (hosts_states['up'] < 0):
             icon = 'error'
             message = "AlignakApp has something broken. Check your logs."
-            img = os.path.abspath(
-                self.config.get('Config', 'path') +
-                self.config.get('Config', 'img') +
-                '/' +
-                self.config.get('Config', 'error'))
+            img = os.path.abspath(img_path + self.config.get('Config', 'error'))
         elif services_states['critical'] <= 0 and hosts_states['down'] <= 0:
             if services_states['unknown'] > 0 or services_states['warning'] > 0:
                 icon = 'warning'
                 message = "Warning: some Services are unknown or warning."
-                img = os.path.abspath(
-                    self.config.get('Config', 'path') +
-                    self.config.get('Config', 'img') +
-                    '/' +
-                    self.config.get('Config', 'warning'))
+                img = os.path.abspath(img_path + self.config.get('Config', 'warning'))
         elif (services_states['critical'] > 0) or (hosts_states['down'] > 0):
             icon = 'alert'
             message = "Alert: Hosts or Services are DOWN !"
-            img = os.path.abspath(
-                self.config.get('Config', 'path') +
-                self.config.get('Config', 'img') +
-                '/' +
-                self.config.get('Config', 'alert'))
+            img = os.path.abspath(img_path + self.config.get('Config', 'alert'))
 
         # Notify or Not
         if 'true' in self.config.get('Alignak-App', 'notifications'):
@@ -291,11 +285,11 @@ class AlignakApp(object):
         else:
             icon = self.config.get('Config', 'icon')
 
-        img = os.path.abspath(
-            self.config.get('Config', 'path') +
-            self.config.get('Config', 'img') +
-            '/' +
-            icon)
+        img_path = home_user \
+            + self.config.get('Config', 'path') \
+            + self.config.get('Config', 'img') \
+            + '/'
+        img = os.path.abspath(img_path + icon)
 
         self.indicator.set_icon(img)
 

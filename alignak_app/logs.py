@@ -38,14 +38,9 @@ def create_logger(logger):
     :type logger: :class:`~`
     """
 
-    # Get HOME to make log dir
-    home = os.environ['HOME']
-    if 'root' in home or not home:
-        sys.exit('Application can\'t find the user HOME or maybe you are connected as ROOT.')
-    if home.endswith('/'):
-        home = home[:-1]
+    home = get_home_user()
 
-    path = home + '/bin/alignak_app/'
+    path = home + '/.alignak_app/'
     filename = 'alignakapp.log'
 
     if not os.path.isdir(path):
@@ -72,3 +67,17 @@ def create_logger(logger):
 
     logger.addHandler(file_handler)
     logger.setLevel(DEBUG)
+
+
+def get_home_user():
+    """
+    Return user home.
+    """
+
+    # Get HOME and USER
+    home = os.environ['HOME']
+    if 'root' in home or not home:
+        sys.exit('Application can\'t find the user HOME or maybe you are connected as ROOT.')
+    if home.endswith('/'):
+        home = home[:-1]
+    return home

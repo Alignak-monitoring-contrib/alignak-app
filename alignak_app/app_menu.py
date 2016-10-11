@@ -25,6 +25,7 @@
 
 import webbrowser
 from logging import getLogger
+from alignak_app.logs import get_home_user
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -83,28 +84,31 @@ class AppMenu(object):
         """
         item = Gtk.ImageMenuItem('')
         img = Gtk.Image()
-        img_path = self.config.get('Config', 'path') + self.config.get('Config', 'img')
+        img_path = get_home_user() \
+            + self.config.get('Config', 'path') \
+            + self.config.get('Config', 'img') \
+            + '/'
 
         if style == 'h_up':
-            img.set_from_file(img_path + '/' + self.config.get('Config', 'host_up'))
+            img.set_from_file(img_path + self.config.get('Config', 'host_up'))
             item.connect("activate", self.open_url)
         elif style == 'h_down':
-            img.set_from_file(img_path + '/' + self.config.get('Config', 'host_down'))
+            img.set_from_file(img_path + self.config.get('Config', 'host_down'))
             item.connect("activate", self.open_url)
         elif style == 'h_unreach':
-            img.set_from_file(img_path + '/' + self.config.get('Config', 'host_unreach'))
+            img.set_from_file(img_path + self.config.get('Config', 'host_unreach'))
             item.connect("activate", self.open_url)
         elif style == 's_ok':
-            img.set_from_file(img_path + '/' + self.config.get('Config', 'service_ok'))
+            img.set_from_file(img_path + self.config.get('Config', 'service_ok'))
             item.connect("activate", self.open_url)
         elif style == 's_critical':
-            img.set_from_file(img_path + '/' + self.config.get('Config', 'service_critical'))
+            img.set_from_file(img_path + self.config.get('Config', 'service_critical'))
             item.connect("activate", self.open_url)
         elif style == 's_warning':
-            img.set_from_file(img_path + '/' + self.config.get('Config', 'service_warning'))
+            img.set_from_file(img_path + self.config.get('Config', 'service_warning'))
             item.connect("activate", self.open_url)
         elif style == 's_unknown':
-            img.set_from_file(img_path + '/' + self.config.get('Config', 'service_unknown'))
+            img.set_from_file(img_path + self.config.get('Config', 'service_unknown'))
             item.connect("activate", self.open_url)
         else:
             img.set_from_stock(Gtk.STOCK_CLOSE, 2)
