@@ -43,12 +43,9 @@ install_requires = [
 ]
 
 # Get HOME and USER
-home = os.environ['HOME']
-if 'root' in home or not home:
-    sys.exit('Application can\'t find the user HOME or maybe you are connected as ROOT.')
-if home.endswith('/'):
-    home = home[:-1]
-home += '/bin'
+from alignak_app.logs import get_home_user
+home = get_home_user()
+home += '/.alignak_app'
 
 print('HOME = ' + home)
 
@@ -60,9 +57,9 @@ print('USER = ' + user)
 paths = {}
 if 'linux' in sys.platform or 'sunos5' in sys.platform:
     paths = {
-        'etc': "/etc/alignak_app",
-        'log': home + "alignak_app/logs",
-        'bin': home,
+        'etc': home,
+        'log': home + "/logs",
+        'bin': home + "/bin",
     }
 else:
     print("Unsupported platform, sorry!")
@@ -106,16 +103,10 @@ setup(
         (paths['etc'] + '/images', ['etc/images/service_warning.svg']),
         (paths['etc'] + '/images', ['etc/images/service_unknown.svg']),
         (paths['bin'], ['etc/bin/alignak-app']),
-        (paths['bin'] + '/alignak_app', ['etc/bin/launch.py']),
+        (paths['bin'], ['etc/bin/launch.py']),
     ],
 
     install_requires=install_requires,
-
-    # entry_points={
-    #     'gui_scripts': [
-    #         'alignak_app = alignak_app.launch:launch',
-    #     ],
-    # },
 
     classifiers = [
         'Development Status :: 4 - Beta',
@@ -134,7 +125,7 @@ setup(
 
 )
 
-cmd = 'sudo chown -R ' + user + ':' + user + ' ~/bin'
+cmd = 'sudo chown -R ' + user + ':' + user + ' ' + home
 try:
     subprocess.Popen(cmd,
         shell=True, stdin=subprocess.PIPE,
