@@ -31,7 +31,17 @@ if [ -d "$APP_ROOT" ]; then
             echo "Now, you can launch application with : [alignakapp] command."
         fi
     fi
-    echo "Alignak-app start !"
+
+    CHECK=`ps fu |grep "alignak_app"|grep -v "grep"|awk '{print $2}'`
+
+    if [ ! -z "$CHECK" -a "$CHECK" != " " ] ; then
+        echo "A process of Alignak-app already running..."
+        echo "-> kill process (with PID : $CHECK)..."
+        kill "$CHECK"
+        echo "Alignak-app restart !"
+    else
+        echo "Alignak-app start !"
+    fi
 
     python -c \
         """
@@ -51,7 +61,8 @@ except KeyError as e:
     sys.exit()
 
 App().run()
-        """
+        """ &
+
 else
     echo "ERROR: installation seems broken !"
 fi
