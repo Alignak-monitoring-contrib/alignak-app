@@ -30,7 +30,7 @@ if [ -d "$APP_ROOT" ]; then
         echo "The command is not yet created..."
         if [ -f "$APP_BIN/$APP_NAME" ]; then
             echo "Create command for alignakapp..."
-            ln -s "$USER_BIN/$APP_NAME" "$HOME/bin"
+            ln -s "$APP_BIN/$APP_NAME" "$HOME/bin"
             echo -e "
     #####################################################
     #      Now, command [alignakapp] is available.      #
