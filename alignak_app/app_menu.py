@@ -85,9 +85,9 @@ class AppMenu(object):
         item = Gtk.ImageMenuItem('')
         img = Gtk.Image()
         img_path = get_alignak_home() \
-                   + self.config.get('Config', 'path') \
-                   + self.config.get('Config', 'img') \
-                   + '/'
+            + self.config.get('Config', 'path') \
+            + self.config.get('Config', 'img') \
+            + '/'
 
         if style == 'h_up':
             img.set_from_file(img_path + self.config.get('Config', 'host_up'))
