@@ -43,7 +43,7 @@ install_requires = [
 paths = {}
 if 'linux' in sys.platform or 'sunos5' in sys.platform:
     paths = {
-        'app': '.alignak_app',
+        'app': 'alignak_app',
         'log': 'logs',
         'bin': 'bin',
     }

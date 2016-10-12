@@ -17,10 +17,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-APP_ROOT=$HOME/.local/.alignak_app/
+APP_ROOT=$HOME/.local/alignak_app/
 APP_NAME=alignakapp
 
 if [ -d "$APP_ROOT" ]; then
+
     echo "Alignak-app verify installation..."
     if [ ! -L "$HOME/bin/$APP_NAME" ]; then
         echo "Command is not create..."

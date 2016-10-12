@@ -38,7 +38,7 @@ def create_logger(logger):  # pragma: no cover
     :type logger: :class:`~`
     """
 
-    path = get_alignak_home()
+    path = get_alignak_home() + '/alignak_app'
 
     filename = 'alignakapp.log'
 

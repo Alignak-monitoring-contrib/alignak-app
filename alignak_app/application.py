@@ -84,7 +84,7 @@ class AlignakApp(object):
 
         """
 
-        config_file = get_alignak_home() + '/.alignak_app/settings.cfg'
+        config_file = get_alignak_home() + '/alignak_app/settings.cfg'
 
         self.config = cfg.ConfigParser()
         logger.info('Read configuration file...')
