@@ -17,30 +17,47 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-APP_ROOT=$HOME/.local/alignak_app/
+APP_ROOT=$HOME/.local/alignak_app
+APP_BIN=$HOME/.local/bin
+USER_BIN=$HOME/bin
 APP_NAME=alignakapp
 
 if [ -d "$APP_ROOT" ]; then
 
+    # Verify installation
     echo "Alignak-app verify installation..."
-    if [ ! -L "$HOME/bin/$APP_NAME" ]; then
-        echo "Command is not create..."
-        if [ -f "$APP_ROOT/$APP_NAME" ]; then
+    if [ ! -L "$USER_BIN/$APP_NAME" ]; then
+        echo "The command is not yet created..."
+        if [ -f "$APP_BIN/$APP_NAME" ]; then
             echo "Create command for alignakapp..."
-            ln -s "$APP_ROOT/$APP_NAME" "$HOME/bin"
-            echo "Now, you can launch application with : [alignakapp] command."
+            ln -s "$USER_BIN/$APP_NAME" "$HOME/bin"
+            echo -e "
+    #####################################################
+    #      Now, command [alignakapp] is available.      #
+    #####################################################
+    "
         fi
     fi
+    echo "Installation is ok !"
 
+    # Check if Application is not running.
     CHECK=`ps fu |grep "alignak_app"|grep -v "grep"|awk '{print $2}'`
 
     if [ ! -z "$CHECK" -a "$CHECK" != " " ] ; then
         echo "A process of Alignak-app already running..."
         echo "-> kill process (with PID : $CHECK)..."
         kill "$CHECK"
-        echo "Alignak-app restart !"
+        echo "
+    #####################################################
+    #               Alignak-app restart !               #
+    #####################################################
+            "
     else
-        echo "Alignak-app start !"
+        echo "
+    #####################################################
+    #               Alignak-app start !               #
+    #####################################################
+            "
     fi
 
     python -c \
@@ -66,4 +83,3 @@ App().run()
 else
     echo "ERROR: installation seems broken !"
 fi
-
