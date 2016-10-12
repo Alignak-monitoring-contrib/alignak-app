@@ -1,6 +1,6 @@
 include README.rst
 include etc/settings.cfg
-include etc/bin/alignak-app
+include etc/bin/alignakapp
 include etc/bin/launch.py
 recursive-include etc/images *.svg
 recursive-include alignak_app *.*
