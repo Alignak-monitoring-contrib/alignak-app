@@ -30,7 +30,7 @@ from logging import getLogger
 
 from alignak_app.alignak_data import AlignakData
 from alignak_app.app_menu import AppMenu
-from alignak_app.utils import get_home_user
+from alignak_app.utils import get_alignak_home
 
 import configparser as cfg
 
@@ -45,7 +45,7 @@ from gi.repository import Notify  # pylint: disable=wrong-import-position
 
 
 logger = getLogger(__name__)
-home_user = get_home_user()
+home_user = get_alignak_home()
 
 
 class AlignakApp(object):
@@ -84,7 +84,7 @@ class AlignakApp(object):
 
         """
 
-        config_file = get_home_user() + '/.alignak_app/settings.cfg'
+        config_file = get_alignak_home() + '/.alignak_app/settings.cfg'
 
         self.config = cfg.ConfigParser()
         logger.info('Read configuration file...')

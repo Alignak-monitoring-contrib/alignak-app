@@ -20,8 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
-import os
-import subprocess
+
 
 try:
     from setuptools import setup, find_packages
@@ -37,29 +36,16 @@ if python_version < (2, 7):
 
 # Requirements
 install_requires = [
-    'future',
-    'configparser',
     'alignak_backend_client'
 ]
-
-# Get HOME and USER
-from alignak_app.utils import get_home_user
-home = get_home_user()
-home += '/.alignak_app'
-
-print('HOME = ' + home)
-
-user = home.split('/')[2]
-
-print('USER = ' + user)
 
 # Define paths
 paths = {}
 if 'linux' in sys.platform or 'sunos5' in sys.platform:
     paths = {
-        'etc': home,
-        'log': home + "/logs",
-        'bin': home + "/bin",
+        'app': '.alignak_app',
+        'log': 'logs',
+        'bin': 'bin',
     }
 else:
     print("Unsupported platform, sorry!")
@@ -89,21 +75,20 @@ setup(
     include_package_data=True,
 
     data_files = [
-        (paths['etc'], ['etc/settings.cfg']),
-        (paths['etc'] + '/images', ['etc/images/alignak.svg']),
-        (paths['etc'] + '/images', ['etc/images/ok.svg']),
-        (paths['etc'] + '/images', ['etc/images/warning.svg']),
-        (paths['etc'] + '/images', ['etc/images/alert.svg']),
-        (paths['etc'] + '/images', ['etc/images/error.svg']),
-        (paths['etc'] + '/images', ['etc/images/host_up.svg']),
-        (paths['etc'] + '/images', ['etc/images/host_down.svg']),
-        (paths['etc'] + '/images', ['etc/images/host_unreach.svg']),
-        (paths['etc'] + '/images', ['etc/images/service_ok.svg']),
-        (paths['etc'] + '/images', ['etc/images/service_critical.svg']),
-        (paths['etc'] + '/images', ['etc/images/service_warning.svg']),
-        (paths['etc'] + '/images', ['etc/images/service_unknown.svg']),
-        (paths['bin'], ['etc/bin/alignak-app']),
-        (paths['bin'], ['etc/bin/launch.py']),
+        (paths['app'], ['etc/settings.cfg']),
+        (paths['app'] + '/images', ['etc/images/alignak.svg']),
+        (paths['app'] + '/images', ['etc/images/ok.svg']),
+        (paths['app'] + '/images', ['etc/images/warning.svg']),
+        (paths['app'] + '/images', ['etc/images/alert.svg']),
+        (paths['app'] + '/images', ['etc/images/error.svg']),
+        (paths['app'] + '/images', ['etc/images/host_up.svg']),
+        (paths['app'] + '/images', ['etc/images/host_down.svg']),
+        (paths['app'] + '/images', ['etc/images/host_unreach.svg']),
+        (paths['app'] + '/images', ['etc/images/service_ok.svg']),
+        (paths['app'] + '/images', ['etc/images/service_critical.svg']),
+        (paths['app'] + '/images', ['etc/images/service_warning.svg']),
+        (paths['app'] + '/images', ['etc/images/service_unknown.svg']),
+        (paths['bin'], ['etc/bin/alignakapp']),
     ],
 
     install_requires=install_requires,
@@ -124,13 +109,3 @@ setup(
     ]
 
 )
-
-cmd = 'sudo chown -R ' + user + ':' + user + ' ' + home
-try:
-    subprocess.Popen(cmd,
-        shell=True, stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE)
-except Exception:
-    print('ERROR : Alignak-app failed to give the necessary rights !')
-

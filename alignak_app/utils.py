@@ -38,9 +38,8 @@ def create_logger(logger):  # pragma: no cover
     :type logger: :class:`~`
     """
 
-    home = get_home_user()
+    path = get_alignak_home()
 
-    path = home + '/.alignak_app/'
     filename = 'alignakapp.log'
 
     if not os.path.isdir(path):
@@ -69,15 +68,16 @@ def create_logger(logger):  # pragma: no cover
     logger.setLevel(DEBUG)
 
 
-def get_home_user():  # pragma: no cover
+def get_alignak_home():  # pragma: no cover
     """
     Return user home.
     """
 
     # Get HOME and USER
-    home = os.environ['HOME']
-    if 'root' in home or not home:
+    alignak_home = os.environ['HOME']
+    if 'root' in alignak_home or not alignak_home:
         sys.exit('Application can\'t find the user HOME or maybe you are connected as ROOT.')
-    if home.endswith('/'):
-        home = home[:-1]
-    return home
+    if alignak_home.endswith('/'):
+        alignak_home = alignak_home[:-1]
+    alignak_home += '/.local'
+    return alignak_home
