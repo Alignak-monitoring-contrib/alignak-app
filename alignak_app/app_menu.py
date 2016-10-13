@@ -147,7 +147,7 @@ class AppMenu(object):
 
         menu.show_all()
 
-    def open_url(self, item):
+    def open_url(self, item):  # pragma: no cover
         """
         Add a link to WebUI on every menu
 
@@ -179,7 +179,7 @@ class AppMenu(object):
         webbrowser.open(webui_url + endurl)
 
     @staticmethod
-    def quit_app(item):
+    def quit_app(item):  # pragma: no cover
         """
         Quit application
 

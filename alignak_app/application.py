@@ -77,7 +77,7 @@ class AlignakApp(object):
         indicator = self.set_indicator()
         indicator.set_menu(self.create_menu())
 
-    def read_configuration(self):
+    def read_configuration(self):  # pragma: no cover
         """
         Read the configuration file.
 
@@ -140,7 +140,7 @@ class AlignakApp(object):
 
         return menu
 
-    def start_process(self):
+    def start_process(self):  # pragma: no cover
         """
         Start process loop.
 
