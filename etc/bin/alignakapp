@@ -41,7 +41,7 @@ if [ -d "$APP_ROOT" ]; then
     echo "Installation is ok !"
 
     # Check if Application is not running.
-    CHECK=`ps fu |grep "alignak_app"|grep -v "grep"|awk '{print $2}'`
+    CHECK=`ps fu |grep "alignak_app.application"|grep -v "grep"|awk '{print $2}'`
 
     if [ ! -z "$CHECK" -a "$CHECK" != " " ] ; then
         echo "A process of Alignak-app already running..."
