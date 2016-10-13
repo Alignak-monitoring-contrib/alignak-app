@@ -15,6 +15,8 @@ You must have Alignak Suite installed before using this app :
 * `alignak-backend`_
 * `alignak-webui`_ 
 
+Alignak-app need at least the backend to connect with it.
+
 System Compatibility
 ~~~~~~~~~~~~~~~~~~~~
 
@@ -23,33 +25,39 @@ You must have a system compatible with **GTK** to run it !
 Python and Libraries
 ~~~~~~~~~~~~~~~~~~~~
 
-You should have ``python`` and ``pip`` installed::
+You should have ``python``, ``python-gi`` and ``pip`` installed::
 
     sudo apt-get update
     sudo apt-get install python python-pip python-gi
     pip install --upgrade pip
 
-Then, simply install Python modules that are listed in ``requirements.txt`` with pip::
+Then, simply install Python modules that are listed in ``requirements.txt`` file with pip:
 
-    pip install -r requirements.txt
+    .. literalinclude:: ../requirements.txt
 
-**Tips:** if you encounter problems with `alignak_backend_client`_, download it, install requirements as above and run ``sudo setup.py install``.
-
-Python-gi
-~~~~~~~~~~~~
-
-It seems install ``gi`` with pip not work (on Debian-like). So please install with your package::
-
-   sudo apt-get install python-gi
+**Note**: if you proceed to an end-user installation with pip, the required modules are automatically installed.
  
 Installation
 ------------
 
-Now you have all requires, let's install::
+End user installation
+~~~~~~~~~~~~~~~~~~~~~
 
-    sudo setup.py install
+You can install with pip::
 
-Normally, Alignak-App is installed.
+    pip install alignak_app
+
+The required Python modules are automatically installed if not present on your system.
+
+From Sources
+~~~~~~~~~~~~
+
+Now you have all requires, clone repos and let's install::
+
+    git clone https://github.com/Alignak-monitoring-contrib/alignak-app
+    cd alignak-app
+    pip install .
+
 
 .. _alignak: http://alignak-monitoring.github.io/
 .. _alignak-backend: http://alignak-backend.readthedocs.io/en/latest/
