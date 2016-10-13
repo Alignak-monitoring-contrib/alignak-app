@@ -28,6 +28,9 @@ import json
 
 from logging import getLogger
 from alignak_backend_client.client import Backend, BackendException
+import gi
+gi.require_version('Notify', '0.7')
+from gi.repository import Notify  # pylint: disable=wrong-import-position
 
 
 logger = getLogger(__name__)
@@ -51,6 +54,7 @@ class AlignakData(object):
         :param config: parser config who contains settings
         :type config: :class:`~configparser.ConfigParser`
         """
+
         # Credentials
         username = config.get('Backend', 'username')
         password = config.get('Backend', 'password')
@@ -64,15 +68,25 @@ class AlignakData(object):
             connect = self.backend.login(username, password)
             if connect:
                 logger.info('Connection to backend : OK.')
+
             else:
                 logger.warn('Connection to backend failed !')
+                Notify.init('appalignak')
+                Notify.Notification.new(
+                    'Connection to backend failed !',
+                    None,
+                    gi.repository.Gtk.STOCK_DIALOG_ERROR,
+                ).show()
         except BackendException as e:
             logger.error(
-                'Can\'t connect to Backend. ' +
+                'Connection to Backend has failed. ' +
                 str(e) +
                 '\nCheck your [settings.cfg] or your backend status.'
             )
-            sys.exit()
+            sys.exit(
+                'Alignak-app will close :( ...' +
+                '\nCheck your logs.'
+            )
 
     def get_host_state(self):
         """
@@ -88,14 +102,13 @@ class AlignakData(object):
             all_host = self.backend.get_all(
                 self.backend.url_endpoint_root + '/host', params)
         except BackendException as e:
-            logger.error('Can\'t get hosts state \n' + str(e))
+            logger.warn('Alignak-app failed to collect hosts... \n' + str(e))
 
         # Store Data
         if all_host:
             for host in all_host['_items']:
                 self.current_hosts[host['name']] = host['ls_state']
-        else:
-            logger.error('AlignakApp has collected 0 hosts !')
+
         return self.current_hosts
 
     def get_service_state(self):
@@ -112,12 +125,11 @@ class AlignakData(object):
             all_services = self.backend.get_all(
                 self.backend.url_endpoint_root + '/service', params)
         except BackendException as e:
-            logger.error('Can\'t get services state \n' + str(e))
+            logger.warn('Alignak-app failed to collect services... \n' + str(e))
 
         # Store Data
         if all_services:
             for service in all_services['_items']:
                 self.current_services[service['name']] = service['ls_state']
-        else:
-            logger.error('AlignakApp has collected 0 services !')
+
         return self.current_services

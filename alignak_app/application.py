@@ -213,6 +213,10 @@ class AlignakApp(object):
         :rtype: dict
         """
 
+        if not self.alignak_data.backend.authenticated:
+            logger.warn('Connection to backend is lost, application will try to reconnect !')
+            self.alignak_data.log_to_backend(self.config)
+
         logger.info('Get state of Host and Services...')
         # Dicts for states
         hosts_states = {
@@ -232,7 +236,6 @@ class AlignakApp(object):
 
         if not hosts_data:
             hosts_states['up'] = -1
-            logger.warning('Alignak-app failed to collect hosts states...')
         else:
             for _, v in hosts_data.items():
                 if 'UP' in v:
@@ -250,7 +253,6 @@ class AlignakApp(object):
         services_data = self.alignak_data.get_service_state()
         if not services_data:
             services_states['ok'] = -1
-            logger.warning('Alignak-app failed to collect services states...')
         else:
             for _, v in services_data.items():
                 if 'OK' in v:
