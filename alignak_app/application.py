@@ -55,10 +55,9 @@ class AlignakApp(object):
 
     def __init__(self):
         self.config = None
-        self.backend_data = None
+        self.alignak_data = None
         self.indicator = None
         self.app_menu = None
-        self.logger = None
 
     def main(self):
         """
@@ -71,8 +70,8 @@ class AlignakApp(object):
         self.app_menu.build_items()
 
         # Connect to Backend
-        self.backend_data = AlignakData()
-        self.backend_data.log_to_backend(self.config)
+        self.alignak_data = AlignakData()
+        self.alignak_data.log_to_backend(self.config)
 
         # Add menu to AppIndicator
         indicator = self.set_indicator()
@@ -229,9 +228,11 @@ class AlignakApp(object):
         }
 
         # Collect Hosts state
-        hosts_data = self.backend_data.get_host_state()
+        hosts_data = self.alignak_data.get_host_state()
+
         if not hosts_data:
             hosts_states['up'] = -1
+            logger.warning('Alignak-app failed to collect hosts states...')
         else:
             for _, v in hosts_data.items():
                 if 'UP' in v:
@@ -246,9 +247,10 @@ class AlignakApp(object):
             logger.info(hosts_log)
 
         # Collect Services state
-        services_data = self.backend_data.get_service_state()
+        services_data = self.alignak_data.get_service_state()
         if not services_data:
             services_states['ok'] = -1
+            logger.warning('Alignak-app failed to collect services states...')
         else:
             for _, v in services_data.items():
                 if 'OK' in v:
@@ -264,6 +266,7 @@ class AlignakApp(object):
                 + str(services_states['critical']) + ' service(s) Critical, ' \
                 + str(services_states['unknown']) + ' service(s) Unknown.'
             logger.info(services_log)
+
         return hosts_states, services_states
 
     def change_icon(self, state):  # pragma: no cover

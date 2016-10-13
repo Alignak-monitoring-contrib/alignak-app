@@ -34,7 +34,7 @@ class TestApplication(unittest2.TestCase):
         under_test = AlignakApp()
 
         self.assertIsNone(under_test.config)
-        self.assertIsNone(under_test.backend_data)
+        self.assertIsNone(under_test.alignak_data)
         self.assertIsNone(under_test.indicator)
 
         config = cfg.ConfigParser()
@@ -44,7 +44,7 @@ class TestApplication(unittest2.TestCase):
         under_test.main()
 
         self.assertIsNotNone(under_test.config)
-        self.assertIsNotNone(under_test.backend_data)
+        self.assertIsNotNone(under_test.alignak_data)
 
     def test_get_state(self):
         under_test = AlignakApp()
@@ -53,8 +53,8 @@ class TestApplication(unittest2.TestCase):
         config.read('./etc/settings.cfg')
         under_test.config = config
 
-        under_test.backend_data = AlignakData()
-        under_test.backend_data.log_to_backend(under_test.config)
+        under_test.alignak_data = AlignakData()
+        under_test.alignak_data.log_to_backend(under_test.config)
 
         # UP and DOWN must be Integer and positive
         hosts_states, services_states = under_test.get_state()
