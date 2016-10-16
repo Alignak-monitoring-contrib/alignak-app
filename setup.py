@@ -21,6 +21,7 @@
 
 import sys
 
+
 try:
     from setuptools import setup, find_packages
 except:
@@ -35,21 +36,16 @@ if python_version < (2, 7):
 
 # Requirements
 install_requires = [
-    'future',
-    'configparser'
+    'alignak_backend_client'
 ]
 
 # Define paths
 paths = {}
 if 'linux' in sys.platform or 'sunos5' in sys.platform:
     paths = {
-        'bin':     "/usr/bin",
-        'var':     "/var/lib/alignak_app/",
-        'share':   "/var/lib/alignak_app/share",
-        'etc':     "/etc/alignak_app",
-        'run':     "/var/run/alignak_app",
-        'log':     "/var/log/alignak_app",
-        'libexec': "/var/lib/alignak_app/libexec",
+        'app': 'alignak_app',
+        'log': 'logs',
+        'bin': 'bin',
     }
 else:
     print("Unsupported platform, sorry!")
@@ -57,7 +53,6 @@ else:
 
 from alignak_app import __description__, __version__, __license__
 from alignak_app import __name__ as __pkg_name__
-
 
 
 setup(
@@ -72,7 +67,7 @@ setup(
     keywords="alignak app indicator",
     url="https://github.com/Alignak-monitoring-contrib/alignak-app",
     description=__description__,
-    long_description=open('README.md').read(),
+    long_description=open('README.rst').read(),
 
     zip_safe=False,
 
@@ -80,27 +75,23 @@ setup(
     include_package_data=True,
 
     data_files = [
-        (paths['etc'], ['etc/settings.cfg']),
-        (paths['etc'] + '/images', ['etc/images/alignak.svg']),
-        (paths['etc'] + '/images', ['etc/images/ok.svg']),
-        (paths['etc'] + '/images', ['etc/images/warning.svg']),
-        (paths['etc'] + '/images', ['etc/images/alert.svg']),
-        (paths['etc'] + '/images', ['etc/images/host_up.svg']),
-        (paths['etc'] + '/images', ['etc/images/host_down.svg']),
-        (paths['etc'] + '/images', ['etc/images/host_unreach.svg']),
-        (paths['etc'] + '/images', ['etc/images/service_ok.svg']),
-        (paths['etc'] + '/images', ['etc/images/service_critical.svg']),
-        (paths['etc'] + '/images', ['etc/images/service_warning.svg']),
-        (paths['etc'] + '/images', ['etc/images/service_unknown.svg']),
+        (paths['app'], ['etc/settings.cfg']),
+        (paths['app'] + '/images', ['etc/images/alignak.svg']),
+        (paths['app'] + '/images', ['etc/images/ok.svg']),
+        (paths['app'] + '/images', ['etc/images/warning.svg']),
+        (paths['app'] + '/images', ['etc/images/alert.svg']),
+        (paths['app'] + '/images', ['etc/images/error.svg']),
+        (paths['app'] + '/images', ['etc/images/host_up.svg']),
+        (paths['app'] + '/images', ['etc/images/host_down.svg']),
+        (paths['app'] + '/images', ['etc/images/host_unreach.svg']),
+        (paths['app'] + '/images', ['etc/images/service_ok.svg']),
+        (paths['app'] + '/images', ['etc/images/service_critical.svg']),
+        (paths['app'] + '/images', ['etc/images/service_warning.svg']),
+        (paths['app'] + '/images', ['etc/images/service_unknown.svg']),
+        (paths['bin'], ['etc/bin/alignakapp']),
     ],
 
     install_requires=install_requires,
-
-    entry_points={
-        'console_scripts': [
-            'alignak_app = alignak_app.launch:launch',
-        ],
-    },
 
     classifiers = [
         'Development Status :: 4 - Beta',
@@ -118,4 +109,3 @@ setup(
     ]
 
 )
-

@@ -19,21 +19,34 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+    App_menu manage menu of application and update values.
+"""
+
 import webbrowser
+from logging import getLogger
+from alignak_app.utils import get_alignak_home
+
 import gi
-
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
-
 gi.require_version('Notify', '0.7')
-from gi.repository import Notify
+from gi.repository import Gtk  # pylint: disable=wrong-import-position
+from gi.repository import Notify  # pylint: disable=wrong-import-position
+
+
+logger = getLogger(__name__)
 
 
 class AppMenu(object):
+    """
+        Class who build items, menus and update them.
+    """
+
     def __init__(self, config):
         """
 
-        :param config: config file of AlignakApp
+        :param config: parser config who contains settings
+        :type config: :class:`~configparser.ConfigParser`
         """
         self.hosts_up_item = None
         self.hosts_down_item = None
@@ -47,8 +60,10 @@ class AppMenu(object):
 
     def build_items(self):
         """
-        Initialize and create each items
+        Initialize and create each item of menu.
+
         """
+        logger.info('Create menu items ...')
         self.hosts_up_item = self.create_items('h_up')
         self.hosts_down_item = self.create_items('h_down')
         self.hosts_unreach_item = self.create_items('h_unreach')
@@ -62,33 +77,38 @@ class AppMenu(object):
     def create_items(self, style):
         """
         Create each item for menu. Possible values: down, up, None
+
         :param style: style of menu to create
-        :return: gtk.ImageMenuItem
+        :type style: str
+        :return: **gi.repository.gtk.ImageMenuItem**
         """
         item = Gtk.ImageMenuItem('')
         img = Gtk.Image()
-        img_path = self.config.get('Config', 'path') + self.config.get('Config', 'img')
+        img_path = get_alignak_home() \
+            + self.config.get('Config', 'path') \
+            + self.config.get('Config', 'img') \
+            + '/'
 
-        if 'h_up' == style:
-            img.set_from_file(img_path + '/' + self.config.get('Config', 'host_up'))
+        if style == 'h_up':
+            img.set_from_file(img_path + self.config.get('Config', 'host_up'))
             item.connect("activate", self.open_url)
-        elif 'h_down' == style:
-            img.set_from_file(img_path + '/' + self.config.get('Config', 'host_down'))
+        elif style == 'h_down':
+            img.set_from_file(img_path + self.config.get('Config', 'host_down'))
             item.connect("activate", self.open_url)
-        elif 'h_unreach' == style:
-            img.set_from_file(img_path + '/' + self.config.get('Config', 'host_unreach'))
+        elif style == 'h_unreach':
+            img.set_from_file(img_path + self.config.get('Config', 'host_unreach'))
             item.connect("activate", self.open_url)
-        elif 's_ok' == style:
-            img.set_from_file(img_path + '/' + self.config.get('Config', 'service_ok'))
+        elif style == 's_ok':
+            img.set_from_file(img_path + self.config.get('Config', 'service_ok'))
             item.connect("activate", self.open_url)
-        elif 's_critical' == style:
-            img.set_from_file(img_path + '/' + self.config.get('Config', 'service_critical'))
+        elif style == 's_critical':
+            img.set_from_file(img_path + self.config.get('Config', 'service_critical'))
             item.connect("activate", self.open_url)
-        elif 's_warning' == style:
-            img.set_from_file(img_path + '/' + self.config.get('Config', 'service_warning'))
+        elif style == 's_warning':
+            img.set_from_file(img_path + self.config.get('Config', 'service_warning'))
             item.connect("activate", self.open_url)
-        elif 's_unknown' == style:
-            img.set_from_file(img_path + '/' + self.config.get('Config', 'service_unknown'))
+        elif style == 's_unknown':
+            img.set_from_file(img_path + self.config.get('Config', 'service_unknown'))
             item.connect("activate", self.open_url)
         else:
             img.set_from_stock(Gtk.STOCK_CLOSE, 2)
@@ -103,14 +123,17 @@ class AppMenu(object):
         """
         Create Main Menu with its Items. Make a first check for Hosts
 
-        :return: menu
-        :rtype: gtk.Menu
+        :param menu: Gtk Menu
+        :type menu: :class:`~gi.repository.Gtk.Menu`
+        :return: menu with all items.
+        :rtype: **gi.repository.gtk.Menu**
         """
         # Separators
         separator_host = Gtk.SeparatorMenuItem()
         separator_service = Gtk.SeparatorMenuItem()
 
         # Building Menu
+        logger.info('Add menus to application...')
         menu.append(self.hosts_up_item)
         menu.append(self.hosts_down_item)
         menu.append(self.hosts_unreach_item)
@@ -124,11 +147,12 @@ class AppMenu(object):
 
         menu.show_all()
 
-    def open_url(self, item):
+    def open_url(self, item):  # pragma: no cover
         """
-        Add a web link on every menu
+        Add a link to WebUI on every menu
 
         :param item: items of Gtk menu
+        :type item: **gi.repository.Gtk.ImageMenuItem**
         """
         assert isinstance(item, Gtk.ImageMenuItem)
 
@@ -136,33 +160,35 @@ class AppMenu(object):
 
         # Define each filter for items
         if "UP" in item.get_label():
-            endurl = '/livestate_table?search=type:host%20state:UP'
+            endurl = '/hosts/table?search=ls_state:UP'
         elif "DOWN" in item.get_label():
-            endurl = '/livestate_table?search=type:host%20state:DOWN'
+            endurl = '/hosts/table?search=ls_state:DOWN'
         elif "UNREACHABLE" in item.get_label():
-            endurl = '/livestate_table?search=type:host%20state:UNREACHABLE'
+            endurl = '/hosts/table?search=ls_state:UNREACHABLE'
         elif 'OK' in item.get_label():
-            endurl = '/livestate_table?search=type:service%20state:OK'
+            endurl = '/services/table?search=ls_state:OK'
         elif 'CRITICAL' in item.get_label():
-            endurl = '/livestate_table?search=type:service%20state:CRITICAL'
+            endurl = '/services/table?search=ls_state:CRITICAL'
         elif 'WARNING' in item.get_label():
-            endurl = '/livestate_table?search=type:service%20state:WARNING'
+            endurl = '/services/table?search=ls_state:WARNING'
         elif 'UNKNOWN' in item.get_label():
-            endurl = '/livestate_table?search=type:service%20state:UNKNOWN'
+            endurl = '/services/table?search=ls_state:UNKNOWN'
         else:
-            endurl = '/livestate_table'
+            endurl = '/dashboard'
 
         webbrowser.open(webui_url + endurl)
 
     @staticmethod
-    def quit_app(item):
+    def quit_app(item):  # pragma: no cover
         """
         Quit application
 
-        :param item: item of Gtk menu
+        :param item: item of Gtk menu. Required by **connect**.
+        :type item: :class:`~Gtk.ImageMenuItem`
         """
         assert isinstance(item, Gtk.ImageMenuItem)
 
+        logger.warn('Alignak-App stop.')
         Notify.uninit()
         Gtk.main_quit()
 
@@ -171,9 +197,12 @@ class AppMenu(object):
         Update items Menu
 
         :param hosts_states: number of hosts UP, DOWN or UNREACHABLE
+        :type hosts_states: dict
         :param services_states: number of services OK, CRITICAL, WARNING or UNKNOWN
+        :type services_states: dict
         """
 
+        logger.info('Update menus...')
         self.hosts_up_item.set_label(
             'Hosts UP (' + str(hosts_states['up']) + ')')
         self.hosts_down_item.set_label(

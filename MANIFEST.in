@@ -1,5 +1,6 @@
-include README.md
+include README.rst
 include etc/settings.cfg
+include etc/bin/alignakapp
 recursive-include etc/images *.svg
 recursive-include alignak_app *.*
 global-exclude *pyc

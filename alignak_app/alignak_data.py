@@ -19,16 +19,26 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-from alignak_backend_client.client import Backend, BackendException
-import requests
+"""
+    Alignak_data manage connexion with backend and his data.
+"""
+
 import sys
+import json
+
+from logging import getLogger
+from alignak_backend_client.client import Backend, BackendException
+import gi
+gi.require_version('Notify', '0.7')
+from gi.repository import Notify  # pylint: disable=wrong-import-position
+
+
+logger = getLogger(__name__)
 
 
 class AlignakData(object):
     """
-        Alignak Bridge
-
-        This class collect informations with Backend-Client and return essential things for
+        Class who collect informations with Backend-Client and returns data for
         Alignak-App.
     """
 
@@ -38,6 +48,13 @@ class AlignakData(object):
         self.backend = None
 
     def log_to_backend(self, config):
+        """
+        Connect to backend with credentials in settings.cfg.
+
+        :param config: parser config who contains settings
+        :type config: :class:`~configparser.ConfigParser`
+        """
+
         # Credentials
         username = config.get('Backend', 'username')
         password = config.get('Backend', 'password')
@@ -45,38 +62,74 @@ class AlignakData(object):
         # Backend login
         backend_url = config.get('Backend', 'backend_url')
         self.backend = Backend(backend_url)
+
+        logger.info('Try to connect to backend...')
         try:
-            self.backend.login(username, password)
+            connect = self.backend.login(username, password)
+            if connect:
+                logger.info('Connection to backend : OK.')
+
+            else:
+                logger.warn('Connection to backend failed !')
+                Notify.init('appalignak')
+                Notify.Notification.new(
+                    'Connection to backend failed !',
+                    None,
+                    gi.repository.Gtk.STOCK_DIALOG_ERROR,
+                ).show()
         except BackendException as e:
-            sys.exit('--> ERROR: Can\'t connect to Backend.\n' + str(e) +
-                     '\n - Please check backend state, url or your credentials.')
+            logger.error(
+                'Connection to Backend has failed. ' +
+                str(e) +
+                '\nCheck your [settings.cfg] or your backend status.'
+            )
+            sys.exit(
+                'Alignak-app will close :( ...' +
+                '\nCheck your logs.'
+            )
 
     def get_host_state(self):
+        """
+        Collect state of Hosts, via backend API.
+
+        """
+
+        all_host = None
+
         # Request
         try:
+            params = {'where': json.dumps({'_is_template': False})}
             all_host = self.backend.get_all(
-                self.backend.url_endpoint_root +
-                '/livestate?where={"type":"host"}')
-        except requests.exceptions.ConnectionError as e:
-            print('--> ERROR: Can\'t get hosts state \n' + str(e) +
-                  '\n - Please check backend state, url or your credentials.')
+                self.backend.url_endpoint_root + '/host', params)
+        except BackendException as e:
+            logger.warn('Alignak-app failed to collect hosts... \n' + str(e))
 
         # Store Data
-        for host in all_host['_items']:
-            self.current_hosts[host['name']] = host['state']
+        if all_host:
+            for host in all_host['_items']:
+                self.current_hosts[host['name']] = host['ls_state']
+
         return self.current_hosts
 
     def get_service_state(self):
+        """
+        Collect state of Services, via backend API.
+
+        """
+
+        all_services = None
+
         # Request
         try:
+            params = {'where': json.dumps({'_is_template': False})}
             all_services = self.backend.get_all(
-                self.backend.url_endpoint_root +
-                '/livestate?where={"type":"service"}')
-        except requests.exceptions.ConnectionError as e:
-            print('--> ERROR: Can\'t get services state \n' + str(e) +
-                  '\n - Please check backend state, url or your credentials.')
+                self.backend.url_endpoint_root + '/service', params)
+        except BackendException as e:
+            logger.warn('Alignak-app failed to collect services... \n' + str(e))
 
         # Store Data
-        for service in all_services['_items']:
-            self.current_services[service['name']] = service['state']
+        if all_services:
+            for service in all_services['_items']:
+                self.current_services[service['name']] = service['ls_state']
+
         return self.current_services

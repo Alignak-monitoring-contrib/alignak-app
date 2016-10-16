@@ -22,11 +22,22 @@
 """
     Alignak App
 
-    This module is an Alignak App Indicator
+    This module is an appindicator for Alignak.
+
+    Application notify you when you have hosts / services DOWN.
+    You'll be notified on your desktop and you can reach your Hosts and Services on your WebUI
+    from this application.
 """
 
+from logging import getLogger
+from alignak_app.utils import create_logger
+
+logger = getLogger(__name__)
+
+create_logger(logger)
+
 # Application version and manifest
-VERSION = (0, 2, 0)
+VERSION = (0, 3, 4)
 __application__ = u"Alignak-App"
 __short_version__ = '.'.join((str(each) for each in VERSION[:2]))
 __version__ = '.'.join((str(each) for each in VERSION[:4]))

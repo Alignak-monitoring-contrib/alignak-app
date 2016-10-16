@@ -1,0 +1,85 @@
+#!/bin/bash
+# Copyright (c) 2015-2016:
+#   Matthieu Estrada, ttamalfor@gmail.com
+#
+# This file is part of (AlignakApp).
+#
+# (AlignakApp) is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# (AlignakApp) is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
+
+APP_ROOT=$HOME/.local/alignak_app
+APP_BIN=$HOME/.local/bin
+USER_BIN=$HOME/bin
+APP_NAME=alignakapp
+
+if [ -d "$APP_ROOT" ]; then
+
+    # Verify installation
+    echo "Alignak-app verify installation..."
+    if [ ! -L "$USER_BIN/$APP_NAME" ]; then
+        echo "The command is not yet created..."
+        if [ -f "$APP_BIN/$APP_NAME" ]; then
+            echo "Create command for alignakapp..."
+            ln -s "$APP_BIN/$APP_NAME" "$USER_BIN"
+            echo -e "
+    #####################################################
+    #      Now, command [alignakapp] is available.      #
+    #####################################################
+    "
+        fi
+    fi
+    echo "Installation is ok !"
+
+    # Check if Application is not running.
+    CHECK=`ps fu |grep "alignak_app.application"|grep -v "grep"|awk '{print $2}'`
+
+    if [ ! -z "$CHECK" -a "$CHECK" != " " ] ; then
+        echo "A process of Alignak-app already running..."
+        echo "-> kill process (with PID : $CHECK)..."
+        kill "$CHECK"
+        echo "
+    #####################################################
+    #               Alignak-app restart !               #
+    #####################################################
+            "
+    else
+        echo "
+    #####################################################
+    #               Alignak-app start !               #
+    #####################################################
+            "
+    fi
+
+    python -c \
+        """
+import os
+import sys
+
+from logging import getLogger
+from alignak_app.application import AlignakApp as App
+
+
+logger = getLogger(__name__)
+
+try:
+    os.environ['DESKTOP_SESSION']
+except KeyError as e:
+    logger.critical('You must be in desktop session to launch Alignak-App : ' + str(e))
+    sys.exit()
+
+App().run()
+        """ &
+
+else
+    echo "ERROR: installation seems broken !"
+fi

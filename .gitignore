@@ -16,3 +16,4 @@ docs/_build/
 build/
 dist/
 src/
+*.log
