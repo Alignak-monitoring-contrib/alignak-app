@@ -26,10 +26,14 @@
 import sys
 import os
 import configparser as cfg
+
 from logging import getLogger
+
 from alignak_app.menu import AppIcon
 from alignak_app.notifier import AppNotifier
 from alignak_app.utils import get_alignak_home
+from alignak_app.alignak_data import AlignakData
+
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
 
@@ -44,21 +48,37 @@ class AlignakApp(object):
         self.config = None
         self.notifier = None
         self.app_icon = None
-        self.thread = None
+        self.alignak_data = None
 
     def main(self):
+        """
+        The main function of Alignak-App
+
+        """
+
+        # Create app
         self.app = QApplication(sys.argv)
         self.app.setQuitOnLastWindowClosed(False)
 
-        icon = QIcon('../etc/images/alignak.svg')
+        # Init. configuration
+        self.read_configuration()
 
-        self.app_icon = AppIcon(icon, self.thread)
+        # Create QSystemTrayIcon
+        icon = self.set_icon()
+        self.app_icon = AppIcon(icon, self.config)
+        self.app_icon.build_menu()
 
+        # Log to backend
+        self.alignak_data = AlignakData()
+        self.alignak_data.log_to_backend(self.config)
+
+        # Create process notifier
+        # TODO see if member is necessary
         self.notifier = AppNotifier(icon)
-        self.notifier.start_process()
+        self.notifier.start_process(self.alignak_data, self.config)
 
+        # Show app and run exec
         self.app_icon.show()
-
         sys.exit(self.app.exec_())
 
     def read_configuration(self):  # pragma: no cover
@@ -78,6 +98,16 @@ class AlignakApp(object):
         else:
             logger.error('Configuration file is missing in [' + config_file + '] !')
             sys.exit('Configuration file is missing in [' + config_file + '] !')
+
+    def set_icon(self):
+        qicon_path = get_alignak_home() \
+                     + self.config.get('Config', 'path') \
+                     + self.config.get('Config', 'img') \
+                     + '/'
+        img = os.path.abspath(qicon_path + self.config.get('Config', 'icon'))
+        icon = QIcon(img)
+
+        return icon
 
 if __name__ == '__main__':
     AlignakApp().main()

@@ -24,9 +24,12 @@
 """
 
 import sys
+import os
 import webbrowser
 
 from logging import getLogger
+
+from alignak_app.utils import get_alignak_home
 from PyQt5.QtWidgets import QSystemTrayIcon
 from PyQt5.QtWidgets import QMenu
 from PyQt5.QtWidgets import QAction
@@ -38,98 +41,136 @@ logger = getLogger(__name__)
 
 class AppIcon(QSystemTrayIcon):
 
-    def __init__(self, icon, parent=None):
+    def __init__(self, icon, config, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
+        self.config = config
         self.menu = QMenu(parent)
         self.hosts_actions = {}
         self.services_actions = {}
         self.quit_menu = None
-        self.build_menu()
-        self.setContextMenu(self.menu)
-        # TODO add config to this class
 
     def build_menu(self):
         """
-        Initialize and create each item of menu.
+        Initialize and create each action of menu.
 
         """
 
-        self.create_hosts_actions()
-        self.create_services_actions()
+        # General path of images
+        qicon_path = get_alignak_home() \
+                     + self.config.get('Config', 'path') \
+                     + self.config.get('Config', 'img') \
+                     + '/'
+
+        # Create actions
+        self.create_hosts_actions(qicon_path)
+        self.create_services_actions(qicon_path)
         self.create_quit_action()
         self.add_actions_to_menu()
 
-    def create_hosts_actions(self):
-        print('Create Host Actions')
+        self.setContextMenu(self.menu)
+
+    def create_hosts_actions(self, qicon_path):
+        """
+        Create hosts actions.
+
+        """
+        logger.info('Create Host Actions')
+
+        img_h_up = os.path.abspath(qicon_path + self.config.get('Config', 'host_up'))
         self.hosts_actions['hosts_up'] = QAction(
-            QIcon('../etc/images/host_up.svg'),
+            QIcon(img_h_up),
             'Host UP (0)',
             self
         )
+
+        img_h_down = os.path.abspath(qicon_path + self.config.get('Config', 'host_down'))
         self.hosts_actions['host_down'] = QAction(
-            QIcon('../etc/images/host_down.svg'),
+            QIcon(img_h_down),
             'Host DOWN (0)',
             self
         )
+
+        img_h_unreach = os.path.abspath(qicon_path + self.config.get('Config', 'host_unreach'))
         self.hosts_actions['host_unreach'] = QAction(
-            QIcon('../etc/images/host_unreach.svg'),
+            QIcon(img_h_unreach),
             'Host UNREACHABLE (0)',
             self
         )
 
-    def create_services_actions(self):
-        print('Create Service Actions')
+    def create_services_actions(self, qicon_path):
+        """
+        Create services actions.
 
+        """
+
+        logger.info('Create Service Actions')
+
+        img_s_ok = os.path.abspath(qicon_path + self.config.get('Config', 'service_ok'))
         self.services_actions['services_ok'] = QAction(
-            QIcon('../etc/images/service_ok.svg'),
+            QIcon(img_s_ok),
             'Services OK (0)',
             self
         )
+
+        img_s_warning = os.path.abspath(qicon_path + self.config.get('Config', 'service_warning'))
         self.services_actions['services_warning'] = QAction(
-            QIcon('../etc/images/service_warning.svg'),
+            QIcon(img_s_warning),
             'Services WARNING (0)',
             self
         )
+
+        img_s_critical = os.path.abspath(qicon_path + self.config.get('Config', 'service_critical'))
         self.services_actions['services_critical'] = QAction(
-            QIcon('../etc/images/service_critical.svg'),
+            QIcon(img_s_critical),
             'Services CRITICAL (0)',
             self
         )
+
+        img_s_unknown = os.path.abspath(qicon_path + self.config.get('Config', 'service_unknown'))
         self.services_actions['services_unknown'] = QAction(
-            QIcon('../etc/images/service_unknown.svg'),
+            QIcon(img_s_unknown),
             'Services UNKNOWN (0)',
             self
         )
 
     def create_quit_action(self):
-        print('Create Quit Actions')
+        """
+        Create quit action.
+
+        """
+
+        logger.info('Create Quit Actions')
         self.quit_menu = QAction(QIcon('../etc/images/error.svg'), 'Quit', self)
         self.quit_menu.triggered.connect(self.quit_app)
 
     def add_actions_to_menu(self):
-        print('Add action to menu')
+        """
+        Add all actions to QMenu.
+
+        """
+
+        logger.info('Add action to menu')
         for h_action in self.hosts_actions:
-            print(self.hosts_actions[h_action])
             self.menu.addAction(self.hosts_actions[h_action])
             self.hosts_actions[h_action].triggered.connect(self.open_url)
         for s_action in self.services_actions:
-            print(self.services_actions[s_action])
             self.menu.addAction(self.services_actions[s_action])
             self.services_actions[s_action].triggered.connect(self.open_url)
         self.menu.addAction(self.quit_menu)
 
     @staticmethod
     def quit_app():
+        """
+        Quit application.
+
+        """
         sys.exit(0)
 
     def open_url(self):  # pragma: no cover
         """
-        Add a link to WebUI on every menu
+        Add a link to Alignak-WebUI on every menu
 
-        :param item: items of Gtk menu
-        :type item: **gi.repository.Gtk.ImageMenuItem**
         """
-        # assert isinstance(item, QAction)
 
         target = self.sender()
         label = target.property('text')
@@ -155,5 +196,3 @@ class AppIcon(QSystemTrayIcon):
             endurl = '/dashboard'
 
         webbrowser.open(webui_url + endurl)
-
-
