@@ -31,12 +31,14 @@ try:
     python_version = sys.version_info
 except:
     python_version = (1, 5)
-if python_version < (2, 7):
-    sys.exit("This application requires a minimum Python 2.7.x, sorry!")
+if python_version < (3, 0):
+    sys.exit("This application currently requires a minimum Python 3, sorry!")
 
 # Requirements
 install_requires = [
-    'alignak_backend_client'
+    'alignak_backend_client',
+    'configParser',
+    'PyQt5'
 ]
 
 # Define paths
