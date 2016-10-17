@@ -18,9 +18,9 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
-# TODO : update doc
+
 """
-    TODO
+    Menu manage the creation of Application menus.
 """
 
 import sys
@@ -30,16 +30,20 @@ import webbrowser
 from logging import getLogger
 
 from alignak_app.utils import get_alignak_home
-from PyQt5.QtWidgets import QSystemTrayIcon
-from PyQt5.QtWidgets import QMenu
-from PyQt5.QtWidgets import QAction
-from PyQt5.QtGui import QIcon
+
+from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QAction  # pylint: disable=no-name-in-module
+from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
 
 
 logger = getLogger(__name__)
 
 
 class AppIcon(QSystemTrayIcon):
+    """
+        Class who create QMenu and QAction.
+    """
 
     def __init__(self, icon, config, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
@@ -57,9 +61,9 @@ class AppIcon(QSystemTrayIcon):
 
         # General path of images
         qicon_path = get_alignak_home() \
-                     + self.config.get('Config', 'path') \
-                     + self.config.get('Config', 'img') \
-                     + '/'
+            + self.config.get('Config', 'path') \
+            + self.config.get('Config', 'img') \
+            + '/'
 
         # Create actions
         self.create_hosts_actions(qicon_path)

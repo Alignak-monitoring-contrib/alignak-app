@@ -28,9 +28,6 @@ import json
 
 from logging import getLogger
 from alignak_backend_client.client import Backend, BackendException
-import gi
-gi.require_version('Notify', '0.7')
-from gi.repository import Notify  # pylint: disable=wrong-import-position
 
 
 logger = getLogger(__name__)
@@ -70,13 +67,7 @@ class AlignakData(object):
                 logger.info('Connection to backend : OK.')
 
             else:
-                logger.warn('Connection to backend failed !')
-                Notify.init('appalignak')
-                Notify.Notification.new(
-                    'Connection to backend failed !',
-                    None,
-                    gi.repository.Gtk.STOCK_DIALOG_ERROR,
-                ).show()
+                logger.warning('Connection to backend failed !')
         except BackendException as e:
             logger.error(
                 'Connection to Backend has failed. ' +
@@ -102,7 +93,7 @@ class AlignakData(object):
             all_host = self.backend.get_all(
                 self.backend.url_endpoint_root + '/host', params)
         except BackendException as e:
-            logger.warn('Alignak-app failed to collect hosts... \n' + str(e))
+            logger.warning('Alignak-app failed to collect hosts... \n' + str(e))
 
         # Store Data
         if all_host:
@@ -125,7 +116,7 @@ class AlignakData(object):
             all_services = self.backend.get_all(
                 self.backend.url_endpoint_root + '/service', params)
         except BackendException as e:
-            logger.warn('Alignak-app failed to collect services... \n' + str(e))
+            logger.warning('Alignak-app failed to collect services... \n' + str(e))
 
         # Store Data
         if all_services:

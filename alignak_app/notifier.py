@@ -19,24 +19,29 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-# TODO : update doc
 """
-    TODO
+    Notifier manage notifications and collect data from backend.
 """
 
 from logging import getLogger
-from PyQt5.QtWidgets import QSystemTrayIcon
-from PyQt5.QtCore import QTimer
+
+from alignak_app.alignak_data import AlignakData
+
+from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
+from PyQt5.QtCore import QTimer  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
 
 class AppNotifier(QSystemTrayIcon):
+    """
+    Class who manage notifications and states of hosts and services.
+    """
 
     def __init__(self, icon, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
-        # self.thread()
         self.backend_client = None
+        self.config = None
         self.hosts_states = {}
         self.services_states = {}
 
@@ -44,27 +49,43 @@ class AppNotifier(QSystemTrayIcon):
         """
         Send desktop notification.
 
-        :param title: title
-        :param msg:
-        :return:
+        :param title: title of notification
+        :type title: str
+        :param msg: message to display
+        :type msg: str
         """
+
         self.show()
         final_title = 'Alignak-app : ' + title
         self.showMessage(final_title, msg, QSystemTrayIcon.Warning)
         self.hide()
 
-    def start_process(self, alignak_data, config):
+    def start_process(self, config):
+        """
+        Start process loop of application with a QTimer.
+
+        :param config: config parser.
+        :type config: :class:`~configparser.ConfigParser`
+        """
+
+        self.config = config
+
         check_interval = int(config.get('Alignak-App', 'check_interval'))
         check_interval *= 1000
 
         timer = QTimer(self)
         timer.start(check_interval)
 
-        self.backend_client = alignak_data
+        self.backend_client = AlignakData()
+        self.backend_client.log_to_backend(config)
 
         timer.timeout.connect(self.collect_data)
 
     def collect_data(self):
+        """
+        Collect data from Backend-Client.
+
+        """
         self.hosts_states, self.services_states = self.get_state()
 
         msg = ''
@@ -86,7 +107,7 @@ class AppNotifier(QSystemTrayIcon):
         """
 
         if not self.backend_client.backend.authenticated:
-            logger.warn('Connection to backend is lost, application will try to reconnect !')
+            logger.warning('Connection to backend is lost, application will try to reconnect !')
             self.backend_client.log_to_backend(self.config)
 
         logger.info('Get state of Host and Services...')

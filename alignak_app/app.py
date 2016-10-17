@@ -18,9 +18,9 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
-# TODO : update doc
+
 """
-    TODO
+    App manage Alignak-App
 """
 
 import sys
@@ -32,21 +32,22 @@ from logging import getLogger
 from alignak_app.menu import AppIcon
 from alignak_app.notifier import AppNotifier
 from alignak_app.utils import get_alignak_home
-from alignak_app.alignak_data import AlignakData
 
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
+from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
 
 
 logger = getLogger(__name__)
 
 
 class AlignakApp(object):
+    """
+        Class who build application and configuration.
+    """
 
     def __init__(self):
         self.app = None
         self.config = None
-        self.notifier = None
         self.app_icon = None
         self.alignak_data = None
 
@@ -68,14 +69,9 @@ class AlignakApp(object):
         self.app_icon = AppIcon(icon, self.config)
         self.app_icon.build_menu()
 
-        # Log to backend
-        self.alignak_data = AlignakData()
-        self.alignak_data.log_to_backend(self.config)
-
         # Create process notifier
-        # TODO see if member is necessary
-        self.notifier = AppNotifier(icon)
-        self.notifier.start_process(self.alignak_data, self.config)
+        notifier = AppNotifier(icon)
+        notifier.start_process(self.config)
 
         # Show app and run exec
         self.app_icon.show()
@@ -100,10 +96,14 @@ class AlignakApp(object):
             sys.exit('Configuration file is missing in [' + config_file + '] !')
 
     def set_icon(self):
+        """
+        Set icon of application.
+
+        """
         qicon_path = get_alignak_home() \
-                     + self.config.get('Config', 'path') \
-                     + self.config.get('Config', 'img') \
-                     + '/'
+            + self.config.get('Config', 'path') \
+            + self.config.get('Config', 'img') \
+            + '/'
         img = os.path.abspath(qicon_path + self.config.get('Config', 'icon'))
         icon = QIcon(img)
 
