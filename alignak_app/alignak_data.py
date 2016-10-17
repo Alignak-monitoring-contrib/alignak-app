@@ -84,8 +84,8 @@ class AlignakData(object):
                 '\nCheck your [settings.cfg] or your backend status.'
             )
             sys.exit(
-                'Alignak-app will close :( ...' +
-                '\nCheck your logs.'
+                '\nAlignak-app will close :( ...' +
+                '\nType [ENTER].'
             )
 
     def get_host_state(self):
