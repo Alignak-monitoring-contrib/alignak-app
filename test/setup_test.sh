@@ -27,7 +27,7 @@ cd $BASE_PATH
 
 echo ' --------- Update and Install packages ... --------- '
 sudo apt-get update
-sudo apt-get install -qq libx11-xcb-dev
+sudo apt-get install -qq python3-pyqt5
 
 echo '--------- Upgrade pip ... --------- '
 pip install --upgrade pip
