@@ -27,7 +27,7 @@ cd $BASE_PATH
 
 echo ' --------- Update and Install packages ... --------- '
 sudo apt-get update
-sudo apt-get install -qq python-gi gir1.2-gtk-3.0 ibus gir1.2-appindicator3-0.1 gir1.2-notify-0.7 gir1.2-glib-2.0
+sudo apt-get install -qq libx11-xcb-dev
 
 echo '--------- Upgrade pip ... --------- '
 pip install --upgrade pip
