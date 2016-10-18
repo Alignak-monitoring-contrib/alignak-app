@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Menu manage the creation of Application menus.
+    Tray_icon manage the creation of Application menus.
 """
 
 import sys
@@ -40,7 +40,7 @@ from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
 logger = getLogger(__name__)
 
 
-class AppIcon(QSystemTrayIcon):
+class TrayIcon(QSystemTrayIcon):
     """
         Class who create QMenu and QAction.
     """
@@ -83,21 +83,21 @@ class AppIcon(QSystemTrayIcon):
         img_h_up = os.path.abspath(qicon_path + self.config.get('Config', 'host_up'))
         self.hosts_actions['hosts_up'] = QAction(
             QIcon(img_h_up),
-            'Host UP (0)',
+            'Hosts UP (N/A)',
             self
         )
 
         img_h_down = os.path.abspath(qicon_path + self.config.get('Config', 'host_down'))
-        self.hosts_actions['host_down'] = QAction(
+        self.hosts_actions['hosts_down'] = QAction(
             QIcon(img_h_down),
-            'Host DOWN (0)',
+            'Hosts DOWN (N/A)',
             self
         )
 
         img_h_unreach = os.path.abspath(qicon_path + self.config.get('Config', 'host_unreach'))
-        self.hosts_actions['host_unreach'] = QAction(
+        self.hosts_actions['hosts_unreach'] = QAction(
             QIcon(img_h_unreach),
-            'Host UNREACHABLE (0)',
+            'Hosts UNREACHABLE (N/A)',
             self
         )
 
@@ -112,21 +112,23 @@ class AppIcon(QSystemTrayIcon):
         img_s_ok = os.path.abspath(qicon_path + self.config.get('Config', 'service_ok'))
         self.services_actions['services_ok'] = QAction(
             QIcon(img_s_ok),
-            'Services OK (0)',
+            'Services OK (N/A)',
             self
         )
+        test = QAction(QIcon(img_s_ok), 'Services OK (0)', self)
+        test.text()
 
         img_s_warning = os.path.abspath(qicon_path + self.config.get('Config', 'service_warning'))
         self.services_actions['services_warning'] = QAction(
             QIcon(img_s_warning),
-            'Services WARNING (0)',
+            'Services WARNING (N/A)',
             self
         )
 
         img_s_critical = os.path.abspath(qicon_path + self.config.get('Config', 'service_critical'))
         self.services_actions['services_critical'] = QAction(
             QIcon(img_s_critical),
-            'Services CRITICAL (0)',
+            'Services CRITICAL (N/A)',
             self
         )
 
@@ -164,12 +166,40 @@ class AppIcon(QSystemTrayIcon):
         self.menu.addSeparator()
         self.menu.addAction(self.quit_menu)
 
+    def update_menus_actions(self, hosts_states, services_states):
+        """
+        Update items Menu
+
+        :param hosts_states: number of hosts UP, DOWN or UNREACHABLE
+        :type hosts_states: dict
+        :param services_states: number of services OK, CRITICAL, WARNING or UNKNOWN
+        :type services_states: dict
+        """
+
+        logger.info('Update menus...')
+        self.hosts_actions['hosts_up'].setText(
+            'Hosts UP (' + str(hosts_states['up']) + ')')
+        self.hosts_actions['hosts_down'].setText(
+            'Hosts DOWN (' + str(hosts_states['down']) + ')')
+        self.hosts_actions['hosts_unreach'].setText(
+            'Hosts UNREACHABLE (' + str(hosts_states['unreachable']) + ')')
+
+        self.services_actions['services_ok'].setText(
+            'Services OK (' + str(services_states['ok']) + ')')
+        self.services_actions['services_critical'].setText(
+            'Services CRITICAL (' + str(services_states['critical']) + ')')
+        self.services_actions['services_warning'].setText(
+            'Services WARNING (' + str(services_states['warning']) + ')')
+        self.services_actions['services_unknown'].setText(
+            'Services UNKNOWN (' + str(services_states['unknown']) + ')')
+
     @staticmethod
     def quit_app():
         """
         Quit application.
 
         """
+
         sys.exit(0)
 
     def open_url(self):  # pragma: no cover

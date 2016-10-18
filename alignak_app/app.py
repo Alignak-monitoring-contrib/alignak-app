@@ -29,7 +29,7 @@ import configparser as cfg
 
 from logging import getLogger
 
-from alignak_app.menu import AppIcon
+from alignak_app.tray_icon import TrayIcon
 from alignak_app.notifier import AppNotifier
 from alignak_app.utils import get_alignak_home
 
@@ -48,7 +48,7 @@ class AlignakApp(object):
     def __init__(self):
         self.app = None
         self.config = None
-        self.app_icon = None
+        self.tray_icon = None
         self.alignak_data = None
 
     def main(self):
@@ -66,15 +66,15 @@ class AlignakApp(object):
 
         # Create QSystemTrayIcon
         icon = self.set_icon()
-        self.app_icon = AppIcon(icon, self.config)
-        self.app_icon.build_menu()
+        self.tray_icon = TrayIcon(icon, self.config)
+        self.tray_icon.build_menu()
 
         # Create process notifier
         notifier = AppNotifier(icon)
-        notifier.start_process(self.config)
+        notifier.start_process(self.config, self.tray_icon)
 
         # Show app and run exec
-        self.app_icon.show()
+        self.tray_icon.show()
         sys.exit(self.app.exec_())
 
     def read_configuration(self):  # pragma: no cover

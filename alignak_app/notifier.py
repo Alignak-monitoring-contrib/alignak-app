@@ -44,6 +44,7 @@ class AppNotifier(QSystemTrayIcon):
         self.config = None
         self.hosts_states = {}
         self.services_states = {}
+        self.tray_icon = None
 
     def send_notification(self, title, msg):
         """
@@ -60,13 +61,17 @@ class AppNotifier(QSystemTrayIcon):
         self.showMessage(final_title, msg, QSystemTrayIcon.Warning)
         self.hide()
 
-    def start_process(self, config):
+    def start_process(self, config, tray_icon):
         """
         Start process loop of application with a QTimer.
 
         :param config: config parser.
         :type config: :class:`~configparser.ConfigParser`
+        :param tray_icon: QSystemTrayIcon menu.
+        :type tray_icon: :class:`~PyQt5.QtWidgets.QSystemTrayIcon`
         """
+
+        self.tray_icon = tray_icon
 
         self.config = config
 
@@ -97,6 +102,7 @@ class AppNotifier(QSystemTrayIcon):
             msg += 'Services ' + state + ' : ' + str(self.services_states[state]) + '\n'
 
         self.send_notification('Warning', msg)
+        self.tray_icon.update_menus_actions(self.hosts_states, self.services_states)
 
     def get_state(self):
         """
