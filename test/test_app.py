@@ -20,40 +20,43 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest2
-import os
 import configparser as cfg
 
+from alignak_app.app import AlignakApp, QIcon
 from alignak_app.alignak_data import AlignakData
 
+import os
 
-class TestAlignakData(unittest2.TestCase):
+
+class TestApp(unittest2.TestCase):
     """
-        This file test methods of AlignakData class
+        This file test methods of AlignakApp class.
     """
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
-
     config = cfg.ConfigParser()
     config.read(dir_path + '/etc/settings.cfg')
 
-    def test_connection(self):
-        under_test = AlignakData()
+    def test_app_main(self):
+        under_test = AlignakApp()
 
-        under_test.log_to_backend(TestAlignakData.config)
+        self.assertIsNone(under_test.app)
+        self.assertIsNone(under_test.alignak_data)
+        self.assertIsNone(under_test.config)
+        self.assertIsNone(under_test.tray_icon)
 
-        # Compare config url and backend
-        self.assertEquals(
-            under_test.backend.url_endpoint_root,
-            TestAlignakData.config.get('Backend', 'backend_url')
-        )
-        # Test if all is empty
-        self.assertFalse(under_test.current_hosts)
-        self.assertFalse(under_test.current_services)
+        under_test.config = TestApp.config
 
-    def test_if_hosts_and_services(self):
-        under_test = AlignakData()
+        under_test.main()
 
-        under_test.log_to_backend(TestAlignakData.config)
+        self.assertIsNotNone(under_test.app)
+        self.assertIsNotNone(under_test.tray_icon)
 
-        self.assertTrue(under_test.get_host_state())
-        self.assertTrue(under_test.get_service_state())
+    def test_set_icon(self):
+        under_test = AlignakApp()
+
+        under_test.config = TestApp.config
+
+        icon = under_test.get_icon()
+
+        self.assertIsInstance(icon, QIcon, 'This is a test for QIcon')

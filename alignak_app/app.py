@@ -65,12 +65,20 @@ class AlignakApp(object):
         self.read_configuration()
 
         # Create QSystemTrayIcon
-        icon = self.set_icon()
-        self.tray_icon = TrayIcon(icon, self.config)
+        self.tray_icon = TrayIcon(self.get_icon(), self.config)
         self.tray_icon.build_menu()
 
-        # Create process notifier
-        notifier = AppNotifier(icon)
+    def run(self):  # pragma: no cover
+        """
+        Start the application.
+
+        """
+
+        # Main function
+        self.main()
+
+        # Start process notifier
+        notifier = AppNotifier(self.get_icon())
         notifier.start_process(self.config, self.tray_icon)
 
         # Show app and run exec
@@ -95,7 +103,7 @@ class AlignakApp(object):
             logger.error('Configuration file is missing in [' + config_file + '] !')
             sys.exit('Configuration file is missing in [' + config_file + '] !')
 
-    def set_icon(self):
+    def get_icon(self):
         """
         Set icon of application.
 
@@ -110,4 +118,4 @@ class AlignakApp(object):
         return icon
 
 if __name__ == '__main__':
-    AlignakApp().main()
+    AlignakApp().run()

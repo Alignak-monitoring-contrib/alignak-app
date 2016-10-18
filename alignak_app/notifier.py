@@ -33,7 +33,7 @@ from PyQt5.QtCore import QTimer  # pylint: disable=no-name-in-module
 logger = getLogger(__name__)
 
 
-class AppNotifier(QSystemTrayIcon):
+class AppNotifier(QSystemTrayIcon):  # pragma: no cover
     """
     Class who manage notifications and states of hosts and services.
     """
@@ -68,7 +68,7 @@ class AppNotifier(QSystemTrayIcon):
         :param config: config parser.
         :type config: :class:`~configparser.ConfigParser`
         :param tray_icon: QSystemTrayIcon menu.
-        :type tray_icon: :class:`~PyQt5.QtWidgets.QSystemTrayIcon`
+        :type tray_icon: :class:`~alignak_app.tray_icon.TrayIcon`
         """
 
         self.tray_icon = tray_icon
