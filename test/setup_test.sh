@@ -30,7 +30,7 @@ pip install --upgrade pip
 
 # install prog AND tests requirements :
 echo '--------- Installing application requirements ... --------- '
-pip install -r requirements.txt --user
+pip install -r requirements.txt
 sudo updatedb
 locate xcb
 echo '--------- Installing application in development mode ... --------- '
