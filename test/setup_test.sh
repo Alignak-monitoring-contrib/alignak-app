@@ -35,7 +35,7 @@ echo '--------- Locate missing library ... --------- '
 sudo updatedb
 locate xcb
 echo $PATH
-PATH=$PATH:~/virtualenv/python3.5.2/lib/python3.5/site-packages/PyQt5/Qt/plugins/platforms/
+PYTHON_PATH=~/virtualenv/python3.5.2/lib/python3.5/site-packages/PyQt5/Qt/plugins/platforms/
 echo '--------- Installing application in development mode ... --------- '
 pip install -e .
 echo '--------- Installing tests requirements ... --------- '
