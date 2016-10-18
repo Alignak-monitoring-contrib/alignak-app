@@ -31,8 +31,11 @@ pip install --upgrade pip
 # install prog AND tests requirements :
 echo '--------- Installing application requirements ... --------- '
 pip install -r requirements.txt
+echo '--------- Locate missing library ... --------- '
 sudo updatedb
 locate xcb
+echo $PATH
+PATH=$PATH:~/virtualenv/python3.5.2/lib/python3.5/site-packages/PyQt5/Qt/plugins/platforms/
 echo '--------- Installing application in development mode ... --------- '
 pip install -e .
 echo '--------- Installing tests requirements ... --------- '
