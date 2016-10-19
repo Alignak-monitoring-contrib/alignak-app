@@ -27,7 +27,8 @@ cd $BASE_PATH
 
 echo ' --------- Update and Install packages ... --------- '
 sudo apt-get update
-sudo apt-get install -qq libegl1-mesa
+#sudo apt-get install -qq libegl1-mesa
+sudo apt-get install -qq libx11-xcb1
 
 echo '--------- Upgrade pip ... --------- '
 pip install --upgrade pip
@@ -38,11 +39,6 @@ pip install -r requirements.txt
 
 echo '--------- Installing application in development mode ... --------- '
 pip install -e .
-
-echo '--------- Locate missing library ... --------- '
-sudo updatedb
-#locate xcb
-locate settings.cfg
 
 echo '--------- Installing tests requirements ... --------- '
 pip install --upgrade -r test/requirements.txt
