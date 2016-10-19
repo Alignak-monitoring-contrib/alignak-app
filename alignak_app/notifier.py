@@ -29,6 +29,7 @@ from alignak_app.alignak_data import AlignakData
 
 from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
 from PyQt5.QtCore import QTimer  # pylint: disable=no-name-in-module
+from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -55,10 +56,16 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
         :param msg: message to display
         :type msg: str
         """
+        final_title = 'Alignak-app : ' + title
+        if 'Alert' in title:
+            icon = QSystemTrayIcon.Warning
+        elif 'Warning' in title:
+            icon = QSystemTrayIcon.Information
+        else:
+            icon = QSystemTrayIcon.NoIcon
 
         self.show()
-        final_title = 'Alignak-app : ' + title
-        self.showMessage(final_title, msg, QSystemTrayIcon.Warning)
+        self.showMessage(final_title, msg, icon)
         self.hide()
 
     def start_process(self, config, tray_icon):
@@ -84,24 +91,43 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
         self.backend_client = AlignakData()
         self.backend_client.log_to_backend(config)
 
-        timer.timeout.connect(self.collect_data)
+        timer.timeout.connect(self.check_data)
 
-    def collect_data(self):
+    def check_data(self):
         """
         Collect data from Backend-Client.
 
         """
         self.hosts_states, self.services_states = self.get_state()
 
+        # Define notification message
         msg = ''
-        for state in self.hosts_states:
-            print(state + ' : ' + str(self.hosts_states[state]))
-            msg += 'Hosts ' + state + ' : ' + str(self.hosts_states[state]) + '\n'
-        for state in self.services_states:
-            print(state + ' : ' + str(self.services_states[state]))
-            msg += 'Services ' + state + ' : ' + str(self.services_states[state]) + '\n'
+        if self.services_states['ok'] < 0 or self.hosts_states['up'] < 0:
+            msg += 'AlignakApp has something broken... \nPlease Check your logs !'
+        else:
+            for state in self.hosts_states:
+                print(state + ' : ' + str(self.hosts_states[state]))
+                msg += 'Hosts ' + state + ' : ' + str(self.hosts_states[state]) + '\n'
+            for state in self.services_states:
+                print(state + ' : ' + str(self.services_states[state]))
+                msg += 'Services ' + state + ' : ' + str(self.services_states[state]) + '\n'
 
-        self.send_notification('Warning', msg)
+        # Change application icon
+        if self.services_states['critical'] > 0 or self.hosts_states['down'] > 0:
+            img = self.tray_icon.get_icon_path() + self.config.get('Config', 'alert')
+            title = 'Alert !!!'
+        elif self.services_states['unknown'] > 0 or \
+                self.services_states['warning'] or \
+                self.hosts_states['unreach'] > 0:
+            img = self.tray_icon.get_icon_path() + self.config.get('Config', 'warning')
+            title = 'Warning !'
+        else:
+            title = 'All is OK :)'
+            img = self.tray_icon.get_icon_path() + self.config.get('Config', 'ok')
+
+        # Trigger all changes
+        self.tray_icon.setIcon(QIcon(img))
+        self.send_notification(title, msg)
         self.tray_icon.update_menus_actions(self.hosts_states, self.services_states)
 
     def get_state(self):

@@ -59,49 +59,44 @@ class TrayIcon(QSystemTrayIcon):
 
         """
 
-        # General path of images
-        qicon_path = get_alignak_home() \
-            + self.config.get('Config', 'path') \
-            + self.config.get('Config', 'img') \
-            + '/'
-
         # Create actions
-        self.create_hosts_actions(qicon_path)
-        self.create_services_actions(qicon_path)
-        self.create_quit_action(qicon_path)
+        self.create_hosts_actions()
+        self.create_services_actions()
+        self.create_quit_action()
         self.add_actions_to_menu()
 
         self.setContextMenu(self.menu)
 
-    def create_hosts_actions(self, qicon_path):
+    def create_hosts_actions(self):
         """
         Create hosts actions.
 
         """
+
         logger.info('Create Host Actions')
 
-        img_h_up = os.path.abspath(qicon_path + self.config.get('Config', 'host_up'))
+        img_h_up = self.get_icon_path() + self.config.get('Config', 'host_up')
         self.hosts_actions['hosts_up'] = QAction(
             QIcon(img_h_up),
-            'Hosts UP (N/A)',
+            'Hosts UP, Wait...',
             self
         )
 
-        img_h_down = os.path.abspath(qicon_path + self.config.get('Config', 'host_down'))
+        img_h_down = self.get_icon_path() + self.config.get('Config', 'host_down')
         self.hosts_actions['hosts_down'] = QAction(
             QIcon(img_h_down),
-            'Hosts DOWN (N/A)',
+            'Hosts DOWN, Wait...',
             self
         )
 
-        img_h_unreach = os.path.abspath(qicon_path + self.config.get('Config', 'host_unreach'))
+        img_h_unreach = self.get_icon_path() + self.config.get('Config', 'host_unreach')
         self.hosts_actions['hosts_unreach'] = QAction(
             QIcon(img_h_unreach),
-            'Hosts UNREACHABLE (N/A)',
+            'Hosts UNREACHABLE, Wait...',
             self
         )
 
-    def create_services_actions(self, qicon_path):
+    def create_services_actions(self):
         """
         Create services actions.
 
@@ -109,44 +104,44 @@ class TrayIcon(QSystemTrayIcon):
 
         logger.info('Create Service Actions...')
 
-        img_s_ok = os.path.abspath(qicon_path + self.config.get('Config', 'service_ok'))
+        img_s_ok = self.get_icon_path() + self.config.get('Config', 'service_ok')
         self.services_actions['services_ok'] = QAction(
             QIcon(img_s_ok),
-            'Services OK (N/A)',
+            'Services OK, Wait...',
             self
         )
         test = QAction(QIcon(img_s_ok), 'Services OK (0)', self)
         test.text()
 
-        img_s_warning = os.path.abspath(qicon_path + self.config.get('Config', 'service_warning'))
+        img_s_warning = self.get_icon_path() + self.config.get('Config', 'service_warning')
         self.services_actions['services_warning'] = QAction(
             QIcon(img_s_warning),
-            'Services WARNING (N/A)',
+            'Services WARNING, Wait...',
             self
         )
 
-        img_s_critical = os.path.abspath(qicon_path + self.config.get('Config', 'service_critical'))
+        img_s_critical = self.get_icon_path() + self.config.get('Config', 'service_critical')
         self.services_actions['services_critical'] = QAction(
             QIcon(img_s_critical),
-            'Services CRITICAL (N/A)',
+            'Services CRITICAL, Wait...',
             self
         )
 
-        img_s_unknown = os.path.abspath(qicon_path + self.config.get('Config', 'service_unknown'))
+        img_s_unknown = self.get_icon_path() + self.config.get('Config', 'service_unknown')
         self.services_actions['services_unknown'] = QAction(
             QIcon(img_s_unknown),
-            'Services UNKNOWN (0)',
+            'Services UNKNOWN, Wait...',
             self
         )
 
-    def create_quit_action(self, qicon_path):
+    def create_quit_action(self):
         """
         Create quit action.
 
         """
 
         logger.info('Create Quit Actions')
-        img_quit = os.path.abspath(qicon_path + self.config.get('Config', 'exit'))
+        img_quit = os.path.abspath(self.get_icon_path() + self.config.get('Config', 'exit'))
         self.quit_menu = QAction(QIcon(img_quit), 'Quit', self)
 
         self.quit_menu.triggered.connect(self.quit_app)
@@ -194,6 +189,19 @@ class TrayIcon(QSystemTrayIcon):
             'Services WARNING (' + str(services_states['warning']) + ')')
         self.services_actions['services_unknown'].setText(
             'Services UNKNOWN (' + str(services_states['unknown']) + ')')
+
+    def get_icon_path(self):
+        """
+        Get the path for all icons
+
+        :return: path of icon
+        :rtype: str
+        """
+        icon_path = get_alignak_home() \
+            + self.config.get('Config', 'path') \
+            + self.config.get('Config', 'img') \
+            + '/'
+        return icon_path
 
     @staticmethod
     def quit_app():
