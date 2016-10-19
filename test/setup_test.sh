@@ -39,6 +39,7 @@ pip install -r requirements.txt
 echo '--------- Locate missing library ... --------- '
 sudo updatedb
 locate xcb
+locate settings.cfg
 
 echo '--------- Installing application in development mode ... --------- '
 pip install -e .

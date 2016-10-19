@@ -62,7 +62,7 @@ class AlignakApp(object):
         self.app.setQuitOnLastWindowClosed(False)
 
         # Init. configuration
-        self.read_configuration()
+        # self.read_configuration()
 
         # Create QSystemTrayIcon
         self.tray_icon = TrayIcon(self.get_icon(), self.config)
@@ -73,6 +73,9 @@ class AlignakApp(object):
         Start the application.
 
         """
+
+        # Read configuration
+        self.read_configuration()
 
         # Main function
         self.main()
@@ -116,6 +119,3 @@ class AlignakApp(object):
         icon = QIcon(img)
 
         return icon
-
-if __name__ == '__main__':
-    AlignakApp().run()
