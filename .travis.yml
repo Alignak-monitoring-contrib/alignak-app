@@ -1,13 +1,12 @@
 language: python
 sudo: true
 python:
-  # - "2.7_with_system_site_packages"
   - "3.5"
 
-before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sleep 3
+#before_script:
+#  - "export DISPLAY=:99.0"
+#  - "sh -e /etc/init.d/xvfb start"
+#  - sleep 3
 
 install:
   - bash test/setup_test.sh

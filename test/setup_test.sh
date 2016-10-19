@@ -25,10 +25,10 @@ BASE_PATH=$(dirname "$THIS_PATH")
 
 cd $BASE_PATH
 
+# install dependencies
 echo ' --------- Update and Install packages ... --------- '
 sudo apt-get update
-#sudo apt-get install -qq libegl1-mesa
-sudo apt-get install -qq libx11-xcb1
+sudo apt-get install -qq libegl1-mesa
 
 echo '--------- Upgrade pip ... --------- '
 pip install --upgrade pip
@@ -42,3 +42,6 @@ pip install -e .
 
 echo '--------- Installing tests requirements ... --------- '
 pip install --upgrade -r test/requirements.txt
+
+echo '--------- Copy config file in right folder ... --------- '
+cp -R etc/ ~/.local/alignak_app/
