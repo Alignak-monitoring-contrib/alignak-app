@@ -80,6 +80,7 @@ setup(
         (paths['app'], ['etc/settings.cfg']),
         (paths['app'] + '/images', ['etc/images/alignak.svg']),
         (paths['app'] + '/images', ['etc/images/ok.svg']),
+        (paths['app'] + '/images', ['etc/images/exit.svg']),
         (paths['app'] + '/images', ['etc/images/warning.svg']),
         (paths['app'] + '/images', ['etc/images/alert.svg']),
         (paths['app'] + '/images', ['etc/images/error.svg']),
