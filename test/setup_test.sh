@@ -44,4 +44,5 @@ echo '--------- Installing tests requirements ... --------- '
 pip install --upgrade -r test/requirements.txt
 
 echo '--------- Copy config file in right folder ... --------- '
-cp -R --verbose etc/* ~/.local/alignak_app/
+cp -R --verbose etc/images/* ~/.local/alignak_app/images/
+cp --verbose etc/settings.cfg ~/.local/alignak_app/
