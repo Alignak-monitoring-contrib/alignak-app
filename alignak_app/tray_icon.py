@@ -68,7 +68,7 @@ class TrayIcon(QSystemTrayIcon):
         # Create actions
         self.create_hosts_actions(qicon_path)
         self.create_services_actions(qicon_path)
-        self.create_quit_action()
+        self.create_quit_action(qicon_path)
         self.add_actions_to_menu()
 
         self.setContextMenu(self.menu)
@@ -107,7 +107,7 @@ class TrayIcon(QSystemTrayIcon):
 
         """
 
-        logger.info('Create Service Actions')
+        logger.info('Create Service Actions...')
 
         img_s_ok = os.path.abspath(qicon_path + self.config.get('Config', 'service_ok'))
         self.services_actions['services_ok'] = QAction(
@@ -139,14 +139,16 @@ class TrayIcon(QSystemTrayIcon):
             self
         )
 
-    def create_quit_action(self):
+    def create_quit_action(self, qicon_path):
         """
         Create quit action.
 
         """
 
         logger.info('Create Quit Actions')
-        self.quit_menu = QAction(QIcon('../etc/images/error.svg'), 'Quit', self)
+        img_quit = os.path.abspath(qicon_path + self.config.get('Config', 'exit'))
+        self.quit_menu = QAction(QIcon(img_quit), 'Quit', self)
+
         self.quit_menu.triggered.connect(self.quit_app)
 
     def add_actions_to_menu(self):

@@ -50,6 +50,7 @@ class AlignakApp(object):
         self.config = None
         self.tray_icon = None
         self.alignak_data = None
+        self.notifier = None
 
     def main(self):
         """
@@ -61,8 +62,11 @@ class AlignakApp(object):
         self.app = QApplication(sys.argv)
         self.app.setQuitOnLastWindowClosed(False)
 
-        # Init. configuration
-        # self.read_configuration()
+        # Read configuration
+        self.read_configuration()
+
+        # Create notifier
+        self.notifier = AppNotifier(self.get_icon())
 
         # Create QSystemTrayIcon
         self.tray_icon = TrayIcon(self.get_icon(), self.config)
@@ -74,21 +78,17 @@ class AlignakApp(object):
 
         """
 
-        # Read configuration
-        self.read_configuration()
-
         # Main function
         self.main()
 
         # Start process notifier
-        notifier = AppNotifier(self.get_icon())
-        notifier.start_process(self.config, self.tray_icon)
+        self.notifier.start_process(self.config, self.tray_icon)
 
         # Show app and run exec
         self.tray_icon.show()
         sys.exit(self.app.exec_())
 
-    def read_configuration(self):  # pragma: no cover
+    def read_configuration(self):
         """
         Read the configuration file.
 
@@ -119,3 +119,6 @@ class AlignakApp(object):
         icon = QIcon(img)
 
         return icon
+
+if __name__ == "__main__":
+    AlignakApp().run()
