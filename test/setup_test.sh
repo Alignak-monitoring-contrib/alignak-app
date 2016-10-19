@@ -46,4 +46,4 @@ pip install --upgrade -r test/requirements.txt
 echo '--------- Check and copy folder data to home... --------- '
 mkdir -p ~/.local/alignak_app/images/
 cp -R --verbose etc/images/* ~/.local/alignak_app/images/
-cp --verbose etc/settings.cfg ~/.local/alignak_app/
+cp --verbose test/etc/settings.cfg ~/.local/alignak_app/
