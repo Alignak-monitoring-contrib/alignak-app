@@ -36,13 +36,13 @@ pip install --upgrade pip
 echo '--------- Installing application requirements ... --------- '
 pip install -r requirements.txt
 
-echo '--------- Locate missing library ... --------- '
-sudo updatedb
-locate xcb
-locate settings.cfg
-
 echo '--------- Installing application in development mode ... --------- '
 pip install -e .
+
+echo '--------- Locate missing library ... --------- '
+sudo updatedb
+#locate xcb
+locate settings.cfg
 
 echo '--------- Installing tests requirements ... --------- '
 pip install --upgrade -r test/requirements.txt
