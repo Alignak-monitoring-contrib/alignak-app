@@ -24,6 +24,7 @@ import os
 import configparser as cfg
 
 from alignak_app.alignak_data import AlignakData
+from alignak_app.app import get_alignak_home
 
 
 class TestAlignakData(unittest2.TestCase):
@@ -31,10 +32,9 @@ class TestAlignakData(unittest2.TestCase):
         This file test methods of AlignakData class
     """
 
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-
+    filepath = get_alignak_home() + '/alignak_app/settings.cfg'
     config = cfg.ConfigParser()
-    config.read(dir_path + '/etc/settings.cfg')
+    config.read(filepath)
 
     def test_connection(self):
         under_test = AlignakData()
