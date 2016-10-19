@@ -25,18 +25,23 @@ BASE_PATH=$(dirname "$THIS_PATH")
 
 cd $BASE_PATH
 
+echo ' --------- Update and Install packages ... --------- '
+sudo apt-get update
+sudo apt-get install -qq libegl1-mesa
+
 echo '--------- Upgrade pip ... --------- '
 pip install --upgrade pip
 
 # install prog AND tests requirements :
 echo '--------- Installing application requirements ... --------- '
 pip install -r requirements.txt
+
 echo '--------- Locate missing library ... --------- '
 sudo updatedb
 locate xcb
-echo $PATH
-PYTHON_PATH=~/virtualenv/python3.5.2/lib/python3.5/site-packages/PyQt5/Qt/plugins/platforms/
+
 echo '--------- Installing application in development mode ... --------- '
 pip install -e .
+
 echo '--------- Installing tests requirements ... --------- '
 pip install --upgrade -r test/requirements.txt

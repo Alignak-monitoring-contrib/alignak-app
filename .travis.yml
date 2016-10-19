@@ -21,16 +21,15 @@ script:
   # No pep257 currently (Code doc compliance)
   # - pep257 --select=D300 alignak_app
   # Code dynamic analysis
-  # - cd test
   - coverage erase
-  #- cd test/
+  # - cd test/
   - nosetests -xv --nologcapture --with-coverage --cover-package=alignak_app test/test_*.py
   - ls -la
   - coverage combine
   - cat .coverage
-  #- cd ..
-  - coverage report -m
   # - cd ..
+  - coverage report -m
+
 
 # specific call to launch coverage data into coveralls.io
 after_success:
