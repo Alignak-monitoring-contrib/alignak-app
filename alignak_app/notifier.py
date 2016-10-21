@@ -49,27 +49,6 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
         self.tray_icon = None
         self.popup = AppPopup()
 
-    def send_notification(self, title, msg):
-        """
-        Send desktop notification.
-
-        :param title: title of notification
-        :type title: str
-        :param msg: message to display
-        :type msg: str
-        """
-        final_title = 'Alignak-app : ' + title
-        if 'Alert' in title:
-            icon = QSystemTrayIcon.Warning
-        elif 'Warning' in title:
-            icon = QSystemTrayIcon.Information
-        else:
-            icon = QSystemTrayIcon.NoIcon
-
-        self.show()
-        self.showMessage(final_title, msg, icon)
-        self.hide()
-
     def start_process(self, config, tray_icon):
         """
         Start process loop of application with a QTimer.
