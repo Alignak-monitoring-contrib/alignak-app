@@ -47,13 +47,13 @@ class AppPopup(QDialog):
         self.setContentsMargins(0, 0, 0, 0)
         self.msg_label = None
         self.state = None
+        self.setMinimumSize(425, 250)
+        self.setMaximumSize(425, 250)
 
     def initialize_notification(self):
         """
         Initialize Notification
 
-        :param level: level of notif
-        :param content: content of notif
         """
 
         title = self.create_title_label()
@@ -73,13 +73,24 @@ class AppPopup(QDialog):
         """
         Send notification.
 
+        :param state_label: state to display in label_state.
+        :type state_label: str
+        :param hosts_states: dict of hosts states
+        :type hosts_states: dict
+        :param services_states: dict of services states.
+        :type services_states: dict
         """
 
-        self.move(self.width() * 2, self.height() / 4)
+        # Get coordinate and move to right, up screen corner
+        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+        centerPoint = QApplication.desktop().screenGeometry(screen).center()
+        x = (centerPoint.x() * 2) - self.width()
+        y = (centerPoint.y() / 2) - self.height()
+        self.move(x, y)
 
+        # Notify
         self.state.setText(state_label)
         self.create_content(hosts_states, services_states)
-
         self.show()
         QTimer.singleShot(8000, self.close)
 
@@ -138,6 +149,12 @@ class AppPopup(QDialog):
 
     @staticmethod
     def get_basic_template():
+        """
+        Give basic template (NOTE: temporary...).
+
+        :return: template
+        :rtype: str
+        """
         return """
         <table>
           <tr>
@@ -178,8 +195,10 @@ class AppPopup(QDialog):
         """
         Create content and return with correct value.
 
-        :return: tpl_content
-        :rtype: str
+        :param hosts_states: states of hosts
+        :type hosts_states: dict
+        :param services_states: states of services
+        :type services_states: dict
         """
 
         if services_states['ok'] < 0 or hosts_states['up'] < 0:
@@ -235,17 +254,3 @@ class AppPopup(QDialog):
         }
         """
         return css
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    notification = AppPopup()
-
-    cur_level = "CRITICAL"
-    cur_content = notification.create_content()
-
-    notification.initialize_notification()
-    notification.send_notification(cur_level, cur_content)
-
-    QTimer.singleShot(8000, notification.close)
-
-    sys.exit(app.exec_())
