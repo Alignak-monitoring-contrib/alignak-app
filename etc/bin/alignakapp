@@ -60,13 +60,13 @@ if [ -d "$APP_ROOT" ]; then
             "
     fi
 
-    python -c \
+    python3 -c \
         """
 import os
 import sys
 
 from logging import getLogger
-from alignak_app.application import AlignakApp as App
+from alignak_app.app import AlignakApp
 
 
 logger = getLogger(__name__)
@@ -77,7 +77,7 @@ except KeyError as e:
     logger.critical('You must be in desktop session to launch Alignak-App : ' + str(e))
     sys.exit()
 
-App().run()
+AlignakApp().run()
         """ &
 
 else

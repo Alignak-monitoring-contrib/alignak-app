@@ -26,6 +26,7 @@
 from string import Template
 
 from alignak_app import __application__
+from alignak_app.utils import get_alignak_home
 
 from PyQt5.QtWidgets import QApplication, QDialog, QLabel  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout  # pylint: disable=no-name-in-module
@@ -44,17 +45,20 @@ class AppPopup(QDialog):
         self.setStyleSheet(self.define_css())
         self.setWindowTitle(__application__)
         self.setContentsMargins(0, 0, 0, 0)
-        self.msg_label = None
-        self.state = None
         self.setMinimumSize(425, 250)
         self.setMaximumSize(425, 250)
 
-    def initialize_notification(self):
+        self.msg_label = None
+        self.state = None
+        self.config = None
+
+    def initialize_notification(self, config):
         """
         Initialize Notification
 
         """
 
+        self.config = config
         title = self.create_title_label()
         msg = self.create_message_label()
 
@@ -118,7 +122,11 @@ class AppPopup(QDialog):
 
         # Logo Label
         logo_label = QLabel(self)
-        pixmap = QPixmap('../etc/images/alignak.svg')
+        icon_path = get_alignak_home() \
+            + self.config.get('Config', 'path') \
+            + self.config.get('Config', 'img') \
+            + '/'
+        pixmap = QPixmap(icon_path + 'alignak.svg')
         pixmap.setDevicePixelRatio(1.5)
         logo_label.setPixmap(pixmap)
         logo_label.setScaledContents(True)
@@ -146,49 +154,21 @@ class AppPopup(QDialog):
 
         self.hide()
 
-    @staticmethod
-    def get_basic_template():
+    def get_basic_template(self):
         """
         Give basic template (NOTE: temporary...).
 
         :return: template
         :rtype: str
         """
-        return """
-        <table>
-          <tr>
-            <td>Hosts UP :</td>
-            <td>$hosts_up</td>
-          </tr>
-          <tr>
-            <td>Hosts DOWN :</td>
-            <td>$hosts_down</td>
-          </tr>
-        <tr>
-            <td>Hosts UNREACH :</td>
-            <td>$hosts_unreachable</td>
-          </tr>
-        </table>
-        <br>
-        <table>
-          <tr>
-            <td>Services OK :</td>
-            <td>$services_ok</td>
-          </tr>
-          <tr>
-            <td>Services WARNING :</td>
-            <td>$services_warning</td>
-          </tr>
-          <tr>
-            <td>Services CRITICAL :</td>
-            <td>$services_critical</td>
-          </tr>
-          <tr>
-            <td>Services UNKNOWN :</td>
-            <td>$services_unknown</td>
-          </tr>
-        </table>
-        """
+        tpl_path = get_alignak_home() \
+            + self.config.get('Config', 'path') \
+            + self.config.get('Config', 'tpl') \
+            + '/'
+
+        tpl = open(tpl_path + 'basic.tpl')
+
+        return tpl.read()
 
     def create_content(self, hosts_states, services_states):
         """
@@ -206,8 +186,8 @@ class AppPopup(QDialog):
             tpl = Template(self.get_basic_template())
             state_dict = dict(
                 hosts_up=str(hosts_states['up']),
-                hosts_down=str(hosts_states['up']),
-                hosts_unreachable=str(hosts_states['up']),
+                hosts_down=str(hosts_states['down']),
+                hosts_unreachable=str(hosts_states['unreachable']),
                 services_ok=str(services_states['ok']),
                 services_warning=str(services_states['warning']),
                 services_critical=str(services_states['critical']),

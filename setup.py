@@ -78,6 +78,7 @@ setup(
 
     data_files = [
         (paths['app'], ['etc/settings.cfg']),
+        (paths['app'] + '/templates', ['etc/templates/basic.tpl']),
         (paths['app'] + '/images', ['etc/images/alignak.svg']),
         (paths['app'] + '/images', ['etc/images/ok.svg']),
         (paths['app'] + '/images', ['etc/images/exit.svg']),

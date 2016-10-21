@@ -69,7 +69,7 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
         timer = QTimer(self)
         timer.start(check_interval)
 
-        self.popup.initialize_notification()
+        self.popup.initialize_notification(self.config)
 
         self.backend_client = AlignakData()
         self.backend_client.log_to_backend(config)
