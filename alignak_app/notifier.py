@@ -100,7 +100,7 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
             img = self.tray_icon.get_icon_path() + self.config.get('Config', 'alert')
             # title = 'Alert !!!'
         elif self.services_states['unknown'] > 0 or \
-                self.services_states['warning'] or \
+                self.services_states['warning'] > 0 or \
                 self.hosts_states['unreach'] > 0:
             img = self.tray_icon.get_icon_path() + self.config.get('Config', 'warning')
             # title = 'Warning !'
