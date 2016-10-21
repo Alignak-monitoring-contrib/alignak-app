@@ -41,13 +41,14 @@ class AppPopup(QDialog):
 
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
+        # Main settings
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(self.define_css())
         self.setWindowTitle(__application__)
         self.setContentsMargins(0, 0, 0, 0)
         self.setMinimumSize(425, 250)
         self.setMaximumSize(425, 250)
-
+        # Fields
         self.msg_label = None
         self.state = None
         self.config = None
@@ -84,11 +85,11 @@ class AppPopup(QDialog):
         :type services_states: dict
         """
 
-        # Get coordinate and move to right, up screen corner
+        # Get coordinate and move to [right,up] screen corner
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        centerPoint = QApplication.desktop().screenGeometry(screen).center()
-        x = (centerPoint.x() * 2) - self.width()
-        y = (centerPoint.y() / 2) - self.height()
+        center_point = QApplication.desktop().screenGeometry(screen).center()
+        x = (center_point.x() * 2) - self.width()
+        y = (center_point.y() / 2) - self.height()
         self.move(x, y)
 
         # Notify

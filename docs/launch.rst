@@ -5,7 +5,7 @@ Launch Alignak-App
 
 Once you have configured your application, just type the following in a terminal::
 
-    $HOME/.local/bin/alignakapp
+    $HOME/.local/alignak_app/launch
 
 Alignak-app will start, but will also create a command for later. Thereafter, you will only have to type the following command to launch your application::
 

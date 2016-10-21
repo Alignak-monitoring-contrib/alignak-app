@@ -30,7 +30,7 @@ if [ -d "$APP_ROOT" ]; then
         echo "The command is not yet created..."
         if [ -f "$APP_BIN/$APP_NAME" ]; then
             echo "Create command for alignakapp..."
-            ln -s "$APP_BIN/$APP_NAME" "$USER_BIN"
+            ln -s "$APP_BIN/launch" "$USER_BIN/$APP_NAME"
             echo -e "
     #####################################################
     #      Now, command [alignakapp] is available.      #
@@ -41,7 +41,7 @@ if [ -d "$APP_ROOT" ]; then
     echo "Installation is ok !"
 
     # Check if Application is not running.
-    CHECK=`ps fu |grep "alignak_app.application"|grep -v "grep"|awk '{print $2}'`
+    CHECK=`ps fu |grep "alignak_app.app"|grep -v "grep"|awk '{print $2}'`
 
     if [ ! -z "$CHECK" -a "$CHECK" != " " ] ; then
         echo "A process of Alignak-app already running..."

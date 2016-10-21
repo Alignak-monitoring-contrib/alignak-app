@@ -76,7 +76,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
 
-    data_files = [
+    data_files=[
         (paths['app'], ['etc/settings.cfg']),
         (paths['app'] + '/templates', ['etc/templates/basic.tpl']),
         (paths['app'] + '/images', ['etc/images/alignak.svg']),
@@ -92,12 +92,12 @@ setup(
         (paths['app'] + '/images', ['etc/images/service_critical.svg']),
         (paths['app'] + '/images', ['etc/images/service_warning.svg']),
         (paths['app'] + '/images', ['etc/images/service_unknown.svg']),
-        (paths['bin'], ['etc/bin/alignakapp']),
+        (paths['app'], ['etc/bin/launch']),
     ],
 
     install_requires=install_requires,
 
-    classifiers = [
+    classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: X11 Applications :: GTK',
         'Intended Audience :: Developers',
