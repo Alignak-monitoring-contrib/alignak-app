@@ -18,9 +18,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 APP_ROOT=$HOME/.local/alignak_app
-APP_BIN=$HOME/.local/bin
 USER_BIN=$HOME/bin
 APP_NAME=alignakapp
+APP_SCRIPT=launch
 
 if [ -d "$APP_ROOT" ]; then
 
@@ -28,16 +28,31 @@ if [ -d "$APP_ROOT" ]; then
     echo "Alignak-app verify installation..."
     if [ ! -L "$USER_BIN/$APP_NAME" ]; then
         echo "The command is not yet created..."
-        if [ -f "$APP_BIN/$APP_NAME" ]; then
+        echo "Prepare folder..."
+        if [ ! -d "$USER_BIN" ]; then
+            mkdir $USER_BIN
+        fi
+        if [ -f "$APP_ROOT/$APP_SCRIPT" ]; then
             echo "Create command for alignakapp..."
-            ln -s "$APP_BIN/launch" "$USER_BIN/$APP_NAME"
-            echo -e "
-    #####################################################
-    #      Now, command [alignakapp] is available.      #
-    #####################################################
-    "
+            ln -s "$APP_ROOT/$APP_SCRIPT" "$USER_BIN/$APP_NAME"
+        else
+            echo "ERROR: file [$APP_SCRIPT] is missing !"
+            exit 1
         fi
     fi
+    if [[ :$PATH: == *:"$USER_BIN":* ]] ; then
+	echo "Path already added."
+        source ~/.profile
+    else
+        echo "Adding to path..."
+        PATH="$PATH:$USER_BIN"
+        source ~/.profile
+    fi
+    echo -e "
+        #####################################################
+        #      Now, command [alignakapp] is available.      #
+        #####################################################
+           "
     echo "Installation is ok !"
 
     # Check if Application is not running.
@@ -81,5 +96,8 @@ AlignakApp().run()
         """ &
 
 else
-    echo "ERROR: installation seems broken !"
+    echo -e "
+    ERROR: installation seems broken !
+    Folder [$APP_ROOT] does not exist !
+           "
 fi
