@@ -42,12 +42,13 @@ class AppPopup(QDialog):
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
         # Main settings
-        self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(self.define_css())
         self.setWindowTitle(__application__)
         self.setContentsMargins(0, 0, 0, 0)
         self.setMinimumSize(425, 250)
         self.setMaximumSize(425, 250)
+        self.setWindowFlags(Qt.SplashScreen)
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         # Fields
         self.msg_label = None
         self.state = None
