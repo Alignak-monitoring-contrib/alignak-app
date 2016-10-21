@@ -23,7 +23,6 @@
     Popup build notifications.
 """
 
-import sys
 from string import Template
 
 from alignak_app import __application__
