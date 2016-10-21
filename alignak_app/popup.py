@@ -45,7 +45,7 @@ class AppPopup(QDialog):
         self.setWindowTitle(__application__)
         self.setContentsMargins(0, 0, 0, 0)
 
-    def create_notification(self, level, content):
+    def initialize_notification(self, level, content):
         """
         Initialize Notification
 
@@ -54,7 +54,7 @@ class AppPopup(QDialog):
         """
 
         title = self.notification_title()
-        msg = self.notification_message(content)
+        msg = self.create_message(content)
 
         state = QLabel(self)
         state.setText(level)
@@ -67,25 +67,17 @@ class AppPopup(QDialog):
         vbox.addWidget(state, 1)
         vbox.addWidget(msg, 2)
 
-    def notify(self):
+    def send_notification(self):
         """
-        Display notification.
+        Send notification.
 
         """
 
-        ph = self.geometry().height()
-        pw = self.geometry().width()
-        px = self.geometry().x()
-        py = self.geometry().y()
-        dw = self.width()
-        dh = self.height()
-        print(ph, pw, px, py, dw, dh)
-        # self.setGeometry(px, py + ph - dh, dw, dh)
         self.move(self.width() * 2, self.height() / 4)
         self.show()
         QTimer.singleShot(8000, self.close)
 
-    def notification_message(self, msg):
+    def create_message(self, msg):
         """
         Build msg QLabel.
 
@@ -229,8 +221,8 @@ if __name__ == '__main__':
     cur_level = "CRITICAL"
     cur_content = notification.create_content()
 
-    notification.create_notification(cur_level, cur_content)
-    notification.notify()
+    notification.initialize_notification(cur_level, cur_content)
+    notification.send_notification()
 
     QTimer.singleShot(8000, notification.close)
 

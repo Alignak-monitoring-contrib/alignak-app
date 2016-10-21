@@ -47,7 +47,7 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
         self.hosts_states = {}
         self.services_states = {}
         self.tray_icon = None
-        self.notif = AppPopup()
+        self.popup = AppPopup()
 
     def send_notification(self, title, msg):
         """
@@ -90,7 +90,7 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
         timer = QTimer(self)
         timer.start(check_interval)
 
-        self.notif.create_notification(level='Warning !', content='Test')
+        self.popup.initialize_notification(level='Warning !', content='Test')
 
         self.backend_client = AlignakData()
         self.backend_client.log_to_backend(config)
@@ -129,10 +129,9 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
             # title = 'All is OK :)'
             img = self.tray_icon.get_icon_path() + self.config.get('Config', 'ok')
 
-        # Trigger all changes
+        # Trigger changes and send notification
         self.tray_icon.setIcon(QIcon(img))
-        # self.send_notification(title, msg)
-        self.notif.notify()
+        self.popup.send_notification()
         self.tray_icon.update_menus_actions(self.hosts_states, self.services_states)
 
     def get_state(self):
