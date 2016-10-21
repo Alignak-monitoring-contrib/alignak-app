@@ -69,7 +69,7 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
         timer = QTimer(self)
         timer.start(check_interval)
 
-        self.popup.initialize_notification(level='Warning !', content='Test')
+        self.popup.initialize_notification()
 
         self.backend_client = AlignakData()
         self.backend_client.log_to_backend(config)
@@ -83,34 +83,22 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
         """
         self.hosts_states, self.services_states = self.get_state()
 
-        # Define notification message
-        msg = ''
-        if self.services_states['ok'] < 0 or self.hosts_states['up'] < 0:
-            msg += 'AlignakApp has something broken... \nPlease Check your logs !'
-        else:
-            for state in self.hosts_states:
-                print(state + ' : ' + str(self.hosts_states[state]))
-                msg += 'Hosts ' + state + ' : ' + str(self.hosts_states[state]) + '\n'
-            for state in self.services_states:
-                print(state + ' : ' + str(self.services_states[state]))
-                msg += 'Services ' + state + ' : ' + str(self.services_states[state]) + '\n'
-
         # Change application icon
         if self.services_states['critical'] > 0 or self.hosts_states['down'] > 0:
             img = self.tray_icon.get_icon_path() + self.config.get('Config', 'alert')
-            # title = 'Alert !!!'
+            title = 'CRITICAL'
         elif self.services_states['unknown'] > 0 or \
                 self.services_states['warning'] > 0 or \
                 self.hosts_states['unreach'] > 0:
             img = self.tray_icon.get_icon_path() + self.config.get('Config', 'warning')
-            # title = 'Warning !'
+            title = 'WARNING !'
         else:
-            # title = 'All is OK :)'
+            title = 'OK'
             img = self.tray_icon.get_icon_path() + self.config.get('Config', 'ok')
 
         # Trigger changes and send notification
         self.tray_icon.setIcon(QIcon(img))
-        self.popup.send_notification()
+        self.popup.send_notification(title, self.hosts_states, self.services_states)
         self.tray_icon.update_menus_actions(self.hosts_states, self.services_states)
 
     def get_state(self):

@@ -24,6 +24,7 @@
 """
 
 import sys
+from string import Template
 
 from alignak_app import __application__
 
@@ -44,8 +45,10 @@ class AppPopup(QDialog):
         self.setStyleSheet(self.define_css())
         self.setWindowTitle(__application__)
         self.setContentsMargins(0, 0, 0, 0)
+        self.msg_label = None
+        self.state = None
 
-    def initialize_notification(self, level, content):
+    def initialize_notification(self):
         """
         Initialize Notification
 
@@ -53,51 +56,52 @@ class AppPopup(QDialog):
         :param content: content of notif
         """
 
-        title = self.notification_title()
-        msg = self.create_message(content)
+        title = self.create_title_label()
+        msg = self.create_message_label()
 
-        state = QLabel(self)
-        state.setText(level)
-        state.setAlignment(Qt.AlignCenter)
-        state.setObjectName('state')
-        state.setMaximumHeight(20)
+        self.state = QLabel(self)
+        self.state.setAlignment(Qt.AlignCenter)
+        self.state.setObjectName('state')
+        self.state.setMaximumHeight(20)
 
         vbox = QVBoxLayout(self)
         vbox.addLayout(title, 0)
-        vbox.addWidget(state, 1)
+        vbox.addWidget(self.state, 1)
         vbox.addWidget(msg, 2)
 
-    def send_notification(self):
+    def send_notification(self, state_label, hosts_states, services_states):
         """
         Send notification.
 
         """
 
         self.move(self.width() * 2, self.height() / 4)
+
+        self.state.setText(state_label)
+        self.create_content(hosts_states, services_states)
+
         self.show()
         QTimer.singleShot(8000, self.close)
 
-    def create_message(self, msg):
+    def create_message_label(self):
         """
         Build msg QLabel.
 
-        :param msg: msg to display.
         :return: QLabel
         :rtype: :class:`~PyQt5.QtWidgets.QLabel`
         """
 
-        msg_label = QLabel(self)
-        msg_label.setText(msg)
-        msg_label.setObjectName('msg')
-        msg_label.setMinimumHeight(150)
-        msg_label.setMinimumWidth(400)
+        self.msg_label = QLabel(self)
+        self.msg_label.setObjectName('msg')
+        self.msg_label.setMinimumHeight(150)
+        self.msg_label.setMinimumWidth(400)
 
-        return msg_label
+        return self.msg_label
 
-    def notification_title(self):
+    def create_title_label(self):
         """
         Build title QLabel, with logo
-        :param level:
+
         :return: QHBoxLayout of title
         :rtype: :class:`~PyQt5.QtWidgets.QHBoxLayout`
         """
@@ -133,7 +137,44 @@ class AppPopup(QDialog):
         self.hide()
 
     @staticmethod
-    def create_content():
+    def get_basic_template():
+        return """
+        <table>
+          <tr>
+            <td>Hosts UP :</td>
+            <td>$hosts_up</td>
+          </tr>
+          <tr>
+            <td>Hosts DOWN :</td>
+            <td>$hosts_down</td>
+          </tr>
+        <tr>
+            <td>Hosts UNREACH :</td>
+            <td>$hosts_unreachable</td>
+          </tr>
+        </table>
+        <br>
+        <table>
+          <tr>
+            <td>Services OK :</td>
+            <td>$services_ok</td>
+          </tr>
+          <tr>
+            <td>Services WARNING :</td>
+            <td>$services_warning</td>
+          </tr>
+          <tr>
+            <td>Services CRITICAL :</td>
+            <td>$services_critical</td>
+          </tr>
+          <tr>
+            <td>Services UNKNOWN :</td>
+            <td>$services_unknown</td>
+          </tr>
+        </table>
+        """
+
+    def create_content(self, hosts_states, services_states):
         """
         Create content and return with correct value.
 
@@ -141,42 +182,23 @@ class AppPopup(QDialog):
         :rtype: str
         """
 
-        tpl_content = """
-        <table>
-          <tr>
-            <td>Hosts UP :</td>
-            <td>N/A</td>
-          </tr>
-          <tr>
-            <td>Hosts DOWN :</td>
-            <td>N/A</td>
-          </tr>
-        <tr>
-            <td>Hosts UNREACH :</td>
-            <td>N/A</td>
-          </tr>
-        </table>
-        <br>
-        <table>
-          <tr>
-            <td>Services OK :</td>
-            <td>N/A</td>
-          </tr>
-          <tr>
-            <td>Services WARNING :</td>
-            <td>N/A</td>
-          </tr>
-          <tr>
-            <td>Services CRITICAL :</td>
-            <td>N/A</td>
-          </tr>
-          <tr>
-            <td>Services UNKNOWN :</td>
-            <td>N/A</td>
-          </tr>
-        </table>
-        """
-        return tpl_content
+        if services_states['ok'] < 0 or hosts_states['up'] < 0:
+            tpl_content = 'AlignakApp has something broken... \nPlease Check your logs !'
+        else:
+            tpl = Template(self.get_basic_template())
+            state_dict = dict(
+                hosts_up=str(hosts_states['up']),
+                hosts_down=str(hosts_states['up']),
+                hosts_unreachable=str(hosts_states['up']),
+                services_ok=str(services_states['ok']),
+                services_warning=str(services_states['warning']),
+                services_critical=str(services_states['critical']),
+                services_unknown=str(services_states['unknown']),
+            )
+
+            tpl_content = tpl.safe_substitute(state_dict)
+
+        self.msg_label.setText(tpl_content)
 
     @staticmethod
     def define_css():
@@ -221,8 +243,8 @@ if __name__ == '__main__':
     cur_level = "CRITICAL"
     cur_content = notification.create_content()
 
-    notification.initialize_notification(cur_level, cur_content)
-    notification.send_notification()
+    notification.initialize_notification()
+    notification.send_notification(cur_level, cur_content)
 
     QTimer.singleShot(8000, notification.close)
 
