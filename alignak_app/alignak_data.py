@@ -40,8 +40,6 @@ class AlignakData(object):
     """
 
     def __init__(self):
-        self.current_hosts = {}
-        self.current_services = {}
         self.backend = None
 
     def log_to_backend(self, config):
@@ -86,6 +84,7 @@ class AlignakData(object):
         """
 
         all_host = None
+        current_hosts = {}
 
         # Request
         try:
@@ -98,9 +97,9 @@ class AlignakData(object):
         # Store Data
         if all_host:
             for host in all_host['_items']:
-                self.current_hosts[host['name']] = host['ls_state']
+                current_hosts[host['name']] = host['ls_state']
 
-        return self.current_hosts
+        return current_hosts
 
     def get_service_state(self):
         """
@@ -109,6 +108,7 @@ class AlignakData(object):
         """
 
         all_services = None
+        current_services = {}
 
         # Request
         try:
@@ -120,7 +120,10 @@ class AlignakData(object):
 
         # Store Data
         if all_services:
+            i = 0
             for service in all_services['_items']:
-                self.current_services[service['name']] = service['ls_state']
+                i += 1
+                service_name = service['name'] + '[' + str(i) + ']'
+                current_services[service_name] = service['ls_state']
 
-        return self.current_services
+        return current_services

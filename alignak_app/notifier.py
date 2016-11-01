@@ -103,9 +103,9 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
 
     def get_state(self):
         """
-        Check the hosts states.
+        Check the hosts and services states.
 
-        :return: number of hosts and services UP, UNKNOWN and DOWN in two dict.
+        :return: each states for hosts and services in two dicts.
         :rtype: dict
         """
 
@@ -114,7 +114,8 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
             self.backend_client.log_to_backend(self.config)
 
         logger.info('Get state of Host and Services...')
-        # Dicts for states
+
+        # Initialize dicts for states
         hosts_states = {
             'up': 0,
             'down': 0,
@@ -147,6 +148,7 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
 
         # Collect Services state
         services_data = self.backend_client.get_service_state()
+
         if not services_data:
             services_states['ok'] = -1
         else:
