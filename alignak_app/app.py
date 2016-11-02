@@ -25,16 +25,22 @@
 
 import sys
 import os
-import configparser as cfg
 
 from logging import getLogger
+
+import configparser
 
 from alignak_app.tray_icon import TrayIcon
 from alignak_app.notifier import AppNotifier
 from alignak_app.utils import get_alignak_home
 
-from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
-from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
+try:
+    __import__('PyQt5')
+    from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
+    from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
+except ImportError:
+    from PyQt4.QtGui import QIcon  # pylint: disable=import-error
+    from PyQt4.Qt import QApplication  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
@@ -96,7 +102,7 @@ class AlignakApp(object):
 
         config_file = get_alignak_home() + '/alignak_app/settings.cfg'
 
-        self.config = cfg.ConfigParser()
+        self.config = configparser.ConfigParser()
         logger.info('Read configuration file...')
 
         if os.path.isfile(config_file):

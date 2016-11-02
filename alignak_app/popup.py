@@ -28,10 +28,17 @@ from string import Template
 from alignak_app import __application__
 from alignak_app.utils import get_alignak_home
 
-from PyQt5.QtWidgets import QApplication, QDialog, QLabel  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.QtCore import QTimer, Qt  # pylint: disable=no-name-in-module
-from PyQt5.QtGui import QPixmap  # pylint: disable=no-name-in-module
+try:
+    __import__('PyQt5')
+    from PyQt5.QtWidgets import QApplication, QDialog, QLabel  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout  # pylint: disable=no-name-in-module
+    from PyQt5.QtCore import QTimer, Qt  # pylint: disable=no-name-in-module
+    from PyQt5.QtGui import QPixmap  # pylint: disable=no-name-in-module
+except ImportError:
+    from PyQt4.Qt import QApplication, QDialog, QLabel  # pylint: disable=import-error
+    from PyQt4.Qt import QHBoxLayout, QVBoxLayout  # pylint: disable=import-error
+    from PyQt4.QtCore import QTimer, Qt  # pylint: disable=import-error
+    from PyQt4.QtGui import QPixmap  # pylint: disable=import-error
 
 
 class AppPopup(QDialog):
@@ -129,7 +136,7 @@ class AppPopup(QDialog):
             + self.config.get('Config', 'img') \
             + '/'
         pixmap = QPixmap(icon_path + 'alignak.svg')
-        pixmap.setDevicePixelRatio(1.5)
+        # pixmap.setDevicePixelRatio(1.5)
         logo_label.setPixmap(pixmap)
         logo_label.setScaledContents(True)
         logo_label.setMaximumHeight(60)

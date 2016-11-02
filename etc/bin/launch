@@ -75,7 +75,7 @@ if [ -d "$APP_ROOT" ]; then
             "
     fi
 
-    python3 -c \
+    python -c \
         """
 import os
 import sys
