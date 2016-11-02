@@ -43,6 +43,13 @@ pip install -e .
 echo '--------- Installing tests requirements ... --------- '
 pip install --upgrade -r test/requirements.txt
 
+PYVERSION=$(python -c "import sys; print(''.join(map(str, sys.version_info[:1])))")
+if [[ "3" == "$PYVERSION" ]] ; then
+    pip install PyQt5
+else
+    sudo apt-get install python-qt4
+fi
+
 echo '--------- Check and copy folder data to home... --------- '
 mkdir -p ~/.local/alignak_app/images/
 cp -R --verbose etc/images/* ~/.local/alignak_app/images/
