@@ -77,7 +77,7 @@ class AlignakData(object):
                 '\nCheck your [settings.cfg] and logs.'
             )
 
-    def get_host_state(self):
+    def get_host_states(self):
         """
         Collect state of Hosts, via backend API.
 
@@ -101,7 +101,7 @@ class AlignakData(object):
 
         return current_hosts
 
-    def get_service_state(self):
+    def get_service_states(self):
         """
         Collect state of Services, via backend API.
 

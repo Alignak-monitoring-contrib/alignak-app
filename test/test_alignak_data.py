@@ -46,14 +46,23 @@ class TestAlignakData(unittest2.TestCase):
             under_test.backend.url_endpoint_root,
             TestAlignakData.config.get('Backend', 'backend_url')
         )
-        # Test if all is empty
-        self.assertFalse(under_test.current_hosts)
-        self.assertFalse(under_test.current_services)
 
-    def test_if_hosts_and_services(self):
-        under_test = AlignakData()
+    def test_if_hosts_states(self):
+        alignak_data = AlignakData()
 
-        under_test.log_to_backend(TestAlignakData.config)
+        alignak_data.log_to_backend(TestAlignakData.config)
 
-        self.assertTrue(under_test.get_host_state())
-        self.assertTrue(under_test.get_service_state())
+        under_test = alignak_data.get_host_states()
+
+        self.assertTrue(alignak_data.backend.authenticated)
+        self.assertTrue(under_test)
+
+    def test_if_services_states(self):
+        alignak_data = AlignakData()
+
+        alignak_data.log_to_backend(TestAlignakData.config)
+
+        under_test = alignak_data.get_service_states()
+
+        self.assertTrue(alignak_data.backend.authenticated)
+        self.assertTrue(under_test)

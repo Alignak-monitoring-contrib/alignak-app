@@ -42,7 +42,7 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
 
     def __init__(self, icon, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
-        self.backend_client = None
+        self.alignak_data = None
         self.config = None
         self.hosts_states = {}
         self.services_states = {}
@@ -71,8 +71,8 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
 
         self.popup.initialize_notification(self.config)
 
-        self.backend_client = AlignakData()
-        self.backend_client.log_to_backend(config)
+        self.alignak_data = AlignakData()
+        self.alignak_data.log_to_backend(config)
 
         timer.timeout.connect(self.check_data)
 
@@ -109,9 +109,9 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
         :rtype: dict
         """
 
-        if not self.backend_client.backend.authenticated:
+        if not self.alignak_data.backend.authenticated:
             logger.warning('Connection to backend is lost, application will try to reconnect !')
-            self.backend_client.log_to_backend(self.config)
+            self.alignak_data.log_to_backend(self.config)
 
         logger.info('Get state of Host and Services...')
 
@@ -129,7 +129,7 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
         }
 
         # Collect Hosts state
-        hosts_data = self.backend_client.get_host_state()
+        hosts_data = self.alignak_data.get_host_states()
 
         if not hosts_data:
             hosts_states['up'] = -1
@@ -147,7 +147,7 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
             logger.info(hosts_log)
 
         # Collect Services state
-        services_data = self.backend_client.get_service_state()
+        services_data = self.alignak_data.get_service_states()
 
         if not services_data:
             services_states['ok'] = -1
