@@ -33,14 +33,15 @@ class TestApp(unittest2.TestCase):
         under_test = AlignakApp()
 
         self.assertIsNone(under_test.app)
-        self.assertIsNone(under_test.alignak_data)
         self.assertIsNone(under_test.config)
         self.assertIsNone(under_test.tray_icon)
+        self.assertIsNone(under_test.notifier)
 
         under_test.main()
 
         self.assertIsNotNone(under_test.app)
         self.assertIsNotNone(under_test.tray_icon)
+        self.assertIsNotNone(under_test.notifier)
 
     def test_set_icon(self):
         under_test = AlignakApp()
