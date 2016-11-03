@@ -50,8 +50,6 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
         QSystemTrayIcon.__init__(self, icon, parent)
         self.alignak_data = None
         self.config = None
-        self.hosts_states = {}
-        self.services_states = {}
         self.tray_icon = None
         self.popup = AppPopup()
 
@@ -66,7 +64,6 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
         """
 
         self.tray_icon = tray_icon
-
         self.config = config
 
         check_interval = int(config.get('Alignak-App', 'check_interval'))
@@ -87,25 +84,21 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
         Collect data from Backend-Client.
 
         """
-        self.hosts_states, self.services_states = self.get_state()
+        hosts_states, services_states = self.get_state()
 
-        # Change application icon
-        if self.services_states['critical'] > 0 or self.hosts_states['down'] > 0:
-            img = self.tray_icon.get_icon_path() + self.config.get('Config', 'alert')
+        # Check state to prepare popup
+        if services_states['critical'] > 0 or hosts_states['down'] > 0:
             title = 'CRITICAL'
-        elif self.services_states['unknown'] > 0 or \
-                self.services_states['warning'] > 0 or \
-                self.hosts_states['unreach'] > 0:
-            img = self.tray_icon.get_icon_path() + self.config.get('Config', 'warning')
+        elif services_states['unknown'] > 0 or \
+                services_states['warning'] > 0 or \
+                hosts_states['unreach'] > 0:
             title = 'WARNING !'
         else:
             title = 'OK'
-            img = self.tray_icon.get_icon_path() + self.config.get('Config', 'ok')
 
         # Trigger changes and send notification
-        self.tray_icon.setIcon(QIcon(img))
-        self.popup.send_notification(title, self.hosts_states, self.services_states)
-        self.tray_icon.update_menus_actions(self.hosts_states, self.services_states)
+        self.popup.send_notification(title, hosts_states, services_states)
+        self.tray_icon.update_menus_actions(hosts_states, services_states)
 
     def get_state(self):
         """

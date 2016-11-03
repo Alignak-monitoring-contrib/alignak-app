@@ -55,7 +55,6 @@ class AlignakApp(object):
         self.app = None
         self.config = None
         self.tray_icon = None
-        self.alignak_data = None
         self.notifier = None
 
     def main(self):

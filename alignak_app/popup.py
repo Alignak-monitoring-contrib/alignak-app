@@ -54,8 +54,7 @@ class AppPopup(QDialog):
         self.setContentsMargins(0, 0, 0, 0)
         self.setMinimumSize(425, 250)
         self.setMaximumSize(425, 250)
-        self.setWindowFlags(Qt.SplashScreen)
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.SplashScreen | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         # Fields
         self.msg_label = None
         self.state = None
@@ -69,7 +68,7 @@ class AppPopup(QDialog):
 
         self.config = config
         title = self.create_title_label()
-        msg = self.create_message_label()
+        self.create_message_label()
 
         self.state = QLabel(self)
         self.state.setAlignment(Qt.AlignCenter)
@@ -79,7 +78,7 @@ class AppPopup(QDialog):
         vbox = QVBoxLayout(self)
         vbox.addLayout(title, 0)
         vbox.addWidget(self.state, 1)
-        vbox.addWidget(msg, 2)
+        vbox.addWidget(self.msg_label, 2)
 
     def send_notification(self, state_label, hosts_states, services_states):
         """
@@ -110,16 +109,12 @@ class AppPopup(QDialog):
         """
         Build msg QLabel.
 
-        :return: QLabel
-        :rtype: :class:`~PyQt5.QtWidgets.QLabel`
         """
 
         self.msg_label = QLabel(self)
         self.msg_label.setObjectName('msg')
         self.msg_label.setMinimumHeight(150)
         self.msg_label.setMinimumWidth(400)
-
-        return self.msg_label
 
     def create_title_label(self):
         """
@@ -136,17 +131,16 @@ class AppPopup(QDialog):
             + self.config.get('Config', 'img') \
             + '/'
         pixmap = QPixmap(icon_path + 'alignak.svg')
-        # pixmap.setDevicePixelRatio(1.5)
         logo_label.setPixmap(pixmap)
         logo_label.setScaledContents(True)
-        logo_label.setMaximumHeight(60)
+        logo_label.setMaximumHeight(32)
 
         # Title Label
         title_label = QLabel(self)
         title_label.setText("Alignak-app")
         title_label.setAlignment(Qt.AlignCenter)
         title_label.setObjectName('title')
-        title_label.setMaximumHeight(40)
+        title_label.setMaximumHeight(32)
 
         # Create title Layout
         tbox = QHBoxLayout()
