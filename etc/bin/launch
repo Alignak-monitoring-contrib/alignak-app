@@ -22,15 +22,15 @@ USER_BIN=$HOME/bin
 APP_NAME=alignakapp
 APP_SCRIPT=launch
 
+python -c "import alignak_app"
 
-if [[ `python -c "import alignak_app"` == 0 ]]; then
+if [ $? -eq 0 ]; then
     PYBIN=python
-    echo "Python Version 2 : $PYBIN"
+    echo "Python Version detected : $PYBIN 2"
 else
     PYBIN=python3
-    echo "Python Version 3 : $PYBIN"
+    echo "Python Version detected : $PYBIN 3"
 fi
-
 
 if [ -d "$APP_ROOT" ]; then
 
