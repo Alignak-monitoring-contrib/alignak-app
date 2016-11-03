@@ -22,6 +22,16 @@ USER_BIN=$HOME/bin
 APP_NAME=alignakapp
 APP_SCRIPT=launch
 
+
+if [[ `python -c "import alignak_app"` == 0 ]]; then
+    PYBIN=python
+    echo "Python Version 2 : $PYBIN"
+else
+    PYBIN=python3
+    echo "Python Version 3 : $PYBIN"
+fi
+
+
 if [ -d "$APP_ROOT" ]; then
 
     #####################################################
@@ -89,7 +99,7 @@ if [ -d "$APP_ROOT" ]; then
     fi
 
     # Launch script in background
-    python "$APP_ROOT/bin/alignakapp.py" &
+    "$PYBIN" "$APP_ROOT/bin/alignakapp.py" &
     echo "
 The application started successfully.
 HELP : You can check the logs and settings in [$APP_ROOT].
