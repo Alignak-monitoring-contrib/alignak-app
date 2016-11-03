@@ -32,7 +32,7 @@
 from logging import getLogger
 from alignak_app.utils import create_logger
 
-logger = getLogger(__name__)
+logger = getLogger()
 
 create_logger(logger)
 

@@ -24,80 +24,83 @@ APP_SCRIPT=launch
 
 if [ -d "$APP_ROOT" ]; then
 
-    # Verify installation
+    #####################################################
+    #                INSTALL APPLICATION                #
+    #####################################################
+
     echo "Alignak-app verify installation..."
     if [ ! -L "$USER_BIN/$APP_NAME" ]; then
+        # Verify installation
         echo "The command is not yet created..."
         echo "Prepare folder..."
         if [ ! -d "$USER_BIN" ]; then
-            mkdir $USER_BIN
+            echo "Create folder for application..."
+            mkdir "$USER_BIN"
         fi
-        if [ -f "$APP_ROOT/$APP_SCRIPT" ]; then
+
+        # Create symlink if needed.
+        if [ -f "$APP_ROOT/bin/$APP_SCRIPT" ]; then
             echo "Create command for alignakapp..."
-            ln -s "$APP_ROOT/$APP_SCRIPT" "$USER_BIN/$APP_NAME"
+            ln -s "$APP_ROOT/bin/$APP_SCRIPT" "$USER_BIN/$APP_NAME"
         else
             echo "ERROR: file [$APP_SCRIPT] is missing !"
             exit 1
         fi
+
+        # Add application to PATH
+        if [[ :$PATH: == *:"$USER_BIN":* ]] ; then
+            echo "Path already added."
+            source $HOME/.profile
+        else
+            echo "Adding application to path..."
+            PATH="$PATH:$USER_BIN"
+            source $HOME/.profile
+        fi
+        echo -e "
+            #####################################################
+            #      Now, command [alignakapp] is available.      #
+            #####################################################
+               "
     fi
-    if [[ :$PATH: == *:"$USER_BIN":* ]] ; then
-	echo "Path already added."
-        source ~/.profile
-    else
-        echo "Adding to path..."
-        PATH="$PATH:$USER_BIN"
-        source ~/.profile
-    fi
-    echo -e "
-        #####################################################
-        #      Now, command [alignakapp] is available.      #
-        #####################################################
-           "
     echo "Installation is ok !"
 
+    #####################################################
+    #                LAUNCH APPLICATION                 #
+    #####################################################
+
     # Check if Application is not running.
-    CHECK=`ps fu |grep "alignak_app.app"|grep -v "grep"|awk '{print $2}'`
+    CHECK=`ps fu |grep "alignakapp.py"|grep -v "grep"|awk '{print $2}'`
 
     if [ ! -z "$CHECK" -a "$CHECK" != " " ] ; then
         echo "A process of Alignak-app already running..."
         echo "-> kill process (with PID : $CHECK)..."
         kill "$CHECK"
-        echo "
-    #####################################################
-    #               Alignak-app restart !               #
-    #####################################################
+        echo -e "
+            #####################################################
+            #               Alignak-app restart !               #
+            #####################################################
             "
     else
-        echo "
-    #####################################################
-    #               Alignak-app start !               #
-    #####################################################
+        echo -e "
+            #####################################################
+            #               Alignak-app start !                 #
+            #####################################################
             "
     fi
 
-    python -c \
-        """
-import os
-import sys
-
-from logging import getLogger
-from alignak_app.app import AlignakApp
-
-
-logger = getLogger(__name__)
-
-try:
-    os.environ['DESKTOP_SESSION']
-except KeyError as e:
-    logger.critical('You must be in desktop session to launch Alignak-App : ' + str(e))
-    sys.exit()
-
-AlignakApp().run()
-        """ &
+    # Launch script in background
+    python "$APP_ROOT/bin/alignakapp.py" &
+    echo "
+The application started successfully.
+HELP : You can check the logs and settings in [$APP_ROOT].
+    "
 
 else
     echo -e "
-    ERROR: installation seems broken !
+    #####################################################
+    !              Alignak-app failed :(                !
+    #####################################################
+    ! ERROR : installation seems broken !
     Folder [$APP_ROOT] does not exist !
            "
 fi

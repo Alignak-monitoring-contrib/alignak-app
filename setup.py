@@ -46,7 +46,7 @@ if 'linux' in sys.platform or 'sunos5' in sys.platform:
     paths = {
         'app': 'alignak_app',
         'log': 'logs',
-        'bin': 'bin',
+        'bin': 'alignak_app/bin',
     }
 else:
     print("Unsupported platform, sorry!")
@@ -91,7 +91,8 @@ setup(
         (paths['app'] + '/images', ['etc/images/service_critical.svg']),
         (paths['app'] + '/images', ['etc/images/service_warning.svg']),
         (paths['app'] + '/images', ['etc/images/service_unknown.svg']),
-        (paths['app'], ['etc/bin/launch']),
+        (paths['bin'], ['etc/bin/launch']),
+        (paths['bin'], ['etc/bin/alignakapp.py']),
     ],
 
     install_requires=install_requires,

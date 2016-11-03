@@ -84,6 +84,13 @@ class AlignakApp(object):
 
         """
 
+        if 'linux' in sys.platform or 'sunos5' in sys.platform:
+            try:
+                os.environ['DESKTOP_SESSION']
+            except KeyError as e:
+                logger.critical('You must be in desktop session to launch Alignak-App : ' + str(e))
+                sys.exit()
+
         # Main function
         self.main()
 
