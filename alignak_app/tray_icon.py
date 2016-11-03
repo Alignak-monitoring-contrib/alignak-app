@@ -38,10 +38,14 @@ try:
     from PyQt5.QtWidgets import QAction  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
 except ImportError:
-    from PyQt4.Qt import QSystemTrayIcon  # pylint: disable=import-error
-    from PyQt4.Qt import QMenu  # pylint: disable=import-error
-    from PyQt4.Qt import QAction  # pylint: disable=import-error
-    from PyQt4.QtGui import QIcon  # pylint: disable=import-error
+    try:
+        __import__('PyQt4')
+        from PyQt4.Qt import QSystemTrayIcon  # pylint: disable=import-error
+        from PyQt4.Qt import QMenu  # pylint: disable=import-error
+        from PyQt4.Qt import QAction  # pylint: disable=import-error
+        from PyQt4.QtGui import QIcon  # pylint: disable=import-error
+    except ImportError:
+        sys.exit('You must have PyQt installed to run this app.')
 
 
 logger = getLogger(__name__)
