@@ -73,8 +73,8 @@ class AlignakData(object):
                 '\nCheck [Backend] section in configuration file.'
             )
             sys.exit(
-                'Alignak-app will close :( ...' +
-                '\nCheck your [settings.cfg] and logs.'
+                'Connection to Backend has failed...' +
+                '\nCheck your settings and logs.'
             )
 
     def get_host_states(self):
