@@ -20,36 +20,49 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest2
+import os
 import configparser as cfg
 
 from alignak_app.alignak_data import AlignakData
+from alignak_app.app import get_alignak_home
+
 
 class TestAlignakData(unittest2.TestCase):
     """
         This file test methods of AlignakData class
     """
 
+    filepath = get_alignak_home() + '/alignak_app/settings.cfg'
+    config = cfg.ConfigParser()
+    config.read(filepath)
+
     def test_connection(self):
         under_test = AlignakData()
 
-        config = cfg.ConfigParser()
-        config.read('etc/settings.cfg')
+        under_test.log_to_backend(TestAlignakData.config)
 
-        under_test.log_to_backend(config)
+        # Compare config url and backend
+        self.assertEquals(
+            under_test.backend.url_endpoint_root,
+            TestAlignakData.config.get('Backend', 'backend_url')
+        )
 
-        # Compare config url and backend
-        self.assertEquals(under_test.backend.url_endpoint_root, config.get('Backend', 'backend_url'))
-        # Test if all is empty
-        self.assertFalse(under_test.current_hosts)
-        self.assertFalse(under_test.current_services)
+    def test_if_hosts_states(self):
+        alignak_data = AlignakData()
 
-    def test_if_hosts_and_services(self):
-        under_test = AlignakData()
+        alignak_data.log_to_backend(TestAlignakData.config)
 
-        config = cfg.ConfigParser()
-        config.read('etc/settings.cfg')
+        under_test = alignak_data.get_host_states()
 
-        under_test.log_to_backend(config)
+        self.assertTrue(alignak_data.backend.authenticated)
+        self.assertTrue(under_test)
 
-        self.assertTrue(under_test.get_host_state())
-        self.assertTrue(under_test.get_service_state())
+    def test_if_services_states(self):
+        alignak_data = AlignakData()
+
+        alignak_data.log_to_backend(TestAlignakData.config)
+
+        under_test = alignak_data.get_service_states()
+
+        self.assertTrue(alignak_data.backend.authenticated)
+        self.assertTrue(under_test)

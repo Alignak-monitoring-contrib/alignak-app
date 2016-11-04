@@ -32,11 +32,12 @@ try:
 except:
     python_version = (1, 5)
 if python_version < (2, 7):
-    sys.exit("This application requires a minimum Python 2.7.x, sorry!")
+    sys.exit("This application currently requires a minimum Python 2.7.x, sorry!")
 
 # Requirements
 install_requires = [
-    'alignak_backend_client'
+    'alignak_backend_client',
+    'configParser',
 ]
 
 # Define paths
@@ -45,7 +46,13 @@ if 'linux' in sys.platform or 'sunos5' in sys.platform:
     paths = {
         'app': 'alignak_app',
         'log': 'logs',
-        'bin': 'bin',
+        'bin': 'alignak_app/bin',
+    }
+elif 'win32' in sys.platform:
+    paths = {
+        'app': 'alignak_app',
+        'log': 'logs',
+        'bin': 'alignak_app/bin',
     }
 else:
     print("Unsupported platform, sorry!")
@@ -74,13 +81,11 @@ setup(
     packages=find_packages(),
     include_package_data=True,
 
-    data_files = [
+    data_files=[
         (paths['app'], ['etc/settings.cfg']),
+        (paths['app'] + '/templates', ['etc/templates/basic.tpl']),
         (paths['app'] + '/images', ['etc/images/alignak.svg']),
-        (paths['app'] + '/images', ['etc/images/ok.svg']),
-        (paths['app'] + '/images', ['etc/images/warning.svg']),
-        (paths['app'] + '/images', ['etc/images/alert.svg']),
-        (paths['app'] + '/images', ['etc/images/error.svg']),
+        (paths['app'] + '/images', ['etc/images/exit.svg']),
         (paths['app'] + '/images', ['etc/images/host_up.svg']),
         (paths['app'] + '/images', ['etc/images/host_down.svg']),
         (paths['app'] + '/images', ['etc/images/host_unreach.svg']),
@@ -88,12 +93,13 @@ setup(
         (paths['app'] + '/images', ['etc/images/service_critical.svg']),
         (paths['app'] + '/images', ['etc/images/service_warning.svg']),
         (paths['app'] + '/images', ['etc/images/service_unknown.svg']),
-        (paths['bin'], ['etc/bin/alignakapp']),
+        (paths['bin'], ['etc/bin/launch']),
+        (paths['bin'], ['etc/bin/alignakapp.py']),
     ],
 
     install_requires=install_requires,
 
-    classifiers = [
+    classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: X11 Applications :: GTK',
         'Intended Audience :: Developers',

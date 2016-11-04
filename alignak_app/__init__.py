@@ -32,12 +32,12 @@
 from logging import getLogger
 from alignak_app.utils import create_logger
 
-logger = getLogger(__name__)
+logger = getLogger()
 
 create_logger(logger)
 
 # Application version and manifest
-VERSION = (0, 3, 4)
+VERSION = (0, 4, 0)
 __application__ = u"Alignak-App"
 __short_version__ = '.'.join((str(each) for each in VERSION[:2]))
 __version__ = '.'.join((str(each) for each in VERSION[:4]))
