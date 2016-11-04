@@ -77,6 +77,7 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
         self.alignak_data = AlignakData()
         self.alignak_data.log_to_backend(config)
 
+        logger.info('Initialize notifier...')
         timer.timeout.connect(self.check_data)
 
     def check_data(self):
@@ -97,8 +98,10 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
             title = 'OK'
 
         # Trigger changes and send notification
-        self.popup.send_notification(title, hosts_states, services_states)
         self.tray_icon.update_menus_actions(hosts_states, services_states)
+
+        if self.config.getboolean('Alignak-App', 'notifications'):
+            self.popup.send_notification(title, hosts_states, services_states)
 
     def get_state(self):
         """
