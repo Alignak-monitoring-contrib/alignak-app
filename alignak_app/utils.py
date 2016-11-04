@@ -87,5 +87,4 @@ def get_alignak_home():  # pragma: no cover
     if 'root' in alignak_home or not alignak_home:
         sys.exit('Application can\'t find the user HOME or maybe you are connected as ROOT.')
 
-    alignak_home += '/.local'
     return alignak_home
