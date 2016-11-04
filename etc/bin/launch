@@ -22,6 +22,10 @@ USER_BIN=$HOME/bin
 APP_NAME=alignakapp
 APP_SCRIPT=launch
 
+#####################################################
+#                CHECK PYTHON VERSION               #
+#####################################################
+
 python -c "import alignak_app"
 
 if [ $? -eq 0 ]; then
