@@ -3,19 +3,30 @@
 Before starting
 ===============
 
-During installation, Alignak-app create the following things:
+During installation, Alignak-app create a folder who contains all data files for the application (Like images, logs and configuration file).
 
-1. ``/home/$USER/.local/alignak_app``: contains all data files for the application. Like images, logs and configuration file.
-2. ``/home/$USER/.local/bin/alignakapp``: this is the script who start Alignak-app.
+On Linux
+--------
+
+The root folder of the application should be under::
+
+``/home/$USER/.local/alignak_app``:
+
+On Windows
+----------
+
+The root folder of the application should be under::
+
+    C:\Users\user\AppData\Roaming\Python\alignak_app\
+
+**Note:** Currently application runs on windows only recently, so launching is not easy. More pretty version will come soon.
 
 Configuration Parameters
 ========================
 
-Before running application, you must configure it. You can configure application in file ``settings.cfg`` located in ``/home/$USER/.local/alignak_app/`` folder.
+Before running application, you must configure it. You can do it in file ``settings.cfg`` located in the folder cited above.
 
 The two most significant Sections are **[Backend]** and your **[Webui]**.
-
-**Note:** The default configuration file contains some default url for a Alignak server test. 
 
 All parameters are explained in file, you only have to read each section.
 
