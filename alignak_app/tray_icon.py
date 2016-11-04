@@ -92,6 +92,11 @@ class TrayIcon(QSystemTrayIcon):
             'Hosts UP, Wait...',
             self
         )
+        test = QAction(
+            QIcon(img_h_up),
+            'Hosts UP, Wait...',
+            self)
+        test.text()
 
         img_h_down = self.get_icon_path() + self.config.get('Config', 'host_down')
         self.hosts_actions['hosts_down'] = QAction(
@@ -230,24 +235,23 @@ class TrayIcon(QSystemTrayIcon):
         """
 
         target = self.sender()
-        label = target.property('text')
 
-        webui_url = 'http://94.76.229.155:6001'
+        webui_url = self.config.get('Webui', 'webui_url')
 
         # Define each filter for items
-        if "UP" in label:
+        if "UP" in target.text():
             endurl = '/hosts/table?search=ls_state:UP'
-        elif "DOWN" in label:
+        elif "DOWN" in target.text():
             endurl = '/hosts/table?search=ls_state:DOWN'
-        elif "UNREACHABLE" in label:
+        elif "UNREACHABLE" in target.text():
             endurl = '/hosts/table?search=ls_state:UNREACHABLE'
-        elif 'OK' in label:
+        elif 'OK' in target.text():
             endurl = '/services/table?search=ls_state:OK'
-        elif 'CRITICAL' in label:
+        elif 'CRITICAL' in target.text():
             endurl = '/services/table?search=ls_state:CRITICAL'
-        elif 'WARNING' in label:
+        elif 'WARNING' in target.text():
             endurl = '/services/table?search=ls_state:WARNING'
-        elif 'UNKNOWN' in label:
+        elif 'UNKNOWN' in target.text():
             endurl = '/services/table?search=ls_state:UNKNOWN'
         else:
             endurl = '/dashboard'
