@@ -74,7 +74,13 @@ def get_alignak_home():  # pragma: no cover
     """
 
     # Get HOME and USER
-    alignak_home = os.environ['HOME']
+    if 'linux' in sys.platform or 'sunos5' in sys.platform:
+        alignak_home = os.environ['HOME']
+    elif 'win32' in sys.platform:
+        alignak_home = os.environ['USERPROFILE']
+    else:
+        sys.exit('Application can\'t find the user HOME or maybe you are connected as ROOT.')
+
     if 'root' in alignak_home or not alignak_home:
         sys.exit('Application can\'t find the user HOME or maybe you are connected as ROOT.')
     if alignak_home.endswith('/'):

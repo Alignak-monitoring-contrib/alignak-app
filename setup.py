@@ -48,6 +48,12 @@ if 'linux' in sys.platform or 'sunos5' in sys.platform:
         'log': 'logs',
         'bin': 'alignak_app/bin',
     }
+elif 'win32' in sys.platform:
+    paths = {
+        'app': 'alignak_app',
+        'log': 'logs',
+        'bin': 'alignak_app/bin',
+    }
 else:
     print("Unsupported platform, sorry!")
     exit(1)
