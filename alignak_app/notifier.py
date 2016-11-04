@@ -91,7 +91,7 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
             title = 'CRITICAL'
         elif services_states['unknown'] > 0 or \
                 services_states['warning'] > 0 or \
-                hosts_states['unreach'] > 0:
+                hosts_states['unreachable'] > 0:
             title = 'WARNING !'
         else:
             title = 'OK'
