@@ -24,6 +24,7 @@
 """
 
 from string import Template
+from logging import getLogger
 
 from alignak_app import __application__
 from alignak_app.utils import get_alignak_home
@@ -39,6 +40,9 @@ except ImportError:
     from PyQt4.Qt import QHBoxLayout, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.QtCore import QTimer, Qt  # pylint: disable=import-error
     from PyQt4.QtGui import QPixmap  # pylint: disable=import-error
+
+
+logger = getLogger(__name__)
 
 
 class AppPopup(QDialog):
@@ -102,6 +106,9 @@ class AppPopup(QDialog):
         # Notify
         self.state.setText(state_label)
         self.create_content(hosts_states, services_states)
+
+        logger.info('Send notification...')
+
         self.show()
         QTimer.singleShot(8000, self.close)
 
