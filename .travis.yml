@@ -23,7 +23,7 @@ script:
   - coverage erase
   # - cd test/
   - nosetests -xv --nologcapture --with-coverage --cover-package=alignak_app test/test_*.py
-  - ls -la
+  - ls -la $HOME/.local/alignak_app
   - coverage combine
   - cat .coverage
   # - cd ..
