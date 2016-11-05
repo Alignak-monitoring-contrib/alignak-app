@@ -26,6 +26,8 @@
 from logging import Formatter
 from logging import DEBUG
 from logging.handlers import TimedRotatingFileHandler
+from string import Template
+
 import os
 import sys
 
@@ -88,3 +90,35 @@ def get_alignak_home():  # pragma: no cover
         sys.exit('Application can\'t find the user HOME or maybe you are connected as ROOT.')
 
     return alignak_home
+
+
+def get_template(name, values, config):
+    """
+        Return content of the choosen template with its values.
+
+
+    :param name: name of the template.
+    :type name: str
+    :param values: dict of values to substitute.
+    :param config:
+    :return: content of a template
+    :rtype: str
+    """
+
+    tpl_content = ''
+
+    tpl_path = get_alignak_home() \
+        + config.get('Config', 'path') \
+        + config.get('Config', 'tpl') \
+        + '/'
+
+    try:
+        tpl_file = open(tpl_path + name)
+    except FileNotFoundError as e:
+        sys.exit('Failed open template : ' + str(e))
+
+    if tpl_file:
+        tpl = Template(tpl_file.read())
+        tpl_content = tpl.safe_substitute(values)
+
+    return tpl_content

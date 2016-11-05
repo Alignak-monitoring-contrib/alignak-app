@@ -23,11 +23,11 @@
     Popup build notifications.
 """
 
-from string import Template
 from logging import getLogger
 
 from alignak_app import __application__
 from alignak_app.utils import get_alignak_home
+from alignak_app.utils import get_template
 
 try:
     __import__('PyQt5')
@@ -163,33 +163,6 @@ class AppPopup(QDialog):
         """
 
         self.hide()
-
-    def get_template(self, name, values):
-        """
-        Give basic template (NOTE: temporary...).
-
-        :return: template
-        :rtype: Template
-        """
-
-        tpl_content = ''
-
-        tpl_path = get_alignak_home() \
-            + self.config.get('Config', 'path') \
-            + self.config.get('Config', 'tpl') \
-            + '/'
-
-        tpl_file = None
-        try:
-            tpl_file = open(tpl_path + name)
-        except FileNotFoundError as e:
-            logger.critical('Failed open template : ' + str(e))
-
-        if tpl_file:
-            tpl = Template(tpl_file.read())
-            tpl_content = tpl.safe_substitute(values)
-
-        return tpl_content
 
     def create_content(self, hosts_states, services_states):
         """
