@@ -52,5 +52,7 @@ fi
 
 echo '--------- Check and copy folder data to home... --------- '
 mkdir -p ~/.local/alignak_app/images/
+mkdir -p ~/.local/alignak_app/templates/
 cp -R --verbose etc/images/* ~/.local/alignak_app/images/
+cp -R --verbose etc/templates/* ~/.local/alignak_app/templates/
 cp --verbose test/etc/settings.cfg ~/.local/alignak_app/
