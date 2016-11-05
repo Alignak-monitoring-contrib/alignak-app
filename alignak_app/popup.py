@@ -164,21 +164,32 @@ class AppPopup(QDialog):
 
         self.hide()
 
-    def get_basic_template(self):
+    def get_template(self, name, values):
         """
         Give basic template (NOTE: temporary...).
 
         :return: template
-        :rtype: str
+        :rtype: Template
         """
+
+        tpl_content = ''
+
         tpl_path = get_alignak_home() \
             + self.config.get('Config', 'path') \
             + self.config.get('Config', 'tpl') \
             + '/'
 
-        tpl = open(tpl_path + 'basic.tpl')
+        tpl_file = None
+        try:
+            tpl_file = open(tpl_path + name)
+        except FileNotFoundError as e:
+            logger.critical('Failed open template : ' + str(e))
 
-        return tpl.read()
+        if tpl_file:
+            tpl = Template(tpl_file.read())
+            tpl_content = tpl.safe_substitute(values)
+
+        return tpl_content
 
     def create_content(self, hosts_states, services_states):
         """
@@ -191,9 +202,8 @@ class AppPopup(QDialog):
         """
 
         if services_states['ok'] < 0 or hosts_states['up'] < 0:
-            tpl_content = 'AlignakApp has something broken... \nPlease Check your logs !'
+            content = 'AlignakApp has something broken... \nPlease Check your logs !'
         else:
-            tpl = Template(self.get_basic_template())
             state_dict = dict(
                 hosts_up=str(hosts_states['up']),
                 hosts_down=str(hosts_states['down']),
@@ -204,9 +214,9 @@ class AppPopup(QDialog):
                 services_unknown=str(services_states['unknown']),
             )
 
-            tpl_content = tpl.safe_substitute(state_dict)
+            content = self.get_template('notification.tpl', state_dict)
 
-        self.msg_label.setText(tpl_content)
+        self.msg_label.setText(content)
 
     @staticmethod
     def define_css():

@@ -83,7 +83,7 @@ setup(
 
     data_files=[
         (paths['app'], ['etc/settings.cfg']),
-        (paths['app'] + '/templates', ['etc/templates/basic.tpl']),
+        (paths['app'] + '/templates', ['etc/templates/notification.tpl']),
         (paths['app'] + '/images', ['etc/images/alignak.svg']),
         (paths['app'] + '/images', ['etc/images/exit.svg']),
         (paths['app'] + '/images', ['etc/images/host_up.svg']),
