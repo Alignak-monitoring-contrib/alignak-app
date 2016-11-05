@@ -53,7 +53,7 @@ class AppPopup(QDialog):
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
         # Main settings
-        self.setStyleSheet(self.define_css())
+        # self.setStyleSheet(self.define_css())
         self.setWindowTitle(__application__)
         self.setContentsMargins(0, 0, 0, 0)
         self.setMinimumSize(425, 250)
@@ -84,12 +84,12 @@ class AppPopup(QDialog):
         vbox.addWidget(self.state, 1)
         vbox.addWidget(self.msg_label, 2)
 
-    def send_notification(self, state_label, hosts_states, services_states):
+    def send_notification(self, title, hosts_states, services_states):
         """
         Send notification.
 
-        :param state_label: state to display in label_state.
-        :type state_label: str
+        :param title: state to display in label_state.
+        :type title: str
         :param hosts_states: dict of hosts states
         :type hosts_states: dict
         :param services_states: dict of services states.
@@ -104,7 +104,8 @@ class AppPopup(QDialog):
         self.move(x, y)
 
         # Notify
-        self.state.setText(state_label)
+        self.state.setText(title)
+        self.setStyleSheet(self.get_style_sheet(title))
         self.create_content(hosts_states, services_states)
 
         logger.info('Send notification...')
@@ -187,12 +188,11 @@ class AppPopup(QDialog):
                 services_unknown=str(services_states['unknown']),
             )
 
-            content = self.get_template('notification.tpl', state_dict)
+            content = get_template('notification.tpl', state_dict, self.config)
 
         self.msg_label.setText(content)
 
-    @staticmethod
-    def define_css():
+    def get_style_sheet(self, title):
         """
         Define css for QWidgets.
 
@@ -200,29 +200,15 @@ class AppPopup(QDialog):
         :rtype: str
         """
 
-        css = """
-        QWidget{
-            Background: #eee;
-            color:white;
-        }
-        QLabel#title{
-            Background: #78909C;
-            border: none;
-            border-radius: 10px;
-            font-size: 18px bold;
-        }
-        QLabel#msg{
-            Background: #eee;
-            color: black;
-        }
-        QLabel#state{
-            Background-color: #e74c3c;
-            font-size: 16px bold;
+        if 'OK' in title:
+            color_title = '#27ae60'
+        elif 'WARNING' in title:
+            color_title = '#e67e22'
+        elif 'CRITICAL' in title:
+            color_title = '#e74c3c'
+        else:
+            color_title = '#EEE'
 
-        }
-        QToolButton{
-            Background: #eee;
-            border: none;
-        }
-        """
+        css = get_template('css.tpl', dict(color_title=color_title), self.config)
+
         return css
