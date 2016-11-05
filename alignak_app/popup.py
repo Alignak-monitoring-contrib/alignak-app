@@ -53,7 +53,6 @@ class AppPopup(QDialog):
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
         # Main settings
-        # self.setStyleSheet(self.define_css())
         self.setWindowTitle(__application__)
         self.setContentsMargins(0, 0, 0, 0)
         self.setMinimumSize(425, 250)
@@ -64,7 +63,7 @@ class AppPopup(QDialog):
         self.state = None
         self.config = None
 
-    def initialize_notification(self, config):
+    def initialize_notification(self, config):  # pragma: no cover
         """
         Initialize Notification
 
@@ -84,7 +83,7 @@ class AppPopup(QDialog):
         vbox.addWidget(self.state, 1)
         vbox.addWidget(self.msg_label, 2)
 
-    def send_notification(self, title, hosts_states, services_states):
+    def send_notification(self, title, hosts_states, services_states):  # pragma: no cover
         """
         Send notification.
 
@@ -113,7 +112,7 @@ class AppPopup(QDialog):
         self.show()
         QTimer.singleShot(8000, self.close)
 
-    def create_message_label(self):
+    def create_message_label(self):  # pragma: no cover
         """
         Build msg QLabel.
 
@@ -124,7 +123,7 @@ class AppPopup(QDialog):
         self.msg_label.setMinimumHeight(150)
         self.msg_label.setMinimumWidth(400)
 
-    def create_title_label(self):
+    def create_title_label(self):  # pragma: no cover
         """
         Build title QLabel, with logo
 
@@ -157,7 +156,7 @@ class AppPopup(QDialog):
 
         return tbox
 
-    def close_dialog(self):
+    def close_dialog(self):  # pragma: no cover
         """
         Close notification.
 
@@ -165,7 +164,7 @@ class AppPopup(QDialog):
 
         self.hide()
 
-    def create_content(self, hosts_states, services_states):
+    def create_content(self, hosts_states, services_states):  # pragma: no cover
         """
         Create content and return with correct value.
 
@@ -192,7 +191,7 @@ class AppPopup(QDialog):
 
         self.msg_label.setText(content)
 
-    def get_style_sheet(self, title):
+    def get_style_sheet(self, title):  # pragma: no cover
         """
         Define css for QWidgets.
 
