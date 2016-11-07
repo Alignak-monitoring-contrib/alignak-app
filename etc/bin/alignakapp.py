@@ -19,6 +19,22 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-from alignak_app.app import AlignakApp
+import sys
 
-AlignakApp().run()
+from alignak_app.app import AlignakApp
+try:
+    __import__('PyQt5')
+    from PyQt5.QtWidgets import QApplication 
+    from PyQt5.QtGui import QIcon 
+except ImportError:
+    from PyQt4.QtGui import QIcon
+    from PyQt4.Qt import QApplication
+
+app = QApplication(sys.argv)
+app.setQuitOnLastWindowClosed(False)
+
+alignak_app = AlignakApp()
+alignak_app.run()
+alignak_app.tray_icon.show()
+
+sys.exit(app.exec_())

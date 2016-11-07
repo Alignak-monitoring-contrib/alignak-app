@@ -20,9 +20,11 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest2
+import configparser
 import sys
 
-from alignak_app.app import AlignakApp, QIcon
+from alignak_app.popup import AppPopup
+from alignak_app.utils import get_alignak_home
 
 try:
     __import__('PyQt5')
@@ -31,9 +33,9 @@ except ImportError:
     from PyQt4.Qt import QApplication  # pylint: disable=import-error
 
 
-class TestApp(unittest2.TestCase):
+class TestPopup(unittest2.TestCase):
     """
-        This file test methods of AlignakApp class.
+        This file test methods of `utils.py` file.
     """
 
     @classmethod
@@ -43,31 +45,16 @@ class TestApp(unittest2.TestCase):
         except:
             pass
 
-    def test_app_main(self):
-        under_test = AlignakApp()
+    def test_initialize_notification(self):
+        under_test = AppPopup()
 
-        self.assertIsNone(under_test.config)
-        self.assertIsNone(under_test.tray_icon)
-        self.assertIsNone(under_test.notifier)
+        config_file = get_alignak_home() + '/alignak_app/settings.cfg'
 
-        under_test.build_alignak_app()
-
-        self.assertIsNotNone(under_test.tray_icon)
-        self.assertIsNotNone(under_test.notifier)
-
-    def test_set_icon(self):
-        under_test = AlignakApp()
-        under_test.read_configuration()
-
-        icon = under_test.get_icon()
-
-        self.assertIsInstance(icon, QIcon, 'This is a test for QIcon')
-
-    def test_read_configuration(self):
-        under_test = AlignakApp()
+        config = configparser.ConfigParser()
+        config.read(config_file)
 
         self.assertIsNone(under_test.config)
 
-        under_test.read_configuration()
+        under_test.initialize_notification(config)
 
         self.assertIsNotNone(under_test.config)

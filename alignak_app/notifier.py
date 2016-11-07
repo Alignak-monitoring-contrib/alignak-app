@@ -51,7 +51,7 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
         self.alignak_data = None
         self.config = None
         self.tray_icon = None
-        self.popup = AppPopup()
+        self.popup = None
 
     def start_process(self, config, tray_icon):
         """
@@ -72,6 +72,7 @@ class AppNotifier(QSystemTrayIcon):  # pragma: no cover
         timer = QTimer(self)
         timer.start(check_interval)
 
+        self.popup = AppPopup()
         self.popup.initialize_notification(self.config)
 
         self.alignak_data = AlignakData()

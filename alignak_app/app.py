@@ -52,20 +52,15 @@ class AlignakApp(object):
     """
 
     def __init__(self):
-        self.app = None
         self.config = None
         self.tray_icon = None
         self.notifier = None
 
-    def main(self):
+    def build_alignak_app(self):
         """
         The main function of Alignak-App
 
         """
-
-        # Create app
-        self.app = QApplication(sys.argv)
-        self.app.setQuitOnLastWindowClosed(False)
 
         # Read configuration
         self.read_configuration()
@@ -90,15 +85,11 @@ class AlignakApp(object):
                 logger.critical('You must be in desktop session to launch Alignak-App : ' + str(e))
                 sys.exit()
 
-        # Main function
-        self.main()
+        # Build app
+        self.build_alignak_app()
 
         # Start process notifier
         self.notifier.start_process(self.config, self.tray_icon)
-
-        # Show app and run exec
-        self.tray_icon.show()
-        sys.exit(self.app.exec_())
 
     def read_configuration(self):
         """
@@ -133,4 +124,11 @@ class AlignakApp(object):
         return icon
 
 if __name__ == "__main__":
-    AlignakApp().run()
+    app = QApplication(sys.argv)
+    app.setQuitOnLastWindowClosed(False)
+
+    alignak_app = AlignakApp()
+    alignak_app.run()
+    alignak_app.tray_icon.show()
+
+    sys.exit(app.exec_())
