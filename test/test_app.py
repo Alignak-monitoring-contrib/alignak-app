@@ -38,24 +38,31 @@ class TestApp(unittest2.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        """Create QApplication"""
+
         try:
             cls.app = QApplication(sys.argv)
         except:
             pass
 
     def test_app_main(self):
+        """Build Alignak-App"""
+
         under_test = AlignakApp()
 
         self.assertIsNone(under_test.config)
         self.assertIsNone(under_test.tray_icon)
         self.assertIsNone(under_test.notifier)
 
+        # Build alignak_app
         under_test.build_alignak_app()
 
         self.assertIsNotNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.notifier)
 
-    def test_set_icon(self):
+    def test_get_icon(self):
+        """Get Icon"""
+
         under_test = AlignakApp()
         under_test.read_configuration()
 
@@ -64,6 +71,8 @@ class TestApp(unittest2.TestCase):
         self.assertIsInstance(icon, QIcon, 'This is a test for QIcon')
 
     def test_read_configuration(self):
+        """Read configuration"""
+
         under_test = AlignakApp()
 
         self.assertIsNone(under_test.config)

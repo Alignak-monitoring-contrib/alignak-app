@@ -35,7 +35,7 @@ except ImportError:
 
 class TestPopup(unittest2.TestCase):
     """
-        This file test methods of `utils.py` file.
+        This file test the AppPopup class.
     """
 
     config_file = get_alignak_home() + '/alignak_app/settings.cfg'
@@ -44,18 +44,22 @@ class TestPopup(unittest2.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        """Create QApplication"""
         try:
             cls.app = QApplication(sys.argv)
         except:
             pass
 
     def test_initialize_notification(self):
+        """Inititalize Notification"""
+
         under_test = AppPopup()
 
         self.assertIsNone(under_test.config)
         self.assertIsNone(under_test.state)
         self.assertIsNone(under_test.msg_label)
 
+        # Create all the label
         under_test.initialize_notification(TestPopup.config)
 
         self.assertIsNotNone(under_test.config)
@@ -64,6 +68,7 @@ class TestPopup(unittest2.TestCase):
 
 
     def test_send_notifications(self):
+        """Send Notification"""
         under_test = AppPopup()
 
         under_test.initialize_notification(TestPopup.config)
@@ -71,6 +76,7 @@ class TestPopup(unittest2.TestCase):
         self.assertEqual('', under_test.state.text())
         self.assertEqual('', under_test.msg_label.text())
 
+        # Simulate dicts of states
         hosts_states = dict(
             up= 1,
             down=1,
@@ -83,6 +89,7 @@ class TestPopup(unittest2.TestCase):
             unknown=1
         )
 
+        # Send a CRITICAL notification
         under_test.send_notification('CRITICAL', hosts_states, services_states)
         expected_content = 'AlignakApp has something broken... \nPlease Check your logs !'
 

@@ -31,11 +31,14 @@ class TestAlignakData(unittest2.TestCase):
         This file test methods of AlignakData class
     """
 
+    # Create config for all methods.
     filepath = get_alignak_home() + '/alignak_app/settings.cfg'
     config = cfg.ConfigParser()
     config.read(filepath)
 
-    def test_connection(self):
+    def test_log_to_backend(self):
+        """Connection to Alignak-Backend"""
+
         under_test = AlignakData()
 
         under_test.log_to_backend(TestAlignakData.config)
@@ -45,23 +48,28 @@ class TestAlignakData(unittest2.TestCase):
             under_test.backend.url_endpoint_root,
             TestAlignakData.config.get('Backend', 'backend_url')
         )
+        self.assertTrue(under_test.backend.authenticated)
 
     def test_if_hosts_states(self):
+        """Collect hosts states"""
+
         alignak_data = AlignakData()
 
         alignak_data.log_to_backend(TestAlignakData.config)
 
+        # Get hosts states
         under_test = alignak_data.get_host_states()
 
-        self.assertTrue(alignak_data.backend.authenticated)
         self.assertTrue(under_test)
 
     def test_if_services_states(self):
+        """Collect services states"""
+
         alignak_data = AlignakData()
 
         alignak_data.log_to_backend(TestAlignakData.config)
 
+        # Get services states
         under_test = alignak_data.get_service_states()
 
-        self.assertTrue(alignak_data.backend.authenticated)
         self.assertTrue(under_test)

@@ -30,7 +30,15 @@ class TestUtils(unittest2.TestCase):
         This file test methods of `utils.py` file.
     """
 
+    # Simulate config file
+    config_file = get_alignak_home() + '/alignak_app/settings.cfg'
+    config = configparser.ConfigParser()
+    config.read(config_file)
+
     def test_get_template(self):
+        """Get a Template"""
+
+        # Simulate an expected Template
         expected_css = """QWidget{
     Background: #eee;
     color:white;
@@ -56,16 +64,16 @@ QToolButton{
 }
 """
 
-        config_file = get_alignak_home() + '/alignak_app/settings.cfg'
 
-        config = configparser.ConfigParser()
-        config.read(config_file)
 
-        under_test = get_template('css.tpl', dict(color_title='#27ae60'), config)
+        # Get the template
+        under_test = get_template('css.tpl', dict(color_title='#27ae60'), TestUtils.config)
 
         self.assertEqual(under_test, expected_css)
 
     def test_get_alignak_home(self):
+        """Get Alignak-App Home"""
+
         expected_home = os.environ['HOME'] + '/.local'
 
         home = get_alignak_home()
