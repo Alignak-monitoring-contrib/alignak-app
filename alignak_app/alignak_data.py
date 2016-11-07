@@ -66,7 +66,7 @@ class AlignakData(object):
 
             else:
                 logger.warning('Connection to backend failed !')
-        except BackendException as e:
+        except BackendException as e:  # pragma: no cover
             logger.error(
                 'Connection to Backend has failed. ' +
                 str(e) +

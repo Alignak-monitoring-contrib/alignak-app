@@ -123,7 +123,7 @@ class AlignakApp(object):
 
         return icon
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)
 
