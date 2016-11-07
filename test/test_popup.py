@@ -38,6 +38,10 @@ class TestPopup(unittest2.TestCase):
         This file test methods of `utils.py` file.
     """
 
+    config_file = get_alignak_home() + '/alignak_app/settings.cfg'
+    config = configparser.ConfigParser()
+    config.read(config_file)
+
     @classmethod
     def setUpClass(cls):
         try:
@@ -48,13 +52,39 @@ class TestPopup(unittest2.TestCase):
     def test_initialize_notification(self):
         under_test = AppPopup()
 
-        config_file = get_alignak_home() + '/alignak_app/settings.cfg'
-
-        config = configparser.ConfigParser()
-        config.read(config_file)
-
         self.assertIsNone(under_test.config)
+        self.assertIsNone(under_test.state)
+        self.assertIsNone(under_test.msg_label)
 
-        under_test.initialize_notification(config)
+        under_test.initialize_notification(TestPopup.config)
 
         self.assertIsNotNone(under_test.config)
+        self.assertEqual('state', under_test.state.objectName())
+        self.assertEqual('msg', under_test.msg_label.objectName())
+
+
+    def test_send_notifications(self):
+        under_test = AppPopup()
+
+        under_test.initialize_notification(TestPopup.config)
+
+        self.assertEqual('', under_test.state.text())
+        self.assertEqual('', under_test.msg_label.text())
+
+        hosts_states = dict(
+            up= 1,
+            down=1,
+            unreachable=1
+        )
+        services_states = dict(
+            ok=-1,
+            warning=1,
+            critical=1,
+            unknown=1
+        )
+
+        under_test.send_notification('CRITICAL', hosts_states, services_states)
+        expected_content = 'AlignakApp has something broken... \nPlease Check your logs !'
+
+        self.assertEqual('CRITICAL', under_test.state.text())
+        self.assertEqual(expected_content, under_test.msg_label.text())
