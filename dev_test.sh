@@ -32,6 +32,7 @@ LIB_NAME=alignak_app
 LIB_ROOT=$HOME/.local/$LIB_NAME
 
 CMD_BEFORE="cp test/etc/settings.cfg $LIB_ROOT/settings.cfg"
+CMD_LIB="~/.local/$LIB_NAME/bin/launch"
 
 # Folders
 
@@ -61,10 +62,10 @@ TEST_ARGS_PY3="-xv --nologcapture --with-coverage --cover-package=$LIB_NAME"
 function install_app {
     echo "---------------- Install $LIB_NAME -----------------"
     if [ $1 = "py2" ]; then
-        echo "-------------- Install for Python 2 ---------------"
+        echo "------------------ for Python 2 ---------------------"
         pip install . --user --upgrade
     else
-        echo "-------------- Install for Python 3 ---------------"
+        echo "------------------ for Python 3 ---------------------"
         pip3 install . --user --upgrade
     fi
 }
@@ -80,6 +81,7 @@ function reinstall_app {
 }
 
 function test_app {
+    echo "-------------- Test $LIB_NAME -----------------"
     if [ $1 = "py2" ]; then
 	$CMD_TEST_PY2 $TEST_ARGS_PY2 $TEST_FOLDER
     else
@@ -90,6 +92,7 @@ function test_app {
 
 # BEGIN ################################################################
 
+echo "------------- Go to $WORKSPACE ---------------"
 cd $WORKSPACE
 
 install_app $1
@@ -98,4 +101,4 @@ $CMD_BEFORE
 
 test_app $1
 
-
+$CMD_LIB
