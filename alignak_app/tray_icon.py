@@ -45,7 +45,7 @@ except ImportError:
         from PyQt4.Qt import QAction  # pylint: disable=import-error
         from PyQt4.QtGui import QIcon  # pylint: disable=import-error
     except ImportError:
-        sys.exit('You must have PyQt installed to run this app.')
+        sys.exit('\nYou must have PyQt installed to run this app.\nPlease read the doc.')
 
 
 logger = getLogger(__name__)

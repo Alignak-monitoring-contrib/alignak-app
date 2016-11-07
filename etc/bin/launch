@@ -46,7 +46,7 @@ if [ -d "$APP_ROOT" ]; then
     if [ ! -L "$USER_BIN/$APP_NAME" ]; then
         # Verify installation
         echo "The command is not yet created..."
-        echo "Prepare folder..."
+        echo "Alignak-App check folders..."
         if [ ! -d "$USER_BIN" ]; then
             echo "Create folder for application..."
             mkdir "$USER_BIN"
@@ -54,7 +54,7 @@ if [ -d "$APP_ROOT" ]; then
 
         # Create symlink if needed.
         if [ -f "$APP_ROOT/bin/$APP_SCRIPT" ]; then
-            echo "Create command for alignakapp..."
+            echo "Create command -> [alignakapp] <- ..."
             ln -s "$APP_ROOT/bin/$APP_SCRIPT" "$USER_BIN/$APP_NAME"
         else
             echo "ERROR: file [$APP_SCRIPT] is missing !"
@@ -89,6 +89,7 @@ if [ -d "$APP_ROOT" ]; then
         echo "A process of Alignak-app already running..."
         echo "-> kill process (with PID : $CHECK)..."
         kill "$CHECK"
+        echo "Application is stopped."
         echo -e "
             #####################################################
             #               Alignak-app restart !               #
@@ -116,5 +117,6 @@ else
     #####################################################
     ! ERROR : installation seems broken !
     Folder [$APP_ROOT] does not exist !
+    Retry to install Alignak-App or upgrade it.
            "
 fi

@@ -28,6 +28,7 @@ import json
 
 from logging import getLogger
 from alignak_backend_client.client import Backend, BackendException
+from alignak_app.popup import AppPopup
 
 
 logger = getLogger(__name__)
@@ -73,8 +74,8 @@ class AlignakData(object):
                 '\nCheck [Backend] section in configuration file.'
             )
             sys.exit(
-                'Connection to Backend has failed...' +
-                '\nCheck your settings and logs.'
+                '\nConnection to Backend has failed...' +
+                '\nPlease, check your settings and logs.'
             )
 
     def get_host_states(self):
