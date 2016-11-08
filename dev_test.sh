@@ -152,7 +152,6 @@ done
 
 if [ ! -z "$py" ]; then
 
-
     choose_step "$py" "$cmd"
 
     if [ "$cmd" != "remove" ]; then
