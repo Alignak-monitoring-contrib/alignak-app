@@ -26,9 +26,9 @@ from alignak_app.app import AlignakApp, QIcon
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QApplication
 except ImportError:
-    from PyQt4.Qt import QApplication  # pylint: disable=import-error
+    from PyQt4.Qt import QApplication
 
 
 class TestApp(unittest2.TestCase):
