@@ -29,20 +29,20 @@
 # Library
 
 LIB_NAME=alignak_app
-LIB_ROOT=$HOME/.local/$LIB_NAME
+LIB_ROOT="$HOME/.local/$LIB_NAME"
 
 CMD_BEFORE="cp test/etc/settings.cfg $LIB_ROOT/settings.cfg"
 CMD_LIB="~/.local/$LIB_NAME/bin/launch"
 
 # Folders
 
-WORKSPACE=$HOME/workspace/repos/alignak-app
+WORKSPACE=$HOME/workspace/personnal-repos/alignak-app
 TEST_FOLDER="test/test_*.py"
 
 # Python 2
 
 PY2=false
-TEST_PY2=$PY2
+TEST_PY2="$PY2"
 
 CMD_TEST_PY2=~/.local/bin/nosetests
 TEST_ARGS_PY2="-xv --nologcapture --with-coverage --cover-package=$LIB_NAME"
@@ -50,7 +50,7 @@ TEST_ARGS_PY2="-xv --nologcapture --with-coverage --cover-package=$LIB_NAME"
 # Python 3
 
 PY3=false
-TEST_PY2=$PY3
+TEST_PY2="$PY3"
 
 CMD_TEST_PY3=~/.local/bin/nosetests-3.4
 TEST_ARGS_PY3="-xv --nologcapture --with-coverage --cover-package=$LIB_NAME"
@@ -72,33 +72,40 @@ function install_app {
 
 function reinstall_app {
     echo "-------------- Uninstall $LIB_NAME -----------------"
-    if [ $1 = "py2" ]; then
-        pip uninstall -y $LIB_NAME
+    if [ $1 = "py2" ]; then
+        "pip uninstall -y $LIB_NAME"
     else
-        pip3 uninstall -y $LIB_NAME
+        "pip3 uninstall -y $LIB_NAME"
     fi
-    install_app $1
+    install_app "$1"
 }
 
 function test_app {
     echo "-------------- Test $LIB_NAME -----------------"
     if [ $1 = "py2" ]; then
-	$CMD_TEST_PY2 $TEST_ARGS_PY2 $TEST_FOLDER
+	    "$CMD_TEST_PY2" "$TEST_ARGS_PY2" "$TEST_FOLDER"
     else
-        $CMD_TEST_PY3 $TEST_ARGS_PY3 $TEST_FOLDER
+        "$CMD_TEST_PY3" "$TEST_ARGS_PY3" "$TEST_FOLDER"
     fi
 }
 
 
 # BEGIN ################################################################
 
-echo "------------- Go to $WORKSPACE ---------------"
-cd $WORKSPACE
 
-install_app $1
+if [ "$1" != "" ]; then
 
-$CMD_BEFORE
+    echo "------------- Go to $WORKSPACE ---------------"
+    cd "$WORKSPACE"
 
-test_app $1
+    install_app "$1"
 
-$CMD_LIB
+    "$CMD_BEFORE"
+
+    test_app "$1"
+
+    "$CMD_LIB"
+else
+    echo -e "Usage:
+    dev_test [py2 | py3]"
+fi
