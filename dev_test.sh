@@ -19,7 +19,7 @@
 
 # HELP ################################################################
 #                                                                     #
-# Change the VAR to adapt script to your lib                          #
+# Change the VAR to adapt script to your library :)                   #
 #                                                                     #
 #######################################################################
 
@@ -31,81 +31,137 @@
 LIB_NAME=alignak_app
 LIB_ROOT="$HOME/.local/$LIB_NAME"
 
-CMD_BEFORE="cp test/etc/settings.cfg $LIB_ROOT/settings.cfg"
+# Additional commands
+CMD_BEFORE="cp --verbose test/etc/settings.cfg $LIB_ROOT/settings.cfg"
 CMD_LIB="~/.local/$LIB_NAME/bin/launch"
 
 # Folders
 
 WORKSPACE=$HOME/workspace/personnal-repos/alignak-app
-TEST_FOLDER="test/test_*.py"
+TEST_FOLDER=test/test_*.py
 
 # Python 2
 
-PY2=false
-TEST_PY2="$PY2"
+PIP_PY2="pip"
+ARGS_PIP_PY2="--user"
 
 CMD_TEST_PY2=~/.local/bin/nosetests
-TEST_ARGS_PY2="-xv --nologcapture --with-coverage --cover-package=$LIB_NAME"
+TEST_ARGS_PY2="-xv --nologcapture --with-coverage --cover-package=${LIB_NAME}"
 
 # Python 3
 
-PY3=false
-TEST_PY2="$PY3"
+PIP_PY3="pip3"
+ARGS_PIP_PY3="--user"
 
 CMD_TEST_PY3=~/.local/bin/nosetests-3.4
-TEST_ARGS_PY3="-xv --nologcapture --with-coverage --cover-package=$LIB_NAME"
+TEST_ARGS_PY3="-xv --nologcapture --with-coverage --cover-package=${LIB_NAME}"
 
 
 # FUNCTIONS ############################################################
 
+function step_msg {
+    echo -e "
+---------------------> [ $1 ]..."
+}
 
-function install_app {
-    echo "---------------- Install $LIB_NAME -----------------"
-    if [ $1 = "py2" ]; then
-        echo "------------------ for Python 2 ---------------------"
-        pip install . --user --upgrade
+function go_to_dir {
+    step_msg  "CD $WORKSPACE"
+    cd "$WORKSPACE"
+}
+
+function uninstall_lib {
+    # Uninstall library
+    if [ "$1" -eq 2 ]; then
+        sh -c "$PIP_PY2 uninstall -y $LIB_NAME"
     else
-        echo "------------------ for Python 3 ---------------------"
-        pip3 install . --user --upgrade
+        sh -c "$PIP_PY3 uninstall -y $LIB_NAME"
     fi
 }
 
-function reinstall_app {
-    echo "-------------- Uninstall $LIB_NAME -----------------"
-    if [ $1 = "py2" ]; then
-        "pip uninstall -y $LIB_NAME"
+function install_lib {
+    # Install or upgrade library
+    if [ ! -z "$2" ]; then
+        flag="$2"
     else
-        "pip3 uninstall -y $LIB_NAME"
+        flag=""
     fi
-    install_app "$1"
+
+    if [ "$1" -eq 2 ]; then
+        sh -c "$PIP_PY2 install . $ARGS_PIP_PY2 $flag"
+    else
+        sh -c "$PIP_PY3 install . $ARGS_PIP_PY3 $flag"
+    fi
+}
+
+function choose_step {
+    # Choose between the function.
+    if [ "$2" = "upgrade" ]; then
+        go_to_dir
+        step_msg "UPGRADE"
+        install_lib $1 "--$2"
+    elif [ "$2" = "remove" ]; then
+        step_msg "UNINSTALL"
+        uninstall_lib $1
+    else
+        go_to_dir
+        step_msg "INSTALLATION"
+        install_lib $1
+    fi
 }
 
 function test_app {
-    echo "-------------- Test $LIB_NAME -----------------"
+    # Launch unit tests
+    step_msg  "RUN UNIT TESTS"
     if [ $1 = "py2" ]; then
-	    "$CMD_TEST_PY2" "$TEST_ARGS_PY2" "$TEST_FOLDER"
+	    sh -c "$CMD_TEST_PY2 $TEST_ARGS_PY2 $TEST_FOLDER"
     else
-        "$CMD_TEST_PY3" "$TEST_ARGS_PY3" "$TEST_FOLDER"
+        sh -c "$CMD_TEST_PY3 $TEST_ARGS_PY3 $TEST_FOLDER"
     fi
 }
 
+usage="$(basename "$0") [-h] [-p n] [-c command] -- script to test and install python libraries.
+
+-h  show this help text.
+-p  choose between python 2 or 3
+-c  choose command : [install | upgrade | remove] to execute."
 
 # BEGIN ################################################################
 
+while getopts 'h:p:c:' opt;
+do
+    case "$opt" in
+    p)
+        py=$OPTARG
+        echo "Python version : $py"
+        ;;
+    c)
+        cmd="$OPTARG"
+        echo "Command : $cmd"
+        ;;
+    h)
+        echo "$usage"
+        exit
+        ;;
+    \?)
+        printf "illegal option: -%s\n" "$OPTARG" >&2
+        echo "$usage" >&2
+        exit 1
+        ;;
+    esac
+done
 
-if [ "$1" != "" ]; then
+if [ ! -z "$py" ]; then
 
-    echo "------------- Go to $WORKSPACE ---------------"
-    cd "$WORKSPACE"
 
-    install_app "$1"
+    choose_step "$py" "$cmd"
 
-    "$CMD_BEFORE"
+    if [ "$cmd" != "remove" ]; then
+        step_msg "RUN COMMAND BEFORE"
+        sh -c "$CMD_BEFORE"
 
-    test_app "$1"
+        test_app "$py"
 
-    "$CMD_LIB"
-else
-    echo -e "Usage:
-    dev_test [py2 | py3]"
+        step_msg  "LAUNCH $LIB_NAME"
+        sh -c "$CMD_LIB"
+     fi
 fi
