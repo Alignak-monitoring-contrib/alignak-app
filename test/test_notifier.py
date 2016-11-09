@@ -68,6 +68,7 @@ class TestAppNotifier(unittest2.TestCase):
             pass
 
     def test_start_process(self):
+        """Start Notifier Process"""
         under_test = AppNotifier(self.icon)
 
         self.assertIsNone(under_test.tray_icon)
@@ -88,6 +89,7 @@ class TestAppNotifier(unittest2.TestCase):
         self.assertIsNotNone(under_test.popup)
 
     def test_check_data(self):
+        """Check Data"""
         under_test = AppNotifier(self.icon)
 
         # Start notifier
