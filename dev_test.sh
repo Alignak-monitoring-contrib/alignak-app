@@ -136,7 +136,7 @@ function choose_step {
 usage="$(basename "$0") [-h] [-p n] [-c command] -- script to test and install python libraries.
 
 -h  show this help text.
--p  choose between python 2 or 3
+-p  [2|3] choose between python 2 or 3. [2] is default !
 -c  choose command to execute:
         - install : install library (default).
         - upgrade : upgrade library.
