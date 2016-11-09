@@ -33,7 +33,7 @@ try:
     from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import QTimer  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
-except ImportError:
+except ImportError:  # pragma: no cover
     from PyQt4.Qt import QSystemTrayIcon  # pylint: disable=import-error
     from PyQt4.QtCore import QTimer  # pylint: disable=import-error
     from PyQt4.QtGui import QIcon  # pylint: disable=import-error
