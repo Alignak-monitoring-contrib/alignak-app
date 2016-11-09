@@ -99,7 +99,7 @@ class AppNotifier(QSystemTrayIcon):
             title = 'OK'
 
         # Trigger changes and send notification
-        self.tray_icon.update_menus_actions(hosts_states, services_states)
+        self.tray_icon.update_menu_actions(hosts_states, services_states)
 
         if self.config.getboolean('Alignak-App', 'notifications'):
             self.popup.send_notification(title, hosts_states, services_states)

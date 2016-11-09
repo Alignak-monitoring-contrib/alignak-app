@@ -37,7 +37,7 @@ try:
     from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QAction  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
-except ImportError:
+except ImportError:  # pragma: no cover
     try:
         __import__('PyQt4')
         from PyQt4.Qt import QSystemTrayIcon  # pylint: disable=import-error
@@ -182,7 +182,7 @@ class TrayIcon(QSystemTrayIcon):
         self.menu.actions()
         self.menu.addAction(self.quit_menu)
 
-    def update_menus_actions(self, hosts_states, services_states):
+    def update_menu_actions(self, hosts_states, services_states):
         """
         Update items Menu
 
