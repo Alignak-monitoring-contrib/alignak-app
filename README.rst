@@ -22,7 +22,7 @@ Build status (stable release)
     :target: https://travis-ci.org/Alignak-monitoring-contrib/alignak-app
 
 .. image:: https://coveralls.io/repos/github/Alignak-monitoring-contrib/alignak-app/badge.svg?branch=master
-    :target: https://coveralls.io/github/Alignak-monitoring-contrib/alignak-app?branch=develop
+    :target: https://coveralls.io/github/Alignak-monitoring-contrib/alignak-app?branch=master
 
 .. image:: http://readthedocs.org/projects/alignak-app/badge/?version=latest
     :target: http://alignak-app.readthedocs.io/en/develop/?badge=latest
