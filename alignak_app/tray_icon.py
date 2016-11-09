@@ -179,15 +179,7 @@ class TrayIcon(QSystemTrayIcon):
         self.menu.addAction(self.services_actions['services_critical'])
         self.menu.addAction(self.services_actions['services_unknown'])
         self.menu.addSeparator()
-
-        # for h_action in self.hosts_actions:
-        #     self.menu.addAction(self.hosts_actions[h_action])
-        #     self.hosts_actions[h_action].triggered.connect(self.open_url)
-        # self.menu.addSeparator()
-        # for s_action in self.services_actions:
-        #     self.menu.addAction(self.services_actions[s_action])
-        #     self.services_actions[s_action].triggered.connect(self.open_url)
-        # self.menu.addSeparator()
+        self.menu.actions()
         self.menu.addAction(self.quit_menu)
 
     def update_menus_actions(self, hosts_states, services_states):
@@ -231,7 +223,7 @@ class TrayIcon(QSystemTrayIcon):
         return icon_path
 
     @staticmethod
-    def quit_app():
+    def quit_app():  # pragma: no cover
         """
         Quit application.
 

@@ -41,7 +41,7 @@ except ImportError:
 logger = getLogger(__name__)
 
 
-class AppNotifier(QSystemTrayIcon):  # pragma: no cover
+class AppNotifier(QSystemTrayIcon):
     """
     Class who manage notifications and states of hosts and services.
     """

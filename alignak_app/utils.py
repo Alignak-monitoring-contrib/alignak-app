@@ -70,7 +70,7 @@ def create_logger(logger):  # pragma: no cover
     logger.setLevel(DEBUG)
 
 
-def get_alignak_home():  # pragma: no cover
+def get_alignak_home():
     """
     Return user home.
     """
