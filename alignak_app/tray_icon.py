@@ -169,14 +169,25 @@ class TrayIcon(QSystemTrayIcon):
         """
 
         logger.info('Add action to menu')
-        for h_action in self.hosts_actions:
-            self.menu.addAction(self.hosts_actions[h_action])
-            self.hosts_actions[h_action].triggered.connect(self.open_url)
+        self.menu.addAction(self.hosts_actions['hosts_up'])
+        self.menu.addAction(self.hosts_actions['hosts_down'])
+        self.menu.addAction(self.hosts_actions['hosts_unreach'])
         self.menu.addSeparator()
-        for s_action in self.services_actions:
-            self.menu.addAction(self.services_actions[s_action])
-            self.services_actions[s_action].triggered.connect(self.open_url)
+
+        self.menu.addAction(self.services_actions['services_ok'])
+        self.menu.addAction(self.services_actions['services_warning'])
+        self.menu.addAction(self.services_actions['services_critical'])
+        self.menu.addAction(self.services_actions['services_unknown'])
         self.menu.addSeparator()
+
+        # for h_action in self.hosts_actions:
+        #     self.menu.addAction(self.hosts_actions[h_action])
+        #     self.hosts_actions[h_action].triggered.connect(self.open_url)
+        # self.menu.addSeparator()
+        # for s_action in self.services_actions:
+        #     self.menu.addAction(self.services_actions[s_action])
+        #     self.services_actions[s_action].triggered.connect(self.open_url)
+        # self.menu.addSeparator()
         self.menu.addAction(self.quit_menu)
 
     def update_menus_actions(self, hosts_states, services_states):
