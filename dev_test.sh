@@ -24,21 +24,21 @@
 #######################################################################
 
 
-# SCRIPT VARS #########################################################
-
-# Library
+# LIBRARY VARS ########################################################
 
 LIB_NAME=alignak_app
 LIB_ROOT="$HOME/.local/$LIB_NAME"
 
 # Additional commands
-CMD_BEFORE="cp --verbose test/etc/settings.cfg $LIB_ROOT/settings.cfg"
+CMD_AFTER="cp --verbose test/etc/settings.cfg $LIB_ROOT/settings.cfg"
 CMD_LIB="~/.local/$LIB_NAME/bin/launch"
 
 # Folders
 
 WORKSPACE=$HOME/workspace/personnal-repos/alignak-app
 TEST_FOLDER=test/test_*.py
+
+# PYTHON VARS #########################################################
 
 # Python 2
 
@@ -57,7 +57,11 @@ CMD_TEST_PY3=~/.local/bin/nosetests-3.4
 TEST_ARGS_PY3="-xv --nologcapture --with-coverage --cover-package=${LIB_NAME}"
 
 
-# FUNCTIONS ############################################################
+# INFO ################################################################
+#                                                                     #
+# FUNCTIONS                                                           #
+#                                                                     #
+#######################################################################
 
 function step_msg {
     echo -e "
@@ -93,6 +97,16 @@ function install_lib {
     fi
 }
 
+function test_app {
+    # Launch unit tests
+
+    if [ $1 = "py2" ]; then
+	    sh -c "$CMD_TEST_PY2 $TEST_ARGS_PY2 $TEST_FOLDER"
+    else
+        sh -c "$CMD_TEST_PY3 $TEST_ARGS_PY3 $TEST_FOLDER"
+    fi
+}
+
 function choose_step {
     # Choose between the function.
     if [ "$2" = "upgrade" ]; then
@@ -102,6 +116,9 @@ function choose_step {
     elif [ "$2" = "remove" ]; then
         step_msg "UNINSTALL"
         uninstall_lib $1
+    elif [ "$2" = "test" ]; then
+        step_msg  "RUN UNIT TESTS"
+        test_app $1
     else
         go_to_dir
         step_msg "INSTALLATION"
@@ -109,58 +126,65 @@ function choose_step {
     fi
 }
 
-function test_app {
-    # Launch unit tests
-    step_msg  "RUN UNIT TESTS"
-    if [ $1 = "py2" ]; then
-	    sh -c "$CMD_TEST_PY2 $TEST_ARGS_PY2 $TEST_FOLDER"
-    else
-        sh -c "$CMD_TEST_PY3 $TEST_ARGS_PY3 $TEST_FOLDER"
-    fi
-}
+
+# INFO ################################################################
+#                                                                     #
+# BEGINNING OF THE SCRIPT                                             #
+#                                                                     #
+#######################################################################
 
 usage="$(basename "$0") [-h] [-p n] [-c command] -- script to test and install python libraries.
 
 -h  show this help text.
 -p  choose between python 2 or 3
--c  choose command : [install | upgrade | remove] to execute."
+-c  choose command to execute:
+        - install : install library (default).
+        - upgrade : upgrade library.
+        - remove  : remove library.
+        - test    : test library.
+        - start   : install and start library."
 
-# BEGIN ################################################################
+# Get args
 
 while getopts 'h:p:c:' opt;
 do
     case "$opt" in
     p)
         py=$OPTARG
-        echo "Python version : $py"
+
         ;;
     c)
         cmd="$OPTARG"
-        echo "Command : $cmd"
+
         ;;
     h)
         echo "$usage"
         exit
         ;;
     \?)
-        printf "illegal option: -%s\n" "$OPTARG" >&2
+        printf "Illegal option: -%s\n" "$OPTARG" >&2
         echo "$usage" >&2
         exit 1
         ;;
     esac
 done
 
-if [ ! -z "$py" ]; then
+# Launch functions
+if [ -z "$py" ]; then
+    py=2
+fi
 
-    choose_step "$py" "$cmd"
+step_msg "CONFIG"
+echo "Python version : $py"
+echo "Command : $cmd"
 
-    if [ "$cmd" != "remove" ]; then
-        step_msg "RUN COMMAND BEFORE"
-        sh -c "$CMD_BEFORE"
+choose_step "$py" "$cmd"
 
-        test_app "$py"
-
-        step_msg  "LAUNCH $LIB_NAME"
-        sh -c "$CMD_LIB"
-     fi
+if [ "$cmd" != "remove" ]; then
+    step_msg "RUN COMMAND AFTER"
+    sh -c "$CMD_AFTER"
+fi
+if [ "$cmd" = "start" ]; then
+    step_msg  "LAUNCH $LIB_NAME"
+    sh -c "$CMD_LIB"
 fi
