@@ -151,11 +151,16 @@ do
     case "$opt" in
     p)
         py=$OPTARG
-
         ;;
     c)
         cmd="$OPTARG"
-
+        if [[ "$cmd" =~ ^(install|upgrade|remove|test|start)$ ]]; then
+            continue
+        else
+            printf "Illegal option: -%s\n" "$OPTARG" >&2
+            echo "$usage" >&2
+            exit 1
+        fi
         ;;
     h)
         echo "$usage"
