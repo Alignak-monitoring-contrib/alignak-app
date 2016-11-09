@@ -58,7 +58,8 @@ License
 
 Alignak App is available under the `GPL version 3 <http://opensource.org/licenses/GPL-3.0>`_.
 
-Preview
-=======
+Preview (Debian and Windows)
+============================
 
-.. image:: https://raw.githubusercontent.com/Alignak-monitoring-contrib/alignak-app/develop/docs/image/preview.png
+.. image:: https://raw.githubusercontent.com/Alignak-monitoring-contrib/alignak-app/develop/docs/image/preview_deb.png
+.. image:: https://raw.githubusercontent.com/Alignak-monitoring-contrib/alignak-app/develop/docs/image/preview_win.png
