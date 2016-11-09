@@ -114,7 +114,7 @@ def get_template(name, values, config):
 
     try:
         tpl_file = open(tpl_path + name)
-    except FileNotFoundError as e:  # pylint: disable=undefined-variable
+    except IOError as e:  # pylint: disable=undefined-variable
         sys.exit('Failed open template : ' + str(e))
 
     if tpl_file:
