@@ -107,10 +107,13 @@ class AppPopup(QDialog):
         self.setStyleSheet(self.get_style_sheet(title))
         self.create_content(hosts_states, services_states)
 
-        logger.info('Send notification...')
+        period = int(self.config.get('Alignak-App', 'period'))
+        period *= 1000
 
+        logger.info('Send notification...')
         self.show()
-        QTimer.singleShot(8000, self.close)
+
+        QTimer.singleShot(period, self.close)
 
     def create_message_label(self):
         """
