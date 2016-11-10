@@ -85,6 +85,7 @@ setup(
         (paths['app'], ['etc/settings.cfg']),
         (paths['app'] + '/templates', ['etc/templates/notification.tpl']),
         (paths['app'] + '/templates', ['etc/templates/css.tpl']),
+        (paths['app'] + '/templates', ['etc/templates/about.tpl']),
         (paths['app'] + '/images', ['etc/images/alignak.svg']),
         (paths['app'] + '/images', ['etc/images/host_up.svg']),
         (paths['app'] + '/images', ['etc/images/host_down.svg']),

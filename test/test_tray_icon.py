@@ -98,6 +98,17 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertIsInstance(under_test.services_actions['services_critical'], QAction)
         self.assertIsInstance(under_test.services_actions['services_unknown'], QAction)
 
+    def test_about_action(self):
+        """About Action"""
+        under_test = TrayIcon(TestTrayIcon.icon, TestTrayIcon.config)
+
+        self.assertIsNone(under_test.about_menu)
+
+        under_test.create_about_action()
+
+        self.assertIsNotNone(under_test.about_menu)
+        self.assertIsInstance(under_test.about_menu, QAction)
+
     def test_quit_action(self):
         """Quit Action"""
         under_test = TrayIcon(TestTrayIcon.icon, TestTrayIcon.config)

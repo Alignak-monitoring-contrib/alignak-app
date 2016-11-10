@@ -171,7 +171,7 @@ class TrayIcon(QSystemTrayIcon):
 
         self.about_menu.triggered.connect(self.about_message)
 
-    def about_message(self):
+    def about_message(self):  # pragma: no cover
         """
         Show about message.
 
@@ -180,18 +180,16 @@ class TrayIcon(QSystemTrayIcon):
         msg_box = QMessageBox()
         msg_box.setWindowIcon(self.icon())
 
-        msg = """
-            <h2>About Alignak-App</h2>
-            <h4>Application version</h4>""" + \
-            __application__ + ', version: ' + __version__ + \
-            "<h4>Copyright</h4>" + \
-            __copyright__ + \
-            "<h4>Home page</h4>" + \
-            "<a href=\"" + __project_url__ + "\">" + __project_url__ + "</a>" + \
-            "<h4>User documentation</h4>" + \
-            "<a href=\"" + __doc_url__ + "\">" + __doc_url__ + "</a>" + \
-            "<h4>Release notes</h4>" + \
-            __releasenotes__ + "<br>"
+        about_dict = dict(
+            application=__application__,
+            version=__version__,
+            copyright=__copyright__,
+            project_url=__project_url__,
+            doc_url=__doc_url__,
+            releasenotes=__releasenotes__
+        )
+
+        msg = get_template('about.tpl', about_dict, self.config)
 
         msg_box.about(None, 'About ' + __application__, msg)
         msg_box.show()
