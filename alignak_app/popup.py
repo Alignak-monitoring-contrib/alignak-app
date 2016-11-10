@@ -98,13 +98,13 @@ class AppPopup(QDialog):
         points = pos.split(':')
 
         if 'top' in points and 'right' in points:
-                position = screen_geometry.topRight()
+            position = screen_geometry.topRight()
         elif 'top' in points and 'left' in points:
-                position = screen_geometry.topLeft()
+            position = screen_geometry.topLeft()
         elif 'bottom' in points and 'right' in points:
-                position = screen_geometry.bottomRight()
+            position = screen_geometry.bottomRight()
         elif 'bottom' in points and 'left' in points:
-                position = screen_geometry.bottomLeft()
+            position = screen_geometry.bottomLeft()
         else:
             position = screen_geometry.center()
 
