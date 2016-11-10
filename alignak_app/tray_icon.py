@@ -29,20 +29,27 @@ import webbrowser
 
 from logging import getLogger
 
-from alignak_app.utils import get_alignak_home
+from alignak_app.utils import get_alignak_home, get_template
+from alignak_app import __releasenotes__, __version__, __copyright__, __doc_url__, __project_url__
+from alignak_app import __application__
 
 try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QAction  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QWidget  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QMessageBox  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
+    from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     try:
         __import__('PyQt4')
         from PyQt4.Qt import QSystemTrayIcon  # pylint: disable=import-error
         from PyQt4.Qt import QMenu  # pylint: disable=import-error
         from PyQt4.Qt import QAction  # pylint: disable=import-error
+        from PyQt4.Qt import QWidget  # pylint: disable=import-error
+        from PyQt4.Qt import QMessageBox  # pylint: disable=import-error
         from PyQt4.QtGui import QIcon  # pylint: disable=import-error
     except ImportError:
         sys.exit('\nYou must have PyQt installed to run this app.\nPlease read the doc.')
@@ -62,6 +69,7 @@ class TrayIcon(QSystemTrayIcon):
         self.menu = QMenu(parent)
         self.hosts_actions = {}
         self.services_actions = {}
+        self.about_menu = None
         self.quit_menu = None
 
     def build_menu(self):
@@ -73,6 +81,7 @@ class TrayIcon(QSystemTrayIcon):
         # Create actions
         self.create_hosts_actions()
         self.create_services_actions()
+        self.create_about_action()
         self.create_quit_action()
         self.add_actions_to_menu()
 
@@ -150,13 +159,50 @@ class TrayIcon(QSystemTrayIcon):
             self
         )
 
+    def create_about_action(self):
+        """
+        Create about action.
+
+        """
+
+        logger.info('Create About Action')
+        img_about = os.path.abspath(self.get_icon_path() + self.config.get('Config', 'about'))
+        self.about_menu = QAction(QIcon(img_about), 'About', self)
+
+        self.about_menu.triggered.connect(self.about_message)
+
+    def about_message(self):
+        """
+        Show about message.
+
+        """
+
+        msg_box = QMessageBox()
+        msg_box.setWindowIcon(self.icon())
+
+        msg = """
+            <h2>About Alignak-App</h2>
+            <h4>Application version</h4>""" + \
+            __application__ + ', version: ' + __version__ + \
+            "<h4>Copyright</h4>" + \
+            __copyright__ + \
+            "<h4>Home page</h4>" + \
+            "<a href=\"" + __project_url__ + "\">" + __project_url__ + "</a>" + \
+            "<h4>User documentation</h4>" + \
+            "<a href=\"" + __doc_url__ + "\">" + __doc_url__ + "</a>" + \
+            "<h4>Release notes</h4>" + \
+            __releasenotes__ + "<br>"
+
+        msg_box.about(None, 'About ' + __application__, msg)
+        msg_box.show()
+
     def create_quit_action(self):
         """
         Create quit action.
 
         """
 
-        logger.info('Create Quit Actions')
+        logger.info('Create Quit Action')
         img_quit = os.path.abspath(self.get_icon_path() + self.config.get('Config', 'exit'))
         self.quit_menu = QAction(QIcon(img_quit), 'Quit', self)
 
@@ -179,7 +225,8 @@ class TrayIcon(QSystemTrayIcon):
         self.menu.addAction(self.services_actions['services_critical'])
         self.menu.addAction(self.services_actions['services_unknown'])
         self.menu.addSeparator()
-        self.menu.actions()
+
+        self.menu.addAction(self.about_menu)
         self.menu.addAction(self.quit_menu)
 
     def update_menu_actions(self, hosts_states, services_states):
