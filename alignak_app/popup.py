@@ -83,6 +83,33 @@ class AppPopup(QDialog):
         vbox.addWidget(self.state, 1)
         vbox.addWidget(self.msg_label, 2)
 
+    def notify_position(self):
+        """
+        Get screen, and return position choosen in settings.
+
+        :return: position choose by user
+        :rtype: ~`PyQt5.QtCore.QPoint`
+        """
+
+        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+        screen_geometry = QApplication.desktop().availableGeometry(screen)
+
+        pos = self.config.get('Alignak-App', 'position')
+        points = pos.split(':')
+
+        if 'top' in points and 'right' in points:
+                position = screen_geometry.topRight()
+        elif 'top' in points and 'left' in points:
+                position = screen_geometry.topLeft()
+        elif 'bottom' in points and 'right' in points:
+                position = screen_geometry.bottomRight()
+        elif 'bottom' in points and 'left' in points:
+                position = screen_geometry.bottomLeft()
+        else:
+            position = screen_geometry.center()
+
+        return position
+
     def send_notification(self, title, hosts_states, services_states):
         """
         Send notification.
@@ -95,12 +122,9 @@ class AppPopup(QDialog):
         :type services_states: dict
         """
 
-        # Get coordinate and move to [right,up] screen corner
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        center_point = QApplication.desktop().screenGeometry(screen).center()
-        x = (center_point.x() * 2) - self.width()
-        y = (center_point.y() / 2) - self.height()
-        self.move(x, y)
+        position = self.notify_position()
+
+        self.move(position)
 
         # Notify
         self.state.setText(title)
