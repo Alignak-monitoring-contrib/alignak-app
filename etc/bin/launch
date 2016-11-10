@@ -105,9 +105,19 @@ if [ -d "$APP_ROOT" ]; then
 
     # Launch script in background
     "$PYBIN" "$APP_ROOT/bin/alignakapp.py" &
+    {
+        version=`python -c "from alignak_app import __version__; print(__version__)"`
+        doc_url=`python -c "from alignak_app import __doc_url__; print(__doc_url__)"`
+    } || {
+        echo "Application can't start. Import alignak_app failed"
+        exit 1
+    }
+    echo "Run Alignak-App, v$version"
     echo "
-The application started successfully.
-HELP : You can check the logs and settings in [$APP_ROOT].
+    The application started successfully.
+    Try to connect to backend...
+    HELP : check your logs and settings in [$APP_ROOT].
+    Or visit documentation : $doc_url.
     "
 
 else

@@ -22,6 +22,7 @@
 import sys
 
 from alignak_app.app import AlignakApp
+
 try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QApplication 
