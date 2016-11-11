@@ -40,6 +40,8 @@ except ImportError:  # pragma: no cover
     from PyQt4.Qt import QHBoxLayout, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.QtCore import QTimer, Qt  # pylint: disable=import-error
     from PyQt4.QtGui import QPixmap  # pylint: disable=import-error
+    from PyQt4.Qt import QDesktopWidget
+    from PyQt4.Qt import QRect
 
 
 logger = getLogger(__name__)
@@ -83,32 +85,31 @@ class AppPopup(QDialog):
         vbox.addWidget(self.state, 1)
         vbox.addWidget(self.msg_label, 2)
 
-    def notify_position(self):
+    def set_position(self):
         """
         Get screen, and return position choosen in settings.
 
-        :return: position choose by user
-        :rtype: ~`PyQt5.QtCore.QPoint`
         """
 
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        screen_geometry = QApplication.desktop().availableGeometry(screen)
-
+        # Get position choosed by user
         pos = self.config.get('Alignak-App', 'position')
         points = pos.split(':')
 
-        if 'top' in points and 'right' in points:
-            position = screen_geometry.topRight()
-        elif 'top' in points and 'left' in points:
-            position = screen_geometry.topLeft()
-        elif 'bottom' in points and 'right' in points:
-            position = screen_geometry.bottomRight()
-        elif 'bottom' in points and 'left' in points:
-            position = screen_geometry.bottomLeft()
-        else:
-            position = screen_geometry.center()
+        # Current desktop
+        desktop = QApplication.desktop()
+        rect_screen = desktop.screenGeometry(QApplication.desktop().cursor().pos())
 
-        return position
+        # Move notification
+        if 'top' in points and 'right' in points:
+            self.move(rect_screen.right(), rect_screen.top())
+        elif 'top' in points and 'left' in points:
+            self.move(rect_screen.left(), rect_screen.top())
+        elif 'bottom' in points and 'right' in points:
+            self.move(rect_screen.right(), rect_screen.bottom())
+        elif 'bottom' in points and 'left' in points:
+            self.move(rect_screen.left(), rect_screen.bottom())
+        else:
+            self.move(rect_screen.right(), rect_screen.top())
 
     def send_notification(self, title, hosts_states, services_states):
         """
@@ -122,22 +123,24 @@ class AppPopup(QDialog):
         :type services_states: dict
         """
 
-        position = self.notify_position()
+        self.set_position()
 
-        self.move(position)
-
-        # Notify
+        # Prepare notification
         self.state.setText(title)
         self.setStyleSheet(self.get_style_sheet(title))
         self.create_content(hosts_states, services_states)
 
-        period = int(self.config.get('Alignak-App', 'period'))
-        period *= 1000
+        # Get duration
+        duration = int(self.config.get('Alignak-App', 'duration'))
+        duration *= 1000
 
         logger.info('Send notification...')
+
+        # Start notification...
         self.show()
 
-        QTimer.singleShot(period, self.close)
+        # ...until the end of the term
+        QTimer.singleShot(duration, self.close)
 
     def create_message_label(self):
         """
@@ -182,14 +185,6 @@ class AppPopup(QDialog):
         tbox.addWidget(title_label, 1)
 
         return tbox
-
-    def close_dialog(self):
-        """
-        Close notification.
-
-        """
-
-        self.hide()
 
     def create_content(self, hosts_states, services_states):
         """
