@@ -96,8 +96,8 @@ class AppPopup(QDialog):
         points = pos.split(':')
 
         # Current desktop
-        desktop = QApplication.desktop()
-        rect_screen = desktop.screenGeometry(QApplication.desktop().cursor().pos())
+        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+        rect_screen = QApplication.desktop().screenGeometry(screen)
 
         # Move notification
         if 'top' in points and 'right' in points:
