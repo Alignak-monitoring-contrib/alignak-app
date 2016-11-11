@@ -95,21 +95,30 @@ class AppPopup(QDialog):
         pos = self.config.get('Alignak-App', 'position')
         points = pos.split(':')
 
-        # Current desktop
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        rect_screen = QApplication.desktop().screenGeometry(screen)
+        center_point = QApplication.desktop().screenGeometry(screen).center()
 
         # Move notification
         if 'top' in points and 'right' in points:
-            self.move(rect_screen.right(), rect_screen.top())
+            x = (center_point.x() * 2) - self.width()
+            y = (center_point.y() / 2) - self.height()
+            self.move(x, y)
         elif 'top' in points and 'left' in points:
-            self.move(rect_screen.left(), rect_screen.top())
+            x = (center_point.x() / 2) - self.width()
+            y = (center_point.y() / 2) - self.height()
+            self.move(x, y)
         elif 'bottom' in points and 'right' in points:
-            self.move(rect_screen.right(), rect_screen.bottom())
+            x = (center_point.x() * 2) - self.width()
+            y = (center_point.y() * 2) - self.height()
+            self.move(x, y)
         elif 'bottom' in points and 'left' in points:
-            self.move(rect_screen.left(), rect_screen.bottom())
+            x = (center_point.x() / 2) - self.width()
+            y = (center_point.y() * 2) - self.height()
+            self.move(x, y)
         else:
-            self.move(rect_screen.right(), rect_screen.top())
+            screen = QApplication.desktop()
+            center_point = screen.screenGeometry(QApplication.desktop().cursor().pos())
+            self.move(center_point.center())
 
     def send_notification(self, title, hosts_states, services_states):
         """
