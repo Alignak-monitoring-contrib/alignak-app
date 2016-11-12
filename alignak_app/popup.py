@@ -143,11 +143,8 @@ class AppPopup(QDialog):
             self.set_position()
         else:
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-            center_point = QApplication.desktop().screenGeometry(screen).center()
-            x = (center_point.x() * 2) - self.width()
-            y = (center_point.y() / 2) - self.height()
-            logger.debug('--!-- OFF:right:left : ' + str(x) + ', ' + str(y))
-            self.move(x, y)
+            center_point = QApplication.desktop().screenGeometry(screen).topLeft()
+            self.move(center_point)
 
         # Prepare notification
         self.state.setText(title)
