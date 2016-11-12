@@ -95,25 +95,35 @@ class AppPopup(QDialog):
         pos = self.config.get('Alignak-App', 'position')
         points = pos.split(':')
 
+        frame_geo = self.frameGeometry()
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
         center_point = QApplication.desktop().screenGeometry(screen).center()
+
+        # Move to center point
+        frame_geo.moveCenter(center_point)
+        logger.debug('--!-- Screen : ' + str(QApplication.desktop().screenGeometry(screen)))
+        logger.debug('--!-- Center Point : ' + str(center_point))
 
         # Move notification
         if 'top' in points and 'right' in points:
             x = (center_point.x() * 2) - self.width()
             y = (center_point.y() / 2) - self.height()
+            logger.debug('--!-- Points : ' + str(x) + ', ' + str(y))
             self.move(x, y)
         elif 'top' in points and 'left' in points:
             x = (center_point.x() / 2) - self.width()
             y = (center_point.y() / 2) - self.height()
+            logger.debug('--!-- Points : ' + str(x) + ', ' + str(y))
             self.move(x, y)
         elif 'bottom' in points and 'right' in points:
             x = (center_point.x() * 2) - self.width()
             y = (center_point.y() * 2) - self.height()
+            logger.debug('--!-- Points : ' + str(x) + ', ' + str(y))
             self.move(x, y)
         elif 'bottom' in points and 'left' in points:
             x = (center_point.x() / 2) - self.width()
             y = (center_point.y() * 2) - self.height()
+            logger.debug('--!-- Points : ' + str(x) + ', ' + str(y))
             self.move(x, y)
         else:
             screen = QApplication.desktop()
