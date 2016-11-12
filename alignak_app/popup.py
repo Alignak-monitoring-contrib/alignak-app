@@ -95,40 +95,40 @@ class AppPopup(QDialog):
         pos = self.config.get('Alignak-App', 'position')
         points = pos.split(':')
 
-        frame_geo = self.frameGeometry()
+        # Get current screen
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        center_point = QApplication.desktop().screenGeometry(screen).center()
+        screen_geo = QApplication.desktop().screenGeometry(screen)
 
-        # Move to center point
-        frame_geo.moveCenter(center_point)
-        logger.debug('--!-- Screen : ' + str(QApplication.desktop().screenGeometry(screen)))
-        logger.debug('--!-- Center Point : ' + str(center_point))
+        logger.debug('--!-- Current Desktop : ' + str(QApplication.desktop().screenGeometry(screen)))
+        logger.debug('--!-- Size screen : ' + str(screen_geo.width()) + ', ' + str(screen_geo.height()))
+        logger.debug('--!-- Size popup : ' + str(self.width()) + ', ' + str(self.height()))
 
-        # Move notification
+        # Move notification popup
         if 'top' in points and 'right' in points:
-            x = (center_point.x() * 2) - self.width()
-            y = (center_point.y() / 2) - self.height()
-            logger.debug('--!-- Points : ' + str(x) + ', ' + str(y))
+            x = screen_geo.width() - self.width()
+            y = (screen_geo.height() / 4) - self.height()
+            logger.debug('--!-- top:right : ' + str(x) + ', ' + str(y))
             self.move(x, y)
         elif 'top' in points and 'left' in points:
-            x = (center_point.x() / 2) - self.width()
-            y = (center_point.y() / 2) - self.height()
-            logger.debug('--!-- Points : ' + str(x) + ', ' + str(y))
+            x = (screen_geo.width() / 4) - self.width()
+            y = (screen_geo.height() / 4) - self.height()
+            logger.debug('--!-- top:left : ' + str(x) + ', ' + str(y))
             self.move(x, y)
         elif 'bottom' in points and 'right' in points:
-            x = (center_point.x() * 2) - self.width()
-            y = (center_point.y() * 2) - self.height()
-            logger.debug('--!-- Points : ' + str(x) + ', ' + str(y))
+            x = screen_geo.width() - self.width()
+            y = screen_geo.height() - self.height()
+            logger.debug('--!-- bottom:right : ' + str(x) + ', ' + str(y))
             self.move(x, y)
         elif 'bottom' in points and 'left' in points:
-            x = (center_point.x() / 2) - self.width()
-            y = (center_point.y() * 2) - self.height()
-            logger.debug('--!-- Points : ' + str(x) + ', ' + str(y))
+            x = (screen_geo.width() / 4) - self.width()
+            y = screen_geo.height() - self.height()
+            logger.debug('--!-- bottom:left : ' + str(x) + ', ' + str(y))
             self.move(x, y)
         else:
-            screen = QApplication.desktop()
-            center_point = screen.screenGeometry(QApplication.desktop().cursor().pos())
-            self.move(center_point.center())
+            x = (screen_geo.width() / 2) - (self.width() / 2)
+            y = (screen_geo.height() / 2) - (self.height() / 2)
+            logger.debug('--!-- center : ' + str(x) + ', ' + str(y))
+            self.move(x, y)
 
     def send_notification(self, title, hosts_states, services_states):
         """
