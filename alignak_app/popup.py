@@ -125,10 +125,7 @@ class AppPopup(QDialog):
             logger.debug('--!-- bottom:left : ' + str(x) + ', ' + str(y))
             self.move(x, y)
         else:
-            x = (screen_geo.width() / 2) - (self.width() / 2)
-            y = (screen_geo.height() / 2) - (self.height() / 2)
-            logger.debug('--!-- center : ' + str(x) + ', ' + str(y))
-            self.move(x, y)
+            pass
 
     def send_notification(self, title, hosts_states, services_states):
         """
@@ -142,7 +139,15 @@ class AppPopup(QDialog):
         :type services_states: dict
         """
 
-        self.set_position()
+        if self.config.getboolean('Alignak-App', 'follow_mouse'):
+            self.set_position()
+        else:
+            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+            center_point = QApplication.desktop().screenGeometry(screen).center()
+            x = (center_point.x() * 2) - self.width()
+            y = (center_point.y() / 2) - self.height()
+            logger.debug('--!-- OFF:right:left : ' + str(x) + ', ' + str(y))
+            self.move(x, y)
 
         # Prepare notification
         self.state.setText(title)
