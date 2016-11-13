@@ -97,7 +97,7 @@ class AppPopup(QDialog):
         if 'top' in points and 'right' in points:
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             top_right = QApplication.desktop().screenGeometry(screen).topRight()
-            self.move(top_right)
+            self.move(top_right.x() - self.width(), top_right.y())
             logger.debug('--!-- top:right : ' + str(top_right))
         elif 'top' in points and 'left' in points:
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
@@ -107,12 +107,12 @@ class AppPopup(QDialog):
         elif 'bottom' in points and 'right' in points:
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             bottom_right = QApplication.desktop().screenGeometry(screen).bottomRight()
-            self.move(bottom_right)
+            self.move(bottom_right.x() - self.width(), bottom_right.y() - self.height())
             logger.debug('--!-- bottom:right : ' + str(bottom_right))
         elif 'bottom' in points and 'left' in points:
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             bottom_left = QApplication.desktop().screenGeometry(screen).bottomLeft()
-            self.move(bottom_left)
+            self.move(bottom_left.x(), bottom_left.y() - self.height())
             logger.debug('--!-- top:right : ' + str(bottom_left))
         else:
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
@@ -132,12 +132,8 @@ class AppPopup(QDialog):
         :type services_states: dict
         """
 
-        if self.config.getboolean('Alignak-App', 'follow_mouse'):
-            self.set_position()
-        else:
-            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-            top_left = QApplication.desktop().screenGeometry(screen).topLeft()
-            self.move(top_left)
+        # Set position of popup
+        self.set_position()
 
         # Prepare notification
         self.state.setText(title)
