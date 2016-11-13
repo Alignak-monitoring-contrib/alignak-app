@@ -43,7 +43,6 @@ except ImportError:
 
 
 logger = getLogger(__name__)
-app_config = None
 
 
 class AlignakApp(object):
@@ -64,14 +63,11 @@ class AlignakApp(object):
         # Initialize configuration
         set_app_config()
 
-        global app_config
-        app_config = get_app_config()
-
         # Create notifier
         self.notifier = AppNotifier(self.get_icon())
 
         # Create QSystemTrayIcon
-        self.tray_icon = TrayIcon(self.get_icon(), app_config)
+        self.tray_icon = TrayIcon(self.get_icon())
         self.tray_icon.build_menu()
 
     def run(self):  # pragma: no cover
@@ -91,7 +87,7 @@ class AlignakApp(object):
         self.build_alignak_app()
 
         # Start process notifier
-        self.notifier.start_process(app_config, self.tray_icon)
+        self.notifier.start_process(self.tray_icon)
 
     @staticmethod
     def get_icon():
@@ -100,10 +96,10 @@ class AlignakApp(object):
 
         """
         qicon_path = get_alignak_home() \
-            + app_config.get('Config', 'path') \
-            + app_config.get('Config', 'img') \
+            + get_app_config().get('Config', 'path') \
+            + get_app_config().get('Config', 'img') \
             + '/'
-        img = os.path.abspath(qicon_path + app_config.get('Config', 'icon'))
+        img = os.path.abspath(qicon_path + get_app_config().get('Config', 'icon'))
         icon = QIcon(img)
 
         return icon

@@ -28,6 +28,7 @@ from logging import getLogger
 from alignak_app import __application__
 from alignak_app.utils import get_alignak_home
 from alignak_app.utils import get_template
+from alignak_app.utils import get_app_config
 
 try:
     __import__('PyQt5')
@@ -52,7 +53,7 @@ class AppPopup(QDialog):
 
     def __init__(self, parent=None):
         QDialog.__init__(self, parent)
-        # Main settings
+        # General settings
         self.setWindowTitle(__application__)
         self.setContentsMargins(0, 0, 0, 0)
         self.setMinimumSize(425, 250)
@@ -61,25 +62,30 @@ class AppPopup(QDialog):
         # Fields
         self.msg_label = None
         self.state = None
-        self.config = None
 
-    def initialize_notification(self, config):
+    def initialize_notification(self):
         """
         Initialize Notification
 
         """
 
-        self.config = config
-        title = self.create_title_label()
+        # QLabel for message
         self.create_message_label()
 
+        # QLabel for state
         self.state = QLabel(self)
         self.state.setAlignment(Qt.AlignCenter)
         self.state.setObjectName('state')
         self.state.setMaximumHeight(20)
 
+        # QHBoxLayout and QLabel for popup label
+        title = self.create_title_label()
         vbox = QVBoxLayout(self)
+
+        # Add layout
         vbox.addLayout(title, 0)
+
+        # Add created QLabels
         vbox.addWidget(self.state, 1)
         vbox.addWidget(self.msg_label, 2)
 
@@ -90,7 +96,7 @@ class AppPopup(QDialog):
         """
 
         # Get position choosed by user
-        pos = self.config.get('Alignak-App', 'position')
+        pos = get_app_config().get('Alignak-App', 'position')
         points = pos.split(':')
 
         # Move notification popup
@@ -141,7 +147,7 @@ class AppPopup(QDialog):
         self.create_content(hosts_states, services_states)
 
         # Get duration
-        duration = int(self.config.get('Alignak-App', 'duration'))
+        duration = int(get_app_config().get('Alignak-App', 'duration'))
         duration *= 1000
 
         logger.info('Send notification...')
@@ -174,8 +180,8 @@ class AppPopup(QDialog):
         # Logo Label
         logo_label = QLabel(self)
         icon_path = get_alignak_home() \
-            + self.config.get('Config', 'path') \
-            + self.config.get('Config', 'img') \
+            + get_app_config().get('Config', 'path') \
+            + get_app_config().get('Config', 'img') \
             + '/'
         pixmap = QPixmap(icon_path + 'alignak.svg')
         logo_label.setPixmap(pixmap)
@@ -219,11 +225,12 @@ class AppPopup(QDialog):
                 services_unknown=str(services_states['unknown']),
             )
 
-            content = get_template('notification.tpl', state_dict, self.config)
+            content = get_template('notification.tpl', state_dict)
 
         self.msg_label.setText(content)
 
-    def get_style_sheet(self, title):
+    @staticmethod
+    def get_style_sheet(title):
         """
         Define css for QWidgets.
 
@@ -240,6 +247,6 @@ class AppPopup(QDialog):
         else:
             color_title = '#EEE'
 
-        css = get_template('css.tpl', dict(color_title=color_title), self.config)
+        css = get_template('css.tpl', dict(color_title=color_title))
 
         return css

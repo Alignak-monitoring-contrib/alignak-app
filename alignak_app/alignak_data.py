@@ -32,7 +32,6 @@ from alignak_app.utils import get_app_config
 
 
 logger = getLogger(__name__)
-# app_config = None
 
 
 class AlignakData(object):
@@ -48,19 +47,14 @@ class AlignakData(object):
         """
         Connect to backend with credentials in settings.cfg.
 
-        :param config: parser config who contains settings
-        :type config: :class:`~configparser.ConfigParser`
         """
 
-        # global app_config
-        app_config = get_app_config()
-
         # Credentials
-        username = app_config.get('Backend', 'username')
-        password = app_config.get('Backend', 'password')
+        username = get_app_config().get('Backend', 'username')
+        password = get_app_config().get('Backend', 'password')
 
         # Backend login
-        backend_url = app_config.get('Backend', 'backend_url')
+        backend_url = get_app_config().get('Backend', 'backend_url')
         self.backend = Backend(backend_url)
 
         logger.info('Try to connect to backend...')

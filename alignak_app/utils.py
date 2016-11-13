@@ -99,7 +99,7 @@ def get_alignak_home():
     return alignak_home
 
 
-def get_template(name, values, config):
+def get_template(name, values):
     """
         Return content of the choosen template with its values.
 
@@ -115,8 +115,8 @@ def get_template(name, values, config):
     tpl_content = ''
 
     tpl_path = get_alignak_home() \
-        + config.get('Config', 'path') \
-        + config.get('Config', 'tpl') \
+        + app_config.get('Config', 'path') \
+        + app_config.get('Config', 'tpl') \
         + '/'
 
     try:

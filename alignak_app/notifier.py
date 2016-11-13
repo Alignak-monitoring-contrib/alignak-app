@@ -27,6 +27,7 @@ from logging import getLogger
 
 from alignak_app.alignak_data import AlignakData
 from alignak_app.popup import AppPopup
+from alignak_app.utils import get_app_config
 
 try:
     __import__('PyQt5')
@@ -49,31 +50,27 @@ class AppNotifier(QSystemTrayIcon):
     def __init__(self, icon, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
         self.alignak_data = None
-        self.config = None
         self.tray_icon = None
         self.popup = None
 
-    def start_process(self, config, tray_icon):
+    def start_process(self, tray_icon):
         """
         Start process loop of application with a QTimer.
 
-        :param config: config parser.
-        :type config: :class:`~configparser.ConfigParser`
         :param tray_icon: QSystemTrayIcon menu.
         :type tray_icon: :class:`~alignak_app.tray_icon.TrayIcon`
         """
 
         self.tray_icon = tray_icon
-        self.config = config
 
-        check_interval = int(config.get('Alignak-App', 'check_interval'))
+        check_interval = int(get_app_config().get('Alignak-App', 'check_interval'))
         check_interval *= 1000
 
         timer = QTimer(self)
         timer.start(check_interval)
 
         self.popup = AppPopup()
-        self.popup.initialize_notification(self.config)
+        self.popup.initialize_notification()
 
         self.alignak_data = AlignakData()
         self.alignak_data.log_to_backend()
@@ -101,7 +98,9 @@ class AppNotifier(QSystemTrayIcon):
         # Trigger changes and send notification
         self.tray_icon.update_menu_actions(hosts_states, services_states)
 
-        if self.config.getboolean('Alignak-App', 'notifications'):
+        notification = get_app_config().getboolean('Alignak-App', 'notifications')
+
+        if notification:
             self.popup.send_notification(title, hosts_states, services_states)
 
     def get_state(self):
@@ -114,7 +113,7 @@ class AppNotifier(QSystemTrayIcon):
 
         if not self.alignak_data.backend.authenticated:
             logger.warning('Connection to backend is lost, application will try to reconnect !')
-            self.alignak_data.log_to_backend(self.config)
+            self.alignak_data.log_to_backend(get_app_config())
 
         logger.info('Get state of Host and Services...')
 
