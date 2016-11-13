@@ -7,7 +7,7 @@ Informations
 
 Alignak-App is a notifier application for `Alignak project <http://alignak-monitoring.github.io/>`_.
 
-.. image:: https://img.shields.io/badge/release-v0.3.4-blue.svg
+.. image:: https://img.shields.io/badge/release-v0.4.1-blue.svg
     :target: https://github.com/Alignak-monitoring-contrib/alignak-app/releases
     :alt: Release
 
