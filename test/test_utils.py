@@ -20,7 +20,6 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest2
-import configparser
 
 from alignak_app.utils import *
 
@@ -30,10 +29,7 @@ class TestUtils(unittest2.TestCase):
         This file test methods of `utils.py` file.
     """
 
-    # Simulate config file
-    config_file = get_alignak_home() + '/alignak_app/settings.cfg'
-    config = configparser.ConfigParser()
-    config.read(config_file)
+    set_app_config()
 
     def test_get_template(self):
         """Get a Template"""
@@ -64,10 +60,8 @@ QToolButton{
 }
 """
 
-
-
         # Get the template
-        under_test = get_template('css.tpl', dict(color_title='#27ae60'), TestUtils.config)
+        under_test = get_template('css.tpl', dict(color_title='#27ae60'))
 
         self.assertEqual(under_test, expected_css)
 

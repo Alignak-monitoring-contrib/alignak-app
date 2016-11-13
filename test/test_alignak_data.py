@@ -24,6 +24,7 @@ import configparser as cfg
 
 from alignak_app.alignak_data import AlignakData
 from alignak_app.app import get_alignak_home
+from alignak_app.utils import set_app_config, get_app_config
 
 
 class TestAlignakData(unittest2.TestCase):
@@ -32,21 +33,19 @@ class TestAlignakData(unittest2.TestCase):
     """
 
     # Create config for all methods.
-    filepath = get_alignak_home() + '/alignak_app/settings.cfg'
-    config = cfg.ConfigParser()
-    config.read(filepath)
+    set_app_config()
 
     def test_log_to_backend(self):
         """Connection to Alignak-Backend"""
 
         under_test = AlignakData()
 
-        under_test.log_to_backend(TestAlignakData.config)
+        under_test.log_to_backend()
 
         # Compare config url and backend
         self.assertEquals(
             under_test.backend.url_endpoint_root,
-            TestAlignakData.config.get('Backend', 'backend_url')
+            get_app_config().get('Backend', 'backend_url')
         )
         self.assertTrue(under_test.backend.authenticated)
 
@@ -55,7 +54,7 @@ class TestAlignakData(unittest2.TestCase):
 
         alignak_data = AlignakData()
 
-        alignak_data.log_to_backend(TestAlignakData.config)
+        alignak_data.log_to_backend()
 
         # Get hosts states
         under_test = alignak_data.get_host_states()
@@ -67,7 +66,7 @@ class TestAlignakData(unittest2.TestCase):
 
         alignak_data = AlignakData()
 
-        alignak_data.log_to_backend(TestAlignakData.config)
+        alignak_data.log_to_backend()
 
         # Get services states
         under_test = alignak_data.get_service_states()

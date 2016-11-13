@@ -20,11 +20,10 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest2
-import configparser
 import sys
 
 from alignak_app.popup import AppPopup
-from alignak_app.utils import get_alignak_home
+from alignak_app.utils import set_app_config
 
 try:
     __import__('PyQt5')
@@ -38,9 +37,7 @@ class TestPopup(unittest2.TestCase):
         This file test the AppPopup class.
     """
 
-    config_file = get_alignak_home() + '/alignak_app/settings.cfg'
-    config = configparser.ConfigParser()
-    config.read(config_file)
+    set_app_config()
 
     @classmethod
     def setUpClass(cls):
@@ -55,23 +52,20 @@ class TestPopup(unittest2.TestCase):
 
         under_test = AppPopup()
 
-        self.assertIsNone(under_test.config)
         self.assertIsNone(under_test.state)
         self.assertIsNone(under_test.msg_label)
 
         # Create all the label
-        under_test.initialize_notification(TestPopup.config)
+        under_test.initialize_notification()
 
-        self.assertIsNotNone(under_test.config)
         self.assertEqual('state', under_test.state.objectName())
         self.assertEqual('msg', under_test.msg_label.objectName())
-
 
     def test_send_notifications(self):
         """Send Notification"""
         under_test = AppPopup()
 
-        under_test.initialize_notification(TestPopup.config)
+        under_test.initialize_notification()
 
         self.assertEqual('', under_test.state.text())
         self.assertEqual('', under_test.msg_label.text())

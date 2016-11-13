@@ -25,7 +25,8 @@ import sys
 import os
 
 from alignak_app.tray_icon import TrayIcon
-from alignak_app.utils import get_alignak_home
+from alignak_app.utils import set_app_config, get_app_config
+from alignak_app.utils import get_img_path
 
 try:
     __import__('PyQt5')
@@ -45,15 +46,9 @@ class TestTrayIcon(unittest2.TestCase):
         This file test the TrayIcon class.
     """
 
-    config_file = get_alignak_home() + '/alignak_app/settings.cfg'
-    config = configparser.ConfigParser()
-    config.read(config_file)
+    set_app_config()
 
-    qicon_path = get_alignak_home() \
-                 + config.get('Config', 'path') \
-                 + config.get('Config', 'img') \
-                 + '/'
-    img = os.path.abspath(qicon_path + config.get('Config', 'icon'))
+    img = os.path.abspath(get_img_path() + get_app_config().get('Config', 'icon'))
     icon = QIcon(img)
 
     @classmethod
@@ -66,14 +61,13 @@ class TestTrayIcon(unittest2.TestCase):
 
     def test_tray_icon(self):
         """Init TrayIcon"""
-        under_test = TrayIcon(TestTrayIcon.icon, TestTrayIcon.config)
+        under_test = TrayIcon(TestTrayIcon.icon)
 
-        self.assertIsNotNone(under_test.config)
         self.assertIsInstance(under_test.menu, QMenu)
 
     def test_host_actions(self):
         """Hosts Actions"""
-        under_test = TrayIcon(TestTrayIcon.icon, TestTrayIcon.config)
+        under_test = TrayIcon(TestTrayIcon.icon)
 
         self.assertFalse(under_test.hosts_actions)
 
@@ -86,7 +80,7 @@ class TestTrayIcon(unittest2.TestCase):
 
     def test_services_actions(self):
         """Services Actions"""
-        under_test = TrayIcon(TestTrayIcon.icon, TestTrayIcon.config)
+        under_test = TrayIcon(TestTrayIcon.icon)
 
         self.assertFalse(under_test.services_actions)
 
@@ -100,7 +94,7 @@ class TestTrayIcon(unittest2.TestCase):
 
     def test_about_action(self):
         """About Action"""
-        under_test = TrayIcon(TestTrayIcon.icon, TestTrayIcon.config)
+        under_test = TrayIcon(TestTrayIcon.icon)
 
         self.assertIsNone(under_test.about_menu)
 
@@ -111,7 +105,7 @@ class TestTrayIcon(unittest2.TestCase):
 
     def test_quit_action(self):
         """Quit Action"""
-        under_test = TrayIcon(TestTrayIcon.icon, TestTrayIcon.config)
+        under_test = TrayIcon(TestTrayIcon.icon)
 
         self.assertIsNone(under_test.quit_menu)
 
@@ -122,7 +116,7 @@ class TestTrayIcon(unittest2.TestCase):
 
     def test_build_menu(self):
         """Menu have actions"""
-        under_test = TrayIcon(TestTrayIcon.icon, TestTrayIcon.config)
+        under_test = TrayIcon(TestTrayIcon.icon)
 
         # Assert no actions in Menu
         self.assertFalse(under_test.menu.actions())
@@ -134,7 +128,7 @@ class TestTrayIcon(unittest2.TestCase):
 
     def test_update_menus_actions(self):
         """Update Menu Actions"""
-        under_test = TrayIcon(TestTrayIcon.icon, TestTrayIcon.config)
+        under_test = TrayIcon(TestTrayIcon.icon)
 
         under_test.build_menu()
 

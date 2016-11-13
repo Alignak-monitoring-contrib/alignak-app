@@ -20,15 +20,14 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest2
-import configparser
 import sys
 import os
 
 from alignak_app.notifier import AppNotifier
-from alignak_app.utils import get_alignak_home
+from alignak_app.utils import get_img_path
+from alignak_app.utils import set_app_config, get_app_config
 from alignak_app.tray_icon import TrayIcon
-from alignak_app.alignak_data import AlignakData
-from alignak_app.popup import AppPopup
+
 
 try:
     __import__('PyQt5')
@@ -48,15 +47,9 @@ class TestAppNotifier(unittest2.TestCase):
         This file test the AppNotifier class.
     """
 
-    config_file = get_alignak_home() + '/alignak_app/settings.cfg'
-    config = configparser.ConfigParser()
-    config.read(config_file)
+    set_app_config()
 
-    qicon_path = get_alignak_home() \
-                 + config.get('Config', 'path') \
-                 + config.get('Config', 'img') \
-                 + '/'
-    img = os.path.abspath(qicon_path + config.get('Config', 'icon'))
+    img = os.path.abspath(get_img_path() + get_app_config().get('Config', 'icon'))
     icon = QIcon(img)
 
     @classmethod
@@ -72,19 +65,17 @@ class TestAppNotifier(unittest2.TestCase):
         under_test = AppNotifier(self.icon)
 
         self.assertIsNone(under_test.tray_icon)
-        self.assertIsNone(under_test.config)
         self.assertIsNone(under_test.alignak_data)
         self.assertIsNone(under_test.popup)
 
         # Tray_icon for notifier
-        tray_icon = TrayIcon(self.icon, self.config)
+        tray_icon = TrayIcon(self.icon)
         tray_icon.build_menu()
 
         # Start process
-        under_test.start_process(self.config, tray_icon)
+        under_test.start_process(tray_icon)
 
         self.assertIsNotNone(under_test.tray_icon)
-        self.assertIsNotNone(under_test.config)
         self.assertIsNotNone(under_test.alignak_data)
         self.assertIsNotNone(under_test.popup)
 
@@ -93,9 +84,9 @@ class TestAppNotifier(unittest2.TestCase):
         under_test = AppNotifier(self.icon)
 
         # Start notifier
-        tray_icon = TrayIcon(self.icon, self.config)
+        tray_icon = TrayIcon(self.icon)
         tray_icon.build_menu()
-        under_test.start_process(self.config, tray_icon)
+        under_test.start_process(tray_icon)
 
         # Check Actions are pending
         self.assertEqual('Hosts UP, Wait...',
@@ -108,6 +99,6 @@ class TestAppNotifier(unittest2.TestCase):
 
         # ...so menu actions should be update
         self.assertNotEqual('Hosts UP, Wait...',
-                         under_test.tray_icon.hosts_actions['hosts_up'].text())
+                            under_test.tray_icon.hosts_actions['hosts_up'].text())
         self.assertNotEqual('Services OK, Wait...',
-                         under_test.tray_icon.services_actions['services_ok'].text())
+                            under_test.tray_icon.services_actions['services_ok'].text())
