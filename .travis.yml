@@ -1,8 +1,7 @@
 language: python
 sudo: true
 python:
-  - "2.7_with_system_site_packages"
-  # - "3.5" #python3-gi is bugged and Travis not let to access to python-gi (py2.7)
+  - "3.5"
 
 before_script:
   - "export DISPLAY=:99.0"
@@ -21,16 +20,15 @@ script:
   # No pep257 currently (Code doc compliance)
   # - pep257 --select=D300 alignak_app
   # Code dynamic analysis
-  # - cd test
   - coverage erase
-  - cd test/
-  - nosetests -xv --nologcapture --with-coverage --cover-package=alignak_app test_*.py
-  - ls -la
+  # - cd test/
+  - nosetests -xv --nologcapture --with-coverage --cover-package=alignak_app test/test_*.py
+  - ls -la $HOME/.local/alignak_app
   - coverage combine
   - cat .coverage
-  - cd ..
-  # - coverage report -m
   # - cd ..
+  - coverage report -m
+
 
 # specific call to launch coverage data into coveralls.io
 after_success:
@@ -38,5 +36,5 @@ after_success:
   # execute coveralls from the base directory of the project,
   # so we need to move the .coverage file here :
   # mv test/.coverage . && coveralls --rcfile=test/.coveragerc -v
-  mv test/.coverage . && coveralls -v
+  - coveralls -v
   

@@ -1,0 +1,132 @@
+#!/bin/bash
+# Copyright (c) 2015-2016:
+#   Matthieu Estrada, ttamalfor@gmail.com
+#
+# This file is part of (AlignakApp).
+#
+# (AlignakApp) is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# (AlignakApp) is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
+
+APP_ROOT=$HOME/.local/alignak_app
+USER_BIN=$HOME/bin
+APP_NAME=alignakapp
+APP_SCRIPT=launch
+
+#####################################################
+#                CHECK PYTHON VERSION               #
+#####################################################
+
+python -c "import alignak_app"
+
+if [ $? -eq 0 ]; then
+    PYBIN=python
+    echo "Python Version detected : $PYBIN 2"
+else
+    PYBIN=python3
+    echo "Python Version detected : $PYBIN 3"
+fi
+
+if [ -d "$APP_ROOT" ]; then
+
+    #####################################################
+    #                INSTALL APPLICATION                #
+    #####################################################
+
+    echo "Alignak-app verify installation..."
+    if [ ! -L "$USER_BIN/$APP_NAME" ]; then
+        # Verify installation
+        echo "The command is not yet created..."
+        echo "Alignak-App check folders..."
+        if [ ! -d "$USER_BIN" ]; then
+            echo "Create folder for application..."
+            mkdir "$USER_BIN"
+        fi
+
+        # Create symlink if needed.
+        if [ -f "$APP_ROOT/bin/$APP_SCRIPT" ]; then
+            echo "Create command -> [alignakapp] <- ..."
+            ln -s "$APP_ROOT/bin/$APP_SCRIPT" "$USER_BIN/$APP_NAME"
+        else
+            echo "ERROR: file [$APP_SCRIPT] is missing !"
+            exit 1
+        fi
+
+        # Add application to PATH
+        if [[ :$PATH: == *:"$USER_BIN":* ]] ; then
+            echo "Path already added."
+            source $HOME/.profile
+        else
+            echo "Adding application to path..."
+            PATH="$PATH:$USER_BIN"
+            source $HOME/.profile
+        fi
+        echo -e "
+            #####################################################
+            #      Now, command [alignakapp] is available.      #
+            #####################################################
+               "
+    fi
+    echo "Installation is ok !"
+
+    #####################################################
+    #                LAUNCH APPLICATION                 #
+    #####################################################
+
+    # Check if Application is not running.
+    CHECK=`ps fu |grep "alignakapp.py"|grep -v "grep"|awk '{print $2}'`
+
+    if [ ! -z "$CHECK" -a "$CHECK" != " " ] ; then
+        echo "A process of Alignak-app already running..."
+        echo "-> kill process (with PID : $CHECK)..."
+        kill "$CHECK"
+        echo "Application is stopped."
+        echo -e "
+            #####################################################
+            #               Alignak-app restart !               #
+            #####################################################
+            "
+    else
+        echo -e "
+            #####################################################
+            #               Alignak-app start !                 #
+            #####################################################
+            "
+    fi
+
+    # Launch script in background
+    "$PYBIN" "$APP_ROOT/bin/alignakapp.py" &
+    {
+        version=`python -c "from alignak_app import __version__; print(__version__)"`
+        doc_url=`python -c "from alignak_app import __doc_url__; print(__doc_url__)"`
+    } || {
+        echo "Application can't start. Import alignak_app failed"
+        exit 1
+    }
+    echo "Run Alignak-App, v$version"
+    echo "
+    The application started successfully.
+    Try to connect to backend...
+    HELP : check your logs and settings in [$APP_ROOT].
+    Or visit documentation : $doc_url.
+    "
+
+else
+    echo -e "
+    #####################################################
+    !              Alignak-app failed :(                !
+    #####################################################
+    ! ERROR : installation seems broken !
+    Folder [$APP_ROOT] does not exist !
+    Retry to install Alignak-App or upgrade it.
+           "
+fi

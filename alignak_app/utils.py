@@ -26,6 +26,8 @@
 from logging import Formatter
 from logging import DEBUG
 from logging.handlers import TimedRotatingFileHandler
+from string import Template
+
 import os
 import sys
 
@@ -68,16 +70,55 @@ def create_logger(logger):  # pragma: no cover
     logger.setLevel(DEBUG)
 
 
-def get_alignak_home():  # pragma: no cover
+def get_alignak_home():
     """
     Return user home.
     """
 
     # Get HOME and USER
-    alignak_home = os.environ['HOME']
+    if 'linux' in sys.platform or 'sunos5' in sys.platform:
+        alignak_home = os.environ['HOME']
+        alignak_home += '/.local'
+    elif 'win32' in sys.platform:
+        alignak_home = os.environ['USERPROFILE']
+        alignak_home += '\\AppData\\Roaming\\Python\\'
+    else:
+        sys.exit('Application can\'t find the user HOME.')
+
+    # Prevent from root user
     if 'root' in alignak_home or not alignak_home:
         sys.exit('Application can\'t find the user HOME or maybe you are connected as ROOT.')
-    if alignak_home.endswith('/'):
-        alignak_home = alignak_home[:-1]
-    alignak_home += '/.local'
+
     return alignak_home
+
+
+def get_template(name, values, config):
+    """
+        Return content of the choosen template with its values.
+
+
+    :param name: name of the template.
+    :type name: str
+    :param values: dict of values to substitute.
+    :param config:
+    :return: content of a template
+    :rtype: str
+    """
+
+    tpl_content = ''
+
+    tpl_path = get_alignak_home() \
+        + config.get('Config', 'path') \
+        + config.get('Config', 'tpl') \
+        + '/'
+
+    try:
+        tpl_file = open(tpl_path + name)
+    except IOError as e:  # pylint: disable=undefined-variable
+        sys.exit('Failed open template : ' + str(e))
+
+    if tpl_file:
+        tpl = Template(tpl_file.read())
+        tpl_content = tpl.safe_substitute(values)
+
+    return tpl_content

@@ -23,33 +23,53 @@ import unittest2
 import configparser as cfg
 
 from alignak_app.alignak_data import AlignakData
+from alignak_app.app import get_alignak_home
+
 
 class TestAlignakData(unittest2.TestCase):
     """
         This file test methods of AlignakData class
     """
 
-    def test_connection(self):
+    # Create config for all methods.
+    filepath = get_alignak_home() + '/alignak_app/settings.cfg'
+    config = cfg.ConfigParser()
+    config.read(filepath)
+
+    def test_log_to_backend(self):
+        """Connection to Alignak-Backend"""
+
         under_test = AlignakData()
 
-        config = cfg.ConfigParser()
-        config.read('etc/settings.cfg')
+        under_test.log_to_backend(TestAlignakData.config)
 
-        under_test.log_to_backend(config)
+        # Compare config url and backend
+        self.assertEquals(
+            under_test.backend.url_endpoint_root,
+            TestAlignakData.config.get('Backend', 'backend_url')
+        )
+        self.assertTrue(under_test.backend.authenticated)
 
-        # Compare config url and backend
-        self.assertEquals(under_test.backend.url_endpoint_root, config.get('Backend', 'backend_url'))
-        # Test if all is empty
-        self.assertFalse(under_test.current_hosts)
-        self.assertFalse(under_test.current_services)
+    def test_if_hosts_states(self):
+        """Collect hosts states"""
 
-    def test_if_hosts_and_services(self):
-        under_test = AlignakData()
+        alignak_data = AlignakData()
 
-        config = cfg.ConfigParser()
-        config.read('etc/settings.cfg')
+        alignak_data.log_to_backend(TestAlignakData.config)
 
-        under_test.log_to_backend(config)
+        # Get hosts states
+        under_test = alignak_data.get_host_states()
 
-        self.assertTrue(under_test.get_host_state())
-        self.assertTrue(under_test.get_service_state())
+        self.assertTrue(under_test)
+
+    def test_if_services_states(self):
+        """Collect services states"""
+
+        alignak_data = AlignakData()
+
+        alignak_data.log_to_backend(TestAlignakData.config)
+
+        # Get services states
+        under_test = alignak_data.get_service_states()
+
+        self.assertTrue(under_test)
