@@ -35,9 +35,9 @@ from string import Template
 import configparser
 
 logger = getLogger(__name__)
-app_config = None
 
 
+# Application Logger
 def create_logger(main_logger):  # pragma: no cover
     """
     Create the logger for Alignak-App
@@ -76,6 +76,7 @@ def create_logger(main_logger):  # pragma: no cover
     main_logger.setLevel(DEBUG)
 
 
+# Application Home
 def get_alignak_home():
     """
     Return user home.
@@ -97,37 +98,10 @@ def get_alignak_home():
 
     return alignak_home
 
+# Application Configuration
 
-def get_template(name, values):
-    """
-        Return content of the choosen template with its values.
-
-
-    :param name: name of the template.
-    :type name: str
-    :param values: dict of values to substitute.
-    :param config:
-    :return: content of a template
-    :rtype: str
-    """
-
-    tpl_content = ''
-
-    tpl_path = get_alignak_home() \
-        + app_config.get('Config', 'path') \
-        + app_config.get('Config', 'tpl') \
-        + '/'
-
-    try:
-        tpl_file = open(tpl_path + name)
-    except IOError as e:  # pylint: disable=undefined-variable
-        sys.exit('Failed open template : ' + str(e))
-
-    if tpl_file:
-        tpl = Template(tpl_file.read())
-        tpl_content = tpl.safe_substitute(values)
-
-    return tpl_content
+# Global variable, access by funtions
+app_config = None
 
 
 def set_app_config():
@@ -157,3 +131,51 @@ def get_app_config():
     """
 
     return app_config
+
+
+# Application Templates
+def get_template(name, values):
+    """
+        Return content of the choosen template with its values.
+
+
+    :param name: name of the template.
+    :type name: str
+    :param values: dict of values to substitute.
+    :param config:
+    :return: content of a template
+    :rtype: str
+    """
+
+    tpl_content = ''
+
+    tpl_path = get_alignak_home() \
+        + app_config.get('Config', 'path') \
+        + app_config.get('Config', 'tpl') \
+        + '/'
+
+    try:
+        tpl_file = open(tpl_path + name)
+    except IOError as e:
+        sys.exit('Failed open template : ' + str(e))
+
+    if tpl_file:
+        tpl = Template(tpl_file.read())
+        tpl_content = tpl.safe_substitute(values)
+
+    return tpl_content
+
+
+def get_img_path():
+    """
+    Get the path for all icons
+
+    :return: path of icon
+    :rtype: str
+    """
+    img_path = get_alignak_home() \
+        + app_config.get('Config', 'path') \
+        + app_config.get('Config', 'img') \
+        + '/'
+
+    return img_path
