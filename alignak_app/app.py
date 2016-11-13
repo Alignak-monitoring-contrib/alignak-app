@@ -28,11 +28,10 @@ import os
 
 from logging import getLogger
 
-import configparser
-
 from alignak_app.tray_icon import TrayIcon
 from alignak_app.notifier import AppNotifier
 from alignak_app.utils import get_alignak_home
+from alignak_app.utils import set_app_config, get_app_config
 
 try:
     __import__('PyQt5')
@@ -44,6 +43,7 @@ except ImportError:
 
 
 logger = getLogger(__name__)
+app_config = None
 
 
 class AlignakApp(object):
@@ -52,7 +52,6 @@ class AlignakApp(object):
     """
 
     def __init__(self):
-        self.config = None
         self.tray_icon = None
         self.notifier = None
 
@@ -62,14 +61,17 @@ class AlignakApp(object):
 
         """
 
-        # Read configuration
-        self.read_configuration()
+        # Initialize configuration
+        set_app_config()
+
+        global app_config
+        app_config = get_app_config()
 
         # Create notifier
         self.notifier = AppNotifier(self.get_icon())
 
         # Create QSystemTrayIcon
-        self.tray_icon = TrayIcon(self.get_icon(), self.config)
+        self.tray_icon = TrayIcon(self.get_icon(), app_config)
         self.tray_icon.build_menu()
 
     def run(self):  # pragma: no cover
@@ -89,36 +91,19 @@ class AlignakApp(object):
         self.build_alignak_app()
 
         # Start process notifier
-        self.notifier.start_process(self.config, self.tray_icon)
+        self.notifier.start_process(app_config, self.tray_icon)
 
-    def read_configuration(self):
-        """
-        Read the configuration file.
-
-        """
-
-        config_file = get_alignak_home() + '/alignak_app/settings.cfg'
-
-        self.config = configparser.ConfigParser()
-        logger.info('Read configuration file...')
-
-        if os.path.isfile(config_file):
-            self.config.read(config_file)
-            logger.info('Configuration file is OK.')
-        else:
-            logger.error('Configuration file is missing in [' + config_file + '] !')
-            sys.exit('Configuration file is missing in [' + config_file + '] !')
-
-    def get_icon(self):
+    @staticmethod
+    def get_icon():
         """
         Set icon of application.
 
         """
         qicon_path = get_alignak_home() \
-            + self.config.get('Config', 'path') \
-            + self.config.get('Config', 'img') \
+            + app_config.get('Config', 'path') \
+            + app_config.get('Config', 'img') \
             + '/'
-        img = os.path.abspath(qicon_path + self.config.get('Config', 'icon'))
+        img = os.path.abspath(qicon_path + app_config.get('Config', 'icon'))
         icon = QIcon(img)
 
         return icon

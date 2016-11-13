@@ -76,7 +76,7 @@ class AppNotifier(QSystemTrayIcon):
         self.popup.initialize_notification(self.config)
 
         self.alignak_data = AlignakData()
-        self.alignak_data.log_to_backend(config)
+        self.alignak_data.log_to_backend()
 
         logger.info('Initialize notifier...')
         timer.timeout.connect(self.check_data)

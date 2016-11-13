@@ -23,21 +23,28 @@
     Application logs
 """
 
-from logging import Formatter
-from logging import DEBUG
-from logging.handlers import TimedRotatingFileHandler
-from string import Template
-
+import configparser
 import os
 import sys
 
+from logging import getLogger
+from logging import Formatter
+from logging import DEBUG
+from logging.handlers import TimedRotatingFileHandler
 
-def create_logger(logger):  # pragma: no cover
+from string import Template
+
+
+logger = getLogger(__name__)
+app_config = None
+
+
+def create_logger(main_logger):  # pragma: no cover
     """
     Create the logger for Alignak-App
 
-    :param logger: the main logger.
-    :type logger: :class:`~`
+    :param main_logger: the main logger.
+    :type main_logger: :class:`~`
     """
 
     path = get_alignak_home() + '/alignak_app'
@@ -66,8 +73,8 @@ def create_logger(logger):  # pragma: no cover
     file_handler.setLevel(DEBUG)
     file_handler.setFormatter(formatter)
 
-    logger.addHandler(file_handler)
-    logger.setLevel(DEBUG)
+    main_logger.addHandler(file_handler)
+    main_logger.setLevel(DEBUG)
 
 
 def get_alignak_home():
@@ -122,3 +129,34 @@ def get_template(name, values, config):
         tpl_content = tpl.safe_substitute(values)
 
     return tpl_content
+
+
+def set_app_config():
+    """
+    Create app_config
+
+    """
+
+    config_file = get_alignak_home() + '/alignak_app/settings.cfg'
+
+    global app_config
+    app_config = configparser.ConfigParser()
+
+    logger.info('Read configuration file...')
+    if os.path.isfile(config_file):
+        app_config.read(config_file)
+        logger.info('Configuration file is OK.')
+    else:
+        logger.error('Configuration file is missing in [' + config_file + '] !')
+        sys.exit('Configuration file is missing in [' + config_file + '] !')
+
+
+def get_app_config():
+    """
+    Return global application configuration
+
+    """
+
+    global app_config
+
+    return app_config
