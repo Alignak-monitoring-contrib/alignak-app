@@ -113,7 +113,7 @@ class AppNotifier(QSystemTrayIcon):
 
         if not self.alignak_data.backend.authenticated:
             logger.warning('Connection to backend is lost, application will try to reconnect !')
-            self.alignak_data.log_to_backend(get_app_config())
+            self.alignak_data.log_to_backend()
 
         logger.info('Get state of Host and Services...')
 

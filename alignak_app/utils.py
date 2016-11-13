@@ -23,7 +23,6 @@
     Application logs
 """
 
-import configparser
 import os
 import sys
 
@@ -33,7 +32,7 @@ from logging import DEBUG
 from logging.handlers import TimedRotatingFileHandler
 
 from string import Template
-
+import configparser
 
 logger = getLogger(__name__)
 app_config = None
@@ -139,7 +138,7 @@ def set_app_config():
 
     config_file = get_alignak_home() + '/alignak_app/settings.cfg'
 
-    global app_config
+    global app_config  # pylint: disable=global-statement
     app_config = configparser.ConfigParser()
 
     logger.info('Read configuration file...')
@@ -156,7 +155,5 @@ def get_app_config():
     Return global application configuration
 
     """
-
-    global app_config
 
     return app_config
