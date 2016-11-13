@@ -107,7 +107,7 @@ class AppPopup(QDialog):
         if 'top' in points and 'right' in points:
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             top_right = QApplication.desktop().screenGeometry(screen).topRight()
-            self.move(top_right)
+            self.move(top_right.x() - self.width(), top_right.y())
             logger.debug('--!-- top:right : ' + str(top_right))
         elif 'top' in points and 'left' in points:
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
@@ -125,7 +125,10 @@ class AppPopup(QDialog):
             self.move(bottom_left)
             logger.debug('--!-- top:right : ' + str(bottom_left))
         else:
-            pass
+            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+            center = QApplication.desktop().screenGeometry(screen).center()
+            self.move(center)
+            logger.debug('--!-- top:right : ' + str(center))
 
     def send_notification(self, title, hosts_states, services_states):
         """
@@ -143,8 +146,8 @@ class AppPopup(QDialog):
             self.set_position()
         else:
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-            center_point = QApplication.desktop().screenGeometry(screen).topRight()
-            self.move(center_point)
+            top_left = QApplication.desktop().screenGeometry(screen).topLeft()
+            self.move(top_left)
 
         # Prepare notification
         self.state.setText(title)
