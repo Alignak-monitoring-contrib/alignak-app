@@ -40,8 +40,6 @@ except ImportError:  # pragma: no cover
     from PyQt4.Qt import QHBoxLayout, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.QtCore import QTimer, Qt  # pylint: disable=import-error
     from PyQt4.QtGui import QPixmap  # pylint: disable=import-error
-    from PyQt4.Qt import QDesktopWidget
-    from PyQt4.Qt import QRect
 
 
 logger = getLogger(__name__)
@@ -94,14 +92,6 @@ class AppPopup(QDialog):
         # Get position choosed by user
         pos = self.config.get('Alignak-App', 'position')
         points = pos.split(':')
-
-        # Get current screen
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        screen_geo = QApplication.desktop().screenGeometry(screen)
-
-        logger.debug('--!-- Current Desktop : ' + str(QApplication.desktop().screenGeometry(screen)))
-        logger.debug('--!-- Size screen : ' + str(screen_geo.width()) + ', ' + str(screen_geo.height()))
-        logger.debug('--!-- Size popup : ' + str(self.width()) + ', ' + str(self.height()))
 
         # Move notification popup
         if 'top' in points and 'right' in points:
