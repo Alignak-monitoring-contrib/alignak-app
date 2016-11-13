@@ -105,25 +105,25 @@ class AppPopup(QDialog):
 
         # Move notification popup
         if 'top' in points and 'right' in points:
-            x = screen_geo.width() - self.width()
-            y = (screen_geo.height() / 4) - self.height()
-            logger.debug('--!-- top:right : ' + str(x) + ', ' + str(y))
-            self.move(x, y)
+            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+            top_right = QApplication.desktop().screenGeometry(screen).topRight()
+            self.move(top_right)
+            logger.debug('--!-- top:right : ' + str(top_right))
         elif 'top' in points and 'left' in points:
-            x = (screen_geo.width() / 4) - self.width()
-            y = (screen_geo.height() / 4) - self.height()
-            logger.debug('--!-- top:left : ' + str(x) + ', ' + str(y))
-            self.move(x, y)
+            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+            top_left = QApplication.desktop().screenGeometry(screen).topLeft()
+            self.move(top_left)
+            logger.debug('--!-- top:left : ' + str(top_left))
         elif 'bottom' in points and 'right' in points:
-            x = screen_geo.width() - self.width()
-            y = screen_geo.height() - self.height()
-            logger.debug('--!-- bottom:right : ' + str(x) + ', ' + str(y))
-            self.move(x, y)
+            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+            bottom_right = QApplication.desktop().screenGeometry(screen).bottomRight()
+            self.move(bottom_right)
+            logger.debug('--!-- bottom:right : ' + str(bottom_right))
         elif 'bottom' in points and 'left' in points:
-            x = (screen_geo.width() / 4) - self.width()
-            y = screen_geo.height() - self.height()
-            logger.debug('--!-- bottom:left : ' + str(x) + ', ' + str(y))
-            self.move(x, y)
+            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+            bottom_left = QApplication.desktop().screenGeometry(screen).bottomLeft()
+            self.move(bottom_left)
+            logger.debug('--!-- top:right : ' + str(bottom_left))
         else:
             pass
 
@@ -143,7 +143,7 @@ class AppPopup(QDialog):
             self.set_position()
         else:
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-            center_point = QApplication.desktop().screenGeometry(screen).topLeft()
+            center_point = QApplication.desktop().screenGeometry(screen).topRight()
             self.move(center_point)
 
         # Prepare notification
