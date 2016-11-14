@@ -30,7 +30,7 @@ from logging import getLogger
 
 from alignak_app.tray_icon import TrayIcon
 from alignak_app.notifier import AppNotifier
-from alignak_app.utils import get_alignak_home, get_img_path
+from alignak_app.utils import get_alignak_home, get_image
 from alignak_app.utils import set_app_config, get_app_config
 
 try:
@@ -96,7 +96,7 @@ class AlignakApp(object):
 
         """
 
-        img = os.path.abspath(get_img_path() + get_app_config().get('Config', 'icon'))
+        img = get_image('icon')
         icon = QIcon(img)
 
         return icon

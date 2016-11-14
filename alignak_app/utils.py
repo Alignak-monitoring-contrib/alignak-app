@@ -166,16 +166,19 @@ def get_template(name, values):
     return tpl_content
 
 
-def get_img_path():
+def get_image(name):
     """
-    Get the path for all icons
+    Return the path of wanted image
 
-    :return: path of icon
+    :return: path of image
     :rtype: str
     """
+
     img_path = get_alignak_home() \
         + app_config.get('Config', 'path') \
         + app_config.get('Config', 'img') \
         + '/'
 
-    return img_path
+    img = img_path + app_config.get('Images', name)
+
+    return img

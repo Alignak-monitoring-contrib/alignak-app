@@ -28,7 +28,7 @@ from logging import getLogger
 from alignak_app import __application__
 from alignak_app.utils import get_alignak_home
 from alignak_app.utils import get_template
-from alignak_app.utils import get_app_config, get_img_path
+from alignak_app.utils import get_app_config, get_image
 
 try:
     __import__('PyQt5')
@@ -178,7 +178,7 @@ class AppPopup(QDialog):
         """
 
         # Logo Label
-        pixmap = QPixmap(get_img_path() + 'alignak.svg')
+        pixmap = QPixmap(get_image('icon'))
 
         logo_label = QLabel(self)
         logo_label.setPixmap(pixmap)

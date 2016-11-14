@@ -26,7 +26,7 @@ import os
 
 from alignak_app.tray_icon import TrayIcon
 from alignak_app.utils import set_app_config, get_app_config
-from alignak_app.utils import get_img_path
+from alignak_app.utils import get_image
 
 try:
     __import__('PyQt5')
@@ -48,8 +48,7 @@ class TestTrayIcon(unittest2.TestCase):
 
     set_app_config()
 
-    img = os.path.abspath(get_img_path() + get_app_config().get('Config', 'icon'))
-    icon = QIcon(img)
+    icon = QIcon(get_image('icon'))
 
     @classmethod
     def setUpClass(cls):
