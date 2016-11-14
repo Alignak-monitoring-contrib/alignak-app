@@ -156,7 +156,7 @@ def get_template(name, values):
 
     try:
         tpl_file = open(tpl_path + name)
-    except IOError as e:
+    except IOError as e:  # pragma: no cover - not testable
         sys.exit('Failed open template : ' + str(e))
 
     if tpl_file:
