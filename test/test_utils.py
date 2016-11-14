@@ -20,16 +20,15 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest2
+import os
 
-from alignak_app.utils import *
+import alignak_app.utils as utils
 
 
 class TestUtils(unittest2.TestCase):
     """
         This file test methods of `utils.py` file.
     """
-
-    set_app_config()
 
     def test_get_template(self):
         """Get a Template"""
@@ -60,8 +59,11 @@ QToolButton{
 }
 """
 
+        # Initialize config
+        utils.set_app_config()
+
         # Get the template
-        under_test = get_template('css.tpl', dict(color_title='#27ae60'))
+        under_test = utils.get_template('css.tpl', dict(color_title='#27ae60'))
 
         self.assertEqual(under_test, expected_css)
 
@@ -70,7 +72,32 @@ QToolButton{
 
         expected_home = os.environ['HOME'] + '/.local'
 
-        home = get_alignak_home()
+        home = utils.get_alignak_home()
 
         self.assertEqual(home, expected_home)
 
+    def test_app_config(self):
+        """Set and Get app_config"""
+
+        # Reset app_config to None
+        utils.app_config = None
+        under_test = utils.get_app_config()
+
+        self.assertIsNone(under_test)
+        self.assertIsNone(utils.app_config)
+
+        utils.set_app_config()
+
+        under_test = utils.get_app_config()
+        self.assertIsNotNone(under_test)
+        self.assertIsNotNone(utils.app_config)
+
+    def test_get_image(self):
+        """Get image"""
+        utils.set_app_config()
+
+        expected_img = utils.get_alignak_home() + '/' + utils.__pkg_name__ + '/images/alignak.svg'
+
+        under_test = utils.get_image('icon')
+
+        self.assertEqual(under_test, expected_img)

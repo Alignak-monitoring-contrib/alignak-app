@@ -21,7 +21,6 @@
 
 import sys
 
-
 try:
     from setuptools import setup, find_packages
 except:
@@ -34,6 +33,9 @@ except:
 if python_version < (2, 7):
     sys.exit("This application currently requires a minimum Python 2.7.x, sorry!")
 
+from alignak_app import __description__, __version__, __license__
+from alignak_app import __name__ as __pkg_name__
+
 # Requirements
 install_requires = [
     'alignak_backend_client',
@@ -44,22 +46,19 @@ install_requires = [
 paths = {}
 if 'linux' in sys.platform or 'sunos5' in sys.platform:
     paths = {
-        'app': 'alignak_app',
+        'app': __pkg_name__,
         'log': 'logs',
-        'bin': 'alignak_app/bin',
+        'bin': __pkg_name__ + '/bin',
     }
 elif 'win32' in sys.platform:
     paths = {
-        'app': 'alignak_app',
+        'app': __pkg_name__,
         'log': 'logs',
-        'bin': 'alignak_app/bin',
+        'bin': __pkg_name__ + '/bin',
     }
 else:
     print("Unsupported platform, sorry!")
     exit(1)
-
-from alignak_app import __description__, __version__, __license__
-from alignak_app import __name__ as __pkg_name__
 
 
 setup(
@@ -71,7 +70,7 @@ setup(
     # metadata for upload to PyPI
     author="Estrada Matthieu",
     author_email="ttamalfor@gmail.com",
-    keywords="alignak app indicator",
+    keywords="alignak app notifier",
     url="https://github.com/Alignak-monitoring-contrib/alignak-app",
     description=__description__,
     long_description=open('README.rst').read(),

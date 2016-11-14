@@ -32,21 +32,22 @@ from logging import DEBUG
 from logging.handlers import TimedRotatingFileHandler
 
 from string import Template
+from alignak_app import __name__ as __pkg_name__
 import configparser
 
 logger = getLogger(__name__)
 
 
 # Application Logger
-def create_logger(main_logger):  # pragma: no cover
+def create_logger(root_logger):  # pragma: no cover
     """
     Create the logger for Alignak-App
 
-    :param main_logger: the main logger.
-    :type main_logger: :class:`~`
+    :param root_logger: the main logger.
+    :type root_logger: :class:`~logging.RootLogger`
     """
 
-    path = get_alignak_home() + '/alignak_app'
+    path = get_alignak_home() + '/' + __pkg_name__
 
     filename = 'alignakapp.log'
 
@@ -72,8 +73,8 @@ def create_logger(main_logger):  # pragma: no cover
     file_handler.setLevel(DEBUG)
     file_handler.setFormatter(formatter)
 
-    main_logger.addHandler(file_handler)
-    main_logger.setLevel(DEBUG)
+    root_logger.addHandler(file_handler)
+    root_logger.setLevel(DEBUG)
 
 
 # Application Home
@@ -110,7 +111,7 @@ def set_app_config():
 
     """
 
-    config_file = get_alignak_home() + '/alignak_app/settings.cfg'
+    config_file = get_alignak_home() + '/' + __pkg_name__ + '/settings.cfg'
 
     global app_config  # pylint: disable=global-statement
     app_config = configparser.ConfigParser()

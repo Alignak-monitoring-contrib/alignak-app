@@ -89,3 +89,126 @@ class TestPopup(unittest2.TestCase):
 
         self.assertEqual('CRITICAL', under_test.state.text())
         self.assertEqual(expected_content, under_test.msg_label.text())
+
+    def test_get_style_sheet(self):
+        ok_css = """QWidget{
+    Background: #eee;
+    color:white;
+}
+QLabel#title{
+    Background: #78909C;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px bold;
+}
+QLabel#msg{
+    Background: #eee;
+    color: black;
+}
+QLabel#state{
+    Background-color: #27ae60;
+    font-size: 16px bold;
+
+}
+QToolButton{
+    Background: #eee;
+    border: none;
+}
+"""
+        warning_css = """QWidget{
+    Background: #eee;
+    color:white;
+}
+QLabel#title{
+    Background: #78909C;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px bold;
+}
+QLabel#msg{
+    Background: #eee;
+    color: black;
+}
+QLabel#state{
+    Background-color: #e67e22;
+    font-size: 16px bold;
+
+}
+QToolButton{
+    Background: #eee;
+    border: none;
+}
+"""
+        critical_css = """QWidget{
+    Background: #eee;
+    color:white;
+}
+QLabel#title{
+    Background: #78909C;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px bold;
+}
+QLabel#msg{
+    Background: #eee;
+    color: black;
+}
+QLabel#state{
+    Background-color: #e74c3c;
+    font-size: 16px bold;
+
+}
+QToolButton{
+    Background: #eee;
+    border: none;
+}
+"""
+        none_css = """QWidget{
+    Background: #eee;
+    color:white;
+}
+QLabel#title{
+    Background: #78909C;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px bold;
+}
+QLabel#msg{
+    Background: #eee;
+    color: black;
+}
+QLabel#state{
+    Background-color: #EEE;
+    font-size: 16px bold;
+
+}
+QToolButton{
+    Background: #eee;
+    border: none;
+}
+"""
+
+        under_test = AppPopup()
+
+        css = {
+            'OK': ok_css,
+            'WARNING': warning_css,
+            'CRITICAL': critical_css,
+            'NONE': none_css,
+        }
+        states = ('OK', 'WARNING', 'CRITICAL', 'NONE')
+
+        for state in states:
+            expected_css = css[state]
+            current_css = under_test.get_style_sheet(state)
+            self.assertEqual(expected_css, current_css)
+
+
+    def test_set_position(self):
+        under_test = AppPopup()
+
+        initial_position = under_test.pos()
+
+        under_test.set_position()
+
+        self.assertNotEqual(under_test.pos(), initial_position)
