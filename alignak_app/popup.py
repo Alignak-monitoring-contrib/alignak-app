@@ -31,12 +31,14 @@ from alignak_app.utils import get_app_config, get_image
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication, QDialog, QLabel, QPushButton  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QApplication, QDialog  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QLabel, QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import QTimer, Qt  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QPixmap, QIcon  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QApplication, QDialog, QLabel, QPushButton  # pylint: disable=import-error
+    from PyQt4.Qt import QApplication, QDialog  # pylint: disable=import-error
+    from PyQt4.Qt import QLabel, QPushButton  # pylint: disable=import-error
     from PyQt4.Qt import QHBoxLayout, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.QtCore import QTimer, Qt  # pylint: disable=import-error
     from PyQt4.QtGui import QPixmap, QIcon  # pylint: disable=import-error
@@ -103,7 +105,7 @@ QPushButton:pressed{
     Background-color: #27ae60;
 }
         """)
-        self.button.clicked.connect(self.handleButton)
+        self.button.clicked.connect(self.close)
 
         # Add state
         vbox.addWidget(self.state, 1)
@@ -115,9 +117,6 @@ QPushButton:pressed{
         # Add button
         vbox.addWidget(self.button, 3)
         vbox.setAlignment(self.button, Qt.AlignCenter)
-
-    def handleButton(self):
-        self.close()
 
     def create_message_label(self):
         """
