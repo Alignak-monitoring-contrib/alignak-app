@@ -96,7 +96,7 @@ QToolButton{
         """Get image"""
         utils.set_app_config()
 
-        expected_img = utils.get_alignak_home() + '/' + utils.__pkg_name__ + '/images/alignak.svg'
+        expected_img = utils.get_alignak_home() + '/alignak_app/images/alignak.svg'
 
         under_test = utils.get_image('icon')
 
