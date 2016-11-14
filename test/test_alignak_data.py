@@ -20,10 +20,8 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest2
-import configparser as cfg
 
 from alignak_app.alignak_data import AlignakData
-from alignak_app.app import get_alignak_home
 from alignak_app.utils import set_app_config, get_app_config
 
 

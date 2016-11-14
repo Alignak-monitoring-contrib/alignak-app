@@ -20,12 +20,10 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest2
-import configparser
 import sys
-import os
 
 from alignak_app.tray_icon import TrayIcon
-from alignak_app.utils import set_app_config, get_app_config
+from alignak_app.utils import set_app_config
 from alignak_app.utils import get_image
 
 try:

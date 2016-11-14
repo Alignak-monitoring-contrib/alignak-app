@@ -138,11 +138,10 @@ def get_template(name, values):
     """
         Return content of the choosen template with its values.
 
-
     :param name: name of the template.
     :type name: str
     :param values: dict of values to substitute.
-    :param config:
+    :type values: dict
     :return: content of a template
     :rtype: str
     """
@@ -170,6 +169,8 @@ def get_image(name):
     """
     Return the path of wanted image
 
+    :param name: name of image
+    :type name: str
     :return: path of image
     :rtype: str
     """

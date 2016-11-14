@@ -24,12 +24,11 @@
 """
 
 import sys
-import os
 import webbrowser
 
 from logging import getLogger
 
-from alignak_app.utils import get_alignak_home, get_template
+from alignak_app.utils import get_template
 from alignak_app.utils import get_app_config, get_image
 from alignak_app import __releasenotes__, __version__, __copyright__, __doc_url__, __project_url__
 from alignak_app import __application__
