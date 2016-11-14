@@ -31,15 +31,15 @@ from alignak_app.utils import get_app_config, get_image
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication, QDialog, QLabel  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QApplication, QDialog, QLabel, QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import QTimer, Qt  # pylint: disable=no-name-in-module
-    from PyQt5.QtGui import QPixmap  # pylint: disable=no-name-in-module
+    from PyQt5.QtGui import QPixmap, QIcon  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QApplication, QDialog, QLabel  # pylint: disable=import-error
+    from PyQt4.Qt import QApplication, QDialog, QLabel, QPushButton  # pylint: disable=import-error
     from PyQt4.Qt import QHBoxLayout, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.QtCore import QTimer, Qt  # pylint: disable=import-error
-    from PyQt4.QtGui import QPixmap  # pylint: disable=import-error
+    from PyQt4.QtGui import QPixmap, QIcon  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
@@ -55,12 +55,13 @@ class AppPopup(QDialog):
         # General settings
         self.setWindowTitle(__application__)
         self.setContentsMargins(0, 0, 0, 0)
-        self.setMinimumSize(425, 250)
-        self.setMaximumSize(425, 250)
+        self.setMinimumSize(425, 270)
+        self.setMaximumSize(425, 270)
         self.setWindowFlags(Qt.SplashScreen | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         # Fields
         self.msg_label = None
         self.state = None
+        self.button = None
 
     def initialize_notification(self):
         """
@@ -68,25 +69,95 @@ class AppPopup(QDialog):
 
         """
 
-        # QLabel for message
-        self.create_message_label()
-
         # QLabel for state
         self.state = QLabel(self)
         self.state.setAlignment(Qt.AlignCenter)
         self.state.setObjectName('state')
-        self.state.setMaximumHeight(20)
+        self.state.setMinimumSize(400, 20)
 
-        # QHBoxLayout and QLabel for popup label
-        title = self.create_title_label()
+        # QLabel for msg_label
+        self.create_message_label()
+
+        # QHBoxLayout with QLabels for popup label
+        hbox_title = self.create_title()
+
+        # Layout
         vbox = QVBoxLayout(self)
 
         # Add layout
-        vbox.addLayout(title, 0)
+        vbox.addLayout(hbox_title, 0)
 
-        # Add created QLabels
+        # Valid Button
+        self.button = QPushButton('Ok', self)
+        self.button.setMinimumSize(30, 30)
+        self.button.setMaximumSize(40, 40)
+
+        self.button.setStyleSheet("""
+QPushButton{
+    Background-color: #78909c;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+}
+QPushButton:pressed{
+    Background-color: #27ae60;
+}
+        """)
+        self.button.clicked.connect(self.handleButton)
+
+        # Add state
         vbox.addWidget(self.state, 1)
+        vbox.setAlignment(self.state, Qt.AlignCenter)
+
+        # Add msg_label
         vbox.addWidget(self.msg_label, 2)
+
+        # Add button
+        vbox.addWidget(self.button, 3)
+        vbox.setAlignment(self.button, Qt.AlignCenter)
+
+    def handleButton(self):
+        self.close()
+
+    def create_message_label(self):
+        """
+        Build msg QLabel.
+
+        """
+
+        self.msg_label = QLabel(self)
+        self.msg_label.setObjectName('msg')
+        self.msg_label.setMinimumSize(400, 150)
+
+    def create_title(self):
+        """
+        Build title QLabel, with logo
+
+        :return: QHBoxLayout of title
+        :rtype: :class:`~PyQt5.QtWidgets.QHBoxLayout`
+        """
+
+        # Logo Label
+        pixmap = QPixmap(get_image('icon'))
+
+        logo_label = QLabel(self)
+        logo_label.setPixmap(pixmap)
+        logo_label.setScaledContents(True)
+        logo_label.setMaximumHeight(32)
+
+        # Title Label
+        title_label = QLabel(self)
+        title_label.setText("Alignak-app")
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setObjectName('title')
+        title_label.setMaximumHeight(32)
+
+        # Create title Layout
+        tbox = QHBoxLayout()
+        tbox.addWidget(logo_label, 0)
+        tbox.addWidget(title_label, 1)
+
+        return tbox
 
     def set_position(self):
         """
@@ -156,47 +227,6 @@ class AppPopup(QDialog):
 
         # ...until the end of the term
         QTimer.singleShot(duration, self.close)
-
-    def create_message_label(self):
-        """
-        Build msg QLabel.
-
-        """
-
-        self.msg_label = QLabel(self)
-        self.msg_label.setObjectName('msg')
-        self.msg_label.setMinimumHeight(150)
-        self.msg_label.setMinimumWidth(400)
-
-    def create_title_label(self):
-        """
-        Build title QLabel, with logo
-
-        :return: QHBoxLayout of title
-        :rtype: :class:`~PyQt5.QtWidgets.QHBoxLayout`
-        """
-
-        # Logo Label
-        pixmap = QPixmap(get_image('icon'))
-
-        logo_label = QLabel(self)
-        logo_label.setPixmap(pixmap)
-        logo_label.setScaledContents(True)
-        logo_label.setMaximumHeight(32)
-
-        # Title Label
-        title_label = QLabel(self)
-        title_label.setText("Alignak-app")
-        title_label.setAlignment(Qt.AlignCenter)
-        title_label.setObjectName('title')
-        title_label.setMaximumHeight(32)
-
-        # Create title Layout
-        tbox = QHBoxLayout()
-        tbox.addWidget(logo_label, 0)
-        tbox.addWidget(title_label, 1)
-
-        return tbox
 
     def create_content(self, hosts_states, services_states):
         """
