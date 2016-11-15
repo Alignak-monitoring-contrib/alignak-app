@@ -95,6 +95,7 @@ setup(
         (paths['app'] + '/images', ['etc/images/service_unknown.svg']),
         (paths['app'] + '/images', ['etc/images/exit.svg']),
         (paths['app'] + '/images', ['etc/images/about.svg']),
+        (paths['app'] + '/images', ['etc/images/checked.svg']),
         (paths['bin'], ['etc/bin/launch']),
         (paths['bin'], ['etc/bin/alignakapp.py']),
     ],
