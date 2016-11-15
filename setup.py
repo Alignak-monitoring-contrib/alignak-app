@@ -33,7 +33,7 @@ except:
 if python_version < (2, 7):
     sys.exit("This application currently requires a minimum Python 2.7.x, sorry!")
 
-from alignak_app import __description__, __version__, __license__
+from alignak_app import __description__, __version__, __license__, __author__, __project_url__
 from alignak_app import __name__ as __pkg_name__
 
 # Requirements
@@ -68,10 +68,10 @@ setup(
     license=__license__,
 
     # metadata for upload to PyPI
-    author="Estrada Matthieu",
+    author=__author__,
     author_email="ttamalfor@gmail.com",
     keywords="alignak app notifier",
-    url="https://github.com/Alignak-monitoring-contrib/alignak-app",
+    url=__project_url__,
     description=__description__,
     long_description=open('README.rst').read(),
 
