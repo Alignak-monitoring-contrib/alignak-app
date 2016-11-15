@@ -89,23 +89,8 @@ class AppPopup(QDialog):
         # Add layout
         vbox.addLayout(hbox_title, 0)
 
-        # Valid Button
-        self.button = QPushButton('Ok', self)
-        self.button.setMinimumSize(30, 30)
-        self.button.setMaximumSize(40, 40)
-
-        self.button.setStyleSheet("""
-QPushButton{
-    Background-color: #78909c;
-    border: none;
-    border-radius: 5px;
-    text-align: center;
-}
-QPushButton:pressed{
-    Background-color: #27ae60;
-}
-        """)
-        self.button.clicked.connect(self.close)
+        # Create button
+        self.create_button()
 
         # Add state
         vbox.addWidget(self.state, 1)
@@ -157,6 +142,30 @@ QPushButton:pressed{
         tbox.addWidget(title_label, 1)
 
         return tbox
+
+    def create_button(self):
+        """
+        Create valid button for popup
+
+        """
+
+        self.button = QPushButton(self)
+        self.button.setIcon(QIcon(get_image('checked')))
+        self.button.setMinimumSize(30, 30)
+        self.button.setMaximumSize(40, 40)
+
+        self.button.setStyleSheet("""
+        QPushButton{
+            Background-color: #eee;
+            border: 1px solid;
+            border-radius: 5px;
+            text-align: center;
+        }
+        QPushButton:hover{
+            Background-color: #ddd;
+        }
+                """)
+        self.button.clicked.connect(self.close)
 
     def set_position(self):
         """
