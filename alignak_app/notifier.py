@@ -115,7 +115,7 @@ class AppNotifier(QSystemTrayIcon):
             logger.warning('Connection to backend is lost, application will try to reconnect !')
             self.alignak_data.log_to_backend()
 
-        logger.info('Get state of Host and Services...')
+        logger.info('Collect state of Host and Services...')
 
         # Initialize dicts for states
         hosts_states = {

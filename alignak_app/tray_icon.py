@@ -118,7 +118,7 @@ class TrayIcon(QSystemTrayIcon):
 
         """
 
-        logger.info('Create Service Actions...')
+        logger.info('Create Service Actions')
 
         self.services_actions['services_ok'] = QAction(
             QIcon(get_image('service_ok')),
