@@ -97,8 +97,8 @@ setup(
         (paths['app'] + '/images', ['etc/images/exit.svg']),
         (paths['app'] + '/images', ['etc/images/about.svg']),
         (paths['app'] + '/images', ['etc/images/checked.svg']),
-        (paths['bin'], ['etc/bin/launch']),
-        (paths['bin'], ['etc/bin/alignakapp.py']),
+        (paths['bin'], ['etc/bin/alignak-app']),
+        (paths['bin'], ['etc/bin/alignak-app.py']),
     ],
 
     install_requires=install_requires,

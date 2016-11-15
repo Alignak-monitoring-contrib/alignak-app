@@ -104,7 +104,7 @@ if [ -d "$APP_ROOT" ]; then
     fi
 
     # Launch script in background
-    "$PYBIN" "$APP_ROOT/bin/alignakapp.py" &
+    "$PYBIN" "$APP_ROOT/bin/alignak-app.py" &
     {
         version=`python -c "from alignak_app import __version__; print(__version__)"`
         doc_url=`python -c "from alignak_app import __doc_url__; print(__doc_url__)"`
