@@ -39,13 +39,13 @@ Build status (development release)
     :target: https://coveralls.io/github/Alignak-monitoring-contrib/alignak-app?branch=develop
 
 .. image:: http://readthedocs.org/projects/alignak-app/badge/?version=develop
-    :target: http://alignak-app.readthedocs.io/en/develop/?badge=latest
+    :target: http://alignak-app.readthedocs.io/en/develop/?badge=develop
     :alt: Documentation Status
 
 Documentation
 =============
 
-Documentation is available on `Read The Docs <http://alignak-app.readthedocs.io/en/develop/index.html>`_ and in the `/docs` directory.
+Documentation is available on `Read The Docs <http://alignak-app.readthedocs.io/en/develop/index.html>`_ and in the ``/docs`` directory.
 
 Bugs / Enhancements
 ===================
