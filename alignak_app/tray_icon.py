@@ -38,17 +38,14 @@ try:
     from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QAction  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QWidget  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QMessageBox  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
-    from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     try:
         __import__('PyQt4')
         from PyQt4.Qt import QSystemTrayIcon  # pylint: disable=import-error
         from PyQt4.Qt import QMenu  # pylint: disable=import-error
         from PyQt4.Qt import QAction  # pylint: disable=import-error
-        from PyQt4.Qt import QWidget  # pylint: disable=import-error
         from PyQt4.Qt import QMessageBox  # pylint: disable=import-error
         from PyQt4.QtGui import QIcon  # pylint: disable=import-error
     except ImportError:
