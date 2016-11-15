@@ -9,6 +9,7 @@ Alignak-App is a notifier application for `Alignak project <http://alignak-monit
 
 .. image:: https://badge.fury.io/py/alignak_app.svg
     :target: https://badge.fury.io/py/alignak_app
+    :alt: Pypi
 
 .. image:: https://img.shields.io/badge/license-GNU%20General%20Public%20License%20v3.0-blue.svg
     :target: https://github.com/Alignak-monitoring-contrib/alignak-app/blob/develop/LICENSE
@@ -19,9 +20,15 @@ Build status (stable release)
 
 .. image:: https://travis-ci.org/Alignak-monitoring-contrib/alignak-app.svg?branch=master
     :target: https://travis-ci.org/Alignak-monitoring-contrib/alignak-app
+    :alt: Build
+
+.. image:: https://landscape.io/github/Alignak-monitoring-contrib/alignak-app/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/Alignak-monitoring-contrib/alignak-app/master
+   :alt: Code Health
 
 .. image:: https://coveralls.io/repos/github/Alignak-monitoring-contrib/alignak-app/badge.svg?branch=master
     :target: https://coveralls.io/github/Alignak-monitoring-contrib/alignak-app?branch=master
+    :alt: Coverage
 
 .. image:: http://readthedocs.org/projects/alignak-app/badge/?version=latest
     :target: http://alignak-app.readthedocs.io/en/develop/?badge=latest
@@ -34,9 +41,15 @@ Build status (development release)
 
 .. image:: https://travis-ci.org/Alignak-monitoring-contrib/alignak-app.svg?branch=develop
     :target: https://travis-ci.org/Alignak-monitoring-contrib/alignak-app
+    :alt: Build
+
+.. image:: https://landscape.io/github/Alignak-monitoring-contrib/alignak-app/develop/landscape.svg?style=flat
+   :target: https://landscape.io/github/Alignak-monitoring-contrib/alignak-app/develop
+   :alt: Code Health
 
 .. image:: https://coveralls.io/repos/github/Alignak-monitoring-contrib/alignak-app/badge.svg?branch=develop&service=github
     :target: https://coveralls.io/github/Alignak-monitoring-contrib/alignak-app?branch=develop
+    :alt: Coverage
 
 .. image:: http://readthedocs.org/projects/alignak-app/badge/?version=develop
     :target: http://alignak-app.readthedocs.io/en/develop/?badge=develop
