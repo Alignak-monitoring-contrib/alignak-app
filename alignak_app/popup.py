@@ -154,17 +154,7 @@ class AppPopup(QDialog):
         self.button.setMinimumSize(30, 30)
         self.button.setMaximumSize(40, 40)
 
-        self.button.setStyleSheet("""
-        QPushButton{
-            Background-color: #eee;
-            border: 1px solid;
-            border-radius: 5px;
-            text-align: center;
-        }
-        QPushButton:hover{
-            Background-color: #ddd;
-        }
-                """)
+        self.button.setStyleSheet(get_template('button.tpl', None))
         self.button.clicked.connect(self.close)
 
     def set_position(self):
