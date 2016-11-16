@@ -8,13 +8,15 @@ On Linux
 
 Once you have configured your application, just type the following in a terminal::
 
-    $HOME/.local/alignak_app/launch
+    $HOME/.local/alignak_app/alignak-app start
 
 Alignak-app will start, but will also create a command for later. Thereafter, you will only have to type the following command to launch your application::
 
-    alignakapp
+    alignak-app start
 
-If you launch command second times, this will restart application.
+Here is the available commands::
+
+    alignak-app {start|stop|status|restart}
 
 On Windows
 ~~~~~~~~~~

@@ -93,7 +93,7 @@ fi
 usage() {
     cat << END
 
-Usage: $(basename "$0") {start|stop|status|restart|reload}
+Usage: $(basename "$0") {start|stop|status|restart}
 
 END
 }
