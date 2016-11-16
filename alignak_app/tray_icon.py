@@ -24,12 +24,12 @@
 """
 
 import sys
+import os
 import webbrowser
 
 from logging import getLogger
 
-from alignak_app.utils import get_template
-from alignak_app.utils import get_app_config, get_image
+from alignak_app.utils import get_alignak_home, get_template
 from alignak_app import __releasenotes__, __version__, __copyright__, __doc_url__, __project_url__
 from alignak_app import __application__
 
@@ -38,14 +38,17 @@ try:
     from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QAction  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QWidget  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QMessageBox  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
+    from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     try:
         __import__('PyQt4')
         from PyQt4.Qt import QSystemTrayIcon  # pylint: disable=import-error
         from PyQt4.Qt import QMenu  # pylint: disable=import-error
         from PyQt4.Qt import QAction  # pylint: disable=import-error
+        from PyQt4.Qt import QWidget  # pylint: disable=import-error
         from PyQt4.Qt import QMessageBox  # pylint: disable=import-error
         from PyQt4.QtGui import QIcon  # pylint: disable=import-error
     except ImportError:
@@ -60,8 +63,9 @@ class TrayIcon(QSystemTrayIcon):
         Class who create QMenu and QAction.
     """
 
-    def __init__(self, icon, parent=None):
+    def __init__(self, icon, config, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
+        self.config = config
         self.menu = QMenu(parent)
         self.hosts_actions = {}
         self.services_actions = {}
@@ -91,23 +95,25 @@ class TrayIcon(QSystemTrayIcon):
 
         logger.info('Create Host Actions')
 
+        img_h_up = self.get_icon_path() + self.config.get('Config', 'host_up')
         self.hosts_actions['hosts_up'] = QAction(
-            QIcon(get_image('host_up')),
+            QIcon(img_h_up),
             'Hosts UP, Wait...',
             self
         )
         self.hosts_actions['hosts_up'].triggered.connect(self.open_url)
 
-
+        img_h_down = self.get_icon_path() + self.config.get('Config', 'host_down')
         self.hosts_actions['hosts_down'] = QAction(
-            QIcon(get_image('host_down')),
+            QIcon(img_h_down),
             'Hosts DOWN, Wait...',
             self
         )
         self.hosts_actions['hosts_down'].triggered.connect(self.open_url)
 
+        img_h_unreach = self.get_icon_path() + self.config.get('Config', 'host_unreach')
         self.hosts_actions['hosts_unreach'] = QAction(
-            QIcon(get_image('host_unreach')),
+            QIcon(img_h_unreach),
             'Hosts UNREACHABLE, Wait...',
             self
         )
@@ -119,32 +125,35 @@ class TrayIcon(QSystemTrayIcon):
 
         """
 
-        logger.info('Create Service Actions')
+        logger.info('Create Service Actions...')
 
+        img_s_ok = self.get_icon_path() + self.config.get('Config', 'service_ok')
         self.services_actions['services_ok'] = QAction(
-            QIcon(get_image('service_ok')),
+            QIcon(img_s_ok),
             'Services OK, Wait...',
             self
         )
         self.services_actions['services_ok'].triggered.connect(self.open_url)
 
-
+        img_s_warning = self.get_icon_path() + self.config.get('Config', 'service_warning')
         self.services_actions['services_warning'] = QAction(
-            QIcon(get_image('service_warning')),
+            QIcon(img_s_warning),
             'Services WARNING, Wait...',
             self
         )
         self.services_actions['services_warning'].triggered.connect(self.open_url)
 
+        img_s_critical = self.get_icon_path() + self.config.get('Config', 'service_critical')
         self.services_actions['services_critical'] = QAction(
-            QIcon(get_image('service_critical')),
+            QIcon(img_s_critical),
             'Services CRITICAL, Wait...',
             self
         )
         self.services_actions['services_critical'].triggered.connect(self.open_url)
 
+        img_s_unknown = self.get_icon_path() + self.config.get('Config', 'service_unknown')
         self.services_actions['services_unknown'] = QAction(
-            QIcon(get_image('service_unknown')),
+            QIcon(img_s_unknown),
             'Services UNKNOWN, Wait...',
             self
         )
@@ -157,8 +166,7 @@ class TrayIcon(QSystemTrayIcon):
         """
 
         logger.info('Create About Action')
-
-        img_about = get_image('about')
+        img_about = os.path.abspath(self.get_icon_path() + self.config.get('Config', 'about'))
         self.about_menu = QAction(QIcon(img_about), 'About', self)
 
         self.about_menu.triggered.connect(self.about_message)
@@ -181,7 +189,7 @@ class TrayIcon(QSystemTrayIcon):
             releasenotes=__releasenotes__
         )
 
-        msg = get_template('about.tpl', about_dict)
+        msg = get_template('about.tpl', about_dict, self.config)
 
         msg_box.about(None, 'About ' + __application__, msg)
         msg_box.show()
@@ -193,8 +201,7 @@ class TrayIcon(QSystemTrayIcon):
         """
 
         logger.info('Create Quit Action')
-
-        img_quit = get_image('exit')
+        img_quit = os.path.abspath(self.get_icon_path() + self.config.get('Config', 'exit'))
         self.quit_menu = QAction(QIcon(img_quit), 'Quit', self)
 
         self.quit_menu.triggered.connect(self.quit_app)
@@ -247,6 +254,19 @@ class TrayIcon(QSystemTrayIcon):
         self.services_actions['services_unknown'].setText(
             'Services UNKNOWN (' + str(services_states['unknown']) + ')')
 
+    def get_icon_path(self):
+        """
+        Get the path for all icons
+
+        :return: path of icon
+        :rtype: str
+        """
+        icon_path = get_alignak_home() \
+            + self.config.get('Config', 'path') \
+            + self.config.get('Config', 'img') \
+            + '/'
+        return icon_path
+
     @staticmethod
     def quit_app():  # pragma: no cover
         """
@@ -264,7 +284,7 @@ class TrayIcon(QSystemTrayIcon):
 
         target = self.sender()
 
-        webui_url = get_app_config().get('Webui', 'webui_url')
+        webui_url = self.config.get('Webui', 'webui_url')
 
         # Define each filter for items
         if "UP" in target.text():
