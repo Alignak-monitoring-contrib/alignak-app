@@ -26,14 +26,14 @@ APP_SCRIPT=launch
 #                CHECK PYTHON VERSION               #
 #####################################################
 
-python -c "import alignak_app"
+python -c "import alignak_app" >/dev/null 2>&1
 
 if [ $? -eq 0 ]; then
     PYBIN=python
-    echo "Python Version detected : $PYBIN 2"
+    echo "Python Version detected : 2"
 else
     PYBIN=python3
-    echo "Python Version detected : $PYBIN 3"
+    echo "Python Version detected : 3"
 fi
 
 if [ -d "$APP_ROOT" ]; then
@@ -106,8 +106,8 @@ if [ -d "$APP_ROOT" ]; then
     # Launch script in background
     "$PYBIN" "$APP_ROOT/bin/alignakapp.py" &
     {
-        version=`python -c "from alignak_app import __version__; print(__version__)"`
-        doc_url=`python -c "from alignak_app import __doc_url__; print(__doc_url__)"`
+        version=`"$PYBIN" -c "from alignak_app import __version__; print(__version__)"`
+        doc_url=`"$PYBIN" -c "from alignak_app import __doc_url__; print(__doc_url__)"`
     } || {
         echo "Application can't start. Import alignak_app failed"
         exit 1
