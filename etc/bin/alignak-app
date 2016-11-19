@@ -72,24 +72,37 @@ else
     fi
 fi
 
-
-
+# Make command alignak-app available
 if [ ! -L "$USER_BIN/$DAEMON" ]; then
-    echo "Alignak-app verify installation..."
+    echo "-!- Alignak-app finish installation -!-"
     # Verify installation
-    echo "The command is not yet created..."
     echo "Alignak-App check folders..."
     if [ ! -d "$USER_BIN" ]; then
-        echo "Create bin folder for application..."
+        echo -e "
+Create:
+    $USER_BIN folder
+for $DAEMON...
+            "
         mkdir "$USER_BIN"
     else
         echo "Folder already exists."
     fi
-    echo "Create [alignak-app] command..."
+    echo "The command [$DAEMON] is not yet created..."
+    echo "
+Create:
+    [$DAEMON] command !
+    "
     ln -s "$BIN_DIR/$(basename "$0")" "$USER_BIN/$DAEMON"
-    echo "Installation is ok !"
+    echo "
+Installation is done !
+"
 fi
 
+# Get version and doc_url of alignak-app
+version=`"$PYBIN" -c "from alignak_app import __version__; print(__version__)"`
+doc_url=`"$PYBIN" -c "from alignak_app import __doc_url__; print(__doc_url__)"`
+
+# Functions for alignak-app
 usage() {
     cat << END
 
@@ -98,8 +111,6 @@ Usage: $(basename "$0") {start|stop|status|restart}
 END
 }
 
-version=`"$PYBIN" -c "from alignak_app import __version__; print(__version__)"`
-doc_url=`"$PYBIN" -c "from alignak_app import __doc_url__; print(__doc_url__)"`
 
 do_start() {
     echo "Starting $DAEMON daemon... with $PYBIN"
@@ -132,7 +143,7 @@ do_status() {
 
 }
 
-
+# Arguments
 CMD=$1
 
 case "$CMD" in
