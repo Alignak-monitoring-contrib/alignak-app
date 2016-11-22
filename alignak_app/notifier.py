@@ -81,7 +81,7 @@ class AppNotifier(QSystemTrayIcon):
         Collect data from Backend-Client.
 
         """
-        hosts_states, services_states = self.get_state()
+        hosts_states, services_states = self.alignak_data.get_state()
 
         # Check state to prepare popup
         if services_states['critical'] > 0 or hosts_states['down'] > 0:
@@ -100,71 +100,3 @@ class AppNotifier(QSystemTrayIcon):
 
         if notification:
             self.popup.send_notification(title, hosts_states, services_states)
-
-    def get_state(self):
-        """
-        Check the hosts and services states.
-
-        :return: each states for hosts and services in two dicts.
-        :rtype: dict
-        """
-
-        if not self.alignak_data.backend.authenticated:
-            logger.warning('Connection to backend is lost, application will try to reconnect !')
-            self.alignak_data.log_to_backend()
-
-        logger.info('Collect state of Host and Services...')
-
-        # Initialize dicts for states
-        hosts_states = {
-            'up': 0,
-            'down': 0,
-            'unreachable': 0
-        }
-        services_states = {
-            'ok': 0,
-            'critical': 0,
-            'unknown': 0,
-            'warning': 0
-        }
-
-        # Collect Hosts state
-        hosts_data = self.alignak_data.get_host_states()
-
-        if not hosts_data:
-            hosts_states['up'] = -1
-        else:
-            for _, v in hosts_data.items():
-                if 'UP' in v:
-                    hosts_states['up'] += 1
-                if 'DOWN' in v:
-                    hosts_states['down'] += 1
-                if 'UNREACHABLE' in v:
-                    hosts_states['unreachable'] += 1
-            hosts_log = str(hosts_states['up']) + ' host(s) Up, ' \
-                + str(hosts_states['down']) + ' host(s) Down, ' \
-                + str(hosts_states['unreachable']) + ' host(s) unreachable, '
-            logger.info(hosts_log)
-
-        # Collect Services state
-        services_data = self.alignak_data.get_service_states()
-
-        if not services_data:
-            services_states['ok'] = -1
-        else:
-            for _, v in services_data.items():
-                if 'OK' in v:
-                    services_states['ok'] += 1
-                if 'CRITICAL' in v:
-                    services_states['critical'] += 1
-                if 'UNKNOWN' in v:
-                    services_states['unknown'] += 1
-                if 'WARNING' in v:
-                    services_states['warning'] += 1
-            services_log = str(services_states['ok']) + ' service(s) Ok, ' \
-                + str(services_states['warning']) + ' service(s) Warning, ' \
-                + str(services_states['critical']) + ' service(s) Critical, ' \
-                + str(services_states['unknown']) + ' service(s) Unknown.'
-            logger.info(services_log)
-
-        return hosts_states, services_states
