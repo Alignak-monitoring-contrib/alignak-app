@@ -42,6 +42,7 @@ class AlignakData(object):
 
     def __init__(self):
         self.backend = None
+        self.data = {}
 
     def log_to_backend(self):
         """
@@ -192,5 +193,8 @@ class AlignakData(object):
                 + str(services_states['critical']) + ' service(s) Critical, ' \
                 + str(services_states['unknown']) + ' service(s) Unknown.'
             logger.info(services_log)
+
+        self.data['hosts'] = hosts_states
+        self.data['services'] = services_states
 
         return hosts_states, services_states

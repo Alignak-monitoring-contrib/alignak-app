@@ -23,6 +23,7 @@
     Notifier manage notifications and collect data from backend.
 """
 
+import copy
 from logging import getLogger
 
 from alignak_app.alignak_data import AlignakData
@@ -50,6 +51,7 @@ class AppNotifier(QSystemTrayIcon):
         self.alignak_data = None
         self.tray_icon = None
         self.popup = None
+        self.notify = True
 
     def start_process(self, tray_icon):
         """
@@ -73,6 +75,9 @@ class AppNotifier(QSystemTrayIcon):
         self.alignak_data = AlignakData()
         self.alignak_data.log_to_backend()
 
+        notify = get_app_config().getboolean('Alignak-App', 'notifications')
+        self.notify = notify
+
         logger.info('Initialize notifier...')
         timer.timeout.connect(self.check_data)
 
@@ -81,7 +86,21 @@ class AppNotifier(QSystemTrayIcon):
         Collect data from Backend-Client.
 
         """
+
+        old_states = {}
+        if self.alignak_data.data:
+            old_states = copy.deepcopy(self.alignak_data.data)
+
+        print('Before old_states : ' + str(old_states))
+        print('Before alignak_data : ' + str(self.alignak_data.data))
         hosts_states, services_states = self.alignak_data.get_state()
+
+        print('After old_states : ' + str(old_states))
+        print('After alignak_data : ' + str(self.alignak_data.data))
+        print('-----------------------------------------------')
+
+        if old_states:
+            self.check_changes(old_states)
 
         # Check state to prepare popup
         if services_states['critical'] > 0 or hosts_states['down'] > 0:
@@ -96,7 +115,16 @@ class AppNotifier(QSystemTrayIcon):
         # Trigger changes and send notification
         self.tray_icon.update_menu_actions(hosts_states, services_states)
 
-        notification = get_app_config().getboolean('Alignak-App', 'notifications')
-
-        if notification:
+        if self.notify:
             self.popup.send_notification(title, hosts_states, services_states)
+
+    def check_changes(self, old_states):
+        """
+        Check if there have been any change since the last check
+
+        """
+
+        if old_states == self.alignak_data.data:
+            print('No changes')
+        else:
+            print('Changes')
