@@ -96,18 +96,21 @@ class TrayIcon(QSystemTrayIcon):
             'Hosts UP, Wait...',
             self
         )
+        self.hosts_actions['hosts_up'].triggered.connect(self.open_url)
 
         self.hosts_actions['hosts_down'] = QAction(
             QIcon(get_image_path('host_down')),
             'Hosts DOWN, Wait...',
             self
         )
+        self.hosts_actions['hosts_down'].triggered.connect(self.open_url)
 
         self.hosts_actions['hosts_unreach'] = QAction(
             QIcon(get_image_path('host_unreach')),
             'Hosts UNREACHABLE, Wait...',
             self
         )
+        self.hosts_actions['hosts_unreach'].triggered.connect(self.open_url)
 
     def create_services_actions(self):
         """
@@ -122,24 +125,28 @@ class TrayIcon(QSystemTrayIcon):
             'Services OK, Wait...',
             self
         )
+        self.services_actions['services_ok'].triggered.connect(self.open_url)
 
         self.services_actions['services_warning'] = QAction(
             QIcon(get_image_path('service_warning')),
             'Services WARNING, Wait...',
             self
         )
+        self.services_actions['services_warning'].triggered.connect(self.open_url)
 
         self.services_actions['services_critical'] = QAction(
             QIcon(get_image_path('service_critical')),
             'Services CRITICAL, Wait...',
             self
         )
+        self.services_actions['services_critical'].triggered.connect(self.open_url)
 
         self.services_actions['services_unknown'] = QAction(
             QIcon(get_image_path('service_unknown')),
             'Services UNKNOWN, Wait...',
             self
         )
+        self.services_actions['services_unknown'].triggered.connect(self.open_url)
 
     def create_about_action(self):
         """
