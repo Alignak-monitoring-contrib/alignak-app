@@ -65,6 +65,7 @@ class AppNotifier(QSystemTrayIcon):
 
         check_interval = int(get_app_config().get('Alignak-App', 'check_interval'))
         check_interval *= 1000
+        logger.debug('Check Interval : ' + str(check_interval))
 
         timer = QTimer(self)
         timer.start(check_interval)
@@ -76,6 +77,7 @@ class AppNotifier(QSystemTrayIcon):
         self.alignak_data.log_to_backend()
 
         self.notify = self.notification()
+        logger.debug('Notify : ' + str(self.notify))
 
         logger.info('Initialize notifier...')
         timer.timeout.connect(self.check_data)
@@ -140,6 +142,8 @@ class AppNotifier(QSystemTrayIcon):
         else:
             title = 'OK'
 
+        logger.debug('Notification Title : ' + str(title))
+
         # Trigger changes and send notification
         self.tray_icon.update_menu_actions(hosts_states, services_states)
 
@@ -172,6 +176,6 @@ class AppNotifier(QSystemTrayIcon):
                     diff = self.alignak_data.states['services'][key] - old_states['services'][key]
                     changes['services'][key] = diff
 
-        logger.debug(changes)
+            logger.debug('Changes : ' + str(changes))
 
         return changes

@@ -172,27 +172,27 @@ class AppPopup(QDialog):
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             top_right = QApplication.desktop().screenGeometry(screen).topRight()
             self.move(top_right.x() - self.width(), top_right.y())
-            logger.debug('--!-- top:right : ' + str(top_right))
+            logger.debug('Position top:right : ' + str(top_right))
         elif 'top' in points and 'left' in points:  # pragma: no cover - not fully testable
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             top_left = QApplication.desktop().screenGeometry(screen).topLeft()
             self.move(top_left)
-            logger.debug('--!-- top:left : ' + str(top_left))
+            logger.debug('Position top:left : ' + str(top_left))
         elif 'bottom' in points and 'right' in points:  # pragma: no cover - not fully testable
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             bottom_right = QApplication.desktop().screenGeometry(screen).bottomRight()
             self.move(bottom_right.x() - self.width(), bottom_right.y() - self.height())
-            logger.debug('--!-- bottom:right : ' + str(bottom_right))
+            logger.debug('Position bottom:right : ' + str(bottom_right))
         elif 'bottom' in points and 'left' in points:  # pragma: no cover - not fully testable
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             bottom_left = QApplication.desktop().screenGeometry(screen).bottomLeft()
             self.move(bottom_left.x(), bottom_left.y() - self.height())
-            logger.debug('--!-- top:right : ' + str(bottom_left))
+            logger.debug('Position top:right : ' + str(bottom_left))
         else:  # pragma: no cover - not fully testable
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             center = QApplication.desktop().screenGeometry(screen).center()
             self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
-            logger.debug('--!-- top:right : ' + str(center))
+            logger.debug('Position center : ' + str(center))
 
     def send_notification(self, title, hosts_states, services_states, changes):
         """
@@ -219,6 +219,7 @@ class AppPopup(QDialog):
         # Get duration
         duration = int(get_app_config().get('Alignak-App', 'duration'))
         duration *= 1000
+        logger.debug('Position Duration : ' + str(duration))
 
         logger.info('Send notification...')
 
@@ -261,6 +262,8 @@ class AppPopup(QDialog):
             }
 
             content = get_template('notification.tpl', state_dict)
+
+        logger.debug('Notification Content : ' + str(content))
 
         self.msg_label.setText(content)
 

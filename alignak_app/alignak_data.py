@@ -61,6 +61,7 @@ class AlignakData(object):
         logger.info('Try to connect to backend...')
         try:
             connect = self.backend.login(username, password)
+            logger.debug('Connection : ' + str(connect))
             if connect:
                 logger.info('Connection to backend : OK.')
 
@@ -94,9 +95,10 @@ class AlignakData(object):
         except BackendException as e:
             logger.warning('Alignak-app failed to collect hosts... \n' + str(e))
 
-        # Store Data
+        # Store Hosts Data
         if all_host:
             for host in all_host['_items']:
+                logger.debug('Host : ' + str(host))
                 current_hosts[host['name']] = host['ls_state']
 
         return current_hosts
@@ -118,10 +120,12 @@ class AlignakData(object):
         except BackendException as e:
             logger.warning('Alignak-app failed to collect services... \n' + str(e))
 
-        # Store Data
+        # Store Services Data
         if all_services:
+            # Increment with i to avoid not counting services with the same name
             i = 0
             for service in all_services['_items']:
+                logger.debug('Service : ' + str(service))
                 i += 1
                 service_name = service['name'] + '[' + str(i) + ']'
                 current_services[service_name] = service['ls_state']

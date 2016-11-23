@@ -173,6 +173,7 @@ class TrayIcon(QSystemTrayIcon):
         )
 
         msg = get_template('about.tpl', about_dict)
+        logger.debug('About Message : ' + str(msg))
 
         msg_box.about(None, 'About ' + __application__, msg)
         msg_box.show()
@@ -275,4 +276,5 @@ class TrayIcon(QSystemTrayIcon):
         else:
             endurl = '/dashboard'
 
+        logger.debug('Open url : ' + webui_url + endurl)
         webbrowser.open(webui_url + endurl)
