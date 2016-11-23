@@ -98,7 +98,11 @@ class AlignakData(object):
         # Store Hosts Data
         if all_host:
             for host in all_host['_items']:
-                logger.debug('Host : ' + str(host))
+                logger.debug(
+                    'H: ' + host['name'] +
+                    ', state: ' + host['ls_state'] +
+                    ', state_type: ' + host['ls_state_type']
+                )
                 current_hosts[host['name']] = host['ls_state']
 
         return current_hosts
@@ -125,7 +129,11 @@ class AlignakData(object):
             # Increment with i to avoid not counting services with the same name
             i = 0
             for service in all_services['_items']:
-                logger.debug('Service : ' + str(service))
+                logger.debug(
+                    'S: ' + service['name'] +
+                    ', state: ' + service['ls_state'] +
+                    ', state_type: ' + service['ls_state_type']
+                )
                 i += 1
                 service_name = service['name'] + '[' + str(i) + ']'
                 current_services[service_name] = service['ls_state']
