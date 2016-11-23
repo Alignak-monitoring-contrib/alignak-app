@@ -47,8 +47,8 @@ def create_logger(root_logger):  # pragma: no cover
     :type root_logger: :class:`~logging.RootLogger`
     """
 
+    # Define path and file for "file_handler"
     path = get_app_root() + '/alignak_app'
-
     filename = 'alignakapp.log'
 
     if not os.path.isdir(path):
@@ -63,6 +63,7 @@ def create_logger(root_logger):  # pragma: no cover
 
     formatter = Formatter('[%(asctime)s] - %(name)-12s - %(levelname)s - %(message)s')
 
+    # Create "file_handler"
     file_handler = TimedRotatingFileHandler(
         filename=os.path.join(path, filename),
         when="D",
@@ -75,8 +76,10 @@ def create_logger(root_logger):  # pragma: no cover
 
     root_logger.addHandler(file_handler)
 
+    # Initialize configuration
     set_app_config()
 
+    # Define level of logger
     if app_config.getboolean('Alignak-App', 'debug'):
         root_logger.setLevel(DEBUG)
     else:
@@ -119,6 +122,7 @@ def set_app_config():
 
     config_file = get_app_root() + '/alignak_app/settings.cfg'
 
+    # Define "app_config" as "global" to access it from anywhere
     global app_config  # pylint: disable=global-statement
     app_config = configparser.ConfigParser()
 
@@ -178,7 +182,7 @@ def get_image_path(name):
 
     :param name: name of image
     :type name: str
-    :return: path of image
+    :return: full path of image
     :rtype: str
     """
 

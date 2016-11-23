@@ -63,9 +63,6 @@ class AlignakApp(object):
 
         """
 
-        # Initialize configuration
-        set_app_config()
-
         # Create notifier
         self.notifier = AppNotifier(self.get_icon())
 
