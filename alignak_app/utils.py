@@ -150,9 +150,9 @@ def get_template(name, values):
     tpl_content = ''
 
     tpl_path = get_app_root() \
-               + app_config.get('Config', 'path') \
-               + app_config.get('Config', 'tpl') \
-               + '/'
+        + app_config.get('Config', 'path') \
+        + app_config.get('Config', 'tpl') \
+        + '/'
 
     try:
         tpl_file = open(tpl_path + name)
@@ -177,9 +177,9 @@ def get_image_path(name):
     """
 
     img_path = get_app_root() \
-               + app_config.get('Config', 'path') \
-               + app_config.get('Config', 'img') \
-               + '/'
+        + app_config.get('Config', 'path') \
+        + app_config.get('Config', 'img') \
+        + '/'
 
     img = img_path + app_config.get('Images', name)
 
