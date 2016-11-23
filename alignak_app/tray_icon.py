@@ -29,7 +29,7 @@ import webbrowser
 from logging import getLogger
 
 from alignak_app.utils import get_template
-from alignak_app.utils import get_app_config, get_image
+from alignak_app.utils import get_app_config, get_image_path
 from alignak_app import __releasenotes__, __version__, __copyright__, __doc_url__, __project_url__
 from alignak_app import __application__
 
@@ -92,19 +92,19 @@ class TrayIcon(QSystemTrayIcon):
         logger.info('Create Host Actions')
 
         self.hosts_actions['hosts_up'] = QAction(
-            QIcon(get_image('host_up')),
+            QIcon(get_image_path('host_up')),
             'Hosts UP, Wait...',
             self
         )
 
         self.hosts_actions['hosts_down'] = QAction(
-            QIcon(get_image('host_down')),
+            QIcon(get_image_path('host_down')),
             'Hosts DOWN, Wait...',
             self
         )
 
         self.hosts_actions['hosts_unreach'] = QAction(
-            QIcon(get_image('host_unreach')),
+            QIcon(get_image_path('host_unreach')),
             'Hosts UNREACHABLE, Wait...',
             self
         )
@@ -118,25 +118,25 @@ class TrayIcon(QSystemTrayIcon):
         logger.info('Create Service Actions')
 
         self.services_actions['services_ok'] = QAction(
-            QIcon(get_image('service_ok')),
+            QIcon(get_image_path('service_ok')),
             'Services OK, Wait...',
             self
         )
 
         self.services_actions['services_warning'] = QAction(
-            QIcon(get_image('service_warning')),
+            QIcon(get_image_path('service_warning')),
             'Services WARNING, Wait...',
             self
         )
 
         self.services_actions['services_critical'] = QAction(
-            QIcon(get_image('service_critical')),
+            QIcon(get_image_path('service_critical')),
             'Services CRITICAL, Wait...',
             self
         )
 
         self.services_actions['services_unknown'] = QAction(
-            QIcon(get_image('service_unknown')),
+            QIcon(get_image_path('service_unknown')),
             'Services UNKNOWN, Wait...',
             self
         )
@@ -149,7 +149,7 @@ class TrayIcon(QSystemTrayIcon):
 
         logger.info('Create About Action')
 
-        img_about = get_image('about')
+        img_about = get_image_path('about')
         self.about_menu = QAction(QIcon(img_about), 'About', self)
 
         self.about_menu.triggered.connect(self.about_message)
@@ -173,6 +173,7 @@ class TrayIcon(QSystemTrayIcon):
         )
 
         msg = get_template('about.tpl', about_dict)
+        logger.debug('About Message : ' + str(msg))
 
         msg_box.about(None, 'About ' + __application__, msg)
         msg_box.show()
@@ -185,7 +186,7 @@ class TrayIcon(QSystemTrayIcon):
 
         logger.info('Create Quit Action')
 
-        img_quit = get_image('exit')
+        img_quit = get_image_path('exit')
         self.quit_menu = QAction(QIcon(img_quit), 'Quit', self)
 
         self.quit_menu.triggered.connect(self.quit_app)
@@ -275,4 +276,5 @@ class TrayIcon(QSystemTrayIcon):
         else:
             endurl = '/dashboard'
 
+        logger.debug('Open url : ' + webui_url + endurl)
         webbrowser.open(webui_url + endurl)

@@ -48,7 +48,7 @@ class TestAlignakData(unittest2.TestCase):
         self.assertTrue(under_test.backend.authenticated)
 
     def test_if_hosts_states(self):
-        """Collect hosts states"""
+        """Collect Hosts States"""
 
         alignak_data = AlignakData()
 
@@ -60,7 +60,7 @@ class TestAlignakData(unittest2.TestCase):
         self.assertTrue(under_test)
 
     def test_if_services_states(self):
-        """Collect services states"""
+        """Collect Services States"""
 
         alignak_data = AlignakData()
 

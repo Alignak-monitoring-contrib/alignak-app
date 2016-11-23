@@ -27,7 +27,7 @@ from logging import getLogger
 
 from alignak_app import __application__
 from alignak_app.utils import get_template
-from alignak_app.utils import get_app_config, get_image
+from alignak_app.utils import get_app_config, get_image_path
 
 try:
     __import__('PyQt5')
@@ -122,7 +122,7 @@ class AppPopup(QDialog):
         """
 
         # Logo Label
-        pixmap = QPixmap(get_image('icon'))
+        pixmap = QPixmap(get_image_path('icon'))
 
         logo_label = QLabel(self)
         logo_label.setPixmap(pixmap)
@@ -150,7 +150,7 @@ class AppPopup(QDialog):
         """
 
         self.button = QPushButton(self)
-        self.button.setIcon(QIcon(get_image('checked')))
+        self.button.setIcon(QIcon(get_image_path('checked')))
         self.button.setMinimumSize(30, 30)
         self.button.setMaximumSize(40, 40)
 
@@ -172,29 +172,29 @@ class AppPopup(QDialog):
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             top_right = QApplication.desktop().screenGeometry(screen).topRight()
             self.move(top_right.x() - self.width(), top_right.y())
-            logger.debug('--!-- top:right : ' + str(top_right))
+            logger.debug('Position top:right : ' + str(top_right))
         elif 'top' in points and 'left' in points:  # pragma: no cover - not fully testable
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             top_left = QApplication.desktop().screenGeometry(screen).topLeft()
             self.move(top_left)
-            logger.debug('--!-- top:left : ' + str(top_left))
+            logger.debug('Position top:left : ' + str(top_left))
         elif 'bottom' in points and 'right' in points:  # pragma: no cover - not fully testable
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             bottom_right = QApplication.desktop().screenGeometry(screen).bottomRight()
             self.move(bottom_right.x() - self.width(), bottom_right.y() - self.height())
-            logger.debug('--!-- bottom:right : ' + str(bottom_right))
+            logger.debug('Position bottom:right : ' + str(bottom_right))
         elif 'bottom' in points and 'left' in points:  # pragma: no cover - not fully testable
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             bottom_left = QApplication.desktop().screenGeometry(screen).bottomLeft()
             self.move(bottom_left.x(), bottom_left.y() - self.height())
-            logger.debug('--!-- top:right : ' + str(bottom_left))
+            logger.debug('Position top:right : ' + str(bottom_left))
         else:  # pragma: no cover - not fully testable
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             center = QApplication.desktop().screenGeometry(screen).center()
             self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
-            logger.debug('--!-- top:right : ' + str(center))
+            logger.debug('Position center : ' + str(center))
 
-    def send_notification(self, title, hosts_states, services_states):
+    def send_notification(self, title, hosts_states, services_states, changes):
         """
         Send notification.
 
@@ -204,6 +204,8 @@ class AppPopup(QDialog):
         :type hosts_states: dict
         :param services_states: dict of services states.
         :type services_states: dict
+        :param changes: dict of changes since the last check of notifier.
+        :type changes: dict
         """
 
         # Set position of popup
@@ -212,11 +214,12 @@ class AppPopup(QDialog):
         # Prepare notification
         self.state.setText(title)
         self.setStyleSheet(self.get_style_sheet(title))
-        self.create_content(hosts_states, services_states)
+        self.create_content(hosts_states, services_states, changes=changes)
 
         # Get duration
         duration = int(get_app_config().get('Alignak-App', 'duration'))
         duration *= 1000
+        logger.debug('Position Duration : ' + str(duration))
 
         logger.info('Send notification...')
 
@@ -226,7 +229,7 @@ class AppPopup(QDialog):
         # ...until the end of the term
         QTimer.singleShot(duration, self.close)
 
-    def create_content(self, hosts_states, services_states):
+    def create_content(self, hosts_states, services_states, changes):
         """
         Create content and return with correct value.
 
@@ -234,22 +237,33 @@ class AppPopup(QDialog):
         :type hosts_states: dict
         :param services_states: states of services
         :type services_states: dict
+        :param changes: dict of changes since the last check of notifier.
+        :type changes: dict
         """
 
         if services_states['ok'] < 0 or hosts_states['up'] < 0:
             content = 'AlignakApp has something broken... \nPlease Check your logs !'
         else:
-            state_dict = dict(
-                hosts_up=str(hosts_states['up']),
-                hosts_down=str(hosts_states['down']),
-                hosts_unreachable=str(hosts_states['unreachable']),
-                services_ok=str(services_states['ok']),
-                services_warning=str(services_states['warning']),
-                services_critical=str(services_states['critical']),
-                services_unknown=str(services_states['unknown']),
-            )
+            state_dict = {
+                'hosts_up': str(hosts_states['up']),
+                'changes_up': str(changes['hosts']['up']),
+                'hosts_down': str(hosts_states['down']),
+                'changes_down': str(changes['hosts']['down']),
+                'hosts_unreachable': str(hosts_states['unreachable']),
+                'changes_unreachable': str(changes['hosts']['unreachable']),
+                'services_ok': str(services_states['ok']),
+                'changes_ok': str(changes['services']['ok']),
+                'services_warning': str(services_states['warning']),
+                'changes_warning': str(changes['services']['warning']),
+                'services_critical': str(services_states['critical']),
+                'changes_critical': str(changes['services']['critical']),
+                'services_unknown': str(services_states['unknown']),
+                'changes_unknown': str(changes['services']['unknown'])
+            }
 
             content = get_template('notification.tpl', state_dict)
+
+        logger.debug('Notification Content : ' + str(content))
 
         self.msg_label.setText(content)
 

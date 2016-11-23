@@ -31,7 +31,7 @@ class TestUtils(unittest2.TestCase):
     """
 
     def test_get_template(self):
-        """Get a Template"""
+        """Get Template with Right CSS"""
 
         # Simulate an expected Template
         expected_css = """QWidget{
@@ -67,12 +67,12 @@ QToolButton{
 
         self.assertEqual(under_test, expected_css)
 
-    def test_get_alignak_home(self):
-        """Get Alignak-App Home"""
+    def test_get_app_root(self):
+        """Get Alignak-App Root Folder"""
 
         expected_home = os.environ['HOME'] + '/.local'
 
-        home = utils.get_alignak_home()
+        home = utils.get_app_root()
 
         self.assertEqual(home, expected_home)
 
@@ -92,12 +92,12 @@ QToolButton{
         self.assertIsNotNone(under_test)
         self.assertIsNotNone(utils.app_config)
 
-    def test_get_image(self):
-        """Get image"""
+    def test_get_image_path(self):
+        """Get Right Image Path"""
         utils.set_app_config()
 
-        expected_img = utils.get_alignak_home() + '/alignak_app/images/alignak.svg'
+        expected_img = utils.get_app_root() + '/alignak_app/images/alignak.svg'
 
-        under_test = utils.get_image('icon')
+        under_test = utils.get_image_path('icon')
 
         self.assertEqual(under_test, expected_img)

@@ -21,9 +21,10 @@
 
 import unittest2
 import sys
+import copy
 
 from alignak_app.notifier import AppNotifier
-from alignak_app.utils import get_image
+from alignak_app.utils import get_image_path
 from alignak_app.utils import set_app_config
 from alignak_app.tray_icon import TrayIcon
 
@@ -48,7 +49,7 @@ class TestAppNotifier(unittest2.TestCase):
 
     set_app_config()
 
-    icon = QIcon(get_image('icon'))
+    icon = QIcon(get_image_path('icon'))
 
     @classmethod
     def setUpClass(cls):
@@ -65,20 +66,22 @@ class TestAppNotifier(unittest2.TestCase):
         self.assertIsNone(under_test.tray_icon)
         self.assertIsNone(under_test.alignak_data)
         self.assertIsNone(under_test.popup)
+        self.assertFalse(under_test.notify)
 
         # Tray_icon for notifier
         tray_icon = TrayIcon(self.icon)
         tray_icon.build_menu()
 
-        # Start process
+        # Start notifier
         under_test.start_process(tray_icon)
 
         self.assertIsNotNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.alignak_data)
         self.assertIsNotNone(under_test.popup)
+        self.assertTrue(under_test.notify)
 
     def test_check_data(self):
-        """Check Data"""
+        """Check Data modify Actions"""
         under_test = AppNotifier(self.icon)
 
         # Start notifier
@@ -100,3 +103,33 @@ class TestAppNotifier(unittest2.TestCase):
                             under_test.tray_icon.hosts_actions['hosts_up'].text())
         self.assertNotEqual('Services OK, Wait...',
                             under_test.tray_icon.services_actions['services_ok'].text())
+
+    def test_states_change(self):
+        """States and Notify Changes"""
+        under_test = AppNotifier(self.icon)
+
+        # Start notifier
+        tray_icon = TrayIcon(self.icon)
+        tray_icon.build_menu()
+        under_test.start_process(tray_icon)
+
+        # "start_process" set notify to True
+        self.assertTrue(under_test.notify)
+
+        # "get_state" to fill states
+        self.assertFalse(under_test.alignak_data.states)
+        under_test.alignak_data.get_state()
+        self.assertTrue(under_test.alignak_data.states)
+
+        # Copy state
+        old_states = copy.deepcopy(under_test.alignak_data.states)
+        under_test.check_changes(old_states)
+
+        # "check_changes" set notify to False if no changes
+        self.assertFalse(under_test.notify)
+
+        # Modify "states" to set notify to True
+        under_test.alignak_data.states['hosts']['up'] += 1
+        under_test.check_changes(old_states)
+
+        self.assertTrue(under_test.notify)

@@ -23,6 +23,7 @@
     Notifier manage notifications and collect data from backend.
 """
 
+import copy
 from logging import getLogger
 
 from alignak_app.alignak_data import AlignakData
@@ -50,6 +51,7 @@ class AppNotifier(QSystemTrayIcon):
         self.alignak_data = None
         self.tray_icon = None
         self.popup = None
+        self.notify = False
 
     def start_process(self, tray_icon):
         """
@@ -63,6 +65,7 @@ class AppNotifier(QSystemTrayIcon):
 
         check_interval = int(get_app_config().get('Alignak-App', 'check_interval'))
         check_interval *= 1000
+        logger.debug('Check Interval : ' + str(check_interval))
 
         timer = QTimer(self)
         timer.start(check_interval)
@@ -73,15 +76,61 @@ class AppNotifier(QSystemTrayIcon):
         self.alignak_data = AlignakData()
         self.alignak_data.log_to_backend()
 
+        self.notify = self.notification()
+        logger.debug('Notify : ' + str(self.notify))
+
         logger.info('Initialize notifier...')
         timer.timeout.connect(self.check_data)
+
+    @staticmethod
+    def notification():
+        """
+        Check if user want to be notify or not.
+
+        :return: notifications in settings.cfg
+        :rtype: bool
+        """
+        return get_app_config().getboolean('Alignak-App', 'notifications')
+
+    @staticmethod
+    def model_changes():
+        """
+        Define model for changes dict
+
+        :return: model dict for changes
+        :rtype: dict
+        """
+        changes = {
+            'hosts': {
+                'up': 'no changes',
+                'down': 'no changes',
+                'unreachable': 'no changes'
+            },
+            'services': {
+                'ok': 'no changes',
+                'warning': 'no changes',
+                'critical': 'no changes',
+                'unknown': 'no changes'
+            }
+        }
+        return changes
 
     def check_data(self):
         """
         Collect data from Backend-Client.
 
         """
-        hosts_states, services_states = self.get_state()
+
+        old_states = {}
+        changes = self.model_changes()
+
+        if self.notification() and self.alignak_data.states:
+            old_states = copy.deepcopy(self.alignak_data.states)
+
+        hosts_states, services_states = self.alignak_data.get_state()
+
+        if self.notification() and old_states:
+            changes = self.check_changes(old_states)
 
         # Check state to prepare popup
         if services_states['critical'] > 0 or hosts_states['down'] > 0:
@@ -93,78 +142,40 @@ class AppNotifier(QSystemTrayIcon):
         else:
             title = 'OK'
 
+        logger.debug('Notification Title : ' + str(title))
+
         # Trigger changes and send notification
         self.tray_icon.update_menu_actions(hosts_states, services_states)
 
-        notification = get_app_config().getboolean('Alignak-App', 'notifications')
+        if self.notify:
+            self.popup.send_notification(title, hosts_states, services_states, changes)
 
-        if notification:
-            self.popup.send_notification(title, hosts_states, services_states)
-
-    def get_state(self):
+    def check_changes(self, old_states):
         """
-        Check the hosts and services states.
+        Check if there have been any change since the last check
 
-        :return: each states for hosts and services in two dicts.
-        :rtype: dict
         """
 
-        if not self.alignak_data.backend.authenticated:
-            logger.warning('Connection to backend is lost, application will try to reconnect !')
-            self.alignak_data.log_to_backend()
+        logger.debug('Old_states : ' + str(old_states))
+        logger.debug('New states : ' + str(self.alignak_data.states))
 
-        logger.info('Collect state of Host and Services...')
+        changes = self.model_changes()
 
-        # Initialize dicts for states
-        hosts_states = {
-            'up': 0,
-            'down': 0,
-            'unreachable': 0
-        }
-        services_states = {
-            'ok': 0,
-            'critical': 0,
-            'unknown': 0,
-            'warning': 0
-        }
-
-        # Collect Hosts state
-        hosts_data = self.alignak_data.get_host_states()
-
-        if not hosts_data:
-            hosts_states['up'] = -1
+        if old_states == self.alignak_data.states:
+            logger.info('No changes since the last check...')
+            self.notify = False
         else:
-            for _, v in hosts_data.items():
-                if 'UP' in v:
-                    hosts_states['up'] += 1
-                if 'DOWN' in v:
-                    hosts_states['down'] += 1
-                if 'UNREACHABLE' in v:
-                    hosts_states['unreachable'] += 1
-            hosts_log = str(hosts_states['up']) + ' host(s) Up, ' \
-                + str(hosts_states['down']) + ' host(s) Down, ' \
-                + str(hosts_states['unreachable']) + ' host(s) unreachable, '
-            logger.info(hosts_log)
+            logger.info('Changes since the last check !')
+            self.notify = True
+            for key, _ in self.alignak_data.states['hosts'].items():
+                if old_states['hosts'][key] != self.alignak_data.states['hosts'][key]:
+                    diff = self.alignak_data.states['hosts'][key] - old_states['hosts'][key]
+                    changes['hosts'][key] = diff
+            for key, _ in self.alignak_data.states['services'].items():
+                if old_states['services'][key] != self.alignak_data.states['services'][key]:
+                    diff = self.alignak_data.states['services'][key] - old_states['services'][key]
+                    changes['services'][key] = diff
 
-        # Collect Services state
-        services_data = self.alignak_data.get_service_states()
+            logger.debug('Changes : ' + str(changes))
 
-        if not services_data:
-            services_states['ok'] = -1
-        else:
-            for _, v in services_data.items():
-                if 'OK' in v:
-                    services_states['ok'] += 1
-                if 'CRITICAL' in v:
-                    services_states['critical'] += 1
-                if 'UNKNOWN' in v:
-                    services_states['unknown'] += 1
-                if 'WARNING' in v:
-                    services_states['warning'] += 1
-            services_log = str(services_states['ok']) + ' service(s) Ok, ' \
-                + str(services_states['warning']) + ' service(s) Warning, ' \
-                + str(services_states['critical']) + ' service(s) Critical, ' \
-                + str(services_states['unknown']) + ' service(s) Unknown.'
-            logger.info(services_log)
-
-        return hosts_states, services_states
+        return changes

@@ -28,11 +28,11 @@ import sys
 
 from logging import getLogger
 from logging import Formatter
-from logging import DEBUG
+from logging import DEBUG, INFO
 from logging.handlers import TimedRotatingFileHandler
 
-import configparser
 from string import Template
+import configparser
 
 
 logger = getLogger(__name__)
@@ -47,7 +47,7 @@ def create_logger(root_logger):  # pragma: no cover
     :type root_logger: :class:`~logging.RootLogger`
     """
 
-    path = get_alignak_home() + '/alignak_app'
+    path = get_app_root() + '/alignak_app'
 
     filename = 'alignakapp.log'
 
@@ -74,11 +74,17 @@ def create_logger(root_logger):  # pragma: no cover
     file_handler.setFormatter(formatter)
 
     root_logger.addHandler(file_handler)
-    root_logger.setLevel(DEBUG)
+
+    set_app_config()
+
+    if app_config.getboolean('Alignak-App', 'debug'):
+        root_logger.setLevel(DEBUG)
+    else:
+        root_logger.setLevel(INFO)
 
 
 # Application Home
-def get_alignak_home():
+def get_app_root():
     """
     Return user home.
     """
@@ -87,10 +93,10 @@ def get_alignak_home():
     if 'linux' in sys.platform or 'sunos5' in sys.platform:
         alignak_home = os.environ['HOME']
         alignak_home += '/.local'
-    elif 'win32' in sys.platform:
+    elif 'win32' in sys.platform:  # pragma: no cover - not testable
         alignak_home = os.environ['USERPROFILE']
         alignak_home += '\\AppData\\Roaming\\Python\\'
-    else:
+    else:  # pragma: no cover - not testable
         sys.exit('Application can\'t find the user HOME.')
 
     # Prevent from root user
@@ -101,7 +107,7 @@ def get_alignak_home():
 
 # Application Configuration
 
-# Global variable, access by funtions
+# Global variable, access by function
 app_config = None
 
 
@@ -111,7 +117,7 @@ def set_app_config():
 
     """
 
-    config_file = get_alignak_home() + '/alignak_app/settings.cfg'
+    config_file = get_app_root() + '/alignak_app/settings.cfg'
 
     global app_config  # pylint: disable=global-statement
     app_config = configparser.ConfigParser()
@@ -149,7 +155,7 @@ def get_template(name, values):
 
     tpl_content = ''
 
-    tpl_path = get_alignak_home() \
+    tpl_path = get_app_root() \
         + app_config.get('Config', 'path') \
         + app_config.get('Config', 'tpl') \
         + '/'
@@ -166,7 +172,7 @@ def get_template(name, values):
     return tpl_content
 
 
-def get_image(name):
+def get_image_path(name):
     """
     Return the path of wanted image
 
@@ -176,7 +182,7 @@ def get_image(name):
     :rtype: str
     """
 
-    img_path = get_alignak_home() \
+    img_path = get_app_root() \
         + app_config.get('Config', 'path') \
         + app_config.get('Config', 'img') \
         + '/'

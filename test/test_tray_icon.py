@@ -24,7 +24,7 @@ import sys
 
 from alignak_app.tray_icon import TrayIcon
 from alignak_app.utils import set_app_config
-from alignak_app.utils import get_image
+from alignak_app.utils import get_image_path
 
 try:
     __import__('PyQt5')
@@ -46,7 +46,7 @@ class TestTrayIcon(unittest2.TestCase):
 
     set_app_config()
 
-    icon = QIcon(get_image('icon'))
+    icon = QIcon(get_image_path('icon'))
 
     @classmethod
     def setUpClass(cls):
@@ -57,13 +57,13 @@ class TestTrayIcon(unittest2.TestCase):
             pass
 
     def test_tray_icon(self):
-        """Init TrayIcon"""
+        """Init TrayIcon and QMenu"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
         self.assertIsInstance(under_test.menu, QMenu)
 
     def test_host_actions(self):
-        """Hosts Actions"""
+        """Hosts QActions are created"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
         self.assertFalse(under_test.hosts_actions)
@@ -76,7 +76,7 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertIsInstance(under_test.hosts_actions['hosts_unreach'], QAction)
 
     def test_services_actions(self):
-        """Services Actions"""
+        """Services QActions are created"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
         self.assertFalse(under_test.services_actions)
@@ -90,7 +90,7 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertIsInstance(under_test.services_actions['services_unknown'], QAction)
 
     def test_about_action(self):
-        """About Action"""
+        """About QAction is created"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
         self.assertIsNone(under_test.about_menu)
@@ -101,7 +101,7 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertIsInstance(under_test.about_menu, QAction)
 
     def test_quit_action(self):
-        """Quit Action"""
+        """Quit QAction is created"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
         self.assertIsNone(under_test.quit_menu)
@@ -112,7 +112,7 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertIsInstance(under_test.quit_menu, QAction)
 
     def test_build_menu(self):
-        """Menu have actions"""
+        """Build Menu add QActions"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
         # Assert no actions in Menu
@@ -124,7 +124,7 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertTrue(under_test.menu.actions())
 
     def test_update_menus_actions(self):
-        """Update Menu Actions"""
+        """Update Menu QActions"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
         under_test.build_menu()

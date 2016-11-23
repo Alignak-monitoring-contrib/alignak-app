@@ -42,6 +42,7 @@ class AlignakData(object):
 
     def __init__(self):
         self.backend = None
+        self.states = {}
 
     def log_to_backend(self):
         """
@@ -60,6 +61,7 @@ class AlignakData(object):
         logger.info('Try to connect to backend...')
         try:
             connect = self.backend.login(username, password)
+            logger.debug('Connection : ' + str(connect))
             if connect:
                 logger.info('Connection to backend : OK.')
 
@@ -93,9 +95,10 @@ class AlignakData(object):
         except BackendException as e:
             logger.warning('Alignak-app failed to collect hosts... \n' + str(e))
 
-        # Store Data
+        # Store Hosts Data
         if all_host:
             for host in all_host['_items']:
+                logger.debug('Host : ' + str(host))
                 current_hosts[host['name']] = host['ls_state']
 
         return current_hosts
@@ -117,12 +120,85 @@ class AlignakData(object):
         except BackendException as e:
             logger.warning('Alignak-app failed to collect services... \n' + str(e))
 
-        # Store Data
+        # Store Services Data
         if all_services:
+            # Increment with i to avoid not counting services with the same name
             i = 0
             for service in all_services['_items']:
+                logger.debug('Service : ' + str(service))
                 i += 1
                 service_name = service['name'] + '[' + str(i) + ']'
                 current_services[service_name] = service['ls_state']
 
         return current_services
+
+    def get_state(self):
+        """
+        Check the hosts and services states.
+
+        :return: each states for hosts and services in two dicts.
+        :rtype: dict
+        """
+
+        if not self.backend.authenticated:
+            logger.warning('Connection to backend is lost, application will try to reconnect !')
+            self.log_to_backend()
+
+        logger.info('Collect state of Host and Services...')
+
+        # Initialize dicts for states
+        hosts_states = {
+            'up': 0,
+            'down': 0,
+            'unreachable': 0
+        }
+        services_states = {
+            'ok': 0,
+            'critical': 0,
+            'unknown': 0,
+            'warning': 0
+        }
+
+        # Collect Hosts state
+        hosts_data = self.get_host_states()
+
+        if not hosts_data:
+            hosts_states['up'] = -1
+        else:
+            for _, v in hosts_data.items():
+                if 'UP' in v:
+                    hosts_states['up'] += 1
+                if 'DOWN' in v:
+                    hosts_states['down'] += 1
+                if 'UNREACHABLE' in v:
+                    hosts_states['unreachable'] += 1
+            hosts_log = str(hosts_states['up']) + ' host(s) Up, ' \
+                + str(hosts_states['down']) + ' host(s) Down, ' \
+                + str(hosts_states['unreachable']) + ' host(s) unreachable, '
+            logger.info(hosts_log)
+
+        # Collect Services state
+        services_data = self.get_service_states()
+
+        if not services_data:
+            services_states['ok'] = -1
+        else:
+            for _, v in services_data.items():
+                if 'OK' in v:
+                    services_states['ok'] += 1
+                if 'CRITICAL' in v:
+                    services_states['critical'] += 1
+                if 'UNKNOWN' in v:
+                    services_states['unknown'] += 1
+                if 'WARNING' in v:
+                    services_states['warning'] += 1
+            services_log = str(services_states['ok']) + ' service(s) Ok, ' \
+                + str(services_states['warning']) + ' service(s) Warning, ' \
+                + str(services_states['critical']) + ' service(s) Critical, ' \
+                + str(services_states['unknown']) + ' service(s) Unknown.'
+            logger.info(services_log)
+
+        self.states['hosts'] = hosts_states
+        self.states['services'] = services_states
+
+        return hosts_states, services_states
