@@ -27,7 +27,7 @@ from logging import getLogger
 
 from alignak_app import __application__
 from alignak_app.utils import get_template
-from alignak_app.utils import get_app_config, get_image
+from alignak_app.utils import get_app_config, get_image_path
 
 try:
     __import__('PyQt5')
@@ -122,7 +122,7 @@ class AppPopup(QDialog):
         """
 
         # Logo Label
-        pixmap = QPixmap(get_image('icon'))
+        pixmap = QPixmap(get_image_path('icon'))
 
         logo_label = QLabel(self)
         logo_label.setPixmap(pixmap)
@@ -150,7 +150,7 @@ class AppPopup(QDialog):
         """
 
         self.button = QPushButton(self)
-        self.button.setIcon(QIcon(get_image('checked')))
+        self.button.setIcon(QIcon(get_image_path('checked')))
         self.button.setMinimumSize(30, 30)
         self.button.setMaximumSize(40, 40)
 

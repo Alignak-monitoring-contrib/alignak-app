@@ -47,7 +47,7 @@ def create_logger(root_logger):  # pragma: no cover
     :type root_logger: :class:`~logging.RootLogger`
     """
 
-    path = get_alignak_home() + '/alignak_app'
+    path = get_app_root() + '/alignak_app'
 
     filename = 'alignakapp.log'
 
@@ -78,7 +78,7 @@ def create_logger(root_logger):  # pragma: no cover
 
 
 # Application Home
-def get_alignak_home():
+def get_app_root():
     """
     Return user home.
     """
@@ -111,7 +111,7 @@ def set_app_config():
 
     """
 
-    config_file = get_alignak_home() + '/alignak_app/settings.cfg'
+    config_file = get_app_root() + '/alignak_app/settings.cfg'
 
     global app_config  # pylint: disable=global-statement
     app_config = configparser.ConfigParser()
@@ -149,10 +149,10 @@ def get_template(name, values):
 
     tpl_content = ''
 
-    tpl_path = get_alignak_home() \
-        + app_config.get('Config', 'path') \
-        + app_config.get('Config', 'tpl') \
-        + '/'
+    tpl_path = get_app_root() \
+               + app_config.get('Config', 'path') \
+               + app_config.get('Config', 'tpl') \
+               + '/'
 
     try:
         tpl_file = open(tpl_path + name)
@@ -166,7 +166,7 @@ def get_template(name, values):
     return tpl_content
 
 
-def get_image(name):
+def get_image_path(name):
     """
     Return the path of wanted image
 
@@ -176,10 +176,10 @@ def get_image(name):
     :rtype: str
     """
 
-    img_path = get_alignak_home() \
-        + app_config.get('Config', 'path') \
-        + app_config.get('Config', 'img') \
-        + '/'
+    img_path = get_app_root() \
+               + app_config.get('Config', 'path') \
+               + app_config.get('Config', 'img') \
+               + '/'
 
     img = img_path + app_config.get('Images', name)
 

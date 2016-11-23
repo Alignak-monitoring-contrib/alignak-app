@@ -24,7 +24,7 @@ import sys
 import copy
 
 from alignak_app.notifier import AppNotifier
-from alignak_app.utils import get_image
+from alignak_app.utils import get_image_path
 from alignak_app.utils import set_app_config
 from alignak_app.tray_icon import TrayIcon
 
@@ -49,7 +49,7 @@ class TestAppNotifier(unittest2.TestCase):
 
     set_app_config()
 
-    icon = QIcon(get_image('icon'))
+    icon = QIcon(get_image_path('icon'))
 
     @classmethod
     def setUpClass(cls):
