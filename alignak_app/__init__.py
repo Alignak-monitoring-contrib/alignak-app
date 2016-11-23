@@ -32,9 +32,7 @@
 from logging import getLogger
 from alignak_app.utils import create_logger
 
-logger = getLogger()
-
-create_logger(logger)
+logger = getLogger(__name__)
 
 # Application version and manifest
 VERSION = (0, 5, 0)
