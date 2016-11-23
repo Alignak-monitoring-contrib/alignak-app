@@ -31,8 +31,8 @@ from logging import Formatter
 from logging import DEBUG
 from logging.handlers import TimedRotatingFileHandler
 
-import configparser
 from string import Template
+import configparser
 
 
 logger = getLogger(__name__)
@@ -87,10 +87,10 @@ def get_alignak_home():
     if 'linux' in sys.platform or 'sunos5' in sys.platform:
         alignak_home = os.environ['HOME']
         alignak_home += '/.local'
-    elif 'win32' in sys.platform:
+    elif 'win32' in sys.platform:  # pragma: no cover - not testable
         alignak_home = os.environ['USERPROFILE']
         alignak_home += '\\AppData\\Roaming\\Python\\'
-    else:
+    else:  # pragma: no cover - not testable
         sys.exit('Application can\'t find the user HOME.')
 
     # Prevent from root user
@@ -101,7 +101,7 @@ def get_alignak_home():
 
 # Application Configuration
 
-# Global variable, access by funtions
+# Global variable, access by function
 app_config = None
 
 

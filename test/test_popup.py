@@ -84,13 +84,27 @@ class TestPopup(unittest2.TestCase):
         )
 
         # Send a CRITICAL notification
-        under_test.send_notification('CRITICAL', hosts_states, services_states)
+        changes = {
+            'hosts': {
+                'up': 'no changes',
+                'down': 'no changes',
+                'unreachable': 'no changes'
+            },
+            'services': {
+                'ok': 'no changes',
+                'warning': 'no changes',
+                'critical': 'no changes',
+                'unknown': 'no changes'
+            }
+        }
+        under_test.send_notification('CRITICAL', hosts_states, services_states, changes)
         expected_content = 'AlignakApp has something broken... \nPlease Check your logs !'
 
         self.assertEqual('CRITICAL', under_test.state.text())
         self.assertEqual(expected_content, under_test.msg_label.text())
 
     def test_get_style_sheet(self):
+        """Get Style Sheet according to States"""
         ok_css = """QWidget{
     Background: #eee;
     color:white;
@@ -205,6 +219,7 @@ QToolButton{
 
 
     def test_set_position(self):
+        """Position Change from Initial Position"""
         under_test = AppPopup()
 
         initial_position = under_test.pos()
