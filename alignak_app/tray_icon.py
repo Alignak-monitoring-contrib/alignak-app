@@ -159,7 +159,10 @@ class TrayIcon(QSystemTrayIcon):
         """
 
         self.status_action = QAction(QIcon(get_image_path('icon')), 'Alignak States', self)
+
         self.alignak_status = AlignakStatus()
+        self.alignak_status.create_status()
+
         self.status_action.triggered.connect(self.show_alignak_status)
 
     def show_alignak_status(self):

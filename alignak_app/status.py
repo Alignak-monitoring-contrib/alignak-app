@@ -28,7 +28,7 @@ from logging import getLogger
 import requests
 
 from alignak_app import __application__
-from alignak_app.utils import get_image_path
+from alignak_app.utils import get_image_path, get_app_config
 
 try:
     __import__('PyQt5')
@@ -60,8 +60,20 @@ class AlignakStatus(QWidget):
         self.setWindowIcon(QIcon(get_image_path('icon')))
         self.move(QApplication.desktop().screen().rect().center() - self.rect().center())
         # Fields
+        self.grid = None
 
-    def web_service_data(self, grid):
+    def create_status(self):
+        """
+
+        :return:
+        """
+        self.grid = QGridLayout()
+        self.grid.addWidget(QLabel('Daemon Name '), 1, 0)
+        self.grid.addWidget(QLabel('Status'), 1, 1)
+
+        self.setLayout(self.grid)
+
+    def web_service_data(self):
         """
         Get web service data and add to layout
 
@@ -69,38 +81,38 @@ class AlignakStatus(QWidget):
         :type grid: QGridLayout
         """
 
-        req = requests.get('http://94.76.229.155:8888' + '/alignak_map')
+        req = requests.get(get_app_config().get('Backend', 'web_service') + '/alignak_map')
         alignak_map = req.json()
 
         line = 2
         for poller in alignak_map['poller']:
-            grid.addWidget(QLabel(poller), line, 0)
-            grid.addWidget(QLabel(str(alignak_map['poller'][poller]['alive'])), line, 1)
+            self.grid.addWidget(QLabel(poller), line, 0)
+            self.grid.addWidget(QLabel(str(alignak_map['poller'][poller]['alive'])), line, 1)
             line += 1
 
         for receiver in alignak_map['receiver']:
-            grid.addWidget(QLabel(receiver), line, 0)
-            grid.addWidget(QLabel(str(alignak_map['receiver'][receiver]['alive'])), line, 1)
+            self.grid.addWidget(QLabel(receiver), line, 0)
+            self.grid.addWidget(QLabel(str(alignak_map['receiver'][receiver]['alive'])), line, 1)
             line += 1
 
         for reactionner in alignak_map['reactionner']:
-            grid.addWidget(QLabel(reactionner), line, 0)
-            grid.addWidget(QLabel(str(alignak_map['reactionner'][reactionner]['alive'])), line, 1)
+            self.grid.addWidget(QLabel(reactionner), line, 0)
+            self.grid.addWidget(QLabel(str(alignak_map['reactionner'][reactionner]['alive'])), line, 1)
             line += 1
 
         for arbiter in alignak_map['arbiter']:
-            grid.addWidget(QLabel(arbiter), line, 0)
-            grid.addWidget(QLabel(str(alignak_map['arbiter'][arbiter]['alive'])), line, 1)
+            self.grid.addWidget(QLabel(arbiter), line, 0)
+            self.grid.addWidget(QLabel(str(alignak_map['arbiter'][arbiter]['alive'])), line, 1)
             line += 1
 
         for scheduler in alignak_map['scheduler']:
-            grid.addWidget(QLabel(scheduler), line, 0)
-            grid.addWidget(QLabel(str(alignak_map['scheduler'][scheduler]['alive'])), line, 1)
+            self.grid.addWidget(QLabel(scheduler), line, 0)
+            self.grid.addWidget(QLabel(str(alignak_map['scheduler'][scheduler]['alive'])), line, 1)
             line += 1
 
         for broker in alignak_map['broker']:
-            grid.addWidget(QLabel(broker), line, 0)
-            grid.addWidget(QLabel(str(alignak_map['broker'][broker]['alive'])), line, 1)
+            self.grid.addWidget(QLabel(broker), line, 0)
+            self.grid.addWidget(QLabel(str(alignak_map['broker'][broker]['alive'])), line, 1)
             line += 1
 
     def show_states(self):
@@ -108,12 +120,7 @@ class AlignakStatus(QWidget):
         Show AlignakStatus
 
         """
-        grid = QGridLayout()
-        grid.addWidget(QLabel('Daemon Name '), 1, 0)
-        grid.addWidget(QLabel('Status'), 1, 1)
 
-        self.web_service_data(grid)
-
-        self.setLayout(grid)
+        self.web_service_data()
 
         self.show()
