@@ -30,6 +30,7 @@ from logging import getLogger
 
 from alignak_app.utils import get_template
 from alignak_app.utils import get_app_config, get_image_path
+from alignak_app.status import AlignakStatus
 from alignak_app import __releasenotes__, __version__, __copyright__, __doc_url__, __project_url__
 from alignak_app import __application__
 
@@ -65,8 +66,10 @@ class TrayIcon(QSystemTrayIcon):
         self.menu = QMenu(parent)
         self.hosts_actions = {}
         self.services_actions = {}
+        self.status_action = None
         self.about_menu = None
         self.quit_menu = None
+        self.alignak_status = None
 
     def build_menu(self):
         """
@@ -77,6 +80,7 @@ class TrayIcon(QSystemTrayIcon):
         # Create actions
         self.create_hosts_actions()
         self.create_services_actions()
+        self.alignak_status_action()
         self.create_about_action()
         self.create_quit_action()
         self.add_actions_to_menu()
@@ -148,6 +152,24 @@ class TrayIcon(QSystemTrayIcon):
         )
         self.services_actions['services_unknown'].triggered.connect(self.open_url)
 
+    def alignak_status_action(self):
+        """
+
+        :return:
+        """
+
+        self.status_action = QAction(QIcon(get_image_path('icon')), 'Alignak States', self)
+        self.alignak_status = AlignakStatus()
+        self.status_action.triggered.connect(self.show_alignak_status)
+
+    def show_alignak_status(self):
+        """
+
+        :return:
+        """
+
+        self.alignak_status.show_states()
+
     def create_about_action(self):
         """
         Create about action.
@@ -205,6 +227,9 @@ class TrayIcon(QSystemTrayIcon):
         """
 
         logger.info('Add action to menu')
+        self.menu.addAction(self.status_action)
+        self.menu.addSeparator()
+
         self.menu.addAction(self.hosts_actions['hosts_up'])
         self.menu.addAction(self.hosts_actions['hosts_down'])
         self.menu.addAction(self.hosts_actions['hosts_unreach'])

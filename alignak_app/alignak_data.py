@@ -56,6 +56,7 @@ class AlignakData(object):
 
         # Backend login
         backend_url = get_app_config().get('Backend', 'backend_url')
+        logger.debug('Backend URL : ' + backend_url)
         self.backend = Backend(backend_url)
 
         logger.info('Try to connect to backend...')
