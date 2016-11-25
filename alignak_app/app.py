@@ -44,6 +44,7 @@ except ImportError:
 
 logger = getLogger()
 
+# noinspection PyTypeChecker
 create_logger(logger)
 
 

@@ -33,6 +33,7 @@ from logging.handlers import TimedRotatingFileHandler
 
 from string import Template
 import configparser
+from configparser import NoOptionError
 
 
 logger = getLogger(__name__)
@@ -135,13 +136,19 @@ def set_app_config():
         sys.exit('Configuration file is missing in [' + config_file + '] !')
 
 
-def get_app_config():
+def get_app_config(section, option, boolean=False):
     """
     Return global application configuration
 
     """
 
-    return app_config
+    if boolean:
+        return app_config.getboolean(section, option)
+    else:
+        try:
+            return app_config.get(section, option)
+        except NoOptionError as e:
+            logger.error('Bad Option : ' + str(e))
 
 
 # Application Templates

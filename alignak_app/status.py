@@ -81,39 +81,49 @@ class AlignakStatus(QWidget):
         :type grid: QGridLayout
         """
 
-        req = requests.get(get_app_config().get('Backend', 'web_service') + '/alignak_map')
-        alignak_map = req.json()
+        req = None
 
-        line = 2
-        for poller in alignak_map['poller']:
-            self.grid.addWidget(QLabel(poller), line, 0)
-            self.grid.addWidget(QLabel(str(alignak_map['poller'][poller]['alive'])), line, 1)
-            line += 1
+        try:
+            req = requests.get(get_app_config('Backend', 'web_service') + '/alignak_map')
+        except TypeError as e:
+            logger.error('Bad value in "web_service" option : ' + str(e))
 
-        for receiver in alignak_map['receiver']:
-            self.grid.addWidget(QLabel(receiver), line, 0)
-            self.grid.addWidget(QLabel(str(alignak_map['receiver'][receiver]['alive'])), line, 1)
-            line += 1
+        if req:
+            alignak_map = req.json()
 
-        for reactionner in alignak_map['reactionner']:
-            self.grid.addWidget(QLabel(reactionner), line, 0)
-            self.grid.addWidget(QLabel(str(alignak_map['reactionner'][reactionner]['alive'])), line, 1)
-            line += 1
+            line = 2
+            for poller in alignak_map['poller']:
+                self.grid.addWidget(QLabel(poller), line, 0)
+                self.grid.addWidget(QLabel(str(alignak_map['poller'][poller]['alive'])), line, 1)
+                line += 1
 
-        for arbiter in alignak_map['arbiter']:
-            self.grid.addWidget(QLabel(arbiter), line, 0)
-            self.grid.addWidget(QLabel(str(alignak_map['arbiter'][arbiter]['alive'])), line, 1)
-            line += 1
+            for receiver in alignak_map['receiver']:
+                self.grid.addWidget(QLabel(receiver), line, 0)
+                self.grid.addWidget(QLabel(str(alignak_map['receiver'][receiver]['alive'])), line, 1)
+                line += 1
 
-        for scheduler in alignak_map['scheduler']:
-            self.grid.addWidget(QLabel(scheduler), line, 0)
-            self.grid.addWidget(QLabel(str(alignak_map['scheduler'][scheduler]['alive'])), line, 1)
-            line += 1
+            for reactionner in alignak_map['reactionner']:
+                self.grid.addWidget(QLabel(reactionner), line, 0)
+                self.grid.addWidget(QLabel(str(alignak_map['reactionner'][reactionner]['alive'])), line, 1)
+                line += 1
 
-        for broker in alignak_map['broker']:
-            self.grid.addWidget(QLabel(broker), line, 0)
-            self.grid.addWidget(QLabel(str(alignak_map['broker'][broker]['alive'])), line, 1)
-            line += 1
+            for arbiter in alignak_map['arbiter']:
+                self.grid.addWidget(QLabel(arbiter), line, 0)
+                self.grid.addWidget(QLabel(str(alignak_map['arbiter'][arbiter]['alive'])), line, 1)
+                line += 1
+
+            for scheduler in alignak_map['scheduler']:
+                self.grid.addWidget(QLabel(scheduler), line, 0)
+                self.grid.addWidget(QLabel(str(alignak_map['scheduler'][scheduler]['alive'])), line, 1)
+                line += 1
+
+            for broker in alignak_map['broker']:
+                self.grid.addWidget(QLabel(broker), line, 0)
+                self.grid.addWidget(QLabel(str(alignak_map['broker'][broker]['alive'])), line, 1)
+                line += 1
+        else:
+            self.grid.addWidget(QLabel('Alignak Web Service not available !'), 2, 0)
+            self.grid.addWidget(QLabel('N/A'), 2, 1)
 
     def show_states(self):
         """

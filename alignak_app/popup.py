@@ -164,7 +164,7 @@ class AppPopup(QDialog):
         """
 
         # Get position choosed by user
-        pos = get_app_config().get('Alignak-App', 'position')
+        pos = get_app_config('Alignak-App', 'position')
         points = pos.split(':')
 
         # Move notification popup
@@ -217,7 +217,7 @@ class AppPopup(QDialog):
         self.create_content(hosts_states, services_states, changes=changes)
 
         # Get duration
-        duration = int(get_app_config().get('Alignak-App', 'duration'))
+        duration = int(get_app_config('Alignak-App', 'duration'))
         duration *= 1000
         logger.debug('Position Duration : ' + str(duration))
 

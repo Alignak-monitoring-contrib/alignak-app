@@ -51,11 +51,11 @@ class AlignakData(object):
         """
 
         # Credentials
-        username = get_app_config().get('Backend', 'username')
-        password = get_app_config().get('Backend', 'password')
+        username = get_app_config('Backend', 'username')
+        password = get_app_config('Backend', 'password')
 
         # Backend login
-        backend_url = get_app_config().get('Backend', 'backend_url')
+        backend_url = get_app_config('Backend', 'backend_url')
         logger.debug('Backend URL : ' + backend_url)
         self.backend = Backend(backend_url)
 

@@ -63,7 +63,7 @@ class AppNotifier(QSystemTrayIcon):
 
         self.tray_icon = tray_icon
 
-        check_interval = int(get_app_config().get('Alignak-App', 'check_interval'))
+        check_interval = int(get_app_config('Alignak-App', 'check_interval'))
         check_interval *= 1000
         logger.debug('Check Interval : ' + str(check_interval))
 
@@ -90,7 +90,7 @@ class AppNotifier(QSystemTrayIcon):
         :return: notifications in settings.cfg
         :rtype: bool
         """
-        return get_app_config().getboolean('Alignak-App', 'notifications')
+        return get_app_config('Alignak-App', 'notifications', boolean=True)
 
     @staticmethod
     def model_changes():
