@@ -81,15 +81,11 @@ QToolButton{
 
         # Reset app_config to None
         utils.app_config = None
-        under_test = utils.get_app_config()
 
-        self.assertIsNone(under_test)
         self.assertIsNone(utils.app_config)
 
         utils.set_app_config()
 
-        under_test = utils.get_app_config()
-        self.assertIsNotNone(under_test)
         self.assertIsNotNone(utils.app_config)
 
     def test_get_image_path(self):

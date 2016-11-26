@@ -43,7 +43,7 @@ class TestAlignakData(unittest2.TestCase):
         # Compare config url and backend
         self.assertEquals(
             under_test.backend.url_endpoint_root,
-            get_app_config().get('Backend', 'backend_url')
+            get_app_config('Backend', 'backend_url')
         )
         self.assertTrue(under_test.backend.authenticated)
 
