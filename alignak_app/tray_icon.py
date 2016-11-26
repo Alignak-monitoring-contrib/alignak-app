@@ -28,18 +28,15 @@ import webbrowser
 
 from logging import getLogger
 
-from alignak_app.utils import get_template
 from alignak_app.utils import get_app_config, get_image_path
 from alignak_app.status import AlignakStatus
-from alignak_app import __releasenotes__, __version__, __copyright__, __doc_url__, __project_url__
-from alignak_app import __application__
+from alignak_app.about import AppAbout
 
 try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QAction  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QMessageBox  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     try:
@@ -47,7 +44,6 @@ except ImportError:  # pragma: no cover
         from PyQt4.Qt import QSystemTrayIcon  # pylint: disable=import-error
         from PyQt4.Qt import QMenu  # pylint: disable=import-error
         from PyQt4.Qt import QAction  # pylint: disable=import-error
-        from PyQt4.Qt import QMessageBox  # pylint: disable=import-error
         from PyQt4.QtGui import QIcon  # pylint: disable=import-error
     except ImportError:
         sys.exit('\nYou must have PyQt installed to run this app.\nPlease read the doc.')
@@ -70,6 +66,7 @@ class TrayIcon(QSystemTrayIcon):
         self.about_menu = None
         self.quit_menu = None
         self.alignak_status = None
+        self.about = None
 
     def build_menu(self):
         """
@@ -163,52 +160,23 @@ class TrayIcon(QSystemTrayIcon):
         self.alignak_status = AlignakStatus()
         self.alignak_status.create_status()
 
-        self.status_action.triggered.connect(self.show_alignak_status)
-
-    def show_alignak_status(self):
-        """
-
-        :return:
-        """
-
-        self.alignak_status.show_states()
+        self.status_action.triggered.connect(self.alignak_status.show_states)
 
     def create_about_action(self):
         """
-        Create about action.
+        Create AppAbout and link to about action.
 
         """
 
         logger.info('Create About Action')
 
+        self.about = AppAbout()
+        self.about.create_window()
+
         img_about = get_image_path('about')
         self.about_menu = QAction(QIcon(img_about), 'About', self)
 
-        self.about_menu.triggered.connect(self.about_message)
-
-    def about_message(self):  # pragma: no cover
-        """
-        Show about message.
-
-        """
-
-        msg_box = QMessageBox()
-        msg_box.setWindowIcon(self.icon())
-
-        about_dict = dict(
-            application=__application__,
-            version=__version__,
-            copyright=__copyright__,
-            project_url=__project_url__,
-            doc_url=__doc_url__,
-            releasenotes=__releasenotes__
-        )
-
-        msg = get_template('about.tpl', about_dict)
-        logger.debug('About Message : ' + str(msg))
-
-        msg_box.about(None, 'About ' + __application__, msg)
-        msg_box.show()
+        self.about_menu.triggered.connect(self.about.show_about)
 
     def create_quit_action(self):
         """
