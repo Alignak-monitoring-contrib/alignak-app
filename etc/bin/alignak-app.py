@@ -19,6 +19,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+    Launch Alignak-app
+"""
+
 import sys
 
 from alignak_app.app import AlignakApp
