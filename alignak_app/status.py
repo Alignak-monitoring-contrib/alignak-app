@@ -36,11 +36,13 @@ try:
     from PyQt5.QtWidgets import QGridLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon, QPixmap  # pylint: disable=no-name-in-module
+    from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication, QWidget  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout  # pylint: disable=import-error
     from PyQt4.Qt import QLabel  # pylint: disable=import-error
     from PyQt4.QtGui import QIcon, QPixmap  # pylint: disable=import-error
+    from PyQt4.QtCore import Qt  # pylint: disable=import-error
 
 logger = getLogger(__name__)
 
@@ -93,8 +95,9 @@ class AlignakStatus(QWidget):
 
         self.setLayout(self.grid)
 
-        self.alignak_ws_request()
-        self.create_daemons_labels()
+        if get_app_config('Backend', 'web_service_status', boolean=True):
+            self.alignak_ws_request()
+            self.create_daemons_labels()
 
         self.web_service_data()
         self.show_at_start()
@@ -107,10 +110,10 @@ class AlignakStatus(QWidget):
 
         try:
             self.ws_request = requests.get(
-                get_app_config('Backend', 'web_service') + '/alignak_map'
+                get_app_config('Backend', 'web_service_url') + '/alignak_map'
             )
         except TypeError as e:
-            logger.error('Bad value in "web_service" option : ' + str(e))
+            logger.error('Bad value in "web_service_url" option : ' + str(e))
 
     def create_daemons_labels(self):
         """
@@ -147,10 +150,10 @@ class AlignakStatus(QWidget):
 
         """
 
-        self.grid.addWidget(QLabel('Daemon Name '), 1, 0)
-        self.grid.addWidget(QLabel('Status'), 1, 1)
+        if self.ws_request and get_app_config('Backend', 'web_service_status'):
+            self.grid.addWidget(QLabel('Daemon Name '), 1, 0)
+            self.grid.addWidget(QLabel('Status'), 1, 1)
 
-        if self.ws_request:
             alignak_map = self.ws_request.json()
 
             for d in self.daemons_label:
@@ -167,8 +170,18 @@ class AlignakStatus(QWidget):
                     )
                     line += 1
         else:
-            self.grid.addWidget(QLabel('Alignak Web Service not available !'), 2, 0)
-            self.grid.addWidget(QLabel('N/A'), 2, 1)
+            info_title_label = QLabel(
+                '<span style="color: blue;">Alignak <b>Web Service</b> is not available !</span>'
+            )
+            self.grid.addWidget(info_title_label, 0, 0)
+
+            info_label = QLabel(
+                'Install it on your <b>Alignak server</b>. '
+                'And configure the <b>settings</b> accordingly in <b>Alignak-app</b>'
+            )
+            info_label.setWordWrap(True)
+            info_label.setAlignment(Qt.AlignTop)
+            self.grid.addWidget(info_label, 1, 0)
 
     def show_states(self):
         """
