@@ -211,6 +211,10 @@ class AppPopup(QDialog):
         # Set position of popup
         self.set_position()
 
+        # Check if services and hosts are positive
+        if services_states['ok'] < 0 or hosts_states['up'] < 0:
+            title = 'CRITICAL'
+
         # Prepare notification
         self.state.setText(title)
         self.setStyleSheet(self.get_style_sheet(title))
