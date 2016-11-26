@@ -47,7 +47,7 @@ logger = getLogger(__name__)
 
 class AlignakStatus(QWidget):
     """
-    Class who create QWidget for Alignak status.
+        Class who create QWidget for Alignak status.
     """
 
     def __init__(self, parent=None):
@@ -74,6 +74,10 @@ class AlignakStatus(QWidget):
         self.daemons_label = {}
 
     def show_at_start(self):
+        """
+        Show AlignakStatus on start
+
+        """
         if self.start:
             self.show()
         else:
@@ -102,14 +106,16 @@ class AlignakStatus(QWidget):
         """
 
         try:
-            self.ws_request = requests.get(get_app_config('Backend', 'web_service') + '/alignak_map')
+            self.ws_request = requests.get(
+                get_app_config('Backend', 'web_service') + '/alignak_map'
+            )
         except TypeError as e:
             logger.error('Bad value in "web_service" option : ' + str(e))
 
     def create_daemons_labels(self):
         """
+        Create QLabels and Pixmaps for each daemons
 
-        :return:
         """
 
         if self.ws_request:
@@ -129,9 +135,13 @@ class AlignakStatus(QWidget):
                 }
                 self.daemons_label['poller'][poller]['label'].setObjectName(poller)
                 if alignak_map['poller'][poller]['alive']:
-                    self.daemons_label['poller'][poller]['icon'].setPixmap(QPixmap(get_image_path('host_up')))
+                    self.daemons_label['poller'][poller]['icon'].setPixmap(
+                        QPixmap(get_image_path('host_up'))
+                    )
                 else:
-                    self.daemons_label['poller'][poller]['icon'].setPixmap(QPixmap(get_image_path('host_down')))
+                    self.daemons_label['poller'][poller]['icon'].setPixmap(
+                        QPixmap(get_image_path('host_down'))
+                    )
 
             for receiver in alignak_map['receiver']:
                 self.daemons_label['receiver'][receiver] = {
@@ -140,9 +150,13 @@ class AlignakStatus(QWidget):
                 }
                 self.daemons_label['receiver'][receiver]['label'].setObjectName(receiver)
                 if alignak_map['receiver'][receiver]['alive']:
-                    self.daemons_label['receiver'][receiver]['icon'].setPixmap(QPixmap(get_image_path('host_up')))
+                    self.daemons_label['receiver'][receiver]['icon'].setPixmap(
+                        QPixmap(get_image_path('host_up'))
+                    )
                 else:
-                    self.daemons_label['receiver'][receiver]['icon'].setPixmap(QPixmap(get_image_path('host_down')))
+                    self.daemons_label['receiver'][receiver]['icon'].setPixmap(
+                        QPixmap(get_image_path('host_down'))
+                    )
 
             for reactionner in alignak_map['reactionner']:
                 self.daemons_label['reactionner'][reactionner] = {
@@ -151,9 +165,13 @@ class AlignakStatus(QWidget):
                 }
                 self.daemons_label['reactionner'][reactionner]['label'].setObjectName(reactionner)
                 if alignak_map['reactionner'][reactionner]['alive']:
-                    self.daemons_label['reactionner'][reactionner]['icon'].setPixmap(QPixmap(get_image_path('host_up')))
+                    self.daemons_label['reactionner'][reactionner]['icon'].setPixmap(
+                        QPixmap(get_image_path('host_up'))
+                    )
                 else:
-                    self.daemons_label['reactionner'][reactionner]['icon'].setPixmap(QPixmap(get_image_path('host_down')))
+                    self.daemons_label['reactionner'][reactionner]['icon'].setPixmap(
+                        QPixmap(get_image_path('host_down'))
+                    )
 
             for arbiter in alignak_map['arbiter']:
                 self.daemons_label['arbiter'][arbiter] = {
@@ -162,9 +180,13 @@ class AlignakStatus(QWidget):
                 }
                 self.daemons_label['arbiter'][arbiter]['label'].setObjectName(arbiter)
                 if alignak_map['arbiter'][arbiter]['alive']:
-                    self.daemons_label['arbiter'][arbiter]['icon'].setPixmap(QPixmap(get_image_path('host_up')))
+                    self.daemons_label['arbiter'][arbiter]['icon'].setPixmap(
+                        QPixmap(get_image_path('host_up'))
+                    )
                 else:
-                    self.daemons_label['arbiter'][arbiter]['icon'].setPixmap(QPixmap(get_image_path('host_down')))
+                    self.daemons_label['arbiter'][arbiter]['icon'].setPixmap(
+                        QPixmap(get_image_path('host_down'))
+                    )
 
             for scheduler in alignak_map['scheduler']:
                 self.daemons_label['scheduler'][scheduler] = {
@@ -173,9 +195,13 @@ class AlignakStatus(QWidget):
                 }
                 self.daemons_label['scheduler'][scheduler]['label'].setObjectName(scheduler)
                 if alignak_map['scheduler'][scheduler]['alive']:
-                    self.daemons_label['scheduler'][scheduler]['icon'].setPixmap(QPixmap(get_image_path('host_up')))
+                    self.daemons_label['scheduler'][scheduler]['icon'].setPixmap(
+                        QPixmap(get_image_path('host_up'))
+                    )
                 else:
-                    self.daemons_label['scheduler'][scheduler]['icon'].setPixmap(QPixmap(get_image_path('host_down')))
+                    self.daemons_label['scheduler'][scheduler]['icon'].setPixmap(
+                        QPixmap(get_image_path('host_down'))
+                    )
 
             for broker in alignak_map['broker']:
                 self.daemons_label['broker'][broker] = {
@@ -184,9 +210,13 @@ class AlignakStatus(QWidget):
                 }
                 self.daemons_label['broker'][broker]['label'].setObjectName(broker)
                 if alignak_map['broker'][broker]['alive']:
-                    self.daemons_label['broker'][broker]['icon'].setPixmap(QPixmap(get_image_path('host_up')))
+                    self.daemons_label['broker'][broker]['icon'].setPixmap(
+                        QPixmap(get_image_path('host_up'))
+                    )
                 else:
-                    self.daemons_label['broker'][broker]['icon'].setPixmap(QPixmap(get_image_path('host_down')))
+                    self.daemons_label['broker'][broker]['icon'].setPixmap(
+                        QPixmap(get_image_path('host_down'))
+                    )
 
     def web_service_data(self):
         """
@@ -205,33 +235,57 @@ class AlignakStatus(QWidget):
 
             line = 2
             for poller in alignak_map['poller']:
-                self.grid.addWidget(self.daemons_label['poller'][poller]['label'], line, 0)
-                self.grid.addWidget(self.daemons_label['poller'][poller]['icon'], line, 1)
+                self.grid.addWidget(
+                    self.daemons_label['poller'][poller]['label'], line, 0
+                )
+                self.grid.addWidget(
+                    self.daemons_label['poller'][poller]['icon'], line, 1
+                )
                 line += 1
 
             for receiver in alignak_map['receiver']:
-                self.grid.addWidget(self.daemons_label['receiver'][receiver]['label'], line, 0)
-                self.grid.addWidget(self.daemons_label['receiver'][receiver]['icon'], line, 1)
+                self.grid.addWidget(
+                    self.daemons_label['receiver'][receiver]['label'], line, 0
+                )
+                self.grid.addWidget(
+                    self.daemons_label['receiver'][receiver]['icon'], line, 1
+                )
                 line += 1
 
             for reactionner in alignak_map['reactionner']:
-                self.grid.addWidget(self.daemons_label['reactionner'][reactionner]['label'], line, 0)
-                self.grid.addWidget(self.daemons_label['reactionner'][reactionner]['icon'], line, 1)
+                self.grid.addWidget(
+                    self.daemons_label['reactionner'][reactionner]['label'], line, 0
+                )
+                self.grid.addWidget(
+                    self.daemons_label['reactionner'][reactionner]['icon'], line, 1
+                )
                 line += 1
 
             for arbiter in alignak_map['arbiter']:
-                self.grid.addWidget(self.daemons_label['arbiter'][arbiter]['label'], line, 0)
-                self.grid.addWidget(self.daemons_label['arbiter'][arbiter]['icon'], line, 1)
+                self.grid.addWidget(
+                    self.daemons_label['arbiter'][arbiter]['label'], line, 0
+                )
+                self.grid.addWidget(
+                    self.daemons_label['arbiter'][arbiter]['icon'], line, 1
+                )
                 line += 1
 
             for scheduler in alignak_map['scheduler']:
-                self.grid.addWidget(self.daemons_label['scheduler'][scheduler]['label'], line, 0)
-                self.grid.addWidget(self.daemons_label['scheduler'][scheduler]['icon'], line, 1)
+                self.grid.addWidget(
+                    self.daemons_label['scheduler'][scheduler]['label'], line, 0
+                )
+                self.grid.addWidget(
+                    self.daemons_label['scheduler'][scheduler]['icon'], line, 1
+                )
                 line += 1
 
             for broker in alignak_map['broker']:
-                self.grid.addWidget(self.daemons_label['broker'][broker]['label'], line, 0)
-                self.grid.addWidget(self.daemons_label['broker'][broker]['icon'], line, 1)
+                self.grid.addWidget(
+                    self.daemons_label['broker'][broker]['label'], line, 0
+                )
+                self.grid.addWidget(
+                    self.daemons_label['broker'][broker]['icon'], line, 1
+                )
                 line += 1
         else:
             self.grid.addWidget(QLabel('Alignak Web Service not available !'), 2, 0)
