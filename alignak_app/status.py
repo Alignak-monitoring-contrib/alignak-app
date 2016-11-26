@@ -73,13 +73,14 @@ class AlignakStatus(QWidget):
             'broker'
         ]
         self.ws_request = None
-        self.daemons_label = {}
+        self.daemons_labels = {}
 
     def show_at_start(self):
         """
         Show AlignakStatus on start
 
         """
+
         if self.start and get_app_config('Backend', 'web_service_status', boolean=True):
             self.show()
         else:
@@ -91,14 +92,15 @@ class AlignakStatus(QWidget):
 
         """
 
+        # Add Layout
         self.grid = QGridLayout()
-
         self.setLayout(self.grid)
 
+        # Display daemons status or info windows
         if get_app_config('Backend', 'web_service_status', boolean=True):
             self.alignak_ws_request()
-            self.create_daemons_labels()
 
+            self.create_daemons_labels()
             self.daemons_to_layout()
         else:
             self.web_service_info()
@@ -107,8 +109,8 @@ class AlignakStatus(QWidget):
 
     def alignak_ws_request(self):
         """
+        Request to get json data from alignak web service
 
-        :return:
         """
 
         try:
@@ -126,27 +128,28 @@ class AlignakStatus(QWidget):
 
         for daemon in self.daemons:
             # Initialize daemon category dict
-            self.daemons_label[daemon] = {}
+            self.daemons_labels[daemon] = {}
 
             # Get json data from Web_service
             alignak_map = self.ws_request.json()
 
             # Create QLabel and Pixmap for each sub_daemon
             for sub_daemon in alignak_map[daemon]:
-                self.daemons_label[daemon][sub_daemon] = {
+                self.daemons_labels[daemon][sub_daemon] = {
                     'label': QLabel(sub_daemon),
                     'icon': QLabel()
                 }
 
-                self.daemons_label[daemon][sub_daemon]['label'].setObjectName(sub_daemon)
+                self.daemons_labels[daemon][sub_daemon]['label'].setObjectName(sub_daemon)
+                self.daemons_labels[daemon][sub_daemon]['icon'].setAlignment(Qt.AlignCenter)
 
                 if alignak_map[daemon][sub_daemon]['alive']:
-                    self.daemons_label[daemon][sub_daemon]['icon'].setPixmap(
+                    self.daemons_labels[daemon][sub_daemon]['icon'].setPixmap(
                         QPixmap(get_image_path('checked'))
                     )
                 else:
-                    self.daemons_label[daemon][sub_daemon]['icon'].setPixmap(
-                        QPixmap(get_image_path('host_down'))
+                    self.daemons_labels[daemon][sub_daemon]['icon'].setPixmap(
+                        QPixmap(get_image_path('unvalid'))
                     )
 
     def web_service_info(self):
@@ -171,27 +174,30 @@ class AlignakStatus(QWidget):
 
     def daemons_to_layout(self):
         """
-        Add all daemons to layout
+        Add all daemons label to layout
 
         """
 
         if self.ws_request:
-            self.grid.addWidget(QLabel('Daemon Name '), 1, 0)
-            self.grid.addWidget(QLabel('Status'), 1, 1)
+            self.grid.addWidget(QLabel('<b>Daemon Name</b> '), 1, 0)
+
+            status_title = QLabel('<b>Status</b>')
+            status_title.setAlignment(Qt.AlignCenter)
+            self.grid.addWidget(status_title, 1, 1)
 
             alignak_map = self.ws_request.json()
 
-            for d in self.daemons_label:
-                logger.debug(self.daemons_label[d])
+            for d in self.daemons_labels:
+                logger.debug(self.daemons_labels[d])
 
             line = 2
             for daemon in self.daemons:
                 for sub_daemon in alignak_map[daemon]:
                     self.grid.addWidget(
-                        self.daemons_label[daemon][sub_daemon]['label'], line, 0
+                        self.daemons_labels[daemon][sub_daemon]['label'], line, 0
                     )
                     self.grid.addWidget(
-                        self.daemons_label[daemon][sub_daemon]['icon'], line, 1
+                        self.daemons_labels[daemon][sub_daemon]['icon'], line, 1
                     )
                     line += 1
 
@@ -210,12 +216,12 @@ class AlignakStatus(QWidget):
             # Update daemons QPixmap for each sub_daemon
             for sub_daemon in alignak_map[daemon]:
                 if alignak_map[daemon][sub_daemon]['alive']:
-                    self.daemons_label[daemon][sub_daemon]['icon'].setPixmap(
+                    self.daemons_labels[daemon][sub_daemon]['icon'].setPixmap(
                         QPixmap(get_image_path('checked'))
                     )
                 else:
-                    self.daemons_label[daemon][sub_daemon]['icon'].setPixmap(
-                        QPixmap(get_image_path('host_down'))
+                    self.daemons_labels[daemon][sub_daemon]['icon'].setPixmap(
+                        QPixmap(get_image_path('unvalid'))
                     )
 
     def show_states(self):
