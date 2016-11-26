@@ -80,7 +80,7 @@ class AlignakStatus(QWidget):
         Show AlignakStatus on start
 
         """
-        if self.start:
+        if self.start and get_app_config('Backend', 'web_service_status', boolean=True):
             self.show()
         else:
             self.start = False
