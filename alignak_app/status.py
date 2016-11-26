@@ -57,8 +57,8 @@ class AlignakStatus(QWidget):
         # General settings
         self.setWindowTitle(__application__ + ': Alignak-States')
         self.setContentsMargins(0, 0, 0, 0)
-        self.setMinimumSize(425, 270)
-        self.setMaximumSize(425, 270)
+        self.setMinimumWidth(425)
+        self.setMinimumWidth(425)
         self.setWindowIcon(QIcon(get_image_path('icon')))
         self.move(QApplication.desktop().screen().rect().center() - self.rect().center())
         # Fields
@@ -99,7 +99,10 @@ class AlignakStatus(QWidget):
             self.alignak_ws_request()
             self.create_daemons_labels()
 
-        self.web_service_data()
+            self.daemons_to_layout()
+        else:
+            self.web_service_info()
+
         self.show_at_start()
 
     def alignak_ws_request(self):
@@ -134,23 +137,45 @@ class AlignakStatus(QWidget):
                     'label': QLabel(sub_daemon),
                     'icon': QLabel()
                 }
+
                 self.daemons_label[daemon][sub_daemon]['label'].setObjectName(sub_daemon)
+
                 if alignak_map[daemon][sub_daemon]['alive']:
                     self.daemons_label[daemon][sub_daemon]['icon'].setPixmap(
-                        QPixmap(get_image_path('host_up'))
+                        QPixmap(get_image_path('checked'))
                     )
                 else:
                     self.daemons_label[daemon][sub_daemon]['icon'].setPixmap(
                         QPixmap(get_image_path('host_down'))
                     )
 
-    def web_service_data(self):
+    def web_service_info(self):
         """
-        Get web service data and add to layout
+        Display information text if "web_service" is not configured
 
         """
 
-        if self.ws_request and get_app_config('Backend', 'web_service_status'):
+        info_title_label = QLabel(
+            '<span style="color: blue;">Alignak <b>Web Service</b> is not available !</span>'
+        )
+        self.grid.addWidget(info_title_label, 0, 0)
+
+        info_label = QLabel(
+            'Install it on your <b>Alignak server</b>. '
+            'And configure the <b>settings</b> accordingly in <b>Alignak-app</b>'
+        )
+        info_label.setWordWrap(True)
+        info_label.setAlignment(Qt.AlignTop)
+
+        self.grid.addWidget(info_label, 1, 0)
+
+    def daemons_to_layout(self):
+        """
+        Add all daemons to layout
+
+        """
+
+        if self.ws_request:
             self.grid.addWidget(QLabel('Daemon Name '), 1, 0)
             self.grid.addWidget(QLabel('Status'), 1, 1)
 
@@ -169,19 +194,29 @@ class AlignakStatus(QWidget):
                         self.daemons_label[daemon][sub_daemon]['icon'], line, 1
                     )
                     line += 1
-        else:
-            info_title_label = QLabel(
-                '<span style="color: blue;">Alignak <b>Web Service</b> is not available !</span>'
-            )
-            self.grid.addWidget(info_title_label, 0, 0)
 
-            info_label = QLabel(
-                'Install it on your <b>Alignak server</b>. '
-                'And configure the <b>settings</b> accordingly in <b>Alignak-app</b>'
-            )
-            info_label.setWordWrap(True)
-            info_label.setAlignment(Qt.AlignTop)
-            self.grid.addWidget(info_label, 1, 0)
+    def update_status(self):
+        """
+        Check daemons states and update icons
+
+        """
+
+        # New request
+        self.alignak_ws_request()
+
+        for daemon in self.daemons:
+            alignak_map = self.ws_request.json()
+
+            # Update daemons QPixmap for each sub_daemon
+            for sub_daemon in alignak_map[daemon]:
+                if alignak_map[daemon][sub_daemon]['alive']:
+                    self.daemons_label[daemon][sub_daemon]['icon'].setPixmap(
+                        QPixmap(get_image_path('checked'))
+                    )
+                else:
+                    self.daemons_label[daemon][sub_daemon]['icon'].setPixmap(
+                        QPixmap(get_image_path('host_down'))
+                    )
 
     def show_states(self):
         """
@@ -189,6 +224,6 @@ class AlignakStatus(QWidget):
 
         """
 
-        self.web_service_data()
+        self.update_status()
 
         self.show()
