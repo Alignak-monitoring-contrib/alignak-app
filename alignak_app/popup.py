@@ -31,13 +31,13 @@ from alignak_app.utils import get_app_config, get_image_path
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication, QDialog  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QApplication, QWidget  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QLabel, QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import QTimer, Qt  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QPixmap, QIcon  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QApplication, QDialog  # pylint: disable=import-error
+    from PyQt4.Qt import QApplication, QWidget  # pylint: disable=import-error
     from PyQt4.Qt import QLabel, QPushButton  # pylint: disable=import-error
     from PyQt4.Qt import QHBoxLayout, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.QtCore import QTimer, Qt  # pylint: disable=import-error
@@ -47,13 +47,13 @@ except ImportError:  # pragma: no cover
 logger = getLogger(__name__)
 
 
-class AppPopup(QDialog):
+class AppPopup(QWidget):
     """
     Class who create notifications.
     """
 
     def __init__(self, parent=None):
-        QDialog.__init__(self, parent)
+        QWidget.__init__(self, parent)
         # General settings
         self.setWindowTitle(__application__)
         self.setContentsMargins(0, 0, 0, 0)
