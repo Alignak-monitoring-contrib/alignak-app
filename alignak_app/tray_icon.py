@@ -31,6 +31,7 @@ from logging import getLogger
 from alignak_app.utils import get_app_config, get_image_path
 from alignak_app.status import AlignakStatus
 from alignak_app.about import AppAbout
+from alignak_app.actions_factory import ActionFactory
 
 try:
     __import__('PyQt5')
@@ -63,10 +64,11 @@ class TrayIcon(QSystemTrayIcon):
         self.hosts_actions = {}
         self.services_actions = {}
         self.status_action = None
-        self.about_menu = None
-        self.quit_menu = None
+        self.about_action = None
+        self.quit_action = None
         self.alignak_status = None
         self.about = None
+        self.action_factory = ActionFactory()
 
     def build_menu(self):
         """
@@ -92,22 +94,22 @@ class TrayIcon(QSystemTrayIcon):
 
         logger.info('Create Host Actions')
 
-        self.hosts_actions['hosts_up'] = QAction(
-            QIcon(get_image_path('host_up')),
+        self.hosts_actions['hosts_up'] = self.action_factory.create(
+            'host_up',
             'Hosts UP, Wait...',
             self
         )
         self.hosts_actions['hosts_up'].triggered.connect(self.open_url)
 
-        self.hosts_actions['hosts_down'] = QAction(
-            QIcon(get_image_path('host_down')),
+        self.hosts_actions['hosts_down'] = self.action_factory.create(
+            'host_down',
             'Hosts DOWN, Wait...',
             self
         )
         self.hosts_actions['hosts_down'].triggered.connect(self.open_url)
 
-        self.hosts_actions['hosts_unreach'] = QAction(
-            QIcon(get_image_path('host_unreach')),
+        self.hosts_actions['hosts_unreach'] = self.action_factory.create(
+            'host_unreach',
             'Hosts UNREACHABLE, Wait...',
             self
         )
@@ -121,29 +123,29 @@ class TrayIcon(QSystemTrayIcon):
 
         logger.info('Create Service Actions')
 
-        self.services_actions['services_ok'] = QAction(
-            QIcon(get_image_path('service_ok')),
+        self.services_actions['services_ok'] = self.action_factory.create(
+            'service_ok',
             'Services OK, Wait...',
             self
         )
         self.services_actions['services_ok'].triggered.connect(self.open_url)
 
-        self.services_actions['services_warning'] = QAction(
-            QIcon(get_image_path('service_warning')),
+        self.services_actions['services_warning'] = self.action_factory.create(
+            'service_warning',
             'Services WARNING, Wait...',
             self
         )
         self.services_actions['services_warning'].triggered.connect(self.open_url)
 
-        self.services_actions['services_critical'] = QAction(
-            QIcon(get_image_path('service_critical')),
+        self.services_actions['services_critical'] = self.action_factory.create(
+            'service_critical',
             'Services CRITICAL, Wait...',
             self
         )
         self.services_actions['services_critical'].triggered.connect(self.open_url)
 
-        self.services_actions['services_unknown'] = QAction(
-            QIcon(get_image_path('service_unknown')),
+        self.services_actions['services_unknown'] = self.action_factory.create(
+            'service_unknown',
             'Services UNKNOWN, Wait...',
             self
         )
@@ -155,7 +157,11 @@ class TrayIcon(QSystemTrayIcon):
         :return:
         """
 
-        self.status_action = QAction(QIcon(get_image_path('icon')), 'Alignak States', self)
+        self.status_action = self.action_factory.create(
+            'icon',
+            'Alignak States',
+            self
+        )
 
         self.alignak_status = AlignakStatus()
         self.alignak_status.create_status()
@@ -173,10 +179,13 @@ class TrayIcon(QSystemTrayIcon):
         self.about = AppAbout()
         self.about.create_window()
 
-        img_about = get_image_path('about')
-        self.about_menu = QAction(QIcon(img_about), 'About', self)
+        self.about_action = self.action_factory.create(
+            'about',
+            'About',
+            self
+        )
 
-        self.about_menu.triggered.connect(self.about.show_about)
+        self.about_action.triggered.connect(self.about.show_about)
 
     def create_quit_action(self):
         """
@@ -186,10 +195,13 @@ class TrayIcon(QSystemTrayIcon):
 
         logger.info('Create Quit Action')
 
-        img_quit = get_image_path('exit')
-        self.quit_menu = QAction(QIcon(img_quit), 'Quit', self)
+        self.quit_action = self.action_factory.create(
+            'exit',
+            'Quit',
+            self
+        )
 
-        self.quit_menu.triggered.connect(self.quit_app)
+        self.quit_action.triggered.connect(self.quit_app)
 
     def add_actions_to_menu(self):
         """
@@ -212,8 +224,8 @@ class TrayIcon(QSystemTrayIcon):
         self.menu.addAction(self.services_actions['services_unknown'])
         self.menu.addSeparator()
 
-        self.menu.addAction(self.about_menu)
-        self.menu.addAction(self.quit_menu)
+        self.menu.addAction(self.about_action)
+        self.menu.addAction(self.quit_action)
 
     def update_menu_actions(self, hosts_states, services_states):
         """

@@ -93,23 +93,23 @@ class TestTrayIcon(unittest2.TestCase):
         """About QAction is created"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
-        self.assertIsNone(under_test.about_menu)
+        self.assertIsNone(under_test.about_action)
 
         under_test.create_about_action()
 
-        self.assertIsNotNone(under_test.about_menu)
-        self.assertIsInstance(under_test.about_menu, QAction)
+        self.assertIsNotNone(under_test.about_action)
+        self.assertIsInstance(under_test.about_action, QAction)
 
     def test_quit_action(self):
         """Quit QAction is created"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
-        self.assertIsNone(under_test.quit_menu)
+        self.assertIsNone(under_test.quit_action)
 
         under_test.create_quit_action()
 
-        self.assertIsNotNone(under_test.quit_menu)
-        self.assertIsInstance(under_test.quit_menu, QAction)
+        self.assertIsNotNone(under_test.quit_action)
+        self.assertIsInstance(under_test.quit_action, QAction)
 
     def test_build_menu(self):
         """Build Menu add QActions"""
