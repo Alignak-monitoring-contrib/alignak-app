@@ -28,7 +28,7 @@ import webbrowser
 
 from logging import getLogger
 
-from alignak_app.utils import get_app_config, get_image_path
+from alignak_app.utils import get_app_config
 from alignak_app.status import AlignakStatus
 from alignak_app.about import AppAbout
 from alignak_app.actions_factory import ActionFactory
@@ -37,15 +37,11 @@ try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QAction  # pylint: disable=no-name-in-module
-    from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     try:
         __import__('PyQt4')
         from PyQt4.Qt import QSystemTrayIcon  # pylint: disable=import-error
         from PyQt4.Qt import QMenu  # pylint: disable=import-error
-        from PyQt4.Qt import QAction  # pylint: disable=import-error
-        from PyQt4.QtGui import QIcon  # pylint: disable=import-error
     except ImportError:
         sys.exit('\nYou must have PyQt installed to run this app.\nPlease read the doc.')
 

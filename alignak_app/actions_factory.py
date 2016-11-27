@@ -30,11 +30,9 @@ from alignak_app.utils import get_image_path
 try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QAction  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QAction  # pylint: disable=import-error
-    from PyQt4.Qt import QLabel  # pylint: disable=import-error
     from PyQt4.QtGui import QIcon  # pylint: disable=import-error
 
 
