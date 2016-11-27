@@ -46,8 +46,25 @@ This section contains main configuration for *alignak-app*.
 
 This section contains parameters to connect to *backend*.
 
+1. **Recommended:** set your token in "username" filed and leave "password" empty. To obtain a token, open a python terminal and type the following commands::
+
+    import requests
+    r = requests.post(
+        "http://94.76.229.155:6000/login",
+         data={
+            'username': 'admin',
+            'password': 'admin'
+         }
+    )
+    print(r.text)
+
+2. **Not recommended:** set your "username" and your "password". This method is less secure.
+
   * **username:** username define in your backend.
   * **password:** password of your backend user.
+
+Then fill your "backend_url":
+
   * **backend_url:** url of your Backend (IP + port or FQDN if you have it)
 
 [Webui] section

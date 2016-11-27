@@ -54,30 +54,46 @@ class AlignakData(object):
         username = get_app_config('Backend', 'username')
         password = get_app_config('Backend', 'password')
 
-        # Backend login
+        # Create Backend object
         backend_url = get_app_config('Backend', 'backend_url')
-        logger.debug('Backend URL : ' + backend_url)
         self.backend = Backend(backend_url)
 
+        logger.debug('Backend URL : ' + backend_url)
         logger.info('Try to connect to backend...')
-        try:
-            connect = self.backend.login(username, password)
-            logger.debug('Connection : ' + str(connect))
-            if connect:
-                logger.info('Connection to backend : OK.')
 
-            else:
-                logger.warning('Connection to backend failed !')
-        except BackendException as e:  # pragma: no cover
-            logger.error(
-                'Connection to Backend has failed. ' +
-                str(e) +
-                '\nCheck [Backend] section in configuration file.'
-            )
-            sys.exit(
-                '\nConnection to Backend has failed...' +
-                '\nPlease, check your settings and logs.'
-            )
+        if username and password:
+            # Username & password : not recommended
+            try:
+                connect = self.backend.login(username, password)
+                logger.debug('Connection : ' + str(connect))
+            except BackendException as e:  # pragma: no cover
+                sys.exit(e)
+        elif username and not password:
+            # Username as token : recommended
+            self.backend.authenticated = True
+            self.backend.token = username
+        else:
+            # Else exit
+            self.exit_error()
+
+    @staticmethod
+    def exit_error(error=''):
+        """
+        Exit the app if login to backend fails.
+
+        :param error: exception
+        :type error: str
+        """
+
+        logger.error(
+            'Connection to Backend has failed. ' +
+            str(error) +
+            '\nCheck [Backend] section in configuration file.'
+        )
+        sys.exit(
+            '\nConnection to Backend has failed...' +
+            '\nPlease, check your settings and logs.'
+        )
 
     def get_host_states(self):
         """
