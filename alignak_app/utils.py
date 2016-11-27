@@ -111,6 +111,35 @@ def get_app_root():
 
 # Application Configuration
 
+default_parameters = {
+    'check_interval': 30,
+    'duration': 8,
+    'notifications': True,
+    'position': 'top:right',
+    'debug': False,
+    'username': 'admin',
+    'password': 'admin',
+    'backend_url': 'http://127.0.0.1:5000',
+    'web_service_status': False,
+    'web_service_url': 'http://127.0.0.1:8888',
+    'webui_url': 'http://127.0.0.1:5001',
+    'path': '/alignak_app',
+    'img': '/images',
+    'tpl': '/templates',
+    'icon': 'alignak.svg',
+    'about': 'about.svg',
+    'exit': 'exit.svg',
+    'checked': 'checked.svg',
+    'unvalid': 'unvalid.svg',
+    'hosts_up': 'host_up.svg',
+    'hosts_down': 'host_down.svg',
+    'hosts_unreach': 'host_unreach.svg',
+    'services_ok': 'service_ok.svg',
+    'services_critical': 'service_critical.svg',
+    'services_unknown': 'service_unknown.svg',
+    'services_warning': 'service_warning.svg',
+}
+
 # Global variable, access by function
 app_config = None
 
@@ -143,12 +172,19 @@ def get_app_config(section, option, boolean=False):
     """
 
     if boolean:
-        return app_config.getboolean(section, option)
+        try:
+            return app_config.getboolean(section, option)
+        except NoOptionError as e:
+            logger.error('Missing Option in configuration file : ' + str(e))
+            logger.error('Replace by : ' + option + ': ' + str(default_parameters[option]))
+            return default_parameters[option]
     else:
         try:
             return app_config.get(section, option)
         except NoOptionError as e:
-            logger.error('Bad Option : ' + str(e))
+            logger.error('Missing Option in configuration file : ' + str(e))
+            logger.error('Replace by : ' + option + ': ' + str(default_parameters[option]))
+            return default_parameters[option]
 
 
 # Application Templates
