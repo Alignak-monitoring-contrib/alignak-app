@@ -66,50 +66,48 @@ class TestTrayIcon(unittest2.TestCase):
         """Hosts QActions are created"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
-        self.assertFalse(under_test.hosts_actions)
+        self.assertFalse(under_test.action_factory.actions)
 
         under_test.create_hosts_actions()
 
-        self.assertTrue(under_test.hosts_actions)
-        self.assertIsInstance(under_test.hosts_actions['hosts_up'], QAction)
-        self.assertIsInstance(under_test.hosts_actions['hosts_down'], QAction)
-        self.assertIsInstance(under_test.hosts_actions['hosts_unreach'], QAction)
+        self.assertIsInstance(under_test.action_factory.get('hosts_up'), QAction)
+        self.assertIsInstance(under_test.action_factory.get('hosts_down'), QAction)
+        self.assertIsInstance(under_test.action_factory.get('hosts_unreach'), QAction)
 
     def test_services_actions(self):
         """Services QActions are created"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
-        self.assertFalse(under_test.services_actions)
+        self.assertFalse(under_test.action_factory.actions)
 
         under_test.create_services_actions()
 
-        self.assertTrue(under_test.services_actions)
-        self.assertIsInstance(under_test.services_actions['services_ok'], QAction)
-        self.assertIsInstance(under_test.services_actions['services_warning'], QAction)
-        self.assertIsInstance(under_test.services_actions['services_critical'], QAction)
-        self.assertIsInstance(under_test.services_actions['services_unknown'], QAction)
+        self.assertIsInstance(under_test.action_factory.get('services_ok'), QAction)
+        self.assertIsInstance(under_test.action_factory.get('services_warning'), QAction)
+        self.assertIsInstance(under_test.action_factory.get('services_critical'), QAction)
+        self.assertIsInstance(under_test.action_factory.get('services_unknown'), QAction)
 
     def test_about_action(self):
         """About QAction is created"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
-        self.assertIsNone(under_test.about_action)
+        self.assertFalse(under_test.action_factory.actions)
 
         under_test.create_about_action()
 
-        self.assertIsNotNone(under_test.about_action)
-        self.assertIsInstance(under_test.about_action, QAction)
+        self.assertIsNotNone(under_test.action_factory)
+        self.assertIsInstance(under_test.action_factory.get('about'), QAction)
 
     def test_quit_action(self):
         """Quit QAction is created"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
-        self.assertIsNone(under_test.quit_action)
+        self.assertFalse(under_test.action_factory.actions)
 
         under_test.create_quit_action()
 
-        self.assertIsNotNone(under_test.quit_action)
-        self.assertIsInstance(under_test.quit_action, QAction)
+        self.assertIsNotNone(under_test.action_factory.get('exit'))
+        self.assertIsInstance(under_test.action_factory.get('exit'), QAction)
 
     def test_build_menu(self):
         """Build Menu add QActions"""
@@ -130,20 +128,20 @@ class TestTrayIcon(unittest2.TestCase):
         under_test.build_menu()
 
         self.assertEqual('Hosts UP, Wait...',
-                         under_test.hosts_actions['hosts_up'].text())
+                         under_test.action_factory.get('hosts_up').text())
         self.assertEqual('Hosts DOWN, Wait...',
-                         under_test.hosts_actions['hosts_down'].text())
+                         under_test.action_factory.get('hosts_down').text())
         self.assertEqual('Hosts UNREACHABLE, Wait...',
-                         under_test.hosts_actions['hosts_unreach'].text())
+                         under_test.action_factory.get('hosts_unreach').text())
 
         self.assertEqual('Services OK, Wait...',
-                         under_test.services_actions['services_ok'].text())
+                         under_test.action_factory.get('services_ok').text())
         self.assertEqual('Services WARNING, Wait...',
-                         under_test.services_actions['services_warning'].text())
+                         under_test.action_factory.get('services_warning').text())
         self.assertEqual('Services CRITICAL, Wait...',
-                         under_test.services_actions['services_critical'].text())
+                         under_test.action_factory.get('services_critical').text())
         self.assertEqual('Services UNKNOWN, Wait...',
-                         under_test.services_actions['services_unknown'].text())
+                         under_test.action_factory.get('services_unknown').text())
 
         hosts_states = dict(
             up=1,
@@ -160,17 +158,17 @@ class TestTrayIcon(unittest2.TestCase):
         under_test.update_menu_actions(hosts_states, services_states)
 
         self.assertEqual('Hosts UP (1)',
-                         under_test.hosts_actions['hosts_up'].text())
+                         under_test.action_factory.get('hosts_up').text())
         self.assertEqual('Hosts DOWN (2)',
-                         under_test.hosts_actions['hosts_down'].text())
+                         under_test.action_factory.get('hosts_down').text())
         self.assertEqual('Hosts UNREACHABLE (3)',
-                         under_test.hosts_actions['hosts_unreach'].text())
+                         under_test.action_factory.get('hosts_unreach').text())
 
         self.assertEqual('Services OK (4)',
-                         under_test.services_actions['services_ok'].text())
+                         under_test.action_factory.get('services_ok').text())
         self.assertEqual('Services WARNING (5)',
-                         under_test.services_actions['services_warning'].text())
+                         under_test.action_factory.get('services_warning').text())
         self.assertEqual('Services CRITICAL (6)',
-                         under_test.services_actions['services_critical'].text())
+                         under_test.action_factory.get('services_critical').text())
         self.assertEqual('Services UNKNOWN (7)',
-                         under_test.services_actions['services_unknown'].text())
+                         under_test.action_factory.get('services_unknown').text())

@@ -91,18 +91,18 @@ class TestAppNotifier(unittest2.TestCase):
 
         # Check Actions are pending
         self.assertEqual('Hosts UP, Wait...',
-                         under_test.tray_icon.hosts_actions['hosts_up'].text())
+                         under_test.tray_icon.action_factory.get('hosts_up').text())
         self.assertEqual('Services OK, Wait...',
-                         under_test.tray_icon.services_actions['services_ok'].text())
+                         under_test.tray_icon.action_factory.get('services_ok').text())
 
         # Check data...
         under_test.check_data()
 
         # ...so menu actions should be update
         self.assertNotEqual('Hosts UP, Wait...',
-                            under_test.tray_icon.hosts_actions['hosts_up'].text())
+                            under_test.tray_icon.action_factory.get('hosts_up').text())
         self.assertNotEqual('Services OK, Wait...',
-                            under_test.tray_icon.services_actions['services_ok'].text())
+                            under_test.tray_icon.action_factory.get('services_ok').text())
 
     def test_states_change(self):
         """States and Notify Changes"""

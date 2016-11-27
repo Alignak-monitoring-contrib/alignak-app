@@ -198,6 +198,9 @@ def get_image_path(name):
         + app_config.get('Config', 'img') \
         + '/'
 
-    img = img_path + app_config.get('Images', name)
-
-    return img
+    try:
+        img = img_path + app_config.get('Images', name)
+        return img
+    except NoOptionError as e:
+        logger.error('Bad Option : ' + str(e))
+        return img_path + app_config.get('Images', 'unvalid')

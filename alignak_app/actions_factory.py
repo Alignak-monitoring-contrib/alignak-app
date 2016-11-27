@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Action_FActory build actions for TrayIcon.
+    Action_Factory build actions for TrayIcon.
 """
 
 from logging import getLogger
@@ -30,11 +30,11 @@ from alignak_app.utils import get_image_path
 try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QAction  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QLabel # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QAction  # pylint: disable=import-error
-    from PyQt4.Qt import QLabel # pylint: disable=import-error
+    from PyQt4.Qt import QLabel  # pylint: disable=import-error
     from PyQt4.QtGui import QIcon  # pylint: disable=import-error
 
 
@@ -43,20 +43,45 @@ logger = getLogger(__name__)
 
 class ActionFactory(object):
     """
-        Create Action for
+        Create QAction with his icon and content
     """
 
-    @staticmethod
-    def create(icon, content, parent):
+    def __init__(self):
+        self.actions = {}
+
+    def create(self, name, content, parent):
+        """
+        Create QAction
+
         """
 
-        :return:
-        """
-
-        action = QAction(
-            QIcon(get_image_path(icon)),
+        q_action = QAction(
+            QIcon(get_image_path(name)),
             content,
             parent
         )
 
-        return action
+        self.add_action(name, q_action)
+
+    def add_action(self, name, q_action):
+        """
+
+        :param name: name of QAction
+        :type name: str
+        :param q_action: QAction associated to name
+        :type q_action: QAction
+        """
+
+        self.actions[name] = q_action
+
+    def get(self, name):
+        """
+        Return QAction
+
+        :param name: name of the QAction
+        :type name: str
+        """
+        try:
+            return self.actions[name]
+        except KeyError as e:
+            logger.error('Bad value for QAction : ' + str(e))
