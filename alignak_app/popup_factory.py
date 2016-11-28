@@ -35,7 +35,7 @@ except ImportError:  # pragma: no cover
     from PyQt4.Qt import QPixmap, QProgressBar  # pylint: disable=import-error
 
 
-class StateFactory(QWidget):
+class PopupFactory(QWidget):
     """
     Class who generate a QWidget for notification content
     """
