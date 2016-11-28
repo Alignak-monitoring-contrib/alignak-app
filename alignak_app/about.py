@@ -87,6 +87,8 @@ class AppAbout(QWidget):
         logger.debug('About Message : ' + str(msg))
 
         about_label = QLabel(msg)
+        about_label.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        about_label.setOpenExternalLinks(True)
         about_layout.addWidget(about_label)
 
         self.create_button()
