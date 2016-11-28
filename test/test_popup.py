@@ -59,6 +59,7 @@ class TestPopup(unittest2.TestCase):
         under_test.initialize_notification()
 
         self.assertEqual('state', under_test.notification_type.objectName())
+        self.assertIsNotNone(under_test.state_factory)
 
     def test_send_notifications(self):
         """Send Notification"""
@@ -67,7 +68,6 @@ class TestPopup(unittest2.TestCase):
         under_test.initialize_notification()
 
         self.assertEqual('', under_test.notification_type.text())
-        self.assertIsNone(under_test.state_factory)
 
         # Simulate dicts of states
         hosts_states = dict(

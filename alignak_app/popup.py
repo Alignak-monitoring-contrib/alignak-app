@@ -253,13 +253,6 @@ class AppPopup(QWidget):
                 'AlignakApp has something broken... \nPlease Check your logs !'
             )
         else:
-            for state in diff['hosts']:
-                if isinstance(diff['hosts'][state], int):
-                    diff['hosts'][state] = "{0:+d}".format(diff['hosts'][state])
-            for state in diff['services']:
-                if isinstance(diff['services'][state], int):
-                    diff['services'][state] = "{0:+d}".format(diff['services'][state])
-
             # Hosts
             self.state_factory.update_states(
                 'hosts_up',

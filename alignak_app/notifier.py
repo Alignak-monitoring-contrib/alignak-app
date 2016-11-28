@@ -93,11 +93,11 @@ class AppNotifier(QSystemTrayIcon):
         return get_app_config('Alignak-App', 'notifications', boolean=True)
 
     @staticmethod
-    def model_changes():
+    def basic_diff_model():
         """
-        Define model for changes dict
+        Define a basic model for dict of diff
 
-        :return: model dict for changes
+        :return: model dict for diff
         :rtype: dict
         """
         changes = {
@@ -122,7 +122,7 @@ class AppNotifier(QSystemTrayIcon):
         """
 
         old_states = {}
-        diff = self.model_changes()
+        diff = self.basic_diff_model()
 
         if self.notification() and self.alignak_data.states:
             old_states = copy.deepcopy(self.alignak_data.states)
@@ -159,7 +159,7 @@ class AppNotifier(QSystemTrayIcon):
         logger.debug('Old_states : ' + str(old_states))
         logger.debug('New states : ' + str(self.alignak_data.states))
 
-        diff = self.model_changes()
+        diff = self.basic_diff_model()
 
         if old_states == self.alignak_data.states:
             logger.info('No changes since the last check...')
@@ -169,12 +169,15 @@ class AppNotifier(QSystemTrayIcon):
             self.notify = True
             for key, _ in self.alignak_data.states['hosts'].items():
                 if old_states['hosts'][key] != self.alignak_data.states['hosts'][key]:
-                    diff = self.alignak_data.states['hosts'][key] - old_states['hosts'][key]
-                    diff['hosts'][key] = diff
+                    cur_diff = self.alignak_data.states['hosts'][key] - old_states['hosts'][key]
+                    diff['hosts'][key] = cur_diff
             for key, _ in self.alignak_data.states['services'].items():
                 if old_states['services'][key] != self.alignak_data.states['services'][key]:
-                    diff = self.alignak_data.states['services'][key] - old_states['services'][key]
-                    diff['services'][key] = diff
+                    cur_diff = \
+                        self.alignak_data.states['services'][key] \
+                        - old_states['services'][key]
+                    print(type(diff))
+                    diff['services'][key] = cur_diff
 
             logger.debug('Diff between last check : ' + str(diff))
 

@@ -112,7 +112,12 @@ class PopupFactory(QWidget):
         """
 
         self.state_data[state_name]['nb_items'].setText(str(nb_items))
-        self.state_data[state_name]['diff'].setText('<b>(' + str(diff) + ')</b>')
+
+        if isinstance(diff, int):
+            self.state_data[state_name]['diff'].setText('<b>(' + "{0:+d}".format(diff) + ')</b>')
+        else:
+            self.state_data[state_name]['diff'].setText('<b>(' + diff + ')</b>')
+
         self.state_data[state_name]['progress_bar'].setValue(int(percent))
 
     @staticmethod
