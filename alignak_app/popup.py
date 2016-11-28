@@ -81,7 +81,7 @@ class AppPopup(QWidget):
         self.notification_type = QLabel(self)
         self.notification_type.setAlignment(Qt.AlignCenter)
         self.notification_type.setObjectName('state')
-        self.notification_type.setMinimumSize(450, 20)
+        self.notification_type.setMinimumSize(425, 40)
 
         self.main_layout.addWidget(self.notification_type, 1)
         self.main_layout.setAlignment(self.notification_type, Qt.AlignCenter)
