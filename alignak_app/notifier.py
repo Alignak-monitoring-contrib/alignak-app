@@ -122,7 +122,7 @@ class AppNotifier(QSystemTrayIcon):
         """
 
         old_states = {}
-        changes = self.model_changes()
+        diff = self.model_changes()
 
         if self.notification() and self.alignak_data.states:
             old_states = copy.deepcopy(self.alignak_data.states)
@@ -130,27 +130,27 @@ class AppNotifier(QSystemTrayIcon):
         hosts_states, services_states = self.alignak_data.get_state()
 
         if self.notification() and old_states:
-            changes = self.check_changes(old_states)
+            diff = self.diff_last_check(old_states)
 
         # Check state to prepare popup
         if services_states['critical'] > 0 or hosts_states['down'] > 0:
-            title = 'CRITICAL'
+            popup_title = 'CRITICAL'
         elif services_states['unknown'] > 0 or \
                 services_states['warning'] > 0 or \
                 hosts_states['unreachable'] > 0:
-            title = 'WARNING !'
+            popup_title = 'WARNING !'
         else:
-            title = 'OK'
+            popup_title = 'OK'
 
-        logger.debug('Notification Title : ' + str(title))
+        logger.debug('Notification Title : ' + str(popup_title))
 
         # Trigger changes and send notification
         self.tray_icon.update_menu_actions(hosts_states, services_states)
 
         if self.notify:
-            self.popup.send_notification(title, hosts_states, services_states, changes)
+            self.popup.send_notification(popup_title, hosts_states, services_states, diff)
 
-    def check_changes(self, old_states):
+    def diff_last_check(self, old_states):
         """
         Check if there have been any change since the last check
 
@@ -159,7 +159,7 @@ class AppNotifier(QSystemTrayIcon):
         logger.debug('Old_states : ' + str(old_states))
         logger.debug('New states : ' + str(self.alignak_data.states))
 
-        changes = self.model_changes()
+        diff = self.model_changes()
 
         if old_states == self.alignak_data.states:
             logger.info('No changes since the last check...')
@@ -170,12 +170,12 @@ class AppNotifier(QSystemTrayIcon):
             for key, _ in self.alignak_data.states['hosts'].items():
                 if old_states['hosts'][key] != self.alignak_data.states['hosts'][key]:
                     diff = self.alignak_data.states['hosts'][key] - old_states['hosts'][key]
-                    changes['hosts'][key] = diff
+                    diff['hosts'][key] = diff
             for key, _ in self.alignak_data.states['services'].items():
                 if old_states['services'][key] != self.alignak_data.states['services'][key]:
                     diff = self.alignak_data.states['services'][key] - old_states['services'][key]
-                    changes['services'][key] = diff
+                    diff['services'][key] = diff
 
-            logger.debug('Changes : ' + str(changes))
+            logger.debug('Diff between last check : ' + str(diff))
 
-        return changes
+        return diff

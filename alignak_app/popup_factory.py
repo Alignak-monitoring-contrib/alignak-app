@@ -37,7 +37,8 @@ except ImportError:  # pragma: no cover
 
 class PopupFactory(QWidget):
     """
-    Class who generate a QWidget for notification content
+    Class who generate a QWidget with 4 QLabels and 1 QProgressBar.
+
     """
 
     def __init__(self, parent=None):
@@ -49,60 +50,70 @@ class PopupFactory(QWidget):
             "QProgressBar { border: 2px solid grey; border-radius: 5px; text-align: center; }"
             "QLabel {color: black; }"
         )
-        self.state = {}
+        self.state_data = {}
 
-    def create_state(self, name):
+    def create_state(self, state_name):
         """
-        Create QLabels and QProgressBar for state:
-            icon | label | state | change | progressbar
+        Generate 4 QLabel and 1 QProgressBar and store in "state_data"
+        QLabels are icon | state_name | diff | change
+        All are added horizontally.
 
-        :param name: name of the state
-        :type name: str
+        :param state_name: name of the state to be stored
+        :type state_name: str
         """
 
-        icon = QLabel()
-        icon.setFixedSize(16, 16)
-        img = QPixmap(get_image_path(name))
-        icon.setPixmap(img)
-        icon.setScaledContents(True)
+        # Icon
+        icon = QPixmap(get_image_path(state_name))
+        label_icon = QLabel()
+        label_icon.setFixedSize(16, 16)
+        label_icon.setScaledContents(True)
+        label_icon.setPixmap(icon)
 
-        label = QLabel(self.define_label(name))
+        # Initialize Labels
+        state_label = QLabel(self.define_label(state_name))
 
-        state = QLabel('0')
+        nb_items = QLabel('0')
 
-        change = QLabel('<b>(0)</b>')
+        diff = QLabel('<b>(0)</b>')
 
+        # QProgressBar
         progress_bar = QProgressBar()
         progress_bar.setValue(0)
 
-        self.main_layout.addWidget(icon, self.pos, 0)
-        self.main_layout.addWidget(label, self.pos, 1)
-        self.main_layout.addWidget(state, self.pos, 2)
-        self.main_layout.addWidget(change, self.pos, 3)
+        # Add all to layout
+        self.main_layout.addWidget(label_icon, self.pos, 0)
+        self.main_layout.addWidget(state_label, self.pos, 1)
+        self.main_layout.addWidget(nb_items, self.pos, 2)
+        self.main_layout.addWidget(diff, self.pos, 3)
         self.main_layout.addWidget(progress_bar, self.pos, 4)
 
-        self.state[name] = {
-            'state': state,
-            'change': change,
+        # Store state
+        self.state_data[state_name] = {
+            'nb_items': nb_items,
+            'diff': diff,
             'progress_bar': progress_bar
         }
 
+        # Increment vertically position for next label
         self.pos += 1
 
-    def update_states(self, name, state, change, percent):
+    def update_states(self, state_name, nb_items, diff, percent):
+        """
+        Update nb_items, diff and progress_bar value.
+
+        :param state_name: name of the state to be update
+        :type state_name: str
+        :param nb_items: state
+        :type nb_items: str
+        :param diff: str
+        :type diff: str
+        :param percent: value of progress bar
+        :type percent: int
         """
 
-        :param name: name of the state to update
-        :type name: str
-        :param state:
-        :param change:
-        :param percent:
-        :return:
-        """
-
-        self.state[name]['state'].setText(str(state))
-        self.state[name]['change'].setText('<b>(' + str(change) + ')</b>')
-        self.state[name]['progress_bar'].setValue(int(percent))
+        self.state_data[state_name]['nb_items'].setText(str(nb_items))
+        self.state_data[state_name]['diff'].setText('<b>(' + str(diff) + ')</b>')
+        self.state_data[state_name]['progress_bar'].setValue(int(percent))
 
     @staticmethod
     def define_label(name):
@@ -121,11 +132,11 @@ class PopupFactory(QWidget):
         elif "services_ok" in name:
             label = "Services OK:"
         elif "services_warning" in name:
-            label = "Hosts DOWN:"
+            label = "Services WARNING:"
         elif "services_critical" in name:
-            label = "Hosts DOWN:"
+            label = "Services CRITICAL:"
         elif "services_unknown" in name:
-            label = "Hosts DOWN:"
+            label = "Services UNKNOWN:"
         else:
             label = "Unknown field"
 

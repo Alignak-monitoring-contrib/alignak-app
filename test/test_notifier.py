@@ -123,13 +123,13 @@ class TestAppNotifier(unittest2.TestCase):
 
         # Copy state
         old_states = copy.deepcopy(under_test.alignak_data.states)
-        under_test.check_changes(old_states)
+        under_test.diff_last_check(old_states)
 
         # "check_changes" set notify to False if no changes
         self.assertFalse(under_test.notify)
 
         # Modify "states" to set notify to True
         under_test.alignak_data.states['hosts']['up'] += 1
-        under_test.check_changes(old_states)
+        under_test.diff_last_check(old_states)
 
         self.assertTrue(under_test.notify)

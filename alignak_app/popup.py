@@ -97,7 +97,7 @@ class AppPopup(QWidget):
 
     def fill_state_factory(self):
         """
-        Fills the factory so that it can be modified later
+        Populate the factory so that it can be modified later
 
         """
 
@@ -195,7 +195,7 @@ class AppPopup(QWidget):
             self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
             logger.debug('Position center : ' + str(center))
 
-    def send_notification(self, title, hosts_states, services_states, changes):
+    def send_notification(self, title, hosts_states, services_states, diff):
         """
         Send notification.
 
@@ -205,8 +205,8 @@ class AppPopup(QWidget):
         :type hosts_states: dict
         :param services_states: dict of services states.
         :type services_states: dict
-        :param changes: dict of changes since the last check of notifier.
-        :type changes: dict
+        :param diff: dict of changes since the last check of notifier.
+        :type diff: dict
         """
 
         # Set position of popup
@@ -219,9 +219,11 @@ class AppPopup(QWidget):
         # Prepare notification
         self.notification_type.setText(title)
         self.setStyleSheet(self.get_style_sheet(title))
-        self.create_content(hosts_states, services_states, changes)
 
-        # Get duration
+        # Update content of PopupFactory
+        self.create_content(hosts_states, services_states, diff)
+
+        # Retrieve duration
         duration = int(get_app_config('Alignak-App', 'duration'))
         duration *= 1000
         logger.debug('Position Duration : ' + str(duration))
@@ -234,7 +236,7 @@ class AppPopup(QWidget):
         # ...until the end of the term
         QTimer.singleShot(duration, self.close)
 
-    def create_content(self, hosts_states, services_states, changes):
+    def create_content(self, hosts_states, services_states, diff):
         """
         Create notification content
 
@@ -242,8 +244,8 @@ class AppPopup(QWidget):
         :type hosts_states: dict
         :param services_states: states of services
         :type services_states: dict
-        :param changes: dict of changes since the last check of notifier.
-        :type changes: dict
+        :param diff: dict of changes since the last check of notifier.
+        :type diff: dict
         """
 
         if services_states['ok'] < 0 or hosts_states['up'] < 0:
@@ -251,30 +253,30 @@ class AppPopup(QWidget):
                 'AlignakApp has something broken... \nPlease Check your logs !'
             )
         else:
-            for state in changes['hosts']:
-                if isinstance(changes['hosts'][state], int):
-                    changes['hosts'][state] = "{0:+d}".format(changes['hosts'][state])
-            for state in changes['services']:
-                if isinstance(changes['services'][state], int):
-                    changes['services'][state] = "{0:+d}".format(changes['services'][state])
+            for state in diff['hosts']:
+                if isinstance(diff['hosts'][state], int):
+                    diff['hosts'][state] = "{0:+d}".format(diff['hosts'][state])
+            for state in diff['services']:
+                if isinstance(diff['services'][state], int):
+                    diff['services'][state] = "{0:+d}".format(diff['services'][state])
 
             # Hosts
             self.state_factory.update_states(
                 'hosts_up',
                 hosts_states['up'],
-                changes['hosts']['up'],
+                diff['hosts']['up'],
                 10
             )
             self.state_factory.update_states(
                 'hosts_down',
                 hosts_states['down'],
-                changes['hosts']['down'],
+                diff['hosts']['down'],
                 20
             )
             self.state_factory.update_states(
                 'hosts_unreach',
                 hosts_states['unreachable'],
-                changes['hosts']['unreachable'],
+                diff['hosts']['unreachable'],
                 30
             )
 
@@ -282,25 +284,25 @@ class AppPopup(QWidget):
             self.state_factory.update_states(
                 'services_ok',
                 services_states['ok'],
-                changes['services']['ok'],
+                diff['services']['ok'],
                 20
             )
             self.state_factory.update_states(
                 'services_warning',
                 services_states['warning'],
-                changes['services']['warning'],
+                diff['services']['warning'],
                 40
             )
             self.state_factory.update_states(
                 'services_critical',
                 services_states['critical'],
-                changes['services']['critical'],
+                diff['services']['critical'],
                 60
             )
             self.state_factory.update_states(
                 'services_unknown',
                 services_states['unknown'],
-                changes['services']['unknown'],
+                diff['services']['unknown'],
                 80
             )
 
