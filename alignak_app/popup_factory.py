@@ -24,7 +24,7 @@
         icon | state | number in this state | changes | progress_bar
 """
 
-from alignak_app.utils import get_image_path
+from alignak_app.utils import get_image_path, get_template
 
 try:
     __import__('PyQt5')
@@ -32,7 +32,7 @@ try:
     from PyQt5.Qt import QPixmap, QProgressBar  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QWidget, QLabel, QGridLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QPixmap, QProgressBar  # pylint: disable=import-error
+    from PyQt4.Qt import QPixmap, QProgressBar, QPalette  # pylint: disable=import-error
 
 
 class PopupFactory(QWidget):
@@ -46,16 +46,14 @@ class PopupFactory(QWidget):
         self.main_layout = QGridLayout()
         self.pos = 0
         self.setLayout(self.main_layout)
-        self.setStyleSheet(
-            "QProgressBar { border: 2px solid grey; border-radius: 5px; text-align: center; }"
-            "QLabel {color: black; }"
-        )
+        self.setStyleSheet("QLabel {color: black;}")
         self.state_data = {}
 
     def create_state(self, state_name):
         """
         Generate 4 QLabel and 1 QProgressBar and store in "state_data"
-        QLabels are icon | state_name | diff | change
+        QLabels are icon | state_label | nb_items | diff
+        QProgressBar get value of percent.
         All are added horizontally.
 
         :param state_name: name of the state to be stored
@@ -79,6 +77,7 @@ class PopupFactory(QWidget):
         # QProgressBar
         progress_bar = QProgressBar()
         progress_bar.setValue(0)
+        progress_bar.setFixedHeight(22)
 
         # Add all to layout
         self.main_layout.addWidget(label_icon, self.pos, 0)
@@ -93,6 +92,8 @@ class PopupFactory(QWidget):
             'diff': diff,
             'progress_bar': progress_bar
         }
+
+        self.bar_style_sheet(state_name)
 
         # Increment vertically position for next label
         self.pos += 1
@@ -146,3 +147,25 @@ class PopupFactory(QWidget):
             label = "Unknown field"
 
         return label
+
+    def bar_style_sheet(self, label_state):
+        """
+
+        :param label_state:
+        :return:
+        """
+
+        if "hosts_up" in label_state or "services_ok" in label_state:
+            bar_color = "#27ae60"
+        elif "hosts_down" in label_state or "services_critical" in label_state:
+            bar_color = "#e74c3c"
+        elif "hosts_unreach" in label_state or "services_warning" in label_state:
+            bar_color = "#e67e22"
+        elif "services_unknown" in label_state:
+            bar_color = "#2980b9"
+        else:
+            bar_color = "grey"
+
+        self.state_data[label_state]['progress_bar'].setStyleSheet(
+            get_template('popup_css.tpl', dict(bar_color=bar_color))
+        )

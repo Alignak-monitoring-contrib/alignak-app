@@ -63,7 +63,7 @@ QToolButton{
         utils.set_app_config()
 
         # Get the template
-        under_test = utils.get_template('css.tpl', dict(color_title='#27ae60'))
+        under_test = utils.get_template('popup_title_css.tpl', dict(color_title='#27ae60'))
 
         self.assertEqual(under_test, expected_css)
 

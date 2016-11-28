@@ -58,8 +58,8 @@ class AppPopup(QWidget):
         # General settings
         self.setWindowTitle(__application__)
         self.setContentsMargins(0, 0, 0, 0)
-        self.setMinimumSize(450, 370)
-        self.setMaximumSize(450, 370)
+        self.setMinimumSize(450, 340)
+        self.setMaximumSize(450, 340)
         self.setWindowFlags(Qt.SplashScreen | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         # Fields
         self.main_layout = QVBoxLayout(self)
@@ -317,6 +317,6 @@ class AppPopup(QWidget):
         else:
             color_title = '#EEE'
 
-        css = get_template('css.tpl', dict(color_title=color_title))
+        css = get_template('popup_title_css.tpl', dict(color_title=color_title))
 
         return css
