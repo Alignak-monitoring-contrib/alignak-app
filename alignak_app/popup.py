@@ -248,21 +248,30 @@ class AppPopup(QWidget):
         if services_states['ok'] < 0 or hosts_states['up'] < 0:
             content = 'AlignakApp has something broken... \nPlease Check your logs !'
         else:
+            changes['hosts']['up'] = -1
+            changes['hosts']['down'] = 1
+            for state in changes['hosts']:
+                if isinstance(changes['hosts'][state], int):
+                    changes['hosts'][state] = "{0:+d}".format(changes['hosts'][state])
+            for state in changes['services']:
+                if isinstance(changes['services'][state], int):
+                    changes['services'][state] = "{0:+d}".format(changes['services'][state])
+
             state_dict = {
-                'hosts_up': str(hosts_states['up']),
-                'changes_up': str(changes['hosts']['up']),
-                'hosts_down': str(hosts_states['down']),
-                'changes_down': str(changes['hosts']['down']),
-                'hosts_unreachable': str(hosts_states['unreachable']),
-                'changes_unreachable': str(changes['hosts']['unreachable']),
-                'services_ok': str(services_states['ok']),
-                'changes_ok': str(changes['services']['ok']),
-                'services_warning': str(services_states['warning']),
-                'changes_warning': str(changes['services']['warning']),
-                'services_critical': str(services_states['critical']),
-                'changes_critical': str(changes['services']['critical']),
-                'services_unknown': str(services_states['unknown']),
-                'changes_unknown': str(changes['services']['unknown'])
+                'hosts_up': hosts_states['up'],
+                'changes_up': changes['hosts']['up'],
+                'hosts_down': hosts_states['down'],
+                'changes_down': changes['hosts']['down'],
+                'hosts_unreachable': hosts_states['unreachable'],
+                'changes_unreachable': changes['hosts']['unreachable'],
+                'services_ok': services_states['ok'],
+                'changes_ok': changes['services']['ok'],
+                'services_warning': services_states['warning'],
+                'changes_warning': changes['services']['warning'],
+                'services_critical': services_states['critical'],
+                'changes_critical': changes['services']['critical'],
+                'services_unknown': services_states['unknown'],
+                'changes_unknown': changes['services']['unknown']
             }
 
             content = get_template('notification.tpl', state_dict)
