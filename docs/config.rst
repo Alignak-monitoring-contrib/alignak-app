@@ -46,7 +46,7 @@ This section contains main configuration for *alignak-app*.
 
 This section contains parameters to connect to *backend*.
 
-1. **Recommended:** set your token in "username" filed and leave "password" empty. To obtain a token, open a python terminal and type the following commands::
+1. **Recommended:** set your token in "username" field and leave "password" empty. To obtain a token, open a python terminal and type the following commands::
 
     import requests
     r = requests.post(
