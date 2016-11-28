@@ -52,14 +52,13 @@ class TestPopup(unittest2.TestCase):
 
         under_test = AppPopup()
 
-        self.assertIsNone(under_test.state)
-        self.assertIsNone(under_test.msg_label)
+        self.assertIsNone(under_test.notification_type)
+        self.assertIsNone(under_test.state_factory)
 
         # Create all the label
         under_test.initialize_notification()
 
-        self.assertEqual('state', under_test.state.objectName())
-        self.assertEqual('msg', under_test.msg_label.objectName())
+        self.assertEqual('state', under_test.notification_type.objectName())
 
     def test_send_notifications(self):
         """Send Notification"""
@@ -67,8 +66,8 @@ class TestPopup(unittest2.TestCase):
 
         under_test.initialize_notification()
 
-        self.assertEqual('', under_test.state.text())
-        self.assertEqual('', under_test.msg_label.text())
+        self.assertEqual('', under_test.notification_type.text())
+        self.assertIsNone(under_test.state_factory)
 
         # Simulate dicts of states
         hosts_states = dict(
@@ -100,8 +99,8 @@ class TestPopup(unittest2.TestCase):
         under_test.send_notification('CRITICAL', hosts_states, services_states, changes)
         expected_content = 'AlignakApp has something broken... \nPlease Check your logs !'
 
-        self.assertEqual('CRITICAL', under_test.state.text())
-        self.assertEqual(expected_content, under_test.msg_label.text())
+        self.assertEqual('CRITICAL', under_test.notification_type.text())
+        self.assertEqual(expected_content, under_test.state_factory.text())
 
     def test_get_style_sheet(self):
         """Get Style Sheet according to States"""

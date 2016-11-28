@@ -28,6 +28,7 @@ from logging import getLogger
 from alignak_app import __application__
 from alignak_app.utils import get_template
 from alignak_app.utils import get_app_config, get_image_path
+from alignak_app.states_factory import StateFactory
 
 try:
     __import__('PyQt5')
@@ -57,12 +58,13 @@ class AppPopup(QWidget):
         # General settings
         self.setWindowTitle(__application__)
         self.setContentsMargins(0, 0, 0, 0)
-        self.setMinimumSize(425, 270)
-        self.setMaximumSize(425, 270)
+        self.setMinimumSize(450, 370)
+        self.setMaximumSize(450, 370)
         self.setWindowFlags(Qt.SplashScreen | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         # Fields
-        self.msg_label = None
-        self.state = None
+        self.main_layout = QVBoxLayout(self)
+        self.notification_type = None
+        self.state_factory = None
         self.button = None
 
     def initialize_notification(self):
@@ -71,49 +73,48 @@ class AppPopup(QWidget):
 
         """
 
-        # QLabel for state
-        self.state = QLabel(self)
-        self.state.setAlignment(Qt.AlignCenter)
-        self.state.setObjectName('state')
-        self.state.setMinimumSize(400, 20)
+        # Create and add Layout for notification title
+        layout_title = self.create_layout_title()
+        self.main_layout.addLayout(layout_title, 0)
 
-        # QLabel for msg_label
-        self.create_message_label()
+        # Create Label for notification type
+        self.notification_type = QLabel(self)
+        self.notification_type.setAlignment(Qt.AlignCenter)
+        self.notification_type.setObjectName('state')
+        self.notification_type.setMinimumSize(450, 20)
 
-        # QHBoxLayout with QLabels for popup label
-        hbox_title = self.create_title()
+        self.main_layout.addWidget(self.notification_type, 1)
+        self.main_layout.setAlignment(self.notification_type, Qt.AlignCenter)
 
-        # Layout
-        vbox = QVBoxLayout(self)
+        # Create and add StateFactory
+        self.fill_state_factory()
+        self.main_layout.addWidget(self.state_factory, 2)
 
-        # Add layout
-        vbox.addLayout(hbox_title, 0)
-
-        # Create button
+        # Create and add button
         self.create_button()
+        self.main_layout.addWidget(self.button, 3)
+        self.main_layout.setAlignment(self.button, Qt.AlignCenter)
 
-        # Add state
-        vbox.addWidget(self.state, 1)
-        vbox.setAlignment(self.state, Qt.AlignCenter)
-
-        # Add msg_label
-        vbox.addWidget(self.msg_label, 2)
-
-        # Add button
-        vbox.addWidget(self.button, 3)
-        vbox.setAlignment(self.button, Qt.AlignCenter)
-
-    def create_message_label(self):
+    def fill_state_factory(self):
         """
-        Build msg QLabel.
+        Fills the factory so that it can be modified later
 
         """
 
-        self.msg_label = QLabel(self)
-        self.msg_label.setObjectName('msg')
-        self.msg_label.setMinimumSize(400, 150)
+        self.state_factory = StateFactory()
 
-    def create_title(self):
+        # Hosts
+        self.state_factory.create_state('hosts_up')
+        self.state_factory.create_state('hosts_down')
+        self.state_factory.create_state('hosts_unreach')
+
+        # Services
+        self.state_factory.create_state('services_ok')
+        self.state_factory.create_state('services_warning')
+        self.state_factory.create_state('services_critical')
+        self.state_factory.create_state('services_unknown')
+
+    def create_layout_title(self):
         """
         Build title QLabel, with logo
 
@@ -216,9 +217,9 @@ class AppPopup(QWidget):
             title = 'CRITICAL'
 
         # Prepare notification
-        self.state.setText(title)
+        self.notification_type.setText(title)
         self.setStyleSheet(self.get_style_sheet(title))
-        self.create_content(hosts_states, services_states, changes=changes)
+        self.create_content(hosts_states, services_states, changes)
 
         # Get duration
         duration = int(get_app_config('Alignak-App', 'duration'))
@@ -235,7 +236,7 @@ class AppPopup(QWidget):
 
     def create_content(self, hosts_states, services_states, changes):
         """
-        Create content and return with correct value.
+        Create notification content
 
         :param hosts_states: states of hosts
         :type hosts_states: dict
@@ -246,7 +247,9 @@ class AppPopup(QWidget):
         """
 
         if services_states['ok'] < 0 or hosts_states['up'] < 0:
-            content = 'AlignakApp has something broken... \nPlease Check your logs !'
+            self.state_factory = QLabel(
+                'AlignakApp has something broken... \nPlease Check your logs !'
+            )
         else:
             for state in changes['hosts']:
                 if isinstance(changes['hosts'][state], int):
@@ -255,28 +258,51 @@ class AppPopup(QWidget):
                 if isinstance(changes['services'][state], int):
                     changes['services'][state] = "{0:+d}".format(changes['services'][state])
 
-            state_dict = {
-                'hosts_up': hosts_states['up'],
-                'changes_up': changes['hosts']['up'],
-                'hosts_down': hosts_states['down'],
-                'changes_down': changes['hosts']['down'],
-                'hosts_unreachable': hosts_states['unreachable'],
-                'changes_unreachable': changes['hosts']['unreachable'],
-                'services_ok': services_states['ok'],
-                'changes_ok': changes['services']['ok'],
-                'services_warning': services_states['warning'],
-                'changes_warning': changes['services']['warning'],
-                'services_critical': services_states['critical'],
-                'changes_critical': changes['services']['critical'],
-                'services_unknown': services_states['unknown'],
-                'changes_unknown': changes['services']['unknown']
-            }
+            # Hosts
+            self.state_factory.update_states(
+                'hosts_up',
+                hosts_states['up'],
+                changes['hosts']['up'],
+                10
+            )
+            self.state_factory.update_states(
+                'hosts_down',
+                hosts_states['down'],
+                changes['hosts']['down'],
+                20
+            )
+            self.state_factory.update_states(
+                'hosts_unreach',
+                hosts_states['unreachable'],
+                changes['hosts']['unreachable'],
+                30
+            )
 
-            content = get_template('notification.tpl', state_dict)
-
-        logger.debug('Notification Content : ' + str(content))
-
-        self.msg_label.setText(content)
+            # Services
+            self.state_factory.update_states(
+                'services_ok',
+                services_states['ok'],
+                changes['services']['ok'],
+                20
+            )
+            self.state_factory.update_states(
+                'services_warning',
+                services_states['warning'],
+                changes['services']['warning'],
+                40
+            )
+            self.state_factory.update_states(
+                'services_critical',
+                services_states['critical'],
+                changes['services']['critical'],
+                60
+            )
+            self.state_factory.update_states(
+                'services_unknown',
+                services_states['unknown'],
+                changes['services']['unknown'],
+                80
+            )
 
     @staticmethod
     def get_style_sheet(title):
