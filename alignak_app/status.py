@@ -238,5 +238,7 @@ class AlignakStatus(QWidget):
 
         if get_app_config('Backend', 'web_service_status', boolean=True) and self.ws_request:
             self.update_status()
+        else:
+            self.web_service_info()
 
         self.show()
