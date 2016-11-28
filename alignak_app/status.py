@@ -26,6 +26,7 @@
 from logging import getLogger
 
 import requests
+# from requests import ConnectionError
 
 from alignak_app import __application__
 from alignak_app.utils import get_image_path, get_app_config
@@ -81,7 +82,11 @@ class AlignakStatus(QWidget):
 
         """
 
-        if self.start and get_app_config('Backend', 'web_service_status', boolean=True):
+        self.alignak_ws_request()
+
+        if self.start \
+                and get_app_config('Backend', 'web_service_status', boolean=True) \
+                and self.ws_request:
             self.show()
         else:
             self.start = False
@@ -99,11 +104,12 @@ class AlignakStatus(QWidget):
         # Display daemons status or info windows
         if get_app_config('Backend', 'web_service_status', boolean=True):
             self.alignak_ws_request()
+            if self.ws_request:
 
-            self.create_daemons_labels()
-            self.daemons_to_layout()
-        else:
-            self.web_service_info()
+                self.create_daemons_labels()
+                self.daemons_to_layout()
+            else:
+                self.web_service_info()
 
         self.show_at_start()
 
@@ -117,7 +123,7 @@ class AlignakStatus(QWidget):
             self.ws_request = requests.get(
                 get_app_config('Backend', 'web_service_url') + '/alignak_map'
             )
-        except TypeError as e:
+        except requests.ConnectionError as e:
             logger.error('Bad value in "web_service_url" option : ' + str(e))
 
     def create_daemons_labels(self):
@@ -165,7 +171,7 @@ class AlignakStatus(QWidget):
 
         info_label = QLabel(
             'Install it on your <b>Alignak server</b>. '
-            'And configure the <b>settings</b> accordingly in <b>Alignak-app</b>'
+            'And configure the <b>settings.cfg</b> accordingly in <b>Alignak-app</b>.'
         )
         info_label.setWordWrap(True)
         info_label.setAlignment(Qt.AlignTop)
@@ -230,6 +236,7 @@ class AlignakStatus(QWidget):
 
         """
 
-        self.update_status()
+        if get_app_config('Backend', 'web_service_status', boolean=True) and self.ws_request:
+            self.update_status()
 
         self.show()
