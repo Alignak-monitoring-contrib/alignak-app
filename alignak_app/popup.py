@@ -248,8 +248,6 @@ class AppPopup(QWidget):
         if services_states['ok'] < 0 or hosts_states['up'] < 0:
             content = 'AlignakApp has something broken... \nPlease Check your logs !'
         else:
-            changes['hosts']['up'] = -1
-            changes['hosts']['down'] = 1
             for state in changes['hosts']:
                 if isinstance(changes['hosts'][state], int):
                     changes['hosts'][state] = "{0:+d}".format(changes['hosts'][state])
