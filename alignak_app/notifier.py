@@ -176,7 +176,6 @@ class AppNotifier(QSystemTrayIcon):
                     cur_diff = \
                         self.alignak_data.states['services'][key] \
                         - old_states['services'][key]
-                    print(type(diff))
                     diff['services'][key] = cur_diff
 
             logger.debug('Diff between last check : ' + str(diff))
