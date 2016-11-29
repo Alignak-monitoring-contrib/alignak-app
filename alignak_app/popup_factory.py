@@ -119,7 +119,38 @@ class PopupFactory(QWidget):
         else:
             self.state_data[state_name]['diff'].setText('<b>(' + diff + ')</b>')
 
-        self.state_data[state_name]['progress_bar'].setValue(int(percent))
+        self.state_data[state_name]['progress_bar'].setFormat('%.01f%%' % percent)
+        self.state_data[state_name]['progress_bar'].setValue(float(percent))
+
+    @staticmethod
+    def get_states_states(hosts_states, services_states):
+        """
+        Calculates and return the sum of the items and their percentages
+        :param hosts_states:
+        :param services_states:
+        :return:
+        """
+
+        percentages = {}
+
+        hosts_sum = hosts_states['up'] \
+            + hosts_states['down'] \
+            + hosts_states['unreachable']
+        services_sum = services_states['ok'] \
+            + services_states['warning'] \
+            + services_states['critical'] \
+            + services_states['unknown']
+
+        percentages['up'] = float((hosts_states['up'] * 100) / hosts_sum)
+        percentages['down'] = float((hosts_states['down'] * 100) / hosts_sum)
+        percentages['unreachable'] = float((hosts_states['unreachable'] * 100) / hosts_sum)
+
+        percentages['ok'] = float((services_states['ok'] * 100) / services_sum)
+        percentages['warning'] = float((services_states['warning'] * 100) / services_sum)
+        percentages['critical'] = float((services_states['critical'] * 100) / services_sum)
+        percentages['unknown'] = float((services_states['unknown'] * 100) / services_sum)
+
+        return percentages
 
     @staticmethod
     def define_label(name):

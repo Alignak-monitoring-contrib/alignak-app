@@ -221,7 +221,7 @@ class AppPopup(QWidget):
         self.setStyleSheet(self.get_style_sheet(title))
 
         # Update content of PopupFactory
-        self.create_content(hosts_states, services_states, diff)
+        self.update_popup(hosts_states, services_states, diff)
 
         # Retrieve duration
         duration = int(get_app_config('Alignak-App', 'duration'))
@@ -236,7 +236,7 @@ class AppPopup(QWidget):
         # ...until the end of the term
         QTimer.singleShot(duration, self.close)
 
-    def create_content(self, hosts_states, services_states, diff):
+    def update_popup(self, hosts_states, services_states, diff):
         """
         Create notification content
 
@@ -248,6 +248,8 @@ class AppPopup(QWidget):
         :type diff: dict
         """
 
+        percentages = self.state_factory.get_states_states(hosts_states, services_states)
+
         if services_states['ok'] < 0 or hosts_states['up'] < 0:
             self.state_factory = QLabel(
                 'AlignakApp has something broken... \nPlease Check your logs !'
@@ -258,19 +260,19 @@ class AppPopup(QWidget):
                 'hosts_up',
                 hosts_states['up'],
                 diff['hosts']['up'],
-                10
+                percentages['up']
             )
             self.state_factory.update_states(
                 'hosts_down',
                 hosts_states['down'],
                 diff['hosts']['down'],
-                20
+                percentages['down']
             )
             self.state_factory.update_states(
                 'hosts_unreach',
                 hosts_states['unreachable'],
                 diff['hosts']['unreachable'],
-                30
+                percentages['unreachable']
             )
 
             # Services
@@ -278,25 +280,25 @@ class AppPopup(QWidget):
                 'services_ok',
                 services_states['ok'],
                 diff['services']['ok'],
-                20
+                percentages['ok']
             )
             self.state_factory.update_states(
                 'services_warning',
                 services_states['warning'],
                 diff['services']['warning'],
-                40
+                percentages['warning']
             )
             self.state_factory.update_states(
                 'services_critical',
                 services_states['critical'],
                 diff['services']['critical'],
-                60
+                percentages['critical']
             )
             self.state_factory.update_states(
                 'services_unknown',
                 services_states['unknown'],
                 diff['services']['unknown'],
-                80
+                percentages['unknown']
             )
 
     @staticmethod
