@@ -105,8 +105,8 @@ class AppPopup(QWidget):
 
         # Hosts
         self.state_factory.create_state('hosts_up')
-        self.state_factory.create_state('hosts_down')
         self.state_factory.create_state('hosts_unreach')
+        self.state_factory.create_state('hosts_down')
 
         # Services
         self.state_factory.create_state('services_ok')

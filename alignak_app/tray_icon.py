@@ -100,23 +100,23 @@ class TrayIcon(QSystemTrayIcon):
         self.action_factory.get('hosts_up').triggered.connect(self.open_url)
 
         self.action_factory.create(
-            'hosts_down',
-            'Hosts DOWN, Wait...',
-            self
-        )
-        self.action_factory.get('hosts_down').triggered.connect(self.open_url)
-
-        self.action_factory.create(
             'hosts_unreach',
             'Hosts UNREACHABLE, Wait...',
             self
         )
         self.action_factory.get('hosts_unreach').triggered.connect(self.open_url)
 
+        self.action_factory.create(
+            'hosts_down',
+            'Hosts DOWN, Wait...',
+            self
+        )
+        self.action_factory.get('hosts_down').triggered.connect(self.open_url)
+
         # Add hosts actions to menu
         self.menu.addAction(self.action_factory.get('hosts_up'))
-        self.menu.addAction(self.action_factory.get('hosts_down'))
         self.menu.addAction(self.action_factory.get('hosts_unreach'))
+        self.menu.addAction(self.action_factory.get('hosts_down'))
 
     def create_services_actions(self):
         """
