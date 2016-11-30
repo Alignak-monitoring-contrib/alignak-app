@@ -29,10 +29,10 @@ from alignak_app.utils import get_image_path, get_template
 try:
     __import__('PyQt5')
     from PyQt5.Qt import QWidget, QLabel, QGridLayout  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QPixmap, QProgressBar  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QPixmap, QProgressBar, QFrame  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QWidget, QLabel, QGridLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QPixmap, QProgressBar, QPalette  # pylint: disable=import-error
+    from PyQt4.Qt import QPixmap, QProgressBar, QFrame  # pylint: disable=import-error
 
 
 class PopupFactory(QWidget):
@@ -95,7 +95,23 @@ class PopupFactory(QWidget):
 
         self.bar_style_sheet(state_name)
 
-        # Increment vertically position for next label
+        # Increment vertically position for next widget
+        self.pos += 1
+
+    def add_separator(self):
+        """
+        Add an horizontal line to layout.
+        """
+
+        separator = QFrame()
+        separator.setFrameShape(QFrame.HLine)
+        separator.setFrameShadow(QFrame.Sunken)
+        separator.setMinimumSize(self.width(), 5)
+
+        # Add to layout
+        self.main_layout.addWidget(separator, self.pos, 0)
+
+        # Increment vertically position for next widget
         self.pos += 1
 
     def update_states(self, state_name, nb_items, diff, percent):
@@ -126,13 +142,19 @@ class PopupFactory(QWidget):
     def get_states_states(hosts_states, services_states):
         """
         Calculates and return the sum of the items and their percentages
-        :param hosts_states:
-        :param services_states:
-        :return:
+
+        :param hosts_states: number of hosts for each states
+        :type hosts_states: dict
+        :param services_states: number of services for each states
+        :type services_states: dict
+        :return: percentages
+        :rtype: dict
         """
 
+        # Initialize percentage
         percentages = {}
 
+        # Get sum for hosts and services
         hosts_sum = hosts_states['up'] \
             + hosts_states['down'] \
             + hosts_states['unreachable']
@@ -141,6 +163,7 @@ class PopupFactory(QWidget):
             + services_states['critical'] \
             + services_states['unknown']
 
+        # Calculates the percentage
         percentages['up'] = float((hosts_states['up'] * 100) / hosts_sum)
         percentages['down'] = float((hosts_states['down'] * 100) / hosts_sum)
         percentages['unreachable'] = float((hosts_states['unreachable'] * 100) / hosts_sum)
@@ -155,9 +178,12 @@ class PopupFactory(QWidget):
     @staticmethod
     def define_label(name):
         """
+        Define label text for QLabel "label_state"
 
-        :param name:
-        :return:
+        :param name: name of state
+        :type name: str
+        :return: label text
+        :rtype: str
         """
 
         if "hosts_up" in name:
@@ -181,9 +207,10 @@ class PopupFactory(QWidget):
 
     def bar_style_sheet(self, label_state):
         """
+        Define the color of QProgressBar
 
-        :param label_state:
-        :return:
+        :param label_state: type of state
+        :type label_state: str
         """
 
         if "hosts_up" in label_state or "services_ok" in label_state:

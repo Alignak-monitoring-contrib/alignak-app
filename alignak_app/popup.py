@@ -108,6 +108,8 @@ class AppPopup(QWidget):
         self.state_factory.create_state('hosts_unreach')
         self.state_factory.create_state('hosts_down')
 
+        self.state_factory.add_separator()
+
         # Services
         self.state_factory.create_state('services_ok')
         self.state_factory.create_state('services_warning')
