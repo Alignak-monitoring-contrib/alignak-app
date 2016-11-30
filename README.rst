@@ -5,12 +5,6 @@ Alignak App
 Informations
 ============
 
-Alignak-App is a notifier application for `Alignak project <http://alignak-monitoring.github.io/>`_. It can be installed on any Linux or Windows Dekstop / Server with a graphical interface who can run Python.
-
-This application is useful for people with an Alignak installation in their business and who want to keep an eye on their supervision constantly.
-
-For **installation**, please read the documentation below.
-
 .. image:: https://badge.fury.io/py/alignak_app.svg
     :target: https://badge.fury.io/py/alignak_app
     :alt: Pypi
@@ -18,6 +12,12 @@ For **installation**, please read the documentation below.
 .. image:: https://img.shields.io/badge/license-GNU%20General%20Public%20License%20v3.0-blue.svg
     :target: https://github.com/Alignak-monitoring-contrib/alignak-app/blob/develop/LICENSE
     :alt: Licence
+
+Alignak-App is a notifier application for `Alignak project <http://alignak-monitoring.github.io/>`_. It can be installed on any Linux or Windows Dekstop / Server with a graphical interface who can run Python.
+
+This application is useful for people with an Alignak installation in their business and who want to keep an eye on their supervision constantly.
+
+For **installation**, please read the documentation below.
 
 Build status (stable release)
 =============================
