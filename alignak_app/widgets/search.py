@@ -24,21 +24,25 @@
 """
 
 import sys
+import json
+
 from logging import getLogger
 
-from alignak_app import __application__
+from alignak_app.popup.popup_title import PopupTitle
 from alignak_app.backend.alignak_data import AlignakData
 from alignak_app.core.utils import set_app_config
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QWidget, QApplication  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QGridLayout  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QGridLayout, QLabel  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QStringListModel  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QCompleter, QLineEdit  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QWidget, QApplication  # pylint: disable=import-error
-    from PyQt4.Qt import QGridLayout  # pylint: disable=import-error
+    from PyQt4.Qt import QApplication  # pylint: disable=import-error
+    from PyQt4.Qt import QWidget, QPushButton  # pylint: disable=import-error
+    from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
     from PyQt4.Qt import QStringListModel  # pylint: disable=import-error
     from PyQt4.Qt import QCompleter, QLineEdit  # pylint: disable=import-error
 
@@ -53,7 +57,12 @@ class AppSearch(QWidget):
 
     def __init__(self, parent=None):
         super(AppSearch, self).__init__(parent)
-        self.setWindowTitle(__application__ + ': About')
+        self.setMinimumSize(900, 700)
+        # Fields
+        self.line_edit = QLineEdit()
+        self.result_label = QLabel()
+        self.alignak_data = AlignakData()
+        self.current_hosts = None
 
     def create_search(self):
         """
@@ -62,26 +71,83 @@ class AppSearch(QWidget):
 
         set_app_config()
 
-        alignak_data = AlignakData()
-        alignak_data.log_to_backend()
+        self.alignak_data.log_to_backend()
 
-        current_hosts = alignak_data.get_host_states()
+        self.current_hosts = self.alignak_data.get_host_states()
+
+        popup_title = self.add_title()
+        self.add_search_bar()
+
+        button = QPushButton('Search', self)
+        button.clicked.connect(self.handle_button)
+        self.line_edit.returnPressed.connect(button.click)
+
+        layout = QGridLayout()
+        layout.addWidget(popup_title, 0, 0)
+        layout.addWidget(self.line_edit, 1, 0)
+        layout.addWidget(button, 1, 1)
+        layout.addWidget(self.result_label, 2, 0)
+
+        self.setLayout(layout)
+        self.show()
+
+    def handle_button(self):
+        """
+        TODO
+        """
+
+        self.result_label.setWordWrap(True)
+        item = self.line_edit.text()
+
+        if item:
+            self.result_label.setText(
+                self.display_result(item)
+            )
+        else:
+            self.result_label.setText('Not found !')
+
+    def display_result(self, item):
+        """
+        TODO
+        """
+
+        params = {'where': json.dumps({'_is_template': False})}
+        all_host = self.alignak_data.backend.get_all(
+            self.alignak_data.backend.url_endpoint_root + '/host', params)
+
+        result = 'Not found !'
+
+        for host in all_host['_items']:
+            print(host)
+            print(host['name'])
+            if host['name'] == item:
+                result = str(host)
+
+        return result
+
+    def add_search_bar(self):
+        """
+        TODO
+        """
 
         model = QStringListModel()
-        model.setStringList(current_hosts)
+        model.setStringList(self.current_hosts)
 
         completer = QCompleter()
         completer.setModel(model)
 
-        lineedit = QLineEdit()
-        lineedit.setCompleter(completer)
+        self.line_edit.setCompleter(completer)
 
-        layout = QGridLayout()
+    @staticmethod
+    def add_title():
+        """
+        TODO
+        """
 
-        layout.addWidget(lineedit)
+        title = PopupTitle()
+        title.create_title('Synthesis View')
 
-        self.setLayout(layout)
-        self.show()
+        return title
 
 
 if __name__ == '__main__':
