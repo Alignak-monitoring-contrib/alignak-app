@@ -32,10 +32,15 @@ from alignak_app.core.utils import set_app_config
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QWidget, QApplication, QGridLayout  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QStringListModel, QCompleter, QLineEdit
+    from PyQt5.QtWidgets import QWidget, QApplication  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QGridLayout  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QStringListModel  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QCompleter, QLineEdit  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QWidget  # pylint: disable=import-error
+    from PyQt4.Qt import QWidget, QApplication  # pylint: disable=import-error
+    from PyQt4.Qt import QGridLayout  # pylint: disable=import-error
+    from PyQt4.Qt import QStringListModel  # pylint: disable=import-error
+    from PyQt4.Qt import QCompleter, QLineEdit  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
