@@ -35,13 +35,13 @@ try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QApplication, QWidget  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QLabel, QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon, QPixmap  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication, QWidget  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QLabel  # pylint: disable=import-error
+    from PyQt4.Qt import QLabel, QPushButton  # pylint: disable=import-error
     from PyQt4.QtGui import QIcon, QPixmap  # pylint: disable=import-error
     from PyQt4.QtCore import Qt  # pylint: disable=import-error
 
@@ -61,9 +61,10 @@ class AlignakStatus(QWidget):
         self.setMinimumWidth(425)
         self.setMinimumWidth(425)
         self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setWindowFlags(Qt.SplashScreen | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.move(QApplication.desktop().screen().rect().center() - self.rect().center())
         # Fields
-        self.grid = None
+        self.layout = None
         self.start = True
         self.daemons = [
             'poller',
@@ -98,8 +99,8 @@ class AlignakStatus(QWidget):
         """
 
         # Add Layout
-        self.grid = QGridLayout()
-        self.setLayout(self.grid)
+        self.layout = QGridLayout()
+        self.setLayout(self.layout)
 
         # Display daemons status or info windows
         if get_app_config('Backend', 'web_service_status', boolean=True):
@@ -151,12 +152,38 @@ class AlignakStatus(QWidget):
 
                 if alignak_map[daemon][sub_daemon]['alive']:
                     self.daemons_labels[daemon][sub_daemon]['icon'].setPixmap(
-                        QPixmap(get_image_path('checked'))
+                        QPixmap(get_image_path('valid'))
                     )
                 else:
                     self.daemons_labels[daemon][sub_daemon]['icon'].setPixmap(
                         QPixmap(get_image_path('unvalid'))
                     )
+
+    def add_button(self, pos):
+        """
+        Add a button
+
+        """
+
+        button = QPushButton(self)
+        button.setIcon(QIcon(get_image_path('checked')))
+        button.setFixedSize(30, 30)
+
+        button.setStyleSheet(
+            """
+QPushButton{
+    Background-color: #eee;
+    border: 2px solid #78909C;
+    border-radius: 15px;
+    text-align: center;
+}
+QPushButton:hover{
+    Background-color: #ddd;
+}"""
+        )
+        button.clicked.connect(self.close)
+        self.layout.addWidget(button, pos, 0, 1, 2)
+        self.layout.setAlignment(button, Qt.AlignCenter)
 
     def web_service_info(self):
         """
@@ -167,7 +194,7 @@ class AlignakStatus(QWidget):
         info_title_label = QLabel(
             '<span style="color: blue;">Alignak <b>Web Service</b> is not available !</span>'
         )
-        self.grid.addWidget(info_title_label, 0, 0)
+        self.layout.addWidget(info_title_label, 0, 0)
 
         info_label = QLabel(
             'Install it on your <b>Alignak server</b>. '
@@ -176,7 +203,8 @@ class AlignakStatus(QWidget):
         info_label.setWordWrap(True)
         info_label.setAlignment(Qt.AlignTop)
 
-        self.grid.addWidget(info_label, 1, 0)
+        self.layout.addWidget(info_label, 1, 0)
+        self.add_button(2)
 
     def daemons_to_layout(self):
         """
@@ -185,11 +213,11 @@ class AlignakStatus(QWidget):
         """
 
         if self.ws_request:
-            self.grid.addWidget(QLabel('<b>Daemon Name</b> '), 1, 0)
+            self.layout.addWidget(QLabel('<b>Daemon Name</b> '), 1, 0)
 
             status_title = QLabel('<b>Status</b>')
             status_title.setAlignment(Qt.AlignCenter)
-            self.grid.addWidget(status_title, 1, 1)
+            self.layout.addWidget(status_title, 1, 1)
 
             alignak_map = self.ws_request.json()
 
@@ -199,13 +227,14 @@ class AlignakStatus(QWidget):
             line = 2
             for daemon in self.daemons:
                 for sub_daemon in alignak_map[daemon]:
-                    self.grid.addWidget(
+                    self.layout.addWidget(
                         self.daemons_labels[daemon][sub_daemon]['label'], line, 0
                     )
-                    self.grid.addWidget(
+                    self.layout.addWidget(
                         self.daemons_labels[daemon][sub_daemon]['icon'], line, 1
                     )
                     line += 1
+        self.add_button(line)
 
     def update_status(self):
         """

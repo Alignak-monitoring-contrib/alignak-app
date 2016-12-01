@@ -153,9 +153,13 @@ class PopupFactory(QWidget):
         self.state_data[state_name]['nb_items'].setText(str(nb_items))
         if nb_items == 0:
             if "hosts" in state_name:
-                self.state_data[state_name]['icon'].setPixmap(QPixmap(get_image_path('hosts_none')))
+                self.state_data[state_name]['icon'].setPixmap(
+                    QPixmap(get_image_path('hosts_none'))
+                )
             else:
-                self.state_data[state_name]['icon'].setPixmap(QPixmap(get_image_path('services_none')))
+                self.state_data[state_name]['icon'].setPixmap(
+                    QPixmap(get_image_path('services_none'))
+                )
         else:
             self.state_data[state_name]['icon'].setPixmap(QPixmap(get_image_path(state_name)))
 
