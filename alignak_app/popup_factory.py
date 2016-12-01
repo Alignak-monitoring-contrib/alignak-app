@@ -92,6 +92,7 @@ class PopupFactory(QWidget):
 
         # Store state
         self.state_data[state_name] = {
+            'icon': label_icon,
             'nb_items': nb_items,
             'diff': diff,
             'progress_bar': progress_bar
@@ -150,6 +151,13 @@ class PopupFactory(QWidget):
         """
 
         self.state_data[state_name]['nb_items'].setText(str(nb_items))
+        if nb_items == 0:
+            if "hosts" in state_name:
+                self.state_data[state_name]['icon'].setPixmap(QPixmap(get_image_path('hosts_none')))
+            else:
+                self.state_data[state_name]['icon'].setPixmap(QPixmap(get_image_path('services_none')))
+        else:
+            self.state_data[state_name]['icon'].setPixmap(QPixmap(get_image_path(state_name)))
 
         if isinstance(diff, int):
             self.state_data[state_name]['diff'].setText('<b>(' + "{0:+d}".format(diff) + ')</b>')
