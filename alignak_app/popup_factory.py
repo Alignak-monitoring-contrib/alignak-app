@@ -28,11 +28,13 @@ from alignak_app.utils import get_image_path, get_template
 try:
     __import__('PyQt5')
     from PyQt5.Qt import QWidget, QLabel, QGridLayout  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QPixmap, QProgressBar, QFrame, QPushButton, QIcon  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QPixmap, QProgressBar  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QFrame, QPushButton, QIcon  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import Qt  # pylint: disable=import-error
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QWidget, QLabel, QGridLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QPixmap, QProgressBar, QFrame, QPushButton, QIcon  # pylint: disable=import-error
+    from PyQt4.Qt import QPixmap, QProgressBar  # pylint: disable=import-error
+    from PyQt4.Qt import QFrame, QPushButton, QIcon  # pylint: disable=import-error
     from PyQt4.QtCore import Qt  # pylint: disable=import-error
 
 

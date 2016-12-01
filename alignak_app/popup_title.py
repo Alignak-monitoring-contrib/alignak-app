@@ -48,7 +48,7 @@ except ImportError:  # pragma: no cover
 logger = getLogger(__name__)
 
 
-class PopupTitle(QWidget):
+class PopupTitle(QWidget):  # pylint: disable=too-few-public-methods
     """
     Class who create popup title.
     """
