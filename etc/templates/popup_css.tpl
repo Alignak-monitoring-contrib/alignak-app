@@ -14,7 +14,6 @@ QLabel#msg{
 QLabel#state{
     Background-color: $color_title;
     font-size: 16px bold;
-
 }
 QPushButton{
     Background-color: #eee;

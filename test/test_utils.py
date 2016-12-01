@@ -34,28 +34,14 @@ class TestUtils(unittest2.TestCase):
         """Get Template with Right CSS"""
 
         # Simulate an expected Template
-        expected_css = """QWidget{
-    Background: #eee;
-    color:white;
-}
-QLabel#title{
-    Background: #78909C;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px bold;
-}
-QLabel#msg{
-    Background: #eee;
+        expected_css = """QProgressBar {
     color: black;
+    border: 2px solid grey;
+    border-radius: 5px;
+    text-align: center;
 }
-QLabel#state{
-    Background-color: #27ae60;
-    font-size: 16px bold;
-
-}
-QToolButton{
-    Background: #eee;
-    border: none;
+QProgressBar::chunk {
+   background-color: #27ae60;
 }
 """
 
@@ -63,7 +49,7 @@ QToolButton{
         utils.set_app_config()
 
         # Get the template
-        under_test = utils.get_template('popup_css.tpl', dict(color_title='#27ae60'))
+        under_test = utils.get_template('progressbar_css.tpl', dict(bar_color='#27ae60'))
 
         self.assertEqual(under_test, expected_css)
 

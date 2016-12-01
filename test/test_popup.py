@@ -104,102 +104,10 @@ class TestPopup(unittest2.TestCase):
 
     def test_get_style_sheet(self):
         """Get Style Sheet according to States"""
-        ok_css = """QWidget{
-    Background: #eee;
-    color:white;
-}
-QLabel#title{
-    Background: #78909C;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px bold;
-}
-QLabel#msg{
-    Background: #eee;
-    color: black;
-}
-QLabel#state{
-    Background-color: #27ae60;
-    font-size: 16px bold;
-
-}
-QToolButton{
-    Background: #eee;
-    border: none;
-}
-"""
-        warning_css = """QWidget{
-    Background: #eee;
-    color:white;
-}
-QLabel#title{
-    Background: #78909C;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px bold;
-}
-QLabel#msg{
-    Background: #eee;
-    color: black;
-}
-QLabel#state{
-    Background-color: #e67e22;
-    font-size: 16px bold;
-
-}
-QToolButton{
-    Background: #eee;
-    border: none;
-}
-"""
-        critical_css = """QWidget{
-    Background: #eee;
-    color:white;
-}
-QLabel#title{
-    Background: #78909C;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px bold;
-}
-QLabel#msg{
-    Background: #eee;
-    color: black;
-}
-QLabel#state{
-    Background-color: #e74c3c;
-    font-size: 16px bold;
-
-}
-QToolButton{
-    Background: #eee;
-    border: none;
-}
-"""
-        none_css = """QWidget{
-    Background: #eee;
-    color:white;
-}
-QLabel#title{
-    Background: #78909C;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px bold;
-}
-QLabel#msg{
-    Background: #eee;
-    color: black;
-}
-QLabel#state{
-    Background-color: #EEE;
-    font-size: 16px bold;
-
-}
-QToolButton{
-    Background: #eee;
-    border: none;
-}
-"""
+        ok_css = "Background-color: #27ae60;"
+        warning_css = "Background-color: #e67e22;"
+        critical_css = "Background-color: #e74c3c;"
+        none_css = "Background-color: #EEE;"
 
         under_test = AppPopup()
 
@@ -213,9 +121,9 @@ QToolButton{
 
         for state in states:
             expected_css = css[state]
-            current_css = under_test.set_style_sheet(state)
-            self.assertEqual(expected_css, current_css)
-
+            under_test.set_style_sheet(state)
+            current_css = under_test.styleSheet()
+            assert expected_css in current_css
 
     def test_set_position(self):
         """Position Change from Initial Position"""
