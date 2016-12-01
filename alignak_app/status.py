@@ -54,7 +54,7 @@ class AlignakStatus(QWidget):
     """
 
     def __init__(self, parent=None):
-        QWidget.__init__(self, parent)
+        super(AlignakStatus, self).__init__(parent)
         # General settings
         self.setWindowTitle(__application__ + ': Alignak-States')
         self.setContentsMargins(0, 0, 0, 0)

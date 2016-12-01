@@ -54,12 +54,11 @@ class AppPopup(QWidget):
     """
 
     def __init__(self, parent=None):
-        QWidget.__init__(self, parent)
+        super(AppPopup, self).__init__(parent)
         # General settings
         self.setWindowTitle(__application__)
         self.setContentsMargins(0, 0, 0, 0)
-        self.setMinimumSize(450, 340)
-        self.setMaximumSize(450, 340)
+        self.setFixedSize(455, 340)
         self.setWindowFlags(Qt.SplashScreen | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         # Fields
         self.main_layout = QVBoxLayout(self)

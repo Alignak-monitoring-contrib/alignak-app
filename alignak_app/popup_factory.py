@@ -20,8 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    States_factory manage the creation of QWidget who display:
-        icon | state | number in this state | changes | progress_bar
+    States_factory manage the creation of Popup Qwidget:
 """
 
 from alignak_app.utils import get_image_path, get_template
@@ -30,9 +29,11 @@ try:
     __import__('PyQt5')
     from PyQt5.Qt import QWidget, QLabel, QGridLayout  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QPixmap, QProgressBar, QFrame  # pylint: disable=no-name-in-module
+    from PyQt5.QtCore import Qt  # pylint: disable=import-error
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QWidget, QLabel, QGridLayout  # pylint: disable=import-error
     from PyQt4.Qt import QPixmap, QProgressBar, QFrame  # pylint: disable=import-error
+    from PyQt4.QtCore import Qt  # pylint: disable=import-error
 
 
 class PopupFactory(QWidget):
@@ -42,7 +43,7 @@ class PopupFactory(QWidget):
     """
 
     def __init__(self, parent=None):
-        QWidget.__init__(self, parent)
+        super(PopupFactory, self).__init__(parent)
         self.main_layout = QGridLayout()
         self.pos = 0
         self.setLayout(self.main_layout)
@@ -83,6 +84,7 @@ class PopupFactory(QWidget):
         self.main_layout.addWidget(label_icon, self.pos, 0)
         self.main_layout.addWidget(state_label, self.pos, 1)
         self.main_layout.addWidget(nb_items, self.pos, 2)
+        self.main_layout.setAlignment(nb_items, Qt.AlignCenter)
         self.main_layout.addWidget(diff, self.pos, 3)
         self.main_layout.addWidget(progress_bar, self.pos, 4)
 
@@ -106,10 +108,10 @@ class PopupFactory(QWidget):
         separator = QFrame()
         separator.setFrameShape(QFrame.HLine)
         separator.setFrameShadow(QFrame.Sunken)
-        separator.setMinimumSize(self.width(), 5)
+        separator.setMinimumSize(self.width(), 2)
 
         # Add to layout
-        self.main_layout.addWidget(separator, self.pos, 0)
+        self.main_layout.addWidget(separator, self.pos, 0, 1, 5)
 
         # Increment vertically position for next widget
         self.pos += 1
