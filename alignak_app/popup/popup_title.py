@@ -25,10 +25,7 @@
 
 from logging import getLogger
 
-from alignak_app import __application__
-from alignak_app.utils import get_template
-from alignak_app.utils import get_app_config, get_image_path
-from alignak_app.popup_factory import PopupFactory
+from alignak_app.core.utils import get_image_path
 
 try:
     __import__('PyQt5')

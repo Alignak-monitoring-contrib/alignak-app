@@ -21,8 +21,8 @@
 
 import unittest2
 
-from alignak_app.alignak_data import AlignakData
-from alignak_app.utils import set_app_config, get_app_config
+from alignak_app.backend.alignak_data import AlignakData
+from alignak_app.core.utils import set_app_config, get_app_config
 
 
 class TestAlignakData(unittest2.TestCase):

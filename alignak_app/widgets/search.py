@@ -24,13 +24,11 @@
 """
 
 import sys
-import json
-
 from logging import getLogger
 
 from alignak_app import __application__
-from alignak_app.alignak_data import AlignakData
-from alignak_app.utils import set_app_config
+from alignak_app.backend.alignak_data import AlignakData
+from alignak_app.core.utils import set_app_config
 
 try:
     __import__('PyQt5')

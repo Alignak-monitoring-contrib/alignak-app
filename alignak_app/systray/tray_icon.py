@@ -25,13 +25,12 @@
 
 import sys
 import webbrowser
-
 from logging import getLogger
 
-from alignak_app.utils import get_app_config
-from alignak_app.status import AlignakStatus
-from alignak_app.about import AppAbout
-from alignak_app.actions_factory import ActionFactory
+from alignak_app.core.utils import get_app_config
+from alignak_app.systray.actions_factory import ActionFactory
+from alignak_app.widgets.about import AppAbout
+from alignak_app.widgets.status import AlignakStatus
 
 try:
     __import__('PyQt5')

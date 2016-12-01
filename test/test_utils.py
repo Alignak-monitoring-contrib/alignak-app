@@ -19,10 +19,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-import unittest2
 import os
 
-import alignak_app.utils as utils
+import unittest2
+
+import alignak_app.core.utils as utils
 
 
 class TestUtils(unittest2.TestCase):

@@ -23,13 +23,13 @@
     Alignak_data manage connexion with backend and his data.
 """
 
-import sys
 import json
-
+import sys
 from logging import getLogger
-from alignak_backend_client.client import Backend, BackendException
-from alignak_app.utils import get_app_config
 
+from alignak_backend_client.client import Backend, BackendException
+
+from alignak_app.core.utils import get_app_config
 
 logger = getLogger(__name__)
 

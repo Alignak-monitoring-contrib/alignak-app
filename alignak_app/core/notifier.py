@@ -26,9 +26,9 @@
 import copy
 from logging import getLogger
 
-from alignak_app.alignak_data import AlignakData
-from alignak_app.popup import AppPopup
-from alignak_app.utils import get_app_config
+from alignak_app.backend.alignak_data import AlignakData
+from alignak_app.core.utils import get_app_config
+from alignak_app.widgets.popup import AppPopup
 
 try:
     __import__('PyQt5')

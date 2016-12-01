@@ -26,10 +26,9 @@
 from logging import getLogger
 
 import requests
-# from requests import ConnectionError
 
 from alignak_app import __application__
-from alignak_app.utils import get_image_path, get_app_config
+from alignak_app.core.utils import get_image_path, get_app_config
 
 try:
     __import__('PyQt5')

@@ -25,7 +25,7 @@
 
 from logging import getLogger
 
-from alignak_app.utils import get_image_path
+from alignak_app.core.utils import get_image_path
 
 try:
     __import__('PyQt5')

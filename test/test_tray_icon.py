@@ -19,12 +19,13 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-import unittest2
 import sys
 
-from alignak_app.tray_icon import TrayIcon
-from alignak_app.utils import set_app_config
-from alignak_app.utils import get_image_path
+import unittest2
+
+from alignak_app.core.utils import get_image_path
+from alignak_app.core.utils import set_app_config
+from alignak_app.systray.tray_icon import TrayIcon
 
 try:
     __import__('PyQt5')

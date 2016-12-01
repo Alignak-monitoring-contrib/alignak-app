@@ -23,7 +23,7 @@
     States_factory manage the creation of Popup Qwidget:
 """
 
-from alignak_app.utils import get_image_path, get_template
+from alignak_app.core.utils import get_image_path, get_template
 
 try:
     __import__('PyQt5')
