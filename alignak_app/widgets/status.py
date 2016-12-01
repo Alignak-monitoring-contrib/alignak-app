@@ -58,9 +58,8 @@ class AlignakStatus(QWidget):
         self.setWindowTitle(__application__ + ': Alignak-States')
         self.setContentsMargins(0, 0, 0, 0)
         self.setMinimumWidth(425)
-        self.setMinimumWidth(425)
         self.setWindowIcon(QIcon(get_image_path('icon')))
-        self.setWindowFlags(Qt.SplashScreen | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.FramelessWindowHint)
         self.move(QApplication.desktop().screen().rect().center() - self.rect().center())
         # Fields
         self.layout = None
