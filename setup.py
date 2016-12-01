@@ -83,10 +83,9 @@ setup(
     data_files=[
         (paths['app'], ['etc/settings.cfg']),
         (paths['app'] + '/templates', ['etc/templates/notification.tpl']),
-        (paths['app'] + '/templates', ['etc/templates/popup_title_css.tpl']),
-        (paths['app'] + '/templates', ['etc/templates/about.tpl']),
-        (paths['app'] + '/templates', ['etc/templates/button.tpl']),
         (paths['app'] + '/templates', ['etc/templates/popup_css.tpl']),
+        (paths['app'] + '/templates', ['etc/templates/about.tpl']),
+        (paths['app'] + '/templates', ['etc/templates/progressbar_css.tpl']),
         (paths['app'] + '/images', ['etc/images/alignak.svg']),
         (paths['app'] + '/images', ['etc/images/host_up.svg']),
         (paths['app'] + '/images', ['etc/images/host_down.svg']),

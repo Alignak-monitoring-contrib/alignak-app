@@ -53,13 +53,13 @@ class TestPopup(unittest2.TestCase):
         under_test = AppPopup()
 
         self.assertIsNone(under_test.notification_type)
-        self.assertIsNone(under_test.state_factory)
+        self.assertIsNone(under_test.popup_factory)
 
         # Create all the label
         under_test.initialize_notification()
 
         self.assertEqual('state', under_test.notification_type.objectName())
-        self.assertIsNotNone(under_test.state_factory)
+        self.assertIsNotNone(under_test.popup_factory)
 
     def test_send_notifications(self):
         """Send Notification"""
@@ -100,7 +100,7 @@ class TestPopup(unittest2.TestCase):
         expected_content = 'AlignakApp has something broken... \nPlease Check your logs !'
 
         self.assertEqual('CRITICAL', under_test.notification_type.text())
-        self.assertEqual(expected_content, under_test.state_factory.text())
+        self.assertEqual(expected_content, under_test.popup_factory.text())
 
     def test_get_style_sheet(self):
         """Get Style Sheet according to States"""
@@ -213,7 +213,7 @@ QToolButton{
 
         for state in states:
             expected_css = css[state]
-            current_css = under_test.get_style_sheet(state)
+            current_css = under_test.set_style_sheet(state)
             self.assertEqual(expected_css, current_css)
 
 

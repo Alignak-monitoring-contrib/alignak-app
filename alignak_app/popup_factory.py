@@ -28,11 +28,11 @@ from alignak_app.utils import get_image_path, get_template
 try:
     __import__('PyQt5')
     from PyQt5.Qt import QWidget, QLabel, QGridLayout  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QPixmap, QProgressBar, QFrame  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QPixmap, QProgressBar, QFrame, QPushButton, QIcon  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import Qt  # pylint: disable=import-error
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QWidget, QLabel, QGridLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QPixmap, QProgressBar, QFrame  # pylint: disable=import-error
+    from PyQt4.Qt import QPixmap, QProgressBar, QFrame, QPushButton, QIcon  # pylint: disable=import-error
     from PyQt4.QtCore import Qt  # pylint: disable=import-error
 
 
@@ -115,6 +115,23 @@ class PopupFactory(QWidget):
 
         # Increment vertically position for next widget
         self.pos += 1
+
+    def add_valid_button(self):
+        """
+        Create valid button for popup
+
+        :return button
+        :rtype QPushButton
+        """
+
+        button = QPushButton(self)
+        button.setIcon(QIcon(get_image_path('checked')))
+        button.setFixedSize(30, 30)
+
+        self.main_layout.addWidget(button, self.pos, 0, 2, 5)
+        self.main_layout.setAlignment(button, Qt.AlignCenter)
+
+        return button
 
     def update_states(self, state_name, nb_items, diff, percent):
         """
@@ -227,5 +244,5 @@ class PopupFactory(QWidget):
             bar_color = "grey"
 
         self.state_data[label_state]['progress_bar'].setStyleSheet(
-            get_template('popup_css.tpl', dict(bar_color=bar_color))
+            get_template('progressbar_css.tpl', dict(bar_color=bar_color))
         )

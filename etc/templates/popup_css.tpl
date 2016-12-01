@@ -1,9 +1,27 @@
-QProgressBar {
+QWidget#popup_title{
+    Background: #eee;
+    color:white;
+}
+QLabel {
+    color:black;
+}
+QLabel#title{
+    font-size: 18px bold;
+}
+QLabel#msg{
     color: black;
-    border: 2px solid grey;
-    border-radius: 5px;
+}
+QLabel#state{
+    Background-color: $color_title;
+    font-size: 16px bold;
+
+}
+QPushButton{
+    Background-color: #eee;
+    border: 2px solid #78909C;
+    border-radius: 15px;
     text-align: center;
 }
-QProgressBar::chunk {
-   background-color: $bar_color;
+QPushButton:hover{
+    Background-color: #ddd;
 }

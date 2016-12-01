@@ -105,10 +105,20 @@ class AppAbout(QWidget):
 
         self.button = QPushButton(self)
         self.button.setIcon(QIcon(get_image_path('checked')))
-        self.button.setMinimumSize(30, 30)
-        self.button.setMaximumSize(30, 30)
+        self.button.setFixedSize(30, 30)
 
-        self.button.setStyleSheet(get_template('button.tpl', None))
+        self.button.setStyleSheet(
+            """
+QPushButton{
+    Background-color: #eee;
+    border: 2px solid #78909C;
+    border-radius: 15px;
+    text-align: center;
+}
+QPushButton:hover{
+    Background-color: #ddd;
+}"""
+        )
         self.button.clicked.connect(self.close)
 
     def show_about(self):

@@ -27,8 +27,9 @@ from logging import getLogger
 
 from alignak_app import __application__
 from alignak_app.utils import get_template
-from alignak_app.utils import get_app_config, get_image_path
+from alignak_app.utils import get_app_config
 from alignak_app.popup_factory import PopupFactory
+from alignak_app.popup_title import PopupTitle
 
 try:
     __import__('PyQt5')
@@ -57,13 +58,12 @@ class AppPopup(QWidget):
         super(AppPopup, self).__init__(parent)
         # General settings
         self.setWindowTitle(__application__)
-        self.setContentsMargins(0, 0, 0, 0)
-        self.setFixedSize(455, 340)
+        self.setFixedSize(455, 350)
         self.setWindowFlags(Qt.SplashScreen | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         # Fields
         self.main_layout = QVBoxLayout(self)
         self.notification_type = None
-        self.state_factory = None
+        self.popup_factory = None
         self.button = None
 
     def initialize_notification(self):
@@ -73,8 +73,9 @@ class AppPopup(QWidget):
         """
 
         # Create and add Layout for notification title
-        layout_title = self.create_layout_title()
-        self.main_layout.addLayout(layout_title, 0)
+        popup_title = PopupTitle(self)
+        popup_title.create_title('Alignak-app')
+        self.main_layout.addWidget(popup_title, 0)
 
         # Create Label for notification type
         self.notification_type = QLabel(self)
@@ -87,12 +88,11 @@ class AppPopup(QWidget):
 
         # Create and add StateFactory
         self.fill_state_factory()
-        self.main_layout.addWidget(self.state_factory, 2)
+        self.main_layout.addWidget(self.popup_factory, 2)
 
         # Create and add button
-        self.create_button()
-        self.main_layout.addWidget(self.button, 3)
-        self.main_layout.setAlignment(self.button, Qt.AlignCenter)
+        button = self.popup_factory.add_valid_button()
+        button.clicked.connect(self.close)
 
     def fill_state_factory(self):
         """
@@ -100,64 +100,20 @@ class AppPopup(QWidget):
 
         """
 
-        self.state_factory = PopupFactory()
+        self.popup_factory = PopupFactory()
 
         # Hosts
-        self.state_factory.create_state('hosts_up')
-        self.state_factory.create_state('hosts_unreach')
-        self.state_factory.create_state('hosts_down')
+        self.popup_factory.create_state('hosts_up')
+        self.popup_factory.create_state('hosts_unreach')
+        self.popup_factory.create_state('hosts_down')
 
-        self.state_factory.add_separator()
+        self.popup_factory.add_separator()
 
         # Services
-        self.state_factory.create_state('services_ok')
-        self.state_factory.create_state('services_warning')
-        self.state_factory.create_state('services_critical')
-        self.state_factory.create_state('services_unknown')
-
-    def create_layout_title(self):
-        """
-        Build title QLabel, with logo
-
-        :return: QHBoxLayout of title
-        :rtype: :class:`~PyQt5.QtWidgets.QHBoxLayout`
-        """
-
-        # Logo Label
-        pixmap = QPixmap(get_image_path('icon'))
-
-        logo_label = QLabel(self)
-        logo_label.setPixmap(pixmap)
-        logo_label.setScaledContents(True)
-        logo_label.setMaximumHeight(32)
-
-        # Title Label
-        title_label = QLabel(self)
-        title_label.setText("Alignak-app")
-        title_label.setAlignment(Qt.AlignCenter)
-        title_label.setObjectName('title')
-        title_label.setMaximumHeight(32)
-
-        # Create title Layout
-        tbox = QHBoxLayout()
-        tbox.addWidget(logo_label, 0)
-        tbox.addWidget(title_label, 1)
-
-        return tbox
-
-    def create_button(self):
-        """
-        Create valid button for popup
-
-        """
-
-        self.button = QPushButton(self)
-        self.button.setIcon(QIcon(get_image_path('checked')))
-        self.button.setMinimumSize(30, 30)
-        self.button.setMaximumSize(40, 40)
-
-        self.button.setStyleSheet(get_template('button.tpl', None))
-        self.button.clicked.connect(self.close)
+        self.popup_factory.create_state('services_ok')
+        self.popup_factory.create_state('services_warning')
+        self.popup_factory.create_state('services_critical')
+        self.popup_factory.create_state('services_unknown')
 
     def set_position(self):
         """
@@ -219,7 +175,7 @@ class AppPopup(QWidget):
 
         # Prepare notification
         self.notification_type.setText(title)
-        self.setStyleSheet(self.get_style_sheet(title))
+        self.set_style_sheet(title)
 
         # Update content of PopupFactory
         self.update_popup(hosts_states, services_states, diff)
@@ -249,27 +205,27 @@ class AppPopup(QWidget):
         :type diff: dict
         """
 
-        percentages = self.state_factory.get_states_states(hosts_states, services_states)
+        percentages = self.popup_factory.get_states_states(hosts_states, services_states)
 
         if services_states['ok'] < 0 or hosts_states['up'] < 0:
-            self.state_factory = QLabel(
+            self.popup_factory = QLabel(
                 'AlignakApp has something broken... \nPlease Check your logs !'
             )
         else:
             # Hosts
-            self.state_factory.update_states(
+            self.popup_factory.update_states(
                 'hosts_up',
                 hosts_states['up'],
                 diff['hosts']['up'],
                 percentages['up']
             )
-            self.state_factory.update_states(
+            self.popup_factory.update_states(
                 'hosts_down',
                 hosts_states['down'],
                 diff['hosts']['down'],
                 percentages['down']
             )
-            self.state_factory.update_states(
+            self.popup_factory.update_states(
                 'hosts_unreach',
                 hosts_states['unreachable'],
                 diff['hosts']['unreachable'],
@@ -277,33 +233,32 @@ class AppPopup(QWidget):
             )
 
             # Services
-            self.state_factory.update_states(
+            self.popup_factory.update_states(
                 'services_ok',
                 services_states['ok'],
                 diff['services']['ok'],
                 percentages['ok']
             )
-            self.state_factory.update_states(
+            self.popup_factory.update_states(
                 'services_warning',
                 services_states['warning'],
                 diff['services']['warning'],
                 percentages['warning']
             )
-            self.state_factory.update_states(
+            self.popup_factory.update_states(
                 'services_critical',
                 services_states['critical'],
                 diff['services']['critical'],
                 percentages['critical']
             )
-            self.state_factory.update_states(
+            self.popup_factory.update_states(
                 'services_unknown',
                 services_states['unknown'],
                 diff['services']['unknown'],
                 percentages['unknown']
             )
 
-    @staticmethod
-    def get_style_sheet(title):
+    def set_style_sheet(self, title):
         """
         Define css for QWidgets.
 
@@ -320,6 +275,6 @@ class AppPopup(QWidget):
         else:
             color_title = '#EEE'
 
-        css = get_template('popup_title_css.tpl', dict(color_title=color_title))
+        style_sheet = get_template('popup_css.tpl', dict(color_title=color_title))
 
-        return css
+        self.setStyleSheet(style_sheet)
