@@ -26,7 +26,7 @@
 import copy
 from logging import getLogger
 
-from alignak_app.backend.alignak_data import AlignakData
+from alignak_app.backend.backend import AlignakBackend
 from alignak_app.core.utils import get_app_config
 from alignak_app.widgets.popup import AppPopup
 
@@ -48,7 +48,7 @@ class AppNotifier(QSystemTrayIcon):
 
     def __init__(self, icon, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
-        self.alignak_data = None
+        self.backend = None
         self.tray_icon = None
         self.popup = None
         self.notify = False
@@ -73,19 +73,19 @@ class AppNotifier(QSystemTrayIcon):
         self.popup = AppPopup()
         self.popup.initialize_notification()
 
-        self.alignak_data = AlignakData()
-        self.alignak_data.log_to_backend()
+        self.backend = AlignakBackend()
+        self.backend.login()
 
-        self.notify = self.notification()
+        self.notify = self.be_notified()
         logger.debug('Notify : ' + str(self.notify))
 
         logger.info('Initialize notifier...')
         timer.timeout.connect(self.check_data)
 
     @staticmethod
-    def notification():
+    def be_notified():
         """
-        Check if user want to be notify or not.
+        Check if user want to be notified or not.
 
         :return: notifications in settings.cfg
         :rtype: bool
@@ -95,7 +95,7 @@ class AppNotifier(QSystemTrayIcon):
     @staticmethod
     def basic_diff_model():
         """
-        Define a basic model for dict of diff
+        Define a basic model of dict for diff
 
         :return: model dict for diff
         :rtype: dict
@@ -124,20 +124,20 @@ class AppNotifier(QSystemTrayIcon):
         old_states = {}
         diff = self.basic_diff_model()
 
-        if self.notification() and self.alignak_data.states:
-            old_states = copy.deepcopy(self.alignak_data.states)
+        if self.be_notified() and self.backend.states:
+            old_states = copy.deepcopy(self.backend.states)
 
-        hosts_states, services_states = self.alignak_data.get_state()
+        states = self.backend.get_all_state()
 
-        if self.notification() and old_states:
+        if self.be_notified() and old_states:
             diff = self.diff_last_check(old_states)
 
         # Check state to prepare popup
-        if services_states['critical'] > 0 or hosts_states['down'] > 0:
+        if states['services']['critical'] > 0 or states['hosts']['down'] > 0:
             popup_title = 'CRITICAL'
-        elif services_states['unknown'] > 0 or \
-                services_states['warning'] > 0 or \
-                hosts_states['unreachable'] > 0:
+        elif states['services']['unknown'] > 0 or \
+                states['services']['warning'] > 0 or \
+                states['hosts']['unreachable'] > 0:
             popup_title = 'WARNING !'
         else:
             popup_title = 'OK'
@@ -145,10 +145,10 @@ class AppNotifier(QSystemTrayIcon):
         logger.debug('Notification Title : ' + str(popup_title))
 
         # Trigger changes and send notification
-        self.tray_icon.update_menu_actions(hosts_states, services_states)
+        self.tray_icon.update_menu_actions(states['hosts'], states['services'])
 
         if self.notify:
-            self.popup.send_notification(popup_title, hosts_states, services_states, diff)
+            self.popup.send_notification(popup_title, states['hosts'], states['services'], diff)
 
     def diff_last_check(self, old_states):
         """
@@ -157,24 +157,24 @@ class AppNotifier(QSystemTrayIcon):
         """
 
         logger.debug('Old_states : ' + str(old_states))
-        logger.debug('New states : ' + str(self.alignak_data.states))
+        logger.debug('New states : ' + str(self.backend.states))
 
         diff = self.basic_diff_model()
 
-        if old_states == self.alignak_data.states:
+        if old_states == self.backend.states:
             logger.info('No changes since the last check...')
             self.notify = False
         else:
             logger.info('Changes since the last check !')
             self.notify = True
-            for key, _ in self.alignak_data.states['hosts'].items():
-                if old_states['hosts'][key] != self.alignak_data.states['hosts'][key]:
-                    cur_diff = self.alignak_data.states['hosts'][key] - old_states['hosts'][key]
+            for key, _ in self.backend.states['hosts'].items():
+                if old_states['hosts'][key] != self.backend.states['hosts'][key]:
+                    cur_diff = self.backend.states['hosts'][key] - old_states['hosts'][key]
                     diff['hosts'][key] = cur_diff
-            for key, _ in self.alignak_data.states['services'].items():
-                if old_states['services'][key] != self.alignak_data.states['services'][key]:
+            for key, _ in self.backend.states['services'].items():
+                if old_states['services'][key] != self.backend.states['services'][key]:
                     cur_diff = \
-                        self.alignak_data.states['services'][key] \
+                        self.backend.states['services'][key] \
                         - old_states['services'][key]
                     diff['services'][key] = cur_diff
 

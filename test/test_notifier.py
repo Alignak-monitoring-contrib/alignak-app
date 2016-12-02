@@ -64,7 +64,7 @@ class TestAppNotifier(unittest2.TestCase):
         under_test = AppNotifier(self.icon)
 
         self.assertIsNone(under_test.tray_icon)
-        self.assertIsNone(under_test.alignak_data)
+        self.assertIsNone(under_test.backend)
         self.assertIsNone(under_test.popup)
         self.assertFalse(under_test.notify)
 
@@ -76,7 +76,7 @@ class TestAppNotifier(unittest2.TestCase):
         under_test.start_process(tray_icon)
 
         self.assertIsNotNone(under_test.tray_icon)
-        self.assertIsNotNone(under_test.alignak_data)
+        self.assertIsNotNone(under_test.backend)
         self.assertIsNotNone(under_test.popup)
         self.assertTrue(under_test.notify)
 
@@ -117,19 +117,19 @@ class TestAppNotifier(unittest2.TestCase):
         self.assertTrue(under_test.notify)
 
         # "get_state" to fill states
-        self.assertFalse(under_test.alignak_data.states)
-        under_test.alignak_data.get_state()
-        self.assertTrue(under_test.alignak_data.states)
+        self.assertFalse(under_test.backend.states)
+        under_test.backend.get_all_state()
+        self.assertTrue(under_test.backend.states)
 
         # Copy state
-        old_states = copy.deepcopy(under_test.alignak_data.states)
+        old_states = copy.deepcopy(under_test.backend.states)
         under_test.diff_last_check(old_states)
 
         # "check_changes" set notify to False if no changes
         self.assertFalse(under_test.notify)
 
         # Modify "states" to set notify to True
-        under_test.alignak_data.states['hosts']['up'] += 1
+        under_test.backend.states['hosts']['up'] += 1
         under_test.diff_last_check(old_states)
 
         self.assertTrue(under_test.notify)

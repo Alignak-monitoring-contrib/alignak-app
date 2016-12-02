@@ -20,12 +20,13 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest2
+import json
 
-from alignak_app.backend.alignak_data import AlignakData
+from alignak_app.backend.backend import AlignakBackend
 from alignak_app.core.utils import set_app_config, get_app_config
 
 
-class TestAlignakData(unittest2.TestCase):
+class TestBackend(unittest2.TestCase):
     """
         This file test methods of AlignakData class
     """
@@ -36,9 +37,9 @@ class TestAlignakData(unittest2.TestCase):
     def test_log_to_backend(self):
         """Connection to Alignak-Backend"""
 
-        under_test = AlignakData()
+        under_test = AlignakBackend()
 
-        under_test.log_to_backend()
+        under_test.login()
 
         # Compare config url and backend
         self.assertEquals(
@@ -47,26 +48,30 @@ class TestAlignakData(unittest2.TestCase):
         )
         self.assertTrue(under_test.backend.authenticated)
 
-    def test_if_hosts_states(self):
+    def test_hosts_endpoint_without_params(self):
         """Collect Hosts States"""
 
-        alignak_data = AlignakData()
+        backend = AlignakBackend()
 
-        alignak_data.log_to_backend()
+        backend.login()
 
         # Get hosts states
-        under_test = alignak_data.get_host_states()
+        under_test = backend.get('host')
 
         self.assertTrue(under_test)
+        self.assertTrue(under_test['_items'])
 
-    def test_if_services_states(self):
+    def test_service_endpoint_with_params(self):
         """Collect Services States"""
 
-        alignak_data = AlignakData()
+        alignak_data = AlignakBackend()
 
-        alignak_data.log_to_backend()
+        alignak_data.login()
 
+        params = {'where': json.dumps({'_is_template': False})}
         # Get services states
-        under_test = alignak_data.get_service_states()
+        under_test = alignak_data.get('service', params=params)
 
         self.assertTrue(under_test)
+        self.assertTrue(under_test['_items'])
+        self.assertTrue(under_test['_status'])
