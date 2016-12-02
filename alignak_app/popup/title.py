@@ -57,13 +57,15 @@ class PopupTitle(QWidget):
         self.setFixedWidth(parent.width())
         self.setStyleSheet("""
             QWidget#popup_title {
-                background-color: #4d788e;
+                background-color: #002b36;
             }
             QLabel#title {
-                background-color: #4d788e;
                 font-size: 20px;
                 margin-top: 5px;
                 color: white;
+            }
+            QLabel#logo {
+                margin-top: 10px;
             }
         """)
         self.setAutoFillBackground(True)
@@ -78,7 +80,8 @@ class PopupTitle(QWidget):
         pixmap = QPixmap(get_image_path('icon'))
 
         logo_label = QLabel(self)
-        logo_label.setFixedSize(35, 35)
+        logo_label.setFixedSize(40, 40)
+        logo_label.setObjectName('logo')
         logo_label.setPixmap(pixmap)
 
         # Title Label
@@ -91,11 +94,8 @@ class PopupTitle(QWidget):
         layout = QHBoxLayout()
         layout.setAlignment(Qt.AlignTop)
         layout.addWidget(logo_label, 0)
-        layout.setAlignment(logo_label, Qt.AlignBottom)
-        layout.addStretch()
         layout.addWidget(title_label, 1)
         layout.setAlignment(title_label, Qt.AlignCenter)
-        layout.addStretch()
 
         self.setLayout(layout)
 
@@ -114,3 +114,21 @@ class PopupTitle(QWidget):
         painter = QPainter(self)
 
         self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)
+
+
+def get_popup_title(title, parent):
+    """
+    Create QWidget title and return it.
+
+    :param title: name of title
+    :type title: str
+    :param parent: QWidget parent
+    :type parent: QWidget
+    :return: PopupTitle
+    :type: PopupTitle
+    """
+
+    popup_title = PopupTitle(parent)
+    popup_title.create_title(title)
+
+    return popup_title

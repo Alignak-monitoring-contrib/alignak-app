@@ -28,7 +28,7 @@ import sys
 from logging import getLogger
 
 from alignak_app.core.utils import get_image_path
-from alignak_app.popup.title import PopupTitle
+from alignak_app.popup.title import get_popup_title
 from alignak_app.backend.backend import AlignakBackend
 from alignak_app.core.utils import set_app_config
 
@@ -144,8 +144,7 @@ class AppSynthesis(QWidget):
 
         """
 
-        title = PopupTitle(self)
-        title.create_title('Synthesis View')
+        title = get_popup_title('Synthesis View', self)
 
         return title
 

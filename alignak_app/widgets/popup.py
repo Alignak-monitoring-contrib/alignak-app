@@ -29,7 +29,7 @@ from alignak_app import __application__
 from alignak_app.core.utils import get_app_config
 from alignak_app.core.utils import get_template
 from alignak_app.popup.factory import PopupFactory
-from alignak_app.popup.title import PopupTitle
+from alignak_app.popup.title import get_popup_title
 
 try:
     __import__('PyQt5')
@@ -73,8 +73,7 @@ class AppPopup(QWidget):
         """
 
         # Create and add Layout for notification title
-        popup_title = PopupTitle(self)
-        popup_title.create_title('Alignak-app')
+        popup_title = get_popup_title('Notification', self)
         self.main_layout.addWidget(popup_title, 0)
         self.main_layout.setAlignment(popup_title, Qt.AlignCenter)
 

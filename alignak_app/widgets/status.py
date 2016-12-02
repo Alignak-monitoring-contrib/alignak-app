@@ -27,9 +27,9 @@ from logging import getLogger
 
 import requests
 
-from alignak_app import __application__
+from alignak_app import __application__, __short_version__
 from alignak_app.core.utils import get_image_path, get_app_config
-from alignak_app.popup.title import PopupTitle
+from alignak_app.popup.title import get_popup_title
 
 try:
     __import__('PyQt5')
@@ -189,7 +189,7 @@ QPushButton:hover{
 
         """
 
-        title = self.add_title()
+        title = get_popup_title('Daemons Status, Version: ' + __short_version__, self)
         self.layout.addWidget(title, 0, 0)
 
         info_title_label = QLabel(
@@ -213,7 +213,12 @@ QPushButton:hover{
 
         """
 
-        title = self.add_title()
+        title = get_popup_title(
+            __application__ +
+            ', Version: ' +
+            __short_version__,
+            self
+        )
         self.layout.addWidget(title, 0, 0, 1, 2)
         self.layout.setAlignment(Qt.AlignCenter)
 
@@ -276,14 +281,3 @@ QPushButton:hover{
             self.web_service_info()
 
         self.show()
-
-    def add_title(self):
-        """
-        Add title for QWidget
-
-        """
-
-        title = PopupTitle(self)
-        title.create_title('Alignak-app')
-
-        return title

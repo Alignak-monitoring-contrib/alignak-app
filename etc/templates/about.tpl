@@ -1,4 +1,4 @@
-<h2>About Alignak-App</h2>
+<br>
 <h4>Application version</h4>
 $application, version: $version
 <h4>Copyright</h4>

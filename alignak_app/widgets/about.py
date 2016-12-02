@@ -28,6 +28,7 @@ from logging import getLogger
 from alignak_app import __application__
 from alignak_app import __releasenotes__, __version__, __copyright__, __doc_url__, __project_url__
 from alignak_app.core.utils import get_image_path, get_template
+from alignak_app.popup.title import get_popup_title
 
 try:
     __import__('PyQt5')
@@ -57,8 +58,6 @@ class AppAbout(QWidget):
         # General settings
         self.setWindowTitle(__application__ + ': About')
         self.setContentsMargins(0, 0, 0, 0)
-        self.setMinimumSize(425, 400)
-        self.setMaximumSize(425, 400)
         self.setWindowIcon(QIcon(get_image_path('icon')))
         self.move(QApplication.desktop().screen().rect().center() - self.rect().center())
         self.setWindowFlags(Qt.FramelessWindowHint)
@@ -71,9 +70,14 @@ class AppAbout(QWidget):
 
         """
 
-        about_layout = QVBoxLayout()
+        layout = QVBoxLayout()
         self.setWindowIcon(QIcon(get_image_path('icon')))
 
+        # Popup title
+        title = get_popup_title('About ' + __application__, self)
+        layout.addWidget(title)
+
+        # About infos
         about_dict = dict(
             application=__application__,
             version=__version__,
@@ -89,13 +93,14 @@ class AppAbout(QWidget):
         about_label = QLabel(msg)
         about_label.setTextInteractionFlags(Qt.TextBrowserInteraction)
         about_label.setOpenExternalLinks(True)
-        about_layout.addWidget(about_label)
+        layout.addWidget(about_label)
 
+        # Button
         self.create_button()
-        about_layout.addWidget(self.button)
-        about_layout.setAlignment(self.button, Qt.AlignCenter)
+        layout.addWidget(self.button)
+        layout.setAlignment(self.button, Qt.AlignCenter)
 
-        self.setLayout(about_layout)
+        self.setLayout(layout)
 
     def create_button(self):
         """

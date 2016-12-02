@@ -1,12 +1,5 @@
-QWidget#popup_title{
-    Background: #eee;
-    color:white;
-}
 QLabel {
     color:black;
-}
-QLabel#title{
-    font-size: 18px bold;
 }
 QLabel#msg{
     color: black;
