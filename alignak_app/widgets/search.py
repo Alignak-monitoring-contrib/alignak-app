@@ -99,29 +99,58 @@ class AppSearch(QWidget):
         self.result_label.setWordWrap(True)
         item = self.line_edit.text()
 
+        data = self.get_item(item)
+
+        services = ''
+        for service in data['services']:
+            services += '<p>' + str(service) + '</p>'
         if item:
             self.result_label.setText(
-                self.display_result(item)
+                '<p>' +
+                str(data['host']) +
+                '</p>' +
+                services
             )
         else:
             self.result_label.setText('Not found !')
 
-    def display_result(self, item):
+    def get_item(self, item):
         """
         TODO
         """
 
-        params = {'where': json.dumps({'_is_template': False})}
+        # host = None
+
+        host_params = {
+            'where': json.dumps({
+                '_is_template': False
+            })
+        }
         all_host = self.alignak_data.backend.get_all(
-            self.alignak_data.backend.url_endpoint_root + '/host', params)
+            self.alignak_data.backend.url_endpoint_root + '/host',
+            host_params
+        )
 
-        result = 'Not found !'
+        for current_host in all_host['_items']:
+            if current_host['name'] == item:
+                host = current_host
 
-        for host in all_host['_items']:
-            print(host)
-            print(host['name'])
-            if host['name'] == item:
-                result = str(host)
+        service_params = {
+            'where': json.dumps({
+                '_is_template': False,
+                'host': host['_id']
+            })
+        }
+        all_services = self.alignak_data.backend.get(
+            self.alignak_data.backend.url_endpoint_root + '/service',
+            service_params
+        )
+        services = all_services['_items']
+
+        result = {
+            'host': host,
+            'services': services
+        }
 
         return result
 
