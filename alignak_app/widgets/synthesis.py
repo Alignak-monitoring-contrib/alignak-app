@@ -27,7 +27,8 @@ import sys
 
 from logging import getLogger
 
-from alignak_app.popup.popup_title import PopupTitle
+from alignak_app.core.utils import get_image_path
+from alignak_app.popup.title import PopupTitle
 from alignak_app.backend.backend import AlignakBackend
 from alignak_app.core.utils import set_app_config
 
@@ -36,13 +37,13 @@ try:
     from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QLabel  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QStringListModel  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QStringListModel, QIcon  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QCompleter, QLineEdit  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QPushButton  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
-    from PyQt4.Qt import QStringListModel  # pylint: disable=import-error
+    from PyQt4.Qt import QStringListModel, QIcon  # pylint: disable=import-error
     from PyQt4.Qt import QCompleter, QLineEdit  # pylint: disable=import-error
 
 
@@ -58,6 +59,7 @@ class AppSynthesis(QWidget):
         super(AppSynthesis, self).__init__(parent)
         self.setMinimumSize(900, 700)
         self.setWindowTitle('Synthesis View')
+        self.setWindowIcon(QIcon(get_image_path('icon')))
         # Fields
         self.line_search = QLineEdit()
         self.result_label = None
@@ -80,10 +82,10 @@ class AppSynthesis(QWidget):
         self.result_label.setWordWrap(True)
 
         layout = QGridLayout()
-        layout.addWidget(popup_title, 0, 0)
-        layout.addWidget(self.line_search, 1, 0)
-        layout.addWidget(button, 1, 1)
-        layout.addWidget(self.result_label, 2, 0)
+        layout.addWidget(popup_title, 0, 0, 1, 2)
+        layout.addWidget(self.line_search, 1, 0, 1, 1)
+        layout.addWidget(button, 1, 1, 1, 1)
+        layout.addWidget(self.result_label, 2, 0, 9, 1)
 
         self.setLayout(layout)
         self.show()
@@ -136,14 +138,13 @@ class AppSynthesis(QWidget):
         # Add completer to "line edit"
         self.line_search.setCompleter(completer)
 
-    @staticmethod
-    def add_title():
+    def add_title(self):
         """
         Add title for QWidget
 
         """
 
-        title = PopupTitle()
+        title = PopupTitle(self)
         title.create_title('Synthesis View')
 
         return title

@@ -29,6 +29,7 @@ import requests
 
 from alignak_app import __application__
 from alignak_app.core.utils import get_image_path, get_app_config
+from alignak_app.popup.title import PopupTitle
 
 try:
     __import__('PyQt5')
@@ -57,7 +58,6 @@ class AlignakStatus(QWidget):
         # General settings
         self.setWindowTitle(__application__ + ': Alignak-States')
         self.setContentsMargins(0, 0, 0, 0)
-        self.setMinimumWidth(425)
         self.setWindowIcon(QIcon(get_image_path('icon')))
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.move(QApplication.desktop().screen().rect().center() - self.rect().center())
@@ -189,10 +189,13 @@ QPushButton:hover{
 
         """
 
+        title = self.add_title()
+        self.layout.addWidget(title, 0, 0)
+
         info_title_label = QLabel(
             '<span style="color: blue;">Alignak <b>Web Service</b> is not available !</span>'
         )
-        self.layout.addWidget(info_title_label, 0, 0)
+        self.layout.addWidget(info_title_label, 1, 0)
 
         info_label = QLabel(
             'Install it on your <b>Alignak server</b>. '
@@ -201,8 +204,8 @@ QPushButton:hover{
         info_label.setWordWrap(True)
         info_label.setAlignment(Qt.AlignTop)
 
-        self.layout.addWidget(info_label, 1, 0)
-        self.add_button(2)
+        self.layout.addWidget(info_label, 2, 0)
+        self.add_button(3)
 
     def daemons_to_layout(self):
         """
@@ -210,12 +213,16 @@ QPushButton:hover{
 
         """
 
+        title = self.add_title()
+        self.layout.addWidget(title, 0, 0, 1, 2)
+        self.layout.setAlignment(Qt.AlignCenter)
+
         if self.ws_request:
-            self.layout.addWidget(QLabel('<b>Daemon Name</b> '), 1, 0)
+            self.layout.addWidget(QLabel('<b>Daemon Name</b> '), 1, 0, 1, 1)
 
             status_title = QLabel('<b>Status</b>')
             status_title.setAlignment(Qt.AlignCenter)
-            self.layout.addWidget(status_title, 1, 1)
+            self.layout.addWidget(status_title, 1, 1, 1, 1)
 
             alignak_map = self.ws_request.json()
 
@@ -269,3 +276,14 @@ QPushButton:hover{
             self.web_service_info()
 
         self.show()
+
+    def add_title(self):
+        """
+        Add title for QWidget
+
+        """
+
+        title = PopupTitle(self)
+        title.create_title('Alignak-app')
+
+        return title

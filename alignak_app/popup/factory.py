@@ -46,11 +46,12 @@ class PopupFactory(QWidget):
 
     def __init__(self, parent=None):
         super(PopupFactory, self).__init__(parent)
-        self.main_layout = QGridLayout()
         self.pos = 0
-        self.setLayout(self.main_layout)
         self.setStyleSheet("QLabel {color: black;}")
+        self.setMaximumWidth(parent.width())
         self.state_data = {}
+        self.main_layout = QGridLayout()
+        self.setLayout(self.main_layout)
 
     def create_state(self, state_name):
         """
@@ -82,7 +83,7 @@ class PopupFactory(QWidget):
         progress_bar.setValue(0)
         progress_bar.setFixedHeight(22)
 
-        # Add all to layout
+        # Layout
         self.main_layout.addWidget(label_icon, self.pos, 0)
         self.main_layout.addWidget(state_label, self.pos, 1)
         self.main_layout.addWidget(nb_items, self.pos, 2)

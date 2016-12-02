@@ -29,19 +29,19 @@ from alignak_app import __application__
 from alignak_app.core.utils import get_app_config
 from alignak_app.core.utils import get_template
 from alignak_app.popup.factory import PopupFactory
-from alignak_app.popup.popup_title import PopupTitle
+from alignak_app.popup.title import PopupTitle
 
 try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QApplication, QWidget  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QLabel, QPushButton  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import QTimer, Qt  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QPixmap, QIcon  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication, QWidget  # pylint: disable=import-error
     from PyQt4.Qt import QLabel, QPushButton  # pylint: disable=import-error
-    from PyQt4.Qt import QHBoxLayout, QVBoxLayout  # pylint: disable=import-error
+    from PyQt4.Qt import QVBoxLayout  # pylint: disable=import-error
     from PyQt4.QtCore import QTimer, Qt  # pylint: disable=import-error
     from PyQt4.QtGui import QPixmap, QIcon  # pylint: disable=import-error
 
@@ -58,7 +58,7 @@ class AppPopup(QWidget):
         super(AppPopup, self).__init__(parent)
         # General settings
         self.setWindowTitle(__application__)
-        self.setFixedSize(455, 350)
+        self.setMaximumWidth(455)
         self.setWindowFlags(Qt.SplashScreen | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         # Fields
         self.main_layout = QVBoxLayout(self)
@@ -76,6 +76,7 @@ class AppPopup(QWidget):
         popup_title = PopupTitle(self)
         popup_title.create_title('Alignak-app')
         self.main_layout.addWidget(popup_title, 0)
+        self.main_layout.setAlignment(popup_title, Qt.AlignCenter)
 
         # Create Label for notification type
         self.notification_type = QLabel(self)
@@ -84,7 +85,6 @@ class AppPopup(QWidget):
         self.notification_type.setMinimumSize(425, 40)
 
         self.main_layout.addWidget(self.notification_type, 1)
-        self.main_layout.setAlignment(self.notification_type, Qt.AlignCenter)
 
         # Create and add StateFactory
         self.fill_state_factory()
@@ -100,7 +100,7 @@ class AppPopup(QWidget):
 
         """
 
-        self.popup_factory = PopupFactory()
+        self.popup_factory = PopupFactory(self)
 
         # Hosts
         self.popup_factory.create_state('hosts_up')
