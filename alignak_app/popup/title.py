@@ -100,7 +100,14 @@ class PopupTitle(QWidget):
         self.setLayout(layout)
 
     # Reimplement paintEvent
-    def paintEvent(self, event):
+    def paintEvent(self, event):  # pylint: disable=unused-argument
+        """
+        Paint QWidget title.
+
+        :param event: event from QPainter
+        :type event: QPaintEvent
+        """
+
         opt = QStyleOption()
         opt.initFrom(self)
 
