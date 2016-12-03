@@ -146,7 +146,6 @@ class AlignakBackend(object):
         item_result = None
 
         for current_item in result['_items']:
-            print(current_item['name'])
             if current_item['name'] == item:
                 item_result = current_item
 
