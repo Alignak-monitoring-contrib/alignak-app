@@ -118,7 +118,7 @@ class TestAppNotifier(unittest2.TestCase):
 
         # "get_state" to fill states
         self.assertFalse(under_test.backend.states)
-        under_test.backend.get_all_state()
+        under_test.backend.get_all_states()
         self.assertTrue(under_test.backend.states)
 
         # Copy state

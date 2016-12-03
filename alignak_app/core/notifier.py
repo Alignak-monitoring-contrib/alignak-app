@@ -127,7 +127,7 @@ class AppNotifier(QSystemTrayIcon):
         if self.be_notified() and self.backend.states:
             old_states = copy.deepcopy(self.backend.states)
 
-        states = self.backend.get_all_state()
+        states = self.backend.get_all_states()
 
         if self.be_notified() and old_states:
             diff = self.diff_last_check(old_states)

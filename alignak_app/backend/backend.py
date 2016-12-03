@@ -158,7 +158,7 @@ class AlignakBackend(object):
 
         return host_data
 
-    def get_all_state(self):
+    def get_all_states(self):
         """
         Check the hosts and services states.
 
