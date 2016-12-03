@@ -27,10 +27,9 @@ import sys
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_image_path
+from alignak_app.core.utils import get_image_path, set_app_config
 from alignak_app.popup.title import get_popup_title
 from alignak_app.backend.backend import AlignakBackend
-from alignak_app.core.utils import set_app_config
 
 try:
     __import__('PyQt5')
@@ -71,23 +70,36 @@ class AppSynthesis(QWidget):
 
         """
 
+        # Title
         popup_title = self.add_title()
-        self.create_search_bar()
 
+        # Sums and other info
+        sums = self.backend.counts()
+
+        hosts_count = QLabel('Hosts : ' + str(sums['hosts']))
+        services_count = QLabel('Services : ' + str(sums['services']))
+
+        # Search Line
+        self.create_line_search()
+
+        # button
         button = QPushButton('Search', self)
         button.clicked.connect(self.handle_button)
         self.line_search.returnPressed.connect(button.click)
 
+        # Result label: later will be QWidget
         self.result_label = QLabel()
         self.result_label.setWordWrap(True)
 
         layout = QGridLayout()
         layout.addWidget(popup_title, 0, 0, 1, 2)
-        layout.addWidget(self.line_search, 1, 0, 1, 1)
-        layout.addWidget(button, 1, 1, 1, 1)
-        layout.addWidget(self.result_label, 2, 0, 9, 1)
-
+        layout.addWidget(hosts_count, 1, 0, 1, 1)
+        layout.addWidget(services_count, 1, 1, 1, 1)
+        layout.addWidget(self.line_search, 2, 0, 1, 1)
+        layout.addWidget(button, 2, 1, 1, 1)
+        layout.addWidget(self.result_label, 3, 0, 9, 1)
         self.setLayout(layout)
+
         self.show()
 
     def handle_button(self):
@@ -116,7 +128,7 @@ class AppSynthesis(QWidget):
         else:
             self.result_label.setText('Not found !')
 
-    def create_search_bar(self):
+    def create_line_search(self):
         """
         All hosts to QLineEdit, with a QCompleter
 

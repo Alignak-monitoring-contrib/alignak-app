@@ -102,6 +102,32 @@ class AlignakBackend(object):
 
         return request
 
+    def counts(self):
+        """
+        Return number of hosts and services.
+
+        :return: number of hosts and services
+        :rtype: dict
+        """
+
+        all_hosts = self.get('host')
+        all_services = self.get('service')
+
+        nb_hosts = 0
+        nb_services = 0
+
+        for _ in all_hosts['_items']:
+            nb_hosts += 1
+        for _ in all_services['_items']:
+            nb_services += 1
+
+        item_counts = {
+            'hosts': nb_hosts,
+            'services': nb_services
+        }
+
+        return item_counts
+
     def get_item(self, item, endpoint, params=None):
         """
         Get a wanted host or service item.
