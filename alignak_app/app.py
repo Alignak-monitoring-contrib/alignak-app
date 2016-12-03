@@ -68,7 +68,7 @@ class AlignakApp(object):
 
         # Create QSystemTrayIcon
         self.tray_icon = TrayIcon(self.get_icon())
-        self.tray_icon.build_menu()
+        self.tray_icon.build_menu(self.notifier.backend)
 
     def run(self):  # pragma: no cover
         """

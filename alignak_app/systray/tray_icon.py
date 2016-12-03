@@ -31,6 +31,7 @@ from alignak_app.core.utils import get_app_config
 from alignak_app.systray.actions_factory import ActionFactory
 from alignak_app.widgets.about import AppAbout
 from alignak_app.widgets.status import AlignakStatus
+from alignak_app.widgets.synthesis import AppSynthesis
 
 try:
     __import__('PyQt5')
@@ -59,14 +60,17 @@ class TrayIcon(QSystemTrayIcon):
         self.alignak_status = None
         self.app_about = None
         self.action_factory = ActionFactory()
+        self.synthesis = None
 
-    def build_menu(self):
+    def build_menu(self, backend):
         """
         Initialize and create each action of menu.
 
         """
 
         # Create actions
+        self.create_synthesis_action(backend)
+
         self.create_status_action()
         self.menu.addSeparator()
 
@@ -159,9 +163,28 @@ class TrayIcon(QSystemTrayIcon):
         self.menu.addAction(self.action_factory.get('services_critical'))
         self.menu.addAction(self.action_factory.get('services_unknown'))
 
+    def create_synthesis_action(self, backend):
+        """
+        Create Synthesis QWidget and "synthesis view" action
+
+        """
+
+        self.action_factory.create(
+            'database',
+            'Synthesis View',
+            self
+        )
+
+        self.synthesis = AppSynthesis()
+        self.synthesis.create_widget(backend)
+
+        self.action_factory.get('database').triggered.connect(self.synthesis.show_synthesis)
+
+        self.menu.addAction(self.action_factory.get('database'))
+
     def create_status_action(self):
         """
-        Create AlignakStatus and status action
+        Create AlignakStatus QWidget and "status" action
 
         """
 
@@ -180,7 +203,7 @@ class TrayIcon(QSystemTrayIcon):
 
     def create_about_action(self):
         """
-        Create AppAbout and about action.
+        Create AppAbout QWidget and "about" action.
 
         """
 

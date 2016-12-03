@@ -48,7 +48,8 @@ class AppNotifier(QSystemTrayIcon):
 
     def __init__(self, icon, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
-        self.backend = None
+        self.backend = AlignakBackend()
+        self.backend.login()
         self.tray_icon = None
         self.popup = None
         self.notify = False
@@ -72,9 +73,6 @@ class AppNotifier(QSystemTrayIcon):
 
         self.popup = AppPopup()
         self.popup.initialize_notification()
-
-        self.backend = AlignakBackend()
-        self.backend.login()
 
         self.notify = self.be_notified()
         logger.debug('Notify : ' + str(self.notify))

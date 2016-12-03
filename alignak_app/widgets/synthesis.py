@@ -69,11 +69,14 @@ class AppSynthesis(QWidget):
         self.services_view = None
         self.backend = AlignakBackend()
 
-    def create_widget(self):
+    def create_widget(self, alignak_backend):
         """
         Create the QWidget
 
         """
+
+        # Get backend
+        self.backend = alignak_backend
 
         # Title
         popup_title = self.add_title()
@@ -110,6 +113,12 @@ class AppSynthesis(QWidget):
         layout.addWidget(self.services_view, 4, 0, 9, 1)
 
         self.setLayout(layout)
+
+    def show_synthesis(self):
+        """
+        Show synthesis view for TrayIcon
+
+        """
 
         self.show()
 
@@ -170,7 +179,9 @@ if __name__ == '__main__':
     set_app_config()
 
     synthesis = AppSynthesis()
-    synthesis.backend.login()
-    synthesis.create_widget()
+    backend = AlignakBackend()
+    backend.login()
+    synthesis.create_widget(backend)
+    synthesis.show_synthesis()
 
     sys.exit(app.exec_())

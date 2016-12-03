@@ -101,6 +101,7 @@ setup(
         (paths['app'] + '/images', ['etc/images/checked.svg']),
         (paths['app'] + '/images', ['etc/images/unvalid.svg']),
         (paths['app'] + '/images', ['etc/images/valid.svg']),
+        (paths['app'] + '/images', ['etc/images/database.svg']),
         (paths['bin'], ['etc/bin/alignak-app']),
         (paths['bin'], ['etc/bin/alignak-app.py']),
     ],
