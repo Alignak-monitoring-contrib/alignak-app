@@ -56,7 +56,7 @@ class AlignakStatus(QWidget):
     def __init__(self, parent=None):
         super(AlignakStatus, self).__init__(parent)
         # General settings
-        self.setWindowTitle(__application__ + ': Alignak-States')
+        self.setWindowTitle(__application__)
         self.setContentsMargins(0, 0, 0, 0)
         self.setWindowIcon(QIcon(get_image_path('icon')))
         self.setWindowFlags(Qt.FramelessWindowHint)
@@ -193,7 +193,7 @@ QPushButton:hover{
         self.layout.addWidget(title, 0, 0)
 
         info_title_label = QLabel(
-            '<span style="color: blue;">Alignak <b>Web Service</b> is not available !</span>'
+            '<br><span style="color: blue;">Alignak <b>Web Service</b> is not available !</span>'
         )
         self.layout.addWidget(info_title_label, 1, 0)
 
