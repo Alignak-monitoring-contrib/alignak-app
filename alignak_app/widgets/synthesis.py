@@ -29,6 +29,8 @@ from logging import getLogger
 
 from alignak_app.core.utils import get_image_path, set_app_config
 from alignak_app.popup.title import get_popup_title
+from alignak_app.popup.host_view import HostView
+from alignak_app.popup.services_view import ServicesView
 from alignak_app.backend.backend import AlignakBackend
 
 try:
@@ -38,12 +40,14 @@ try:
     from PyQt5.QtWidgets import QGridLayout, QLabel  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QStringListModel, QIcon  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QCompleter, QLineEdit  # pylint: disable=no-name-in-module
+    from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QPushButton  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
     from PyQt4.Qt import QStringListModel, QIcon  # pylint: disable=import-error
     from PyQt4.Qt import QCompleter, QLineEdit  # pylint: disable=import-error
+    from PyQt4.QtCore import Qt  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
@@ -61,7 +65,8 @@ class AppSynthesis(QWidget):
         self.setWindowIcon(QIcon(get_image_path('icon')))
         # Fields
         self.line_search = QLineEdit()
-        self.result_label = None
+        self.host_view = None
+        self.services_view = None
         self.backend = AlignakBackend()
 
     def create_widget(self):
@@ -87,17 +92,23 @@ class AppSynthesis(QWidget):
         button.clicked.connect(self.handle_button)
         self.line_search.returnPressed.connect(button.click)
 
-        # Result label: later will be QWidget
-        self.result_label = QLabel()
-        self.result_label.setWordWrap(True)
+        # Create views
+        self.host_view = HostView()
+        self.host_view.init_view()
+        self.services_view = ServicesView()
 
+        # Layout
+        # row, column, rowSpan, colSPan
         layout = QGridLayout()
-        layout.addWidget(popup_title, 0, 0, 1, 2)
+        layout.addWidget(popup_title, 0, 0, 1, 4)
         layout.addWidget(hosts_count, 1, 0, 1, 1)
-        layout.addWidget(services_count, 1, 1, 1, 1)
-        layout.addWidget(self.line_search, 2, 0, 1, 1)
-        layout.addWidget(button, 2, 1, 1, 1)
-        layout.addWidget(self.result_label, 3, 0, 9, 1)
+        layout.addWidget(services_count, 1, 2, 1, 1)
+        layout.addWidget(self.line_search, 1, 0, 1, 3)
+        layout.addWidget(button, 1, 3, 1, 1)
+        layout.addWidget(self.host_view, 3, 0, 1, 1)
+        layout.setAlignment(self.host_view, Qt.AlignLeft)
+        layout.addWidget(self.services_view, 4, 0, 9, 1)
+
         self.setLayout(layout)
 
         self.show()
@@ -115,18 +126,10 @@ class AppSynthesis(QWidget):
 
         # Write result ot "result_label"
         if data:
-            services = ''
-            for service in data['services']:
-                services += '<p>' + str(service) + '</p>'
-            if host_name:
-                self.result_label.setText(
-                    '<p>' +
-                    str(data['host']) +
-                    '</p>' +
-                    services
-                )
+            self.host_view.update_view(data['host'])
+            self.services_view.display_services(data['services'])
         else:
-            self.result_label.setText('Not found !')
+            self.host_view.setText('Not found !')
 
     def create_line_search(self):
         """
