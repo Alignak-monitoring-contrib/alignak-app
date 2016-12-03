@@ -185,7 +185,7 @@ echo "Command : $cmd"
 
 choose_step "$py" "$cmd"
 
-if [ "$cmd" != "remove" ]; then
+if [ "$cmd" != "remove" -a "$cmd" != "test" ]; then
     step_msg "RUN COMMAND AFTER"
     sh -c "$CMD_AFTER"
 fi
