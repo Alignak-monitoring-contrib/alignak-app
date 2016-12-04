@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Alignak Backend manage connexion and access to backend.
+    App Backend manage connexion and access to backend.
 """
 
 import json
@@ -34,7 +34,7 @@ from alignak_app.core.utils import get_app_config
 logger = getLogger(__name__)
 
 
-class AlignakBackend(object):
+class AppBackend(object):
     """
         Class who collect informations with Backend-Client and returns data for
         Alignak-App.

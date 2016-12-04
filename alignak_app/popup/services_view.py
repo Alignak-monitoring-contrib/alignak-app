@@ -23,11 +23,9 @@
     App Synthesis manage widget for Synthesis QWidget.
 """
 
-import sys
-
 from logging import getLogger
 
-from alignak_app.core.utils import get_image_path, set_app_config
+from alignak_app.core.utils import get_image_path
 
 try:
     __import__('PyQt5')
@@ -57,39 +55,48 @@ class ServicesView(QWidget):
 
     def display_services(self, services):
         """
-        TODO
+        Display services.
+
+        :param services: services of a specific host from backend
+        :type services: dict
         """
 
+        logger.info('Create Services View')
+
+        # Clean all items before
         for i in reversed(range(self.layout.count())):
+            logger.debug('Clean: ' + str(self.layout.itemAt(i)))
             self.layout.itemAt(i).widget().setParent(None)
 
         pos = 0
         for service in services:
             # Icon
-            self.layout.addWidget(self.create_icon(service['ls_state']), pos, 0, 1, 1)
+            logger.debug('Add item at pos: ' + str(pos))
+            self.layout.addWidget(self.get_service_icon(service['ls_state']), pos, 0, 1, 1)
 
             # row, column, rowSpan, colSPan
             # Service name
             service_name = QLabel(service['name'].title())
             service_name.setObjectName('name')
+            service_name.setMinimumHeight(30)
             self.layout.addWidget(service_name, pos, 1, 1, 1)
 
             # Output
             output_service = QLabel(service['ls_output'])
             self.layout.addWidget(output_service, pos, 2, 1, 3)
             pos += 1
-            if pos == 1:
-                for inf in service:
-                    print(inf, service[inf])
 
         self.show()
 
     @staticmethod
-    def create_icon(state):
+    def get_service_icon(state):
         """
+        Return QPixmap with the icon corresponding to the status.
 
-        :param state:
-        :return:
+        :param state: state of the host.
+        :type state: str
+        :return: QPixmap with image
+        :rtype: QPixmap
         """
 
         if 'OK' in state:
@@ -102,6 +109,8 @@ class ServicesView(QWidget):
             icon_name = 'services_unknown'
         else:
             icon_name = 'services_none'
+
+        logger.debug('Service Icon: ' + icon_name)
 
         icon = QPixmap(get_image_path(icon_name))
         icon_label = QLabel()

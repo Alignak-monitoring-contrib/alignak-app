@@ -26,7 +26,7 @@
 import copy
 from logging import getLogger
 
-from alignak_app.backend.backend import AlignakBackend
+from alignak_app.backend.backend import AppBackend
 from alignak_app.core.utils import get_app_config
 from alignak_app.widgets.popup import AppPopup
 
@@ -48,7 +48,7 @@ class AppNotifier(QSystemTrayIcon):
 
     def __init__(self, icon, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
-        self.backend = AlignakBackend()
+        self.backend = AppBackend()
         self.backend.login()
         self.tray_icon = None
         self.popup = None

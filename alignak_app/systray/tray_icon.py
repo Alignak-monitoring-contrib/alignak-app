@@ -31,7 +31,7 @@ from alignak_app.core.utils import get_app_config
 from alignak_app.systray.actions_factory import ActionFactory
 from alignak_app.widgets.about import AppAbout
 from alignak_app.widgets.status import AlignakStatus
-from alignak_app.widgets.synthesis import AppSynthesis
+from alignak_app.widgets.synthesis import Synthesis
 
 try:
     __import__('PyQt5')
@@ -175,7 +175,7 @@ class TrayIcon(QSystemTrayIcon):
             self
         )
 
-        self.synthesis = AppSynthesis()
+        self.synthesis = Synthesis()
         self.synthesis.create_widget(backend)
 
         self.action_factory.get('database').triggered.connect(self.synthesis.show_synthesis)

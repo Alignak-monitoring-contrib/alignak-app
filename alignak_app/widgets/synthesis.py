@@ -31,7 +31,7 @@ from alignak_app.core.utils import get_image_path, set_app_config
 from alignak_app.popup.title import get_popup_title
 from alignak_app.popup.host_view import HostView
 from alignak_app.popup.services_view import ServicesView
-from alignak_app.backend.backend import AlignakBackend
+from alignak_app.backend.backend import AppBackend
 
 try:
     __import__('PyQt5')
@@ -53,13 +53,13 @@ except ImportError:  # pragma: no cover
 logger = getLogger(__name__)
 
 
-class AppSynthesis(QWidget):
+class Synthesis(QWidget):
     """
         Class who create the Synthesis QWidget.
     """
 
     def __init__(self, parent=None):
-        super(AppSynthesis, self).__init__(parent)
+        super(Synthesis, self).__init__(parent)
         self.setMinimumSize(900, 700)
         self.setWindowTitle('Synthesis View')
         self.setWindowIcon(QIcon(get_image_path('icon')))
@@ -67,19 +67,22 @@ class AppSynthesis(QWidget):
         self.line_search = QLineEdit()
         self.host_view = None
         self.services_view = None
-        self.backend = AlignakBackend()
+        self.backend = AppBackend()
 
     def create_widget(self, alignak_backend):
         """
-        Create the QWidget
+        Create the QWidget with its items and layout.
 
+        :param alignak_backend: backend of alignak.
+        :type alignak_backend: AppBackend
         """
 
+        logger.info('Create Synthesis View...')
         # Get backend
         self.backend = alignak_backend
 
         # Title
-        popup_title = self.add_title()
+        popup_title = self.get_synthesis_title()
 
         # Sums and other info
         sums = self.backend.counts()
@@ -105,9 +108,9 @@ class AppSynthesis(QWidget):
         layout = QGridLayout()
         layout.addWidget(popup_title, 0, 0, 1, 4)
         layout.addWidget(hosts_count, 1, 0, 1, 1)
-        layout.addWidget(services_count, 1, 2, 1, 1)
-        layout.addWidget(self.line_search, 1, 0, 1, 3)
-        layout.addWidget(button, 1, 3, 1, 1)
+        layout.addWidget(services_count, 1, 1, 1, 1)
+        layout.addWidget(self.line_search, 2, 0, 1, 3)
+        layout.addWidget(button, 2, 3, 1, 1)
         layout.addWidget(self.host_view, 3, 0, 1, 1)
         layout.setAlignment(self.host_view, Qt.AlignLeft)
         layout.addWidget(self.services_view, 4, 0, 9, 1)
@@ -124,11 +127,12 @@ class AppSynthesis(QWidget):
 
     def handle_button(self):
         """
-        Handle Event when "line_search" is click.
+        Handle Event when "line_search" is clicked.
         """
 
         # Get item that is searched
         host_name = self.line_search.text().rstrip()
+        logger.debug('Desired host: ' + host_name)
 
         # Collect host data and associated services
         data = self.backend.get_all_host_data(host_name)
@@ -138,11 +142,17 @@ class AppSynthesis(QWidget):
             self.host_view.update_view(data['host'])
             self.services_view.display_services(data['services'])
         else:
-            self.host_view.setText('Not found !')
+            data = {
+                'name': 'NOT FOUND',
+                'ls_state': 'NOT FOUND',
+                'ls_last_check': 'NOT FOUND',
+                'ls_output': 'NOT FOUND'
+            }
+            self.host_view.update_view(data)
 
     def create_line_search(self):
         """
-        All hosts to QLineEdit, with a QCompleter
+        Add all hosts to QLineEdit and set QCompleter
 
         """
 
@@ -161,10 +171,11 @@ class AppSynthesis(QWidget):
 
         # Add completer to "line edit"
         self.line_search.setCompleter(completer)
+        self.line_search.setPlaceholderText('Type a host name to display its data')
 
-    def add_title(self):
+    def get_synthesis_title(self):
         """
-        Add title for QWidget
+        Get popup title for QWidget
 
         """
 
@@ -178,8 +189,8 @@ if __name__ == '__main__':
 
     set_app_config()
 
-    synthesis = AppSynthesis()
-    backend = AlignakBackend()
+    synthesis = Synthesis()
+    backend = AppBackend()
     backend.login()
     synthesis.create_widget(backend)
     synthesis.show_synthesis()

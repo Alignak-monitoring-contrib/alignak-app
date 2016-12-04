@@ -28,7 +28,7 @@ from alignak_app.core.notifier import AppNotifier
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import set_app_config
 from alignak_app.systray.tray_icon import TrayIcon
-from alignak_app.backend.backend import AlignakBackend
+from alignak_app.backend.backend import AppBackend
 
 try:
     __import__('PyQt5')
@@ -52,7 +52,7 @@ class TestAppNotifier(unittest2.TestCase):
 
     icon = QIcon(get_image_path('icon'))
 
-    backend = AlignakBackend()
+    backend = AppBackend()
     backend.login()
 
     @classmethod

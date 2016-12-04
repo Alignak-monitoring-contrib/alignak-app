@@ -22,7 +22,7 @@
 import unittest2
 import json
 
-from alignak_app.backend.backend import AlignakBackend
+from alignak_app.backend.backend import AppBackend
 from alignak_app.core.utils import set_app_config, get_app_config
 
 
@@ -37,7 +37,7 @@ class TestBackend(unittest2.TestCase):
     def test_log_to_backend(self):
         """Connection to Alignak-Backend"""
 
-        under_test = AlignakBackend()
+        under_test = AppBackend()
 
         under_test.login()
 
@@ -51,7 +51,7 @@ class TestBackend(unittest2.TestCase):
     def test_hosts_endpoint_without_params(self):
         """Collect Hosts States"""
 
-        backend = AlignakBackend()
+        backend = AppBackend()
 
         backend.login()
 
@@ -64,7 +64,7 @@ class TestBackend(unittest2.TestCase):
     def test_service_endpoint_with_params(self):
         """Collect Services States"""
 
-        alignak_data = AlignakBackend()
+        alignak_data = AppBackend()
 
         alignak_data.login()
 

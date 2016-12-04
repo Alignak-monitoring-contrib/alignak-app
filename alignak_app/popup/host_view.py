@@ -47,36 +47,41 @@ logger = getLogger(__name__)
 
 class HostView(QWidget):
     """
-        Class who create the Synthesis QWidget.
+        Class who create the Host View QWidget.
     """
 
     def __init__(self, parent=None):
         super(HostView, self).__init__(parent)
-        self.setMaximumHeight(100)
+        self.setFixedHeight(100)
         self.layout = None
         self.labels = {}
 
     def init_view(self):
         """
-        TODO
+        Init Host View with default values.
+
         """
+
+        logger.info('Initialize Host View...')
 
         self.layout = QGridLayout()
         self.setLayout(self.layout)
 
         # Creates the labels that will be updated
         self.labels = {
-            'name': QLabel(),
+            'name': QLabel('<h3>Host Name</h3>'),
             'state_icon': QLabel(),
             'real_state_icon': QLabel(),
-            'last_check': QLabel(),
-            'output': QLabel()
+            'last_check': QLabel('N/A'),
+            'output': QLabel('N/A')
         }
 
-        # Adjust icons
+        # Adjust icons and set default icons
         self.labels['state_icon'].setFixedSize(64, 64)
+        self.labels['state_icon'].setPixmap(self.get_host_icon(''))
         self.labels['real_state_icon'].setFixedSize(32, 32)
         self.labels['real_state_icon'].setScaledContents(True)
+        self.labels['real_state_icon'].setPixmap(self.get_host_icon(''))
 
         # row, column, rowSpan, colSPan
         self.layout.addWidget(self.labels['state_icon'], 0, 0, 2, 1)
@@ -93,26 +98,32 @@ class HostView(QWidget):
         self.layout.addWidget(QLabel('Output:'), 2, 2, 1, 1)
         self.layout.addWidget(self.labels['output'], 2, 3, 1, 1)
 
-        # self.update_view(host)/
-
     def update_view(self, host):
         """
-        TODO
-        :return:
+        Update Host view with desired host.
+
+        :param host: host data from backend
+        :type host: dict
         """
 
-        self.labels['name'].setText(host['name'].title())
-        self.labels['state_icon'].setPixmap(self.create_icon(host['ls_state']))
-        self.labels['real_state_icon'].setPixmap(self.create_icon(''))
+        logger.info('Update Host View...')
+        logger.debug(host['name'])
+
+        self.labels['name'].setText('<h3>' + host['name'].title() + '</h3>')
+        self.labels['state_icon'].setPixmap(self.get_host_icon(host['ls_state']))
+        self.labels['real_state_icon'].setPixmap(self.get_host_icon(''))
         self.labels['last_check'].setText(str(host['ls_last_check']))
         self.labels['output'].setText(host['ls_output'])
 
     @staticmethod
-    def create_icon(state):
+    def get_host_icon(state):
         """
+        Return QPixmap with the icon corresponding to the status.
 
-        :param state:
-        :return:
+        :param state: state of the host.
+        :type state: str
+        :return: QPixmap with image
+        :rtype: QPixmap
         """
 
         if 'UP' in state:
@@ -124,6 +135,7 @@ class HostView(QWidget):
         else:
             icon_name = 'hosts_none'
 
+        logger.debug('Host icon: ' + icon_name)
         icon = QPixmap(get_image_path(icon_name))
 
         return icon
