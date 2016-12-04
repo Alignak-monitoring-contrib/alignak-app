@@ -44,7 +44,7 @@ __license__ = u"GNU Affero General Public License, version 3"
 __description__ = u"Notifier for Alignak monitoring solution."
 __releasenotes__ = u"Notifier for Alignak monitoring solution."
 __project_url__ = "https://github.com/Alignak-monitoring-contrib/alignak-app"
-__doc_url__ = "http://alignak-app.readthedocs.io/en/develop/?badge=latest"
+__doc_url__ = "http://alignak-app.readthedocs.io/en/develop/"
 
 # Application Manifest
 manifest = {
