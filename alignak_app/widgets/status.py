@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Status manage QWidget who display Alignak status.
+    Status manage QWidget who display Alignak Daemons status.
 """
 
 from logging import getLogger
@@ -50,7 +50,7 @@ logger = getLogger(__name__)
 
 class AlignakStatus(QWidget):
     """
-        Class who create QWidget for Alignak status.
+        Class who create QWidget for Daemons status.
     """
 
     def __init__(self, parent=None):
@@ -189,7 +189,12 @@ QPushButton:hover{
 
         """
 
-        title = get_popup_title('Daemons Status, Version: ' + __short_version__, self)
+        title = get_popup_title(
+            __application__ +
+            ', Version: ' +
+            __short_version__,
+            self
+        )
         self.layout.addWidget(title, 0, 0)
 
         info_title_label = QLabel(
