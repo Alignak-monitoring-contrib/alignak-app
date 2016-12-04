@@ -79,7 +79,7 @@ QProgressBar::chunk {
         """Get Right Image Path"""
         utils.set_app_config()
 
-        expected_img = utils.get_app_root() + '/alignak_app/images/alignak.svg'
+        expected_img = utils.get_app_root() + '/alignak_app/images/icon.svg'
 
         under_test = utils.get_image_path('icon')
 
