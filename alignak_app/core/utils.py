@@ -25,6 +25,8 @@
 
 import os
 import sys
+import datetime
+import time
 
 from logging import getLogger
 from logging import Formatter
@@ -240,3 +242,39 @@ def get_image_path(name):
     except NoOptionError as e:
         logger.error('Bad Option : ' + str(e))
         return img_path + app_config.get('Images', 'unvalid')
+
+
+def get_diff_since_last_time(last_check):
+    """
+    Return the diff between the last time stamp
+
+    :param last_check: timestamp of the last check
+    :type last_check: float
+    :return: time difference formatted
+    :rtype: str
+    """
+
+    # Get current time
+    cur_time = time.time()
+
+    format_time = '%H:%M:%S'
+    ft_check = datetime.datetime.fromtimestamp(last_check).strftime(format_time)
+    ft_time = datetime.datetime.fromtimestamp(cur_time).strftime(format_time)
+
+    time_delta = \
+        datetime.datetime.strptime(ft_time, format_time) - \
+        datetime.datetime.strptime(ft_check, format_time)
+
+    # Calculate hours, minutes and seconds
+    hours = time_delta.seconds // 3600
+    # remaining seconds
+    s = time_delta.seconds - (hours * 3600)
+    minutes = s // 60
+    seconds = s - (minutes * 60)
+
+    if hours == 0:
+        delta = str(minutes) + 'm ' + str(seconds) + 's ago'
+    else:
+        delta = str(hours) + 'h ' + str(minutes) + 'm ' + str(seconds) + 's ago'
+
+    return delta

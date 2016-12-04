@@ -28,6 +28,7 @@ import sys
 from logging import getLogger
 
 from alignak_app.core.utils import get_image_path, set_app_config
+from alignak_app.core.utils import get_diff_since_last_time
 
 try:
     __import__('PyQt5')
@@ -109,10 +110,12 @@ class HostView(QWidget):
         logger.info('Update Host View...')
         logger.debug(host['name'])
 
+        time_delta = get_diff_since_last_time(host['ls_last_check'])
+
         self.labels['name'].setText('<h3>' + host['name'].title() + '</h3>')
         self.labels['state_icon'].setPixmap(self.get_host_icon(host['ls_state']))
         self.labels['real_state_icon'].setPixmap(self.get_host_icon(''))
-        self.labels['last_check'].setText(str(host['ls_last_check']))
+        self.labels['last_check'].setText(str(time_delta))
         self.labels['output'].setText(host['ls_output'])
 
     @staticmethod
