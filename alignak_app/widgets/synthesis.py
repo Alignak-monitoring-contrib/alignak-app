@@ -131,7 +131,7 @@ class Synthesis(QWidget):
         """
 
         # Get item that is searched
-        host_name = self.line_search.text().rstrip()
+        host_name = str(self.line_search.text()).rstrip()
         logger.debug('Desired host: ' + host_name)
 
         # Collect host data and associated services
