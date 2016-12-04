@@ -29,12 +29,12 @@ from alignak_app.core.utils import get_image_path
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QScrollArea  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QWidget, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QLabel  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QPixmap  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QApplication  # pylint: disable=import-error
+    from PyQt4.Qt import QScrollArea  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
     from PyQt4.Qt import QPixmap  # pylint: disable=import-error
@@ -50,7 +50,7 @@ class ServicesView(QWidget):
 
     def __init__(self, parent=None):
         super(ServicesView, self).__init__(parent)
-        self.layout = QGridLayout()
+        self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
     def display_services(self, services):
@@ -68,24 +68,32 @@ class ServicesView(QWidget):
             logger.debug('Clean: ' + str(self.layout.itemAt(i)))
             self.layout.itemAt(i).widget().setParent(None)
 
+        widget = QWidget()
+        layout = QGridLayout()
         pos = 0
         for service in services:
             # Icon
             logger.debug('Add item at pos: ' + str(pos))
-            self.layout.addWidget(self.get_service_icon(service['ls_state']), pos, 0, 1, 1)
+            layout.addWidget(self.get_service_icon(service['ls_state']), pos, 0)
 
             # row, column, rowSpan, colSPan
             # Service name
             service_name = QLabel(service['name'].title())
             service_name.setObjectName('name')
             service_name.setMinimumHeight(30)
-            self.layout.addWidget(service_name, pos, 1, 1, 1)
+            layout.addWidget(service_name, pos, 1)
 
             # Output
             output_service = QLabel(service['ls_output'])
-            self.layout.addWidget(output_service, pos, 2, 1, 3)
+            layout.addWidget(output_service, pos, 2)
             pos += 1
 
+        widget.setLayout(layout)
+        scroll = QScrollArea()
+        scroll.setWidget(widget)
+        scroll.setWidgetResizable(True)
+
+        self.layout.addWidget(scroll)
         self.show()
 
     @staticmethod
