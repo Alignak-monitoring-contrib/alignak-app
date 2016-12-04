@@ -84,12 +84,14 @@ class AppBackend(object):
         :type endpoint: str
         :param params: dict of parameters for the backend API
         :type params: dict
+        :return desired request of backend
+        :rtype: dict
         """
 
         request = None
 
         if not params:
-            params = {'where': json.dumps({'_is_template': False})}
+            params = {'max_results': 50}
 
         # Request
         try:
@@ -98,7 +100,9 @@ class AppBackend(object):
                 params
             )
         except BackendException as e:
-            logger.warning('Alignak-app failed to collect hosts... \n' + str(e))
+            logger.warning('Failed to collect from backend')
+            logger.warning('  endpoint: ' + endpoint + 'params: ' + str(params))
+            logger.warning(str(e))
 
         return request
 
@@ -110,43 +114,39 @@ class AppBackend(object):
         :rtype: dict
         """
 
-        all_hosts = self.get('host')
-        all_services = self.get('service')
-
-        nb_hosts = 0
-        nb_services = 0
-
-        for _ in all_hosts['_items']:
-            nb_hosts += 1
-        for _ in all_services['_items']:
-            nb_services += 1
+        all_items = self.get_all_states()
 
         item_counts = {
-            'hosts': nb_hosts,
-            'services': nb_services
+            'hosts': 0,
+            'services': 0
         }
+
+        for state in all_items['hosts']:
+            item_counts['hosts'] += all_items['hosts'][state]
+        for state in all_items['services']:
+            item_counts['services'] += all_items['services'][state]
 
         return item_counts
 
-    def get_item(self, item, endpoint, params=None):
+    def get_item(self, item_name, endpoint):
         """
         Get a wanted host or service item.
 
-        :param item: name of wanted item : host or service
-        :type item: str
+        :param item_name: name of wanted item : host or service
+        :type item_name: str
         :param endpoint: corresponding endpoint
         :type endpoint: str
-        :param params: requested params
-        :type params: dict
         :return: None if not found or item dict
         """
+
+        params = {'where': json.dumps({'_is_template': False})}
 
         result = self.get(endpoint, params)
 
         item_result = None
 
         for current_item in result['_items']:
-            if current_item['name'] == item:
+            if current_item['name'] == item_name:
                 item_result = current_item
 
         return item_result
@@ -212,25 +212,29 @@ class AppBackend(object):
             }
         }
 
-        all_hosts = self.get('host')
-        all_services = self.get('service')
+        live_synthesis = self.get('livesynthesis')
 
-        for host in all_hosts['_items']:
-            if 'UP' in host['ls_state']:
-                states['hosts']['up'] += 1
-            if 'UNREACHABLE' in host['ls_state']:
-                states['hosts']['unreachable'] += 1
-            if 'DOWN' in host['ls_state']:
-                states['hosts']['down'] += 1
-        for service in all_services['_items']:
-            if 'OK' in service['ls_state']:
-                states['services']['ok'] += 1
-            if 'WARNING' in service['ls_state']:
-                states['services']['warning'] += 1
-            if 'CRITICAL' in service['ls_state']:
-                states['services']['critical'] += 1
-            if 'UNKNOWN' in service['ls_state']:
-                states['services']['unknown'] += 1
+        for realm in live_synthesis['_items']:
+            states['hosts']['up'] += realm['hosts_up_soft']
+            states['hosts']['up'] += realm['hosts_up_hard']
+
+            states['hosts']['unreachable'] += realm['hosts_unreachable_soft']
+            states['hosts']['unreachable'] += realm['hosts_unreachable_hard']
+
+            states['hosts']['down'] += realm['hosts_down_soft']
+            states['hosts']['down'] += realm['hosts_down_hard']
+
+            states['services']['ok'] += realm['services_ok_soft']
+            states['services']['ok'] += realm['services_ok_hard']
+
+            states['services']['warning'] += realm['services_warning_soft']
+            states['services']['warning'] += realm['services_warning_hard']
+
+            states['services']['critical'] += realm['services_critical_soft']
+            states['services']['critical'] += realm['services_critical_hard']
+
+            states['services']['unknown'] += realm['services_unknown_soft']
+            states['services']['unknown'] += realm['services_unknown_hard']
 
         self.states['hosts'] = states['hosts']
         self.states['services'] = states['services']
