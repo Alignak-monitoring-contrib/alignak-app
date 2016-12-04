@@ -77,10 +77,11 @@ class PopupTitle(QWidget):
         """
 
         # Logo Label
-        pixmap = QPixmap(get_image_path('icon'))
+        pixmap = QPixmap(get_image_path('alignak'))
 
         logo_label = QLabel(self)
-        logo_label.setFixedSize(40, 40)
+        logo_label.setFixedSize(132, 40)
+        logo_label.setScaledContents(True)
         logo_label.setObjectName('logo')
         logo_label.setPixmap(pixmap)
 

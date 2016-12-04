@@ -4,5 +4,6 @@ include etc/templates/*.tpl
 include etc/bin/launch
 include etc/bin/alignakapp.py
 recursive-include etc/images *.svg
+recursive-include etc/images *.png
 recursive-include alignak_app *.*
 global-exclude *pyc
