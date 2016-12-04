@@ -111,9 +111,9 @@ class Synthesis(QWidget):
         layout.addWidget(services_count, 1, 1, 1, 1)
         layout.addWidget(self.line_search, 2, 0, 1, 3)
         layout.addWidget(button, 2, 3, 1, 1)
-        layout.addWidget(self.host_view, 3, 0, 1, 1)
+        layout.addWidget(self.host_view, 3, 0, 1, 4)
         layout.setAlignment(self.host_view, Qt.AlignLeft)
-        layout.addWidget(self.services_view, 4, 0, 9, 1)
+        layout.addWidget(self.services_view, 4, 0, 8, 4)
 
         self.setLayout(layout)
 
