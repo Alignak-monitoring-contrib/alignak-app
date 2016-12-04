@@ -262,7 +262,7 @@ QPushButton:hover{
             for sub_daemon in alignak_map[daemon]:
                 if alignak_map[daemon][sub_daemon]['alive']:
                     self.daemons_labels[daemon][sub_daemon]['icon'].setPixmap(
-                        QPixmap(get_image_path('checked'))
+                        QPixmap(get_image_path('valid'))
                     )
                 else:
                     self.daemons_labels[daemon][sub_daemon]['icon'].setPixmap(
