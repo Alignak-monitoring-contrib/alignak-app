@@ -100,6 +100,8 @@ fi
 
 # Get version and doc_url of alignak-app
 version=`"$PYBIN" -c "from alignak_app import __version__; print(__version__)"`
+release_notes=`"$PYBIN" -c "from alignak_app import __releasenotes__; print(__releasenotes__)"`
+project_url=`"$PYBIN" -c "from alignak_app import __project_url__; print(__project_url__)"`
 doc_url=`"$PYBIN" -c "from alignak_app import __doc_url__; print(__doc_url__)"`
 
 # Functions for alignak-app
@@ -113,9 +115,13 @@ END
 
 
 do_start() {
-    echo "Starting $DAEMON daemon... with $PYBIN"
-    echo "Version $version"
-    echo "HELP: visit $doc_url"
+    echo "Starting $DAEMON daemon... with $PYBIN $PY"
+    echo "------------------------------------------"
+    echo "Alignak-app, Version $version"
+    echo "$release_notes"
+    echo "For more help, visit $doc_url."
+    echo "Please open any issue on $project_url."
+    echo "------------------------------------------"
     "$PYBIN" "$BIN_DIR/$DAEMON.py" &
 }
 
