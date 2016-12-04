@@ -110,15 +110,3 @@ class ServicesView(QWidget):
         icon_label.setPixmap(icon)
 
         return icon_label
-
-
-# For Tests
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-
-    set_app_config()
-
-    synthesis = ServicesView()
-    synthesis.display_services()
-
-    sys.exit(app.exec_())

@@ -28,6 +28,7 @@ from alignak_app.core.notifier import AppNotifier
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import set_app_config
 from alignak_app.systray.tray_icon import TrayIcon
+from alignak_app.backend.backend import AlignakBackend
 
 try:
     __import__('PyQt5')
@@ -51,6 +52,9 @@ class TestAppNotifier(unittest2.TestCase):
 
     icon = QIcon(get_image_path('icon'))
 
+    backend = AlignakBackend()
+    backend.login()
+
     @classmethod
     def setUpClass(cls):
         """Create QApplication"""
@@ -64,13 +68,13 @@ class TestAppNotifier(unittest2.TestCase):
         under_test = AppNotifier(self.icon)
 
         self.assertIsNone(under_test.tray_icon)
-        self.assertIsNone(under_test.backend)
+        self.assertIsNotNone(under_test.backend)
         self.assertIsNone(under_test.popup)
         self.assertFalse(under_test.notify)
 
         # Tray_icon for notifier
         tray_icon = TrayIcon(self.icon)
-        tray_icon.build_menu()
+        tray_icon.build_menu(self.backend)
 
         # Start notifier
         under_test.start_process(tray_icon)
@@ -86,7 +90,7 @@ class TestAppNotifier(unittest2.TestCase):
 
         # Start notifier
         tray_icon = TrayIcon(self.icon)
-        tray_icon.build_menu()
+        tray_icon.build_menu(self.backend)
         under_test.start_process(tray_icon)
 
         # Check Actions are pending
@@ -110,7 +114,7 @@ class TestAppNotifier(unittest2.TestCase):
 
         # Start notifier
         tray_icon = TrayIcon(self.icon)
-        tray_icon.build_menu()
+        tray_icon.build_menu(self.backend)
         under_test.start_process(tray_icon)
 
         # "start_process" set notify to True

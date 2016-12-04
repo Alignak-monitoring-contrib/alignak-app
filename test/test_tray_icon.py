@@ -26,6 +26,7 @@ import unittest2
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import set_app_config
 from alignak_app.systray.tray_icon import TrayIcon
+from alignak_app.backend.backend import AlignakBackend
 
 try:
     __import__('PyQt5')
@@ -48,6 +49,9 @@ class TestTrayIcon(unittest2.TestCase):
     set_app_config()
 
     icon = QIcon(get_image_path('icon'))
+
+    backend = AlignakBackend()
+    backend.login()
 
     @classmethod
     def setUpClass(cls):
@@ -116,17 +120,25 @@ class TestTrayIcon(unittest2.TestCase):
 
         # Assert no actions in Menu
         self.assertFalse(under_test.menu.actions())
+        self.assertIsNone(under_test.app_about)
+        self.assertIsNone(under_test.synthesis)
+        self.assertIsNone(under_test.alignak_status)
+        self.assertIsNotNone(under_test.action_factory)
 
-        under_test.build_menu()
+        under_test.build_menu(self.backend)
 
         # Assert actions are added in Menu
         self.assertTrue(under_test.menu.actions())
+        self.assertIsNotNone(under_test.app_about)
+        self.assertIsNotNone(under_test.synthesis)
+        self.assertIsNotNone(under_test.alignak_status)
+        self.assertIsNotNone(under_test.action_factory)
 
     def test_update_menus_actions(self):
         """Update Menu QActions"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
-        under_test.build_menu()
+        under_test.build_menu(self.backend)
 
         self.assertEqual('Hosts UP, Wait...',
                          under_test.action_factory.get('hosts_up').text())
