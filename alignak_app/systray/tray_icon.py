@@ -129,7 +129,6 @@ class TrayIcon(QSystemTrayIcon):
 
         self.menu.addMenu(self.hosts_menu)
 
-
     def create_services_actions(self):
         """
         Create services actions.
@@ -265,8 +264,13 @@ class TrayIcon(QSystemTrayIcon):
 
         logger.info('Update menus...')
 
-        host_nb = hosts_states['up'] + hosts_states['down'] + hosts_states['unreachable']
-        services_nb = services_states['ok'] + services_states['warning'] + services_states['critical'] + services_states['unknown']
+        host_nb = hosts_states['up'] + \
+            hosts_states['down'] + \
+            hosts_states['unreachable']
+        services_nb = services_states['ok'] + \
+            services_states['warning'] + \
+            services_states['critical'] + \
+            services_states['unknown']
 
         self.hosts_menu.setTitle('Hosts (' + str(host_nb) + ')')
         self.services_menu.setTitle('Services (' + str(services_nb) + ')')

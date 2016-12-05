@@ -70,7 +70,7 @@ class AlignakApp(object):
         else:
             logger.setLevel(INFO)
 
-        #Create notifier
+        # Create notifier
         self.notifier = AppNotifier(self.get_icon())
 
         # Create QSystemTrayIcon
