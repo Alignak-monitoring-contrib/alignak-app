@@ -21,4 +21,5 @@
 
 """
     The Core package contains classes to manage alignak_app.
+    They are isolated from pyqt.
 """

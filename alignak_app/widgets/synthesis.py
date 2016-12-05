@@ -23,16 +23,15 @@
     App Synthesis manage widget for Synthesis QWidget.
 """
 
-import sys
 import json
-
+import sys
 from logging import getLogger
 
+from alignak_app.core.backend import AppBackend
 from alignak_app.core.utils import get_image_path, set_app_config
-from alignak_app.popup.title import get_popup_title
 from alignak_app.popup.host_view import HostView
 from alignak_app.popup.services_view import ServicesView
-from alignak_app.backend.backend import AppBackend
+from alignak_app.popup.title import get_popup_title
 
 try:
     __import__('PyQt5')

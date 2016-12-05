@@ -19,10 +19,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-import unittest2
 import json
 
-from alignak_app.backend.backend import AppBackend
+import unittest2
+
+from alignak_app.core.backend import AppBackend
 from alignak_app.core.utils import set_app_config, get_app_config
 
 
