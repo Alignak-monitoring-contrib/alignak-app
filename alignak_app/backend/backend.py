@@ -42,6 +42,7 @@ class AppBackend(object):
 
     def __init__(self):
         self.backend = None
+        self.first_check = True
         self.states = {}
 
     def login(self):
@@ -236,8 +237,13 @@ class AppBackend(object):
             states['services']['unknown'] += realm['services_unknown_soft']
             states['services']['unknown'] += realm['services_unknown_hard']
 
-        self.states['hosts'] = states['hosts']
-        self.states['services'] = states['services']
+        if not self.first_check:
+            logger.info('Store backend changes...')
+            self.states['hosts'] = states['hosts']
+            self.states['services'] = states['services']
+        else:
+            logger.info('First check...')
+            self.first_check = False
 
         return states
 
