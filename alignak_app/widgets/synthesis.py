@@ -24,6 +24,7 @@
 """
 
 import sys
+import json
 
 from logging import getLogger
 
@@ -132,6 +133,7 @@ class Synthesis(QWidget):
 
         # Get item that is searched
         host_name = str(self.line_search.text()).rstrip()
+
         logger.debug('Desired host: ' + host_name)
 
         # Collect host data and associated services
@@ -149,6 +151,7 @@ class Synthesis(QWidget):
                 'ls_output': 'NOT FOUND'
             }
             self.host_view.update_view(data)
+            self.services_view.display_services(None)
 
     def create_line_search(self):
         """
@@ -158,7 +161,10 @@ class Synthesis(QWidget):
 
         # Create list for QStringModel
         hosts_list = []
-        all_hosts = self.backend.get('host')
+        params = {'where': json.dumps({'_is_template': False})}
+
+        all_hosts = self.backend.get('host', params)
+
         for host in all_hosts['_items']:
             hosts_list.append(host['name'])
 

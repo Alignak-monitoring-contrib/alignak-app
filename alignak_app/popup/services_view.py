@@ -70,23 +70,43 @@ class ServicesView(QWidget):
 
         widget = QWidget()
         layout = QGridLayout()
+
         pos = 0
-        for service in services:
+
+        if not services:
+            logger.warning('Services not Found ! ')
+
             # Icon
-            logger.debug('Add item at pos: ' + str(pos))
-            layout.addWidget(self.get_service_icon(service['ls_state']), pos, 0)
+            layout.addWidget(self.get_service_icon(''), pos, 0)
 
             # row, column, rowSpan, colSPan
             # Service name
-            service_name = QLabel(service['name'].title())
+            service_name = QLabel('NOT FOUND')
             service_name.setObjectName('name')
             service_name.setMinimumHeight(30)
             layout.addWidget(service_name, pos, 1)
 
             # Output
-            output_service = QLabel(service['ls_output'])
+            output_service = QLabel('NOT FOUND')
             layout.addWidget(output_service, pos, 2)
-            pos += 1
+        else:
+            for service in services:
+                logger.debug('Add item at pos: ' + str(pos))
+
+                # Icon
+                layout.addWidget(self.get_service_icon(service['ls_state']), pos, 0)
+
+                # row, column, rowSpan, colSPan
+                # Service name
+                service_name = QLabel(service['name'].title())
+                service_name.setObjectName('name')
+                service_name.setMinimumHeight(30)
+                layout.addWidget(service_name, pos, 1)
+
+                # Output
+                output_service = QLabel(service['ls_output'])
+                layout.addWidget(output_service, pos, 2)
+                pos += 1
 
         widget.setLayout(layout)
         scroll = QScrollArea()
