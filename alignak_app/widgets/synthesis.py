@@ -62,7 +62,7 @@ class Synthesis(QWidget):
     def __init__(self, parent=None):
         super(Synthesis, self).__init__(parent)
         self.setMinimumSize(900, 700)
-        self.setWindowTitle('Synthesis View')
+        self.setWindowTitle('Hosts Synthesis View')
         self.setWindowIcon(QIcon(get_image_path('icon')))
         # Fields
         self.line_search = QLineEdit()
@@ -85,11 +85,11 @@ class Synthesis(QWidget):
         # Title
         popup_title = self.get_synthesis_title()
 
-        # Sums and other info
-        sums = self.backend.counts()
-
-        hosts_count = QLabel('Hosts : ' + str(sums['hosts']))
-        services_count = QLabel('Services : ' + str(sums['services']))
+        # # Sums and other info
+        # sums = self.backend.counts()
+        #
+        # hosts_count = QLabel('Hosts : ' + str(sums['hosts']))
+        # services_count = QLabel('Services : ' + str(sums['services']))
 
         # Search Line
         self.create_line_search()
@@ -108,13 +108,11 @@ class Synthesis(QWidget):
         # row, column, rowSpan, colSPan
         layout = QGridLayout()
         layout.addWidget(popup_title, 0, 0, 1, 4)
-        layout.addWidget(hosts_count, 1, 0, 1, 1)
-        layout.addWidget(services_count, 1, 1, 1, 1)
-        layout.addWidget(self.line_search, 2, 0, 1, 3)
-        layout.addWidget(button, 2, 3, 1, 1)
-        layout.addWidget(self.host_view, 3, 0, 1, 4)
+        layout.addWidget(self.line_search, 1, 0, 1, 3)
+        layout.addWidget(button, 1, 3, 1, 1)
+        layout.addWidget(self.host_view, 2, 0, 1, 4)
         layout.setAlignment(self.host_view, Qt.AlignLeft)
-        layout.addWidget(self.services_view, 4, 0, 8, 4)
+        layout.addWidget(self.services_view, 3, 0, 8, 4)
 
         self.setLayout(layout)
 

@@ -30,7 +30,7 @@ import time
 
 from logging import getLogger
 from logging import Formatter
-from logging import DEBUG, INFO
+from logging import DEBUG
 from logging.handlers import TimedRotatingFileHandler
 
 from string import Template
@@ -78,15 +78,6 @@ def create_logger(root_logger):  # pragma: no cover
     file_handler.setFormatter(formatter)
 
     root_logger.addHandler(file_handler)
-
-    # Initialize configuration
-    set_app_config()
-
-    # Define level of logger
-    if app_config.getboolean('Alignak-App', 'debug'):
-        root_logger.setLevel(DEBUG)
-    else:
-        root_logger.setLevel(INFO)
 
 
 # Application Home

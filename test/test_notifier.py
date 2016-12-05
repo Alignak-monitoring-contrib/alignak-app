@@ -120,8 +120,11 @@ class TestAppNotifier(unittest2.TestCase):
         # "start_process" set notify to True
         self.assertTrue(under_test.notify)
 
-        # "get_state" to fill states
+        # "get_all_state" to fill states
+        # 1 - First time, states are not fill, only next time to see diff
+        under_test.backend.get_all_states()
         self.assertFalse(under_test.backend.states)
+        # 2 - Second time, states are fill
         under_test.backend.get_all_states()
         self.assertTrue(under_test.backend.states)
 

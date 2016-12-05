@@ -26,10 +26,12 @@
 import os
 import sys
 from logging import getLogger
+from logging import DEBUG, INFO
 
 from alignak_app.core.notifier import AppNotifier
 
 from alignak_app.core.utils import get_image_path
+from alignak_app.core.utils import set_app_config, get_app_config
 from alignak_app.systray.tray_icon import TrayIcon
 
 try:
@@ -59,7 +61,16 @@ class AlignakApp(object):
 
         """
 
-        # Create notifier
+        # Initialize configuration
+        set_app_config()
+
+        # Define level of logger
+        if get_app_config('Alignak-App', 'debug', boolean=True):
+            logger.setLevel(DEBUG)
+        else:
+            logger.setLevel(INFO)
+
+        #Create notifier
         self.notifier = AppNotifier(self.get_icon())
 
         # Create QSystemTrayIcon
