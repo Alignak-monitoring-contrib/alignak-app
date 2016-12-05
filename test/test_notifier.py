@@ -70,7 +70,7 @@ class TestAppNotifier(unittest2.TestCase):
         self.assertIsNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.backend)
         self.assertIsNone(under_test.popup)
-        self.assertFalse(under_test.notify)
+        self.assertTrue(under_test.notify)
 
         # Tray_icon for notifier
         tray_icon = TrayIcon(self.icon)
@@ -121,11 +121,10 @@ class TestAppNotifier(unittest2.TestCase):
         self.assertTrue(under_test.notify)
 
         # "get_all_state" to fill states
-        # 1 - First time, states are not fill, only next time to see diff
-        under_test.backend.get_all_states()
+        # 1 - First time, states are fill
         self.assertFalse(under_test.backend.states)
-        # 2 - Second time, states are fill
-        under_test.backend.get_all_states()
+        under_test.backend.synthesis_count()
+        # 2 - Next time, states will be filled
         self.assertTrue(under_test.backend.states)
 
         # Copy state

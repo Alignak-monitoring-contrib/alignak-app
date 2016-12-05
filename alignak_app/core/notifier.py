@@ -52,7 +52,7 @@ class AppNotifier(QSystemTrayIcon):
         self.backend.login()
         self.tray_icon = None
         self.popup = None
-        self.notify = False
+        self.notify = True
 
     def start_process(self, tray_icon):
         """
@@ -74,21 +74,10 @@ class AppNotifier(QSystemTrayIcon):
         self.popup = AppPopup()
         self.popup.initialize_notification()
 
-        self.notify = self.be_notified()
+        logger.info('Initialize notifier...')
         logger.debug('Notify : ' + str(self.notify))
 
-        logger.info('Initialize notifier...')
         timer.timeout.connect(self.check_data)
-
-    @staticmethod
-    def be_notified():
-        """
-        Check if user want to be notified or not.
-
-        :return: notifications in settings.cfg
-        :rtype: bool
-        """
-        return get_app_config('Alignak-App', 'notifications', boolean=True)
 
     @staticmethod
     def basic_diff_model():
@@ -119,34 +108,43 @@ class AppNotifier(QSystemTrayIcon):
 
         """
 
+        # Init dict
         old_states = {}
         diff = self.basic_diff_model()
 
-        if self.be_notified() and self.backend.states:
+        if self.backend.states:
+            logger.info('Store old states...')
             old_states = copy.deepcopy(self.backend.states)
 
-        states = self.backend.get_all_states()
+        current_states = self.backend.synthesis_count()
 
-        if self.be_notified() and old_states:
+        if old_states:
             diff = self.diff_last_check(old_states)
 
-        # Check state to prepare popup
-        if states['services']['critical'] > 0 or states['hosts']['down'] > 0:
-            popup_title = 'CRITICAL'
-        elif states['services']['unknown'] > 0 or \
-                states['services']['warning'] > 0 or \
-                states['hosts']['unreachable'] > 0:
-            popup_title = 'WARNING !'
+        # Define notification level
+        if current_states['services']['critical'] > 0 or current_states['hosts']['down'] > 0:
+            level_notif = 'CRITICAL'
+        elif current_states['services']['unknown'] > 0 or \
+                current_states['services']['warning'] > 0 or \
+                current_states['hosts']['unreachable'] > 0:
+            level_notif = 'WARNING'
         else:
-            popup_title = 'OK'
+            level_notif = 'OK'
 
-        logger.debug('Notification Title : ' + str(popup_title))
-
-        # Trigger changes and send notification
-        self.tray_icon.update_menu_actions(states['hosts'], states['services'])
+        logger.debug('Notification Level : ' + str(level_notif))
+        logger.debug('Notify : ' + str(self.notify))
 
         if self.notify:
-            self.popup.send_notification(popup_title, states['hosts'], states['services'], diff)
+            # Trigger changes and send notification
+            self.tray_icon.update_menu_actions(
+                current_states['hosts'],
+                current_states['services']
+            )
+            self.popup.send_notification(
+                level_notif, current_states['hosts'],
+                current_states['services'],
+                diff
+            )
 
     def diff_last_check(self, old_states):
         """

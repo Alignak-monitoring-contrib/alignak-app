@@ -222,6 +222,7 @@ def get_image_path(name):
     :rtype: str
     """
 
+    logger.debug('Image imported : ' + name)
     img_path = get_app_root() \
         + app_config.get('Config', 'path') \
         + app_config.get('Config', 'img') \
@@ -251,6 +252,9 @@ def get_diff_since_last_time(last_check):
     format_time = '%H:%M:%S'
     ft_check = datetime.datetime.fromtimestamp(last_check).strftime(format_time)
     ft_time = datetime.datetime.fromtimestamp(cur_time).strftime(format_time)
+
+    logger.debug('Check: ' + str(ft_check))
+    logger.debug('CurTime: ' + str(ft_time))
 
     time_delta = \
         datetime.datetime.strptime(ft_time, format_time) - \

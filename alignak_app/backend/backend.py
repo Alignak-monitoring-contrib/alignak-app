@@ -118,28 +118,6 @@ class AppBackend(object):
 
         return request
 
-    def counts(self):
-        """
-        Return number of hosts and services.
-
-        :return: number of hosts and services
-        :rtype: dict
-        """
-
-        all_items = self.get_all_states()
-
-        item_counts = {
-            'hosts': 0,
-            'services': 0
-        }
-
-        for state in all_items['hosts']:
-            item_counts['hosts'] += all_items['hosts'][state]
-        for state in all_items['services']:
-            item_counts['services'] += all_items['services'][state]
-
-        return item_counts
-
     def get_item(self, item_name, endpoint):
         """
         Get a wanted host or service item.
@@ -195,7 +173,7 @@ class AppBackend(object):
 
         return host_data
 
-    def get_all_states(self):
+    def synthesis_count(self):
         """
         Check the hosts and services states.
 
@@ -207,7 +185,7 @@ class AppBackend(object):
             logger.warning('Connection to backend is lost, application will try to reconnect !')
             self.login()
 
-        logger.info('GET state of Host and Services...')
+        logger.info('GET synthesis count states...')
 
         # Initialize dicts for states
         states = {
@@ -248,12 +226,8 @@ class AppBackend(object):
             states['services']['unknown'] += realm['services_unknown_soft']
             states['services']['unknown'] += realm['services_unknown_hard']
 
-        if not self.first_check:
-            logger.info('Store backend changes...')
-            self.states['hosts'] = states['hosts']
-            self.states['services'] = states['services']
-        else:
-            logger.info('First check...')
-            self.first_check = False
+        logger.info('Store current states...')
+        self.states['hosts'] = states['hosts']
+        self.states['services'] = states['services']
 
         return states

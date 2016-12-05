@@ -151,12 +151,12 @@ class AppPopup(QWidget):
             self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
             logger.debug('Position center : ' + str(center))
 
-    def send_notification(self, title, hosts_states, services_states, diff):
+    def send_notification(self, level_notif, hosts_states, services_states, diff):
         """
         Send notification.
 
-        :param title: state to display in label_state.
-        :type title: str
+        :param level_notif: state to display in label_state.
+        :type level_notif: str
         :param hosts_states: dict of hosts states
         :type hosts_states: dict
         :param services_states: dict of services states.
@@ -168,13 +168,9 @@ class AppPopup(QWidget):
         # Set position of popup
         self.set_position()
 
-        # Check if services and hosts are positive
-        if services_states['ok'] < 0 or hosts_states['up'] < 0:
-            title = 'CRITICAL'
-
         # Prepare notification
-        self.notification_type.setText(title)
-        self.set_style_sheet(title)
+        self.notification_type.setText(level_notif)
+        self.set_style_sheet(level_notif)
 
         # Update content of PopupFactory
         self.update_popup(hosts_states, services_states, diff)
