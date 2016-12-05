@@ -88,7 +88,6 @@ class AppAbout(QWidget):
         )
 
         msg = get_template('about.tpl', about_dict)
-        logger.debug('About Message : ' + str(msg))
 
         about_label = QLabel(msg)
         about_label.setTextInteractionFlags(Qt.TextBrowserInteraction)

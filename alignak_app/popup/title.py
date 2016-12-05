@@ -23,8 +23,6 @@
     Popup Title manage creation of .
 """
 
-from logging import getLogger
-
 from alignak_app.core.utils import get_image_path
 
 try:
@@ -40,9 +38,6 @@ except ImportError:  # pragma: no cover
     from PyQt4.Qt import QHBoxLayout  # pylint: disable=import-error
     from PyQt4.QtCore import Qt  # pylint: disable=import-error
     from PyQt4.QtGui import QPixmap, QPainter  # pylint: disable=import-error
-
-
-logger = getLogger(__name__)
 
 
 class PopupTitle(QWidget):
@@ -68,7 +63,6 @@ class PopupTitle(QWidget):
                 margin-top: 10px;
             }
         """)
-        self.setAutoFillBackground(True)
 
     def create_title(self, name):
         """

@@ -144,7 +144,8 @@ class AlignakStatus(QWidget):
                     'label': QLabel(sub_daemon),
                     'icon': QLabel()
                 }
-
+                logger.debug(str(sub_daemon))
+                logger.debug(str(alignak_map[daemon][sub_daemon]['alive']))
                 self.daemons_labels[daemon][sub_daemon]['label'].setObjectName(sub_daemon)
                 self.daemons_labels[daemon][sub_daemon]['icon'].setAlignment(Qt.AlignCenter)
 
@@ -235,9 +236,6 @@ QPushButton:hover{
             self.layout.addWidget(status_title, 1, 1, 1, 1)
 
             alignak_map = self.ws_request.json()
-
-            for d in self.daemons_labels:
-                logger.debug(self.daemons_labels[d])
 
             line = 2
             for daemon in self.daemons:

@@ -64,7 +64,7 @@ def create_logger(root_logger):  # pragma: no cover
     if not os.access(path, os.W_OK):
         path = '.'
 
-    formatter = Formatter('[%(asctime)s] - %(name)-12s - %(levelname)s - %(message)s')
+    formatter = Formatter('[%(asctime)s]> %(name)-12s : [%(levelname)s] %(message)s')
 
     # Create "file_handler"
     file_handler = TimedRotatingFileHandler(
