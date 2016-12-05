@@ -68,6 +68,10 @@ class AppBackend(object):
                 connect = self.backend.login(username, password)
                 logger.debug('Connection : ' + str(connect))
             except BackendException as e:  # pragma: no cover
+                logger.error(
+                    'Connection to Backend has failed. ' +
+                    str(e)
+                )
                 sys.exit(e)
         elif username and not password:
             # Username as token : recommended
@@ -75,7 +79,14 @@ class AppBackend(object):
             self.backend.token = username
         else:
             # Else exit
-            self.exit_error()
+            logger.error(
+                'Connection to Backend has failed. ' +
+                '\nCheck [Backend] section in configuration file.'
+            )
+            sys.exit(
+                '\nConnection to Backend has failed...' +
+                '\nPlease, check your settings and logs.'
+            )
 
     def get(self, endpoint, params=None):
         """
@@ -246,22 +257,3 @@ class AppBackend(object):
             self.first_check = False
 
         return states
-
-    @staticmethod
-    def exit_error(error=''):
-        """
-        Exit the app if login to backend fails.
-
-        :param error: exception
-        :type error: str
-        """
-
-        logger.error(
-            'Connection to Backend has failed. ' +
-            str(error) +
-            '\nCheck [Backend] section in configuration file.'
-        )
-        sys.exit(
-            '\nConnection to Backend has failed...' +
-            '\nPlease, check your settings and logs.'
-        )
