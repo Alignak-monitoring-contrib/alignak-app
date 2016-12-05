@@ -30,8 +30,12 @@
 """
 
 from logging import getLogger
+from alignak_app.core.utils import create_logger
 
-logger = getLogger(__name__)
+logger = getLogger()
+# noinspection PyTypeChecker
+create_logger(logger)
+
 
 # Application version and manifest
 VERSION = (0, 5, 0)

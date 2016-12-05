@@ -29,7 +29,6 @@ from logging import getLogger
 
 from alignak_app.core.notifier import AppNotifier
 
-from alignak_app.core.utils import create_logger
 from alignak_app.core.utils import get_image_path
 from alignak_app.systray.tray_icon import TrayIcon
 
@@ -42,10 +41,7 @@ except ImportError:
     from PyQt4.Qt import QApplication  # pylint: disable=import-error
 
 
-logger = getLogger()
-
-# noinspection PyTypeChecker
-create_logger(logger)
+logger = getLogger(__name__)
 
 
 class AlignakApp(object):
