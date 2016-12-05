@@ -110,7 +110,10 @@ class HostView(QWidget):
         logger.info('Update Host View...')
         logger.debug(host['name'])
 
-        time_delta = get_diff_since_last_time(host['ls_last_check'])
+        if isinstance(host['ls_last_check'], int):
+            time_delta = get_diff_since_last_time(host['ls_last_check'])
+        else:
+            time_delta = 'NOT FOUND'
 
         self.labels['name'].setText('<h3>' + host['name'].title() + '</h3>')
         self.labels['state_icon'].setPixmap(self.get_host_icon(host['ls_state']))
