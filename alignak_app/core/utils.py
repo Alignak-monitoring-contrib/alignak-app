@@ -194,7 +194,7 @@ def get_image_path(name):
         return img_path + app_config.get('Images', 'unvalid')
 
 
-def get_diff_since_last_time(last_check):
+def get_diff_since_last_check(last_check):
     """
     Return the diff between the last time stamp
 
