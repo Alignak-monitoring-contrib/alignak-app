@@ -42,11 +42,8 @@ except ImportError:
     from PyQt4.QtGui import QIcon  # pylint: disable=import-error
     from PyQt4.Qt import QApplication  # pylint: disable=import-error
 
-
-logger = getLogger()
-
-# Inititalize logger
-create_logger(logger)
+# Initialize logger
+logger = create_logger()
 
 
 class AlignakApp(object):

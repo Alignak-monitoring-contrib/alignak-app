@@ -42,13 +42,20 @@ logger = getLogger(__name__)
 
 
 # Application Logger
-def create_logger(root_logger):  # pragma: no cover
+def create_logger():  # pragma: no cover
     """
     Create the logger for Alignak-App
 
     :param root_logger: the main logger.
     :type root_logger: :class:`~logging.RootLogger`
     """
+
+    root_logger = getLogger()
+
+    stdout_handler = None
+
+    if root_logger.handlers:
+        stdout_handler = root_logger.handlers[0]
 
     # Define path and file for "file_handler"
     path = get_app_root() + '/alignak_app'
@@ -78,6 +85,11 @@ def create_logger(root_logger):  # pragma: no cover
     file_handler.setFormatter(formatter)
 
     root_logger.addHandler(file_handler)
+
+    # Remove stdout handler to ensure logs are only in filehandler
+    root_logger.removeHandler(stdout_handler)
+
+    return root_logger
 
 
 # Application Home
