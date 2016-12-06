@@ -84,12 +84,6 @@ class Synthesis(QWidget):
         # Title
         popup_title = self.get_synthesis_title()
 
-        # # Sums and other info
-        # sums = self.backend.counts()
-        #
-        # hosts_count = QLabel('Hosts : ' + str(sums['hosts']))
-        # services_count = QLabel('Services : ' + str(sums['services']))
-
         # Search Line
         self.create_line_search()
 
@@ -99,9 +93,9 @@ class Synthesis(QWidget):
         self.line_search.returnPressed.connect(button.click)
 
         # Create views
-        self.host_view = HostView()
+        self.host_view = HostView(self)
         self.host_view.init_view()
-        self.services_view = ServicesView()
+        self.services_view = ServicesView(self)
 
         # Layout
         # row, column, rowSpan, colSPan

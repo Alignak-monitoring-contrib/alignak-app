@@ -72,7 +72,7 @@ class AppAbout(QWidget):
         self.setWindowIcon(QIcon(get_image_path('icon')))
 
         # Popup title
-        title = get_popup_title('About ' + __application__, self)
+        title = get_popup_title(u'about ' + __application__, self)
         layout.addWidget(title)
 
         # About infos

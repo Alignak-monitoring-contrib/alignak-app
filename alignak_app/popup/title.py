@@ -49,7 +49,7 @@ class PopupTitle(QWidget):
         super(PopupTitle, self).__init__(parent)
         self.setObjectName('popup_title')
         self.setContentsMargins(0, -10, 0, 0)
-        self.setFixedWidth(parent.width())
+
         self.setStyleSheet("""
             QWidget#popup_title {
                 background-color: #002b36;
@@ -64,11 +64,18 @@ class PopupTitle(QWidget):
             }
         """)
 
-    def create_title(self, name):
+    def create_title(self, name, parent=None):
         """
         Build title QLabel, with logo QLabel
 
+        :param name: name of the title
+        :type name: str
+        :param parent: QWidget parent
+        :type parent: QWidget
         """
+
+        if 'notification' in name and parent:
+            self.setFixedWidth(parent.width())
 
         # Logo Label
         pixmap = QPixmap(get_image_path('alignak'))
@@ -81,7 +88,7 @@ class PopupTitle(QWidget):
 
         # Title Label
         title_label = QLabel(self)
-        title_label.setText(name)
+        title_label.setText(name.title())
         title_label.setObjectName('title')
         title_label.setMaximumHeight(40)
 
@@ -124,6 +131,6 @@ def get_popup_title(title, parent):
     """
 
     popup_title = PopupTitle(parent)
-    popup_title.create_title(title)
+    popup_title.create_title(title, parent)
 
     return popup_title

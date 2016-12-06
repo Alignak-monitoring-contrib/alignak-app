@@ -73,7 +73,7 @@ class AppPopup(QWidget):
         """
 
         # Create and add Layout for notification title
-        popup_title = get_popup_title('Notification', self)
+        popup_title = get_popup_title('notification', self)
         self.main_layout.addWidget(popup_title, 0)
         self.main_layout.setAlignment(popup_title, Qt.AlignCenter)
 

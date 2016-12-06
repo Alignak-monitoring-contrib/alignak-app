@@ -32,12 +32,12 @@ from alignak_app.core.utils import get_diff_since_last_check
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QApplication, QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QWidget, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QLabel  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QPixmap  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QPixmap, Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QApplication  # pylint: disable=import-error
+    from PyQt4.Qt import QApplication, QPushButton  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
     from PyQt4.Qt import QPixmap  # pylint: disable=import-error
@@ -54,6 +54,7 @@ class HostView(QWidget):
     def __init__(self, parent=None):
         super(HostView, self).__init__(parent)
         self.setFixedHeight(150)
+        self.setMinimumWidth(parent.width())
         self.layout = None
         self.labels = {}
 
@@ -93,11 +94,38 @@ class HostView(QWidget):
         self.layout.addWidget(real_state_text, 0, 1, 1, 1)
         self.layout.addWidget(self.labels['real_state_icon'], 1, 1, 2, 1)
 
-        self.layout.addWidget(QLabel('My last Check'), 0, 2, 1, 2)
-        self.layout.addWidget(QLabel('Last check:'), 1, 2, 1, 1)
+        check_label = QLabel('My last Check')
+        self.layout.addWidget(check_label, 0, 2, 1, 2)
+        self.layout.setAlignment(check_label, Qt.AlignTrailing)
+        last_check = QLabel('Last check:')
+        self.layout.addWidget(last_check, 1, 2, 1, 1)
+        self.layout.setAlignment(last_check, Qt.AlignTrailing)
         self.layout.addWidget(self.labels['last_check'], 1, 3, 1, 1)
-        self.layout.addWidget(QLabel('Output:'), 2, 2, 1, 1)
+        output = QLabel('Output:')
+        self.layout.addWidget(output, 2, 2, 1, 1)
+        self.layout.setAlignment(output, Qt.AlignTrailing)
         self.layout.addWidget(self.labels['output'], 2, 3, 1, 1)
+
+        buttons = self.extra_buttons()
+        self.layout.addWidget(buttons, 1, 4, 1, 2)
+
+    def extra_buttons(self):
+        """
+
+        :return:
+        """
+
+        button_widget = QWidget()
+        layout = QVBoxLayout()
+        button_widget.setLayout(layout)
+
+        ack_button = QPushButton('Ack')
+        down_button = QPushButton('Down')
+
+        layout.addWidget(ack_button, 0)
+        layout.addWidget(down_button, 1)
+
+        return button_widget
 
     def update_view(self, host):
         """
