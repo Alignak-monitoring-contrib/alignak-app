@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 26 26" enable-background="new 0 0 26 26" width="32px" height="32px">
   <circle cx="14" cy="14" r="10" stroke="#27ae60" stroke-width="4" fill="white" />
-  <line x1="9" y1="13" x2="13" y2="18" stroke-width="3" stroke="#27ae60" stroke-linecap="round"/>
-  <line x1="13.5" y1="18" x2="18" y2="10" stroke-width="3" stroke="#27ae60" stroke-linecap="round"/>
+  <line x1="10" y1="14" x2="13" y2="18" stroke-width="3" stroke="#27ae60" stroke-linecap="round"/>
+  <line x1="13.5" y1="18" x2="17" y2="11" stroke-width="3" stroke="#27ae60" stroke-linecap="round"/>
 </svg>
