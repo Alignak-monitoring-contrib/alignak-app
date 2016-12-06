@@ -70,8 +70,10 @@ class AlignakApp(object):
         # Define level of logger
         if get_app_config('Alignak-App', 'debug', boolean=True):
             logger.setLevel(DEBUG)
+            logger.info('Logger set to DEBUG')
         else:
             logger.setLevel(INFO)
+            logger.info('Logger set to INFO')
 
         # Create notifier
         self.notifier = AppNotifier(self.get_icon())

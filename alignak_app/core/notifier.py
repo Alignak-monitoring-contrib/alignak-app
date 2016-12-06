@@ -75,7 +75,7 @@ class AppNotifier(QSystemTrayIcon):
         self.popup.initialize_notification()
 
         logger.info('Initialize notifier...')
-        logger.debug('Notify : ' + str(self.notify))
+        logger.debug('Be notify : ' + str(self.notify))
 
         timer.timeout.connect(self.check_data)
 
@@ -132,7 +132,7 @@ class AppNotifier(QSystemTrayIcon):
             level_notif = 'OK'
 
         logger.debug('Notification Level : ' + str(level_notif))
-        logger.debug('Notify : ' + str(self.notify))
+        logger.debug('Be notify : ' + str(self.notify))
 
         if self.notify:
             # Trigger changes and send notification
@@ -158,10 +158,10 @@ class AppNotifier(QSystemTrayIcon):
         diff = self.basic_diff_model()
 
         if old_states == self.backend.states:
-            logger.info('No changes since the last check...')
+            logger.info('[No changes] since the last check...')
             self.notify = False
         else:
-            logger.info('Changes since the last check !')
+            logger.info('[Changes] since the last check !')
             self.notify = True
             for key, _ in self.backend.states['hosts'].items():
                 if old_states['hosts'][key] != self.backend.states['hosts'][key]:
@@ -173,7 +173,5 @@ class AppNotifier(QSystemTrayIcon):
                         self.backend.states['services'][key] \
                         - old_states['services'][key]
                     diff['services'][key] = cur_diff
-
-            logger.debug('Diff between last check : ' + str(diff))
 
         return diff

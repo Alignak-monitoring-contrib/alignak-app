@@ -63,7 +63,7 @@ class AppPopup(QWidget):
         # Fields
         self.main_layout = QVBoxLayout(self)
         self.notification_type = None
-        self.popup_factory = None
+        self.popup_factory = PopupFactory(self)
         self.button = None
 
     def initialize_notification(self):
@@ -85,7 +85,7 @@ class AppPopup(QWidget):
 
         self.main_layout.addWidget(self.notification_type, 1)
 
-        # Create and add StateFactory
+        # Fill and add StateFactory
         self.fill_state_factory()
         self.main_layout.addWidget(self.popup_factory, 2)
 
@@ -99,94 +99,20 @@ class AppPopup(QWidget):
 
         """
 
-        self.popup_factory = PopupFactory(self)
+        # self.popup_factory = PopupFactory(self)
 
         # Hosts
-        self.popup_factory.create_state('hosts_up')
-        self.popup_factory.create_state('hosts_unreach')
-        self.popup_factory.create_state('hosts_down')
+        self.popup_factory.create_state_labels('hosts_up')
+        self.popup_factory.create_state_labels('hosts_unreach')
+        self.popup_factory.create_state_labels('hosts_down')
 
         self.popup_factory.add_separator()
 
         # Services
-        self.popup_factory.create_state('services_ok')
-        self.popup_factory.create_state('services_warning')
-        self.popup_factory.create_state('services_critical')
-        self.popup_factory.create_state('services_unknown')
-
-    def set_position(self):
-        """
-        Get screen, and return position choosen in settings.
-
-        """
-
-        # Get position choosed by user
-        pos = get_app_config('Alignak-App', 'position')
-        points = pos.split(':')
-
-        # Move notification popup
-        if 'top' in points and 'right' in points:
-            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-            top_right = QApplication.desktop().screenGeometry(screen).topRight()
-            self.move(top_right.x() - self.width(), top_right.y())
-            logger.debug('Position top:right : ' + str(top_right))
-        elif 'top' in points and 'left' in points:  # pragma: no cover - not fully testable
-            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-            top_left = QApplication.desktop().screenGeometry(screen).topLeft()
-            self.move(top_left)
-            logger.debug('Position top:left : ' + str(top_left))
-        elif 'bottom' in points and 'right' in points:  # pragma: no cover - not fully testable
-            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-            bottom_right = QApplication.desktop().screenGeometry(screen).bottomRight()
-            self.move(bottom_right.x() - self.width(), bottom_right.y() - self.height())
-            logger.debug('Position bottom:right : ' + str(bottom_right))
-        elif 'bottom' in points and 'left' in points:  # pragma: no cover - not fully testable
-            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-            bottom_left = QApplication.desktop().screenGeometry(screen).bottomLeft()
-            self.move(bottom_left.x(), bottom_left.y() - self.height())
-            logger.debug('Position top:right : ' + str(bottom_left))
-        else:  # pragma: no cover - not fully testable
-            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-            center = QApplication.desktop().screenGeometry(screen).center()
-            self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
-            logger.debug('Position center : ' + str(center))
-
-    def send_notification(self, level_notif, hosts_states, services_states, diff):
-        """
-        Send notification.
-
-        :param level_notif: state to display in label_state.
-        :type level_notif: str
-        :param hosts_states: dict of hosts states
-        :type hosts_states: dict
-        :param services_states: dict of services states.
-        :type services_states: dict
-        :param diff: dict of changes since the last check of notifier.
-        :type diff: dict
-        """
-
-        # Set position of popup
-        self.set_position()
-
-        # Prepare notification
-        self.notification_type.setText(level_notif)
-        self.set_style_sheet(level_notif)
-
-        # Update content of PopupFactory
-        self.update_popup(hosts_states, services_states, diff)
-
-        # Retrieve duration
-        duration = int(get_app_config('Alignak-App', 'duration'))
-        duration *= 1000
-        logger.debug('Position Duration : ' + str(duration))
-
-        logger.info('Send notification...')
-
-        # Start notification...
-        self.show()
-
-        # ...until the end of the term
-        QTimer.singleShot(duration, self.close)
+        self.popup_factory.create_state_labels('services_ok')
+        self.popup_factory.create_state_labels('services_warning')
+        self.popup_factory.create_state_labels('services_critical')
+        self.popup_factory.create_state_labels('services_unknown')
 
     def update_popup(self, hosts_states, services_states, diff):
         """
@@ -200,7 +126,7 @@ class AppPopup(QWidget):
         :type diff: dict
         """
 
-        percentages = self.popup_factory.get_states_states(hosts_states, services_states)
+        percentages = self.popup_factory.get_percentages_states(hosts_states, services_states)
 
         if services_states['ok'] < 0 or hosts_states['up'] < 0:
             self.popup_factory = QLabel(
@@ -252,6 +178,82 @@ class AppPopup(QWidget):
                 diff['services']['unknown'],
                 percentages['unknown']
             )
+
+    def set_position(self):
+        """
+        Get screen, and return position choosen in settings.
+
+        """
+
+        # Get position choosed by user
+        pos = get_app_config('Alignak-App', 'position')
+        points = pos.split(':')
+
+        # Move notification popup
+        if 'top' in points and 'right' in points:
+            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+            top_right = QApplication.desktop().screenGeometry(screen).topRight()
+            self.move(top_right.x() - self.width(), top_right.y())
+            msg = '[top:right] ' + str(top_right)
+        elif 'top' in points and 'left' in points:  # pragma: no cover - not fully testable
+            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+            top_left = QApplication.desktop().screenGeometry(screen).topLeft()
+            self.move(top_left)
+            msg = '[top:left] ' + str(top_left)
+        elif 'bottom' in points and 'right' in points:  # pragma: no cover - not fully testable
+            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+            bottom_right = QApplication.desktop().screenGeometry(screen).bottomRight()
+            self.move(bottom_right.x() - self.width(), bottom_right.y() - self.height())
+            msg = '[bottom:right] ' + str(bottom_right)
+        elif 'bottom' in points and 'left' in points:  # pragma: no cover - not fully testable
+            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+            bottom_left = QApplication.desktop().screenGeometry(screen).bottomLeft()
+            self.move(bottom_left.x(), bottom_left.y() - self.height())
+            msg = '[top:right] ' + str(bottom_left)
+        else:  # pragma: no cover - not fully testable
+            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+            center = QApplication.desktop().screenGeometry(screen).center()
+            self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
+            msg = '[center] ' + str(center)
+
+        logger.debug('Position ' + msg)
+
+    def send_notification(self, level_notif, hosts_states, services_states, diff):
+        """
+        Send notification.
+
+        :param level_notif: state to display in label_state.
+        :type level_notif: str
+        :param hosts_states: dict of hosts states
+        :type hosts_states: dict
+        :param services_states: dict of services states.
+        :type services_states: dict
+        :param diff: dict of changes since the last check of notifier.
+        :type diff: dict
+        """
+
+        # Set position of popup
+        self.set_position()
+
+        # Prepare notification
+        self.notification_type.setText(level_notif)
+        self.set_style_sheet(level_notif)
+
+        # Update content of PopupFactory
+        self.update_popup(hosts_states, services_states, diff)
+
+        # Retrieve duration
+        duration = int(get_app_config('Alignak-App', 'duration'))
+        duration *= 1000
+        logger.debug('Notification Duration : ' + str(duration))
+
+        logger.info('Send notification...')
+
+        # Start notification...
+        self.show()
+
+        # ...until the end of the term
+        QTimer.singleShot(duration, self.close)
 
     def set_style_sheet(self, title):
         """

@@ -108,7 +108,7 @@ class HostView(QWidget):
         """
 
         logger.info('Update Host View...')
-        logger.debug(host['name'])
+        logger.debug('Host: ' + host['name'] + ' is ' + host['ls_state'])
 
         if isinstance(host['ls_last_check'], int):
             time_delta = get_diff_since_last_time(host['ls_last_check'])

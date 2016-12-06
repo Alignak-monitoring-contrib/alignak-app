@@ -45,8 +45,6 @@ except ImportError:  # pragma: no cover
     from PyQt4.QtGui import QIcon  # pylint: disable=import-error
     from PyQt4.QtCore import Qt  # pylint: disable=import-error
 
-logger = getLogger(__name__)
-
 
 class AppAbout(QWidget):
     """

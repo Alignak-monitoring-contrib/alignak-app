@@ -194,6 +194,8 @@ class TrayIcon(QSystemTrayIcon):
 
         self.menu.addAction(self.action_factory.get('database'))
 
+        logger.info('Create Synthesis Action')
+
     def create_status_action(self):
         """
         Create AlignakStatus QWidget and "status" action
@@ -213,13 +215,13 @@ class TrayIcon(QSystemTrayIcon):
 
         self.menu.addAction(self.action_factory.get('icon'))
 
+        logger.info('Create Status Action')
+
     def create_about_action(self):
         """
         Create AppAbout QWidget and "about" action.
 
         """
-
-        logger.info('Create About Action')
 
         self.app_about = AppAbout()
         self.app_about.create_window()
@@ -233,6 +235,8 @@ class TrayIcon(QSystemTrayIcon):
         self.action_factory.get('about').triggered.connect(self.app_about.show_about)
 
         self.menu.addAction(self.action_factory.get('about'))
+
+        logger.info('Create About Action')
 
     def create_quit_action(self):
         """

@@ -65,7 +65,6 @@ class ServicesView(QWidget):
 
         # Clean all items before
         for i in reversed(range(self.layout.count())):
-            logger.debug('Clean: ' + str(self.layout.itemAt(i)))
             self.layout.itemAt(i).widget().setParent(None)
 
         widget = QWidget()
@@ -91,8 +90,6 @@ class ServicesView(QWidget):
             layout.addWidget(output_service, pos, 2)
         else:
             for service in services:
-                logger.debug('Add item at pos: ' + str(pos))
-
                 # Icon
                 layout.addWidget(self.get_service_icon(service['ls_state']), pos, 0)
 
@@ -107,6 +104,8 @@ class ServicesView(QWidget):
                 output_service = QLabel(service['ls_output'])
                 layout.addWidget(output_service, pos, 2)
                 pos += 1
+
+        logger.debug('Number of services: ' + str(pos))
 
         widget.setLayout(layout)
         scroll = QScrollArea()
@@ -137,8 +136,6 @@ class ServicesView(QWidget):
             icon_name = 'services_unknown'
         else:
             icon_name = 'services_none'
-
-        logger.debug('Service Icon: ' + icon_name)
 
         icon = QPixmap(get_image_path(icon_name))
         icon_label = QLabel()

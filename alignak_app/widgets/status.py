@@ -144,8 +144,14 @@ class AlignakStatus(QWidget):
                     'label': QLabel(sub_daemon),
                     'icon': QLabel()
                 }
-                logger.debug(str(sub_daemon))
-                logger.debug(str(alignak_map[daemon][sub_daemon]['alive']))
+
+                logger.debug(
+                    'Daemon ' +
+                    str(sub_daemon) +
+                    ' is alive: ' +
+                    str(alignak_map[daemon][sub_daemon]['alive'])
+                )
+
                 self.daemons_labels[daemon][sub_daemon]['label'].setObjectName(sub_daemon)
                 self.daemons_labels[daemon][sub_daemon]['icon'].setAlignment(Qt.AlignCenter)
 

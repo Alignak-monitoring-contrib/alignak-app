@@ -142,7 +142,7 @@ class Synthesis(QWidget):
             self.services_view.display_services(data['services'])
         else:
             data = {
-                'name': 'NOT FOUND',
+                'name': host_name,
                 'ls_state': 'NOT FOUND',
                 'ls_last_check': 'NOT FOUND',
                 'ls_output': 'NOT FOUND'

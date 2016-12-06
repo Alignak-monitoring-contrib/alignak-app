@@ -23,6 +23,7 @@
     States_factory manage the creation of Popup Qwidget:
 """
 
+from logging import getLogger
 from alignak_app.core.utils import get_image_path, get_template
 
 try:
@@ -37,11 +38,12 @@ except ImportError:  # pragma: no cover
     from PyQt4.Qt import QFrame, QPushButton, QIcon  # pylint: disable=import-error
     from PyQt4.QtCore import Qt  # pylint: disable=import-error
 
+logger = getLogger(__name__)
+
 
 class PopupFactory(QWidget):
     """
     Class who generate a QWidget with 4 QLabels and 1 QProgressBar.
-
     """
 
     def __init__(self, parent=None):
@@ -53,7 +55,7 @@ class PopupFactory(QWidget):
         self.main_layout = QGridLayout()
         self.setLayout(self.main_layout)
 
-    def create_state(self, state_name):
+    def create_state_labels(self, state_name):
         """
         Generate 4 QLabel and 1 QProgressBar and store in "state_data"
         QLabels are icon | state_label | nb_items | diff
@@ -151,6 +153,8 @@ class PopupFactory(QWidget):
         :type percent: int
         """
 
+        logger.debug('Update: ' + str(nb_items) + ' for ' + state_name)
+
         self.state_data[state_name]['nb_items'].setText(str(nb_items))
         if nb_items == 0:
             if "hosts" in state_name:
@@ -173,7 +177,7 @@ class PopupFactory(QWidget):
         self.state_data[state_name]['progress_bar'].setValue(float(percent))
 
     @staticmethod
-    def get_states_states(hosts_states, services_states):
+    def get_percentages_states(hosts_states, services_states):
         """
         Calculates and return the sum of the items and their percentages
 
