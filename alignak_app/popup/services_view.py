@@ -25,19 +25,19 @@
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_image_path
+from alignak_app.core.utils import get_image_path, get_diff_since_last_check
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QScrollArea  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QScrollArea, QHBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QWidget, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QLabel  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QPixmap  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QPixmap, Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QScrollArea  # pylint: disable=import-error
+    from PyQt4.Qt import QScrollArea, QHBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
-    from PyQt4.Qt import QPixmap  # pylint: disable=import-error
+    from PyQt4.Qt import QPixmap, Qt  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
@@ -53,12 +53,14 @@ class ServicesView(QWidget):
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
-    def display_services(self, services):
+    def display_services(self, services, name):  # pylint: disable=too-many-locals
         """
         Display services.
 
         :param services: services of a specific host from backend
         :type services: dict
+        :param name: name of host
+        :type name: str
         """
 
         logger.info('Create Services View')
@@ -66,6 +68,10 @@ class ServicesView(QWidget):
         # Clean all items before
         for i in reversed(range(self.layout.count())):
             self.layout.itemAt(i).widget().setParent(None)
+
+        service_title = QLabel('<b>Services of ' + name + '</b>')
+        self.layout.addWidget(service_title, 0)
+        self.layout.setAlignment(Qt.AlignCenter)
 
         widget = QWidget()
         layout = QGridLayout()
@@ -75,10 +81,12 @@ class ServicesView(QWidget):
         if not services:
             logger.warning('Services not Found ! ')
 
-            # Icon
-            layout.addWidget(self.get_service_icon(''), pos, 0)
-
             # row, column, rowSpan, colSPan
+            # Icon
+            icon = self.get_service_icon('')
+            layout.addWidget(icon, pos, 0)
+            layout.setAlignment(icon, Qt.AlignCenter)
+
             # Service name
             service_name = QLabel('NOT FOUND')
             service_name.setObjectName('name')
@@ -90,19 +98,28 @@ class ServicesView(QWidget):
             layout.addWidget(output_service, pos, 2)
         else:
             for service in services:
+                print('Service: ', service)
                 # Icon
                 layout.addWidget(self.get_service_icon(service['ls_state']), pos, 0)
 
                 # row, column, rowSpan, colSPan
                 # Service name
                 service_name = QLabel(service['name'].title())
-                service_name.setObjectName('name')
                 service_name.setMinimumHeight(30)
                 layout.addWidget(service_name, pos, 1)
 
+                # Last check
+                check_name = QLabel('<b>Last check:</b>')
+                layout.addWidget(check_name, pos, 2)
+                diff_last_check = get_diff_since_last_check(service['ls_last_check'])
+                last_check = QLabel(str(diff_last_check))
+                layout.addWidget(last_check, pos, 3)
+
                 # Output
+                output_name = QLabel('<b>Output:</b>')
+                layout.addWidget(output_name, pos, 4)
                 output_service = QLabel(service['ls_output'])
-                layout.addWidget(output_service, pos, 2)
+                layout.addWidget(output_service, pos, 5, 1, 2)
                 pos += 1
 
         logger.debug('Number of services: ' + str(pos))

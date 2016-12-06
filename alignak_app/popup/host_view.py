@@ -53,7 +53,7 @@ class HostView(QWidget):
 
     def __init__(self, parent=None):
         super(HostView, self).__init__(parent)
-        self.setFixedHeight(100)
+        self.setFixedHeight(150)
         self.layout = None
         self.labels = {}
 
@@ -145,7 +145,6 @@ class HostView(QWidget):
         icon = QPixmap(get_image_path(icon_name))
 
         return icon
-
 
 # For Tests
 if __name__ == '__main__':

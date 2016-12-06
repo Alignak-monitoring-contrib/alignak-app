@@ -60,7 +60,7 @@ class Synthesis(QWidget):
 
     def __init__(self, parent=None):
         super(Synthesis, self).__init__(parent)
-        self.setMinimumSize(900, 700)
+        self.setMinimumSize(1000, 700)
         self.setWindowTitle('Hosts Synthesis View')
         self.setWindowIcon(QIcon(get_image_path('icon')))
         # Fields
@@ -139,7 +139,7 @@ class Synthesis(QWidget):
         # Write result ot "result_label"
         if data:
             self.host_view.update_view(data['host'])
-            self.services_view.display_services(data['services'])
+            self.services_view.display_services(data['services'], data['host']['name'])
         else:
             data = {
                 'name': host_name,
@@ -148,7 +148,7 @@ class Synthesis(QWidget):
                 'ls_output': 'NOT FOUND'
             }
             self.host_view.update_view(data)
-            self.services_view.display_services(None)
+            self.services_view.display_services(None, 'NOT KNOWN')
 
     def create_line_search(self):
         """
