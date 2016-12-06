@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Application logs
+    Application configuration
 """
 
 import os
@@ -29,9 +29,6 @@ import datetime
 import time
 
 from logging import getLogger
-from logging import Formatter
-from logging import DEBUG
-from logging.handlers import TimedRotatingFileHandler
 
 from string import Template
 import configparser
@@ -39,57 +36,6 @@ from configparser import NoOptionError
 
 
 logger = getLogger(__name__)
-
-
-# Application Logger
-def create_logger():  # pragma: no cover
-    """
-    Create the logger for Alignak-App
-
-    :param root_logger: the main logger.
-    :type root_logger: :class:`~logging.RootLogger`
-    """
-
-    root_logger = getLogger()
-
-    stdout_handler = None
-
-    if root_logger.handlers:
-        stdout_handler = root_logger.handlers[0]
-
-    # Define path and file for "file_handler"
-    path = get_app_root() + '/alignak_app'
-    filename = 'alignakapp.log'
-
-    if not os.path.isdir(path):
-        # noinspection PyBroadException
-        try:  # pragma: no cover - not testable
-            os.makedirs(path)
-        except Exception:
-            path = '.'
-
-    if not os.access(path, os.W_OK):
-        path = '.'
-
-    formatter = Formatter('[%(asctime)s]> %(name)-12s : [%(levelname)s] %(message)s')
-
-    # Create "file_handler"
-    file_handler = TimedRotatingFileHandler(
-        filename=os.path.join(path, filename),
-        when="D",
-        interval=1,
-        backupCount=6
-    )
-
-    file_handler.setLevel(DEBUG)
-    file_handler.setFormatter(formatter)
-
-    root_logger.addHandler(file_handler)
-
-    # Remove stdout handler to ensure logs are only in filehandler
-    root_logger.removeHandler(stdout_handler)
-
-    return root_logger
 
 
 # Application Home
@@ -100,19 +46,19 @@ def get_app_root():
 
     # Get HOME and USER
     if 'linux' in sys.platform or 'sunos5' in sys.platform:
-        alignak_home = os.environ['HOME']
-        alignak_home += '/.local'
+        app_root = os.environ['HOME']
+        app_root += '/.local'
     elif 'win32' in sys.platform:  # pragma: no cover - not testable
-        alignak_home = os.environ['USERPROFILE']
-        alignak_home += '\\AppData\\Roaming\\Python\\'
+        app_root = os.environ['USERPROFILE']
+        app_root += '\\AppData\\Roaming\\Python\\'
     else:  # pragma: no cover - not testable
         sys.exit('Application can\'t find the user HOME.')
 
     # Prevent from root user
-    if 'root' in alignak_home or not alignak_home:
+    if 'root' in app_root or not app_root:
         sys.exit('Application can\'t find the user HOME or maybe you are connected as ROOT.')
 
-    return alignak_home
+    return app_root
 
 # Application Configuration
 

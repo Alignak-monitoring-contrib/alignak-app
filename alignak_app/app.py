@@ -25,12 +25,11 @@
 
 import os
 import sys
-from logging import getLogger
 from logging import DEBUG, INFO
 
+from alignak_app.core.logs import create_logger
 from alignak_app.core.notifier import AppNotifier
-
-from alignak_app.core.utils import get_image_path, create_logger
+from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import set_app_config, get_app_config
 from alignak_app.systray.tray_icon import TrayIcon
 
