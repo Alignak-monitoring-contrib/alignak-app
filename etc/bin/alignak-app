@@ -29,6 +29,11 @@
 # Description:       alignak-app is a notifier for Alignak suite.
 ### END INIT INFO
 
+END='\x1b[0m'
+RED='\x1b[31m'
+GREEN='\x1b[32m'
+CYAN='\x1b[36m'
+
 LIB_NAME=alignak_app
 DAEMON=alignak-app
 
@@ -67,14 +72,16 @@ else
     if [[ "$PY" -eq 3 && "$PYQT" -eq 3 ]]; then
         PYBIN=python3
     else
-        echo "It seems that your version of Python and PyQt are not compatible or not installed !"
+        echo "$RED It seems that your version of Python and PyQt are not compatible or not installed ! $END"
         exit 1
     fi
 fi
 
 # Make command alignak-app available
 if [ ! -L "$USER_BIN/$DAEMON" ]; then
-    echo "Alignak-app verify installation -!-"
+    echo "------------------------------------------"
+    echo "      Alignak-app verify installation"
+    echo "------------------------------------------"
     # Verify installation
     echo "Check folders..."
     if [ ! -d "$USER_BIN" ]; then
@@ -88,7 +95,7 @@ for $DAEMON...
         echo "Folder already exists."
     fi
     echo "The command $DAEMON is not yet created..."
-    echo -e "\nCreate: \x1b[32m $DAEMON \x1b[0m command !"
+    echo -e "\nCreate: $GREEN $DAEMON $END command !"
     ln -s "$BIN_DIR/$(basename "$0")" "$USER_BIN/$DAEMON"
     echo -e "\nInstallation is done !"
 fi
@@ -101,17 +108,18 @@ doc_url=`"$PYBIN" -c "from alignak_app import __doc_url__; print(__doc_url__)"`
 
 # Functions for alignak-app
 usage() {
-    echo -e "\n Usage: \x1b[36m $(basename "$0") {start|stop|status|restart} \x1b[0m \n"
+    echo -e "\n Usage: $CYAN $(basename "$0") {start|stop|status|restart} $END \n"
 }
 
 
 do_start() {
-    echo -e "\x1b[32m Starting $DAEMON daemon \x1b[0m..."
     echo "------------------------------------------"
-    echo -e "\x1b[36m Alignak-app, Version $version \x1b[0m"
-    echo "$release_notes"
-    echo "For more help, visit $doc_url."
-    echo "Please open any issue on $project_url."
+    echo -e "$GREEN Starting $DAEMON daemon $END..."
+    echo "------------------------------------------"
+    echo -e "$CYAN Alignak-app, Version $version $END \n"
+    echo "  $release_notes"
+    echo "  For more help, visit $doc_url."
+    echo "  Please open any issue on $project_url."
     echo "------------------------------------------"
     "$PYBIN" "$BIN_DIR/$DAEMON.py" &
 }
@@ -119,22 +127,21 @@ do_start() {
 do_stop() {
     pid=`ps fu |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
     if [ ! -z "$pid" ]; then
-        echo "PID: $pid"
+        echo -e "$RED  Stop $DAEMON daemon... $END"
+        echo "Kill pid: $pid"
         kill "$pid"
-        echo "Stop $DAEMON daemon..."
-        echo "OK"
+        echo "...$DAEMON stop !"
     else
-        echo "PID: $pid"
-        echo "$DAEMON is not running !"
+        echo -e "$RED $DAEMON is not running ! $END"
     fi
 }
 
 do_status() {
     pid=`ps fu |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
     if [ ! -z "$pid" ]; then
-        echo "$DAEMON is running... (pid $pid)"
+        echo -e "$DAEMON is $GREEN running $END... (pid $pid)"
     else
-        echo "$DAEMON is not running !"
+        echo -e "$RED $DAEMON is not running ! $END"
         echo "Run $DAEMON start"
     fi
 
@@ -153,6 +160,9 @@ case "$CMD" in
     restart)
         do_stop
         do_start
+    ;;
+    status)
+        do_status
     ;;
     *)
         usage
