@@ -54,7 +54,7 @@ class TestPopup(unittest2.TestCase):
         under_test = AppPopup()
 
         self.assertIsNone(under_test.notification_type)
-        self.assertIsNone(under_test.popup_factory)
+        self.assertIsNotNone(under_test.popup_factory)
 
         # Create all the label
         under_test.initialize_notification()
