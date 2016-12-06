@@ -74,9 +74,9 @@ fi
 
 # Make command alignak-app available
 if [ ! -L "$USER_BIN/$DAEMON" ]; then
-    echo "-!- Alignak-app finish installation -!-"
+    echo "Alignak-app verify installation -!-"
     # Verify installation
-    echo "Alignak-App check folders..."
+    echo "Check folders..."
     if [ ! -d "$USER_BIN" ]; then
         echo -e "
 Create:
@@ -87,15 +87,10 @@ for $DAEMON...
     else
         echo "Folder already exists."
     fi
-    echo "The command [$DAEMON] is not yet created..."
-    echo "
-Create:
-    [$DAEMON] command !
-    "
+    echo "The command $DAEMON is not yet created..."
+    echo -e "\nCreate: \x1b[32m $DAEMON \x1b[0m command !"
     ln -s "$BIN_DIR/$(basename "$0")" "$USER_BIN/$DAEMON"
-    echo "
-Installation is done !
-"
+    echo -e "\nInstallation is done !"
 fi
 
 # Get version and doc_url of alignak-app
@@ -106,18 +101,14 @@ doc_url=`"$PYBIN" -c "from alignak_app import __doc_url__; print(__doc_url__)"`
 
 # Functions for alignak-app
 usage() {
-    cat << END
-
-Usage: $(basename "$0") {start|stop|status|restart}
-
-END
+    echo -e "\n Usage: \x1b[36m $(basename "$0") {start|stop|status|restart} \x1b[0m \n"
 }
 
 
 do_start() {
-    echo "Starting $DAEMON daemon... with $PYBIN $PY"
+    echo -e "\x1b[32m Starting $DAEMON daemon \x1b[0m..."
     echo "------------------------------------------"
-    echo "Alignak-app, Version $version"
+    echo -e "\x1b[36m Alignak-app, Version $version \x1b[0m"
     echo "$release_notes"
     echo "For more help, visit $doc_url."
     echo "Please open any issue on $project_url."
