@@ -125,7 +125,7 @@ do_start() {
 }
 
 do_stop() {
-    pid=`ps fu |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
+    pid=`ps aux |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
     if [ ! -z "$pid" ]; then
         echo -e "$RED  Stop $DAEMON daemon... $END"
         echo "Kill pid: $pid"
