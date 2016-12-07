@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The Popup package contains classes who create QWidgets notification.
+    The Synthesis package contains classes who create Host Synthesis View.
 """

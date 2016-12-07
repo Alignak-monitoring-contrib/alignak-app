@@ -29,7 +29,7 @@ import requests
 
 from alignak_app import __application__, __short_version__
 from alignak_app.core.utils import get_image_path, get_app_config
-from alignak_app.popup.title import get_popup_title
+from alignak_app.widgets.title import get_popup_title
 
 try:
     __import__('PyQt5')

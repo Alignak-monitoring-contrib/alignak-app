@@ -23,12 +23,10 @@
     About manage QWidget who display About window.
 """
 
-from logging import getLogger
-
 from alignak_app import __application__
 from alignak_app import __releasenotes__, __version__, __copyright__, __doc_url__, __project_url__
 from alignak_app.core.utils import get_image_path, get_template
-from alignak_app.popup.title import get_popup_title
+from alignak_app.widgets.title import get_popup_title
 
 try:
     __import__('PyQt5')

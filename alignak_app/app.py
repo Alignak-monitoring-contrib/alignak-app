@@ -47,7 +47,7 @@ logger = create_logger()
 
 class AlignakApp(object):
     """
-        Class who build application and configuration.
+        Class who build Alignak-app and initialize configuration, notifier and systray icon.
     """
 
     def __init__(self):

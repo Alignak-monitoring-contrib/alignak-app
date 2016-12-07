@@ -24,7 +24,7 @@ import sys
 import unittest2
 
 from alignak_app.core.utils import set_app_config
-from alignak_app.widgets.popup import AppPopup
+from alignak_app.popup.popup import AppPopup
 
 try:
     __import__('PyQt5')
