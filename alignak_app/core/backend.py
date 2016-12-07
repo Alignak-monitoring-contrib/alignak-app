@@ -72,7 +72,8 @@ class AppBackend(object):
                     'Connection to Backend has failed. ' +
                     str(e)
                 )
-                sys.exit(e)
+                print(e, 'Please, check your [settings.cfg] and logs.')
+                sys.exit()
         elif username and not password:
             # Username as token : recommended
             self.backend.authenticated = True
@@ -83,10 +84,11 @@ class AppBackend(object):
                 'Connection to Backend has failed. ' +
                 '\nCheck [Backend] section in configuration file.'
             )
-            sys.exit(
-                '\nConnection to Backend has failed...' +
-                '\nPlease, check your settings and logs.'
+            print(
+                'Connection to Backend has failed...'
+                'Please, check your [settings.cfg] and logs.'
             )
+            sys.exit()
 
     def get(self, endpoint, params=None):
         """
