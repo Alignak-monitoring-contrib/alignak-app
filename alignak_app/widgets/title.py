@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Popup Title manage creation of .
+    Title manage creation of widgets title.
 """
 
 from alignak_app.core.utils import get_image_path
@@ -40,13 +40,13 @@ except ImportError:  # pragma: no cover
     from PyQt4.QtGui import QPixmap, QPainter  # pylint: disable=import-error
 
 
-class PopupTitle(QWidget):
+class Title(QWidget):
     """
     Class who create popup title.
     """
 
     def __init__(self, parent=None):
-        super(PopupTitle, self).__init__(parent)
+        super(Title, self).__init__(parent)
         self.setObjectName('popup_title')
         self.setContentsMargins(0, -10, 0, 0)
 
@@ -118,7 +118,7 @@ class PopupTitle(QWidget):
         self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)
 
 
-def get_popup_title(title, parent):
+def get_widget_title(title, parent):
     """
     Create QWidget title and return it.
 
@@ -126,11 +126,11 @@ def get_popup_title(title, parent):
     :type title: str
     :param parent: QWidget parent
     :type parent: QWidget
-    :return: PopupTitle
-    :type: PopupTitle
+    :return: qwidget Title
+    :rtype: Title
     """
 
-    popup_title = PopupTitle(parent)
+    popup_title = Title(parent)
     popup_title.create_title(title, parent)
 
     return popup_title

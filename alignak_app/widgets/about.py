@@ -26,7 +26,7 @@
 from alignak_app import __application__
 from alignak_app import __releasenotes__, __version__, __copyright__, __doc_url__, __project_url__
 from alignak_app.core.utils import get_image_path, get_template
-from alignak_app.widgets.title import get_popup_title
+from alignak_app.widgets.title import get_widget_title
 
 try:
     __import__('PyQt5')
@@ -80,7 +80,7 @@ class AppAbout(QWidget):
         self.setWindowIcon(QIcon(get_image_path('icon')))
 
         # Popup title
-        title = get_popup_title('about ' + __application__, self)
+        title = get_widget_title('about ' + __application__, self)
         layout.addWidget(title)
 
         # About infos

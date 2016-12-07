@@ -31,7 +31,7 @@ from alignak_app.core.backend import AppBackend
 from alignak_app.core.utils import get_image_path, set_app_config
 from alignak_app.synthesis.host_view import HostView
 from alignak_app.synthesis.services_view import ServicesView
-from alignak_app.widgets.title import get_popup_title
+from alignak_app.widgets.title import get_widget_title
 
 try:
     __import__('PyQt5')
@@ -178,7 +178,7 @@ class Synthesis(QWidget):
 
         """
 
-        title = get_popup_title('host synthesis view', self)
+        title = get_widget_title('host synthesis view', self)
 
         return title
 
