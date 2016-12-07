@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    States_factory manage the creation of Popup Qwidget:
+    Notification Factory manage the creation of notification Qwidgets:
 """
 
 from logging import getLogger
@@ -41,13 +41,13 @@ except ImportError:  # pragma: no cover
 logger = getLogger(__name__)
 
 
-class PopupFactory(QWidget):
+class NotificationFactory(QWidget):
     """
-    Class who generate a QWidget with 4 QLabels and 1 QProgressBar.
+        Class who generate a QWidget with 4 QLabels and 1 QProgressBar.
     """
 
     def __init__(self, parent=None):
-        super(PopupFactory, self).__init__(parent)
+        super(NotificationFactory, self).__init__(parent)
         self.pos = 0
         self.setStyleSheet("QLabel {color: black;}")
         self.setMaximumWidth(parent.width())
@@ -58,7 +58,7 @@ class PopupFactory(QWidget):
     def create_state_labels(self, state_name):
         """
         Generate 4 QLabel and 1 QProgressBar and store in "state_data"
-        QLabels are icon | state_label | nb_items | diff
+        QLabels are: icon | state_label | nb_items | diff
         QProgressBar get value of percent.
         All are added horizontally.
 

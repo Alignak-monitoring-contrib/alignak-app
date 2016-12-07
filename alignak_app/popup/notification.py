@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Popup build notifications.
+    Notification build notifications QWidgets.
 """
 
 from logging import getLogger
@@ -28,7 +28,7 @@ from logging import getLogger
 from alignak_app import __application__
 from alignak_app.core.utils import get_app_config
 from alignak_app.core.utils import get_template
-from alignak_app.popup.factory import PopupFactory
+from alignak_app.popup.notification_factory import NotificationFactory
 from alignak_app.widgets.title import get_popup_title
 
 try:
@@ -49,13 +49,13 @@ except ImportError:  # pragma: no cover
 logger = getLogger(__name__)
 
 
-class AppPopup(QWidget):
+class AppNotification(QWidget):
     """
-    Class who create notifications.
+        Class who create QWidget notifications.
     """
 
     def __init__(self, parent=None):
-        super(AppPopup, self).__init__(parent)
+        super(AppNotification, self).__init__(parent)
         # General settings
         self.setWindowTitle(__application__)
         self.setMaximumWidth(455)
@@ -63,7 +63,7 @@ class AppPopup(QWidget):
         # Fields
         self.main_layout = QVBoxLayout(self)
         self.notification_type = None
-        self.popup_factory = PopupFactory(self)
+        self.popup_factory = NotificationFactory(self)
         self.button = None
 
     def initialize_notification(self):

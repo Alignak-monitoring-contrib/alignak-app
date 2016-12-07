@@ -28,7 +28,7 @@ from logging import getLogger
 
 from alignak_app.core.backend import AppBackend
 from alignak_app.core.utils import get_app_config
-from alignak_app.popup.popup import AppPopup
+from alignak_app.popup.notification import AppNotification
 
 try:
     __import__('PyQt5')
@@ -71,7 +71,7 @@ class AppNotifier(QSystemTrayIcon):
         timer = QTimer(self)
         timer.start(check_interval)
 
-        self.popup = AppPopup()
+        self.popup = AppNotification()
         self.popup.initialize_notification()
 
         logger.info('Initialize notifier...')

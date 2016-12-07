@@ -24,7 +24,7 @@ import sys
 import unittest2
 
 from alignak_app.core.utils import set_app_config
-from alignak_app.popup.popup import AppPopup
+from alignak_app.popup.notification import AppNotification
 
 try:
     __import__('PyQt5')
@@ -33,7 +33,7 @@ except ImportError:
     from PyQt4.Qt import QApplication
 
 
-class TestPopup(unittest2.TestCase):
+class TestNotification(unittest2.TestCase):
     """
         This file test the AppPopup class.
     """
@@ -51,7 +51,7 @@ class TestPopup(unittest2.TestCase):
     def test_initialize_notification(self):
         """Inititalize Notification"""
 
-        under_test = AppPopup()
+        under_test = AppNotification()
 
         self.assertIsNone(under_test.notification_type)
         self.assertIsNotNone(under_test.popup_factory)
@@ -64,7 +64,7 @@ class TestPopup(unittest2.TestCase):
 
     def test_send_notifications(self):
         """Send Notification"""
-        under_test = AppPopup()
+        under_test = AppNotification()
 
         under_test.initialize_notification()
 
@@ -110,7 +110,7 @@ class TestPopup(unittest2.TestCase):
         critical_css = "Background-color: #e74c3c;"
         none_css = "Background-color: #EEE;"
 
-        under_test = AppPopup()
+        under_test = AppNotification()
 
         css = {
             'OK': ok_css,
@@ -128,7 +128,7 @@ class TestPopup(unittest2.TestCase):
 
     def test_set_position(self):
         """Position Change from Initial Position"""
-        under_test = AppPopup()
+        under_test = AppNotification()
 
         initial_position = under_test.pos()
 
