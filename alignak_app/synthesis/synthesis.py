@@ -89,6 +89,7 @@ class Synthesis(QWidget):
 
         # button
         button = QPushButton('Search', self)
+        button.setToolTip('Search a host')
         button.clicked.connect(self.handle_button)
         self.line_search.returnPressed.connect(button.click)
 
@@ -169,6 +170,7 @@ class Synthesis(QWidget):
         # Add completer to "line edit"
         self.line_search.setCompleter(completer)
         self.line_search.setPlaceholderText('Type a host name to display its data')
+        self.line_search.setToolTip('Type a host name to display its data')
 
     def get_synthesis_title(self):
         """
@@ -176,7 +178,7 @@ class Synthesis(QWidget):
 
         """
 
-        title = get_popup_title('Synthesis View', self)
+        title = get_popup_title('host synthesis view', self)
 
         return title
 

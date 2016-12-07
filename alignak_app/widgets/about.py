@@ -55,6 +55,7 @@ class AppAbout(QWidget):
         self.setWindowTitle(__application__ + ': About')
         self.setContentsMargins(0, 0, 0, 0)
         self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setToolTip('About')
         self.setWindowFlags(Qt.FramelessWindowHint)
         # Fields
         self.button = None
@@ -79,7 +80,7 @@ class AppAbout(QWidget):
         self.setWindowIcon(QIcon(get_image_path('icon')))
 
         # Popup title
-        title = get_popup_title(u'about ' + __application__, self)
+        title = get_popup_title('about ' + __application__, self)
         layout.addWidget(title)
 
         # About infos

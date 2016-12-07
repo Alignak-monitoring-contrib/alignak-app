@@ -53,6 +53,7 @@ class HostView(QWidget):
         super(HostView, self).__init__(parent)
         self.setFixedHeight(150)
         self.setMinimumWidth(parent.width())
+        self.setToolTip('Host View')
         self.layout = None
         self.labels = {}
 

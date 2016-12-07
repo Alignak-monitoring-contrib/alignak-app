@@ -63,15 +63,17 @@ class TrayIcon(QSystemTrayIcon):
         self.hosts_menu.setIcon(QIcon(get_image_path('host')))
         self.services_menu = QMenu(self.menu)
         self.services_menu.setIcon(QIcon(get_image_path('service')))
+        self.action_factory = ActionFactory()
         self.alignak_status = None
         self.app_about = None
-        self.action_factory = ActionFactory()
         self.synthesis = None
 
     def build_menu(self, backend):
         """
         Initialize and create each action of menu.
 
+        :param backend: Backend data
+        :type backend: AppBackend
         """
 
         # Create actions
@@ -179,6 +181,8 @@ class TrayIcon(QSystemTrayIcon):
         """
         Create Synthesis QWidget and "synthesis view" action
 
+        :param backend: Backend data
+        :type backend: AppBackend
         """
 
         self.action_factory.create(

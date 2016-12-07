@@ -59,6 +59,7 @@ class AlignakStatus(QWidget):
         self.setWindowTitle(__application__)
         self.setContentsMargins(0, 0, 0, 0)
         self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setToolTip('Daemons Status')
         self.setWindowFlags(Qt.FramelessWindowHint)
         # Fields
         self.layout = None

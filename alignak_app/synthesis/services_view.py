@@ -50,6 +50,7 @@ class ServicesView(QWidget):
 
     def __init__(self, parent=None):
         super(ServicesView, self).__init__(parent)
+        self.setToolTip('Services View')
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
