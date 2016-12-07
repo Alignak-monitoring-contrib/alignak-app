@@ -56,6 +56,7 @@ def get_app_root():
 
     # Prevent from root user
     if 'root' in app_root or not app_root:
+        logger.error('Application can\'t find the user HOME or maybe you are connected as ROOT.')
         sys.exit('Application can\'t find the user HOME or maybe you are connected as ROOT.')
 
     return app_root
@@ -161,6 +162,7 @@ def get_template(name, values):
     try:
         tpl_file = open(tpl_path + name)
     except IOError as e:  # pragma: no cover - not testable
+        logger.error('Failed open template : ' + str(e))
         sys.exit('Failed open template : ' + str(e))
 
     if tpl_file:

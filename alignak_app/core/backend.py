@@ -66,7 +66,7 @@ class AppBackend(object):
             # Username & password : not recommended
             try:
                 connect = self.backend.login(username, password)
-                logger.debug('Connection : ' + str(connect))
+                logger.info('Connection by password: ' + str(connect))
             except BackendException as e:  # pragma: no cover
                 logger.error(
                     'Connection to Backend has failed. ' +
@@ -78,6 +78,7 @@ class AppBackend(object):
             # Username as token : recommended
             self.backend.authenticated = True
             self.backend.token = username
+            logger.info('Connection by token: ' + str(self.backend.authenticated))
         else:
             # Else exit
             logger.error(
