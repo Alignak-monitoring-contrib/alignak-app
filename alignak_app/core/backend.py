@@ -115,11 +115,32 @@ class AppBackend(object):
                 params
             )
         except BackendException as e:
-            logger.warning('Failed to collect from backend')
-            logger.warning('  endpoint: ' + endpoint + 'params: ' + str(params))
-            logger.warning(str(e))
+            logger.error('GET: error from backend')
+            logger.error('  endpoint: ' + endpoint + 'params: ' + str(params))
+            logger.error(str(e))
 
         return request
+
+    def post(self, endpoint, data, files=None, headers=None):
+        """
+
+        :param endpoint:
+        :param data:
+        :param files:
+        :param headers:
+        :return:
+        """
+
+        resp = None
+
+        try:
+            resp = self.backend.post(endpoint, data, files, headers)
+        except BackendException as e:
+            logger.error('POST error')
+            logger.error('  endpoint: ' + endpoint + 'params: ' + str(data))
+            logger.error(str(e))
+
+        return resp
 
     def get_item(self, item_name, endpoint):
         """
