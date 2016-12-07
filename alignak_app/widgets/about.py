@@ -55,10 +55,19 @@ class AppAbout(QWidget):
         self.setWindowTitle(__application__ + ': About')
         self.setContentsMargins(0, 0, 0, 0)
         self.setWindowIcon(QIcon(get_image_path('icon')))
-        self.move(QApplication.desktop().screen().rect().center() - self.rect().center())
         self.setWindowFlags(Qt.FramelessWindowHint)
         # Fields
         self.button = None
+
+    def center(self):
+        """
+        Center QWidget
+
+        """
+
+        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+        center = QApplication.desktop().screenGeometry(screen).center()
+        self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
 
     def create_window(self):
         """
@@ -126,5 +135,5 @@ QPushButton:hover{
         Show QWidget
 
         """
-
+        self.center()
         self.show()

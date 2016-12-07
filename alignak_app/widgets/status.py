@@ -60,7 +60,6 @@ class AlignakStatus(QWidget):
         self.setContentsMargins(0, 0, 0, 0)
         self.setWindowIcon(QIcon(get_image_path('icon')))
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.move(QApplication.desktop().screen().rect().center() - self.rect().center())
         # Fields
         self.layout = None
         self.start = True
@@ -75,6 +74,16 @@ class AlignakStatus(QWidget):
         self.ws_request = None
         self.daemons_labels = {}
 
+    def center(self):
+        """
+        Center QWidget
+
+        """
+
+        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+        center = QApplication.desktop().screenGeometry(screen).center()
+        self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
+
     def show_at_start(self):
         """
         Show AlignakStatus on start
@@ -86,6 +95,7 @@ class AlignakStatus(QWidget):
         if self.start \
                 and get_app_config('Backend', 'web_service_status', boolean=True) \
                 and self.ws_request:
+            self.center()
             self.show()
         else:
             self.start = False
@@ -289,4 +299,5 @@ QPushButton:hover{
         else:
             self.web_service_info()
 
+        self.center()
         self.show()
