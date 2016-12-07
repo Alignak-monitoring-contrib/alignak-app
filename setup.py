@@ -20,6 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
+import os
 
 try:
     from setuptools import setup, find_packages
@@ -31,7 +32,10 @@ try:
 except:
     python_version = (1, 5)
 if python_version < (2, 7):
-    sys.exit("This application currently requires a minimum Python 2.7.x, sorry!")
+    sys.exit(
+        "This application currently requires a minimum Python 2.7.x or 3.x"
+        "Please update your Python version."
+    )
 
 from alignak_app import __description__, __version__, __license__, __author__, __project_url__
 from alignak_app import __name__ as __pkg_name__
@@ -44,21 +48,44 @@ install_requires = [
 
 # Define paths
 paths = {}
-if 'linux' in sys.platform or 'sunos5' in sys.platform:
+if 'linux' in sys.platform or\
+        'sunos5' in sys.platform or\
+        'bsd' in sys.platform:
     paths = {
         'app': __pkg_name__,
-        'log': 'logs',
+        'images': __pkg_name__ + '/images',
+        'templates': __pkg_name__ + '/templates',
         'bin': __pkg_name__ + '/bin',
     }
 elif 'win32' in sys.platform:
     paths = {
         'app': __pkg_name__,
-        'log': 'logs',
+        'images': __pkg_name__ + '/images',
+        'templates': __pkg_name__ + '/templates',
         'bin': __pkg_name__ + '/bin',
     }
 else:
     print("Unsupported platform, sorry!")
     exit(1)
+
+# Fill [data_files]
+dir_path = os.path.dirname(os.path.realpath(__file__))
+data_files = []
+
+# Images
+images = os.listdir(dir_path + '/etc/images')
+for image in images:
+    data_files.append((paths['images'], ['etc/images/' + image]))
+
+# Templates
+templates = os.listdir(dir_path + '/etc/templates')
+for template in templates:
+    data_files.append((paths['templates'], ['etc/templates/' + template]))
+
+# Settings and bin
+data_files.append((paths['app'], ['etc/settings.cfg']))
+data_files.append((paths['bin'], ['etc/bin/alignak-app']))
+data_files.append((paths['bin'], ['etc/bin/alignak-app.py']))
 
 
 setup(
@@ -80,36 +107,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
 
-    data_files=[
-        (paths['app'], ['etc/settings.cfg']),
-        (paths['app'] + '/templates', ['etc/templates/notification.tpl']),
-        (paths['app'] + '/templates', ['etc/templates/popup_css.tpl']),
-        (paths['app'] + '/templates', ['etc/templates/about.tpl']),
-        (paths['app'] + '/templates', ['etc/templates/progressbar_css.tpl']),
-        (paths['app'] + '/images', ['etc/images/alignak.png']),
-        (paths['app'] + '/images', ['etc/images/icon.svg']),
-        (paths['app'] + '/images', ['etc/images/host.svg']),
-        (paths['app'] + '/images', ['etc/images/host_up.svg']),
-        (paths['app'] + '/images', ['etc/images/host_down.svg']),
-        (paths['app'] + '/images', ['etc/images/host_unreach.svg']),
-        (paths['app'] + '/images', ['etc/images/host_none.svg']),
-        (paths['app'] + '/images', ['etc/images/service.svg']),
-        (paths['app'] + '/images', ['etc/images/service_ok.svg']),
-        (paths['app'] + '/images', ['etc/images/service_critical.svg']),
-        (paths['app'] + '/images', ['etc/images/service_warning.svg']),
-        (paths['app'] + '/images', ['etc/images/service_unknown.svg']),
-        (paths['app'] + '/images', ['etc/images/service_none.svg']),
-        (paths['app'] + '/images', ['etc/images/acknowledged.svg']),
-        (paths['app'] + '/images', ['etc/images/downtime.svg']),
-        (paths['app'] + '/images', ['etc/images/exit.svg']),
-        (paths['app'] + '/images', ['etc/images/about.svg']),
-        (paths['app'] + '/images', ['etc/images/checked.svg']),
-        (paths['app'] + '/images', ['etc/images/unvalid.svg']),
-        (paths['app'] + '/images', ['etc/images/valid.svg']),
-        (paths['app'] + '/images', ['etc/images/database.svg']),
-        (paths['bin'], ['etc/bin/alignak-app']),
-        (paths['bin'], ['etc/bin/alignak-app.py']),
-    ],
+    data_files=data_files,
 
     install_requires=install_requires,
 
