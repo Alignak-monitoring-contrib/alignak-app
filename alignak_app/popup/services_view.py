@@ -98,7 +98,6 @@ class ServicesView(QWidget):
             layout.addWidget(output_service, pos, 2)
         else:
             for service in services:
-                print('Service: ', service)
                 # Icon
                 layout.addWidget(self.get_service_icon(service['ls_state']), pos, 0)
 

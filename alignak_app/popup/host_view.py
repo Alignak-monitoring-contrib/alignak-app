@@ -23,24 +23,22 @@
     App Synthesis manage widget for Synthesis QWidget.
 """
 
-import sys
-
 from logging import getLogger
 
-from alignak_app.core.utils import get_image_path, set_app_config
+from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import get_diff_since_last_check
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication, QPushButton  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QWidget, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QLabel  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QPixmap, Qt  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QPixmap, Qt, QIcon  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QApplication, QPushButton  # pylint: disable=import-error
+    from PyQt4.Qt import QPushButton  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
-    from PyQt4.Qt import QPixmap  # pylint: disable=import-error
+    from PyQt4.Qt import QPixmap, Qt, QIcon  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
@@ -94,33 +92,40 @@ class HostView(QWidget):
         self.layout.addWidget(real_state_text, 0, 1, 1, 1)
         self.layout.addWidget(self.labels['real_state_icon'], 1, 1, 2, 1)
 
-        check_label = QLabel('My last Check')
+        check_label = QLabel('<b>My last Check</b>')
         self.layout.addWidget(check_label, 0, 2, 1, 2)
         self.layout.setAlignment(check_label, Qt.AlignTrailing)
-        last_check = QLabel('Last check:')
+        last_check = QLabel('<b>Last check:</b>')
         self.layout.addWidget(last_check, 1, 2, 1, 1)
         self.layout.setAlignment(last_check, Qt.AlignTrailing)
         self.layout.addWidget(self.labels['last_check'], 1, 3, 1, 1)
-        output = QLabel('Output:')
+        output = QLabel('<b>Output:</b>')
         self.layout.addWidget(output, 2, 2, 1, 1)
         self.layout.setAlignment(output, Qt.AlignTrailing)
         self.layout.addWidget(self.labels['output'], 2, 3, 1, 1)
 
-        buttons = self.extra_buttons()
+        buttons = self.action_buttons()
         self.layout.addWidget(buttons, 1, 4, 1, 2)
 
-    def extra_buttons(self):
+    @staticmethod
+    def action_buttons():
         """
+        Create ack and downtime buttons
 
-        :return:
+        :return: QWidget with buttons
+        :rtype: QWidget
         """
 
         button_widget = QWidget()
         layout = QVBoxLayout()
         button_widget.setLayout(layout)
 
-        ack_button = QPushButton('Ack')
-        down_button = QPushButton('Down')
+        ack_button = QPushButton('Acknowledge this problem')
+        ack_button.setToolTip('Acknowledge this problem')
+        ack_button.setIcon(QIcon(get_image_path('acknowledged')))
+        down_button = QPushButton('Schedule a downtime')
+        down_button.setToolTip('Schedule a downtime')
+        down_button.setIcon(QIcon(get_image_path('downtime')))
 
         layout.addWidget(ack_button, 0)
         layout.addWidget(down_button, 1)
@@ -173,14 +178,3 @@ class HostView(QWidget):
         icon = QPixmap(get_image_path(icon_name))
 
         return icon
-
-# For Tests
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-
-    set_app_config()
-
-    synthesis = HostView()
-    synthesis.init_view()
-
-    sys.exit(app.exec_())

@@ -131,6 +131,7 @@ class PopupFactory(QWidget):
         """
 
         button = QPushButton(self)
+        button.setToolTip('Close')
         button.setIcon(QIcon(get_image_path('checked')))
         button.setFixedSize(30, 30)
 

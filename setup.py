@@ -99,6 +99,8 @@ setup(
         (paths['app'] + '/images', ['etc/images/service_warning.svg']),
         (paths['app'] + '/images', ['etc/images/service_unknown.svg']),
         (paths['app'] + '/images', ['etc/images/service_none.svg']),
+        (paths['app'] + '/images', ['etc/images/acknowledged.svg']),
+        (paths['app'] + '/images', ['etc/images/downtime.svg']),
         (paths['app'] + '/images', ['etc/images/exit.svg']),
         (paths['app'] + '/images', ['etc/images/about.svg']),
         (paths['app'] + '/images', ['etc/images/checked.svg']),
