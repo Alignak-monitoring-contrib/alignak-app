@@ -54,7 +54,7 @@ class TestApp(unittest2.TestCase):
         self.assertIsNone(under_test.notifier)
 
         # Build alignak_app
-        under_test.build_alignak_app()
+        under_test.start()
 
         self.assertIsNotNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.notifier)

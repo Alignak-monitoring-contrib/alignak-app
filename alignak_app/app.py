@@ -32,13 +32,15 @@ from alignak_app.core.notifier import AppNotifier
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import set_app_config, get_app_config
 from alignak_app.systray.tray_icon import TrayIcon
+from alignak_app.widgets.connect import AppLogin
+from alignak_app.core.backend import AppBackend
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QApplication, QDialog  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
 except ImportError:
-    from PyQt4.QtGui import QIcon  # pylint: disable=import-error
+    from PyQt4.QtGui import QIcon, QDialog  # pylint: disable=import-error
     from PyQt4.Qt import QApplication  # pylint: disable=import-error
 
 # Initialize logger
@@ -54,7 +56,7 @@ class AlignakApp(object):
         self.tray_icon = None
         self.notifier = None
 
-    def build_alignak_app(self):
+    def start(self):
         """
         The main function of Alignak-App
 
@@ -71,18 +73,41 @@ class AlignakApp(object):
             logger.setLevel(INFO)
             logger.info('Logger set to INFO')
 
-        # Create notifier
-        self.notifier = AppNotifier(self.get_icon())
+        # If not backend url, stop application
+        if get_app_config('Backend', 'backend_url'):
+            # If not username and password, create login form,
+            # else connect with config data.
+            if not get_app_config('Backend', 'username') and \
+                    not get_app_config('Backend', 'password'):
+                login = AppLogin()
+                login.create_widget()
+                # If credentials are True, connect
+                if login.exec_() == QDialog.Accepted:
+                    self.run(login.app_backend)
+            elif get_app_config('Backend', 'username') and \
+                    not get_app_config('Backend', 'password'):
+                self.run()
+            elif get_app_config('Backend', 'username') and \
+                    get_app_config('Backend', 'password'):
+                self.run()
+            else:
+                logger.error('Please configure Alignak-app before starting it.')
+                print('Please configure Alignak-app before starting it.')
+                sys.exit()
+        else:
+            logger.error('Please configure Alignak-app before starting it.')
+            print('Please configure Alignak-app before starting it.')
+            sys.exit()
 
-        # Create QSystemTrayIcon
-        self.tray_icon = TrayIcon(self.get_icon())
-        self.tray_icon.build_menu(self.notifier.backend)
-
-    def run(self):  # pragma: no cover
+    def run(self, app_backend=None):  # pragma: no cover
         """
-        Start the application.
+        Start all Alignak-app processes
 
         """
+
+        if not app_backend:
+            app_backend = AppBackend()
+            app_backend.login()
 
         if 'linux' in sys.platform or 'sunos5' in sys.platform:
             try:
@@ -91,10 +116,14 @@ class AlignakApp(object):
                 logger.critical('You must be in desktop session to launch Alignak-App : ' + str(e))
                 sys.exit()
 
-        # Build app
-        self.build_alignak_app()
+        # Initialize notifier
+        self.notifier = AppNotifier(self.get_icon(), app_backend)
 
-        # Start process notifier
+        # Create QSystemTrayIcon
+        self.tray_icon = TrayIcon(self.get_icon())
+        self.tray_icon.build_menu(self.notifier.backend)
+        self.tray_icon.show()
+
         self.notifier.start_process(self.tray_icon)
 
     @staticmethod
@@ -114,7 +143,6 @@ if __name__ == "__main__":  # pragma: no cover
     app.setQuitOnLastWindowClosed(False)
 
     alignak_app = AlignakApp()
-    alignak_app.run()
-    alignak_app.tray_icon.show()
+    alignak_app.start()
 
     sys.exit(app.exec_())

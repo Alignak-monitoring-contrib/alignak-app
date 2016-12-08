@@ -46,10 +46,9 @@ class AppNotifier(QSystemTrayIcon):
     Class who manage notifications and states of hosts and services.
     """
 
-    def __init__(self, icon, parent=None):
+    def __init__(self, icon, backend, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
-        self.backend = AppBackend()
-        self.backend.login()
+        self.backend = backend
         self.tray_icon = None
         self.popup = None
         self.notify = True

@@ -65,7 +65,7 @@ class TestAppNotifier(unittest2.TestCase):
 
     def test_start_process(self):
         """Start Notifier Process"""
-        under_test = AppNotifier(self.icon)
+        under_test = AppNotifier(self.icon, self.backend)
 
         self.assertIsNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.backend)
@@ -86,7 +86,7 @@ class TestAppNotifier(unittest2.TestCase):
 
     def test_check_data(self):
         """Check Data modify Actions"""
-        under_test = AppNotifier(self.icon)
+        under_test = AppNotifier(self.icon, self.backend)
 
         # Start notifier
         tray_icon = TrayIcon(self.icon)
@@ -110,7 +110,10 @@ class TestAppNotifier(unittest2.TestCase):
 
     def test_states_change(self):
         """States and Notify Changes"""
-        under_test = AppNotifier(self.icon)
+        self.backend = AppBackend()
+        self.backend.login()
+
+        under_test = AppNotifier(self.icon, self.backend)
 
         # Start notifier
         tray_icon = TrayIcon(self.icon)
