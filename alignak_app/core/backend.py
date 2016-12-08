@@ -44,6 +44,7 @@ class AppBackend(object):
         self.backend = None
         self.first_check = True
         self.states = {}
+        self.user = {}
 
     def login(self):
         """
@@ -63,10 +64,12 @@ class AppBackend(object):
         logger.info('Try to connect to backend...')
 
         if username and password:
-            # Username & password : not recommended
+            # Username & password : not recommended, without "widgets.login.py" form.
             try:
                 connect = self.backend.login(username, password)
                 logger.info('Connection by password: ' + str(connect))
+                self.user['username'] = username
+                self.user['token'] = self.backend.token
             except BackendException as e:  # pragma: no cover
                 logger.error(
                     'Connection to Backend has failed. ' +
@@ -78,6 +81,7 @@ class AppBackend(object):
             # Username as token : recommended
             self.backend.authenticated = True
             self.backend.token = username
+            self.user['token'] = username
             logger.info('Connection by token: ' + str(self.backend.authenticated))
         else:
             # Else exit
@@ -121,20 +125,23 @@ class AppBackend(object):
 
         return request
 
-    def post(self, endpoint, data, files=None, headers=None):
+    def post(self, endpoint, data, headers=None):
         """
 
-        :param endpoint:
-        :param data:
-        :param files:
-        :param headers:
-        :return:
+        :param endpoint: endpoint (API URL)
+        :type endpoint: str
+        :param data: properties of item to create
+        :type data: dict
+        :param headers: headers (example: Content-Type)
+        :type headers: dict
+        :return: response (creation information)
+        :rtype: dict
         """
 
         resp = None
 
         try:
-            resp = self.backend.post(endpoint, data, files, headers)
+            resp = self.backend.post(endpoint, data, headers=headers)
         except BackendException as e:
             logger.error('POST error')
             logger.error('  endpoint: ' + endpoint + 'params: ' + str(data))

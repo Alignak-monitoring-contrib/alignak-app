@@ -126,7 +126,10 @@ class AppLogin(QDialog):
 
         try:
             resp = self.app_backend.backend.login(str(username), str(password))
+
             if resp:
+                self.app_backend.user['username'] = str(username)
+                self.app_backend.user['token'] = str(self.app_backend.backend.token)
                 self.accept()
             else:
                 self.message.setText('Bad crendentials :(')

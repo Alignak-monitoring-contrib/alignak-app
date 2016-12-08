@@ -110,6 +110,9 @@ class AlignakApp(object):
             app_backend = AppBackend()
             app_backend.login()
 
+        if 'token' not in app_backend.user:
+            app_backend.user['token'] = app_backend.backend.token
+
         # Initialize notifier
         self.notifier = AppNotifier(self.get_icon(), app_backend)
 
