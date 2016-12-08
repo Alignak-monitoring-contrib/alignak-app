@@ -28,7 +28,7 @@ from logging import getLogger
 from alignak_app import __short_version__
 from alignak_app.core.backend import AppBackend, Backend, BackendException
 from alignak_app.core.utils import get_app_config
-from alignak_app.popup.title import get_popup_title
+from alignak_app.widgets.title import get_widget_title
 
 
 try:
@@ -71,7 +71,7 @@ class AppLogin(QDialog):
         layout = QVBoxLayout(self)
 
         # QDialog title
-        popup_title = get_popup_title('', self)
+        popup_title = get_widget_title('', self)
         layout.addWidget(popup_title, 0)
 
         # Login text
