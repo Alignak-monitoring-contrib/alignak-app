@@ -41,7 +41,7 @@ except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication, QWidget  # pylint: disable=import-error
     from PyQt4.Qt import QDialog, QPushButton  # pylint: disable=import-error
     from PyQt4.Qt import QVBoxLayout, QLabel  # pylint: disable=import-error
-    from PyQt4.QtGui import QLineEdit, QMessageBox, Qt  # pylint: disable=import-error
+    from PyQt4.Qt import QLineEdit, QMessageBox, Qt  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)

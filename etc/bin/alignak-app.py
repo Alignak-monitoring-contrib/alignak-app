@@ -24,6 +24,7 @@
 """
 
 import sys
+import os
 
 from alignak_app.app import AlignakApp
 
@@ -36,8 +37,18 @@ except ImportError:
 app = QApplication(sys.argv)
 app.setQuitOnLastWindowClosed(False)
 
+if 'win32' not in sys.platform:
+    try:
+        os.environ['DESKTOP_SESSION']
+    except KeyError as e:
+        print(
+            'You must be in [DESKTOP_SESSION] to launch Alignak-App !\n'
+            'Try to launch without ssh connection.'
+        )
+        sys.exit()
+
 alignak_app = AlignakApp()
-alignak_app.run()
+alignak_app.start()
 alignak_app.tray_icon.show()
 
 sys.exit(app.exec_())

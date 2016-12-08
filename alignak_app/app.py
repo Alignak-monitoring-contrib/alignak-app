@@ -23,7 +23,6 @@
     App manage Alignak-App
 """
 
-import os
 import sys
 from logging import DEBUG, INFO
 
@@ -109,13 +108,6 @@ class AlignakApp(object):
             app_backend = AppBackend()
             app_backend.login()
 
-        if 'linux' in sys.platform or 'sunos5' in sys.platform:
-            try:
-                os.environ['DESKTOP_SESSION']
-            except KeyError as e:
-                logger.critical('You must be in desktop session to launch Alignak-App : ' + str(e))
-                sys.exit()
-
         # Initialize notifier
         self.notifier = AppNotifier(self.get_icon(), app_backend)
 
@@ -137,12 +129,3 @@ class AlignakApp(object):
         icon = QIcon(img)
 
         return icon
-
-if __name__ == "__main__":  # pragma: no cover
-    app = QApplication(sys.argv)
-    app.setQuitOnLastWindowClosed(False)
-
-    alignak_app = AlignakApp()
-    alignak_app.start()
-
-    sys.exit(app.exec_())
