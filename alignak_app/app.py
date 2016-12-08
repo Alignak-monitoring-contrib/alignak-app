@@ -31,7 +31,7 @@ from alignak_app.core.notifier import AppNotifier
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import set_app_config, get_app_config
 from alignak_app.systray.tray_icon import TrayIcon
-from alignak_app.widgets.connect import AppLogin
+from alignak_app.widgets.login import AppLogin
 from alignak_app.core.backend import AppBackend
 
 try:
