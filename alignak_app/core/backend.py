@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    App Backend manage connexion and access to backend.
+    App Backend manage connexion and access to app_backend.
 """
 
 import json
@@ -48,7 +48,7 @@ class AppBackend(object):
 
     def login(self):
         """
-        Connect to backend with credentials in settings.cfg.
+        Connect to app_backend with credentials in settings.cfg.
 
         """
 
@@ -61,7 +61,7 @@ class AppBackend(object):
         self.backend = Backend(backend_url)
 
         logger.debug('Backend URL : ' + backend_url)
-        logger.info('Try to connect to backend...')
+        logger.info('Try to connect to app_backend...')
 
         if username and password:
             # Username & password : not recommended, without "widgets.login.py" form.
@@ -97,13 +97,13 @@ class AppBackend(object):
 
     def get(self, endpoint, params=None):
         """
-        Collect state of Hosts, via backend API.
+        Collect state of Hosts, via app_backend API.
 
         :param endpoint: endpoint (API URL)
         :type endpoint: str
-        :param params: dict of parameters for the backend API
+        :param params: dict of parameters for the app_backend API
         :type params: dict
-        :return desired request of backend
+        :return desired request of app_backend
         :rtype: dict
         """
 
@@ -119,7 +119,7 @@ class AppBackend(object):
                 params
             )
         except BackendException as e:
-            logger.error('GET: error from backend')
+            logger.error('GET: error from app_backend')
             logger.error('  endpoint: ' + endpoint + 'params: ' + str(params))
             logger.error(str(e))
 
@@ -213,7 +213,7 @@ class AppBackend(object):
         """
 
         if not self.backend.authenticated:
-            logger.warning('Connection to backend is lost, application will try to reconnect !')
+            logger.warning('Connection to app_backend is lost, application will try to reconnect !')
             self.login()
 
         logger.info('GET synthesis count states...')

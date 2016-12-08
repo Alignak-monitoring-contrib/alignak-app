@@ -42,7 +42,7 @@ class TestBackend(unittest2.TestCase):
 
         under_test.login()
 
-        # Compare config url and backend
+        # Compare config url and app_backend
         self.assertEquals(
             under_test.backend.url_endpoint_root,
             get_app_config('Backend', 'backend_url')

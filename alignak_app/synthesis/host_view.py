@@ -137,7 +137,7 @@ class HostView(QWidget):
         """
         Update Host view with desired host.
 
-        :param host: host data from backend
+        :param host: host data from app_backend
         :type host: dict
         """
 

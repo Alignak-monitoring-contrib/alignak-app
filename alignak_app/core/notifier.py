@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Notifier manage notifications and collect data from backend.
+    Notifier manage notifications and collect data from app_backend.
 """
 
 import copy

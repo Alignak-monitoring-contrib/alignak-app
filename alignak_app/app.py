@@ -71,7 +71,7 @@ class AlignakApp(object):
             logger.setLevel(INFO)
             logger.info('Logger set to INFO')
 
-        # If not backend url, stop application
+        # If not app_backend url, stop application
         if get_app_config('Backend', 'backend_url'):
             # If not username and password, create login form,
             # else connect with config data.

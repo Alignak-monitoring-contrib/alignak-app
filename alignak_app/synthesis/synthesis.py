@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    App Synthesis manage widget for Synthesis QWidget.
+    App Synthesis manage widget for Host Synthesis QWidget.
 """
 
 import json
@@ -67,22 +67,22 @@ class Synthesis(QWidget):
         self.line_search = QLineEdit()
         self.host_view = None
         self.services_view = None
-        self.backend = AppBackend()
+        self.app_backend = None
 
-    def create_widget(self, alignak_backend):
+    def create_widget(self, app_backend):
         """
         Create the QWidget with its items and layout.
 
-        :param alignak_backend: backend of alignak.
-        :type alignak_backend: AppBackend
+        :param app_backend: app_backend of alignak.
+        :type app_backend: AppBackend
         """
 
         logger.info('Create Synthesis View...')
-        # Get backend
-        self.backend = alignak_backend
+        # Get app_backend
+        self.app_backend = app_backend
 
         # Title
-        popup_title = self.get_synthesis_title()
+        popup_title = get_widget_title('host synthesis view', self)
 
         # Search Line
         self.create_line_search()
@@ -121,6 +121,7 @@ class Synthesis(QWidget):
     def handle_button(self):
         """
         Handle Event when "line_search" is clicked.
+
         """
 
         # Get item that is searched
@@ -129,7 +130,7 @@ class Synthesis(QWidget):
         logger.debug('Desired host: ' + host_name)
 
         # Collect host data and associated services
-        data = self.backend.get_all_host_data(host_name)
+        data = self.app_backend.get_all_host_data(host_name)
 
         # Write result ot "result_label"
         if data:
@@ -155,7 +156,7 @@ class Synthesis(QWidget):
         hosts_list = []
         params = {'where': json.dumps({'_is_template': False})}
 
-        all_hosts = self.backend.get('host', params)
+        all_hosts = self.app_backend.get('host', params)
 
         for host in all_hosts['_items']:
             hosts_list.append(host['name'])
@@ -172,15 +173,6 @@ class Synthesis(QWidget):
         self.line_search.setPlaceholderText('Type a host name to display its data')
         self.line_search.setToolTip('Type a host name to display its data')
 
-    def get_synthesis_title(self):
-        """
-        Get popup title for QWidget
-
-        """
-
-        title = get_widget_title('host synthesis view', self)
-
-        return title
 
 # For Tests
 if __name__ == '__main__':

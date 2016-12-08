@@ -58,7 +58,7 @@ class ServicesView(QWidget):
         """
         Display services.
 
-        :param services: services of a specific host from backend
+        :param services: services of a specific host from app_backend
         :type services: dict
         :param name: name of host
         :type name: str
