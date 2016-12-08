@@ -52,7 +52,7 @@ class AppNotifier(QSystemTrayIcon):
         self.popup = None
         self.notify = True
 
-    def start_process(self, tray_icon):
+    def start(self, tray_icon):
         """
         Start process loop of application with a QTimer.
 
@@ -61,20 +61,17 @@ class AppNotifier(QSystemTrayIcon):
         """
 
         self.tray_icon = tray_icon
-
-        check_interval = int(get_app_config('Alignak-App', 'check_interval'))
-        check_interval *= 1000
-        logger.debug('Check Interval : ' + str(check_interval))
-
-        timer = QTimer(self)
-        timer.start(check_interval)
-
         self.popup = AppNotification()
         self.popup.initialize_notification()
 
-        logger.info('Initialize notifier...')
-        logger.debug('Be notify : ' + str(self.notify))
+        check_interval = int(get_app_config('Alignak-App', 'check_interval'))
+        logger.info('Start notifier...')
+        logger.debug('Will be notify in ' + str(check_interval) + 's')
 
+        check_interval *= 1000
+
+        timer = QTimer(self)
+        timer.start(check_interval)
         timer.timeout.connect(self.check_data)
 
     @staticmethod
@@ -129,10 +126,8 @@ class AppNotifier(QSystemTrayIcon):
         else:
             level_notif = 'OK'
 
-        logger.debug('Notification Level : ' + str(level_notif))
-        logger.debug('Be notify : ' + str(self.notify))
-
         if self.notify:
+            logger.info('Send notification..')
             # Trigger changes and send notification
             self.tray_icon.update_menu_actions(
                 current_states['hosts'],
@@ -143,6 +138,10 @@ class AppNotifier(QSystemTrayIcon):
                 current_states['services'],
                 diff
             )
+        else:
+            logger.info('No Notify.')
+
+        logger.debug('Notification Level : ' + str(level_notif))
 
     def diff_last_check(self, old_states):
         """

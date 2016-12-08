@@ -106,6 +106,7 @@ class AlignakApp(object):
 
         """
 
+        # If not login form
         if not app_backend:
             app_backend = AppBackend()
             app_backend.login()
@@ -121,7 +122,8 @@ class AlignakApp(object):
         self.tray_icon.build_menu(self.notifier.backend)
         self.tray_icon.show()
 
-        self.notifier.start_process(self.tray_icon)
+        # Start notifier
+        self.notifier.start(self.tray_icon)
 
     @staticmethod
     def get_icon():
