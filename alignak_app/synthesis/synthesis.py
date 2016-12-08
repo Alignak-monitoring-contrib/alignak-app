@@ -95,7 +95,7 @@ class Synthesis(QWidget):
 
         # Create views
         self.host_view = HostView(self)
-        self.host_view.init_view()
+        self.host_view.init_view(self.app_backend)
         self.services_view = ServicesView(self)
 
         # Layout

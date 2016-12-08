@@ -23,6 +23,7 @@
     App Synthesis manage widget for Synthesis QWidget.
 """
 
+import json
 from logging import getLogger
 
 from alignak_app.core.utils import get_image_path
@@ -54,16 +55,23 @@ class HostView(QWidget):
         self.setFixedHeight(150)
         self.setMinimumWidth(parent.width())
         self.setToolTip('Host View')
+        # Fields
+        self.ack_button = None
+        self.down_button = None
         self.layout = None
         self.labels = {}
+        self.host = None
+        self.app_backend = None
 
-    def init_view(self):
+    def init_view(self, app_backend):
         """
         Init Host View with default values.
 
         """
 
         logger.info('Initialize Host View...')
+
+        self.app_backend = app_backend
 
         self.layout = QGridLayout()
         self.setLayout(self.layout)
@@ -108,8 +116,7 @@ class HostView(QWidget):
         buttons = self.action_buttons()
         self.layout.addWidget(buttons, 1, 4, 1, 2)
 
-    @staticmethod
-    def action_buttons():
+    def action_buttons(self):
         """
         Create ack and downtime buttons
 
@@ -121,17 +128,48 @@ class HostView(QWidget):
         layout = QVBoxLayout()
         button_widget.setLayout(layout)
 
-        ack_button = QPushButton('Acknowledge this problem')
-        ack_button.setToolTip('Acknowledge this problem')
-        ack_button.setIcon(QIcon(get_image_path('acknowledged')))
-        down_button = QPushButton('Schedule a downtime')
-        down_button.setToolTip('Schedule a downtime')
-        down_button.setIcon(QIcon(get_image_path('downtime')))
+        self.ack_button = QPushButton('Acknowledge this problem')
+        self.ack_button.setToolTip('Acknowledge this problem')
+        self.ack_button.setIcon(QIcon(get_image_path('acknowledged')))
+        self.ack_button.clicked.connect(self.acknowledge_action)
 
-        layout.addWidget(ack_button, 0)
-        layout.addWidget(down_button, 1)
+        self.down_button = QPushButton('Schedule a downtime')
+        self.down_button.setToolTip('Schedule a downtime')
+        self.down_button.setIcon(QIcon(get_image_path('downtime')))
+
+        layout.addWidget(self.ack_button, 0)
+        layout.addWidget(self.down_button, 1)
 
         return button_widget
+
+    def acknowledge_action(self):
+        """
+        Handle action for "ack_button"
+
+        """
+
+        params = {
+            'where': json.dumps({
+                'token': self.app_backend.user['token']
+            })
+        }
+
+        user = self.app_backend.get('user', params)
+
+        data = {
+            'host': self.host['_id'],
+            'service': None,
+            'user': user['_items'][0]['_id'],
+            'comment': 'Alignak-app'
+        }
+
+        post = self.app_backend.post('actionacknowledge', data)
+
+        if post['_status'] == 'OK':
+            self.ack_button.setEnabled(False)
+            print('acknowledge')
+        else:
+            print('no effect')
 
     def update_view(self, host):
         """
@@ -140,6 +178,8 @@ class HostView(QWidget):
         :param host: host data from app_backend
         :type host: dict
         """
+
+        self.host = host
 
         logger.info('Update Host View...')
         logger.debug('Host: ' + host['name'] + ' is ' + host['ls_state'])
