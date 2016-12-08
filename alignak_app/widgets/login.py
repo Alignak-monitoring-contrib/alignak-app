@@ -97,6 +97,7 @@ class AppLogin(QDialog):
         # Password field
         self.password_line = QLineEdit(self)
         self.password_line.setPlaceholderText('Password')
+        self.password_line.setEchoMode(QLineEdit.Password)
         layout.addWidget(self.password_line, 4)
 
         # Login button

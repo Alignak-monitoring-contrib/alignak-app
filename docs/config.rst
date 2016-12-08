@@ -38,19 +38,20 @@ This section contains main configuration for *alignak-app*.
 
   * **check_interval:** defines (in seconds) the frequency of checks to the backend API.
   * **duration:** defines (in seconds) the duration of the notification popup.
-  * **notifications:** choose if you want to be notify by popup or not. (boolean)
-  * **position:** chosse where the notifications will be displayed.
+  * **position:** choose where the notifications will be displayed.
+  * **debug:** set application to debug or not.
 
 [Backend] section
 -----------------
 
-This section contains parameters to connect to *backend*.
+This section contains parameters to connect to *backend*. Choose from the following 3 ways to connect:
 
-1. **Recommended:** set your token in "username" field and leave "password" empty. To obtain a token, open a python terminal and type the following commands::
+1. **Recommended:** leave empty "username" and "password". Alignak-app will display a login Window.
+2. **Recommended:** set your token in "username" field and leave "password" empty. To obtain a token, open a python terminal and type the following commands::
 
     import requests
     r = requests.post(
-        "http://94.76.229.155:6000/login",
+        "http://127.0.0.1:5000/login",
          data={
             'username': 'admin',
             'password': 'admin'
@@ -66,6 +67,15 @@ This section contains parameters to connect to *backend*.
 Then fill your "backend_url":
 
   * **backend_url:** url of your Backend (IP + port or FQDN if you have it)
+
+If you have installed `Web Service <https://github.com/Alignak-monitoring-contrib/alignak-module-ws>`_ module,
+Alignak-app can display daemons status of Alignak.
+
+  * **web_service_status:** = set to yes or no to display it.
+
+Application then need url of your alignak Web Service. If "web_service_status" is set to "no", this settings has no effect.
+
+  * **web_service_url:** = url of your web service.
 
 [Webui] section
 ---------------
@@ -90,9 +100,6 @@ This section contains images names. You can add your images if you want, but the
 They are also all in ``.svg`` format and can therefore be easily modified.
 
   * **icon:** this is the main icon of Alignak-App. It will be displayed in your taskbar.
-  * **about:** this image is for about menu.
-  * **checked:** this image is for validate button.
-  * **exit:** this image is for quit menu.
 
   * **host_up:** = image for host UP.
   * **host_down:** = image for host DOWN.
@@ -102,3 +109,5 @@ They are also all in ``.svg`` format and can therefore be easily modified.
   * **service_critical:** = image for service CRITICAL.
   * **service_unknown:** = image for service UNKNOWN.
   * **service_warning:** = image for service WARNING.
+
+The other images are used for different application interfaces.
