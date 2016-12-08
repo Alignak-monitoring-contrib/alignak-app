@@ -208,9 +208,7 @@ QPushButton:hover{
         """
 
         title = get_widget_title(
-            __application__ +
-            ', Version: ' +
-            __short_version__,
+            'alignak status',
             self
         )
         self.layout.addWidget(title, 0, 0)
@@ -237,9 +235,7 @@ QPushButton:hover{
         """
 
         title = get_widget_title(
-            __application__ +
-            ', Version: ' +
-            __short_version__,
+            'alignak status',
             self
         )
         self.layout.addWidget(title, 0, 0, 1, 2)

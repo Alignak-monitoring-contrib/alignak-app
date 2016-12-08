@@ -187,7 +187,7 @@ class TrayIcon(QSystemTrayIcon):
 
         self.action_factory.create(
             'database',
-            'Synthesis View',
+            'Host View',
             self
         )
 
@@ -208,7 +208,7 @@ class TrayIcon(QSystemTrayIcon):
 
         self.action_factory.create(
             'icon',
-            'Alignak States',
+            'Alignak Status',
             self
         )
 
