@@ -26,7 +26,6 @@
 import copy
 from logging import getLogger
 
-from alignak_app.core.backend import AppBackend
 from alignak_app.core.utils import get_app_config
 from alignak_app.popup.notification import AppNotification
 

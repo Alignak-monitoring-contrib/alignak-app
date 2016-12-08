@@ -36,11 +36,10 @@ from alignak_app.core.backend import AppBackend
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication, QDialog  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QDialog  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
 except ImportError:
     from PyQt4.QtGui import QIcon, QDialog  # pylint: disable=import-error
-    from PyQt4.Qt import QApplication  # pylint: disable=import-error
 
 # Initialize logger
 logger = create_logger()
@@ -83,6 +82,9 @@ class AlignakApp(object):
                 # If credentials are True, connect
                 if login.exec_() == QDialog.Accepted:
                     self.run(login.app_backend)
+                else:
+                    logger.warning('Application close.')
+                    exit()
             elif get_app_config('Backend', 'username') and \
                     not get_app_config('Backend', 'password'):
                 self.run()

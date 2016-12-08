@@ -33,15 +33,15 @@ from alignak_app.widgets.title import get_widget_title
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication, QWidget  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QDialog, QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QVBoxLayout, QLabel  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QLineEdit, QMessageBox, Qt  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QLineEdit, Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QApplication, QWidget  # pylint: disable=import-error
+    from PyQt4.Qt import QApplication  # pylint: disable=import-error
     from PyQt4.Qt import QDialog, QPushButton  # pylint: disable=import-error
     from PyQt4.Qt import QVBoxLayout, QLabel  # pylint: disable=import-error
-    from PyQt4.Qt import QLineEdit, QMessageBox, Qt  # pylint: disable=import-error
+    from PyQt4.Qt import QLineEdit, Qt  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
