@@ -123,8 +123,7 @@ class AppLogin(QDialog):
         self.app_backend.backend = Backend(get_app_config('Backend', 'backend_url'))
 
         try:
-            resp = self.app_backend.backend.login(username, password)
-
+            resp = self.app_backend.backend.login(str(username), str(password))
             if resp:
                 self.accept()
             else:

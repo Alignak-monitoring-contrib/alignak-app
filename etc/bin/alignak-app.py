@@ -49,6 +49,5 @@ if 'win32' not in sys.platform:
 
 alignak_app = AlignakApp()
 alignak_app.start()
-alignak_app.tray_icon.show()
 
 sys.exit(app.exec_())
