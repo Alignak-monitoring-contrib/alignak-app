@@ -182,7 +182,6 @@ def get_image_path(name):
     :rtype: str
     """
 
-    logger.debug('Image imported : ' + name)
     img_path = get_app_root() \
         + app_config.get('Config', 'path') \
         + app_config.get('Config', 'img') \
