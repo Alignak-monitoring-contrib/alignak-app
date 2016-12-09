@@ -64,6 +64,10 @@ class HostView(QWidget):
         self.labels = {}
         self.host = None
         self.app_backend = None
+        self.endpoints = {
+            'actionacknowledge': {},
+            'actiondowntime': {}
+        }
 
     def init_view(self, app_backend):
         """
@@ -133,53 +137,62 @@ class HostView(QWidget):
         self.ack_button = QPushButton('Acknowledge this problem')
         self.ack_button.setToolTip('Acknowledge this problem')
         self.ack_button.setIcon(QIcon(get_image_path('acknowledged')))
-        self.ack_button.clicked.connect(self.acknowledge_action)
+        self.ack_button.setObjectName('actionacknowledge')
+        self.ack_button.clicked.connect(self.action)
 
         self.down_button = QPushButton('Schedule a downtime')
         self.down_button.setToolTip('Schedule a downtime')
         self.down_button.setIcon(QIcon(get_image_path('downtime')))
+        self.down_button.setObjectName('actiondowntime')
+        self.down_button.clicked.connect(self.action)
 
         layout.addWidget(self.ack_button, 0)
         layout.addWidget(self.down_button, 1)
 
         return button_widget
 
-    def acknowledge_action(self):
+    def action(self):
         """
         Handle action for "ack_button"
 
         """
 
-        params = {
-            'where': json.dumps({
-                'token': self.app_backend.user['token']
-            })
-        }
+        # Which button is caller
+        sender = self.sender()
 
-        user = self.app_backend.get('user', params)
+        user = self.app_backend.get_user()
 
         if self.host:
+
             data = {
                 'action': 'add',
                 'host': self.host['_id'],
                 'service': None,
-                'user': user['_items'][0]['_id'],
-                'comment': 'Acknowledge from Alignak-app.'
+                'user': user['_id'],
+                'comment': 'comment'
             }
 
-            post = self.app_backend.post('actionacknowledge', data)
+            action = self.app_backend.post(sender.objectName(), data)
 
-            logger.debug('POST: ack with data: ' + str(data))
-            logger.debug('Ack response: ' + str(post))
-
-            if post['_status'] == 'OK':
-                self.host['ack_href'] = post['_links']['self']['href']
-                self.ack_button.setEnabled(False)
-                self.ack_button.setText('Waiting from backend...')
+            if action['_status'] == 'OK':
+                # Init timer
                 ack_timer = QTimer(self)
-                ack_timer.singleShot(16000, self.check_ack_done)
+
+                # If endpoints is not store, add it
+                if not self.host['_id'] in self.endpoints[sender.objectName()]:
+                    self.endpoints[sender.objectName()][self.host['_id']] = action['_links']['self']['href']
+
+                # Update buttons
+                if 'actiondowntime' in sender.objectName():
+                    self.down_button.setEnabled(False)
+                    self.down_button.setText('Waiting from backend...')
+                    ack_timer.singleShot(17000, self.check_downtime_done)
+                else:  # 'actionacknowledge'
+                    self.ack_button.setEnabled(False)
+                    self.ack_button.setText('Waiting from backend...')
+                    ack_timer.singleShot(17000, self.check_ack_done)
             else:
-                print('no effect')
+                logger.error('Action failed...')
 
     def check_ack_done(self):
         """
@@ -187,10 +200,39 @@ class HostView(QWidget):
 
         """
 
-        ack = self.app_backend.backend.get(self.host['ack_href'])
+        ack_response = self.app_backend.backend.get(
+            self.endpoints['actionacknowledge'][self.host['_id']]
+        )
 
-        if ack['processed'] is True:
-            QMessageBox.warning(self, 'Acknowledge', "Acknowledged is done !", QMessageBox.Ok)
+        if ack_response['processed']:
+            QMessageBox.information(
+                self,
+                'Acknowledge',
+                "Acknowledged on " + self.host['name'] + " is done !",
+                QMessageBox.Ok
+            )
+        else:
+            logger.error('Acknowledge failed: ' + str(ack_response))
+
+    def check_downtime_done(self):
+        """
+        Check if downtime is done
+        :return:
+        """
+
+        down_response = self.app_backend.backend.get(
+            self.endpoints['actiondowntime'][self.host['_id']]
+        )
+
+        if down_response['processed']:
+            QMessageBox.information(
+                self,
+                'Downtime' + self.host['name'],
+                "Schedule a downtime on " + self.host['name'] + " is done !",
+                QMessageBox.Ok
+            )
+        else:
+            logger.error('Downtime failed: ' + str(down_response))
 
     def update_view(self, host):
         """
