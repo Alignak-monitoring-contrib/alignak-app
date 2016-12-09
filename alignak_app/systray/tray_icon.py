@@ -260,44 +260,60 @@ class TrayIcon(QSystemTrayIcon):
 
         self.menu.addAction(self.action_factory.get('exit'))
 
-    def update_menu_actions(self, hosts_states, services_states):
+    def update_menu_actions(self, hosts, services):
         """
         Update items Menu
 
-        :param hosts_states: number of hosts UP, DOWN or UNREACHABLE
-        :type hosts_states: dict
-        :param services_states: number of services OK, CRITICAL, WARNING or UNKNOWN
-        :type services_states: dict
+        :param hosts: number of hosts UP, DOWN or UNREACHABLE
+        :type hosts: dict
+        :param services: number of services OK, CRITICAL, WARNING or UNKNOWN
+        :type services: dict
         """
 
         logger.info('Update menus...')
 
-        host_nb = hosts_states['up'] + \
-            hosts_states['down'] + \
-            hosts_states['unreachable']
-        services_nb = services_states['ok'] + \
-            services_states['warning'] + \
-            services_states['critical'] + \
-            services_states['unknown']
+        host_nb = hosts['up'] + \
+            hosts['down'] + \
+            hosts['unreachable']
+        services_nb = services['ok'] + \
+            services['warning'] + \
+            services['critical'] + \
+            services['unknown']
+
+        if hosts['down'] != 0:
+            self.hosts_menu.setIcon(QIcon(get_image_path('hosts_down')))
+        elif hosts['down'] == 0 and hosts['unreachable > '] > hosts['up']:
+            self.hosts_menu.setIcon(QIcon(get_image_path('hosts_unreachable')))
+        else:
+            self.hosts_menu.setIcon(QIcon(get_image_path('hosts_ok')))
 
         self.hosts_menu.setTitle('Hosts (' + str(host_nb) + ')')
+
+        if services['critical'] != 0:
+            self.services_menu.setIcon(QIcon(get_image_path('services_critical')))
+        else:
+            if services['unknown'] != 0 or services['warning'] != 0:
+                self.services_menu.setIcon(QIcon(get_image_path('services_warning')))
+            else:
+                self.services_menu.setIcon(QIcon(get_image_path('services_ok')))
+
         self.services_menu.setTitle('Services (' + str(services_nb) + ')')
 
         self.action_factory.get('hosts_up').setText(
-            'Hosts UP (' + str(hosts_states['up']) + ')')
+            'Hosts UP (' + str(hosts['up']) + ')')
         self.action_factory.get('hosts_down').setText(
-            'Hosts DOWN (' + str(hosts_states['down']) + ')')
+            'Hosts DOWN (' + str(hosts['down']) + ')')
         self.action_factory.get('hosts_unreach').setText(
-            'Hosts UNREACHABLE (' + str(hosts_states['unreachable']) + ')')
+            'Hosts UNREACHABLE (' + str(hosts['unreachable']) + ')')
 
         self.action_factory.get('services_ok').setText(
-            'Services OK (' + str(services_states['ok']) + ')')
+            'Services OK (' + str(services['ok']) + ')')
         self.action_factory.get('services_critical').setText(
-            'Services CRITICAL (' + str(services_states['critical']) + ')')
+            'Services CRITICAL (' + str(services['critical']) + ')')
         self.action_factory.get('services_warning').setText(
-            'Services WARNING (' + str(services_states['warning']) + ')')
+            'Services WARNING (' + str(services['warning']) + ')')
         self.action_factory.get('services_unknown').setText(
-            'Services UNKNOWN (' + str(services_states['unknown']) + ')')
+            'Services UNKNOWN (' + str(services['unknown']) + ')')
 
     @staticmethod
     def quit_app():  # pragma: no cover
