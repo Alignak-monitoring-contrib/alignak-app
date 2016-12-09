@@ -152,7 +152,7 @@ class HostView(QWidget):
 
     def action(self):
         """
-        Handle action for "ack_button"
+        Handle action for "ack_button" and "down_button"
 
         """
 
@@ -197,7 +197,7 @@ class HostView(QWidget):
 
     def check_ack_done(self):
         """
-        TODO
+        Check if acknowledge is done.
 
         """
 
@@ -217,8 +217,8 @@ class HostView(QWidget):
 
     def check_downtime_done(self):
         """
-        Check if downtime is done
-        :return:
+        Check if downtime scheduled is done
+
         """
 
         down_response = self.app_backend.backend.get(
