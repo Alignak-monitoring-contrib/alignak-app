@@ -65,6 +65,7 @@ class AppNotification(QWidget):
         self.notification_type = None
         self.popup_factory = NotificationFactory(self)
         self.button = None
+        self.timer = QTimer(self)
 
     def initialize_notification(self):
         """
@@ -253,7 +254,17 @@ class AppNotification(QWidget):
         self.show()
 
         # ...until the end of the term
-        QTimer.singleShot(duration, self.close)
+        self.timer.timeout.connect(self.close)
+        self.timer.setSingleShot(True)
+        self.timer.start(duration)
+
+    def mousePressEvent(self, _):
+        """
+        Reimplement Mouse press event
+
+        """
+
+        self.timer.stop()
 
     def set_style_sheet(self, title):
         """
