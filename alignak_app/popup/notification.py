@@ -129,56 +129,51 @@ class AppNotification(QWidget):
 
         percentages = self.popup_factory.get_percentages_states(hosts_states, services_states)
 
-        if services_states['ok'] < 0 or hosts_states['up'] < 0:
-            self.popup_factory = QLabel(
-                'AlignakApp has something broken... \nPlease Check your logs !'
-            )
-        else:
-            # Hosts
-            self.popup_factory.update_states(
-                'hosts_up',
-                hosts_states['up'],
-                diff['hosts']['up'],
-                percentages['up']
-            )
-            self.popup_factory.update_states(
-                'hosts_down',
-                hosts_states['down'],
-                diff['hosts']['down'],
-                percentages['down']
-            )
-            self.popup_factory.update_states(
-                'hosts_unreach',
-                hosts_states['unreachable'],
-                diff['hosts']['unreachable'],
-                percentages['unreachable']
-            )
+        # Hosts
+        self.popup_factory.update_states(
+            'hosts_up',
+            hosts_states['up'],
+            diff['hosts']['up'],
+            percentages['up']
+        )
+        self.popup_factory.update_states(
+            'hosts_down',
+            hosts_states['down'],
+            diff['hosts']['down'],
+            percentages['down']
+        )
+        self.popup_factory.update_states(
+            'hosts_unreach',
+            hosts_states['unreachable'],
+            diff['hosts']['unreachable'],
+            percentages['unreachable']
+        )
 
-            # Services
-            self.popup_factory.update_states(
-                'services_ok',
-                services_states['ok'],
-                diff['services']['ok'],
-                percentages['ok']
-            )
-            self.popup_factory.update_states(
-                'services_warning',
-                services_states['warning'],
-                diff['services']['warning'],
-                percentages['warning']
-            )
-            self.popup_factory.update_states(
-                'services_critical',
-                services_states['critical'],
-                diff['services']['critical'],
-                percentages['critical']
-            )
-            self.popup_factory.update_states(
-                'services_unknown',
-                services_states['unknown'],
-                diff['services']['unknown'],
-                percentages['unknown']
-            )
+        # Services
+        self.popup_factory.update_states(
+            'services_ok',
+            services_states['ok'],
+            diff['services']['ok'],
+            percentages['ok']
+        )
+        self.popup_factory.update_states(
+            'services_warning',
+            services_states['warning'],
+            diff['services']['warning'],
+            percentages['warning']
+        )
+        self.popup_factory.update_states(
+            'services_critical',
+            services_states['critical'],
+            diff['services']['critical'],
+            percentages['critical']
+        )
+        self.popup_factory.update_states(
+            'services_unknown',
+            services_states['unknown'],
+            diff['services']['unknown'],
+            percentages['unknown']
+        )
 
     def set_position(self):
         """
