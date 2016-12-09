@@ -31,15 +31,17 @@ from alignak_app.core.utils import get_diff_since_last_check
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QPushButton  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QPushButton, QMessageBox  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QWidget, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QLabel  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QPixmap, Qt, QIcon  # pylint: disable=no-name-in-module
+    from PyQt5.QtCore import QTimer  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QPushButton  # pylint: disable=import-error
+    from PyQt4.Qt import QPushButton, QMessageBox  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
     from PyQt4.Qt import QPixmap, Qt, QIcon  # pylint: disable=import-error
+    from PyQt4.QtCore import QTimer  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
@@ -156,20 +158,39 @@ class HostView(QWidget):
 
         user = self.app_backend.get('user', params)
 
-        data = {
-            'host': self.host['_id'],
-            'service': None,
-            'user': user['_items'][0]['_id'],
-            'comment': 'Alignak-app'
-        }
+        if self.host:
+            data = {
+                'action': 'add',
+                'host': self.host['_id'],
+                'service': None,
+                'user': user['_items'][0]['_id'],
+                'comment': 'Acknowledge from Alignak-app.'
+            }
 
-        post = self.app_backend.post('actionacknowledge', data)
+            post = self.app_backend.post('actionacknowledge', data)
 
-        if post['_status'] == 'OK':
-            self.ack_button.setEnabled(False)
-            print('acknowledge')
-        else:
-            print('no effect')
+            logger.debug('POST: ack with data: ' + str(data))
+            logger.debug('Ack response: ' + str(post))
+
+            if post['_status'] == 'OK':
+                self.host['ack_href'] = post['_links']['self']['href']
+                self.ack_button.setEnabled(False)
+                self.ack_button.setText('Waiting from backend...')
+                ack_timer = QTimer(self)
+                ack_timer.singleShot(16000, self.check_ack_done)
+            else:
+                print('no effect')
+
+    def check_ack_done(self):
+        """
+        TODO
+
+        """
+
+        ack = self.app_backend.backend.get(self.host['ack_href'])
+
+        if ack['processed'] is True:
+            QMessageBox.warning(self, 'Acknowledge', "Acknowledged is done !", QMessageBox.Ok)
 
     def update_view(self, host):
         """
