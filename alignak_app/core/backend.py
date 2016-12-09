@@ -118,9 +118,10 @@ class AppBackend(object):
                 endpoint,
                 params
             )
+            logger.debug('GET: ' + endpoint)
+            logger.debug('..with params: ' + str(params))
+            logger.debug('...Response > ' + str(request))
         except BackendException as e:
-            logger.error('GET: error from app_backend')
-            logger.error('  endpoint: ' + endpoint + 'params: ' + str(params))
             logger.error(str(e))
 
         return request
@@ -142,9 +143,10 @@ class AppBackend(object):
 
         try:
             resp = self.backend.post(endpoint, data, headers=headers)
+            logger.debug('POST on ' + endpoint)
+            logger.debug('..with data: ' + str(data))
+            logger.debug('...Response > ' + str(resp))
         except BackendException as e:
-            logger.error('POST error')
-            logger.error('  endpoint: ' + endpoint + 'params: ' + str(data))
             logger.error(str(e))
 
         return resp
@@ -203,6 +205,24 @@ class AppBackend(object):
             }
 
         return host_data
+
+    def get_user(self):
+        """
+        Retrieve user by token.
+
+        :return user items
+        :rtype dict
+        """
+
+        params = {
+            'where': json.dumps({
+                'token': self.user['token']
+            })
+        }
+
+        user = self.get('user', params)
+
+        return user['_items'][0]
 
     def synthesis_count(self):
         """
