@@ -23,7 +23,6 @@
     App Synthesis manage widget for Synthesis QWidget.
 """
 
-import json
 from logging import getLogger
 
 from alignak_app.core.utils import get_image_path
