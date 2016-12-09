@@ -157,6 +157,7 @@ class HostView(QWidget):
         """
 
         # Which button is caller
+        # objectname can be 'actionacknowledge' or 'actiondowntime'
         sender = self.sender()
 
         user = self.app_backend.get_user()
@@ -178,15 +179,16 @@ class HostView(QWidget):
                 ack_timer = QTimer(self)
 
                 # If endpoints is not store, add it
-                if not self.host['_id'] in self.endpoints[sender.objectName()]:
-                    self.endpoints[sender.objectName()][self.host['_id']] = action['_links']['self']['href']
+                if self.host['_id'] not in self.endpoints[sender.objectName()]:
+                    self.endpoints[sender.objectName()][self.host['_id']] = \
+                        action['_links']['self']['href']
 
                 # Update buttons
                 if 'actiondowntime' in sender.objectName():
                     self.down_button.setEnabled(False)
                     self.down_button.setText('Waiting from backend...')
                     ack_timer.singleShot(17000, self.check_downtime_done)
-                else:  # 'actionacknowledge'
+                else:
                     self.ack_button.setEnabled(False)
                     self.ack_button.setText('Waiting from backend...')
                     ack_timer.singleShot(17000, self.check_ack_done)
