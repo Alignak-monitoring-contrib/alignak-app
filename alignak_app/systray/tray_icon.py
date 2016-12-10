@@ -187,7 +187,7 @@ class TrayIcon(QSystemTrayIcon):
 
         self.action_factory.create(
             'database',
-            'Host View',
+            'Host Synthesis View',
             self
         )
 

@@ -120,7 +120,7 @@ class AppBackend(object):
             )
             logger.debug('GET: ' + endpoint)
             logger.debug('..with params: ' + str(params))
-            logger.debug('...Response > ' + str(request))
+            logger.debug('...Response > ' + str(request['_status']))
         except BackendException as e:
             logger.error(str(e))
 

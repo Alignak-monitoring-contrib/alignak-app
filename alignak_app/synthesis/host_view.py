@@ -109,10 +109,12 @@ class HostView(QWidget):
         check_label = QLabel('<b>My last Check</b>')
         self.layout.addWidget(check_label, 0, 2, 1, 2)
         self.layout.setAlignment(check_label, Qt.AlignTrailing)
+
         last_check = QLabel('<b>Last check:</b>')
         self.layout.addWidget(last_check, 1, 2, 1, 1)
         self.layout.setAlignment(last_check, Qt.AlignTrailing)
         self.layout.addWidget(self.labels['last_check'], 1, 3, 1, 1)
+
         output = QLabel('<b>Output:</b>')
         self.layout.addWidget(output, 2, 2, 1, 1)
         self.layout.setAlignment(output, Qt.AlignTrailing)
@@ -159,20 +161,26 @@ class HostView(QWidget):
         # Which button is caller
         # objectname can be 'actionacknowledge' or 'actiondowntime'
         sender = self.sender()
+        print(sender.objectName())
 
         user = self.app_backend.get_user()
 
         if self.host:
 
+            if 'actiondowntime' in sender.objectName():
+                comment = 'Schedule downtime by ' + user['name'] + ', from Alignak-app'
+            else:
+                comment = 'Acknowledge by ' + user['name'] + ', from Alignak-app'
             data = {
                 'action': 'add',
                 'host': self.host['_id'],
                 'service': None,
                 'user': user['_id'],
-                'comment': 'comment'
+                'comment': comment
             }
 
             action = self.app_backend.post(sender.objectName(), data)
+            print('action', action)
 
             if action['_status'] == 'OK':
                 # Init timer
@@ -184,20 +192,21 @@ class HostView(QWidget):
                         action['_links']['self']['href']
 
                 # Update buttons
+
                 if 'actiondowntime' in sender.objectName():
                     self.down_button.setEnabled(False)
                     self.down_button.setText('Waiting from backend...')
-                    ack_timer.singleShot(17000, self.check_downtime_done)
+                    ack_timer.singleShot(17000, self.downtime_message)
                 else:
                     self.ack_button.setEnabled(False)
                     self.ack_button.setText('Waiting from backend...')
-                    ack_timer.singleShot(17000, self.check_ack_done)
+                    ack_timer.singleShot(17000, self.ack_message)
             else:
-                logger.error('Action failed...')
+                logger.error('Action ' + sender.objectName() + 'failed')
 
-    def check_ack_done(self):
+    def ack_message(self):
         """
-        Check if acknowledge is done.
+        Display QMessageBox if acknowledge processed return True
 
         """
 
@@ -215,9 +224,9 @@ class HostView(QWidget):
         else:
             logger.error('Acknowledge failed: ' + str(ack_response))
 
-    def check_downtime_done(self):
+    def downtime_message(self):
         """
-        Check if downtime scheduled is done
+        Display QMessageBox if downtime processed return True
 
         """
 
@@ -258,6 +267,35 @@ class HostView(QWidget):
         self.labels['real_state_icon'].setPixmap(self.get_host_icon(''))
         self.labels['last_check'].setText(str(time_delta))
         self.labels['output'].setText(host['ls_output'])
+
+        self.update_action_button()
+
+    def update_action_button(self):
+        """
+        Check if there is action and update button
+
+        """
+
+        logger.debug('ACK: is ' + str(self.host['ls_acknowledged']))
+        logger.debug('DOWNTIME: is ' + str(self.host['ls_downtimed']))
+
+        if self.host['ls_acknowledged']:
+            self.ack_button.setEnabled(False)
+            self.ack_button.setText('Acknowledged !')
+            self.ack_button.setIcon(QIcon(get_image_path('valid')))
+        else:
+            self.ack_button.setEnabled(True)
+            self.ack_button.setText('Acknowledge this problem')
+            self.ack_button.setIcon(QIcon(get_image_path('acknowledged')))
+
+        if self.host['ls_downtimed']:
+            self.down_button.setEnabled(False)
+            self.down_button.setText('Downtimed !')
+            self.down_button.setIcon(QIcon(get_image_path('downtime')))
+        else:
+            self.down_button.setEnabled(True)
+            self.down_button.setText('Schedule a downtime')
+            self.down_button.setIcon(QIcon(get_image_path('downtime')))
 
     @staticmethod
     def get_host_icon(state):

@@ -88,8 +88,8 @@ class Synthesis(QWidget):
         self.create_line_search()
 
         # button
-        button = QPushButton('Search', self)
-        button.setToolTip('Search a host')
+        button = QPushButton('Search / Refresh', self)
+        button.setToolTip('Type name of a host to display his data')
         button.clicked.connect(self.handle_button)
         self.line_search.returnPressed.connect(button.click)
 
@@ -141,7 +141,9 @@ class Synthesis(QWidget):
                 'name': host_name,
                 'ls_state': 'NOT FOUND',
                 'ls_last_check': 'NOT FOUND',
-                'ls_output': 'NOT FOUND'
+                'ls_output': 'NOT FOUND',
+                'ls_acknowledged': False,
+                'ls_downtimed': False
             }
             self.host_view.update_view(data)
             self.services_view.display_services(None, 'NOT KNOWN')
