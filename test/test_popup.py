@@ -72,12 +72,12 @@ class TestNotification(unittest2.TestCase):
 
         # Simulate dicts of states
         hosts_states = dict(
-            up= 1,
+            up=1,
             down=1,
             unreachable=1
         )
         services_states = dict(
-            ok=-1,
+            ok=1,
             warning=1,
             critical=1,
             unknown=1
@@ -98,10 +98,21 @@ class TestNotification(unittest2.TestCase):
             }
         }
         under_test.send_notification('CRITICAL', hosts_states, services_states, changes)
-        expected_content = 'AlignakApp has something broken... \nPlease Check your logs !'
 
         self.assertEqual('CRITICAL', under_test.notification_type.text())
-        self.assertEqual(expected_content, under_test.popup_factory.text())
+        self.assertEqual(
+            under_test.popup_factory.state_data['hosts_up']['nb_items'].text(),
+            '1'
+        )
+        self.assertEqual(
+            under_test.popup_factory.state_data['hosts_up']['progress_bar'].value(),
+            33
+        )
+        self.assertEqual(
+            under_test.popup_factory.state_data['hosts_up']['diff'].text(),
+            '<b>(no changes)</b>'
+        )
+        assert 'Background-color: #e74c3c;' in under_test.styleSheet()
 
     def test_get_style_sheet(self):
         """Get Style Sheet according to States"""
