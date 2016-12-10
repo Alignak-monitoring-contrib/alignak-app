@@ -66,6 +66,7 @@ class AppNotification(QWidget):
         self.popup_factory = NotificationFactory(self)
         self.button = None
         self.timer = QTimer(self)
+        self.pin = False
 
     def initialize_notification(self):
         """
@@ -92,7 +93,16 @@ class AppNotification(QWidget):
 
         # Create and add button
         button = self.popup_factory.add_valid_button()
-        button.clicked.connect(self.close)
+        button.clicked.connect(self.close_notification)
+
+    def close_notification(self):
+        """
+        Close notification and set pin at False
+
+        """
+
+        self.pin = False
+        self.close()
 
     def fill_state_factory(self):
         """
@@ -249,9 +259,20 @@ class AppNotification(QWidget):
         self.show()
 
         # ...until the end of the term
-        self.timer.timeout.connect(self.close)
+        self.timer.timeout.connect(self.close_pin)
         self.timer.setSingleShot(True)
         self.timer.start(duration)
+
+    def close_pin(self):
+        """
+        Check if pin is set to True, else close
+
+        """
+
+        if not self.pin:
+            self.close()
+        else:
+            pass
 
     def mousePressEvent(self, _):
         """
@@ -260,6 +281,7 @@ class AppNotification(QWidget):
         """
 
         self.timer.stop()
+        self.pin = True
 
     def set_style_sheet(self, title):
         """
