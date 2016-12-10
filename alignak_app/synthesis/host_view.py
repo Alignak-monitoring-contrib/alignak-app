@@ -90,19 +90,22 @@ class HostView(QWidget):
             'output': QLabel('N/A')
         }
 
+        # row, column, rowSpan, colSPan
         # Adjust icons and set default icons
         self.labels['state_icon'].setFixedSize(64, 64)
         self.labels['state_icon'].setPixmap(self.get_host_icon(''))
+        self.layout.addWidget(self.labels['state_icon'], 0, 0, 2, 1)
+
         self.labels['real_state_icon'].setFixedSize(32, 32)
         self.labels['real_state_icon'].setScaledContents(True)
         self.labels['real_state_icon'].setPixmap(self.get_host_icon(''))
 
-        # row, column, rowSpan, colSPan
-        self.layout.addWidget(self.labels['state_icon'], 0, 0, 2, 1)
+        self.labels['name'].setWordWrap(True)
         self.layout.addWidget(self.labels['name'], 2, 0, 1, 1)
 
         real_state_text = QLabel('Host real state, excluding services')
         real_state_text.setWordWrap(True)
+        real_state_text.setStyleSheet('font-size: 10px;')
         self.layout.addWidget(real_state_text, 0, 1, 1, 1)
         self.layout.addWidget(self.labels['real_state_icon'], 1, 1, 2, 1)
 
@@ -161,7 +164,6 @@ class HostView(QWidget):
         # Which button is caller
         # objectname can be 'actionacknowledge' or 'actiondowntime'
         sender = self.sender()
-        print(sender.objectName())
 
         user = self.app_backend.get_user()
 
@@ -180,7 +182,6 @@ class HostView(QWidget):
             }
 
             action = self.app_backend.post(sender.objectName(), data)
-            print('action', action)
 
             if action['_status'] == 'OK':
                 # Init timer
@@ -244,29 +245,29 @@ class HostView(QWidget):
         else:
             logger.error('Downtime failed: ' + str(down_response))
 
-    def update_view(self, host):
+    def update_view(self, data):
         """
         Update Host view with desired host.
 
-        :param host: host data from app_backend
-        :type host: dict
+        :param data: host data with associated services from app_backend
+        :type data: dict
         """
 
-        self.host = host
+        self.host = data['host']
 
         logger.info('Update Host View...')
-        logger.debug('Host: ' + host['name'] + ' is ' + host['ls_state'])
+        logger.debug('Host: ' + self.host['name'] + ' is ' + self.host['ls_state'])
 
-        if isinstance(host['ls_last_check'], int):
-            time_delta = get_diff_since_last_check(host['ls_last_check'])
+        if isinstance(self.host['ls_last_check'], int):
+            time_delta = get_diff_since_last_check(self.host['ls_last_check'])
         else:
             time_delta = 'NOT FOUND'
 
-        self.labels['name'].setText('<h3>' + host['name'].title() + '</h3>')
-        self.labels['state_icon'].setPixmap(self.get_host_icon(host['ls_state']))
-        self.labels['real_state_icon'].setPixmap(self.get_host_icon(''))
+        self.labels['name'].setText('<h3>' + self.host['alias'].title() + '</h3>')
+        self.labels['state_icon'].setPixmap(self.get_real_state_icon(data['services']))
+        self.labels['real_state_icon'].setPixmap(self.get_host_icon(self.host['ls_state']))
         self.labels['last_check'].setText(str(time_delta))
-        self.labels['output'].setText(host['ls_output'])
+        self.labels['output'].setText(self.host['ls_output'])
 
         self.update_action_button()
 
@@ -317,7 +318,36 @@ class HostView(QWidget):
         else:
             icon_name = 'hosts_none'
 
-        logger.debug('Host icon: ' + icon_name)
         icon = QPixmap(get_image_path(icon_name))
+
+        return icon
+
+    @staticmethod
+    def get_real_state_icon(services):
+        """
+        Calculate real state and return QPixmap
+
+        :param services: dict of services. None if search is not found
+        :type services: dict
+        """
+
+        if services:
+            icon_names = ['hosts_up', 'hosts_none', 'hosts_unreach', 'hosts_down']
+            state_lvl = []
+            for service in services:
+                if 'UNREACHABLE' in service['ls_state'] or 'CRITICAL' in service['ls_state']:
+                    state_lvl.append(3)
+                elif 'WARNING' in service['ls_state'] or 'UNKNOWN' in service['ls_state']:
+                    state_lvl.append(2)
+                elif service['ls_downtimed']:
+                    state_lvl.append(1)
+                else:
+                    state_lvl.append(0)
+
+            result = max(state_lvl)
+
+            icon = QPixmap(get_image_path(icon_names[result]))
+        else:
+            icon = QPixmap(get_image_path('hosts_none'))
 
         return icon

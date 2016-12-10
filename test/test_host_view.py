@@ -93,11 +93,11 @@ class TestServicesView(unittest2.TestCase):
 
         self.assertFalse(under_test.host)
 
-        under_test.update_view(data['host'])
+        under_test.update_view(data)
 
         self.assertTrue(under_test.host)
         self.assertEqual(
-            '<h3>Always_Down</h3>',
+            '<h3>Always Down</h3>',
             under_test.labels['name'].text()
         )
         self.assertEqual(

@@ -134,16 +134,20 @@ class Synthesis(QWidget):
 
         # Write result ot "result_label"
         if data:
-            self.host_view.update_view(data['host'])
+            self.host_view.update_view(data)
             self.services_view.display_services(data['services'], data['host']['name'])
         else:
             data = {
-                'name': host_name,
-                'ls_state': 'NOT FOUND',
-                'ls_last_check': 'NOT FOUND',
-                'ls_output': 'NOT FOUND',
-                'ls_acknowledged': False,
-                'ls_downtimed': False
+                'host': {
+                    'name': host_name,
+                    'alias': 'NOT FOUND',
+                    'ls_state': 'NOT FOUND',
+                    'ls_last_check': 'NOT FOUND',
+                    'ls_output': 'NOT FOUND',
+                    'ls_acknowledged': False,
+                    'ls_downtimed': False
+                },
+                'services': None
             }
             self.host_view.update_view(data)
             self.services_view.display_services(None, 'NOT KNOWN')
