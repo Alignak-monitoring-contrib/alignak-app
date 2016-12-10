@@ -150,7 +150,7 @@ class HostView(QWidget):
 
         return button_widget
 
-    def action(self):
+    def action(self):  # pragma: no cover
         """
         Handle action for "ack_button" and "down_button"
 
