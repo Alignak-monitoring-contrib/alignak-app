@@ -55,7 +55,7 @@ class AppLogin(QDialog):
     def __init__(self, parent=None):
         super(AppLogin, self).__init__(parent)
         self.setWindowTitle('Connect to Alignak')
-        self.resize(300, 150)
+        self.resize(320, 150)
         self.app_backend = AppBackend()
         self.username_line = None
         self.password_line = None
@@ -132,7 +132,7 @@ class AppLogin(QDialog):
                 self.app_backend.user['token'] = str(self.app_backend.backend.token)
                 self.accept()
             else:
-                self.message.setText('Bad crendentials :(')
+                self.message.setText('Your connection information are not accepted !')
                 self.message.setStyleSheet('color: red;')
                 logger.error('Bad credentials in login form.')
         except BackendException as e:
