@@ -60,7 +60,6 @@ class AppLogin(QDialog):
         self.username_line = None
         self.password_line = None
         self.message = None
-        self.login_line = None
 
     def create_widget(self):
         """
