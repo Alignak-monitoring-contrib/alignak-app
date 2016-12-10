@@ -280,7 +280,7 @@ class HostView(QWidget):
         logger.debug('ACK: is ' + str(self.host['ls_acknowledged']))
         logger.debug('DOWNTIME: is ' + str(self.host['ls_downtimed']))
 
-        if self.host['ls_acknowledged']:
+        if self.host['ls_acknowledged'] or 'UP' in self.host['ls_state']:
             self.ack_button.setEnabled(False)
             self.ack_button.setText('Acknowledged !')
             self.ack_button.setIcon(QIcon(get_image_path('valid')))
@@ -289,7 +289,7 @@ class HostView(QWidget):
             self.ack_button.setText('Acknowledge this problem')
             self.ack_button.setIcon(QIcon(get_image_path('acknowledged')))
 
-        if self.host['ls_downtimed']:
+        if self.host['ls_downtimed'] or 'UP' in self.host['ls_state']:
             self.down_button.setEnabled(False)
             self.down_button.setText('Downtimed !')
             self.down_button.setIcon(QIcon(get_image_path('downtime')))
