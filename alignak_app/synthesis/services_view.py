@@ -151,13 +151,16 @@ class ServicesView(QWidget):
             icon_name = 'services_critical'
         elif 'UNKNOWN' in state:
             icon_name = 'services_unknown'
+        elif 'UNREACHABLE' in state:
+            icon_name = 'services_unreachable'
         else:
             icon_name = 'services_none'
 
         icon = QPixmap(get_image_path(icon_name))
         icon_label = QLabel()
-        icon_label.setScaledContents(True)
         icon_label.setFixedSize(16, 16)
+        icon_label.setScaledContents(True)
         icon_label.setPixmap(icon)
+        icon_label.setToolTip('Service is ' + state)
 
         return icon_label
