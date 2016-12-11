@@ -74,13 +74,18 @@ class TestNotification(unittest2.TestCase):
         hosts_states = dict(
             up=1,
             down=1,
-            unreachable=1
+            unreachable=1,
+            acknowledge=1,
+            downtime=1
         )
         services_states = dict(
             ok=1,
             warning=1,
             critical=1,
-            unknown=1
+            unknown=1,
+            unreachable=1,
+            acknowledge=1,
+            downtime=1,
         )
 
         # Send a CRITICAL notification
@@ -88,13 +93,18 @@ class TestNotification(unittest2.TestCase):
             'hosts': {
                 'up': 'no changes',
                 'down': 'no changes',
-                'unreachable': 'no changes'
+                'unreachable': 'no changes',
+                'acknowledge': 'no changes',
+                'downtime': 'no changes',
             },
             'services': {
                 'ok': 'no changes',
                 'warning': 'no changes',
                 'critical': 'no changes',
-                'unknown': 'no changes'
+                'unknown': 'no changes',
+                'unreachable': 'no changes',
+                'acknowledge': 'no changes',
+                'downtime': 'no changes',
             }
         }
         under_test.send_notification('CRITICAL', hosts_states, services_states, changes)
@@ -106,7 +116,7 @@ class TestNotification(unittest2.TestCase):
         )
         self.assertEqual(
             under_test.popup_factory.state_data['hosts_up']['progress_bar'].value(),
-            33
+            20
         )
         self.assertEqual(
             under_test.popup_factory.state_data['hosts_up']['diff'].text(),
