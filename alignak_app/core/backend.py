@@ -226,7 +226,7 @@ class AppBackend(object):
 
     def synthesis_count(self):
         """
-        Check the hosts and services states.
+        Check and return the hosts and services states.
 
         :return: each number of states for hosts and services.
         :rtype: dict

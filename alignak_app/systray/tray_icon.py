@@ -322,10 +322,10 @@ class TrayIcon(QSystemTrayIcon):
 
         if hosts['down'] != 0:
             self.hosts_menu.setIcon(QIcon(get_image_path('hosts_down')))
-        elif hosts['down'] == 0 and hosts['unreachable > '] > hosts['up']:
+        elif hosts['down'] == 0 and hosts['unreachable'] > hosts['up']:
             self.hosts_menu.setIcon(QIcon(get_image_path('hosts_unreachable')))
         else:
-            self.hosts_menu.setIcon(QIcon(get_image_path('hosts_ok')))
+            self.hosts_menu.setIcon(QIcon(get_image_path('hosts_up')))
 
         self.hosts_menu.setTitle('Hosts (' + str(host_nb) + ')')
 
