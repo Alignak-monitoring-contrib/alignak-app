@@ -116,6 +116,8 @@ class AppNotification(QWidget):
         self.popup_factory.create_state_labels('hosts_up')
         self.popup_factory.create_state_labels('hosts_unreach')
         self.popup_factory.create_state_labels('hosts_down')
+        self.popup_factory.create_state_labels('acknowledged', item_type='hosts')
+        self.popup_factory.create_state_labels('downtime', item_type='hosts')
 
         self.popup_factory.add_separator()
 
@@ -124,6 +126,9 @@ class AppNotification(QWidget):
         self.popup_factory.create_state_labels('services_warning')
         self.popup_factory.create_state_labels('services_critical')
         self.popup_factory.create_state_labels('services_unknown')
+        self.popup_factory.create_state_labels('services_unreachable')
+        self.popup_factory.create_state_labels('acknowledged', item_type='services')
+        self.popup_factory.create_state_labels('downtime', item_type='services')
 
     def update_popup(self, hosts_states, services_states, diff):
         """
@@ -158,6 +163,18 @@ class AppNotification(QWidget):
             diff['hosts']['unreachable'],
             percentages['unreachable']
         )
+        self.popup_factory.update_states(
+            'hosts_acknowledged',
+            hosts_states['acknowledge'],
+            diff['hosts']['acknowledge'],
+            percentages['acknowledge']
+        )
+        self.popup_factory.update_states(
+            'hosts_downtime',
+            hosts_states['downtime'],
+            diff['hosts']['downtime'],
+            percentages['downtime']
+        )
 
         # Services
         self.popup_factory.update_states(
@@ -183,6 +200,24 @@ class AppNotification(QWidget):
             services_states['unknown'],
             diff['services']['unknown'],
             percentages['unknown']
+        )
+        self.popup_factory.update_states(
+            'services_unreachable',
+            services_states['unreachable'],
+            diff['services']['unreachable'],
+            percentages['unreachable']
+        )
+        self.popup_factory.update_states(
+            'services_acknowledged',
+            services_states['acknowledge'],
+            diff['services']['acknowledge'],
+            percentages['acknowledge']
+        )
+        self.popup_factory.update_states(
+            'services_downtime',
+            services_states['downtime'],
+            diff['services']['downtime'],
+            percentages['downtime']
         )
 
     def set_position(self):

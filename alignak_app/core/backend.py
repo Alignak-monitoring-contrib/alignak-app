@@ -259,7 +259,6 @@ class AppBackend(object):
         }
 
         live_synthesis = self.get('livesynthesis')
-        print(live_synthesis)
 
         for realm in live_synthesis['_items']:
             states['hosts']['up'] += realm['hosts_up_soft']

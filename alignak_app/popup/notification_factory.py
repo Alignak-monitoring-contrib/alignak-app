@@ -55,7 +55,7 @@ class NotificationFactory(QWidget):
         self.main_layout = QGridLayout()
         self.setLayout(self.main_layout)
 
-    def create_state_labels(self, state_name):
+    def create_state_labels(self, state_name, item_type=None):
         """
         Generate 4 QLabel and 1 QProgressBar and store in "state_data"
         QLabels are: icon | state_label | nb_items | diff
@@ -64,14 +64,19 @@ class NotificationFactory(QWidget):
 
         :param state_name: name of the state to be stored
         :type state_name: str
+        :param item_type: if needed, precise if "hosts" or "services"
+        :type item_type: str
         """
-
+        print(state_name)
         # Icon
         icon = QPixmap(get_image_path(state_name))
         label_icon = QLabel()
         label_icon.setFixedSize(16, 16)
         label_icon.setScaledContents(True)
         label_icon.setPixmap(icon)
+
+        if item_type:
+            state_name = item_type + '_' + state_name
 
         # Initialize Labels
         state_label = QLabel(self.define_label(state_name))
@@ -157,7 +162,7 @@ class NotificationFactory(QWidget):
         logger.debug('Update: ' + str(nb_items) + ' for ' + state_name)
 
         self.state_data[state_name]['nb_items'].setText(str(nb_items))
-        if nb_items == 0:
+        if nb_items == 0 and 'downtime' not in state_name and 'acknowledged' not in state_name:
             if "hosts" in state_name:
                 self.state_data[state_name]['icon'].setPixmap(
                     QPixmap(get_image_path('hosts_none'))
@@ -167,7 +172,12 @@ class NotificationFactory(QWidget):
                     QPixmap(get_image_path('services_none'))
                 )
         else:
-            self.state_data[state_name]['icon'].setPixmap(QPixmap(get_image_path(state_name)))
+            if 'hosts_downtime' in state_name or 'services_downtime' in state_name:
+                self.state_data[state_name]['icon'].setPixmap(QPixmap(get_image_path('downtime')))
+            elif 'hosts_acknowledged' in state_name or 'services_acknowledged' in state_name:
+                self.state_data[state_name]['icon'].setPixmap(QPixmap(get_image_path('acknowledged')))
+            else:
+                self.state_data[state_name]['icon'].setPixmap(QPixmap(get_image_path(state_name)))
 
         if isinstance(diff, int):
             self.state_data[state_name]['diff'].setText('<b>(' + "{0:+d}".format(diff) + ')</b>')
@@ -196,21 +206,31 @@ class NotificationFactory(QWidget):
         # Get sum for hosts and services
         hosts_sum = hosts_states['up'] \
             + hosts_states['down'] \
-            + hosts_states['unreachable']
+            + hosts_states['unreachable'] \
+            + hosts_states['acknowledge'] \
+            + hosts_states['downtime']
         services_sum = services_states['ok'] \
             + services_states['warning'] \
             + services_states['critical'] \
-            + services_states['unknown']
+            + services_states['unknown'] \
+            + services_states['unreachable'] \
+            + services_states['acknowledge'] \
+            + services_states['downtime']
 
         # Calculates the percentage
         percentages['up'] = float((hosts_states['up'] * 100) / hosts_sum)
         percentages['down'] = float((hosts_states['down'] * 100) / hosts_sum)
         percentages['unreachable'] = float((hosts_states['unreachable'] * 100) / hosts_sum)
+        percentages['acknowledge'] = float((hosts_states['acknowledge'] * 100) / hosts_sum)
+        percentages['downtime'] = float((hosts_states['downtime'] * 100) / hosts_sum)
 
         percentages['ok'] = float((services_states['ok'] * 100) / services_sum)
         percentages['warning'] = float((services_states['warning'] * 100) / services_sum)
         percentages['critical'] = float((services_states['critical'] * 100) / services_sum)
         percentages['unknown'] = float((services_states['unknown'] * 100) / services_sum)
+        percentages['unreachable'] = float((services_states['unreachable'] * 100) / services_sum)
+        percentages['acknowledge'] = float((services_states['acknowledge'] * 100) / services_sum)
+        percentages['downtime'] = float((services_states['downtime'] * 100) / services_sum)
 
         return percentages
 
@@ -227,10 +247,14 @@ class NotificationFactory(QWidget):
 
         if "hosts_up" in name:
             label = "Hosts UP:"
-        elif "hosts_down" in name:
+        elif "hosts_down" == name:
             label = "Hosts DOWN:"
         elif "hosts_unreach" in name:
             label = "Hosts UNREACHABLE:"
+        elif "hosts_acknowledged" in name:
+            label = "Hosts ACKNOWLEDGE"
+        elif "hosts_downtime" == name:
+            label = "Hosts DOWNTIME"
         elif "services_ok" in name:
             label = "Services OK:"
         elif "services_warning" in name:
@@ -239,6 +263,12 @@ class NotificationFactory(QWidget):
             label = "Services CRITICAL:"
         elif "services_unknown" in name:
             label = "Services UNKNOWN:"
+        elif "services_unreachable" in name:
+            label = "Services UNREACHABLE"
+        elif "services_acknowledged" in name:
+            label = "Services ACKNOWLEDGE"
+        elif "services_downtime" in name:
+            label = "Services DOWNTIME"
         else:
             label = "Unknown field"
 
