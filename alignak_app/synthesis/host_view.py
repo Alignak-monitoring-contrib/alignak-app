@@ -81,7 +81,7 @@ class HostView(QWidget):
         self.layout = QGridLayout()
         self.setLayout(self.layout)
 
-        # Creates the labels that will be updated
+        # Keep labels that will be updated in dict
         self.labels = {
             'name': QLabel('<h3>Host Name</h3>'),
             'state_icon': QLabel(),
@@ -90,45 +90,80 @@ class HostView(QWidget):
             'output': QLabel('N/A')
         }
 
-        # row, column, rowSpan, colSPan
-        # Adjust icons and set default icons
+        # Create QWidgets
+        states_widget = self.get_states_widget()
+        check_widget = self.get_check_widget()
+        buttons = self.get_buttons_widget()
+
+        self.layout.addWidget(states_widget, 0, 0)
+        self.layout.addWidget(check_widget, 0, 1, 1, 2)
+        self.layout.addWidget(buttons, 0, 3)
+
+    def get_states_widget(self):
+        """
+        Add QWidget states icons
+
+        :return: states QWidget
+        :rtype: QWidget
+        """
+
+        states_widget = QWidget(self)
+        states_layout = QGridLayout()
+        states_widget.setLayout(states_layout)
+
         self.labels['state_icon'].setFixedSize(64, 64)
         self.labels['state_icon'].setPixmap(self.get_host_icon(''))
-        self.layout.addWidget(self.labels['state_icon'], 0, 0, 2, 1)
+        states_layout.addWidget(self.labels['state_icon'], 0, 0, 2, 2)
+
+        self.labels['name'].setWordWrap(True)
+        states_layout.addWidget(self.labels['name'], 2, 0, 1, 2)
 
         self.labels['real_state_icon'].setFixedSize(32, 32)
         self.labels['real_state_icon'].setScaledContents(True)
         self.labels['real_state_icon'].setPixmap(self.get_host_icon(''))
-
-        self.labels['name'].setWordWrap(True)
-        self.layout.addWidget(self.labels['name'], 2, 0, 1, 1)
+        states_layout.addWidget(self.labels['real_state_icon'], 2, 2, 1, 1)
 
         real_state_text = QLabel('Host real state, excluding services')
         real_state_text.setWordWrap(True)
         real_state_text.setStyleSheet('font-size: 10px;')
-        self.layout.addWidget(real_state_text, 0, 1, 1, 1)
-        self.layout.addWidget(self.labels['real_state_icon'], 1, 1, 2, 1)
+        states_layout.addWidget(real_state_text, 0, 2, 1, 1)
+
+        return states_widget
+
+    def get_check_widget(self):
+        """
+        Create and return check QWidget
+
+        :return: Checks qwidget
+        :rtype: QWidget
+        """
+
+        check_widget = QWidget(self)
+        check_layout = QGridLayout()
+        check_widget.setLayout(check_layout)
 
         check_label = QLabel('<b>My last Check</b>')
-        self.layout.addWidget(check_label, 0, 2, 1, 2)
-        self.layout.setAlignment(check_label, Qt.AlignTrailing)
+        check_layout.addWidget(check_label, 0, 0, 1, 2)
+        check_layout.setAlignment(check_label, Qt.AlignCenter)
 
         last_check = QLabel('<b>Last check:</b>')
-        self.layout.addWidget(last_check, 1, 2, 1, 1)
-        self.layout.setAlignment(last_check, Qt.AlignTrailing)
-        self.layout.addWidget(self.labels['last_check'], 1, 3, 1, 1)
+        check_layout.addWidget(last_check, 1, 0, 1, 1)
+        check_layout.setAlignment(last_check, Qt.AlignLeft)
+
+        check_layout.addWidget(self.labels['last_check'], 1, 1, 1, 2)
 
         output = QLabel('<b>Output:</b>')
-        self.layout.addWidget(output, 2, 2, 1, 1)
-        self.layout.setAlignment(output, Qt.AlignTrailing)
-        self.layout.addWidget(self.labels['output'], 2, 3, 1, 1)
+        check_layout.addWidget(output, 2, 0, 1, 1)
+        check_layout.setAlignment(output, Qt.AlignLeft)
 
-        buttons = self.action_buttons()
-        self.layout.addWidget(buttons, 1, 4, 1, 2)
+        self.labels['output'].setWordWrap(True)
+        check_layout.addWidget(self.labels['output'], 2, 1, 1, 2)
 
-    def action_buttons(self):
+        return check_widget
+
+    def get_buttons_widget(self):
         """
-        Create ack and downtime buttons
+        Create and return QWidget for ack and downtime buttons
 
         :return: QWidget with buttons
         :rtype: QWidget
