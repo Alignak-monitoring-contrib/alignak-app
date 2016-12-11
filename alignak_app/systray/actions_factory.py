@@ -59,10 +59,19 @@ class ActionFactory(object):
             parent
         )
 
+        if 'acknowledged' in name and 'Hosts' in content:
+            name = 'hosts_' + name
+        if 'downtime' in name and 'Hosts' in content:
+            name = 'hosts_' + name
+        if 'acknowledged' in name and 'Services' in content:
+            name = 'services_' + name
+        if 'downtime' in name and 'Services' in content:
+            name = 'services_' + name
         self.add_action(name, q_action)
 
     def add_action(self, name, q_action):
         """
+        Add action in actions dict for acces thereafter
 
         :param name: name of QAction
         :type name: str

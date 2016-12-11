@@ -159,13 +159,18 @@ class TestTrayIcon(unittest2.TestCase):
         hosts_states = dict(
             up=1,
             down=2,
-            unreachable=3
+            unreachable=3,
+            acknowledge=4,
+            downtime=5,
         )
         services_states = dict(
             ok=4,
             warning=5,
             critical=6,
-            unknown=7
+            unknown=7,
+            unreachable=8,
+            acknowledge=9,
+            downtime=10
         )
 
         under_test.update_menu_actions(hosts_states, services_states)
@@ -176,6 +181,10 @@ class TestTrayIcon(unittest2.TestCase):
                          under_test.action_factory.get('hosts_down').text())
         self.assertEqual('Hosts UNREACHABLE (3)',
                          under_test.action_factory.get('hosts_unreach').text())
+        self.assertEqual('Hosts ACKNOWLEDGE (4)',
+                         under_test.action_factory.get('hosts_acknowledged').text())
+        self.assertEqual('Hosts DOWNTIME (5)',
+                         under_test.action_factory.get('hosts_downtime').text())
 
         self.assertEqual('Services OK (4)',
                          under_test.action_factory.get('services_ok').text())
@@ -185,3 +194,9 @@ class TestTrayIcon(unittest2.TestCase):
                          under_test.action_factory.get('services_critical').text())
         self.assertEqual('Services UNKNOWN (7)',
                          under_test.action_factory.get('services_unknown').text())
+        self.assertEqual('Services UNREACHABLE (8)',
+                         under_test.action_factory.get('services_unreachable').text())
+        self.assertEqual('Services ACKNOWLEDGE (9)',
+                         under_test.action_factory.get('services_acknowledged').text())
+        self.assertEqual('Services DOWNTIME (10)',
+                         under_test.action_factory.get('services_downtime').text())

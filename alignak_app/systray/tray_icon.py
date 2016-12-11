@@ -124,10 +124,24 @@ class TrayIcon(QSystemTrayIcon):
         )
         self.action_factory.get('hosts_down').triggered.connect(self.open_url)
 
+        self.action_factory.create(
+            'acknowledged',
+            'Hosts ACKNOWLEDGE, Wait...',
+            self.hosts_menu
+        )
+
+        self.action_factory.create(
+            'downtime',
+            'Hosts DOWNTIME, Wait...',
+            self.hosts_menu
+        )
+
         # Add hosts actions to menu
         self.hosts_menu.addAction(self.action_factory.get('hosts_up'))
         self.hosts_menu.addAction(self.action_factory.get('hosts_unreach'))
         self.hosts_menu.addAction(self.action_factory.get('hosts_down'))
+        self.hosts_menu.addAction(self.action_factory.get('hosts_acknowledged'))
+        self.hosts_menu.addAction(self.action_factory.get('hosts_downtime'))
 
         self.menu.addMenu(self.hosts_menu)
 
@@ -169,11 +183,32 @@ class TrayIcon(QSystemTrayIcon):
         )
         self.action_factory.get('services_unknown').triggered.connect(self.open_url)
 
+        self.action_factory.create(
+            'services_unreachable',
+            'Services UNREACHABLE, Wait...',
+            self.services_menu
+        )
+
+        self.action_factory.create(
+            'acknowledged',
+            'Services ACKNOWLEDGE, Wait...',
+            self.services_menu
+        )
+
+        self.action_factory.create(
+            'downtime',
+            'Services UNKNOWN, Wait...',
+            self.services_menu
+        )
+
         # Add services actions to menu
         self.services_menu.addAction(self.action_factory.get('services_ok'))
         self.services_menu.addAction(self.action_factory.get('services_warning'))
         self.services_menu.addAction(self.action_factory.get('services_critical'))
         self.services_menu.addAction(self.action_factory.get('services_unknown'))
+        self.services_menu.addAction(self.action_factory.get('services_unreachable'))
+        self.services_menu.addAction(self.action_factory.get('services_acknowledged'))
+        self.services_menu.addAction(self.action_factory.get('services_downtime'))
 
         self.menu.addMenu(self.services_menu)
 
@@ -274,11 +309,16 @@ class TrayIcon(QSystemTrayIcon):
 
         host_nb = hosts['up'] + \
             hosts['down'] + \
-            hosts['unreachable']
+            hosts['unreachable'] + \
+            hosts['downtime'] + \
+            hosts['acknowledge']
         services_nb = services['ok'] + \
             services['warning'] + \
             services['critical'] + \
-            services['unknown']
+            services['unknown'] + \
+            services['unreachable'] + \
+            services['downtime'] + \
+            services['acknowledge']
 
         if hosts['down'] != 0:
             self.hosts_menu.setIcon(QIcon(get_image_path('hosts_down')))
@@ -305,6 +345,10 @@ class TrayIcon(QSystemTrayIcon):
             'Hosts DOWN (' + str(hosts['down']) + ')')
         self.action_factory.get('hosts_unreach').setText(
             'Hosts UNREACHABLE (' + str(hosts['unreachable']) + ')')
+        self.action_factory.get('hosts_acknowledged').setText(
+            'Hosts ACKNOWLEDGE (' + str(hosts['acknowledge']) + ')')
+        self.action_factory.get('hosts_downtime').setText(
+            'Hosts DOWNTIME (' + str(hosts['downtime']) + ')')
 
         self.action_factory.get('services_ok').setText(
             'Services OK (' + str(services['ok']) + ')')
@@ -314,6 +358,12 @@ class TrayIcon(QSystemTrayIcon):
             'Services WARNING (' + str(services['warning']) + ')')
         self.action_factory.get('services_unknown').setText(
             'Services UNKNOWN (' + str(services['unknown']) + ')')
+        self.action_factory.get('services_unreachable').setText(
+            'Services UNREACHABLE (' + str(services['unreachable']) + ')')
+        self.action_factory.get('services_acknowledged').setText(
+            'Services ACKNOWLEDGE (' + str(services['acknowledge']) + ')')
+        self.action_factory.get('services_downtime').setText(
+            'Services DOWNTIME (' + str(services['downtime']) + ')')
 
     @staticmethod
     def quit_app():  # pragma: no cover

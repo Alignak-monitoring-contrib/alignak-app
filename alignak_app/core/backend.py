@@ -243,17 +243,23 @@ class AppBackend(object):
             'hosts': {
                 'up': 0,
                 'down': 0,
-                'unreachable': 0
+                'unreachable': 0,
+                'acknowledge': 0,
+                'downtime': 0
             },
             'services': {
                 'ok': 0,
                 'critical': 0,
                 'unknown': 0,
-                'warning': 0
+                'warning': 0,
+                'unreachable': 0,
+                'acknowledge': 0,
+                'downtime': 0
             }
         }
 
         live_synthesis = self.get('livesynthesis')
+        print(live_synthesis)
 
         for realm in live_synthesis['_items']:
             states['hosts']['up'] += realm['hosts_up_soft']
@@ -264,6 +270,9 @@ class AppBackend(object):
 
             states['hosts']['down'] += realm['hosts_down_soft']
             states['hosts']['down'] += realm['hosts_down_hard']
+
+            states['hosts']['acknowledge'] += realm['hosts_acknowledged']
+            states['hosts']['downtime'] += realm['hosts_in_downtime']
 
             states['services']['ok'] += realm['services_ok_soft']
             states['services']['ok'] += realm['services_ok_hard']
@@ -276,6 +285,12 @@ class AppBackend(object):
 
             states['services']['unknown'] += realm['services_unknown_soft']
             states['services']['unknown'] += realm['services_unknown_hard']
+
+            states['services']['unreachable'] += realm['services_unreachable_soft']
+            states['services']['unreachable'] += realm['services_unreachable_hard']
+
+            states['services']['acknowledge'] += realm['services_acknowledged']
+            states['services']['downtime'] += realm['services_in_downtime']
 
         logger.info('Store current states...')
         self.states['hosts'] = states['hosts']
