@@ -23,6 +23,9 @@
     App Synthesis manage widget for Synthesis QWidget.
 """
 
+import time
+import datetime
+
 from logging import getLogger
 
 from alignak_app.core.utils import get_image_path
@@ -224,6 +227,13 @@ class HostView(QWidget):
                 'user': user['_id'],
                 'comment': comment
             }
+
+            if 'actiondowntime' in sender.objectName():
+                start_time = datetime.datetime.now()
+                end_time = start_time + datetime.timedelta(days=1)
+                data['start_time'] = start_time.timestamp()
+                data['end_time'] = end_time.timestamp()
+                data['fixed'] = True
 
             action = self.app_backend.post(sender.objectName(), data)
 
