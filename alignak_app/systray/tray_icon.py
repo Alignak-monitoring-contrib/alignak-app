@@ -124,6 +124,8 @@ class TrayIcon(QSystemTrayIcon):
         )
         self.action_factory.get('hosts_down').triggered.connect(self.open_url)
 
+        self.hosts_menu.addSeparator()
+
         self.action_factory.create(
             'acknowledged',
             'Hosts ACKNOWLEDGE, Wait...',
@@ -188,6 +190,8 @@ class TrayIcon(QSystemTrayIcon):
             'Services UNREACHABLE, Wait...',
             self.services_menu
         )
+
+        self.services_menu.addSeparator()
 
         self.action_factory.create(
             'acknowledged',

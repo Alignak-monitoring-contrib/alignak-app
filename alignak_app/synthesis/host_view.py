@@ -111,9 +111,9 @@ class HostView(QWidget):
         """
 
         states_widget = QWidget(self)
-        states_widget.setObjectName('states')
+        states_widget.setObjectName("states")
         states_widget.setStyleSheet(
-            'QWidget#states{border: 1px solid #03a9f4;border-radius: 16px;}'
+            'QWidget#states{border: 1.5px solid #03a9f4;border-radius: 16px;}'
         )
         states_layout = QGridLayout()
         states_widget.setLayout(states_layout)
@@ -121,6 +121,7 @@ class HostView(QWidget):
         self.labels['state_icon'].setFixedSize(64, 64)
         self.labels['state_icon'].setPixmap(self.get_host_icon(''))
         states_layout.addWidget(self.labels['state_icon'], 0, 0, 2, 2)
+        states_layout.setAlignment(self.labels['state_icon'], Qt.AlignCenter)
 
         self.labels['name'].setWordWrap(True)
         states_layout.addWidget(self.labels['name'], 2, 0, 1, 2)
@@ -129,6 +130,7 @@ class HostView(QWidget):
         self.labels['real_state_icon'].setScaledContents(True)
         self.labels['real_state_icon'].setPixmap(self.get_host_icon(''))
         states_layout.addWidget(self.labels['real_state_icon'], 2, 2, 1, 1)
+        states_layout.setAlignment(self.labels['real_state_icon'], Qt.AlignCenter)
 
         real_state_text = QLabel('Host real state, excluding services')
         real_state_text.setWordWrap(True)

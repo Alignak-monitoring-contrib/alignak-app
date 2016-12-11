@@ -75,6 +75,25 @@ class ServicesView(QWidget):
         self.layout.setAlignment(Qt.AlignCenter)
 
         widget = QWidget()
+        widget.setStyleSheet(
+            """
+            QLabel#OK {
+                border-style: solid;border-width:0px 0px 2px 0px;border-color: #27ae60;
+            }
+            QLabel#WARNING {
+                border-style: solid;border-width:0px 0px 2px 0px;border-color: #e67e22;
+            }
+            QLabel#CRITICAL {
+                border-style: solid;border-width:0px 0px 2px 0px;border-color: #e74c3c;
+            }
+            QLabel#UNKNOWN {
+                border-style: solid;border-width:0px 0px 2px 0px;border-color: #2980b9;
+            }
+            QLabel#UNREACHABLE {
+                border-style: solid;border-width:0px 0px 2px 0px;border-color: dark-grey;
+            }
+            """
+        )
         layout = QGridLayout()
 
         pos = 0
@@ -90,7 +109,6 @@ class ServicesView(QWidget):
 
             # Service name
             service_name = QLabel('NOT FOUND')
-            service_name.setObjectName('name')
             service_name.setMinimumHeight(30)
             layout.addWidget(service_name, pos, 1)
 
@@ -106,6 +124,8 @@ class ServicesView(QWidget):
                 # Service name
                 service_name = QLabel(service['name'].title())
                 service_name.setMinimumHeight(30)
+                service_name.setToolTip('Service is ' + service['ls_state'])
+                service_name.setObjectName(service['ls_state'])
                 layout.addWidget(service_name, pos, 1)
 
                 # Last check
@@ -119,6 +139,7 @@ class ServicesView(QWidget):
                 output_name = QLabel('<b>Output:</b>')
                 layout.addWidget(output_name, pos, 4)
                 output_service = QLabel(service['ls_output'])
+                output_service.setToolTip('Output of service')
                 layout.addWidget(output_service, pos, 5, 1, 2)
                 pos += 1
 

@@ -67,7 +67,7 @@ class NotificationFactory(QWidget):
         :param item_type: if needed, precise if "hosts" or "services"
         :type item_type: str
         """
-        print(state_name)
+
         # Icon
         icon = QPixmap(get_image_path(state_name))
         label_icon = QLabel()
@@ -88,7 +88,7 @@ class NotificationFactory(QWidget):
         # QProgressBar
         progress_bar = QProgressBar()
         progress_bar.setValue(0)
-        progress_bar.setFixedHeight(22)
+        progress_bar.setFixedHeight(20)
 
         # Layout
         self.main_layout.addWidget(label_icon, self.pos, 0)
@@ -172,12 +172,21 @@ class NotificationFactory(QWidget):
                     QPixmap(get_image_path('services_none'))
                 )
         else:
+            # Check if downtime
             if 'hosts_downtime' in state_name or 'services_downtime' in state_name:
-                self.state_data[state_name]['icon'].setPixmap(QPixmap(get_image_path('downtime')))
+                self.state_data[state_name]['icon'].setPixmap(
+                    QPixmap(get_image_path('downtime'))
+                )
+            # Check if ack
             elif 'hosts_acknowledged' in state_name or 'services_acknowledged' in state_name:
-                self.state_data[state_name]['icon'].setPixmap(QPixmap(get_image_path('acknowledged')))
+                self.state_data[state_name]['icon'].setPixmap(
+                    QPixmap(get_image_path('acknowledged'))
+                )
+            # Else apply normal icon
             else:
-                self.state_data[state_name]['icon'].setPixmap(QPixmap(get_image_path(state_name)))
+                self.state_data[state_name]['icon'].setPixmap(
+                    QPixmap(get_image_path(state_name))
+                )
 
         if isinstance(diff, int):
             self.state_data[state_name]['diff'].setText('<b>(' + "{0:+d}".format(diff) + ')</b>')
@@ -245,34 +254,27 @@ class NotificationFactory(QWidget):
         :rtype: str
         """
 
-        if "hosts_up" in name:
-            label = "Hosts UP:"
-        elif "hosts_down" == name:
-            label = "Hosts DOWN:"
-        elif "hosts_unreach" in name:
-            label = "Hosts UNREACHABLE:"
-        elif "hosts_acknowledged" in name:
-            label = "Hosts ACKNOWLEDGE"
-        elif "hosts_downtime" == name:
-            label = "Hosts DOWNTIME"
-        elif "services_ok" in name:
-            label = "Services OK:"
-        elif "services_warning" in name:
-            label = "Services WARNING:"
-        elif "services_critical" in name:
-            label = "Services CRITICAL:"
-        elif "services_unknown" in name:
-            label = "Services UNKNOWN:"
-        elif "services_unreachable" in name:
-            label = "Services UNREACHABLE"
-        elif "services_acknowledged" in name:
-            label = "Services ACKNOWLEDGE"
-        elif "services_downtime" in name:
-            label = "Services DOWNTIME"
-        else:
-            label = "Unknown field"
+        label_model = {
+            "hosts_up": "Hosts UP:",
+            "hosts_down": "Hosts DOWN:",
+            "hosts_unreach": "Hosts UNREACHABLE:",
+            "hosts_acknowledged": "Hosts ACKNOWLEDGE:",
+            "hosts_downtime": "Hosts DOWNTIME:",
+            "services_ok": "Services OK:",
+            "services_warning": "Services WARNING:",
+            "services_critical": "Services CRITICAL:",
+            "services_unknown": "Services UNKNOWN:",
+            "services_unreachable": "Services UNREACHABLE:",
+            "services_acknowledged": "Services ACKNOWLEDGED:",
+            "services_downtime": "Services DOWNTIME:",
+        }
 
-        return label
+        try:
+            return label_model[name]
+        except KeyError as e:
+            logger.error('Notification name : ' + name)
+            logger.error(str(e))
+            return 'Unknow field'
 
     def bar_style_sheet(self, label_state):
         """
