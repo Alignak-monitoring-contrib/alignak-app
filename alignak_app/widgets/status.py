@@ -57,10 +57,8 @@ class AlignakStatus(QWidget):
         super(AlignakStatus, self).__init__(parent)
         # General settings
         self.setWindowTitle(__application__)
-        self.setContentsMargins(0, 0, 0, 0)
         self.setWindowIcon(QIcon(get_image_path('icon')))
         self.setToolTip('Daemons Status')
-        self.setWindowFlags(Qt.FramelessWindowHint)
         # Fields
         self.layout = None
         self.start = True
@@ -165,6 +163,8 @@ class AlignakStatus(QWidget):
 
                 self.daemons_labels[daemon][sub_daemon]['label'].setObjectName(sub_daemon)
                 self.daemons_labels[daemon][sub_daemon]['icon'].setAlignment(Qt.AlignCenter)
+                self.daemons_labels[daemon][sub_daemon]['icon'].setFixedSize(24, 24)
+                self.daemons_labels[daemon][sub_daemon]['icon'].setScaledContents(True)
 
                 if alignak_map[daemon][sub_daemon]['alive']:
                     self.daemons_labels[daemon][sub_daemon]['icon'].setPixmap(
