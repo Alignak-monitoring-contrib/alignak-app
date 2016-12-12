@@ -201,7 +201,7 @@ class TrayIcon(QSystemTrayIcon):
 
         self.action_factory.create(
             'downtime',
-            'Services UNKNOWN, Wait...',
+            'Services DOWNTIME, Wait...',
             self.services_menu
         )
 
