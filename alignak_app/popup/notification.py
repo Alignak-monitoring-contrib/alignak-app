@@ -161,19 +161,19 @@ class AppNotification(QWidget):
             'hosts_unreach',
             hosts_states['unreachable'],
             diff['hosts']['unreachable'],
-            percentages['unreachable']
+            percentages['hosts_unreachable']
         )
         self.popup_factory.update_states(
             'hosts_acknowledged',
             hosts_states['acknowledge'],
             diff['hosts']['acknowledge'],
-            percentages['acknowledge']
+            percentages['hosts_acknowledge']
         )
         self.popup_factory.update_states(
             'hosts_downtime',
             hosts_states['downtime'],
             diff['hosts']['downtime'],
-            percentages['downtime']
+            percentages['hosts_downtime']
         )
 
         # Services
@@ -205,19 +205,19 @@ class AppNotification(QWidget):
             'services_unreachable',
             services_states['unreachable'],
             diff['services']['unreachable'],
-            percentages['unreachable']
+            percentages['services_unreachable']
         )
         self.popup_factory.update_states(
             'services_acknowledged',
             services_states['acknowledge'],
             diff['services']['acknowledge'],
-            percentages['acknowledge']
+            percentages['services_acknowledge']
         )
         self.popup_factory.update_states(
             'services_downtime',
             services_states['downtime'],
             diff['services']['downtime'],
-            percentages['downtime']
+            percentages['services_downtime']
         )
 
     def set_position(self):

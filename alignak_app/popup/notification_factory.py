@@ -229,17 +229,19 @@ class NotificationFactory(QWidget):
         # Calculates the percentage
         percentages['up'] = float((hosts_states['up'] * 100) / hosts_sum)
         percentages['down'] = float((hosts_states['down'] * 100) / hosts_sum)
-        percentages['unreachable'] = float((hosts_states['unreachable'] * 100) / hosts_sum)
-        percentages['acknowledge'] = float((hosts_states['acknowledge'] * 100) / hosts_sum)
-        percentages['downtime'] = float((hosts_states['downtime'] * 100) / hosts_sum)
+        percentages['hosts_unreachable'] = float((hosts_states['unreachable'] * 100) / hosts_sum)
+        percentages['hosts_acknowledge'] = float((hosts_states['acknowledge'] * 100) / hosts_sum)
+        percentages['hosts_downtime'] = float((hosts_states['downtime'] * 100) / hosts_sum)
 
         percentages['ok'] = float((services_states['ok'] * 100) / services_sum)
         percentages['warning'] = float((services_states['warning'] * 100) / services_sum)
         percentages['critical'] = float((services_states['critical'] * 100) / services_sum)
         percentages['unknown'] = float((services_states['unknown'] * 100) / services_sum)
-        percentages['unreachable'] = float((services_states['unreachable'] * 100) / services_sum)
-        percentages['acknowledge'] = float((services_states['acknowledge'] * 100) / services_sum)
-        percentages['downtime'] = float((services_states['downtime'] * 100) / services_sum)
+        percentages['services_unreachable'] = \
+            float((services_states['unreachable'] * 100) / services_sum)
+        percentages['services_acknowledge'] = \
+            float((services_states['acknowledge'] * 100) / services_sum)
+        percentages['services_downtime'] = float((services_states['downtime'] * 100) / services_sum)
 
         return percentages
 
