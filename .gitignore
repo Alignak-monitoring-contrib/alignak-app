@@ -6,6 +6,7 @@
 *.pyc
 __pycache__/
 .coverage
+*.spec
 
 # Sphinx documentation
 docs/_build/
