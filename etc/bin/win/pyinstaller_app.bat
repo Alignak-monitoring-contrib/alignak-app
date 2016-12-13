@@ -7,7 +7,7 @@ rm -R dist
  --onefile ^
  --windowed ^
  --icon etc\bin\win\icon.ico ^
- --paths C:\%HOMEPATH%\AppData\Roaming\Python\Python35\site-packages\PyQt5 ^
+ --paths C:\%HOMEPATH%\AppData\Roaming\Python\Python35\site-packages\PyQt5\Qt\bin ^
  etc\bin\unix\alignak-app.py
 
 pause
