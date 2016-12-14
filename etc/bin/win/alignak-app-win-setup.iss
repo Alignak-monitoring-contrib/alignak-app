@@ -4,7 +4,7 @@
 #define MyAppName "Alignak-app"
 #define MyAppVersion "0.5"
 #define MyAppPublisher "Alignak (Estrada Matthieu)"
-#define MyAppURL "http://alignak-monitoring.github.io"
+#define MyAppURL "https://github.com/Alignak-monitoring-contrib/alignak-app"
 #define MyAppExeName "alignak-app.exe"
 #define RootApp "D:\INSTALL"
 
@@ -24,7 +24,7 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 LicenseFile={#RootApp}\alignak-app\LICENSE
 OutputDir={#RootApp}\alignak-app\dist\setup
-OutputBaseFilename=Setup {#MyAppName} {#MyAppVersion}
+OutputBaseFilename=Setup {#MyAppName} {#MyAppVersion}-64bits
 SetupIconFile={#RootApp}\alignak-app\etc\bin\win\icon.ico
 Compression=lzma
 SolidCompression=yes
@@ -42,12 +42,31 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "{#RootApp}\alignak-app\dist\alignak-app.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#RootApp}\alignak-app\etc\images\*"; DestDir: "{userappdata}\Python\alignak_app\images"; Flags: ignoreversion
 Source: "{#RootApp}\alignak-app\etc\templates\*"; DestDir: "{userappdata}\Python\alignak_app\templates"; Flags: ignoreversion
-Source: "{#RootApp}\alignak-app\etc\settings.cfg"; DestDir: "{userappdata}\Python\alignak_app\"; Flags: ignoreversion
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+Source: "{#RootApp}\alignak-app\etc\settings.cfg"; DestDir: "{app}"; Flags: ignoreversion; Permissions: everyone-full
+Source: "{#RootApp}\alignak-app\etc\bin\win\vc_redist.x64.exe"; DestDir: {tmp}; Check: IsWin64; Flags: deleteafterinstall
+Source: "{#RootApp}\alignak-app\etc\bin\win\vc_redist.x86.exe"; DestDir: {tmp}; Check: not IsWin64; Flags: deleteafterinstall
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\alignak-app.exe";
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\alignak-app.exe"; Tasks: desktopicon
 
+[Code]
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if CurStep = ssPostInstall then
+  begin
+    MsgBox(ExpandConstant(
+      'Configuration file is located under folder'
+      + #13#10 
+      + ' [ {app} ] !' 
+      + #13#10 
+      + 'For any assistance, please consult: https://github.com/Alignak-monitoring-contrib/alignak-app !'),
+       mbInformation,
+        MB_OK);
+  end
+end;
+
 [Run]
+Filename: {tmp}\vc_redist.x64.exe; Parameters: "/q /passive /Q:a /c:""msiexec /q /i vcredist.msi"" "; Check: IsWin64; StatusMsg: Installing VC++ 64bits Redistributables...
+Filename: {tmp}\vc_redist.x86.exe; Parameters: "/q /passive /Q:a /c:""msiexec /q /i vcredist.msi"" "; Check: not IsWin64; StatusMsg: Installing VC++ 32Bits Redistributables...
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent

@@ -120,13 +120,12 @@ def set_app_config():
 
     logger.info('Read configuration file...')
     try:
-        if os.path.isfile(config_filenames):
-            app_config.read(config_filenames)
-            logger.info('Configuration file is OK.')
+	    app_config.read(config_filenames)
+	    logger.info('Configuration file is OK.')
     except Exception as e:
-        logger.error('Configuration file is missing in [' + config_filenames + '] !')
+        logger.error('Configuration file is missing in [' + str(config_filenames) + '] !')
         logger.error(str(e))
-        sys.exit('Configuration file is missing in [' + config_filenames + '] !')
+        sys.exit('Configuration file is missing in [' + str(config_filenames) + '] !')
 
 
 def get_app_config(section, option, boolean=False):
