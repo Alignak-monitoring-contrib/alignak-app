@@ -102,19 +102,31 @@ def set_app_config():
 
     """
 
-    config_file = get_app_root() + '/alignak_app/settings.cfg'
-
     # Define "app_config" as "global" to access it from anywhere
     global app_config  # pylint: disable=global-statement
-    app_config = configparser.ConfigParser()
+
+    if 'linux' in sys.platform or 'sunos5' in sys.platform:
+        config_filenames = get_app_root() + '/alignak_app/settings.cfg'
+    elif 'win32' in sys.platform:  # pragma: no cover - not testable
+        config_filenames = [
+            get_app_root() + '\\alignak_app\\settings.cfg',
+            'C:\\Program Files (x86)\\Alignak-app\\settings.cfg',
+            'C:\\Program Files\\Alignak-app\\settings.cfg'
+        ]
+    else:
+        config_filenames = get_app_root() + '/alignak_app/settings.cfg'
+
+    app_config = configparser.RawConfigParser()
 
     logger.info('Read configuration file...')
-    if os.path.isfile(config_file):
-        app_config.read(config_file)
-        logger.info('Configuration file is OK.')
-    else:
-        logger.error('Configuration file is missing in [' + config_file + '] !')
-        sys.exit('Configuration file is missing in [' + config_file + '] !')
+    try:
+        if os.path.isfile(config_filenames):
+            app_config.read(config_filenames)
+            logger.info('Configuration file is OK.')
+    except Exception as e:
+        logger.error('Configuration file is missing in [' + config_filenames + '] !')
+        logger.error(str(e))
+        sys.exit('Configuration file is missing in [' + config_filenames + '] !')
 
 
 def get_app_config(section, option, boolean=False):
