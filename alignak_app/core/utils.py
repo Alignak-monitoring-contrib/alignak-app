@@ -120,8 +120,8 @@ def set_app_config():
 
     logger.info('Read configuration file...')
     try:
-	    app_config.read(config_filenames)
-	    logger.info('Configuration file is OK.')
+        app_config.read(config_filenames)
+        logger.info('Configuration file is OK.')
     except Exception as e:
         logger.error('Configuration file is missing in [' + str(config_filenames) + '] !')
         logger.error(str(e))
