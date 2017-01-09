@@ -94,14 +94,11 @@ default_parameters = {
 app_config = None
 
 
-def set_app_config():
-    """
-    Create app_config
-
+def get_filenames():
     """
 
-    # Define "app_config" as "global" to access it from anywhere
-    global app_config  # pylint: disable=global-statement
+    :return:
+    """
 
     if 'linux' in sys.platform or 'sunos5' in sys.platform:
         config_filenames = get_app_root() + '/alignak_app/settings.cfg'
@@ -114,16 +111,28 @@ def set_app_config():
     else:
         config_filenames = get_app_root() + '/alignak_app/settings.cfg'
 
+    return config_filenames
+
+
+def init_config():
+    """
+    Create app_config
+
+    """
+
+    # Define "app_config" as "global" to access it from anywhere
+    global app_config  # pylint: disable=global-statement
+
     app_config = configparser.ConfigParser()
 
     logger.info('Read configuration file...')
     try:
-        app_config.read(config_filenames)
+        app_config.read(get_filenames())
         logger.info('Configuration file is OK.')
     except Exception as e:
-        logger.error('Configuration file is missing in [' + str(config_filenames) + '] !')
+        logger.error('Configuration file is missing in [' + str(get_filenames()) + '] !')
         logger.error(str(e))
-        sys.exit('Configuration file is missing in [' + str(config_filenames) + '] !')
+        sys.exit('Configuration file is missing in [' + str(get_filenames()) + '] !')
 
 
 def get_app_config(section, option, boolean=False):
@@ -146,6 +155,32 @@ def get_app_config(section, option, boolean=False):
             logger.error('Missing Option in configuration file : ' + str(e))
             logger.error('Replace by : ' + option + ': ' + str(default_parameters[option]))
             return default_parameters[option]
+
+
+def set_app_config(section, option, value):
+    """
+    Set an option in configuration file
+
+    :param section:
+    :param option:
+    :param value:
+    """
+
+    try:
+        # Read configuration file and store in list
+        with open(get_filenames(), 'r') as file:
+            data = file.readlines()
+
+        # Update values
+        for d in data:
+            if option in d[0:len(option)]:
+                data[data.index(d)] = option + ' = ' + value + '\n'
+        app_config.set(section, option, value)
+        with open(get_filenames(), 'w') as file:
+            file.writelines(data)
+
+    except NoOptionError as e:
+        logger.error('Can\'t set Option in configuration file : ' + str(e))
 
 
 # Application Templates

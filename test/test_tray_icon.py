@@ -25,7 +25,7 @@ import unittest2
 
 from alignak_app.core.backend import AppBackend
 from alignak_app.core.utils import get_image_path
-from alignak_app.core.utils import set_app_config
+from alignak_app.core.utils import init_config
 from alignak_app.systray.tray_icon import TrayIcon
 
 try:
@@ -46,7 +46,7 @@ class TestTrayIcon(unittest2.TestCase):
         This file test the TrayIcon class.
     """
 
-    set_app_config()
+    init_config()
 
     icon = QIcon(get_image_path('icon'))
 

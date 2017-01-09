@@ -27,7 +27,7 @@ from logging import getLogger
 
 from alignak_app import __short_version__
 from alignak_app.core.backend import AppBackend, Backend, BackendException
-from alignak_app.core.utils import get_app_config
+from alignak_app.core.utils import get_app_config, set_app_config
 from alignak_app.widgets.title import get_widget_title
 
 
@@ -35,12 +35,12 @@ try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QDialog, QPushButton  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QVBoxLayout, QLabel  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QGridLayout, QLabel  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QLineEdit, Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication  # pylint: disable=import-error
     from PyQt4.Qt import QDialog, QPushButton  # pylint: disable=import-error
-    from PyQt4.Qt import QVBoxLayout, QLabel  # pylint: disable=import-error
+    from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
     from PyQt4.Qt import QLineEdit, Qt  # pylint: disable=import-error
 
 
@@ -57,6 +57,7 @@ class AppLogin(QDialog):
         self.setWindowTitle('Connect to Alignak')
         self.resize(320, 150)
         self.app_backend = AppBackend()
+        self.backend_url = None
         self.username_line = None
         self.password_line = None
         self.message = None
@@ -67,16 +68,21 @@ class AppLogin(QDialog):
 
         """
 
-        layout = QVBoxLayout(self)
+        layout = QGridLayout(self)
 
         # QDialog title
         popup_title = get_widget_title('', self)
-        layout.addWidget(popup_title, 0)
+        layout.addWidget(popup_title, 0, 0, 1, 2)
 
         # Login text
-        login_line = QLabel('<b>LOGIN</b>')
+        login_line = QLabel('<b>Login</b>')
         login_line.setStyleSheet('color: #1fb4e4; font-size: 18px;')
-        layout.addWidget(login_line, 1)
+        layout.addWidget(login_line, 1, 0, 1, 1)
+
+        # Configure button
+        conf_button = QPushButton('Server')
+        conf_button.clicked.connect(self.handle_server)
+        layout.addWidget(conf_button, 1, 1, 1, 1)
 
         # Welcome text
         welcome = QLabel(
@@ -85,29 +91,30 @@ class AppLogin(QDialog):
             '</b><br>Please enter your credentials'
         )
         welcome.setStyleSheet('font-size: 14px; text-align: center;')
-        layout.addWidget(welcome, 2)
+        layout.addWidget(welcome, 2, 0, 1, 2)
         layout.setAlignment(welcome, Qt.AlignTrailing)
 
         # Username field
         self.username_line = QLineEdit(self)
         self.username_line.setPlaceholderText('Username')
-        layout.addWidget(self.username_line, 3)
+        layout.addWidget(self.username_line, 3, 0, 1, 2)
 
         # Password field
         self.password_line = QLineEdit(self)
         self.password_line.setPlaceholderText('Password')
         self.password_line.setEchoMode(QLineEdit.Password)
-        layout.addWidget(self.password_line, 4)
+        layout.addWidget(self.password_line, 4, 0, 1, 2)
 
         # Login button
         login_button = QPushButton('Login', self)
         login_button.clicked.connect(self.handle_login)
+        login_button.setDefault(True)
         self.password_line.returnPressed.connect(login_button.click)
-        layout.addWidget(login_button, 5)
+        layout.addWidget(login_button, 5, 0, 1, 2)
 
         # Message output
         self.message = QLabel('...')
-        layout.addWidget(self.message, 6)
+        layout.addWidget(self.message, 6, 0, 1, 2)
         layout.setAlignment(self.message, Qt.AlignCenter)
 
         self.setLayout(layout)
@@ -121,7 +128,7 @@ class AppLogin(QDialog):
         username = self.username_line.text()
         password = self.password_line.text()
 
-        self.app_backend.backend = Backend(get_app_config('Backend', 'backend_url'))
+        self.app_backend.backend = Backend(get_app_config('Backend', 'alignak_backend'))
 
         try:
             resp = self.app_backend.backend.login(str(username), str(password))
@@ -139,3 +146,35 @@ class AppLogin(QDialog):
             self.message.setStyleSheet('color: red;')
             logger.error('Bad credentials in login form ! Missing password !')
             logger.error(str(e))
+
+    def handle_server(self):
+        """
+        TODO
+        :return:
+        """
+
+        server_dialog = QDialog(self)
+        server_dialog.setWindowTitle('Server Configuration')
+        server_dialog.setMinimumSize(250, 100)
+
+        layout = QGridLayout()
+        server_dialog.setLayout(layout)
+
+        server_desc = QLabel(
+            '<b>Server:</b> Here you can define alignak server url. '
+            '<b>Be sure to enter a valid address</b>'
+        )
+        server_desc.setWordWrap(True)
+        layout.addWidget(server_desc)
+
+        server_url = QLineEdit()
+        server_url.setPlaceholderText('alignak server url')
+        server_url.setText(get_app_config('Backend', 'alignak_url'))
+        layout.addWidget(server_url)
+
+        valid_btn = QPushButton('Valid')
+        valid_btn.clicked.connect(server_dialog.accept)
+        layout.addWidget(valid_btn)
+
+        if server_dialog.exec_() == QDialog.Accepted:
+            set_app_config('Backend', 'alignak_url', server_url.text().rstrip())

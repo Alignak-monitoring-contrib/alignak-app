@@ -28,7 +28,7 @@ import sys
 from logging import getLogger
 
 from alignak_app.core.backend import AppBackend
-from alignak_app.core.utils import get_image_path, set_app_config
+from alignak_app.core.utils import get_image_path, init_config
 from alignak_app.synthesis.host_view import HostView
 from alignak_app.synthesis.services_view import ServicesView
 from alignak_app.widgets.title import get_widget_title
@@ -184,7 +184,7 @@ class Synthesis(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 
-    set_app_config()
+    init_config()
 
     synthesis = Synthesis()
     backend = AppBackend()

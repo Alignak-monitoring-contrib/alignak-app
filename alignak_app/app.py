@@ -29,7 +29,7 @@ from logging import DEBUG, INFO
 from alignak_app.core.logs import create_logger
 from alignak_app.core.notifier import AppNotifier
 from alignak_app.core.utils import get_image_path
-from alignak_app.core.utils import set_app_config, get_app_config
+from alignak_app.core.utils import init_config, get_app_config
 from alignak_app.systray.tray_icon import TrayIcon
 from alignak_app.widgets.login import AppLogin
 from alignak_app.core.backend import AppBackend
@@ -61,7 +61,7 @@ class AlignakApp(object):
         """
 
         # Initialize configuration
-        set_app_config()
+        init_config()
 
         # Define level of logger
         if get_app_config('Alignak-App', 'debug', boolean=True):

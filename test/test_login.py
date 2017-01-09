@@ -23,7 +23,7 @@ import sys
 
 import unittest2
 
-from alignak_app.core.utils import set_app_config
+from alignak_app.core.utils import init_config
 from alignak_app.widgets.login import AppLogin
 
 try:
@@ -38,7 +38,7 @@ class TestAppLogin(unittest2.TestCase):
         This file test the AppLogin class.
     """
 
-    set_app_config()
+    init_config()
 
     @classmethod
     def setUpClass(cls):

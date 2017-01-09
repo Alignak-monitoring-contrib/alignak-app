@@ -23,7 +23,7 @@ import sys
 
 import unittest2
 
-from alignak_app.core.utils import set_app_config
+from alignak_app.core.utils import init_config
 from alignak_app.synthesis.host_view import HostView
 from alignak_app.core.backend import AppBackend
 
@@ -41,7 +41,7 @@ class TestServicesView(unittest2.TestCase):
         This file test the ServicesView class.
     """
 
-    set_app_config()
+    init_config()
 
     app_backend = AppBackend()
     app_backend.login()

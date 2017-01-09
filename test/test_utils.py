@@ -47,7 +47,7 @@ QProgressBar::chunk {
 """
 
         # Initialize config
-        utils.set_app_config()
+        utils.init_config()
 
         # Get the template
         under_test = utils.get_template('progressbar_css.tpl', dict(bar_color='#27ae60'))
@@ -71,13 +71,13 @@ QProgressBar::chunk {
 
         self.assertIsNone(utils.app_config)
 
-        utils.set_app_config()
+        utils.init_config()
 
         self.assertIsNotNone(utils.app_config)
 
     def test_get_image_path(self):
         """Get Right Image Path"""
-        utils.set_app_config()
+        utils.init_config()
 
         expected_img = utils.get_app_root() + '/alignak_app/images/icon.svg'
 

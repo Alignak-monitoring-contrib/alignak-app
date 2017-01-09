@@ -23,7 +23,7 @@ import sys
 
 import unittest2
 
-from alignak_app.core.utils import set_app_config
+from alignak_app.core.utils import init_config
 from alignak_app.synthesis.services_view import ServicesView
 
 try:
@@ -38,7 +38,7 @@ class TestServicesView(unittest2.TestCase):
         This file test the ServicesView class.
     """
 
-    set_app_config()
+    init_config()
 
     @classmethod
     def setUpClass(cls):
