@@ -92,7 +92,7 @@ class AlignakStatus(QWidget):
         self.alignak_ws_request()
 
         if self.start \
-                and get_app_config('Backend', 'web_service_status', boolean=True) \
+                and get_app_config('Backend', 'web_service', boolean=True) \
                 and self.ws_request:
             self.center()
             self.show()
@@ -110,7 +110,7 @@ class AlignakStatus(QWidget):
         self.setLayout(self.layout)
 
         # Display daemons status or info windows
-        if get_app_config('Backend', 'web_service_status', boolean=True):
+        if get_app_config('Backend', 'web_service', boolean=True):
             self.alignak_ws_request()
             if self.ws_request:
 
@@ -129,7 +129,7 @@ class AlignakStatus(QWidget):
 
         try:
             self.ws_request = requests.get(
-                get_app_config('Backend', 'web_service_url') + '/alignak_map'
+                get_app_config('Backend', 'alignak_ws') + '/alignak_map'
             )
         except requests.ConnectionError as e:
             logger.error('Bad value in "web_service_url" option : ' + str(e))
@@ -291,7 +291,7 @@ QPushButton:hover{
 
         """
 
-        if get_app_config('Backend', 'web_service_status', boolean=True) and self.ws_request:
+        if get_app_config('Backend', 'web_service', boolean=True) and self.ws_request:
             self.update_status()
         else:
             self.web_service_info()

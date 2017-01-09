@@ -57,7 +57,7 @@ class AppBackend(object):
         password = get_app_config('Backend', 'password')
 
         # Create Backend object
-        backend_url = get_app_config('Backend', 'backend_url')
+        backend_url = get_app_config('Backend', 'alignak_backend')
         self.backend = Backend(backend_url)
 
         logger.debug('Backend URL : ' + backend_url)

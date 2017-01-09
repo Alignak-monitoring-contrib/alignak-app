@@ -71,9 +71,7 @@ default_parameters = {
     'debug': False,
     'username': '',
     'password': '',
-    'backend_url': 'http://127.0.0.1:5000',
-    'web_service_status': False,
-    'web_service_url': 'http://127.0.0.1:8888',
+    'alignak_url': 'http://127.0.0.1',
     'webui_url': 'http://127.0.0.1:5001',
     'path': '/alignak_app',
     'img': '/images',
@@ -116,7 +114,7 @@ def set_app_config():
     else:
         config_filenames = get_app_root() + '/alignak_app/settings.cfg'
 
-    app_config = configparser.RawConfigParser()
+    app_config = configparser.ConfigParser()
 
     logger.info('Read configuration file...')
     try:
