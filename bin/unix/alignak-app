@@ -87,8 +87,7 @@ if [ ! -L "$USER_BIN/$DAEMON" ]; then
     if [ ! -d "$USER_BIN" ]; then
         echo -e "
 Create:
-    $USER_BIN folder
-for $DAEMON...
+    $GREEN $USER_BIN folder for $DAEMON $END
             "
         mkdir "$USER_BIN"
     else

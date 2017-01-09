@@ -84,8 +84,8 @@ for template in templates:
 
 # Settings and bin
 data_files.append((paths['app'], ['etc/settings.cfg']))
-data_files.append((paths['bin'], ['etc/bin/unix/alignak-app']))
-data_files.append((paths['bin'], ['etc/bin/unix/alignak-app.py']))
+data_files.append((paths['bin'], ['bin/unix/alignak-app']))
+data_files.append((paths['bin'], ['bin/unix/alignak-app.py']))
 
 
 setup(
