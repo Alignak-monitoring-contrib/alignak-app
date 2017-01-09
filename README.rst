@@ -59,6 +59,34 @@ Build status (development release)
     :target: http://alignak-app.readthedocs.io/en/develop/?badge=develop
     :alt: Documentation Status
 
+Quick Install
+=============
+
+To install Alignak-app::
+
+	# For Linux users with python2
+    sudo apt-get install python-qt4
+    # For Linux and Windows users with python3
+    pip3 install PyQt5 --user
+
+    # For Windows users, we recommend using python3, else install PyQt from the download page
+
+    # Alignak App
+    pip install alignak_app --user
+
+    # As of now, the last version is not yet pip installable, so we:
+    git clone https://github.com/Alignak-monitoring-contrib/alignak-app
+    cd alignak-app
+    pip install . --user
+
+    # Run the app (1st run will finalize the installation)
+    $HOME/.local/alignak_app/alignak-app start
+
+    # Then you will be able for next runs to
+    alignak-app start
+
+You can find more help in the documentation below.
+
 Documentation
 =============
 
@@ -69,7 +97,7 @@ To learn more about Alignak, visit `http://alignak-monitoring.github.io <http://
 Bugs / Enhancements
 ===================
 
-Please open any issue on this `repository <https://github.com/Alignak-monitoring-contrib/alignak-app/issues>`_.
+Please open any issue or idea on this `repository <https://github.com/Alignak-monitoring-contrib/alignak-app/issues>`_.
 
 License
 =======
