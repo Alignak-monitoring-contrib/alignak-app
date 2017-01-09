@@ -60,8 +60,6 @@ class AlignakStatus(QWidget):
         self.setWindowIcon(QIcon(get_image_path('icon')))
         self.setToolTip('Daemons Status')
         # Fields
-        self.layout = None
-        self.start = True
         self.daemons = [
             'poller',
             'receiver',
@@ -91,13 +89,9 @@ class AlignakStatus(QWidget):
 
         self.alignak_ws_request()
 
-        if self.start \
-                and get_app_config('Backend', 'web_service', boolean=True) \
-                and self.ws_request:
+        if get_app_config('Backend', 'web_service', boolean=True) and self.ws_request:
             self.center()
             self.show()
-        else:
-            self.start = False
 
     def create_status(self):
         """
@@ -106,8 +100,8 @@ class AlignakStatus(QWidget):
         """
 
         # Add Layout
-        self.layout = QGridLayout()
-        self.setLayout(self.layout)
+        layout = QGridLayout()
+        self.setLayout(layout)
 
         # Display daemons status or info windows
         if get_app_config('Backend', 'web_service', boolean=True):
@@ -115,9 +109,9 @@ class AlignakStatus(QWidget):
             if self.ws_request:
 
                 self.create_daemons_labels()
-                self.daemons_to_layout()
+                self.daemons_to_layout(layout)
             else:
-                self.web_service_info()
+                self.web_service_info(layout)
 
         self.show_at_start()
 
@@ -175,7 +169,7 @@ class AlignakStatus(QWidget):
                         QPixmap(get_image_path('unvalid'))
                     )
 
-    def add_button(self, pos):
+    def add_button(self, pos, layout):
         """
         Add a button
 
@@ -198,10 +192,10 @@ QPushButton:hover{
 }"""
         )
         button.clicked.connect(self.close)
-        self.layout.addWidget(button, pos, 0, 1, 2)
-        self.layout.setAlignment(button, Qt.AlignCenter)
+        layout.addWidget(button, pos, 0, 1, 2)
+        layout.setAlignment(button, Qt.AlignCenter)
 
-    def web_service_info(self):
+    def web_service_info(self, layout):
         """
         Display information text if "web_service" is not configured
 
@@ -211,12 +205,12 @@ QPushButton:hover{
             'alignak status',
             self
         )
-        self.layout.addWidget(title, 0, 0)
+        layout.addWidget(title, 0, 0)
 
         info_title_label = QLabel(
             '<br><span style="color: blue;">Alignak <b>Web Service</b> is not available !</span>'
         )
-        self.layout.addWidget(info_title_label, 1, 0)
+        layout.addWidget(info_title_label, 1, 0)
 
         info_label = QLabel(
             'Install it on your <b>Alignak server</b>. '
@@ -225,10 +219,10 @@ QPushButton:hover{
         info_label.setWordWrap(True)
         info_label.setAlignment(Qt.AlignTop)
 
-        self.layout.addWidget(info_label, 2, 0)
-        self.add_button(3)
+        layout.addWidget(info_label, 2, 0)
+        self.add_button(3, layout)
 
-    def daemons_to_layout(self):
+    def daemons_to_layout(self, layout):
         """
         Add all daemons label to layout
 
@@ -238,29 +232,29 @@ QPushButton:hover{
             'alignak status',
             self
         )
-        self.layout.addWidget(title, 0, 0, 1, 2)
-        self.layout.setAlignment(Qt.AlignCenter)
+        layout.addWidget(title, 0, 0, 1, 2)
+        layout.setAlignment(Qt.AlignCenter)
 
         if self.ws_request:
-            self.layout.addWidget(QLabel('<b>Daemon Name</b> '), 1, 0, 1, 1)
+            layout.addWidget(QLabel('<b>Daemon Name</b> '), 1, 0, 1, 1)
 
             status_title = QLabel('<b>Status</b>')
             status_title.setAlignment(Qt.AlignCenter)
-            self.layout.addWidget(status_title, 1, 1, 1, 1)
+            layout.addWidget(status_title, 1, 1, 1, 1)
 
             alignak_map = self.ws_request.json()
 
             line = 2
             for daemon in self.daemons:
                 for sub_daemon in alignak_map[daemon]:
-                    self.layout.addWidget(
+                    layout.addWidget(
                         self.daemons_labels[daemon][sub_daemon]['label'], line, 0
                     )
-                    self.layout.addWidget(
+                    layout.addWidget(
                         self.daemons_labels[daemon][sub_daemon]['icon'], line, 1
                     )
                     line += 1
-        self.add_button(line)
+        self.add_button(line, layout)
 
     def update_status(self):
         """
@@ -294,7 +288,7 @@ QPushButton:hover{
         if get_app_config('Backend', 'web_service', boolean=True) and self.ws_request:
             self.update_status()
         else:
-            self.web_service_info()
+            self.web_service_info(self.layout())
 
         self.center()
         self.show()
