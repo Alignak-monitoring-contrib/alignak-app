@@ -1,8 +1,8 @@
 include README.rst
 include etc/settings.cfg
 include etc/templates/*.tpl
-include etc/bin/alignak-app
-include etc/bin/alignak-app.py
+include bin/unix/alignak-app
+include bin/unix/alignak-app.py
 recursive-include etc/images *.svg
 recursive-include etc/images *.png
 recursive-include alignak_app *.*
