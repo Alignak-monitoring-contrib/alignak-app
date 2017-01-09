@@ -11,9 +11,9 @@ Actions=Restart;Stop;
 [Desktop Action Restart]
 Name=Restart Alignak-app
 Name[fr]=Redémarrer Alignak-app
-Exec=bash "/home/mea/.local/alignak_app/bin/alignak-app" restart
+Exec=bash "/home/<user>/.local/alignak_app/bin/alignak-app" restart
 
 [Desktop Action Stop]
 Name=Stop Alignak-app
 Name[fr]=Stopper Alignak-app
-Exec=bash "/home/mea/.local/alignak_app/bin/alignak-app" stop
+Exec=bash "/home/<user>/.local/alignak_app/bin/alignak-app" stop
