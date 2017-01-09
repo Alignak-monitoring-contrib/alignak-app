@@ -64,7 +64,7 @@ Quick Install
 
 To install Alignak-app::
 
-	# For Linux users with python2
+    # For Linux users with python2
     sudo apt-get install python-qt4
     # For Linux and Windows users with python3
     pip3 install PyQt5 --user
