@@ -27,7 +27,7 @@ from logging import getLogger
 
 from alignak_app import __application__
 from alignak_app.core.utils import get_app_config
-from alignak_app.core.utils import get_template
+from alignak_app.core.utils import get_css
 from alignak_app.popup.notification_factory import NotificationFactory
 from alignak_app.widgets.title import get_widget_title
 
@@ -67,6 +67,7 @@ class AppNotification(QWidget):
         self.button = None
         self.timer = QTimer(self)
         self.pin = False
+        self.setStyleSheet(get_css())
 
     def initialize_notification(self):
         """
@@ -335,6 +336,11 @@ class AppNotification(QWidget):
         else:
             color_title = '#EEE'
 
-        style_sheet = get_template('popup_css.tpl', dict(color_title=color_title))
-
-        self.setStyleSheet(style_sheet)
+        self.setStyleSheet(
+            """
+            QLabel#state{
+                Background-color: %s;
+                font-size: 16px bold;
+            }
+            """ % color_title
+        )

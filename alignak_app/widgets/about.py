@@ -25,7 +25,7 @@
 
 from alignak_app import __application__
 from alignak_app import __releasenotes__, __version__, __copyright__, __doc_url__, __project_url__
-from alignak_app.core.utils import get_image_path, get_template
+from alignak_app.core.utils import get_image_path, get_template, get_css
 from alignak_app.widgets.title import get_widget_title
 
 try:
@@ -59,6 +59,7 @@ class AppAbout(QWidget):
         self.setWindowFlags(Qt.FramelessWindowHint)
         # Fields
         self.button = None
+        self.setStyleSheet(get_css())
 
     def center(self):
         """
@@ -116,19 +117,8 @@ class AppAbout(QWidget):
         self.button = QPushButton(self)
         self.button.setIcon(QIcon(get_image_path('checked')))
         self.button.setFixedSize(30, 30)
+        self.button.setObjectName('valid')
 
-        self.button.setStyleSheet(
-            """
-QPushButton{
-    Background-color: #eee;
-    border: 2px solid #78909C;
-    border-radius: 15px;
-    text-align: center;
-}
-QPushButton:hover{
-    Background-color: #ddd;
-}"""
-        )
         self.button.clicked.connect(self.close)
 
     def show_about(self):

@@ -97,7 +97,3 @@ class TestAppLogin(unittest2.TestCase):
             'Your connection information are not accepted !',
             under_test.message.text()
         )
-        self.assertEqual(
-            'color: red;',
-            under_test.message.styleSheet()
-        )

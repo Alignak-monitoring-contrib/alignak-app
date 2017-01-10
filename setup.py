@@ -54,6 +54,7 @@ if 'linux' in sys.platform or\
     paths = {
         'app': __pkg_name__,
         'images': __pkg_name__ + '/images',
+        'css': __pkg_name__ + '/css',
         'templates': __pkg_name__ + '/templates',
         'bin': __pkg_name__ + '/bin',
     }
@@ -61,6 +62,7 @@ elif 'win32' in sys.platform:
     paths = {
         'app': __pkg_name__,
         'images': __pkg_name__ + '/images',
+        'css': __pkg_name__ + '/css',
         'templates': __pkg_name__ + '/templates',
         'bin': __pkg_name__ + '/bin',
     }
@@ -81,6 +83,11 @@ for image in images:
 templates = os.listdir(dir_path + '/etc/templates')
 for template in templates:
     data_files.append((paths['templates'], ['etc/templates/' + template]))
+
+# StyleSheet
+stylesheet = os.listdir(dir_path + '/etc/css')
+for style in stylesheet:
+    data_files.append((paths['css'], ['etc/css/' + style]))
 
 # Settings and bin
 data_files.append((paths['app'], ['etc/settings.cfg']))

@@ -276,3 +276,13 @@ def get_diff_since_last_check(last_check):
         delta = str(hours) + 'h ' + str(minutes) + 'm ' + str(seconds) + 's ago'
 
     return delta
+
+
+def get_css():
+    """
+    TODO
+    :return:
+    """
+
+    with open(get_app_root() + app_config.get('Config', 'path') + '/css/style.css') as css:
+        return css.read()

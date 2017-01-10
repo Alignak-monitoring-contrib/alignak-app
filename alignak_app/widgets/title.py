@@ -23,7 +23,7 @@
     Title manage creation of widgets title.
 """
 
-from alignak_app.core.utils import get_image_path
+from alignak_app.core.utils import get_image_path, get_css
 
 try:
     __import__('PyQt5')
@@ -49,20 +49,7 @@ class Title(QWidget):
         super(Title, self).__init__(parent)
         self.setObjectName('popup_title')
         self.setContentsMargins(0, -10, 0, 0)
-
-        self.setStyleSheet("""
-            QWidget#popup_title {
-                background-color: #002b36;
-            }
-            QLabel#title {
-                font-size: 20px;
-                margin-top: 5px;
-                color: white;
-            }
-            QLabel#logo {
-                margin-top: 10px;
-            }
-        """)
+        self.setStyleSheet(get_css())
 
     def create_title(self, name, parent=None):
         """
@@ -89,7 +76,7 @@ class Title(QWidget):
         # Title Label
         title_label = QLabel(self)
         title_label.setText(name.title())
-        title_label.setObjectName('title')
+        title_label.setObjectName('title_label')
         title_label.setMaximumHeight(40)
 
         # Create title Layout

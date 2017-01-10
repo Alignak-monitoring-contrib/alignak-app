@@ -24,7 +24,7 @@
 """
 
 from logging import getLogger
-from alignak_app.core.utils import get_image_path, get_template
+from alignak_app.core.utils import get_image_path, get_css
 
 try:
     __import__('PyQt5')
@@ -49,11 +49,11 @@ class NotificationFactory(QWidget):
     def __init__(self, parent=None):
         super(NotificationFactory, self).__init__(parent)
         self.pos = 0
-        self.setStyleSheet("QLabel {color: black;}")
         self.setMaximumWidth(parent.width())
         self.state_data = {}
         self.main_layout = QGridLayout()
         self.setLayout(self.main_layout)
+        self.setStyleSheet(get_css())
 
     def create_state_labels(self, state_name, item_type=None):
         """
@@ -137,6 +137,7 @@ class NotificationFactory(QWidget):
 
         button = QPushButton(self)
         button.setToolTip('Close')
+        button.setObjectName('valid')
         button.setIcon(QIcon(get_image_path('checked')))
         button.setFixedSize(30, 30)
 
@@ -298,5 +299,7 @@ class NotificationFactory(QWidget):
             bar_color = "grey"
 
         self.state_data[label_state]['progress_bar'].setStyleSheet(
-            get_template('progressbar_css.tpl', dict(bar_color=bar_color))
+            """QProgressBar::chunk {
+                background-color: %s;
+}           """ % bar_color
         )

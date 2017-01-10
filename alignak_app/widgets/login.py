@@ -27,7 +27,7 @@ from logging import getLogger
 
 from alignak_app import __short_version__
 from alignak_app.core.backend import AppBackend, Backend, BackendException
-from alignak_app.core.utils import get_app_config, set_app_config
+from alignak_app.core.utils import get_app_config, set_app_config, get_css
 from alignak_app.widgets.title import get_widget_title
 
 
@@ -61,6 +61,7 @@ class AppLogin(QDialog):
         self.username_line = None
         self.password_line = None
         self.message = None
+        self.setStyleSheet(get_css())
 
     def create_widget(self):
         """
@@ -76,7 +77,7 @@ class AppLogin(QDialog):
 
         # Login text
         login_line = QLabel('<b>Login</b>')
-        login_line.setStyleSheet('color: #1fb4e4; font-size: 18px;')
+        login_line.setObjectName('login')
         layout.addWidget(login_line, 1, 0, 1, 1)
 
         # Configure button
@@ -90,7 +91,6 @@ class AppLogin(QDialog):
             __short_version__ +
             '</b><br>Please enter your credentials'
         )
-        welcome.setStyleSheet('font-size: 14px; text-align: center;')
         layout.addWidget(welcome, 2, 0, 1, 2)
         layout.setAlignment(welcome, Qt.AlignTrailing)
 
@@ -114,6 +114,7 @@ class AppLogin(QDialog):
 
         # Message output
         self.message = QLabel('...')
+        self.message.setObjectName('login_msg')
         layout.addWidget(self.message, 6, 0, 1, 2)
         layout.setAlignment(self.message, Qt.AlignCenter)
 
@@ -139,11 +140,9 @@ class AppLogin(QDialog):
                 self.accept()
             else:
                 self.message.setText('Your connection information are not accepted !')
-                self.message.setStyleSheet('color: red;')
                 logger.error('Bad credentials in login form.')
         except BackendException as e:
             self.message.setText('Bad crendentials :(')
-            self.message.setStyleSheet('color: red;')
             logger.error('Bad credentials in login form ! Missing password !')
             logger.error(str(e))
 

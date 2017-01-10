@@ -84,7 +84,7 @@ class AlignakApp(object):
                     self.run(login.app_backend)
                 else:
                     logger.warning('Application close.')
-                    exit()
+                    exit(0)
             elif get_app_config('Backend', 'username') and \
                     not get_app_config('Backend', 'password'):
                 self.run()

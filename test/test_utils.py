@@ -31,29 +31,6 @@ class TestUtils(unittest2.TestCase):
         This file test methods of `utils.py` file.
     """
 
-    def test_get_template(self):
-        """Get Template with Right CSS"""
-
-        # Simulate an expected Template
-        expected_css = """QProgressBar {
-    color: black;
-    border: 2px solid grey;
-    border-radius: 5px;
-    text-align: center;
-}
-QProgressBar::chunk {
-   background-color: #27ae60;
-}
-"""
-
-        # Initialize config
-        utils.init_config()
-
-        # Get the template
-        under_test = utils.get_template('progressbar_css.tpl', dict(bar_color='#27ae60'))
-
-        self.assertEqual(under_test, expected_css)
-
     def test_get_app_root(self):
         """Get Alignak-App Root Folder"""
 

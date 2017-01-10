@@ -112,9 +112,6 @@ class HostView(QWidget):
 
         states_widget = QWidget(self)
         states_widget.setObjectName("states")
-        states_widget.setStyleSheet(
-            'QWidget#states{border: 1.5px solid #03a9f4;border-radius: 16px;}'
-        )
         states_layout = QGridLayout()
         states_widget.setLayout(states_layout)
 
@@ -134,7 +131,6 @@ class HostView(QWidget):
 
         real_state_text = QLabel('Host real state, excluding services')
         real_state_text.setWordWrap(True)
-        real_state_text.setStyleSheet('font-size: 10px;')
         states_layout.addWidget(real_state_text, 0, 2, 1, 1)
 
         return states_widget
@@ -149,14 +145,10 @@ class HostView(QWidget):
 
         check_widget = QWidget(self)
         check_layout = QGridLayout()
-        # check_widget.setStyleSheet('QLabel#title{}')
         check_widget.setLayout(check_layout)
 
         check_label = QLabel('<b>My last Check</b>')
         check_label.setObjectName('title')
-        check_label.setStyleSheet(
-            'border-style: solid;border-width:0px 0px 1px 0px;border-color: #03a9f4;'
-        )
         check_layout.addWidget(check_label, 0, 0, 1, 2)
         check_layout.setAlignment(check_label, Qt.AlignCenter)
 

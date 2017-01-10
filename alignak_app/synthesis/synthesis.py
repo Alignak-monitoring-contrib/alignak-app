@@ -24,11 +24,11 @@
 """
 
 import json
-import sys
+
 from logging import getLogger
 
 from alignak_app.core.backend import AppBackend
-from alignak_app.core.utils import get_image_path, init_config
+from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.synthesis.host_view import HostView
 from alignak_app.synthesis.services_view import ServicesView
 from alignak_app.widgets.title import get_widget_title
@@ -68,6 +68,7 @@ class Synthesis(QWidget):
         self.host_view = None
         self.services_view = None
         self.app_backend = None
+        self.setStyleSheet(get_css())
 
     def create_widget(self, app_backend):
         """
@@ -178,18 +179,3 @@ class Synthesis(QWidget):
         self.line_search.setCompleter(completer)
         self.line_search.setPlaceholderText('Type a host name to display its data')
         self.line_search.setToolTip('Type a host name to display its data')
-
-
-# For Tests
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-
-    init_config()
-
-    synthesis = Synthesis()
-    backend = AppBackend()
-    backend.login()
-    synthesis.create_widget(backend)
-    synthesis.show_synthesis()
-
-    sys.exit(app.exec_())

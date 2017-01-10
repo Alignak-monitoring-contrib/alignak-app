@@ -75,26 +75,8 @@ class ServicesView(QWidget):
         self.layout.setAlignment(Qt.AlignCenter)
 
         widget = QWidget()
-        widget.setStyleSheet(
-            """
-            QLabel#OK {
-                border-style: solid;border-width:0px 0px 2px 0px;border-color: #27ae60;
-            }
-            QLabel#WARNING {
-                border-style: solid;border-width:0px 0px 2px 0px;border-color: #e67e22;
-            }
-            QLabel#CRITICAL {
-                border-style: solid;border-width:0px 0px 2px 0px;border-color: #e74c3c;
-            }
-            QLabel#UNKNOWN {
-                border-style: solid;border-width:0px 0px 2px 0px;border-color: #2980b9;
-            }
-            QLabel#UNREACHABLE {
-                border-style: solid;border-width:0px 0px 2px 0px;border-color: dark-grey;
-            }
-            """
-        )
         layout = QGridLayout()
+        widget.setLayout(layout)
 
         pos = 0
 
@@ -145,7 +127,6 @@ class ServicesView(QWidget):
 
         logger.debug('Number of services: ' + str(pos))
 
-        widget.setLayout(layout)
         scroll = QScrollArea()
         scroll.setWidget(widget)
         scroll.setWidgetResizable(True)
