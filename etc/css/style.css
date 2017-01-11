@@ -3,7 +3,7 @@ QLabel {
     color:black;
 }
 QPushButton#valid{
-    Background-color: #eee;
+    background-color: #eee;
     border: 2px solid #78909C;
     border-radius: 15px;
     text-align: center;
@@ -84,3 +84,7 @@ QLabel#logo {
 	margin-top: 10px;
 }
 
+/****** STATUS ******/
+QLabel#help {
+    font-size: 11px;
+}

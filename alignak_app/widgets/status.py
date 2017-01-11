@@ -69,6 +69,7 @@ class AlignakStatus(QWidget):
             'broker'
         ]
         self.daemons_labels = {}
+        self.info = None
         self.setStyleSheet(get_css())
 
     def center(self):
@@ -147,12 +148,17 @@ class AlignakStatus(QWidget):
         layout.addWidget(title, 0, 0, 1, 2)
         layout.setAlignment(Qt.AlignCenter)
 
-        line = 2
+        help_txt = QLabel('(Hover your mouse over each daemon to learn more)')
+        help_txt.setObjectName('help')
+        layout.addWidget(help_txt, 1, 0, 1, 2)
+        layout.setAlignment(help_txt, Qt.AlignCenter)
 
-        layout.addWidget(QLabel('<b>Daemon Name</b> '), 1, 0, 1, 1)
+        layout.addWidget(QLabel('<b>Daemon Name</b> '), 2, 0, 1, 1)
         status_title = QLabel('<b>Status</b>')
         status_title.setAlignment(Qt.AlignCenter)
-        layout.addWidget(status_title, 1, 1, 1, 1)
+        layout.addWidget(status_title, 2, 1, 1, 1)
+
+        line = 3
 
         for daemon in self.daemons:
             # Initialize dict for each daemon category
@@ -173,6 +179,11 @@ class AlignakStatus(QWidget):
                 self.daemons_labels[daemon]['icon'], line, 1
             )
             line += 1
+
+        self.info = QLabel()
+        layout.addWidget(self.info, line, 0, 1, 2)
+        layout.setAlignment(self.info, Qt.AlignCenter)
+        line += 1
 
         self.add_button(line, layout)
 
@@ -224,6 +235,8 @@ class AlignakStatus(QWidget):
 
         """
 
+        daemons_status = 'OK'
+
         for daemon in self.daemons:
             # Reset to zero state of daemon
             self.daemons_labels[daemon]['status'] = 0
@@ -234,9 +247,11 @@ class AlignakStatus(QWidget):
 
             # Update daemons QPixmap for each daemon
             for sub_daemon in alignak_map[daemon]:
+                # alignak_map[daemon][sub_daemon]['alive'] = False
                 if not alignak_map[daemon][sub_daemon]['alive']:
                     self.daemons_labels[daemon]['status'] += 1
                     bad_daemons += '<p>%s is not alive </p>' % sub_daemon.capitalize()
+                    daemons_status = 'DOWN'
 
             if self.daemons_labels[daemon]['status'] == 0:
                 self.daemons_labels[daemon]['icon'].setPixmap(QPixmap(get_image_path('valid')))
@@ -246,6 +261,13 @@ class AlignakStatus(QWidget):
                 self.daemons_labels[daemon]['icon'].setPixmap(QPixmap(get_image_path('unvalid')))
                 self.daemons_labels[daemon]['icon'].setToolTip(bad_daemons)
                 self.daemons_labels[daemon]['label'].setToolTip(bad_daemons)
+
+        if 'OK' in daemons_status:
+            self.info.setText('All daemons are alive...')
+            self.info.setStyleSheet('color: #27ae60;')
+        else:
+            self.info.setText('Some daemons are not alive !')
+            self.info.setStyleSheet('color: #e74c3c;')
 
     def show_states(self):
         """
