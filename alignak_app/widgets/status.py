@@ -68,7 +68,6 @@ class AlignakStatus(QWidget):
             'scheduler',
             'broker'
         ]
-        self.ws_request = None
         self.daemons_labels = {}
         self.setStyleSheet(get_css())
 
@@ -88,9 +87,9 @@ class AlignakStatus(QWidget):
 
         """
 
-        self.alignak_ws_request()
+        request = self.alignak_ws_request()
 
-        if get_app_config('Backend', 'web_service', boolean=True) and self.ws_request:
+        if get_app_config('Backend', 'web_service', boolean=True) and request:
             self.center()
             self.show()
 
@@ -106,9 +105,7 @@ class AlignakStatus(QWidget):
 
         # Display daemons status or info windows
         if get_app_config('Backend', 'web_service', boolean=True):
-            self.alignak_ws_request()
-            if self.ws_request:
-
+            if self.alignak_ws_request():
                 self.create_daemons_labels()
                 self.daemons_to_layout(layout)
             else:
@@ -116,18 +113,26 @@ class AlignakStatus(QWidget):
 
         self.show_at_start()
 
-    def alignak_ws_request(self):
+    @staticmethod
+    def alignak_ws_request():
         """
         Request to get json data from alignak web service
 
+        :return: request on alignak_map
+        :rtype: requests.models.Response
         """
 
+        request = None
+
         try:
-            self.ws_request = requests.get(
+            request = requests.get(
                 get_app_config('Backend', 'alignak_ws') + '/alignak_map'
             )
+
         except requests.ConnectionError as e:
             logger.error('Bad value in "web_service_url" option : ' + str(e))
+
+        return request
 
     def create_daemons_labels(self):
         """
@@ -140,7 +145,8 @@ class AlignakStatus(QWidget):
             self.daemons_labels[daemon] = {}
 
             # Get json data from Web_service
-            alignak_map = self.ws_request.json()
+            request = self.alignak_ws_request()
+            alignak_map = request.json()
 
             # Create QLabel and Pixmap for each sub_daemon
             for sub_daemon in alignak_map[daemon]:
@@ -225,16 +231,17 @@ class AlignakStatus(QWidget):
         layout.addWidget(title, 0, 0, 1, 2)
         layout.setAlignment(Qt.AlignCenter)
 
-        if self.ws_request:
+        line = 2
+
+        if self.alignak_ws_request():
             layout.addWidget(QLabel('<b>Daemon Name</b> '), 1, 0, 1, 1)
 
             status_title = QLabel('<b>Status</b>')
             status_title.setAlignment(Qt.AlignCenter)
             layout.addWidget(status_title, 1, 1, 1, 1)
 
-            alignak_map = self.ws_request.json()
+            alignak_map = self.alignak_ws_request().json()
 
-            line = 2
             for daemon in self.daemons:
                 for sub_daemon in alignak_map[daemon]:
                     layout.addWidget(
@@ -244,6 +251,7 @@ class AlignakStatus(QWidget):
                         self.daemons_labels[daemon][sub_daemon]['icon'], line, 1
                     )
                     line += 1
+
         self.add_button(line, layout)
 
     def update_status(self):
@@ -252,11 +260,8 @@ class AlignakStatus(QWidget):
 
         """
 
-        # New request
-        self.alignak_ws_request()
-
         for daemon in self.daemons:
-            alignak_map = self.ws_request.json()
+            alignak_map = self.alignak_ws_request().json()
 
             # Update daemons QPixmap for each sub_daemon
             for sub_daemon in alignak_map[daemon]:
@@ -275,7 +280,7 @@ class AlignakStatus(QWidget):
 
         """
 
-        if get_app_config('Backend', 'web_service', boolean=True) and self.ws_request:
+        if get_app_config('Backend', 'web_service', boolean=True) and self.alignak_ws_request():
             self.update_status()
         else:
             self.web_service_info(self.layout())
