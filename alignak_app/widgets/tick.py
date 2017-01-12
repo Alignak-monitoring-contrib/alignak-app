@@ -104,7 +104,7 @@ class TickManager(object):
         """
         TEST
         """
-        print("timer")
+
         self.timer = QTimer()
         self.timer.start(5000)
         self.timer.timeout.connect(self.test_tick)
@@ -113,7 +113,7 @@ class TickManager(object):
         """
         TEST
         """
-        print('send tick')
+
         self.send_tick('OK', 'All daemons are Alive !')
 
 

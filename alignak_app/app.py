@@ -93,11 +93,9 @@ class AlignakApp(object):
                 self.run()
             else:
                 logger.error('Please configure Alignak-app before starting it.')
-                print('Please configure Alignak-app before starting it.')
                 sys.exit()
         else:
             logger.error('Please configure Alignak-app before starting it.')
-            print('Please configure Alignak-app before starting it.')
             sys.exit()
 
     def run(self, app_backend=None):  # pragma: no cover

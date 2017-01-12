@@ -94,7 +94,7 @@ default_parameters = {
 app_config = None
 
 
-def get_filenames():
+def get_filenames():  # pylint: disable=redefined-variable-type
     """
 
     :return:
@@ -103,7 +103,7 @@ def get_filenames():
     if 'linux' in sys.platform or 'sunos5' in sys.platform:
         config_filenames = get_app_root() + '/alignak_app/settings.cfg'
     elif 'win32' in sys.platform:  # pragma: no cover - not testable
-        config_filenames = [
+        config_filenames = [  # pylint: disable=redefined-variable-type
             get_app_root() + '\\alignak_app\\settings.cfg',
             'C:\\Program Files (x86)\\Alignak-app\\settings.cfg',
             'C:\\Program Files\\Alignak-app\\settings.cfg'
@@ -168,16 +168,16 @@ def set_app_config(section, option, value):
 
     try:
         # Read configuration file and store in list
-        with open(get_filenames(), 'r') as file:
-            data = file.readlines()
+        with open(get_filenames(), 'r') as config_file:
+            data = config_file.readlines()
 
         # Update values
         for d in data:
             if option in d[0:len(option)]:
                 data[data.index(d)] = option + ' = ' + value + '\n'
         app_config.set(section, option, value)
-        with open(get_filenames(), 'w') as file:
-            file.writelines(data)
+        with open(get_filenames(), 'w') as new_config_file:
+            new_config_file.writelines(data)
 
     except NoOptionError as e:
         logger.error('Can\'t set Option in configuration file : ' + str(e))
