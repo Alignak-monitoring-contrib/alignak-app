@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    Tick send some stick notifications for small informations.
 """
 
 import sys
@@ -30,38 +30,75 @@ try:
     from PyQt5.QtWidgets import QHBoxLayout, QApplication  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QWidget, QPushButton, QLabel  # pylint: disable=no-name-in-module
     from PyQt5.Qt import Qt, QIcon, QTimer, QPoint  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QObject, pyqtSignal  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import QPropertyAnimation  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QHBoxLayout, QApplication  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QPushButton, QLabel  # pylint: disable=import-error
-    from PyQt4.QtCore import Qt, QIcon, QTimer, QPoint  # pylint: disable=import-error
+    from PyQt4.QtCore import Qt, QIcon, QTimer, QPoint, pyqtSignal  # pylint: disable=import-error
+    from PyQt4.QtCore import QObject, pyqtSignal  # pylint: disable=import-error
     from PyQt4.QtCore import QPropertyAnimation  # pylint: disable=import-error
-
-
-OK = '#27ae60'
-WARNING = '#e67e22'
-CRITICAL = '#e74c3c'
 
 
 class TickManager(object):
     """
-    TODO
+        Class who send and manage ticks
     """
 
     def __init__(self):
         self.ticks = []
         self.timer = None
 
-    def send(self, color, text):
+    def send_tick(self, level, message):
         """
-        TODO
-        :return:
+        Send a tick with text
+
+        :param level: OK, WARNING, or CRITICAL
+        :type level: str
+        :param message: message to display
+        :type message: str
         """
 
         tick = Tick()
-        tick.create_tick(color, text, ticks=self.ticks)
+        tick.create_tick(level, message)
+
+        tick.animation.start()
+        tick.closed.connect(self.tick_listener)
+
+        tick.show()
+
+        for old_tick in self.ticks:
+            pos = old_tick.pos()
+            old_tick.move(pos.x(), pos.y() + old_tick.height())
 
         self.ticks.append(tick)
+
+    def tick_listener(self, sender):
+        """
+        Listener who listen if tick is closed
+
+        :param sender: the tick who emit closed signal
+        :type sender: Tick
+        """
+
+        self.remove_tick(sender)
+
+    def remove_tick(self, tick):
+        """
+        Close and remove a tick. Move leaving ticks
+        :param tick: tick to remove
+        :type tick: Tick
+        """
+
+        # Shift ticks when one is removed
+        self.ticks.remove(tick)
+
+        for old_tick in self.ticks:
+            if (old_tick.pos().y() - tick.pos().y()) >= 50:
+                pos = old_tick.pos()
+                old_tick.move(pos.x(), pos.y() - old_tick.height())
+
+        tick.close()
 
     def test_process(self):
         """
@@ -77,39 +114,64 @@ class TickManager(object):
         TEST
         """
         print('send tick')
-        self.send(OK, 'All daemons are Alive !')
+        self.send_tick('OK', 'All daemons are Alive !')
 
 
 class Tick(QWidget):
     """
-    TODO
+        Class who create a tick.
     """
+
+    closed = pyqtSignal(QObject)
 
     def __init__(self, parent=None):
         super(Tick, self).__init__(parent)
-        self.setMinimumSize(400, 50)
+        self.setFixedSize(400, 50)
         self.setWindowFlags(Qt.SplashScreen)
+        # Animation
         self.animation = QPropertyAnimation(self, b'pos')
-        self.ticks = None
+        # Color model
+        self.color_levels = {
+            'OK': {
+                'color': '#27ae60',
+                'title': 'INFO'
+            },
+            'WARNING': {
+                'color': '#e67e22',
+                'title': 'WARNING'
+            },
+            'CRITICAL': {
+                'color': '#e74c3c',
+                'title': 'ALERT'
+            }
+        }
 
-    def create_tick(self, color, text, ticks):
+    def create_tick(self, level, message):
         """
-        TODO
-        :return:
-        """
+        Create tick QWidget and QPropertyAnimation
 
-        self.ticks = ticks
+        :param level: OK, WARNING or CRITICAL defines color of tick
+        :type level: str
+        :param message: message to display in tick
+        :type message: str
+        """
 
         layout = QHBoxLayout()
         layout.setSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
 
+        try:
+            color = self.color_levels[level]['color']
+        except KeyError:
+            color = 'black'
+
         self.setStyleSheet(
             """
                 background-color: %s;
                 color: white;
                 border: 1px solid #d2d2d2;
+                font-size: 14px;
             """ % color)
 
         valid_btn = QPushButton()
@@ -125,10 +187,8 @@ class Tick(QWidget):
 
         layout.addWidget(valid_btn)
 
-        ticker_txt = QLabel(text)
+        ticker_txt = QLabel('<b>%s</b>: ' % self.color_levels[level]['title'] + message)
         layout.addWidget(ticker_txt)
-
-        self.show()
 
         # Animation
         start_value = QPoint(0, 0)
@@ -142,26 +202,16 @@ class Tick(QWidget):
             end_position.y()
         )
         self.animation.setEndValue(end_value)
-        self.animation.start()
-
-        for tick in self.ticks:
-            pos = tick.pos()
-            tick.move(pos.x(), pos.y() + tick.height())
 
     def close_tick(self):
         """
-        TODO
-        :return:
+        Send signal to manager to close tick
+
         """
 
-        self.ticks.remove(self)
-        old_tick = self
-        for tick in self.ticks:
-            if (tick.pos().y() - old_tick.pos().y()) >= 50:
-                pos = tick.pos()
-                tick.move(pos.x(), pos.y() - tick.height())
-        self.close()
+        self.closed.emit(self)
 
+# TEST
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 
