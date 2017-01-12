@@ -15,7 +15,6 @@
 AppId={{18B7B0EE-1FBA-4375-9236-8575674AB45B}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
-;AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
@@ -29,6 +28,8 @@ SetupIconFile={#RootApp}\alignak-app\etc\bin\win\icon.ico
 Compression=lzma
 SolidCompression=yes
 WizardImageFile={#RootApp}\alignak-app\etc\bin\win\Wizard_App.bmp
+ArchitecturesInstallIn64BitMode=x64
+ArchitecturesAllowed=x64
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
