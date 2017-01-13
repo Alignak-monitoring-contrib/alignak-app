@@ -6,7 +6,7 @@
 #define MyAppPublisher "Alignak (Estrada Matthieu)"
 #define MyAppURL "https://github.com/Alignak-monitoring-contrib/alignak-app"
 #define MyAppExeName "alignak-app.exe"
-#define RootApp "D:\INSTALL"
+#define RootApp "D:\Repos"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -23,11 +23,11 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 LicenseFile={#RootApp}\alignak-app\LICENSE
 OutputDir={#RootApp}\alignak-app\dist\setup
-OutputBaseFilename=Setup {#MyAppName} {#MyAppVersion}-64bits
-SetupIconFile={#RootApp}\alignak-app\etc\bin\win\icon.ico
+OutputBaseFilename=Setup {#MyAppName} {#MyAppVersion}.x64_BETA
+SetupIconFile={#RootApp}\alignak-app\bin\win\icon.ico
 Compression=lzma
 SolidCompression=yes
-WizardImageFile={#RootApp}\alignak-app\etc\bin\win\Wizard_App.bmp
+WizardImageFile={#RootApp}\alignak-app\bin\win\Wizard_App.bmp
 ArchitecturesInstallIn64BitMode=x64
 ArchitecturesAllowed=x64
 
@@ -41,11 +41,11 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "{#RootApp}\alignak-app\dist\alignak-app.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#RootApp}\alignak-app\etc\css\*"; DestDir: "{userappdata}\Python\alignak_app\css"; Flags: ignoreversion
 Source: "{#RootApp}\alignak-app\etc\images\*"; DestDir: "{userappdata}\Python\alignak_app\images"; Flags: ignoreversion
 Source: "{#RootApp}\alignak-app\etc\templates\*"; DestDir: "{userappdata}\Python\alignak_app\templates"; Flags: ignoreversion
 Source: "{#RootApp}\alignak-app\etc\settings.cfg"; DestDir: "{app}"; Flags: ignoreversion; Permissions: everyone-full
-Source: "{#RootApp}\alignak-app\etc\bin\win\vc_redist.x64.exe"; DestDir: {tmp}; Check: IsWin64; Flags: deleteafterinstall
-Source: "{#RootApp}\alignak-app\etc\bin\win\vc_redist.x86.exe"; DestDir: {tmp}; Check: not IsWin64; Flags: deleteafterinstall
+Source: "{#RootApp}\alignak-app\bin\win\vc_redist.x64.exe"; DestDir: {tmp}; Check: IsWin64; Flags: deleteafterinstall
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\alignak-app.exe";
@@ -69,5 +69,4 @@ end;
 
 [Run]
 Filename: {tmp}\vc_redist.x64.exe; Parameters: "/q /passive /Q:a /c:""msiexec /q /i vcredist.msi"" "; Check: IsWin64; StatusMsg: Installing VC++ 64bits Redistributables...
-Filename: {tmp}\vc_redist.x86.exe; Parameters: "/q /passive /Q:a /c:""msiexec /q /i vcredist.msi"" "; Check: not IsWin64; StatusMsg: Installing VC++ 32Bits Redistributables...
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent

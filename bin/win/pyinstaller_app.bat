@@ -1,4 +1,4 @@
-cd ..\..\..\
+cd ..\..
 
 rm -R build
 rm -R dist
@@ -7,9 +7,10 @@ rm -R dist
  --name alignak-app ^
  --onefile ^
  --windowed ^
- --icon etc\bin\win\icon.ico ^
+ --icon bin\win\icon.ico ^
  --paths C:\%HOMEPATH%\AppData\Roaming\Python\Python35\site-packages\PyQt5\Qt\bin ^
- --paths D:\INSTALL\alignak-app\alignak_app ^
- etc\bin\unix\alignak-app.py
+ --paths alignak_app ^
+ bin\unix\alignak-app.py
 
+cd bin\win
 pause
