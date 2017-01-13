@@ -168,15 +168,26 @@ def set_app_config(section, option, value):
 
     try:
         # Read configuration file and store in list
-        with open(get_filenames(), 'r') as config_file:
-            data = config_file.readlines()
-
+        file_to_write = ''
+        if 'linux' in sys.platform or 'sunos5' in sys.platform:
+            with open(get_filenames(), 'r') as config_file:
+                data = config_file.readlines()
+                file_to_write = get_filenames()
+        elif 'win32' in sys.platform:  # pragma: no cover - not testable
+            for cfg_files in get_filenames():
+                try:
+                    with open(cfg_files, 'r') as config_file:
+                        data = config_file.readlines()
+                    file_to_write = cfg_files
+                except FileNotFoundError as e:
+                    logger.warning(e)
+                    pass
         # Update values
         for d in data:
             if option in d[0:len(option)]:
                 data[data.index(d)] = option + ' = ' + value + '\n'
         app_config.set(section, option, value)
-        with open(get_filenames(), 'w') as new_config_file:
+        with open(file_to_write, 'w') as new_config_file:
             new_config_file.writelines(data)
 
     except NoOptionError as e:
