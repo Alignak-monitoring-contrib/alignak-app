@@ -23,7 +23,7 @@
     Tick send some stick notifications for small informations.
 """
 
-import sys
+from alignak_app.core.utils import get_image_path
 
 try:
     __import__('PyQt5')
@@ -196,7 +196,7 @@ class Tick(QWidget):
             """
         )
         valid_btn.clicked.connect(self.close_tick)
-        valid_btn.setIcon(QIcon('../../etc/images/tick.svg'))
+        valid_btn.setIcon(QIcon(get_image_path('tick')))
 
         layout.addWidget(valid_btn)
 
