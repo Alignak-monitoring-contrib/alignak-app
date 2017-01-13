@@ -47,7 +47,38 @@ class TickManager(object):
 
     def __init__(self):
         self.ticks = []
+        self.ticks_to_send = []
         self.timer = None
+
+    def start(self):
+        """
+        Start manager. Manager checks if there is tick to send or not.
+
+        """
+
+        self.timer = QTimer()
+        self.timer.start(6000)
+        self.timer.timeout.connect(self.check_ticks)
+
+    def check_ticks(self):
+        """
+        Check ticks to send
+
+        """
+
+        if self.ticks_to_send:
+            for old_tick in self.ticks:
+                pos = old_tick.pos()
+                old_tick.move(pos.x(), pos.y() + old_tick.height())
+
+            tick = self.ticks_to_send[0]
+            tick.animation.start()
+            tick.closed.connect(self.tick_listener)
+
+            tick.show()
+
+            self.ticks_to_send.remove(tick)
+            self.ticks.append(tick)
 
     def send_tick(self, level, message):
         """
@@ -61,17 +92,7 @@ class TickManager(object):
 
         tick = Tick()
         tick.create_tick(level, message)
-
-        tick.animation.start()
-        tick.closed.connect(self.tick_listener)
-
-        tick.show()
-
-        for old_tick in self.ticks:
-            pos = old_tick.pos()
-            old_tick.move(pos.x(), pos.y() + old_tick.height())
-
-        self.ticks.append(tick)
+        self.ticks_to_send.append(tick)
 
     def tick_listener(self, sender):
         """
@@ -99,22 +120,6 @@ class TickManager(object):
                 old_tick.move(pos.x(), pos.y() - old_tick.height())
 
         tick.close()
-
-    def test_process(self):
-        """
-        TEST
-        """
-
-        self.timer = QTimer()
-        self.timer.start(5000)
-        self.timer.timeout.connect(self.test_tick)
-
-    def test_tick(self):
-        """
-        TEST
-        """
-
-        self.send_tick('OK', 'All daemons are Alive !')
 
 
 class Tick(QWidget):
@@ -161,6 +166,8 @@ class Tick(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
 
+        self.setToolTip(message)
+
         try:
             color = self.color_levels[level]['color']
         except KeyError:
@@ -168,10 +175,16 @@ class Tick(QWidget):
 
         self.setStyleSheet(
             """
+            QWidget {
                 background-color: %s;
                 color: white;
                 border: 1px solid #d2d2d2;
                 font-size: 14px;
+            }
+            QToolTip {
+                background-color: black;
+                color: white;
+            }
             """ % color)
 
         valid_btn = QPushButton()
@@ -187,8 +200,11 @@ class Tick(QWidget):
 
         layout.addWidget(valid_btn)
 
-        ticker_txt = QLabel('<b>%s</b>: ' % self.color_levels[level]['title'] + message)
-        layout.addWidget(ticker_txt)
+        if len(message) > 36:
+            message = message[:36] + '...'
+
+        tick_msg = QLabel('<b>%s</b>: ' % self.color_levels[level]['title'] + message)
+        layout.addWidget(tick_msg)
 
         # Animation
         start_value = QPoint(0, 0)
@@ -211,11 +227,19 @@ class Tick(QWidget):
 
         self.closed.emit(self)
 
-# TEST
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
+# Main instance of TickManager()
 
-    tick_manager = TickManager()
-    tick_manager.test_process()
+tickManager = TickManager()
 
-    sys.exit(app.exec_())
+
+def send_tick(level, message):
+    """
+    Direct access to send a tick
+
+    :param level: OK, WARNING or CRITICAL defines color of tick
+    :type level: str
+    :param message: message to display in tick
+    :type message: str
+    """
+
+    tickManager.send_tick(level, message)
