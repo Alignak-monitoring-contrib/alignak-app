@@ -23,23 +23,23 @@
     App Synthesis manage widget for Synthesis QWidget.
 """
 
-import time
 import datetime
 
 from logging import getLogger
 
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import get_diff_since_last_check
+from alignak_app.widgets.tick import send_tick
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QPushButton, QMessageBox  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QWidget, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QLabel  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QPixmap, Qt, QIcon  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import QTimer  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QPushButton, QMessageBox  # pylint: disable=import-error
+    from PyQt4.Qt import QPushButton  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
     from PyQt4.Qt import QPixmap, Qt, QIcon  # pylint: disable=import-error
@@ -245,17 +245,17 @@ class HostView(QWidget):
                 if 'actiondowntime' in sender.objectName():
                     self.down_button.setEnabled(False)
                     self.down_button.setText('Waiting from backend...')
-                    ack_timer.singleShot(17000, self.downtime_message)
+                    ack_timer.singleShot(20000, self.downtime_message)
                 else:
                     self.ack_button.setEnabled(False)
                     self.ack_button.setText('Waiting from backend...')
-                    ack_timer.singleShot(17000, self.ack_message)
+                    ack_timer.singleShot(20000, self.ack_message)
             else:
                 logger.error('Action ' + sender.objectName() + 'failed')
 
     def ack_message(self):
         """
-        Display QMessageBox if acknowledge processed return True
+        Display Tick if acknowledge processed return True
 
         """
 
@@ -264,18 +264,13 @@ class HostView(QWidget):
         )
 
         if ack_response['processed']:
-            QMessageBox.information(
-                self,
-                'Acknowledge',
-                "Acknowledged on " + self.host['name'] + " is done !",
-                QMessageBox.Ok
-            )
+            send_tick('OK', "Acknowledged on " + self.host['name'] + " is done !")
         else:
             logger.error('Acknowledge failed: ' + str(ack_response))
 
     def downtime_message(self):
         """
-        Display QMessageBox if downtime processed return True
+        Display Tick if downtime processed return True
 
         """
 
@@ -284,12 +279,7 @@ class HostView(QWidget):
         )
 
         if down_response['processed']:
-            QMessageBox.information(
-                self,
-                'Downtime' + self.host['name'],
-                "Schedule a downtime on " + self.host['name'] + " is done !",
-                QMessageBox.Ok
-            )
+            send_tick('OK', "Downtime on " + self.host['name'] + " is scheduled !")
         else:
             logger.error('Downtime failed: ' + str(down_response))
 

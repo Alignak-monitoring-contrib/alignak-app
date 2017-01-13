@@ -30,6 +30,7 @@ import requests
 from alignak_app import __application__
 from alignak_app.core.utils import get_image_path, get_app_config, get_css
 from alignak_app.widgets.title import get_widget_title
+from alignak_app.widgets.tick import send_tick
 
 try:
     __import__('PyQt5')
@@ -91,8 +92,7 @@ class AlignakStatus(QWidget):
         request = self.alignak_ws_request()
 
         if get_app_config('Backend', 'web_service', boolean=True) and request:
-            self.center()
-            self.show()
+            send_tick('OK', "All daemons are alive")
 
     def create_status(self):
         """

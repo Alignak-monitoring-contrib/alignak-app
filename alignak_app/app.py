@@ -32,6 +32,7 @@ from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import init_config, get_app_config
 from alignak_app.systray.tray_icon import TrayIcon
 from alignak_app.widgets.login import AppLogin
+from alignak_app.widgets.tick import tickManager, send_tick
 from alignak_app.core.backend import AppBackend
 
 try:
@@ -62,6 +63,7 @@ class AlignakApp(object):
 
         # Initialize configuration
         init_config()
+        tickManager.start()
 
         # Define level of logger
         if get_app_config('Alignak-App', 'debug', boolean=True):
@@ -112,6 +114,7 @@ class AlignakApp(object):
         if 'token' not in app_backend.user:
             app_backend.user['token'] = app_backend.backend.token
 
+        send_tick('OK', 'You are connected to Alignak Backend')
         # Initialize notifier
         self.notifier = AppNotifier(self.get_icon(), app_backend)
 
