@@ -253,7 +253,6 @@ class AlignakStatus(QWidget):
                     bad_daemons += '<p>%s is not alive </p>' % sub_daemon.capitalize()
                     daemons_status = 'DOWN'
 
-
             if self.daemons_labels[daemon]['status'] == 0:
                 self.daemons_labels[daemon]['icon'].setPixmap(QPixmap(get_image_path('valid')))
                 self.daemons_labels[daemon]['icon'].setToolTip('All %ss are alive ' % daemon)

@@ -172,7 +172,7 @@ def set_app_config(section, option, value):
         if 'linux' in sys.platform or 'sunos5' in sys.platform:
             with open(get_filenames(), 'r') as config_file:
                 data = config_file.readlines()
-                file_to_write = get_filenames()
+                file_to_write = get_filenames()  # pylint: disable=redefinde-variable-type
         elif 'win32' in sys.platform:  # pragma: no cover - not testable
             for cfg_files in get_filenames():
                 try:
@@ -181,7 +181,6 @@ def set_app_config(section, option, value):
                     file_to_write = cfg_files
                 except FileNotFoundError as e:
                     logger.warning(e)
-                    pass
         # Update values
         for d in data:
             if option in d[0:len(option)]:
