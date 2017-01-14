@@ -172,7 +172,7 @@ def set_app_config(section, option, value):
         if 'linux' in sys.platform or 'sunos5' in sys.platform:
             with open(get_filenames(), 'r') as config_file:
                 data = config_file.readlines()
-                file_to_write = get_filenames()  # pylint: disable=redefinde-variable-type
+                file_to_write = get_filenames()  # pylint: disable=redefined-variable-type
         elif 'win32' in sys.platform:  # pragma: no cover - not testable
             for cfg_files in get_filenames():
                 try:

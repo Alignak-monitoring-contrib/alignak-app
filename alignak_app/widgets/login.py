@@ -142,8 +142,12 @@ class AppLogin(QDialog):
                 self.message.setText('Your connection information are not accepted !')
                 logger.error('Connection informations are not accepted !')
         except BackendException as e:
-            self.message.setText('The connection failed, check your login parameters or the server address !')
-            logger.error('The connection failed, check your login parameters or the server address !')
+            self.message.setText(
+                'The connection failed, check your login parameters or the server address !'
+            )
+            logger.error(
+                'The connection failed, check your login parameters or the server address !'
+            )
             logger.error(str(e))
 
     def handle_server(self):
