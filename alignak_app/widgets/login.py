@@ -140,10 +140,10 @@ class AppLogin(QDialog):
                 self.accept()
             else:
                 self.message.setText('Your connection information are not accepted !')
-                logger.error('Bad credentials in login form.')
+                logger.error('Connection informations are not accepted !')
         except BackendException as e:
-            self.message.setText('Bad crendentials :(')
-            logger.error('Bad credentials in login form ! Missing password !')
+            self.message.setText('The connection failed, check your login parameters or the server address !')
+            logger.error('The connection failed, check your login parameters or the server address !')
             logger.error(str(e))
 
     def handle_server(self):
