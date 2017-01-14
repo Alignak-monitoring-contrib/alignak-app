@@ -9,7 +9,7 @@ rm -R dist
  --windowed ^
  --icon bin\win\icon.ico ^
  --paths C:\%HOMEPATH%\AppData\Roaming\Python\Python35\site-packages\PyQt5\Qt\bin ^
- --paths alignak_app ^
+ --paths D:\Repos\alignak-app\alignak_app ^
  bin\unix\alignak-app.py
 
 cd bin\win

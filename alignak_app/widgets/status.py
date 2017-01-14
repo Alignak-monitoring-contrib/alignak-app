@@ -92,7 +92,8 @@ class AlignakStatus(QWidget):
         request = self.alignak_ws_request()
 
         if get_app_config('Backend', 'web_service', boolean=True) and request:
-            send_tick('OK', "All daemons are alive")
+            self.center()
+            self.show()
 
     def create_status(self):
         """
@@ -247,16 +248,17 @@ class AlignakStatus(QWidget):
 
             # Update daemons QPixmap for each daemon
             for sub_daemon in alignak_map[daemon]:
-                # alignak_map[daemon][sub_daemon]['alive'] = False
                 if not alignak_map[daemon][sub_daemon]['alive']:
                     self.daemons_labels[daemon]['status'] += 1
                     bad_daemons += '<p>%s is not alive </p>' % sub_daemon.capitalize()
                     daemons_status = 'DOWN'
 
+
             if self.daemons_labels[daemon]['status'] == 0:
                 self.daemons_labels[daemon]['icon'].setPixmap(QPixmap(get_image_path('valid')))
                 self.daemons_labels[daemon]['icon'].setToolTip('All %ss are alive ' % daemon)
                 self.daemons_labels[daemon]['label'].setToolTip('All %ss are alive ' % daemon)
+
             else:
                 self.daemons_labels[daemon]['icon'].setPixmap(QPixmap(get_image_path('unvalid')))
                 self.daemons_labels[daemon]['icon'].setToolTip(bad_daemons)
@@ -265,9 +267,11 @@ class AlignakStatus(QWidget):
         if 'OK' in daemons_status:
             self.info.setText('All daemons are alive...')
             self.info.setStyleSheet('color: #27ae60;')
+            send_tick('OK', 'Alignak daemons are alive')
         else:
-            self.info.setText('Some daemons are not alive !')
+            self.info.setText('Some daemons are down !')
             self.info.setStyleSheet('color: #e74c3c;')
+            send_tick('WARN', 'Some daemons are DOWN !')
 
     def show_states(self):
         """

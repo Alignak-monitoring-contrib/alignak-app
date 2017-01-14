@@ -84,7 +84,7 @@ class TickManager(object):
         """
         Send a tick with text
 
-        :param level: OK, WARNING, or CRITICAL
+        :param level: OK, WARN, or ALERT
         :type level: str
         :param message: message to display
         :type message: str
@@ -141,11 +141,11 @@ class Tick(QWidget):
                 'color': '#27ae60',
                 'title': 'INFO'
             },
-            'WARNING': {
+            'WARN': {
                 'color': '#e67e22',
                 'title': 'WARNING'
             },
-            'CRITICAL': {
+            'ALERT': {
                 'color': '#e74c3c',
                 'title': 'ALERT'
             }
@@ -155,7 +155,7 @@ class Tick(QWidget):
         """
         Create tick QWidget and QPropertyAnimation
 
-        :param level: OK, WARNING or CRITICAL defines color of tick
+        :param level: OK, WARN, or ALERT defines color of tick
         :type level: str
         :param message: message to display in tick
         :type message: str
@@ -228,7 +228,6 @@ class Tick(QWidget):
         self.closed.emit(self)
 
 # Main instance of TickManager()
-
 tickManager = TickManager()
 
 
