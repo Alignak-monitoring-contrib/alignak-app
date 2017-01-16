@@ -282,7 +282,7 @@ class HostView(QWidget):
                     ack_timer.singleShot(20000, self.ack_message)
                     self.acks_to_check.append(self.host['name'])
             else:
-                logger.error('Action %s failed' % sender.objectName())
+                logger.error('Action ' + sender.objectName() + ' failed')
 
     def ack_message(self):
         """
@@ -297,7 +297,7 @@ class HostView(QWidget):
         if ack_response['processed']:
             send_tick('OK', "Acknowledged on %s is done !" % self.host['name'])
         else:
-            logger.error('Acknowledge failed: %s' % str(ack_response))
+            logger.error('Acknowledge failed: ' + str(ack_response))
 
     def downtime_message(self):
         """
@@ -312,7 +312,7 @@ class HostView(QWidget):
         if down_response['processed']:
             send_tick('OK', "Downtime on %s is scheduled !" % self.host['name'])
         else:
-            logger.error('Downtime failed: %s' % str(down_response))
+            logger.error('Downtime failed: ' + str(down_response))
 
     def update_view(self, data=False):
         """
@@ -327,7 +327,7 @@ class HostView(QWidget):
             self.services = data['services']
 
         logger.info('Update Host View...')
-        logger.debug('Host: %s is %s' % (self.host['name'], self.host['ls_state']))
+        logger.debug('Host: ' + self.host['name'] + ' is ' + self.host['ls_state'])
 
         if isinstance(self.host['ls_last_check'], int):
             time_delta = get_diff_since_last_check(self.host['ls_last_check'])
@@ -348,8 +348,8 @@ class HostView(QWidget):
 
         """
 
-        logger.debug('ACK: is %s' % str(self.host['ls_acknowledged']))
-        logger.debug('DOWNTIME: is %s' % str(self.host['ls_downtimed']))
+        logger.debug('ACK: is ' + str(self.host['ls_acknowledged']))
+        logger.debug('DOWNTIME: is ' + str(self.host['ls_downtimed']))
 
         if self.host['ls_acknowledged'] or 'UP' in self.host['ls_state']:
             self.ack_button.setEnabled(False)

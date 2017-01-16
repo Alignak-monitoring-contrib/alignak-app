@@ -32,7 +32,7 @@ from logging import getLogger
 
 from string import Template
 import configparser
-from configparser import NoOptionError#, DuplicateOptionError
+from configparser import NoOptionError
 
 
 logger = getLogger(__name__)
@@ -182,7 +182,7 @@ def set_app_config(section, option, value):
                     with open(cfg_files, 'r') as config_file:
                         data = config_file.readlines()
                     file_to_write = cfg_files
-                except FileNotFoundError as e:
+                except IOError as e:
                     logger.warning(e)
         # Update values
         for d in data:

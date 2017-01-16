@@ -163,5 +163,3 @@ class AlignakApp(object):
         start = bool(app_backend.get('livesynthesis'))
         if start:
             self.notifier.start(self.tray_icon)
-
-
