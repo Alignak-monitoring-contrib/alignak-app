@@ -65,6 +65,7 @@ class HostView(QWidget):
         self.layout = None
         self.labels = {}
         self.host = None
+        self.services = None
         self.app_backend = None
         self.endpoints = {
             'actionacknowledge': {},
@@ -202,6 +203,28 @@ class HostView(QWidget):
 
         return button_widget
 
+    def action_checker(self):
+        """
+        Check requested acknowledges and downtime and send a tick if it's done.
+
+        """
+
+        # Check acknowledges
+        if self.acks_to_check:
+            for host in self.acks_to_check:
+                cur_host = self.app_backend.get_item(host, 'host')
+                if cur_host['ls_acknowledged']:
+                    send_tick('OK', 'Host %s is acknowledged.' % host)
+                    self.acks_to_check.remove(host)
+
+        # Check downtimes scheduled
+        if self.downtimes_to_check:
+            for host in self.downtimes_to_check:
+                cur_host = self.app_backend.get_item(host, 'host')
+                if cur_host['ls_downtimed']:
+                    send_tick('OK', 'Host %s is acknowledged.' % host)
+                    self.downtimes_to_check.remove(host)
+
     def action(self):  # pragma: no cover
         """
         Handle action for "ack_button" and "down_button"
@@ -291,7 +314,7 @@ class HostView(QWidget):
         else:
             logger.error('Downtime failed: %s' % str(down_response))
 
-    def update_view(self, data=None):
+    def update_view(self, data=False):
         """
         Update Host view with desired host.
 
@@ -301,6 +324,7 @@ class HostView(QWidget):
 
         if data:
             self.host = data['host']
+            self.services = data['services']
 
         logger.info('Update Host View...')
         logger.debug('Host: %s is %s' % (self.host['name'], self.host['ls_state']))
@@ -308,37 +332,15 @@ class HostView(QWidget):
         if isinstance(self.host['ls_last_check'], int):
             time_delta = get_diff_since_last_check(self.host['ls_last_check'])
         else:
-            time_delta = 'NOT FOUND'
+            time_delta = '...'
 
         self.labels['name'].setText('<h3>' + self.host['alias'].title() + '</h3>')
-        self.labels['state_icon'].setPixmap(self.get_real_state_icon(data['services']))
+        self.labels['state_icon'].setPixmap(self.get_real_state_icon(self.services))
         self.labels['real_state_icon'].setPixmap(self.get_host_icon(self.host['ls_state']))
         self.labels['last_check'].setText(str(time_delta))
         self.labels['output'].setText(self.host['ls_output'])
 
         self.update_action_button()
-
-    def action_checker(self):
-        """
-        Check requested acknowledges and downtime and send a tick if it's done.
-
-        """
-
-        # Check acknowledges
-        if self.acks_to_check:
-            for host in self.acks_to_check:
-                cur_host = self.app_backend.get_item(host, 'host')
-                if cur_host['ls_acknowledged']:
-                    send_tick('OK', 'Host %s is acknowledged.' % host)
-                    self.acks_to_check.remove(host)
-
-        # Check downtimes scheduled
-        if self.downtimes_to_check:
-            for host in self.downtimes_to_check:
-                cur_host = self.app_backend.get_item(host, 'host')
-                if cur_host['ls_downtimed']:
-                    send_tick('OK', 'Host %s is acknowledged.' % host)
-                    self.downtimes_to_check.remove(host)
 
     def update_action_button(self):
         """

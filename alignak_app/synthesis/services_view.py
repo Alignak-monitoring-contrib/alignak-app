@@ -90,12 +90,12 @@ class ServicesView(QWidget):
             layout.setAlignment(icon, Qt.AlignCenter)
 
             # Service name
-            service_name = QLabel('NOT FOUND')
+            service_name = QLabel('...')
             service_name.setMinimumHeight(30)
             layout.addWidget(service_name, pos, 1)
 
             # Output
-            output_service = QLabel('NOT FOUND')
+            output_service = QLabel('...')
             layout.addWidget(output_service, pos, 2)
         else:
             for service in services:

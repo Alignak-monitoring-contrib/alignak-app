@@ -39,14 +39,14 @@ try:
     from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QStringListModel, QIcon  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QCompleter, QLineEdit  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QCompleter, QLineEdit, QTimer  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QPushButton  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout  # pylint: disable=import-error
     from PyQt4.Qt import QStringListModel, QIcon  # pylint: disable=import-error
-    from PyQt4.Qt import QCompleter, QLineEdit  # pylint: disable=import-error
+    from PyQt4.Qt import QCompleter, QLineEdit, QTimer  # pylint: disable=import-error
     from PyQt4.QtCore import Qt  # pylint: disable=import-error
 
 
@@ -91,7 +91,7 @@ class Synthesis(QWidget):
         # button
         button = QPushButton('Search / Refresh', self)
         button.setToolTip('Type name of a host to display his data')
-        button.clicked.connect(self.handle_button)
+        button.clicked.connect(self.refresh_all_views)
         self.line_search.returnPressed.connect(button.click)
 
         # Create views
@@ -111,6 +111,10 @@ class Synthesis(QWidget):
 
         self.setLayout(layout)
 
+        timer = QTimer(self)
+        timer.start(10000)
+        timer.timeout.connect(self.refresh_all_views)
+
     def show_synthesis(self):
         """
         Show synthesis view for TrayIcon
@@ -119,7 +123,7 @@ class Synthesis(QWidget):
 
         self.show()
 
-    def handle_button(self):
+    def refresh_all_views(self):
         """
         Handle Event when "line_search" is clicked.
 
@@ -141,10 +145,10 @@ class Synthesis(QWidget):
             data = {
                 'host': {
                     'name': host_name,
-                    'alias': 'NOT FOUND',
-                    'ls_state': 'NOT FOUND',
-                    'ls_last_check': 'NOT FOUND',
-                    'ls_output': 'NOT FOUND',
+                    'alias': '...',
+                    'ls_state': '...D',
+                    'ls_last_check': 0.0,
+                    'ls_output': '...',
                     'ls_acknowledged': False,
                     'ls_downtimed': False
                 },
@@ -164,7 +168,7 @@ class Synthesis(QWidget):
         params = {'where': json.dumps({'_is_template': False})}
 
         all_hosts = self.app_backend.get('host', params)
-        print('all_host = ', all_hosts)
+
         if all_hosts:
             for host in all_hosts['_items']:
                 hosts_list.append(host['name'])

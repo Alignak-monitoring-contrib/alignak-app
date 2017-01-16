@@ -57,7 +57,7 @@ class TickManager(object):
         """
 
         self.timer = QTimer()
-        self.timer.start(3000)
+        self.timer.start(4000)
         self.timer.timeout.connect(self.check_ticks)
 
     def check_ticks(self):
