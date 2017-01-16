@@ -71,10 +71,10 @@ class AppBackend(object):
             # Username & password : not recommended, without "widgets.login.py" form.
             try:
                 connect = self.backend.login(username, password)
-                print('connect', connect)
+                if connect:
+                    self.user['username'] = username
+                    self.user['token'] = self.backend.token
                 logger.info('Connection by password: ' + str(connect))
-                self.user['username'] = username
-                self.user['token'] = self.backend.token
             except BackendException as e:  # pragma: no cover
                 logger.error(
                     'Connection to Backend has failed. ' +

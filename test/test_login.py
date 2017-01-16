@@ -62,7 +62,6 @@ class TestAppLogin(unittest2.TestCase):
         self.assertIsNotNone(under_test.app_backend)
         self.assertIsNotNone(under_test.username_line)
         self.assertIsNotNone(under_test.password_line)
-        self.assertEqual('...', under_test.message.text())
 
     def test_handle_login_good_connection(self):
         """Handle Login: good credentials"""
@@ -93,7 +92,3 @@ class TestAppLogin(unittest2.TestCase):
         under_test.handle_login()
 
         self.assertFalse(under_test.app_backend.user)
-        self.assertEqual(
-            'Your connection information are not accepted !',
-            under_test.message.text()
-        )
