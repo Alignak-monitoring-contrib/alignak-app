@@ -32,7 +32,7 @@ from logging import getLogger
 
 from string import Template
 import configparser
-from configparser import NoOptionError
+from configparser import NoOptionError, DuplicateOptionError
 
 
 logger = getLogger(__name__)
@@ -129,6 +129,9 @@ def init_config():
     try:
         app_config.read(get_filenames())
         logger.info('Configuration file is OK.')
+    except DuplicateOptionError as doe:
+        logger.error(str(doe))
+        sys.exit(str(doe))
     except Exception as e:
         logger.error('Configuration file is missing in [' + str(get_filenames()) + '] !')
         logger.error(str(e))
