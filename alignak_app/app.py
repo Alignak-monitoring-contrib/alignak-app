@@ -103,6 +103,29 @@ class AlignakApp(object):
             logger.error('Please configure Alignak-app before starting it.')
             sys.exit()
 
+    @staticmethod
+    def can_close():
+        """
+        Check if tick for bad identifier is send and close application.
+
+        """
+
+        if len(tickManager.ticks_to_send) == 0:
+            QMessageBox.critical(None, 'Connection ERROR', 'Application will close !')
+            sys.exit(0)
+
+    @staticmethod
+    def get_icon():
+        """
+        Set icon of application.
+
+        """
+
+        img = get_image_path('icon')
+        icon = QIcon(img)
+
+        return icon
+
     def run(self, app_backend=None):  # pragma: no cover
         """
         Start all Alignak-app processes
@@ -136,30 +159,9 @@ class AlignakApp(object):
         self.tray_icon.build_menu(self.notifier.backend)
         self.tray_icon.show()
 
-        # Start notifier
-        start = app_backend.backend.authenticated
+        # If all is OK ;)
+        start = bool(app_backend.get('livesynthesis'))
         if start:
             self.notifier.start(self.tray_icon)
 
-    @staticmethod
-    def can_close():
-        """
-        Check if tick for bad identifier is send and close application.
 
-        """
-
-        if len(tickManager.ticks_to_send) == 0:
-            QMessageBox.critical(None, 'Connection ERROR', 'Application will close !')
-            sys.exit(0)
-
-    @staticmethod
-    def get_icon():
-        """
-        Set icon of application.
-
-        """
-
-        img = get_image_path('icon')
-        icon = QIcon(img)
-
-        return icon

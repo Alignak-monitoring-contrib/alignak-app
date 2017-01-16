@@ -164,9 +164,10 @@ class Synthesis(QWidget):
         params = {'where': json.dumps({'_is_template': False})}
 
         all_hosts = self.app_backend.get('host', params)
-
-        for host in all_hosts['_items']:
-            hosts_list.append(host['name'])
+        print('all_host = ', all_hosts)
+        if all_hosts:
+            for host in all_hosts['_items']:
+                hosts_list.append(host['name'])
 
         model = QStringListModel()
         model.setStringList(hosts_list)
