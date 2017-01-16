@@ -70,6 +70,8 @@ class HostView(QWidget):
             'actionacknowledge': {},
             'actiondowntime': {}
         }
+        self.acks_to_check = []
+        self.downtimes_to_check = []
 
     def init_view(self, app_backend):
         """
@@ -101,6 +103,10 @@ class HostView(QWidget):
         self.layout.addWidget(states_widget, 0, 0)
         self.layout.addWidget(check_widget, 0, 1, 1, 2)
         self.layout.addWidget(buttons, 0, 3)
+
+        timer = QTimer(self)
+        timer.start(10000)
+        timer.timeout.connect(self.action_checker)
 
     def get_states_widget(self):
         """
@@ -246,10 +252,12 @@ class HostView(QWidget):
                     self.down_button.setEnabled(False)
                     self.down_button.setText('Waiting from backend...')
                     ack_timer.singleShot(20000, self.downtime_message)
+                    self.downtimes_to_check.append(self.host['name'])
                 else:
                     self.ack_button.setEnabled(False)
                     self.ack_button.setText('Waiting from backend...')
                     ack_timer.singleShot(20000, self.ack_message)
+                    self.acks_to_check.append(self.host['name'])
             else:
                 logger.error('Action ' + sender.objectName() + 'failed')
 
@@ -264,7 +272,7 @@ class HostView(QWidget):
         )
 
         if ack_response['processed']:
-            send_tick('OK', "Acknowledged on " + self.host['name'] + " is done !")
+            send_tick('OK', "Acknowledged on " + self.host['name'] + " is processed...")
         else:
             logger.error('Acknowledge failed: ' + str(ack_response))
 
@@ -279,11 +287,11 @@ class HostView(QWidget):
         )
 
         if down_response['processed']:
-            send_tick('OK', "Downtime on " + self.host['name'] + " is scheduled !")
+            send_tick('OK', "Schedule a downtime on " + self.host['name'] + " is processed... !")
         else:
             logger.error('Downtime failed: ' + str(down_response))
 
-    def update_view(self, data):
+    def update_view(self, data=None):
         """
         Update Host view with desired host.
 
@@ -291,7 +299,8 @@ class HostView(QWidget):
         :type data: dict
         """
 
-        self.host = data['host']
+        if data:
+            self.host = data['host']
 
         logger.info('Update Host View...')
         logger.debug('Host: ' + self.host['name'] + ' is ' + self.host['ls_state'])
@@ -308,6 +317,28 @@ class HostView(QWidget):
         self.labels['output'].setText(self.host['ls_output'])
 
         self.update_action_button()
+
+    def action_checker(self):
+        """
+        Check requested acknowledges and downtime and send a tick if it's done.
+
+        """
+
+        # Check acknowledges
+        if self.acks_to_check:
+            for host in self.acks_to_check:
+                cur_host = self.app_backend.get_item(host, 'host')
+                if cur_host['ls_acknowledged']:
+                    send_tick('OK', 'Host %s is acknowledged.')
+                    self.acks_to_check.remove(host)
+
+        # Check downtimes scheduled
+        if self.downtimes_to_check:
+            for host in self.downtimes_to_check:
+                cur_host = self.app_backend.get_item(host, 'host')
+                if cur_host['ls_downtime']:
+                    send_tick('OK', 'Host %s is acknowledged.')
+                    self.downtimes_to_check.remove(host)
 
     def update_action_button(self):
         """
