@@ -57,7 +57,7 @@ class TickManager(object):
         """
 
         self.timer = QTimer()
-        self.timer.start(6000)
+        self.timer.start(3000)
         self.timer.timeout.connect(self.check_ticks)
 
     def check_ticks(self):
@@ -143,7 +143,7 @@ class Tick(QWidget):
             },
             'WARN': {
                 'color': '#e67e22',
-                'title': 'WARNING'
+                'title': 'WARN'
             },
             'ALERT': {
                 'color': '#e74c3c',
@@ -200,10 +200,11 @@ class Tick(QWidget):
 
         layout.addWidget(valid_btn)
 
-        if len(message) > 36:
-            message = message[:36] + '...'
+        if len(message) > 76:
+            message = message[:76] + '...'
 
         tick_msg = QLabel('<b>%s</b>: ' % self.color_levels[level]['title'] + message)
+        tick_msg.setWordWrap(True)
         layout.addWidget(tick_msg)
 
         # Animation
