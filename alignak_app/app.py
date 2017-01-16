@@ -25,6 +25,7 @@
 
 import sys
 from logging import DEBUG, INFO
+from time import sleep
 
 from alignak_app.core.logs import create_logger
 from alignak_app.core.notifier import AppNotifier
@@ -37,10 +38,13 @@ from alignak_app.core.backend import AppBackend
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QDialog  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QDialog, QMessageBox  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QTimer  # pylint: disable=no-name-in-module
 except ImportError:
-    from PyQt4.QtGui import QIcon, QDialog  # pylint: disable=import-error
+    from PyQt4.QtGui import QDialog, QMessageBox  # pylint: disable=import-error
+    from PyQt4.QtGui import QIcon  # pylint: disable=import-error
+    from PyQt4.QtCore import QTimer  # pylint: disable=import-error
 
 # Initialize logger
 logger = create_logger()
@@ -75,13 +79,12 @@ class AlignakApp(object):
 
         # If not app_backend url, stop application
         if get_app_config('Backend', 'alignak_backend'):
-            # If not username and password, create login form,
-            # else connect with config data.
+            # If not username and password, create login form, else connect with config data.
             if not get_app_config('Backend', 'username') and \
                     not get_app_config('Backend', 'password'):
                 login = AppLogin()
                 login.create_widget()
-                # If credentials are True, connect
+
                 if login.exec_() == QDialog.Accepted:
                     self.run(login.app_backend)
                 else:
@@ -109,12 +112,22 @@ class AlignakApp(object):
         # If not login form
         if not app_backend:
             app_backend = AppBackend()
-            app_backend.login()
+            connect = app_backend.login()
+            if not connect:
+                send_tick(
+                    'ALERT',
+                    'Your connection information are not accepted ! '
+                    'Check your config file !'
+                )
+                timer = QTimer()
+                timer.start(6000)
+                timer.timeout.connect(self.can_close)
+            else:
+                send_tick('OK', 'Connected to Alignak Backend')
 
         if 'token' not in app_backend.user:
             app_backend.user['token'] = app_backend.backend.token
 
-        send_tick('OK', 'You are connected to Alignak Backend')
         # Initialize notifier
         self.notifier = AppNotifier(self.get_icon(), app_backend)
 
@@ -124,7 +137,20 @@ class AlignakApp(object):
         self.tray_icon.show()
 
         # Start notifier
-        self.notifier.start(self.tray_icon)
+        start = app_backend.backend.authenticated
+        if start:
+            self.notifier.start(self.tray_icon)
+
+    @staticmethod
+    def can_close():
+        """
+        Check if tick for bad identifier is send and close application.
+
+        """
+
+        if len(tickManager.ticks_to_send) == 0:
+            QMessageBox.critical(None, 'Connection ERROR', 'Application will close !')
+            sys.exit(0)
 
     @staticmethod
     def get_icon():

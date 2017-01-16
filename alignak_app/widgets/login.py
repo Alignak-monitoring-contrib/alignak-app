@@ -26,9 +26,10 @@
 from logging import getLogger
 
 from alignak_app import __short_version__
-from alignak_app.core.backend import AppBackend, Backend, BackendException
+from alignak_app.core.backend import AppBackend, Backend
 from alignak_app.core.utils import get_app_config, set_app_config, get_css
 from alignak_app.widgets.title import get_widget_title
+from alignak_app.widgets.tick import send_tick
 
 
 try:
@@ -60,7 +61,6 @@ class AppLogin(QDialog):
         self.backend_url = None
         self.username_line = None
         self.password_line = None
-        self.message = None
         self.setStyleSheet(get_css())
 
     def create_widget(self):
@@ -112,12 +112,6 @@ class AppLogin(QDialog):
         self.password_line.returnPressed.connect(login_button.click)
         layout.addWidget(login_button, 5, 0, 1, 2)
 
-        # Message output
-        self.message = QLabel('...')
-        self.message.setObjectName('login_msg')
-        layout.addWidget(self.message, 6, 0, 1, 2)
-        layout.setAlignment(self.message, Qt.AlignCenter)
-
         self.setLayout(layout)
 
     def handle_login(self):
@@ -131,24 +125,16 @@ class AppLogin(QDialog):
 
         self.app_backend.backend = Backend(get_app_config('Backend', 'alignak_backend'))
 
-        try:
-            resp = self.app_backend.backend.login(str(username), str(password))
+        resp = self.app_backend.login(str(username), str(password))
 
-            if resp:
-                self.app_backend.user['username'] = str(username)
-                self.app_backend.user['token'] = str(self.app_backend.backend.token)
-                self.accept()
-            else:
-                self.message.setText('Your connection information are not accepted !')
-                logger.error('Connection informations are not accepted !')
-        except BackendException as e:
-            self.message.setText(
-                'The connection failed, check your login parameters or the server address !'
-            )
-            logger.error(
-                'The connection failed, check your login parameters or the server address !'
-            )
-            logger.error(str(e))
+        if resp:
+            send_tick('OK', 'Connected to Alignak Backend')
+            self.app_backend.user['username'] = str(username)
+            self.app_backend.user['token'] = str(self.app_backend.backend.token)
+            self.accept()
+        else:
+            send_tick('WARN', 'Your connection information are not accepted !')
+            logger.warning('Connection informations are not accepted !')
 
     def handle_server(self):
         """

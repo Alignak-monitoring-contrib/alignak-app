@@ -46,15 +46,19 @@ class AppBackend(object):
         self.states = {}
         self.user = {}
 
-    def login(self):
+    def login(self, username=None, password=None):
         """
         Connect to app_backend with credentials in settings.cfg.
 
         """
 
         # Credentials
-        username = get_app_config('Backend', 'username')
-        password = get_app_config('Backend', 'password')
+        if not username and not password:
+            if self.user:
+                username = self.user['token']
+            else:
+                username = get_app_config('Backend', 'username')
+                password = get_app_config('Backend', 'password')
 
         # Create Backend object
         backend_url = get_app_config('Backend', 'alignak_backend')
@@ -67,6 +71,7 @@ class AppBackend(object):
             # Username & password : not recommended, without "widgets.login.py" form.
             try:
                 connect = self.backend.login(username, password)
+                print('connect', connect)
                 logger.info('Connection by password: ' + str(connect))
                 self.user['username'] = username
                 self.user['token'] = self.backend.token
@@ -80,20 +85,31 @@ class AppBackend(object):
         elif username and not password:
             # Username as token : recommended
             self.backend.authenticated = True
-            self.backend.token = username
-            self.user['token'] = username
+            if self.user:
+                self.backend.token = self.user['token']
+            else:
+                self.backend.token = username
+                self.user['token'] = username
             logger.info('Connection by token: ' + str(self.backend.authenticated))
+
+            # Test to check token
+            test = self.get('livesynthesis')
+            if test:
+                if test['_status'] == 'OK':
+                    connect = True
+                else:
+                    connect = False
+            else:
+                connect = False
         else:
             # Else exit
             logger.error(
                 'Connection to Backend has failed. ' +
                 '\nCheck [Backend] section in configuration file.'
             )
-            print(
-                'Connection to Backend has failed...'
-                'Please, check your [settings.cfg] and logs.'
-            )
-            sys.exit()
+            connect = False
+
+        return connect
 
     def get(self, endpoint, params=None):
         """
