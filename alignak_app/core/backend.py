@@ -93,14 +93,7 @@ class AppBackend(object):
             logger.info('Connection by token: ' + str(self.backend.authenticated))
 
             # Test to check token
-            test = self.get('livesynthesis')
-            if test:
-                if test['_status'] == 'OK':
-                    connect = True
-                else:
-                    connect = False
-            else:
-                connect = False
+            connect = bool(self.get('livesynthesis'))
         else:
             # Else exit
             logger.error(

@@ -229,12 +229,18 @@ class NotificationFactory(QWidget):
 
         # Calculates the percentage
         try:
+            # Hosts
             percentages['up'] = float((hosts_states['up'] * 100) / hosts_sum)
             percentages['down'] = float((hosts_states['down'] * 100) / hosts_sum)
-            percentages['hosts_unreachable'] = float((hosts_states['unreachable'] * 100) / hosts_sum)
-            percentages['hosts_acknowledge'] = float((hosts_states['acknowledge'] * 100) / hosts_sum)
+            percentages['hosts_unreachable'] = float(
+                (hosts_states['unreachable'] * 100) / hosts_sum
+            )
+            percentages['hosts_acknowledge'] = float(
+                (hosts_states['acknowledge'] * 100) / hosts_sum
+            )
             percentages['hosts_downtime'] = float((hosts_states['downtime'] * 100) / hosts_sum)
 
+            # Services
             percentages['ok'] = float((services_states['ok'] * 100) / services_sum)
             percentages['warning'] = float((services_states['warning'] * 100) / services_sum)
             percentages['critical'] = float((services_states['critical'] * 100) / services_sum)
@@ -243,7 +249,9 @@ class NotificationFactory(QWidget):
                 float((services_states['unreachable'] * 100) / services_sum)
             percentages['services_acknowledge'] = \
                 float((services_states['acknowledge'] * 100) / services_sum)
-            percentages['services_downtime'] = float((services_states['downtime'] * 100) / services_sum)
+            percentages['services_downtime'] = float(
+                (services_states['downtime'] * 100) / services_sum
+            )
         except ZeroDivisionError as e:
             logger.error(str(e))
 
