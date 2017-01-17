@@ -327,7 +327,7 @@ class TrayIcon(QSystemTrayIcon):
         if hosts['down'] != 0:
             self.hosts_menu.setIcon(QIcon(get_image_path('hosts_down')))
         elif hosts['down'] == 0 and hosts['unreachable'] > hosts['up']:
-            self.hosts_menu.setIcon(QIcon(get_image_path('hosts_unreachable')))
+            self.hosts_menu.setIcon(QIcon(get_image_path('hosts_unreach')))
         else:
             self.hosts_menu.setIcon(QIcon(get_image_path('hosts_up')))
 
@@ -386,7 +386,7 @@ class TrayIcon(QSystemTrayIcon):
 
         target = self.sender()
 
-        webui_url = get_app_config('Webui', 'webui_url')
+        webui_url = get_app_config('Backend', 'webui_url')
 
         # Define each filter for items
         if "UP" in target.text():
