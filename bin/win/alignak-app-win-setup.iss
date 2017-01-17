@@ -2,7 +2,8 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Alignak-app"
-#define MyAppVersion "0.5"
+#define ShortVersion "0.5"
+#define MyAppVersion ShortVersion + ".1"
 #define MyAppPublisher "Alignak (Estrada Matthieu)"
 #define MyAppURL "https://github.com/Alignak-monitoring-contrib/alignak-app"
 #define MyAppExeName "alignak-app.exe"
@@ -23,8 +24,9 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 LicenseFile={#RootApp}\alignak-app\LICENSE
 OutputDir={#RootApp}\alignak-app\dist\setup
-OutputBaseFilename=Setup {#MyAppName} {#MyAppVersion}.x64_BETA
-SetupIconFile={#RootApp}\alignak-app\bin\win\icon.ico
+OutputBaseFilename=Setup {#MyAppName} {#MyAppVersion}-x64-BETA
+SetupIconFile={#RootApp}\alignak-app\bin\win\icon_64.ico
+UninstallDisplayIcon={app}/icon_64.ico
 Compression=lzma
 SolidCompression=yes
 WizardImageFile={#RootApp}\alignak-app\bin\win\Wizard_App.bmp
@@ -45,11 +47,12 @@ Source: "{#RootApp}\alignak-app\etc\css\*"; DestDir: "{userappdata}\Python\align
 Source: "{#RootApp}\alignak-app\etc\images\*"; DestDir: "{userappdata}\Python\alignak_app\images"; Flags: ignoreversion
 Source: "{#RootApp}\alignak-app\etc\templates\*"; DestDir: "{userappdata}\Python\alignak_app\templates"; Flags: ignoreversion
 Source: "{#RootApp}\alignak-app\etc\settings.cfg"; DestDir: "{app}"; Flags: ignoreversion; Permissions: everyone-full
-Source: "{#RootApp}\alignak-app\bin\win\vc_redist.x64.exe"; DestDir: {tmp}; Check: IsWin64; Flags: deleteafterinstall
+Source: "{#RootApp}\alignak-app\bin\win\vc_redist.x64.exe"; DestDir: {tmp}; Flags: deleteafterinstall
+Source: "{#RootApp}\alignak-app\bin\win\icon_64.ico"; DestDir: {app}; Flags: deleteafterinstall
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\alignak-app.exe";
-Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\alignak-app.exe"; Tasks: desktopicon
+Name: "{group}\{#MyAppName} v{#MyAppVersion}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon_64.ico";
+Name: "{commondesktop}\{#MyAppName} v{#MyAppVersion}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon_64.ico"; Tasks: desktopicon
 
 [Code]
 procedure CurStepChanged(CurStep: TSetupStep);
