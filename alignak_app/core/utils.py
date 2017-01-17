@@ -129,9 +129,6 @@ def init_config():
     try:
         app_config.read(get_filenames())
         logger.info('Configuration file is OK.')
-    # except DuplicateOptionError as doe:
-    #     logger.error(str(doe))
-    #     sys.exit(str(doe))
     except Exception as e:
         logger.error('Configuration file is missing in [' + str(get_filenames()) + '] !')
         logger.error(str(e))
@@ -160,13 +157,13 @@ def get_app_config(section, option, boolean=False):
             return default_parameters[option]
 
 
-def set_app_config(section, option, value):
+def set_app_config(section, option, new_value):
     """
     Set an option in configuration file
 
     :param section:
     :param option:
-    :param value:
+    :param new_value:
     """
 
     try:
@@ -187,8 +184,8 @@ def set_app_config(section, option, value):
         # Update values
         for d in data:
             if option in d[0:len(option)]:
-                data[data.index(d)] = option + ' = ' + value + '\n'
-        app_config.set(section, option, value)
+                data[data.index(d)] = option + ' = ' + new_value + '\n'
+        app_config.set(section, option, new_value)
         with open(file_to_write, 'w') as new_config_file:
             new_config_file.writelines(data)
 
@@ -293,9 +290,15 @@ def get_diff_since_last_check(last_check):
 
 def get_css():
     """
-    TODO
-    :return:
+    Read css file and return its content
+
+    :return: css text
+    :rtype: str
     """
 
-    with open(get_app_root() + app_config.get('Config', 'path') + '/css/style.css') as css:
-        return css.read()
+    try:
+        with open(get_app_root() + app_config.get('Config', 'path') + '/css/style.css') as css:
+            return css.read()
+    except IOError as e:
+        logger.error('CSS File is missing : ' + str(e))
+        return ""
