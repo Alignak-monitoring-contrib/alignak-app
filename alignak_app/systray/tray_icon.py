@@ -386,7 +386,7 @@ class TrayIcon(QSystemTrayIcon):
 
         target = self.sender()
 
-        webui_url = get_app_config('Backend', 'webui_url')
+        webui_url = get_app_config('Backend', 'alignak_webui')
 
         # Define each filter for items
         if "UP" in target.text():

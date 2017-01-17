@@ -40,7 +40,7 @@ Configuration Parameters
 Before running application, you must configure it. You can do it in file ``settings.cfg`` located in the folder cited above.
 This file contains Sections who are introduced by a ``[section_name]`` header. Then, it contains ``name = value`` entries.
 
-The two most significant Sections are **[Backend]** and **[Webui]**. You need to fill in your different url and credentials.
+The most significant Section is **[Backend]**. You need to fill in your different url and credentials.
 
 All parameters are also explained in file. For the boolean parameters, you can use the following values: on/off, true/false or 1/0.
 
@@ -57,14 +57,20 @@ This section contains main configuration for *alignak-app*.
 [Backend] section
 -----------------
 
-This section contains parameters to connect to *backend*. Choose from the following 3 ways to connect:
+This section contains parameters to connect to *backend*.
 
-1. **Recommended:** leave empty "username" and "password". Alignak-app will display a login Window.
-2. **Recommended:** set your token in "username" field and leave "password" empty. To obtain a token, open a python terminal and type the following commands::
+For "username" and "password", choose from the following 3 ways to connect:
+
+  * **Recommended:** leave empty "username" and "password". Alignak-app will display a login Window.
+  * **Recommended:** set your token in "username" field and leave "password" empty.
+  * **Not recommended:** set your "username" and your "password". This method is less secure.
+
+To obtain a token, open a python terminal and type the following commands::
 
     import requests
+    backend_url = 'http://alignak.com:5000'
     r = requests.post(
-        "http://127.0.0.1:5000/login",
+        backend_url + '/login',
          data={
             'username': 'admin',
             'password': 'admin'
@@ -72,35 +78,35 @@ This section contains parameters to connect to *backend*. Choose from the follow
     )
     print(r.text)
 
-2. **Not recommended:** set your "username" and your "password". This method is less secure.
+Then fill your "alignak_url":
 
-  * **username:** username define in your backend.
-  * **password:** password of your backend user.
+  * **alignak_url:** url of your Backend, without port. (IP or FQDN if you have it)
 
-Then fill your "backend_url":
+You can call this option after with ``%(alignak_url)s`` syntax, but **only in this section !**
 
-  * **backend_url:** url of your Backend (IP + port or FQDN if you have it)
+Your "alignak_backend" url:
+
+  * **alignak_backend:** your backend url. Default is: ``%(alignak_url)s:5000`` but you can also put the IP or FQDN.
+
+And the "alignak_webui" url.
+
+  * **alignak_webui:** url of your WebUI. Default is: ``%(alignak_url)s`` but you can also put the IP or else.
+
+If you have a port other than port 80 for your WebUI, do not forget to add it (e.g.: ``%(alignak_url)s:5001``).
 
 If you have installed `Web Service <https://github.com/Alignak-monitoring-contrib/alignak-module-ws>`_ module,
 Alignak-app can display daemons status of Alignak.
 
-  * **web_service_status:** = set to yes or no to display it.
+  * **web_service:** active or not the web-service in Alignak-app. Set to `yes` or `no` to display it.
 
 Application then need url of your alignak Web Service. If "web_service_status" is set to "no", this settings has no effect.
 
-  * **web_service_url:** = url of your web service.
-
-[Webui] section
----------------
-
-This section contains parameters to reach *webui*.
-
-  * **webui_url:** url of your WebUI (IP + port or FQDN if you have it).
+  * **alignak_ws:** = url of your web service. Default is: ``%(alignak_url)s:8888`` but you can also put the IP or FQDN.
 
 [Config] section
 ----------------
 
-This section contains application paths. Be **careful** if you change something in this section.
+This section contains application paths. Be **careful** if you modify something in this section.
 
   * **path:** this is the main path of application.
   * **img:** this the images path. This path is relative of the [path] value.
@@ -109,18 +115,5 @@ This section contains application paths. Be **careful** if you change something 
 [Images] section
 ----------------
 
-This section contains images names. You can add your images if you want, but they had to be in [path] + [img] folder.
+This section contains images names. You can add your own images if you want, but they had to be in [path] + [img] folder.
 They are also all in ``.svg`` format and can therefore be easily modified.
-
-  * **icon:** this is the main icon of Alignak-App. It will be displayed in your taskbar.
-
-  * **host_up:** = image for host UP.
-  * **host_down:** = image for host DOWN.
-  * **host_unreach:** = image for host UNREACHABLE.
-
-  * **service_ok:** = image for service OK.
-  * **service_critical:** = image for service CRITICAL.
-  * **service_unknown:** = image for service UNKNOWN.
-  * **service_warning:** = image for service WARNING.
-
-The other images are used for different application interfaces.
