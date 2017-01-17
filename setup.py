@@ -89,8 +89,10 @@ stylesheet = os.listdir(dir_path + '/etc/css')
 for style in stylesheet:
     data_files.append((paths['css'], ['etc/css/' + style]))
 
-# Settings and bin
+# Etc
 data_files.append((paths['app'], ['etc/settings.cfg']))
+
+# Bin for Unix
 data_files.append((paths['bin'], ['bin/unix/alignak-app']))
 data_files.append((paths['bin'], ['bin/unix/alignak-app.py']))
 
@@ -104,7 +106,7 @@ setup(
     # metadata for upload to PyPI
     author=__author__,
     author_email="ttamalfor@gmail.com",
-    keywords="alignak app notifier",
+    keywords="alignak applet notifier",
     url=__project_url__,
     description=__description__,
     long_description=open('README.rst').read(),
