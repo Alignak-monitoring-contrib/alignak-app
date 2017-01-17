@@ -233,13 +233,13 @@ class HostView(QWidget):
 
         # Which button is caller
         # objectname can be 'actionacknowledge' or 'actiondowntime'
-        sender = self.sender()
+        action = str(self.sender().objectName())
 
         user = self.app_backend.get_user()
 
         if self.host:
 
-            if 'actiondowntime' in sender.objectName():
+            if 'actiondowntime' in action:
                 comment = 'Schedule downtime by %s, from Alignak-app' % user['name']
             else:
                 comment = 'Acknowledge by %s, from Alignak-app' % user['name']
@@ -251,27 +251,27 @@ class HostView(QWidget):
                 'comment': comment
             }
 
-            if 'actiondowntime' in sender.objectName():
+            if 'actiondowntime' in action:
                 start_time = datetime.datetime.now()
                 end_time = start_time + datetime.timedelta(days=1)
                 data['start_time'] = start_time.timestamp()
                 data['end_time'] = end_time.timestamp()
                 data['fixed'] = True
 
-            action = self.app_backend.post(sender.objectName(), data)
+            action_post = self.app_backend.post(action, data)
 
-            if action['_status'] == 'OK':
+            if action_post['_status'] == 'OK':
                 # Init timer
                 ack_timer = QTimer(self)
 
                 # If endpoints is not store, add it
-                if self.host['_id'] not in self.endpoints[sender.objectName()]:
-                    self.endpoints[sender.objectName()][self.host['_id']] = \
-                        action['_links']['self']['href']
+                if self.host['_id'] not in self.endpoints[action]:
+                    self.endpoints[action][self.host['_id']] = \
+                        action_post['_links']['self']['href']
 
                 # Update buttons
 
-                if 'actiondowntime' in sender.objectName():
+                if 'actiondowntime' in action:
                     self.down_button.setEnabled(False)
                     self.down_button.setText('Waiting from backend...')
                     ack_timer.singleShot(20000, self.downtime_message)
@@ -282,7 +282,7 @@ class HostView(QWidget):
                     ack_timer.singleShot(20000, self.ack_message)
                     self.acks_to_check.append(self.host['name'])
             else:
-                logger.error('Action ' + sender.objectName() + ' failed')
+                logger.error('Action ' + action + ' failed')
 
     def ack_message(self):
         """
