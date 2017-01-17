@@ -97,6 +97,7 @@ class AppLogin(QDialog):
         # Username field
         self.username_line = QLineEdit(self)
         self.username_line.setPlaceholderText('Username')
+        self.username_line.setFocus( )
         layout.addWidget(self.username_line, 3, 0, 1, 2)
 
         # Password field
@@ -166,4 +167,4 @@ class AppLogin(QDialog):
         layout.addWidget(valid_btn)
 
         if server_dialog.exec_() == QDialog.Accepted:
-            set_app_config('Backend', 'alignak_url', server_url.text().rstrip())
+            set_app_config('Backend', 'alignak_url', str(server_url.text()).rstrip())
