@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
-
+import os
 
 try:
     from setuptools import setup, find_packages
@@ -32,7 +32,13 @@ try:
 except:
     python_version = (1, 5)
 if python_version < (2, 7):
-    sys.exit("This application currently requires a minimum Python 2.7.x, sorry!")
+    sys.exit(
+        "This application currently requires a minimum Python 2.7.x or 3.x"
+        "Please update your Python version."
+    )
+
+from alignak_app import __description__, __version__, __license__, __author__, __project_url__
+from alignak_app import __name__ as __pkg_name__
 
 # Requirements
 install_requires = [
@@ -42,24 +48,53 @@ install_requires = [
 
 # Define paths
 paths = {}
-if 'linux' in sys.platform or 'sunos5' in sys.platform:
+if 'linux' in sys.platform or\
+        'sunos5' in sys.platform or\
+        'bsd' in sys.platform:
     paths = {
-        'app': 'alignak_app',
-        'log': 'logs',
-        'bin': 'alignak_app/bin',
+        'app': __pkg_name__,
+        'images': __pkg_name__ + '/images',
+        'css': __pkg_name__ + '/css',
+        'templates': __pkg_name__ + '/templates',
+        'bin': __pkg_name__ + '/bin',
     }
 elif 'win32' in sys.platform:
     paths = {
-        'app': 'alignak_app',
-        'log': 'logs',
-        'bin': 'alignak_app/bin',
+        'app': __pkg_name__,
+        'images': __pkg_name__ + '/images',
+        'css': __pkg_name__ + '/css',
+        'templates': __pkg_name__ + '/templates',
+        'bin': __pkg_name__ + '/bin',
     }
 else:
     print("Unsupported platform, sorry!")
     exit(1)
 
-from alignak_app import __description__, __version__, __license__
-from alignak_app import __name__ as __pkg_name__
+# Fill [data_files]
+dir_path = os.path.dirname(os.path.realpath(__file__))
+data_files = []
+
+# Images
+images = os.listdir(dir_path + '/etc/images')
+for image in images:
+    data_files.append((paths['images'], ['etc/images/' + image]))
+
+# Templates
+templates = os.listdir(dir_path + '/etc/templates')
+for template in templates:
+    data_files.append((paths['templates'], ['etc/templates/' + template]))
+
+# StyleSheet
+stylesheet = os.listdir(dir_path + '/etc/css')
+for style in stylesheet:
+    data_files.append((paths['css'], ['etc/css/' + style]))
+
+# Etc
+data_files.append((paths['app'], ['etc/settings.cfg']))
+
+# Bin for Unix
+data_files.append((paths['bin'], ['bin/unix/alignak-app']))
+data_files.append((paths['bin'], ['bin/unix/alignak-app.py']))
 
 
 setup(
@@ -69,10 +104,10 @@ setup(
     license=__license__,
 
     # metadata for upload to PyPI
-    author="Estrada Matthieu",
+    author=__author__,
     author_email="ttamalfor@gmail.com",
-    keywords="alignak app indicator",
-    url="https://github.com/Alignak-monitoring-contrib/alignak-app",
+    keywords="alignak applet notifier",
+    url=__project_url__,
     description=__description__,
     long_description=open('README.rst').read(),
 
@@ -81,24 +116,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
 
-    data_files=[
-        (paths['app'], ['etc/settings.cfg']),
-        (paths['app'] + '/templates', ['etc/templates/notification.tpl']),
-        (paths['app'] + '/templates', ['etc/templates/css.tpl']),
-        (paths['app'] + '/templates', ['etc/templates/about.tpl']),
-        (paths['app'] + '/images', ['etc/images/alignak.svg']),
-        (paths['app'] + '/images', ['etc/images/host_up.svg']),
-        (paths['app'] + '/images', ['etc/images/host_down.svg']),
-        (paths['app'] + '/images', ['etc/images/host_unreach.svg']),
-        (paths['app'] + '/images', ['etc/images/service_ok.svg']),
-        (paths['app'] + '/images', ['etc/images/service_critical.svg']),
-        (paths['app'] + '/images', ['etc/images/service_warning.svg']),
-        (paths['app'] + '/images', ['etc/images/service_unknown.svg']),
-        (paths['app'] + '/images', ['etc/images/exit.svg']),
-        (paths['app'] + '/images', ['etc/images/about.svg']),
-        (paths['bin'], ['etc/bin/launch']),
-        (paths['bin'], ['etc/bin/alignakapp.py']),
-    ],
+    data_files=data_files,
 
     install_requires=install_requires,
 

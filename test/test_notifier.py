@@ -19,16 +19,16 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-import unittest2
-import configparser
+import copy
 import sys
-import os
 
-from alignak_app.notifier import AppNotifier
-from alignak_app.utils import get_alignak_home
-from alignak_app.tray_icon import TrayIcon
-from alignak_app.alignak_data import AlignakData
-from alignak_app.popup import AppPopup
+import unittest2
+
+from alignak_app.core.backend import AppBackend
+from alignak_app.core.notifier import AppNotifier
+from alignak_app.core.utils import get_image_path
+from alignak_app.core.utils import init_config
+from alignak_app.systray.tray_icon import TrayIcon
 
 try:
     __import__('PyQt5')
@@ -48,16 +48,12 @@ class TestAppNotifier(unittest2.TestCase):
         This file test the AppNotifier class.
     """
 
-    config_file = get_alignak_home() + '/alignak_app/settings.cfg'
-    config = configparser.ConfigParser()
-    config.read(config_file)
+    init_config()
 
-    qicon_path = get_alignak_home() \
-                 + config.get('Config', 'path') \
-                 + config.get('Config', 'img') \
-                 + '/'
-    img = os.path.abspath(qicon_path + config.get('Config', 'icon'))
-    icon = QIcon(img)
+    icon = QIcon(get_image_path('icon'))
+
+    backend = AppBackend()
+    backend.login()
 
     @classmethod
     def setUpClass(cls):
@@ -69,45 +65,80 @@ class TestAppNotifier(unittest2.TestCase):
 
     def test_start_process(self):
         """Start Notifier Process"""
-        under_test = AppNotifier(self.icon)
+        under_test = AppNotifier(self.icon, self.backend)
 
         self.assertIsNone(under_test.tray_icon)
-        self.assertIsNone(under_test.config)
-        self.assertIsNone(under_test.alignak_data)
+        self.assertIsNotNone(under_test.backend)
         self.assertIsNone(under_test.popup)
+        self.assertTrue(under_test.notify)
 
         # Tray_icon for notifier
-        tray_icon = TrayIcon(self.icon, self.config)
-        tray_icon.build_menu()
-
-        # Start process
-        under_test.start_process(self.config, tray_icon)
-
-        self.assertIsNotNone(under_test.tray_icon)
-        self.assertIsNotNone(under_test.config)
-        self.assertIsNotNone(under_test.alignak_data)
-        self.assertIsNotNone(under_test.popup)
-
-    def test_check_data(self):
-        """Check Data"""
-        under_test = AppNotifier(self.icon)
+        tray_icon = TrayIcon(self.icon)
+        tray_icon.build_menu(self.backend)
 
         # Start notifier
-        tray_icon = TrayIcon(self.icon, self.config)
-        tray_icon.build_menu()
-        under_test.start_process(self.config, tray_icon)
+        under_test.start(tray_icon)
+
+        self.assertIsNotNone(under_test.tray_icon)
+        self.assertIsNotNone(under_test.backend)
+        self.assertIsNotNone(under_test.popup)
+        self.assertTrue(under_test.notify)
+
+    def test_check_data(self):
+        """Check Data modify Actions"""
+        under_test = AppNotifier(self.icon, self.backend)
+
+        # Start notifier
+        tray_icon = TrayIcon(self.icon)
+        tray_icon.build_menu(self.backend)
+        under_test.start(tray_icon)
 
         # Check Actions are pending
         self.assertEqual('Hosts UP, Wait...',
-                         under_test.tray_icon.hosts_actions['hosts_up'].text())
+                         under_test.tray_icon.action_factory.get('hosts_up').text())
         self.assertEqual('Services OK, Wait...',
-                         under_test.tray_icon.services_actions['services_ok'].text())
+                         under_test.tray_icon.action_factory.get('services_ok').text())
 
         # Check data...
         under_test.check_data()
 
         # ...so menu actions should be update
         self.assertNotEqual('Hosts UP, Wait...',
-                         under_test.tray_icon.hosts_actions['hosts_up'].text())
+                            under_test.tray_icon.action_factory.get('hosts_up').text())
         self.assertNotEqual('Services OK, Wait...',
-                         under_test.tray_icon.services_actions['services_ok'].text())
+                            under_test.tray_icon.action_factory.get('services_ok').text())
+
+    def test_states_change(self):
+        """States and Notify Changes"""
+        self.backend = AppBackend()
+        self.backend.login()
+
+        under_test = AppNotifier(self.icon, self.backend)
+
+        # Start notifier
+        tray_icon = TrayIcon(self.icon)
+        tray_icon.build_menu(self.backend)
+        under_test.start(tray_icon)
+
+        # "start_process" set notify to True
+        self.assertTrue(under_test.notify)
+
+        # "get_all_state" to fill states
+        # 1 - First time, states are fill
+        self.assertFalse(under_test.backend.states)
+        under_test.backend.synthesis_count()
+        # 2 - Next time, states will be filled
+        self.assertTrue(under_test.backend.states)
+
+        # Copy state
+        old_states = copy.deepcopy(under_test.backend.states)
+        under_test.diff_last_check(old_states)
+
+        # "check_changes" set notify to False if no changes
+        self.assertFalse(under_test.notify)
+
+        # Modify "states" to set notify to True
+        under_test.backend.states['hosts']['up'] += 1
+        under_test.diff_last_check(old_states)
+
+        self.assertTrue(under_test.notify)

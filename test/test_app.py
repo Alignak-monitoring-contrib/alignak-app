@@ -50,12 +50,11 @@ class TestApp(unittest2.TestCase):
 
         under_test = AlignakApp()
 
-        self.assertIsNone(under_test.config)
         self.assertIsNone(under_test.tray_icon)
         self.assertIsNone(under_test.notifier)
 
         # Build alignak_app
-        under_test.build_alignak_app()
+        under_test.start()
 
         self.assertIsNotNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.notifier)
@@ -64,19 +63,7 @@ class TestApp(unittest2.TestCase):
         """Get Icon"""
 
         under_test = AlignakApp()
-        under_test.read_configuration()
 
         icon = under_test.get_icon()
 
         self.assertIsInstance(icon, QIcon, 'This is a test for QIcon')
-
-    def test_read_configuration(self):
-        """Read configuration"""
-
-        under_test = AlignakApp()
-
-        self.assertIsNone(under_test.config)
-
-        under_test.read_configuration()
-
-        self.assertIsNotNone(under_test.config)

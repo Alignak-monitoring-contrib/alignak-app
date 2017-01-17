@@ -19,57 +19,60 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
+import json
+
 import unittest2
-import configparser as cfg
 
-from alignak_app.alignak_data import AlignakData
-from alignak_app.app import get_alignak_home
+from alignak_app.core.backend import AppBackend
+from alignak_app.core.utils import init_config, get_app_config
 
 
-class TestAlignakData(unittest2.TestCase):
+class TestBackend(unittest2.TestCase):
     """
         This file test methods of AlignakData class
     """
 
     # Create config for all methods.
-    filepath = get_alignak_home() + '/alignak_app/settings.cfg'
-    config = cfg.ConfigParser()
-    config.read(filepath)
+    init_config()
 
     def test_log_to_backend(self):
         """Connection to Alignak-Backend"""
 
-        under_test = AlignakData()
+        under_test = AppBackend()
 
-        under_test.log_to_backend(TestAlignakData.config)
+        under_test.login()
 
-        # Compare config url and backend
+        # Compare config url and app_backend
         self.assertEquals(
             under_test.backend.url_endpoint_root,
-            TestAlignakData.config.get('Backend', 'backend_url')
+            get_app_config('Backend', 'alignak_backend')
         )
         self.assertTrue(under_test.backend.authenticated)
 
-    def test_if_hosts_states(self):
-        """Collect hosts states"""
+    def test_hosts_endpoint_without_params(self):
+        """Collect Hosts States"""
 
-        alignak_data = AlignakData()
+        backend = AppBackend()
 
-        alignak_data.log_to_backend(TestAlignakData.config)
+        backend.login()
 
         # Get hosts states
-        under_test = alignak_data.get_host_states()
+        under_test = backend.get('host')
 
         self.assertTrue(under_test)
+        self.assertTrue(under_test['_items'])
 
-    def test_if_services_states(self):
-        """Collect services states"""
+    def test_service_endpoint_with_params(self):
+        """Collect Services States"""
 
-        alignak_data = AlignakData()
+        alignak_data = AppBackend()
 
-        alignak_data.log_to_backend(TestAlignakData.config)
+        alignak_data.login()
 
+        params = {'where': json.dumps({'_is_template': False})}
         # Get services states
-        under_test = alignak_data.get_service_states()
+        under_test = alignak_data.get('service', params=params)
 
         self.assertTrue(under_test)
+        self.assertTrue(under_test['_items'])
+        self.assertTrue(under_test['_status'])

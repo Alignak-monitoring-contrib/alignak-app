@@ -29,25 +29,19 @@
     from this application.
 """
 
-from logging import getLogger
-from alignak_app.utils import create_logger
-
-logger = getLogger()
-
-create_logger(logger)
 
 # Application version and manifest
-VERSION = (0, 4, 2)
+VERSION = (0, 5, 1)
 __application__ = u"Alignak-App"
 __short_version__ = '.'.join((str(each) for each in VERSION[:2]))
 __version__ = '.'.join((str(each) for each in VERSION[:4]))
 __author__ = u"Estrada Matthieu"
 __copyright__ = u"2015-2016 - %s" % __author__
 __license__ = u"GNU Affero General Public License, version 3"
-__description__ = u"Notifier for Alignak monitoring solution."
-__releasenotes__ = u"Notifier for Alignak monitoring solution."
+__description__ = u"Applet, in system tray, for Alignak monitoring solution"
+__releasenotes__ = u"Applet, in system tray, for Alignak monitoring solution"
 __project_url__ = "https://github.com/Alignak-monitoring-contrib/alignak-app"
-__doc_url__ = "http://alignak-app.readthedocs.io/en/develop/?badge=latest"
+__doc_url__ = "http://alignak-app.readthedocs.io/en/develop/"
 
 # Application Manifest
 manifest = {

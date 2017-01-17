@@ -19,10 +19,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-import unittest2
-import configparser
+import os
 
-from alignak_app.utils import *
+import unittest2
+
+import alignak_app.core.utils as utils
 
 
 class TestUtils(unittest2.TestCase):
@@ -30,53 +31,33 @@ class TestUtils(unittest2.TestCase):
         This file test methods of `utils.py` file.
     """
 
-    # Simulate config file
-    config_file = get_alignak_home() + '/alignak_app/settings.cfg'
-    config = configparser.ConfigParser()
-    config.read(config_file)
-
-    def test_get_template(self):
-        """Get a Template"""
-
-        # Simulate an expected Template
-        expected_css = """QWidget{
-    Background: #eee;
-    color:white;
-}
-QLabel#title{
-    Background: #78909C;
-    border: none;
-    border-radius: 10px;
-    font-size: 18px bold;
-}
-QLabel#msg{
-    Background: #eee;
-    color: black;
-}
-QLabel#state{
-    Background-color: #27ae60;
-    font-size: 16px bold;
-
-}
-QToolButton{
-    Background: #eee;
-    border: none;
-}
-"""
-
-
-
-        # Get the template
-        under_test = get_template('css.tpl', dict(color_title='#27ae60'), TestUtils.config)
-
-        self.assertEqual(under_test, expected_css)
-
-    def test_get_alignak_home(self):
-        """Get Alignak-App Home"""
+    def test_get_app_root(self):
+        """Get Alignak-App Root Folder"""
 
         expected_home = os.environ['HOME'] + '/.local'
 
-        home = get_alignak_home()
+        home = utils.get_app_root()
 
         self.assertEqual(home, expected_home)
 
+    def test_app_config(self):
+        """Set and Get app_config"""
+
+        # Reset app_config to None
+        utils.app_config = None
+
+        self.assertIsNone(utils.app_config)
+
+        utils.init_config()
+
+        self.assertIsNotNone(utils.app_config)
+
+    def test_get_image_path(self):
+        """Get Right Image Path"""
+        utils.init_config()
+
+        expected_img = utils.get_app_root() + '/alignak_app/images/icon.svg'
+
+        under_test = utils.get_image_path('icon')
+
+        self.assertEqual(under_test, expected_img)

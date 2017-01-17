@@ -24,111 +24,142 @@
 """
 
 import sys
-import os
+from logging import DEBUG, INFO
+from time import sleep
 
-from logging import getLogger
-
-import configparser
-
-from alignak_app.tray_icon import TrayIcon
-from alignak_app.notifier import AppNotifier
-from alignak_app.utils import get_alignak_home
+from alignak_app.core.logs import create_logger
+from alignak_app.core.notifier import AppNotifier
+from alignak_app.core.utils import get_image_path
+from alignak_app.core.utils import init_config, get_app_config
+from alignak_app.systray.tray_icon import TrayIcon
+from alignak_app.widgets.login import AppLogin
+from alignak_app.widgets.tick import tickManager, send_tick
+from alignak_app.core.backend import AppBackend
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QDialog, QMessageBox  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QTimer  # pylint: disable=no-name-in-module
 except ImportError:
+    from PyQt4.QtGui import QDialog, QMessageBox  # pylint: disable=import-error
     from PyQt4.QtGui import QIcon  # pylint: disable=import-error
-    from PyQt4.Qt import QApplication  # pylint: disable=import-error
+    from PyQt4.QtCore import QTimer  # pylint: disable=import-error
 
-
-logger = getLogger(__name__)
+# Initialize logger
+logger = create_logger()
 
 
 class AlignakApp(object):
     """
-        Class who build application and configuration.
+        Class who build Alignak-app and initialize configuration, notifier and systray icon.
     """
 
     def __init__(self):
-        self.config = None
         self.tray_icon = None
         self.notifier = None
 
-    def build_alignak_app(self):
+    def start(self):
         """
         The main function of Alignak-App
 
         """
 
-        # Read configuration
-        self.read_configuration()
+        # Initialize configuration
+        init_config()
+        tickManager.start()
 
-        # Create notifier
-        self.notifier = AppNotifier(self.get_icon())
-
-        # Create QSystemTrayIcon
-        self.tray_icon = TrayIcon(self.get_icon(), self.config)
-        self.tray_icon.build_menu()
-
-    def run(self):  # pragma: no cover
-        """
-        Start the application.
-
-        """
-
-        if 'linux' in sys.platform or 'sunos5' in sys.platform:
-            try:
-                os.environ['DESKTOP_SESSION']
-            except KeyError as e:
-                logger.critical('You must be in desktop session to launch Alignak-App : ' + str(e))
-                sys.exit()
-
-        # Build app
-        self.build_alignak_app()
-
-        # Start process notifier
-        self.notifier.start_process(self.config, self.tray_icon)
-
-    def read_configuration(self):
-        """
-        Read the configuration file.
-
-        """
-
-        config_file = get_alignak_home() + '/alignak_app/settings.cfg'
-
-        self.config = configparser.ConfigParser()
-        logger.info('Read configuration file...')
-
-        if os.path.isfile(config_file):
-            self.config.read(config_file)
-            logger.info('Configuration file is OK.')
+        # Define level of logger
+        if get_app_config('Alignak-App', 'debug', boolean=True):
+            logger.setLevel(DEBUG)
+            logger.info('Logger set to DEBUG')
         else:
-            logger.error('Configuration file is missing in [' + config_file + '] !')
-            sys.exit('Configuration file is missing in [' + config_file + '] !')
+            logger.setLevel(INFO)
+            logger.info('Logger set to INFO')
 
-    def get_icon(self):
+        # If not app_backend url, stop application
+        if get_app_config('Backend', 'alignak_backend'):
+            # If not username and password, create login form, else connect with config data.
+            if not get_app_config('Backend', 'username') and \
+                    not get_app_config('Backend', 'password'):
+                login = AppLogin()
+                login.create_widget()
+
+                if login.exec_() == QDialog.Accepted:
+                    self.run(login.app_backend)
+                else:
+                    logger.warning('Application close.')
+                    exit(0)
+            elif get_app_config('Backend', 'username') and \
+                    not get_app_config('Backend', 'password'):
+                self.run()
+            elif get_app_config('Backend', 'username') and \
+                    get_app_config('Backend', 'password'):
+                self.run()
+            else:
+                logger.error('Please configure Alignak-app before starting it.')
+                sys.exit()
+        else:
+            logger.error('Please configure Alignak-app before starting it.')
+            sys.exit()
+
+    @staticmethod
+    def can_close():
+        """
+        Check if tick for bad identifier is send and close application.
+
+        """
+
+        if len(tickManager.ticks_to_send) == 0:
+            QMessageBox.critical(None, 'Connection ERROR', 'Application will close !')
+            sys.exit(0)
+
+    @staticmethod
+    def get_icon():
         """
         Set icon of application.
 
         """
-        qicon_path = get_alignak_home() \
-            + self.config.get('Config', 'path') \
-            + self.config.get('Config', 'img') \
-            + '/'
-        img = os.path.abspath(qicon_path + self.config.get('Config', 'icon'))
+
+        img = get_image_path('icon')
         icon = QIcon(img)
 
         return icon
 
-if __name__ == "__main__":  # pragma: no cover
-    app = QApplication(sys.argv)
-    app.setQuitOnLastWindowClosed(False)
+    def run(self, app_backend=None):  # pragma: no cover
+        """
+        Start all Alignak-app processes
 
-    alignak_app = AlignakApp()
-    alignak_app.run()
-    alignak_app.tray_icon.show()
+        """
 
-    sys.exit(app.exec_())
+        # If not login form
+        if not app_backend:
+            app_backend = AppBackend()
+            connect = app_backend.login()
+            if not connect:
+                send_tick(
+                    'ALERT',
+                    'Your connection information are not accepted ! '
+                    'Check your config file !'
+                )
+                timer = QTimer()
+                timer.start(6000)
+                timer.timeout.connect(self.can_close)
+            else:
+                send_tick('OK', 'Connected to Alignak Backend')
+
+        if 'token' not in app_backend.user:
+            app_backend.user['token'] = app_backend.backend.token
+
+        # Initialize notifier
+        self.notifier = AppNotifier(self.get_icon(), app_backend)
+
+        # Create QSystemTrayIcon
+        self.tray_icon = TrayIcon(self.get_icon())
+        self.tray_icon.build_menu(self.notifier.backend)
+        self.tray_icon.show()
+
+        # If all is OK ;)
+        start = bool(app_backend.get('livesynthesis'))
+        if start:
+            self.notifier.start(self.tray_icon)

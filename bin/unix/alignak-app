@@ -1,0 +1,170 @@
+#!/usr/bin/env bash
+# -*- coding: utf-8 -*-
+
+# Copyright (c) 2015-2016:
+#   Matthieu Estrada, ttamalfor@gmail.com
+#
+# This file is part of (AlignakApp).
+#
+# (AlignakApp) is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# (AlignakApp) is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
+
+### BEGIN INIT INFO
+# Provides:          alignak-app
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: alignak application notifier
+# Description:       alignak-app is a notifier for Alignak suite.
+### END INIT INFO
+
+END='\x1b[0m'
+RED='\x1b[31m'
+GREEN='\x1b[32m'
+CYAN='\x1b[36m'
+
+LIB_NAME=alignak_app
+DAEMON=alignak-app
+
+ROOT_DIR="$HOME/.local/$LIB_NAME"
+BIN_DIR="$ROOT_DIR/bin"
+USER_BIN=$HOME/bin
+
+# Verify import of alignak_app and PyQt
+PYBIN=""
+PYQT=0
+PY=0
+
+python -c "import alignak_app" >/dev/null  2>&1
+
+if [ $? -eq 0 ]; then
+    PY=2
+fi
+
+python -c "__import__('PyQt4')" >/dev/null  2>&1
+
+if [ $? -eq 0 ]; then
+    PYQT=2
+fi
+
+if [[ "$PY" -eq 2 && "$PYQT" -eq 2 ]]; then
+    PYBIN=python
+else
+    python3 -c "import alignak_app"
+    if [ $? -eq 0 ]; then
+        PY=3
+    fi
+    python3 -c "__import__('PyQt5')"
+    if [ $? -eq 0 ]; then
+        PYQT=3
+    fi
+    if [[ "$PY" -eq 3 && "$PYQT" -eq 3 ]]; then
+        PYBIN=python3
+    else
+        echo "$RED It seems that your version of Python and PyQt are not compatible or not installed ! $END"
+        exit 1
+    fi
+fi
+
+# Make command alignak-app available
+if [ ! -L "$USER_BIN/$DAEMON" ]; then
+    echo "------------------------------------------"
+    echo "      Alignak-app verify installation"
+    echo "------------------------------------------"
+    # Verify installation
+    echo "Check folders..."
+    if [ ! -d "$USER_BIN" ]; then
+        echo -e "
+Create:
+    $GREEN $USER_BIN folder for $DAEMON $END
+            "
+        mkdir "$USER_BIN"
+    else
+        echo "Folder already exists."
+    fi
+    echo "The command $DAEMON is not yet created..."
+    echo -e "\nCreate: $GREEN $DAEMON $END command !"
+    ln -s "$BIN_DIR/$(basename "$0")" "$USER_BIN/$DAEMON"
+    echo -e "\nInstallation is done !"
+fi
+
+# Get version and doc_url of alignak-app
+version=`"$PYBIN" -c "from alignak_app import __version__; print(__version__)"`
+release_notes=`"$PYBIN" -c "from alignak_app import __releasenotes__; print(__releasenotes__)"`
+project_url=`"$PYBIN" -c "from alignak_app import __project_url__; print(__project_url__)"`
+doc_url=`"$PYBIN" -c "from alignak_app import __doc_url__; print(__doc_url__)"`
+
+# Functions for alignak-app
+usage() {
+    echo -e "\n Usage: $CYAN $(basename "$0") {start|stop|status|restart} $END \n"
+}
+
+
+do_start() {
+    echo "------------------------------------------"
+    echo -e "$GREEN Starting $DAEMON daemon $END..."
+    echo "------------------------------------------"
+    echo -e "$CYAN Alignak-app, Version $version $END \n"
+    echo "  $release_notes"
+    echo "  For more help, visit $doc_url."
+    echo "  Please open any issue on $project_url."
+    echo "------------------------------------------"
+    "$PYBIN" "$BIN_DIR/$DAEMON.py" &
+}
+
+do_stop() {
+    pid=`ps aux |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
+    if [ ! -z "$pid" ]; then
+        echo -e "$RED  Stop $DAEMON daemon... $END"
+        echo "Kill pid: $pid"
+        kill "$pid"
+        echo "...$DAEMON stop !"
+    else
+        echo -e "$RED $DAEMON is not running ! $END"
+    fi
+}
+
+do_status() {
+    pid=`ps fu |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
+    if [ ! -z "$pid" ]; then
+        echo -e "$DAEMON is $GREEN running $END... (pid $pid)"
+    else
+        echo -e "$RED $DAEMON is not running ! $END"
+        echo "Run $DAEMON start"
+    fi
+
+}
+
+# Arguments
+CMD=$1
+
+case "$CMD" in
+    start)
+        do_start
+    ;;
+    stop)
+        do_stop
+    ;;
+    restart)
+        do_stop
+        do_start
+    ;;
+    status)
+        do_status
+    ;;
+    *)
+        usage
+        exit 1
+esac
+exit 0

@@ -1,0 +1,90 @@
+/****** GENERAL ******/
+QLabel {
+    color:black;
+}
+QPushButton#valid{
+    background-color: #eee;
+    border: 2px solid #78909C;
+    border-radius: 15px;
+    text-align: center;
+}
+QPushButton#valid:hover{
+    Background-color: #ddd;
+}
+
+/****** NOTIFICATION ******/
+QProgressBar {
+    color: black;
+    border: 2px solid grey;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/****** SERVICES VIEW ******/
+QLabel#OK {
+    border-style: solid;
+	border-width:0px 0px 2px 0px;
+	border-color: #27ae60;
+}
+QLabel#WARNING {
+    border-style: solid;
+	border-width:0px 0px 2px 0px;
+	border-color: #e67e22;
+}
+QLabel#CRITICAL {
+    border-style: solid;
+	border-width:0px 0px 2px 0px;
+	border-color: #e74c3c;
+}
+QLabel#UNKNOWN {
+    border-style: solid;
+	border-width:0px 0px 2px 0px;
+	border-color: #2980b9;
+}
+QLabel#UNREACHABLE {
+    border-style: solid;
+	border-width:0px 0px 2px 0px;
+	border-color: dark-grey;
+}
+
+/****** HOST VIEW ******/
+QWidget#states {
+	border: 1.5px solid #03a9f4;
+	border-radius: 16px;
+}
+QLabel#title {
+	border-style: solid;
+	border-width:0px 0px 1px 0px;
+	border-color: #03a9f4;
+}
+
+/****** LOGIN ******/
+QLabel#login_msg {
+	color: red;
+}
+QLabel#login {
+	color: #1fb4e4; 
+	font-size: 18px;
+}
+QLabel#login_welcome {
+	font-size: 14px; 
+	text-align: center;
+}
+
+/****** TITLE ******/
+QWidget#popup_title {
+	background-color: #002b36;
+}
+QLabel#title_label {
+	font-size: 20px;
+	margin-top: 5px;
+	color: white;
+}
+QLabel#logo {
+	margin-top: 10px;
+}
+
+/****** STATUS ******/
+QLabel#help {
+    font-size: 11px;
+}

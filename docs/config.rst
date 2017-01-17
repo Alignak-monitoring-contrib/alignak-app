@@ -1,52 +1,128 @@
 .. _config:
 
-Before starting
-===============
+Alignak-app Folders
+===================
 
-During installation, Alignak-app create a folder who contains all data files for the application (Like images, logs and configuration file).
+During installation, Alignak-app creates a root folder that contains all the files you need: images, logs, and configuration files.
 
 On Linux
 --------
 
-The root folder of the application should be under::
+The ROOT folder of the application should be under::
 
-``/home/$USER/.local/alignak_app``:
+    /home/$USER/.local/alignak_app/
 
 On Windows
 ----------
 
-The root folder of the application should be under::
+1. If you install from **Pip** or with **Sources**:
+
+The ROOT folder of the application should be under::
 
     C:\Users\user\AppData\Roaming\Python\alignak_app\
 
-**Note:** Currently application runs on windows only recently, so launching is not easy. More pretty version will come soon.
+
+2. If you use **Installer** (see :ref:`install`):
+
+The configuration file will be located under::
+
+    C:\Program Files\Alignak-app\
+
+This is to facilitate access to the configuration and respect Windows conventions.
+
+The rest of the files is in::
+
+    C:\Users\user\AppData\Roaming\Python\alignak_app\
+
+To Know
+~~~~~~~
+
+You will soon find the logs and other files in this folders.
 
 Configuration Parameters
 ========================
 
-Before running application, you must configure it. You can do it in file ``settings.cfg`` located in the folder cited above.
+Before running application, **you must configure it**.
 
-The two most significant Sections are **[Backend]** and your **[Webui]**.
+You will find a file named ``settings.cfg`` located in the "ROOT" folder cited above.
 
-All parameters are explained in file, you only have to read each section.
+This file contains Sections who are introduced by a ``[section_name]`` header. Then, it contains ``name = value`` entries.
+All parameters are also explained in file. For the boolean parameters, you can use the following values: on/off, true/false or 1/0.
+
+The most significant Section is **[Backend]**. You need set your backend url, ports and credentials.
+
+.. [ToKnow] " Without connection on Backend of Alignak, App won't start ! "
 
 [Alignak-App] section
 ---------------------
 
-This section contains main configuration for *alignak-app*. 
+This section contains main configuration for *alignak-app*.
+
+  * **check_interval:** defines (in seconds) the frequency of checks to the backend API.
+  * **duration:** defines (in seconds) the duration of the notification popup.
+  * **position:** choose where the notifications will be displayed.
+  * **debug:** set application to debug or not.
 
 [Backend] section
 -----------------
 
 This section contains parameters to connect to *backend*.
 
-[Webui] section
----------------
+For "username" and "password", choose from the following 3 ways to connect:
 
-This section contains parameters to reach *webui*.
+  * **Recommended:** leave empty "username" and "password". Alignak-app will display a login Window.
+  * **Recommended:** set your token in "username" field and leave "password" empty.
+  * **Not recommended:** set your "username" and your "password". This method is less secure.
+
+To obtain a token, open a python terminal and type the following commands::
+
+    import requests
+    backend_url = 'http://alignak.com:5000'
+    r = requests.post(
+        backend_url + '/login',
+         data={
+            'username': 'admin',
+            'password': 'admin'
+         }
+    )
+    print(r.text)
+
+Then fill your "alignak_url":
+
+  * **alignak_url:** url of your Backend, without port. (IP or FQDN if you have it)
+
+You can call this option after with ``%(alignak_url)s`` syntax, but **only in this section !**
+
+Your "alignak_backend" url:
+
+  * **alignak_backend:** your backend url. Default is: ``%(alignak_url)s:5000`` but you can also put the IP or FQDN.
+
+And the "alignak_webui" url.
+
+  * **alignak_webui:** url of your WebUI. Default is: ``%(alignak_url)s`` but you can also put the IP or else.
+
+If you have a port other than port 80 for your WebUI, do not forget to add it (e.g.: ``%(alignak_url)s:5001``).
+
+If you have installed `Web Service <https://github.com/Alignak-monitoring-contrib/alignak-module-ws>`_ module,
+Alignak-app can display daemons status of Alignak.
+
+  * **web_service:** active or not the web-service in Alignak-app. Set to `yes` or `no` to display it.
+
+Application then need url of your alignak Web Service. If "web_service_status" is set to "no", this settings has no effect.
+
+  * **alignak_ws:** = url of your web service. Default is: ``%(alignak_url)s:8888`` but you can also put the IP or FQDN.
 
 [Config] section
 ----------------
 
-This section contains path to application and images. Be **careful** if you change something in it.
+This section contains application paths. Be **careful** if you modify something in this section.
 
+  * **path:** this is the main path of application.
+  * **img:** this the images path. This path is relative of the [path] value.
+  * **tpl:** this the templates path. This path is relative of the [path] value.
+
+[Images] section
+----------------
+
+This section contains images names. You can add your own images if you want, but they had to be in [path] + [img] folder.
+They are also all in ``.svg`` format and can therefore be easily modified.
