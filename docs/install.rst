@@ -17,37 +17,55 @@ You must have Alignak Suite installed before using this app :
 
 Alignak-app need at least a functionnal **alignak-backend** to connect with it.
 
-Python and PyQT
-~~~~~~~~~~~~~~~
+Before install
+~~~~~~~~~~~~~~
+
+Please **READ** the following lines before to begin:
+
+**Note for Windows users:** An installer is available in repository of Alignak-app, under `win folder <https://github.com/Alignak-monitoring-contrib/alignak-app/tree/develop/bin/win>`_.
+PyQt5 and Python3 are more easy to install if you want to install from sources or with pip.
+
+**Note for Linux users:** PyQt5 and Python 3 are recommended, but not required.
+A ``.desktop``, named **alignak-app.desktop**, is available in repository of Alignak-app under `unix folder <https://github.com/Alignak-monitoring-contrib/alignak-app/tree/develop/bin/unix>`_
+to create a shorcut with "Stop" and "Restart" actions.
+
+PyQT
+~~~~
 
 You must install a version of **PyQt**, compatible with your python version.
 
-**Note:** For **Windows** users, PyQt5 and Python3 are more easy to install.
+"App" support PyQt4 and PyQt5, there is many tutorial on web who explains how to install it.
+But below, you'll find "quick install" for Linux and Windows:
 
-Generally, here's how to install PyQt:
+Linux
+*****
 
-Python2
-*******
-
-On Linux::
+For PyQt4, it's often available with your distribution packages::
 
     sudo apt-get install python-qt4
 
-On Windows:
+Pyqt5 is directly available via pip but only for Python 3.5::
+
+    pip3 install PyQt5 --user
+
+Windows
+*******
+
+**Note:** If you install "App" with the installer, you do not need to do this step.
+
+For PyQt4:
 
 * Download the correct executable on `PyQt4 Official Website`_.
 * Be sure to have **the same architecture** as your **Python version** (`x86` or `x64`).
 * Then simply run installer.
 
-Python3
-*******
+Pyqt5 installs in the same way as Linux and is only available for Python 3.5::
 
-On Linux and Windows::
+    pip3 install PyQt5 --user
 
-    pip install PyQt5 --user
 
-Python and Libraries
-~~~~~~~~~~~~~~~~~~~~
+External Libraries
+~~~~~~~~~~~~~~~~~~
 
 Then, simply install Python modules that are listed in ``requirements.txt`` file with pip:
 
@@ -59,6 +77,7 @@ Installation
 ------------
 
 **Note:** Be sure to install this application with ``--user`` flags. Otherwise you may not be able to launch it !
+**Note:** If you install "App" with the installer, you do not need to install Python or other libraries.
 
 End user installation
 ~~~~~~~~~~~~~~~~~~~~~
@@ -83,8 +102,9 @@ Installer (Windows only)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 An installer is available on `Alignak-app repository <https://github.com/Alignak-monitoring-contrib/alignak-app/tree/develop/bin/win>`_ for Windows.
+It already contains the application and required libraries. Installing Python and PyQt is not necessary !
 
-This installer is only compatible with **x64** architecture !
+**IMPORTANT:** This installer is only compatible with **x64** architecture !
 
 .. _alignak: http://alignak-monitoring.github.io/
 .. _alignak-backend: http://alignak-backend.readthedocs.io/en/latest/

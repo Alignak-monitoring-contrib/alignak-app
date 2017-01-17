@@ -14,7 +14,7 @@ More information about Alignak is available in the `Alignak documentation <http:
 About Alignak-App
 -----------------
 
-The Alignak-App is an open source Notifier written in Python, under the terms of the `GNU Affero General Public License`_ .
+The Alignak-App is an open source Applet in system tray, written in Python. It is available under the terms of the `GNU Affero General Public License`_ .
 
 This application is intended to be used within the Alignak project, it connects to the Alignak backend and allows you to be notified directly on your workstation.
 You will be able to view the states of the hosts and the services that you have defined in your installation.
@@ -23,16 +23,18 @@ Features
 ~~~~~~~~
 
 Alignak-App has many features:
-  * Support Python 2.7 and Python 3 (and also PyQt4 and PyQt5)
+
+  * Support Python 2.7 and Python 3, PyQt4 and PyQt5. (Python 3.5 is recommended)
   * Multi-platfom: Linux / Windows
   * Multi-screen: notifies you on your active screen
   * Customizable: notifications interval, duration and position, use your own icons
   * Links to your `Alignak WebUI`_ from the menus
+  * Search Hosts and Services, acknowledge problems, schedule downtimes and more
 
 Release cycle
 ~~~~~~~~~~~~~
 
-Alignak-App has no strict schedule for releasing.
+"App" has no strict schedule for releasing.
 
 Other features will come in the next versions and you can propose new features through  `project issues <https://github.com/Alignak-monitoring-contrib/alignak-app>`_.
 Each feature is discussed in a separate issue.

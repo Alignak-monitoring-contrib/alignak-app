@@ -1,48 +1,57 @@
 .. _config:
 
-Before starting
-===============
+Alignak-app Folders
+===================
 
 During installation, Alignak-app creates a root folder that contains all the files you need: images, logs, and configuration files.
 
 On Linux
 --------
 
-The root folder of the application should be under::
+The ROOT folder of the application should be under::
 
     /home/$USER/.local/alignak_app/
 
 On Windows
 ----------
 
-From Pip or Sources
-~~~~~~~~~~~~~~~~~~~
+1. If you install from **Pip** or with **Sources**:
 
-The root folder of the application should be under::
+The ROOT folder of the application should be under::
 
     C:\Users\user\AppData\Roaming\Python\alignak_app\
 
 
-With installer
-~~~~~~~~~~~~~~
+2. If you use **Installer** (see :ref:`install`):
 
-If you install app with installer (see :ref:`install`), the configuration file will be located under::
+The configuration file will be located under::
 
     C:\Program Files\Alignak-app\
+
+This is to facilitate access to the configuration and respect Windows conventions.
 
 The rest of the files is in::
 
     C:\Users\user\AppData\Roaming\Python\alignak_app\
 
+To Know
+~~~~~~~
+
+You will soon find the logs and other files in this folders.
+
 Configuration Parameters
 ========================
 
-Before running application, you must configure it. You can do it in file ``settings.cfg`` located in the folder cited above.
+Before running application, **you must configure it**.
+
+You will find a file named ``settings.cfg`` located in the "ROOT" folder cited above.
+
 This file contains Sections who are introduced by a ``[section_name]`` header. Then, it contains ``name = value`` entries.
-
-The most significant Section is **[Backend]**. You need to fill in your different url and credentials.
-
 All parameters are also explained in file. For the boolean parameters, you can use the following values: on/off, true/false or 1/0.
+
+The most significant Section is **[Backend]**. You need set your backend url, ports and credentials.
+
+.. [ToKnow] " Without connection on Backend of Alignak, App won't start ! "
 
 [Alignak-App] section
 ---------------------
