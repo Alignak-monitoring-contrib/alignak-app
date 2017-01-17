@@ -97,7 +97,7 @@ class AppLogin(QDialog):
         # Username field
         self.username_line = QLineEdit(self)
         self.username_line.setPlaceholderText('Username')
-        self.username_line.setFocus( )
+        self.username_line.setFocus()
         layout.addWidget(self.username_line, 3, 0, 1, 2)
 
         # Password field
