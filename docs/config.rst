@@ -15,11 +15,24 @@ The root folder of the application should be under::
 On Windows
 ----------
 
+From Pip or Sources
+~~~~~~~~~~~~~~~~~~~
+
 The root folder of the application should be under::
 
     C:\Users\user\AppData\Roaming\Python\alignak_app\
 
-**Note:** Currently application runs on windows only recently, so launching is not friendly. More pretty version will come soon.
+
+With installer
+~~~~~~~~~~~~~~
+
+If you install app with installer (see :ref:`install`), the configuration file will be located under::
+
+    C:\Program Files\Alignak-app\
+
+The rest of the files is in::
+
+    C:\Users\user\AppData\Roaming\Python\alignak_app\
 
 Configuration Parameters
 ========================

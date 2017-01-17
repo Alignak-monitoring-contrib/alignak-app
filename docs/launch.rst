@@ -21,11 +21,19 @@ Here is the available commands::
 On Windows
 ~~~~~~~~~~
 
+From command line
+*****************
+
 You just have to launch the ``alignak-app.py`` in ``bin`` folder::
 
     python c:\Users\user\AppData\Roaming\Python\alignak_app\bin\alignak-app.py
 
-Obviously, for the time it requires to have an open command prompt on Windows. A more complete installer will arrive soon
+Obviously, it requires to keep an open command prompt on Windows.
+
+With Installer
+**************
+
+Just launch ``Alignak-app`` shorcut on your desktop or run the ``alignak-app.exe`` located in ``C:\Program Files\Alignak-app\``.
 
 Solve Problems
 ==============

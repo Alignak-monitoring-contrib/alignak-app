@@ -79,6 +79,13 @@ To install from source, clone repos and install with pip ::
     cd alignak-app
     pip install . --user
 
+Installer (Windows only)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+An installer is available on `Alignak-app repository <https://github.com/Alignak-monitoring-contrib/alignak-app/tree/develop/bin/win>`_ for Windows.
+
+This installer is only compatible with **x64** architecture !
+
 .. _alignak: http://alignak-monitoring.github.io/
 .. _alignak-backend: http://alignak-backend.readthedocs.io/en/latest/
 .. _alignak-webui: http://alignak-web-ui.readthedocs.io/en/latest/
