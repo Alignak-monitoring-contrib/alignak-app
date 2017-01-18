@@ -25,7 +25,8 @@
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_image_path, get_diff_since_last_check
+from alignak_app.core.utils import get_image_path
+from alignak_app.synthesis.service import Service
 
 try:
     __import__('PyQt5')
@@ -83,46 +84,13 @@ class ServicesView(QWidget):
         if not services:
             logger.warning('Services not Found ! ')
 
-            # row, column, rowSpan, colSPan
-            # Icon
-            icon = self.get_service_icon('')
-            layout.addWidget(icon, pos, 0)
-            layout.setAlignment(icon, Qt.AlignCenter)
-
-            # Service name
-            service_name = QLabel('...')
-            service_name.setMinimumHeight(30)
-            layout.addWidget(service_name, pos, 1)
-
-            # Output
-            output_service = QLabel('...')
-            layout.addWidget(output_service, pos, 2)
+            output_service = QLabel('No services available...')
+            layout.addWidget(output_service, 0, 0)
         else:
             for service in services:
-                # Icon
-                layout.addWidget(self.get_service_icon(service['ls_state']), pos, 0)
-
-                # row, column, rowSpan, colSPan
-                # Service name
-                service_name = QLabel(service['name'].title())
-                service_name.setMinimumHeight(30)
-                service_name.setToolTip('Service is ' + service['ls_state'])
-                service_name.setObjectName(service['ls_state'])
-                layout.addWidget(service_name, pos, 1)
-
-                # Last check
-                check_name = QLabel('<b>Last check:</b>')
-                layout.addWidget(check_name, pos, 2)
-                diff_last_check = get_diff_since_last_check(service['ls_last_check'])
-                last_check = QLabel(str(diff_last_check))
-                layout.addWidget(last_check, pos, 3)
-
-                # Output
-                output_name = QLabel('<b>Output:</b>')
-                layout.addWidget(output_name, pos, 4)
-                output_service = QLabel(service['ls_output'])
-                output_service.setToolTip('Output of service')
-                layout.addWidget(output_service, pos, 5, 1, 2)
+                service_widget = Service()
+                service_widget.initialize(service)
+                layout.addWidget(service_widget, pos, 0)
                 pos += 1
 
         logger.debug('Number of services: ' + str(pos))
