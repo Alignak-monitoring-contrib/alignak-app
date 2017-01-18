@@ -93,6 +93,7 @@ class Synthesis(QWidget):
         button.setToolTip('Type name of a host to display his data')
         button.clicked.connect(self.refresh_all_views)
         self.line_search.returnPressed.connect(button.click)
+        self.line_search.textChanged.connect(self.refresh_all_views)
 
         # Create views
         self.host_view = HostView(self)
