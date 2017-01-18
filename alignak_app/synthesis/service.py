@@ -31,8 +31,10 @@ from alignak_app.core.utils import get_image_path, get_diff_since_last_check, in
 try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QApplication, QScrollArea  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QWidget, QPushButton, Qt, QIcon  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QGridLayout, QLabel, QPixmap  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QIcon, QPixmap  # pylint: disable=no-name-in-module
+    from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QGridLayout, QLabel   # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication, QScrollArea  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QPushButton, Qt, QIcon  # pylint: disable=import-error
