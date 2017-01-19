@@ -160,42 +160,48 @@ class AppBackend(object):
 
         return resp
 
-    def get_item(self, item_name, endpoint):
+    def get_host(self, hostname):
         """
-        Get a wanted host or service item.
+        Return the desired host.
 
-        :param item_name: name of wanted item : host or service
-        :type item_name: str
-        :param endpoint: corresponding endpoint
-        :type endpoint: str
+        :param hostname: name of wanted item : host or service
+        :type hostname: str
         :return: None if not found or item dict
         """
 
         params = {'where': json.dumps({'_is_template': False})}
 
-        result = self.get(endpoint, params)
+        result = self.get('host', params)
 
         item_result = None
 
         for current_item in result['_items']:
-            if current_item['name'] == item_name:
+            if current_item['name'] == hostname:
                 item_result = current_item
 
         return item_result
 
-    def get_all_host_data(self, host_name):
+    def get_service(self, hostname, service_id):
         """
-        Collect item data and associated services
+        Returns the desired service of the specified host
+
+        :param hostname:
+        :param service_id:
+        :return:
+        """
+    def get_host_with_services(self, host_name):
+        """
+        Returns the desired host and all its services
 
         :param host_name: desired host
         :type host_name: str
-        :return dict with host informations and associated services
+        :return dict with host data and its associated services
         :rtype: dict
         """
 
         host_data = None
 
-        host = self.get_item(host_name, 'host')
+        host = self.get_host(host_name)
 
         if host:
             params = {

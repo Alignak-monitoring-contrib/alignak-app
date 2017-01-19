@@ -68,7 +68,7 @@ class TestServicesView(unittest2.TestCase):
         self.assertIsNone(under_test.down_button)
         self.assertIsNotNone(under_test.endpoints)
 
-        under_test.init_view(self.app_backend)
+        under_test.init_view(self.app_backend, None)
 
         self.assertIsNotNone(under_test.app_backend)
 
@@ -87,9 +87,9 @@ class TestServicesView(unittest2.TestCase):
 
         under_test = HostView(parent=self.widget)
 
-        under_test.init_view(self.app_backend)
+        under_test.init_view(self.app_backend, None)
 
-        data = self.app_backend.get_all_host_data('always_down')
+        data = self.app_backend.get_host_with_services('always_down')
 
         self.assertFalse(under_test.host)
 

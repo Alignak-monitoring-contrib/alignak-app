@@ -29,6 +29,7 @@ from logging import getLogger
 
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import get_diff_since_last_check
+from alignak_app.core.action_manager import ACK, DOWNTIME
 from alignak_app.widgets.tick import send_tick
 
 try:
@@ -65,16 +66,14 @@ class HostView(QWidget):
         self.layout = None
         self.labels = {}
         self.host = None
-        self.services = None
         self.app_backend = None
+        self.action_manager = None
         self.endpoints = {
-            'actionacknowledge': {},
-            'actiondowntime': {}
+            ACK: {},
+            DOWNTIME: {}
         }
-        self.acks_to_check = []
-        self.downtimes_to_check = []
 
-    def init_view(self, app_backend):
+    def init_view(self, app_backend, action_manager):
         """
         Init Host View with default values.
 
@@ -105,9 +104,7 @@ class HostView(QWidget):
         self.layout.addWidget(check_widget, 0, 1, 1, 2)
         self.layout.addWidget(buttons, 0, 3)
 
-        timer = QTimer(self)
-        timer.start(10000)
-        timer.timeout.connect(self.action_checker)
+        self.action_manager = action_manager
 
     def get_states_widget(self):
         """
@@ -189,41 +186,19 @@ class HostView(QWidget):
         self.ack_button = QPushButton('Acknowledge this problem')
         self.ack_button.setToolTip('Acknowledge this problem')
         self.ack_button.setIcon(QIcon(get_image_path('acknowledged')))
-        self.ack_button.setObjectName('actionacknowledge')
+        self.ack_button.setObjectName(ACK)
         self.ack_button.clicked.connect(self.action)
 
         self.down_button = QPushButton('Schedule a downtime')
         self.down_button.setToolTip('Schedule a downtime')
         self.down_button.setIcon(QIcon(get_image_path('downtime')))
-        self.down_button.setObjectName('actiondowntime')
+        self.down_button.setObjectName(DOWNTIME)
         self.down_button.clicked.connect(self.action)
 
         layout.addWidget(self.ack_button, 0)
         layout.addWidget(self.down_button, 1)
 
         return button_widget
-
-    def action_checker(self):
-        """
-        Check requested acknowledges and downtime and send a tick if it's done.
-
-        """
-
-        # Check acknowledges
-        if self.acks_to_check:
-            for host in self.acks_to_check:
-                cur_host = self.app_backend.get_item(host, 'host')
-                if cur_host['ls_acknowledged']:
-                    send_tick('OK', 'Host %s is acknowledged.' % host)
-                    self.acks_to_check.remove(host)
-
-        # Check downtimes scheduled
-        if self.downtimes_to_check:
-            for host in self.downtimes_to_check:
-                cur_host = self.app_backend.get_item(host, 'host')
-                if cur_host['ls_downtimed']:
-                    send_tick('OK', 'Host %s is acknowledged.' % host)
-                    self.downtimes_to_check.remove(host)
 
     def action(self):  # pragma: no cover
         """
@@ -239,10 +214,11 @@ class HostView(QWidget):
 
         if self.host:
 
-            if 'actiondowntime' in action:
-                comment = 'Schedule downtime by %s, from Alignak-app' % user['name']
-            else:
+            if ACK in action:
                 comment = 'Acknowledge by %s, from Alignak-app' % user['name']
+            else:
+                comment = 'Schedule downtime by %s, from Alignak-app' % user['name']
+
             data = {
                 'action': 'add',
                 'host': self.host['_id'],
@@ -251,7 +227,7 @@ class HostView(QWidget):
                 'comment': comment
             }
 
-            if 'actiondowntime' in action:
+            if DOWNTIME in action:
                 start_time = datetime.datetime.now()
                 end_time = start_time + datetime.timedelta(days=1)
                 data['start_time'] = start_time.timestamp()
@@ -271,16 +247,16 @@ class HostView(QWidget):
 
                 # Update buttons
 
-                if 'actiondowntime' in action:
-                    self.down_button.setEnabled(False)
-                    self.down_button.setText('Waiting from backend...')
-                    ack_timer.singleShot(20000, self.downtime_message)
-                    self.downtimes_to_check.append(self.host['name'])
-                else:
+                if ACK in action:
                     self.ack_button.setEnabled(False)
                     self.ack_button.setText('Waiting from backend...')
                     ack_timer.singleShot(20000, self.ack_message)
-                    self.acks_to_check.append(self.host['name'])
+                    self.action_manager.add_item(self.host['name'], ACK)
+                else:
+                    self.down_button.setEnabled(False)
+                    self.down_button.setText('Waiting from backend...')
+                    ack_timer.singleShot(20000, self.downtime_message)
+                    self.action_manager.add_item(self.host['name'], DOWNTIME)
             else:
                 logger.error('Action ' + action + ' failed')
 
@@ -291,7 +267,7 @@ class HostView(QWidget):
         """
 
         ack_response = self.app_backend.backend.get(
-            self.endpoints['actionacknowledge'][self.host['_id']]
+            self.endpoints[ACK][self.host['_id']]
         )
 
         if ack_response['processed']:
@@ -306,7 +282,7 @@ class HostView(QWidget):
         """
 
         down_response = self.app_backend.backend.get(
-            self.endpoints['actiondowntime'][self.host['_id']]
+            self.endpoints[DOWNTIME][self.host['_id']]
         )
 
         if down_response['processed']:
@@ -324,7 +300,6 @@ class HostView(QWidget):
 
         if data:
             self.host = data['host']
-            self.services = data['services']
 
         logger.info('Update Host View...')
         logger.debug('Host: ' + self.host['name'] + ' is ' + self.host['ls_state'])
@@ -335,7 +310,7 @@ class HostView(QWidget):
             time_delta = '...'
 
         self.labels['name'].setText('<h3>' + self.host['alias'].title() + '</h3>')
-        self.labels['state_icon'].setPixmap(self.get_real_state_icon(self.services))
+        self.labels['state_icon'].setPixmap(self.get_real_state_icon(data['services']))
         self.labels['real_state_icon'].setPixmap(self.get_host_icon(self.host['ls_state']))
         self.labels['last_check'].setText(str(time_delta))
         self.labels['output'].setText(self.host['ls_output'])
