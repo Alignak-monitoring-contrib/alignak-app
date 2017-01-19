@@ -160,35 +160,60 @@ class AppBackend(object):
 
         return resp
 
-    def get_host(self, hostname):
+    def get_host(self, value, key):
         """
         Return the desired host.
 
-        :param hostname: name of wanted item : host or service
-        :type hostname: str
+        :param value: value of key
+        :type value: str
+        :param key: key of host to verify
+        :type key: str
         :return: None if not found or item dict
         """
 
         params = {'where': json.dumps({'_is_template': False})}
 
-        result = self.get('host', params)
+        hosts = self.get('host', params)
 
-        item_result = None
+        wanted_host = None
 
-        for current_item in result['_items']:
-            if current_item['name'] == hostname:
-                item_result = current_item
+        for host in hosts['_items']:
+            if host[key] == value:
+                wanted_host = host
 
-        return item_result
+        return wanted_host
 
     def get_service(self, hostname, service_id):
         """
         Returns the desired service of the specified host
 
-        :param hostname:
-        :param service_id:
-        :return:
+        :param hostname: name of host
+        :type hostname: str
+        :param service_id: id of wanted service
+        :type service_id: str
+        :return: wanted service
+        :rtype: dict
         """
+
+        host = self.get_host(hostname, 'name')
+
+        params = {
+            'where': json.dumps({
+                '_is_template': False,
+                'host': host['_id']
+            })
+        }
+
+        services = self.get('service', params=params)
+
+        wanted_service = None
+
+        for service in services['_items']:
+            if service['_id'] == service_id:
+                wanted_service = service
+
+        return wanted_service
+
     def get_host_with_services(self, host_name):
         """
         Returns the desired host and all its services
@@ -201,7 +226,7 @@ class AppBackend(object):
 
         host_data = None
 
-        host = self.get_host(host_name)
+        host = self.get_host(host_name, 'name')
 
         if host:
             params = {
@@ -212,11 +237,11 @@ class AppBackend(object):
             }
             services = self.get('service', params=params)
 
-            host_services = services['_items']
+            services_host = services['_items']
 
             host_data = {
                 'host': host,
-                'services': host_services
+                'services': services_host
             }
 
         return host_data

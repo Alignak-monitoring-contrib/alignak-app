@@ -23,13 +23,14 @@
     App Synthesis manage widget for Host Synthesis QWidget.
 """
 
+import datetime
 import json
 
 from logging import getLogger
 
 from alignak_app.core.backend import AppBackend
 from alignak_app.core.utils import get_image_path, get_css
-from alignak_app.core.action_manager import ActionManager, ACK, DOWNTIME
+from alignak_app.core.action_manager import ActionManager, ACK, DOWNTIME, PROCESS
 from alignak_app.synthesis.host_view import HostView
 from alignak_app.synthesis.services_view import ServicesView
 from alignak_app.widgets.title import get_widget_title
@@ -209,3 +210,12 @@ class Synthesis(QWidget):
                 send_tick('OK', 'Acknowledge for %s is done !' % ack_item)
             for downtime_item in items_to_send[DOWNTIME]:
                 send_tick('OK', 'Downtime scheduled for %s is done !' % downtime_item)
+            for process in items_to_send[PROCESS]:
+                action = process['_links']['self']['title'].replace('Action', '').capitalize()
+                if not process['service']:
+                    host_id = process['host']
+                    host = self.app_backend.get_host(host_id, '_id')
+                    send_tick('OK', '%s for %s is processed...' % (action, host['name']))
+                else:
+                    item = process['service']
+                    send_tick('OK', '%s for host %s is processed...' % (action, item))

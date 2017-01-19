@@ -29,7 +29,7 @@ from logging import getLogger
 
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import get_diff_since_last_check
-from alignak_app.core.action_manager import ACK, DOWNTIME
+from alignak_app.core.action_manager import ACK, DOWNTIME, PROCESS
 from alignak_app.widgets.tick import send_tick
 
 try:
@@ -187,37 +187,29 @@ class HostView(QWidget):
         self.ack_button.setToolTip('Acknowledge this problem')
         self.ack_button.setIcon(QIcon(get_image_path('acknowledged')))
         self.ack_button.setObjectName(ACK)
-        self.ack_button.clicked.connect(self.action)
+        self.ack_button.clicked.connect(self.acknowledge)
 
         self.down_button = QPushButton('Schedule a downtime')
         self.down_button.setToolTip('Schedule a downtime')
         self.down_button.setIcon(QIcon(get_image_path('downtime')))
         self.down_button.setObjectName(DOWNTIME)
-        self.down_button.clicked.connect(self.action)
+        self.down_button.clicked.connect(self.downtime)
 
         layout.addWidget(self.ack_button, 0)
         layout.addWidget(self.down_button, 1)
 
         return button_widget
 
-    def action(self):  # pragma: no cover
+    def acknowledge(self):  # pragma: no cover
         """
-        Handle action for "ack_button" and "down_button"
+        Handle action for "ack_button"
 
         """
-
-        # Which button is caller
-        # objectname can be 'actionacknowledge' or 'actiondowntime'
-        action = str(self.sender().objectName())
-
-        user = self.app_backend.get_user()
 
         if self.host:
+            user = self.app_backend.get_user()
 
-            if ACK in action:
-                comment = 'Acknowledge by %s, from Alignak-app' % user['name']
-            else:
-                comment = 'Schedule downtime by %s, from Alignak-app' % user['name']
+            comment = 'Acknowledge by %s, from Alignak-app' % user['name']
 
             data = {
                 'action': 'add',
@@ -227,68 +219,48 @@ class HostView(QWidget):
                 'comment': comment
             }
 
-            if DOWNTIME in action:
-                start_time = datetime.datetime.now()
-                end_time = start_time + datetime.timedelta(days=1)
-                data['start_time'] = start_time.timestamp()
-                data['end_time'] = end_time.timestamp()
-                data['fixed'] = True
+            action_post = self.app_backend.post(ACK, data)
+            href = action_post['_links']['self']['href']
 
-            action_post = self.app_backend.post(action, data)
+            self.action_manager.add_item(href, PROCESS)
+            self.action_manager.add_item(self.host['name'], ACK)
 
-            if action_post['_status'] == 'OK':
-                # Init timer
-                ack_timer = QTimer(self)
+            self.ack_button.setEnabled(False)
+            self.ack_button.setText('Waiting from backend...')
 
-                # If endpoints is not store, add it
-                if self.host['_id'] not in self.endpoints[action]:
-                    self.endpoints[action][self.host['_id']] = \
-                        action_post['_links']['self']['href']
-
-                # Update buttons
-
-                if ACK in action:
-                    self.ack_button.setEnabled(False)
-                    self.ack_button.setText('Waiting from backend...')
-                    ack_timer.singleShot(20000, self.ack_message)
-                    self.action_manager.add_item(self.host['name'], ACK)
-                else:
-                    self.down_button.setEnabled(False)
-                    self.down_button.setText('Waiting from backend...')
-                    ack_timer.singleShot(20000, self.downtime_message)
-                    self.action_manager.add_item(self.host['name'], DOWNTIME)
-            else:
-                logger.error('Action ' + action + ' failed')
-
-    def ack_message(self):
+    def downtime(self):
         """
-        Display Tick if acknowledge processed return True
+        Handle action for "down_button"
 
         """
 
-        ack_response = self.app_backend.backend.get(
-            self.endpoints[ACK][self.host['_id']]
-        )
+        if self.host:
+            user = self.app_backend.get_user()
 
-        if ack_response['processed']:
-            send_tick('OK', "Acknowledged on %s is done !" % self.host['name'])
-        else:
-            logger.error('Acknowledge failed: ' + str(ack_response))
+            comment = 'Schedule downtime by %s, from Alignak-app' % user['name']
 
-    def downtime_message(self):
-        """
-        Display Tick if downtime processed return True
+            start_time = datetime.datetime.now()
+            end_time = start_time + datetime.timedelta(days=1)
 
-        """
+            data = {
+                'action': 'add',
+                'host': self.host['_id'],
+                'service': None,
+                'user': user['_id'],
+                'comment': comment,
+                'start_time': start_time.timestamp(),
+                'end_time': end_time.timestamp(),
+                'fixed': True
+            }
 
-        down_response = self.app_backend.backend.get(
-            self.endpoints[DOWNTIME][self.host['_id']]
-        )
+            action_post = self.app_backend.post(DOWNTIME, data)
+            href = action_post['_links']['self']['href']
 
-        if down_response['processed']:
-            send_tick('OK', "Downtime on %s is scheduled !" % self.host['name'])
-        else:
-            logger.error('Downtime failed: ' + str(down_response))
+            self.action_manager.add_item(href, PROCESS)
+            self.action_manager.add_item(self.host['name'], DOWNTIME)
+
+            self.down_button.setEnabled(False)
+            self.down_button.setText('Waiting from backend...')
 
     def update_view(self, data=False):
         """

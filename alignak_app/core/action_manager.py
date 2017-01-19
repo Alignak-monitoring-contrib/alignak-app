@@ -30,6 +30,7 @@ logger = getLogger(__name__)
 
 ACK = 'actionacknowledge'
 DOWNTIME = 'actiondowntime'
+PROCESS = 'processed'
 
 
 class ActionManager(object):
@@ -41,24 +42,26 @@ class ActionManager(object):
         self.app_backend = app_backend
         self.acks_to_check = []
         self.downtimes_to_check = []
+        self.processed_to_check = []
 
     def check_items(self):
         """
         Check items to see if actions are done
 
-        :return: dict of ACK and DOWNTIME who are done
+        :return: dict of ACK, DOWNTIME and PROCESSED who are done
         :rtype: dict
         """
 
         done_actions = {
             ACK: [],
-            DOWNTIME: []
+            DOWNTIME: [],
+            PROCESS: []
         }
 
         # Check acknowledges
         if self.acks_to_check:
             for host in self.acks_to_check:
-                cur_host = self.app_backend.get_host(host)
+                cur_host = self.app_backend.get_host(host, 'name')
                 if cur_host['ls_acknowledged']:
                     self.acks_to_check.remove(host)
                     done_actions[ACK].append(host)
@@ -66,10 +69,17 @@ class ActionManager(object):
         # Check downtimes scheduled
         if self.downtimes_to_check:
             for host in self.downtimes_to_check:
-                cur_host = self.app_backend.get_host(host)
+                cur_host = self.app_backend.get_host(host, 'name')
                 if cur_host['ls_downtimed']:
                     self.downtimes_to_check.remove(host)
                     done_actions[DOWNTIME].append(host)
+
+        if self.processed_to_check:
+            for process in self.processed_to_check:
+                resp = self.app_backend.backend.get(process)
+                if resp[PROCESS]:
+                    self.processed_to_check.remove(process)
+                    done_actions[PROCESS].append(resp)
 
         return done_actions
 
@@ -81,7 +91,6 @@ class ActionManager(object):
         :type item: TODO
         :param endpoint: endpoint to check
         :type endpoint: str
-
         """
 
         if ACK in endpoint:
@@ -90,5 +99,10 @@ class ActionManager(object):
         elif DOWNTIME in endpoint:
             self.downtimes_to_check.append(item)
             logger.info('Begin to check %s...', item)
+        elif PROCESS in endpoint:
+            self.processed_to_check.append(item)
+            logger.info('Add process to check %s', item)
         else:
-            logger.error('Endpoint %s is not valid. Expect: %s or %s', endpoint, ACK, DOWNTIME)
+            logger.error(
+                'Endpoint %s is not valid. Expect: %s, %s or %s', endpoint, ACK, DOWNTIME, PROCESS
+            )
