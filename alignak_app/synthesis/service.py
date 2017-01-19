@@ -61,6 +61,8 @@ class Service(QWidget):
     def __init__(self, parent=None):
         super(Service, self).__init__(parent)
         self.setStyleSheet(get_css())
+        self.acknowledge_btn = None
+        self.downtime_btn = None
 
     def initialize(self, service):
         """
@@ -86,15 +88,15 @@ class Service(QWidget):
         layout.setAlignment(service_name, Qt.AlignLeft)
 
         # Buttons
-        acknowledge_btn = QPushButton()
-        acknowledge_btn.setIcon(QIcon(get_image_path('acknowledged')))
-        acknowledge_btn.setFixedSize(25, 25)
-        layout.addWidget(acknowledge_btn, 0, 2, 1, 1)
+        self.acknowledge_btn = QPushButton()
+        self.acknowledge_btn.setIcon(QIcon(get_image_path('acknowledged')))
+        self.acknowledge_btn.setFixedSize(25, 25)
+        layout.addWidget(self.acknowledge_btn, 0, 2, 1, 1)
 
-        downtime_btn = QPushButton()
-        downtime_btn.setIcon(QIcon(get_image_path('downtime')))
-        downtime_btn.setFixedSize(25, 25)
-        layout.addWidget(downtime_btn, 1, 2, 1, 1)
+        self.downtime_btn = QPushButton()
+        self.downtime_btn.setIcon(QIcon(get_image_path('downtime')))
+        self.downtime_btn.setFixedSize(25, 25)
+        layout.addWidget(self.downtime_btn, 1, 2, 1, 1)
 
         # Last check
         check_name = QLabel('<b>Last check:</b>')
