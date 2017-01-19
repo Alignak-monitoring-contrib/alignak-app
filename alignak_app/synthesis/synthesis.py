@@ -198,12 +198,11 @@ class Synthesis(QWidget):
 
     def check_action_manager(self):
         """
-        TODO
-        :return:
+        Check ActionManager and send tick if items to send
+
         """
 
         items_to_send = self.action_manager.check_items()
-        # print('items to send : ', items_to_send)
 
         if items_to_send:
             for ack_item in items_to_send[ACK]:

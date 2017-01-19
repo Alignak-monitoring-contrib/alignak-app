@@ -20,10 +20,8 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    Action Manager manage actions requests
 """
-
-import datetime
 
 from logging import getLogger
 
@@ -36,7 +34,7 @@ DOWNTIME = 'actiondowntime'
 
 class ActionManager(object):
     """
-        TODO
+        Class who check items to see if actions are done
     """
 
     def __init__(self, app_backend):
@@ -46,8 +44,10 @@ class ActionManager(object):
 
     def check_items(self):
         """
-        TODO
-        :return:
+        Check items to see if actions are done
+
+        :return: dict of ACK and DOWNTIME who are done
+        :rtype: dict
         """
 
         done_actions = {
@@ -75,10 +75,13 @@ class ActionManager(object):
 
     def add_item(self, item, endpoint):
         """
-        TODO
-        :param item:
-        :param endpoint:
-        :return:
+        Add item in ActionManager
+
+        :param item: item to add
+        :type item: TODO
+        :param endpoint: endpoint to check
+        :type endpoint: str
+
         """
 
         if ACK in endpoint:

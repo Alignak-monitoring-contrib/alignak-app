@@ -64,8 +64,10 @@ class Service(QWidget):
 
     def initialize(self, service):
         """
-        TODO
-        :return:
+        Inititialize QWidget
+
+        :param service: service data
+        :type service: dict
         """
 
         layout = QGridLayout()

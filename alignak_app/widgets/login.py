@@ -139,8 +139,8 @@ class AppLogin(QDialog):
 
     def handle_server(self):
         """
-        TODO
-        :return:
+        Handle for server button
+
         """
 
         server_dialog = QDialog(self)
