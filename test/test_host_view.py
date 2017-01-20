@@ -26,6 +26,7 @@ import unittest2
 from alignak_app.core.utils import init_config
 from alignak_app.synthesis.host_view import HostView
 from alignak_app.core.backend import AppBackend
+from alignak_app.core.action_manager import ActionManager
 
 try:
     __import__('PyQt5')
@@ -87,7 +88,8 @@ class TestServicesView(unittest2.TestCase):
 
         under_test = HostView(parent=self.widget)
 
-        under_test.init_view(self.app_backend, None)
+        test_action_mngr = ActionManager(self.app_backend)
+        under_test.init_view(self.app_backend, test_action_mngr)
 
         data = self.app_backend.get_host_with_services('always_down')
 

@@ -25,6 +25,8 @@ import unittest2
 
 from alignak_app.core.utils import init_config
 from alignak_app.synthesis.services_view import ServicesView
+from alignak_app.core.action_manager import ActionManager
+from alignak_app.core.backend import AppBackend
 
 try:
     __import__('PyQt5')
@@ -40,6 +42,12 @@ class TestServicesView(unittest2.TestCase):
 
     init_config()
 
+    app_backend = AppBackend()
+    app_backend.login()
+
+    action_manager = ActionManager(app_backend)
+
+
     @classmethod
     def setUpClass(cls):
         """Create QApplication"""
@@ -51,11 +59,11 @@ class TestServicesView(unittest2.TestCase):
     def test_display_services(self):
         """Inititalize ServicesView"""
 
-        under_test = ServicesView()
+        under_test = ServicesView(self.action_manager, self.app_backend)
 
         self.assertIsNotNone(under_test.layout)
 
-        under_test.display_services(None, 'name')
+        under_test.display_services(None, {'name': ''})
 
         self.assertIsNotNone(under_test.layout)
 
