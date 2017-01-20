@@ -64,8 +64,8 @@ class TestServicesView(unittest2.TestCase):
         self.assertFalse(under_test.labels)
         self.assertIsNone(under_test.layout)
         self.assertIsNone(under_test.host)
-        self.assertIsNone(under_test.ack_button)
-        self.assertIsNone(under_test.down_button)
+        self.assertIsNone(under_test.acknowledge_btn)
+        self.assertIsNone(under_test.downtime_btn)
         self.assertIsNotNone(under_test.endpoints)
 
         under_test.init_view(self.app_backend, None)
@@ -78,8 +78,8 @@ class TestServicesView(unittest2.TestCase):
 
         self.assertIsNotNone(under_test.layout)
         self.assertIsNone(under_test.host)
-        self.assertIsNotNone(under_test.ack_button)
-        self.assertIsNotNone(under_test.down_button)
+        self.assertIsNotNone(under_test.acknowledge_btn)
+        self.assertIsNotNone(under_test.downtime_btn)
         self.assertIsNotNone(under_test.endpoints)
 
     def test_update_view(self):

@@ -30,7 +30,6 @@ from logging import getLogger
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import get_diff_since_last_check
 from alignak_app.core.action_manager import ACK, DOWNTIME, PROCESS
-from alignak_app.widgets.tick import send_tick
 
 try:
     __import__('PyQt5')
@@ -61,8 +60,8 @@ class HostView(QWidget):
         self.setMinimumWidth(parent.width())
         self.setToolTip('Host View')
         # Fields
-        self.ack_button = None
-        self.down_button = None
+        self.acknowledge_btn = None
+        self.downtime_btn = None
         self.layout = None
         self.labels = {}
         self.host = None
@@ -183,20 +182,20 @@ class HostView(QWidget):
         layout = QVBoxLayout()
         button_widget.setLayout(layout)
 
-        self.ack_button = QPushButton('Acknowledge this problem')
-        self.ack_button.setToolTip('Acknowledge this problem')
-        self.ack_button.setIcon(QIcon(get_image_path('acknowledged')))
-        self.ack_button.setObjectName(ACK)
-        self.ack_button.clicked.connect(self.acknowledge)
+        self.acknowledge_btn = QPushButton('Acknowledge this problem')
+        self.acknowledge_btn.setToolTip('Acknowledge this problem')
+        self.acknowledge_btn.setIcon(QIcon(get_image_path('acknowledged')))
+        self.acknowledge_btn.setObjectName(ACK)
+        self.acknowledge_btn.clicked.connect(self.acknowledge)
 
-        self.down_button = QPushButton('Schedule a downtime')
-        self.down_button.setToolTip('Schedule a downtime')
-        self.down_button.setIcon(QIcon(get_image_path('downtime')))
-        self.down_button.setObjectName(DOWNTIME)
-        self.down_button.clicked.connect(self.downtime)
+        self.downtime_btn = QPushButton('Schedule a downtime')
+        self.downtime_btn.setToolTip('Schedule a downtime')
+        self.downtime_btn.setIcon(QIcon(get_image_path('downtime')))
+        self.downtime_btn.setObjectName(DOWNTIME)
+        self.downtime_btn.clicked.connect(self.downtime)
 
-        layout.addWidget(self.ack_button, 0)
-        layout.addWidget(self.down_button, 1)
+        layout.addWidget(self.acknowledge_btn, 0)
+        layout.addWidget(self.downtime_btn, 1)
 
         return button_widget
 
@@ -225,8 +224,8 @@ class HostView(QWidget):
             self.action_manager.add_item(href, PROCESS)
             self.action_manager.add_item(self.host['name'], ACK)
 
-            self.ack_button.setEnabled(False)
-            self.ack_button.setText('Waiting from backend...')
+            self.acknowledge_btn.setEnabled(False)
+            self.acknowledge_btn.setText('Waiting from backend...')
 
     def downtime(self):
         """
@@ -259,8 +258,8 @@ class HostView(QWidget):
             self.action_manager.add_item(href, PROCESS)
             self.action_manager.add_item(self.host['name'], DOWNTIME)
 
-            self.down_button.setEnabled(False)
-            self.down_button.setText('Waiting from backend...')
+            self.downtime_btn.setEnabled(False)
+            self.downtime_btn.setText('Waiting from backend...')
 
     def update_view(self, data=False):
         """
@@ -298,23 +297,23 @@ class HostView(QWidget):
         logger.debug('ACK: is ' + str(self.host['ls_acknowledged']))
         logger.debug('DOWNTIME: is ' + str(self.host['ls_downtimed']))
 
-        if self.host['ls_acknowledged'] or 'UP' in self.host['ls_state']:
-            self.ack_button.setEnabled(False)
-            self.ack_button.setText('Acknowledged !')
-            self.ack_button.setIcon(QIcon(get_image_path('valid')))
+        if self.host['ls_acknowledged'] \
+                or 'UP' in self.host['ls_state'] \
+                or self.host['name'] in self.action_manager.acks_to_check:
+            self.acknowledge_btn.setEnabled(False)
+            self.acknowledge_btn.setText('Acknowledged !')
         else:
-            self.ack_button.setEnabled(True)
-            self.ack_button.setText('Acknowledge this problem')
-            self.ack_button.setIcon(QIcon(get_image_path('acknowledged')))
+            self.acknowledge_btn.setEnabled(True)
+            self.acknowledge_btn.setText('Acknowledge this problem')
 
-        if self.host['ls_downtimed'] or 'UP' in self.host['ls_state']:
-            self.down_button.setEnabled(False)
-            self.down_button.setText('Downtimed !')
-            self.down_button.setIcon(QIcon(get_image_path('downtime')))
+        if self.host['ls_downtimed'] \
+                or 'UP' in self.host['ls_state'] \
+                or self.host['name'] in self.action_manager.downtimes_to_check:
+            self.downtime_btn.setEnabled(False)
+            self.downtime_btn.setText('Downtimed !')
         else:
-            self.down_button.setEnabled(True)
-            self.down_button.setText('Schedule a downtime')
-            self.down_button.setIcon(QIcon(get_image_path('downtime')))
+            self.downtime_btn.setEnabled(True)
+            self.downtime_btn.setText('Schedule a downtime')
 
     @staticmethod
     def get_host_icon(state):
