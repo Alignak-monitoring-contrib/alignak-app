@@ -34,10 +34,12 @@ try:
     from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QIcon, QPixmap  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QObject, pyqtSignal  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QLabel   # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication, QScrollArea  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QPushButton, Qt, QIcon  # pylint: disable=import-error
+    from PyQt4.QtCore import QObject, pyqtSignal  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QLabel, QPixmap  # pylint: disable=import-error
 
 
@@ -58,11 +60,16 @@ class Service(QWidget):
         'DEFAULT': 'services_none'
     }
 
+    acknowledged = pyqtSignal(QObject)
+    downtimed = pyqtSignal(QObject)
+
     def __init__(self, parent=None):
         super(Service, self).__init__(parent)
         self.setStyleSheet(get_css())
+        # Fields
         self.acknowledge_btn = None
         self.downtime_btn = None
+        self.service = None
 
     def initialize(self, service):
         """
@@ -71,6 +78,8 @@ class Service(QWidget):
         :param service: service data
         :type service: dict
         """
+
+        self.service = service
 
         layout = QGridLayout()
         self.setLayout(layout)
@@ -91,11 +100,13 @@ class Service(QWidget):
         self.acknowledge_btn = QPushButton()
         self.acknowledge_btn.setIcon(QIcon(get_image_path('acknowledged')))
         self.acknowledge_btn.setFixedSize(25, 25)
+        self.acknowledge_btn.clicked.connect(self.add_acknowledge)
         layout.addWidget(self.acknowledge_btn, 0, 2, 1, 1)
 
         self.downtime_btn = QPushButton()
         self.downtime_btn.setIcon(QIcon(get_image_path('downtime')))
         self.downtime_btn.setFixedSize(25, 25)
+        self.downtime_btn.clicked.connect(self.add_downtime)
         layout.addWidget(self.downtime_btn, 1, 2, 1, 1)
 
         # Last check
@@ -119,6 +130,8 @@ class Service(QWidget):
         scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll.setMaximumHeight(60)
         layout.addWidget(scroll, 1, 4, 2, 1)
+
+
 
     def get_service_icon(self, state):
         """
@@ -144,6 +157,23 @@ class Service(QWidget):
         icon_label.setToolTip('Service is ' + state)
 
         return icon_label
+
+    def add_acknowledge(self):
+        """
+        TODO
+        :return:
+        """
+
+        self.acknowledged.emit(self)
+
+    def add_downtime(self):
+        """
+        TODO
+        :return:
+        """
+
+        self.downtimed.emit(self)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

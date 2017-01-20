@@ -23,10 +23,13 @@
     App Synthesis manage widget for Synthesis QWidget.
 """
 
+import datetime
+
 from logging import getLogger
 
 from alignak_app.core.utils import get_image_path
 from alignak_app.synthesis.service import Service
+from alignak_app.core.action_manager import ACK, DOWNTIME, PROCESS
 
 try:
     __import__('PyQt5')
@@ -49,31 +52,35 @@ class ServicesView(QWidget):
         Class who create the Synthesis QWidget.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, action_manager, app_backend, parent=None):
         super(ServicesView, self).__init__(parent)
         self.setToolTip('Services View')
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
+        self.current_host = None
+        self.action_manager = action_manager
+        self.app_backend = app_backend
 
-    def display_services(self, services, name):  # pylint: disable=too-many-locals
+    def display_services(self, services, host):  # pylint: disable=too-many-locals
         """
         Display services.
 
         :param services: services of a specific host from app_backend
         :type services: dict
-        :param name: name of host
-        :type name: str
+        :param host: host to which the services belong
+        :type host: dict
         """
 
         logger.info('Create Services View')
+        self.current_host = host
 
         # Clean all items before
         for i in reversed(range(self.layout.count())):
             self.layout.itemAt(i).widget().setParent(None)
 
-        service_title = QLabel('<b>Services of ' + name + '</b>')
-        self.layout.addWidget(service_title, 0)
-        self.layout.setAlignment(Qt.AlignCenter)
+        service_title = QLabel('<b>Services of ' + host['name'] + '</b>')
+        self.layout.addWidget(service_title)
+        self.layout.setAlignment(service_title, Qt.AlignCenter)
 
         widget = QWidget()
         layout = QGridLayout()
@@ -90,6 +97,9 @@ class ServicesView(QWidget):
             for service in services:
                 service_widget = Service()
                 service_widget.initialize(service)
+                service_widget.acknowledged.connect(self.acknowledge)
+                service_widget.downtimed.connect(self.downtime)
+                self.update_service_buttons(service_widget)
                 layout.addWidget(service_widget, pos, 0)
                 pos += 1
 
@@ -101,6 +111,97 @@ class ServicesView(QWidget):
 
         self.layout.addWidget(scroll)
         self.show()
+
+    def update_service_buttons(self, service):
+        """
+        TODO
+        :param service: service QWidget
+        :type service: Service
+        """
+
+        if service.service['ls_acknowledged'] \
+                or 'OK' in service.service['ls_state'] \
+                or service.service['name'] in self.action_manager.acks_to_check:
+            service.acknowledge_btn.setEnabled(False)
+        else:
+            service.acknowledge_btn.setEnabled(True)
+
+        if service.service['ls_downtimed'] \
+                or 'OK' in service.service['ls_state'] \
+                or service.service['name'] in self.action_manager.downtimes_to_check:
+            service.downtime_btn.setEnabled(False)
+        else:
+            service.downtime_btn.setEnabled(True)
+
+    def acknowledge(self):  # pragma: no cover
+        """
+        Handle action for "ack_button"
+
+        """
+
+        # Get service who emit SIGNAL
+        service = self.sender().service
+        print(service)
+
+        if self.current_host:
+            user = self.app_backend.get_user()
+
+            comment = 'Service %s acknowledged by %s, from Alignak-app' % (
+                service['name'],
+                user['name']
+            )
+
+            data = {
+                'action': 'add',
+                'host': self.current_host['_id'],
+                'service': service['_id'],
+                'user': user['_id'],
+                'comment': comment
+            }
+
+            action_post = self.app_backend.post(ACK, data)
+            print('action_post:', action_post)
+            href = action_post['_links']['self']['href']
+
+            self.action_manager.add_item(href, PROCESS)
+            self.action_manager.add_item(self.current_host['name'], ACK)
+
+            service.acknowledge_btn.setEnabled(False)
+
+    def downtime(self):
+        """
+        TEST
+        :return:
+        """
+
+        service = self.sender()
+
+        if self.current_host:
+            user = self.app_backend.get_user()
+
+            comment = 'Schedule downtime by %s, from Alignak-app' % user['name']
+
+            start_time = datetime.datetime.now()
+            end_time = start_time + datetime.timedelta(days=1)
+
+            data = {
+                'action': 'add',
+                'host': self.current_host['_id'],
+                'service': service['_id'],
+                'user': user['_id'],
+                'comment': comment,
+                'start_time': start_time.timestamp(),
+                'end_time': end_time.timestamp(),
+                'fixed': True
+            }
+
+            action_post = self.app_backend.post(DOWNTIME, data)
+            href = action_post['_links']['self']['href']
+
+            self.action_manager.add_item(href, PROCESS)
+            self.action_manager.add_item(self.host['name'], DOWNTIME)
+
+            service.downtime_btn.setEnabled(False)
 
     @staticmethod
     def get_service_icon(state):

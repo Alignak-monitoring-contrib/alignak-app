@@ -104,7 +104,7 @@ class Synthesis(QWidget):
         # Create views
         self.host_view = HostView(self)
         self.host_view.init_view(self.app_backend, self.action_manager)
-        self.services_view = ServicesView(self)
+        self.services_view = ServicesView(self.action_manager, self.app_backend)
 
         # Layout
         # row, column, rowSpan, colSPan
@@ -180,7 +180,7 @@ class Synthesis(QWidget):
         # Write result ot "result_label"
         if data:
             self.host_view.update_view(data)
-            self.services_view.display_services(data['services'], data['host']['name'])
+            self.services_view.display_services(data['services'], data['host'])
         else:
             data = {
                 'host': {
@@ -195,7 +195,7 @@ class Synthesis(QWidget):
                 'services': None
             }
             self.host_view.update_view(data)
-            self.services_view.display_services(None, 'NO HOST')
+            self.services_view.display_services(None, {'name': 'NO HOST'})
 
     def check_action_manager(self):
         """
