@@ -131,8 +131,6 @@ class Service(QWidget):
         scroll.setMaximumHeight(60)
         layout.addWidget(scroll, 1, 4, 2, 1)
 
-
-
     def get_service_icon(self, state):
         """
         Return QPixmap with the icon corresponding to the status.
