@@ -218,11 +218,19 @@ class Host(QWidget):
                 'comment': comment
             }
 
-            action_post = self.app_backend.post(ACK, data)
-            href = action_post['_links']['self']['href']
+            post = self.app_backend.post(ACK, data)
+            item_process = {
+                'name': self.host['name'],
+                'href': post
+            }
+            self.action_manager.add_item(item_process)
 
-            self.action_manager.add_item(href, PROCESS)
-            self.action_manager.add_item(self.host['name'], ACK)
+            item_action = {
+                'action': ACK,
+                'host': self.host,
+                'service': None
+            }
+            self.action_manager.add_item(item_action)
 
             self.acknowledge_btn.setEnabled(False)
             self.acknowledge_btn.setText('Waiting from backend...')
@@ -252,11 +260,19 @@ class Host(QWidget):
                 'fixed': True
             }
 
-            action_post = self.app_backend.post(DOWNTIME, data)
-            href = action_post['_links']['self']['href']
+            post = self.app_backend.post(DOWNTIME, data)
+            item_process = {
+                'name': self.host['name'],
+                'href': post
+            }
+            self.action_manager.add_item(item_process)
 
-            self.action_manager.add_item(href, PROCESS)
-            self.action_manager.add_item(self.host['name'], DOWNTIME)
+            item_action = {
+                'action': DOWNTIME,
+                'host': self.host,
+                'service': None
+            }
+            self.action_manager.add_item(item_action)
 
             self.downtime_btn.setEnabled(False)
             self.downtime_btn.setText('Waiting from backend...')

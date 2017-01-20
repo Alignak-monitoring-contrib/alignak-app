@@ -142,7 +142,6 @@ class ServicesView(QWidget):
 
         # Get service who emit SIGNAL
         service = self.sender().service
-        print(service)
 
         if self.current_host:
             user = self.app_backend.get_user()
@@ -160,12 +159,20 @@ class ServicesView(QWidget):
                 'comment': comment
             }
 
-            action_post = self.app_backend.post(ACK, data)
-            print('action_post:', action_post)
-            href = action_post['_links']['self']['href']
+            post = self.app_backend.post(ACK, data)
+            item_process = {
+                'action': PROCESS,
+                'name': service['name'],
+                'post': post
+            }
+            self.action_manager.add_item(item_process)
 
-            self.action_manager.add_item(href, PROCESS)
-            self.action_manager.add_item(self.current_host['name'], ACK)
+            item_action = {
+                'action': ACK,
+                'host_id': self.current_host['_id'],
+                'service_id': service['_id']
+            }
+            self.action_manager.add_item(item_action)
 
             self.sender().acknowledge_btn.setEnabled(False)
 
@@ -196,11 +203,20 @@ class ServicesView(QWidget):
                 'fixed': True
             }
 
-            action_post = self.app_backend.post(DOWNTIME, data)
-            href = action_post['_links']['self']['href']
+            post = self.app_backend.post(DOWNTIME, data)
+            item_process = {
+                'action': PROCESS,
+                'name': service['name'],
+                'post': post
+            }
+            self.action_manager.add_item(item_process)
 
-            self.action_manager.add_item(href, PROCESS)
-            self.action_manager.add_item(self.host['name'], DOWNTIME)
+            item_action = {
+                'action': DOWNTIME,
+                'host_id': self.current_host['_id'],
+                'service_id': service['_id']
+            }
+            self.action_manager.add_item(item_action)
 
             self.sender().downtime_btn.setEnabled(False)
 

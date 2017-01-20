@@ -204,18 +204,26 @@ class Synthesis(QWidget):
         """
 
         items_to_send = self.action_manager.check_items()
+        actions = [ACK, DOWNTIME]
 
         if items_to_send:
-            for ack_item in items_to_send[ACK]:
-                send_tick('OK', 'Acknowledge for %s is done !' % ack_item)
-            for downtime_item in items_to_send[DOWNTIME]:
-                send_tick('OK', 'Downtime scheduled for %s is done !' % downtime_item)
-            for process in items_to_send[PROCESS]:
-                action = process['_links']['self']['title'].replace('Action', '').capitalize()
-                if not process['service']:
-                    host_id = process['host']
-                    host = self.app_backend.get_host(host_id, '_id')
-                    send_tick('OK', '%s for %s is processed...' % (action, host['name']))
-                else:
-                    item = process['service']
-                    send_tick('OK', '%s for host %s is processed...' % (action, item))
+            # Send ACKs and DOWNTIMEs
+            for action in actions:
+                title = action.replace('action', '').capitalize()
+                # For Hosts
+                if items_to_send[action]['hosts']:
+                    for item in items_to_send[action]['hosts']:
+                        host = self.app_backend.get_host(item['host_id'])
+                        send_tick('OK', '%s for %s is done !' % (title, host['name']))
+                # For Services
+                if items_to_send[action]['services']:
+                    for item in items_to_send[action]['services']:
+                        service = self.app_backend.get_service(item['host_id'], item['service_id'])
+                        send_tick('OK', '%s for %s is done !' % (title, service['name']))
+
+            # Send PROCESS
+            if items_to_send[PROCESS]:
+                for item in items_to_send[PROCESS]:
+                    requested_action = item['post']['_links']['self']['title'].replace('Action', '')
+                    action_title = requested_action.capitalize()
+                    send_tick('OK', '%s for %s is processed...' % (action_title, item['name']))

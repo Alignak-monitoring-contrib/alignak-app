@@ -183,24 +183,22 @@ class AppBackend(object):
 
         return wanted_host
 
-    def get_service(self, hostname, service_id):
+    def get_service(self, host_id, service_id):
         """
         Returns the desired service of the specified host
 
-        :param hostname: name of host
-        :type hostname: str
-        :param service_id: id of wanted service
+        :param host_id: _id of host
+        :type host_id: str
+        :param service_id: _id of wanted service
         :type service_id: str
         :return: wanted service
         :rtype: dict
         """
 
-        host = self.get_host(hostname, 'name')
-
         params = {
             'where': json.dumps({
                 '_is_template': False,
-                'host': host['_id']
+                'host': host_id
             })
         }
 

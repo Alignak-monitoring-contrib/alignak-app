@@ -40,8 +40,14 @@ class ActionManager(object):
 
     def __init__(self, app_backend):
         self.app_backend = app_backend
-        self.acks_to_check = []
-        self.downtimes_to_check = []
+        self.acks_to_check = {
+            'hosts': [],
+            'services': []
+        }
+        self.downtimes_to_check = {
+            'hosts': [],
+            'services': []
+        }
         self.processed_to_check = []
 
     def check_items(self):
@@ -53,56 +59,92 @@ class ActionManager(object):
         """
 
         done_actions = {
-            ACK: [],
-            DOWNTIME: [],
+            ACK: {
+                'hosts': [],
+                'services': []
+            },
+            DOWNTIME: {
+                'hosts': [],
+                'services': []
+            },
             PROCESS: []
         }
 
-        # Check acknowledges
-        if self.acks_to_check:
-            for host in self.acks_to_check:
-                cur_host = self.app_backend.get_host(host, 'name')
-                if cur_host['ls_acknowledged']:
-                    self.acks_to_check.remove(host)
-                    done_actions[ACK].append(host)
+        # Check hosts acknowledges
+        if self.acks_to_check['hosts']:
+            for item in self.acks_to_check['hosts']:
+                # Get host
+                host = self.app_backend.get_host(item['host_id'], '_id')
+                if host['ls_acknowledged']:
+                    self.acks_to_check['hosts'].remove(item)
+                    done_actions[ACK]['hosts'].append(item)
+        # Check services acknowledges
+        if self.acks_to_check['services']:
+            for item in self.acks_to_check['services']:
+                # Get service
+                service = self.app_backend.get_service(item['host_id'], item['service_id'])
+                if service['ls_acknowledged']:
+                    self.acks_to_check['services'].remove(item)
+                    done_actions[ACK]['services'].append(item)
 
-        # Check downtimes scheduled
-        if self.downtimes_to_check:
-            for host in self.downtimes_to_check:
-                cur_host = self.app_backend.get_host(host, 'name')
-                if cur_host['ls_downtimed']:
-                    self.downtimes_to_check.remove(host)
-                    done_actions[DOWNTIME].append(host)
+        # Check host downtimes
+        if self.downtimes_to_check['hosts']:
+            for item in self.downtimes_to_check['hosts']:
+                # Get host
+                host = self.app_backend.get_host(item['host_id'], '_id')
+                if host['ls_downtimed']:
+                    self.downtimes_to_check['hosts'].remove(item)
+                    done_actions[DOWNTIME]['hosts'].append(item)
+                    # Check services acknowledges
+        if self.downtimes_to_check['services']:
+            for item in self.downtimes_to_check['services']:
+                # Get service
+                service = self.app_backend.get_service(item['host_id'], item['service_id'])
+                if service['ls_acknowledged']:
+                    self.downtimes_to_check['services'].remove(item)
+                    done_actions[ACK]['services'].append(item)
 
+        # Check process
         if self.processed_to_check:
-            for process in self.processed_to_check:
-                resp = self.app_backend.backend.get(process)
+            for item in self.processed_to_check:
+                resp = self.app_backend.backend.get(item['post']['_links']['self']['href'])
                 if resp[PROCESS]:
-                    self.processed_to_check.remove(process)
-                    done_actions[PROCESS].append(resp)
+                    self.processed_to_check.remove(item)
+                    done_actions[PROCESS].append(item)
 
         return done_actions
 
-    def add_item(self, item, endpoint):
+    def add_item(self, item):
         """
         Add item in ActionManager
 
         :param item: item to add
-        :type item: TODO
-        :param endpoint: endpoint to check
-        :type endpoint: str
+            - for actions
+            item = {
+                'action': ACK, DOWNTIME
+                'host_id': id of host,
+                'service_id': id of service if needed
+            }
+            - for processed
+            item = {
+                'action': PROCESS
+                'name': name of an item (host or service)
+                'post': href of action POST
+            }
+        :type item: dict
         """
 
-        if ACK in endpoint:
-            self.acks_to_check.append(item)
-            logger.info('Begin to check %s...', item)
-        elif DOWNTIME in endpoint:
-            self.downtimes_to_check.append(item)
-            logger.info('Begin to check %s...', item)
-        elif PROCESS in endpoint:
+        if ACK in item['action']:
+            if not item['service_id']:
+                self.acks_to_check['hosts'].append(item)
+            else:
+                self.acks_to_check['services'].append(item)
+        elif DOWNTIME in item['action']:
+            if not item['service_id']:
+                self.downtimes_to_check['hosts'].append(item)
+            else:
+                self.downtimes_to_check['services'].append(item)
+        elif PROCESS in item['action']:
             self.processed_to_check.append(item)
-            logger.info('Add process to check %s', item)
         else:
-            logger.error(
-                'Endpoint %s is not valid. Expect: %s, %s or %s', endpoint, ACK, DOWNTIME, PROCESS
-            )
+            logger.error('Endpoint %s is not valid', item['action'])
