@@ -97,8 +97,8 @@ class ServicesView(QWidget):
             for service in services:
                 service_widget = Service()
                 service_widget.initialize(service)
-                service_widget.acknowledged.connect(self.acknowledge)
-                service_widget.downtimed.connect(self.downtime)
+                service_widget.acknowledged.connect(self.add_acknowledge)
+                service_widget.downtimed.connect(self.add_downtime)
                 self.update_service_buttons(service_widget)
                 layout.addWidget(service_widget, pos, 0)
                 pos += 1
@@ -114,7 +114,8 @@ class ServicesView(QWidget):
 
     def update_service_buttons(self, service):
         """
-        TODO
+        Update buttons of the service who has emit action
+
         :param service: service QWidget
         :type service: Service
         """
@@ -133,7 +134,7 @@ class ServicesView(QWidget):
         else:
             service.downtime_btn.setEnabled(True)
 
-    def acknowledge(self):  # pragma: no cover
+    def add_acknowledge(self):  # pragma: no cover
         """
         Handle action for "ack_button"
 
@@ -166,15 +167,15 @@ class ServicesView(QWidget):
             self.action_manager.add_item(href, PROCESS)
             self.action_manager.add_item(self.current_host['name'], ACK)
 
-            service.acknowledge_btn.setEnabled(False)
+            self.sender().acknowledge_btn.setEnabled(False)
 
-    def downtime(self):
+    def add_downtime(self):
         """
         TEST
         :return:
         """
 
-        service = self.sender()
+        service = self.sender().service
 
         if self.current_host:
             user = self.app_backend.get_user()
@@ -201,7 +202,7 @@ class ServicesView(QWidget):
             self.action_manager.add_item(href, PROCESS)
             self.action_manager.add_item(self.host['name'], DOWNTIME)
 
-            service.downtime_btn.setEnabled(False)
+            self.sender().downtime_btn.setEnabled(False)
 
     @staticmethod
     def get_service_icon(state):

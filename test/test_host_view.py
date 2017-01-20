@@ -24,7 +24,7 @@ import sys
 import unittest2
 
 from alignak_app.core.utils import init_config
-from alignak_app.synthesis.host_view import HostView
+from alignak_app.synthesis.host import Host
 from alignak_app.core.backend import AppBackend
 from alignak_app.core.action_manager import ActionManager
 
@@ -59,7 +59,7 @@ class TestServicesView(unittest2.TestCase):
     def test_init_view(self):
         """Init Host View"""
 
-        under_test = HostView(parent=self.widget)
+        under_test = Host(parent=self.widget)
 
         self.assertIsNone(under_test.app_backend)
         self.assertFalse(under_test.labels)
@@ -86,7 +86,7 @@ class TestServicesView(unittest2.TestCase):
     def test_update_view(self):
         """Update Host View"""
 
-        under_test = HostView(parent=self.widget)
+        under_test = Host(parent=self.widget)
 
         test_action_mngr = ActionManager(self.app_backend)
         under_test.init_view(self.app_backend, test_action_mngr)

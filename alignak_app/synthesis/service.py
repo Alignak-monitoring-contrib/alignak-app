@@ -20,24 +20,23 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    App Synthesis manage widget for Host Synthesis QWidget.
+    Service manage QWidgets for services.
 """
-import sys
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_image_path, get_diff_since_last_check, init_config, get_css
+from alignak_app.core.utils import get_image_path, get_diff_since_last_check, get_css
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication, QScrollArea  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QScrollArea  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QIcon, QPixmap  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QObject, pyqtSignal  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QLabel   # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QApplication, QScrollArea  # pylint: disable=import-error
+    from PyQt4.Qt import QScrollArea  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QPushButton, Qt, QIcon  # pylint: disable=import-error
     from PyQt4.QtCore import QObject, pyqtSignal  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QLabel, QPixmap  # pylint: disable=import-error
@@ -48,7 +47,7 @@ logger = getLogger(__name__)
 
 class Service(QWidget):
     """
-        Class who create the Synthesis QWidget.
+        Class who create the Service QWidget for SynthesisView.
     """
 
     state_model = {
@@ -100,13 +99,13 @@ class Service(QWidget):
         self.acknowledge_btn = QPushButton()
         self.acknowledge_btn.setIcon(QIcon(get_image_path('acknowledged')))
         self.acknowledge_btn.setFixedSize(25, 25)
-        self.acknowledge_btn.clicked.connect(self.add_acknowledge)
+        self.acknowledge_btn.clicked.connect(self.emit_acknowledge)
         layout.addWidget(self.acknowledge_btn, 0, 2, 1, 1)
 
         self.downtime_btn = QPushButton()
         self.downtime_btn.setIcon(QIcon(get_image_path('downtime')))
         self.downtime_btn.setFixedSize(25, 25)
-        self.downtime_btn.clicked.connect(self.add_downtime)
+        self.downtime_btn.clicked.connect(self.emit_downtime)
         layout.addWidget(self.downtime_btn, 1, 2, 1, 1)
 
         # Last check
@@ -156,38 +155,18 @@ class Service(QWidget):
 
         return icon_label
 
-    def add_acknowledge(self):
+    def emit_acknowledge(self):
         """
-        TODO
-        :return:
+        Emit pyqtSignal for acknowledge
+
         """
 
         self.acknowledged.emit(self)
 
-    def add_downtime(self):
+    def emit_downtime(self):
         """
-        TODO
-        :return:
+        Emit pyqtSignal for downtimes
+
         """
 
         self.downtimed.emit(self)
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    init_config()
-
-    widget = Service()
-    cur_service = {
-        'name': 'My Service',
-        'ls_state': 'WARNING',
-        'ls_last_check': 0.0,
-        'ls_output': "CHECKPKGAUDIT CRITICAL - found 169 vulnerable(s) pkg(s) in : alignak,"
-                     " base_php7, base_webserver, durieuxfamily, elasticsearch, etherpad, glpi_fdj,"
-                     " grafana, graphite_fdj, kibana_ipmfrance, lachassagne.siprossii.com, "
-                     "mysql_fdj, mysql_master_ipm, saas_backend, tannierelouveteaux"
-    }
-    print(len(cur_service['ls_output']))
-    widget.initialize(cur_service)
-    widget.show()
-    sys.exit(app.exec_())

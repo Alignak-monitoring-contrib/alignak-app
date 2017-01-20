@@ -31,7 +31,7 @@ from logging import getLogger
 from alignak_app.core.backend import AppBackend
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.action_manager import ActionManager, ACK, DOWNTIME, PROCESS
-from alignak_app.synthesis.host_view import HostView
+from alignak_app.synthesis.host import Host
 from alignak_app.synthesis.services_view import ServicesView
 from alignak_app.widgets.title import get_widget_title
 from alignak_app.widgets.tick import send_tick
@@ -102,7 +102,7 @@ class Synthesis(QWidget):
         self.line_search.textChanged.connect(self.refresh_all_views)
 
         # Create views
-        self.host_view = HostView(self)
+        self.host_view = Host(self)
         self.host_view.init_view(self.app_backend, self.action_manager)
         self.services_view = ServicesView(self.action_manager, self.app_backend)
 

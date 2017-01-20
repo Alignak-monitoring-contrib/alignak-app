@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    App Synthesis manage widget for Synthesis QWidget.
+    Host manage QWidgets for hosts.
 """
 
 import datetime
@@ -49,13 +49,13 @@ except ImportError:  # pragma: no cover
 logger = getLogger(__name__)
 
 
-class HostView(QWidget):
+class Host(QWidget):
     """
-        Class who create the Host View QWidget.
+        Class who create the Host QWidget for SynthesisView.
     """
 
     def __init__(self, parent=None):
-        super(HostView, self).__init__(parent)
+        super(Host, self).__init__(parent)
         self.setFixedHeight(150)
         self.setMinimumWidth(parent.width())
         self.setToolTip('Host View')
@@ -186,20 +186,20 @@ class HostView(QWidget):
         self.acknowledge_btn.setToolTip('Acknowledge this problem')
         self.acknowledge_btn.setIcon(QIcon(get_image_path('acknowledged')))
         self.acknowledge_btn.setObjectName(ACK)
-        self.acknowledge_btn.clicked.connect(self.acknowledge)
+        self.acknowledge_btn.clicked.connect(self.add_acknowledge)
 
         self.downtime_btn = QPushButton('Schedule a downtime')
         self.downtime_btn.setToolTip('Schedule a downtime')
         self.downtime_btn.setIcon(QIcon(get_image_path('downtime')))
         self.downtime_btn.setObjectName(DOWNTIME)
-        self.downtime_btn.clicked.connect(self.downtime)
+        self.downtime_btn.clicked.connect(self.add_downtime)
 
         layout.addWidget(self.acknowledge_btn, 0)
         layout.addWidget(self.downtime_btn, 1)
 
         return button_widget
 
-    def acknowledge(self):  # pragma: no cover
+    def add_acknowledge(self):  # pragma: no cover
         """
         Handle action for "ack_button"
 
@@ -227,7 +227,7 @@ class HostView(QWidget):
             self.acknowledge_btn.setEnabled(False)
             self.acknowledge_btn.setText('Waiting from backend...')
 
-    def downtime(self):
+    def add_downtime(self):
         """
         Handle action for "down_button"
 
