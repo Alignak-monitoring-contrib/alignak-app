@@ -280,7 +280,7 @@ class AlignakStatus(QWidget):
             bad_daemons += cur_bad_daemons
 
         if self.sender() and ('status_trayicon' not in self.sender().objectName()):
-            if not bad_daemons and self.old_bad_daemons != 0:
+            if not bad_daemons and (self.old_bad_daemons != 0):
                 self.info.setText('All daemons are alive.')
                 self.info.setStyleSheet('color: #27ae60;')
                 send_banner('OK', 'All daemons are alive.')
