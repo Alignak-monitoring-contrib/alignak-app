@@ -185,10 +185,10 @@ class Synthesis(QWidget):
             data = {
                 'host': {
                     'name': host_name,
-                    'alias': '...',
-                    'ls_state': '...D',
+                    'alias': 'N/A',
+                    'ls_state': 'N/A',
                     'ls_last_check': 0.0,
-                    'ls_output': '...',
+                    'ls_output': 'N/A',
                     'ls_acknowledged': False,
                     'ls_downtimed': False
                 },

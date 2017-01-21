@@ -294,7 +294,7 @@ class Host(QWidget):
         if isinstance(self.host['ls_last_check'], int):
             time_delta = get_diff_since_last_check(self.host['ls_last_check'])
         else:
-            time_delta = '...'
+            time_delta = 'N/A'
 
         self.labels['name'].setText('<h3>' + self.host['alias'].title() + '</h3>')
         self.labels['state_icon'].setPixmap(self.get_real_state_icon(data['services']))

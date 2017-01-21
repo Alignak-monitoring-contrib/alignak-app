@@ -91,7 +91,7 @@ class ServicesView(QWidget):
         if not services:
             logger.warning('Services not Found ! ')
 
-            output_service = QLabel('No services available...')
+            output_service = QLabel('Services not available .... Search for a host before.')
             layout.addWidget(output_service, 0, 0)
         else:
             for service in services:
