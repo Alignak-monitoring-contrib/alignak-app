@@ -30,7 +30,7 @@ import requests
 from alignak_app import __application__
 from alignak_app.core.utils import get_image_path, get_app_config, get_css
 from alignak_app.widgets.title import get_widget_title
-from alignak_app.widgets.tick import send_tick
+from alignak_app.widgets.banner import send_banner
 
 try:
     __import__('PyQt5')
@@ -266,11 +266,11 @@ class AlignakStatus(QWidget):
         if 'OK' in daemons_status:
             self.info.setText('All daemons are alive...')
             self.info.setStyleSheet('color: #27ae60;')
-            send_tick('OK', 'Alignak daemons are alive')
+            send_banner('OK', 'Alignak daemons are alive')
         else:
             self.info.setText('Some daemons are down !')
             self.info.setStyleSheet('color: #e74c3c;')
-            send_tick('WARN', 'Some daemons are DOWN !')
+            send_banner('WARN', 'Some daemons are DOWN !')
 
     def show_states(self):
         """

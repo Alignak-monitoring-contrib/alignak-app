@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Tick send some stick notifications for small informations.
+    Banner send some banner notifications with a message.
 """
 
 from alignak_app.core.utils import get_image_path
@@ -40,49 +40,49 @@ except ImportError:  # pragma: no cover
     from PyQt4.QtCore import QPropertyAnimation  # pylint: disable=import-error
 
 
-class TickManager(object):
+class BannerManager(object):
     """
-        Class who send and manage ticks
+        Class who send and manage banners
     """
 
     def __init__(self):
-        self.ticks = []
-        self.ticks_to_send = []
+        self.banners = []
+        self.banners_to_send = []
         self.timer = None
 
     def start(self):
         """
-        Start manager. Manager checks if there is tick to send or not.
+        Start manager. Manager checks if there is banner to send or not.
 
         """
 
         self.timer = QTimer()
         self.timer.start(4000)
-        self.timer.timeout.connect(self.check_ticks)
+        self.timer.timeout.connect(self.check_banners)
 
-    def check_ticks(self):
+    def check_banners(self):
         """
-        Check ticks to send
+        Check banners to send
 
         """
 
-        if self.ticks_to_send:
-            for old_tick in self.ticks:
-                pos = old_tick.pos()
-                old_tick.move(pos.x(), pos.y() + old_tick.height())
+        if self.banners_to_send:
+            for visible_banner in self.banners:
+                pos = visible_banner.pos()
+                visible_banner.move(pos.x(), pos.y() + visible_banner.height())
 
-            tick = self.ticks_to_send[0]
-            tick.animation.start()
-            tick.closed.connect(self.tick_listener)
+            banner = self.banners_to_send[0]
+            banner.animation.start()
+            banner.closed.connect(self.banner_listener)
 
-            tick.show()
+            banner.show()
 
-            self.ticks_to_send.remove(tick)
-            self.ticks.append(tick)
+            self.banners_to_send.remove(banner)
+            self.banners.append(banner)
 
-    def send_tick(self, level, message):
+    def display_banner(self, level, message):
         """
-        Send a tick with text
+        Display message in a banner
 
         :param level: OK, WARN, or ALERT
         :type level: str
@@ -90,47 +90,47 @@ class TickManager(object):
         :type message: str
         """
 
-        tick = Tick()
-        tick.create_tick(level, message)
-        self.ticks_to_send.append(tick)
+        banner = Banner()
+        banner.create_banner(level, message)
+        self.banners_to_send.append(banner)
 
-    def tick_listener(self, sender):
+    def banner_listener(self, sender):
         """
-        Listener who listen if tick is closed
+        Listener who listen if banner is banner_closed
 
-        :param sender: the tick who emit closed signal
-        :type sender: Tick
-        """
-
-        self.remove_tick(sender)
-
-    def remove_tick(self, tick):
-        """
-        Close and remove a tick. Move leaving ticks
-        :param tick: tick to remove
-        :type tick: Tick
+        :param sender: the banner who emit banner_closed signal
+        :type sender: Banner
         """
 
-        # Shift ticks when one is removed
-        self.ticks.remove(tick)
+        self.remove_banner(sender)
 
-        for old_tick in self.ticks:
-            if (old_tick.pos().y() - tick.pos().y()) >= 50:
-                pos = old_tick.pos()
-                old_tick.move(pos.x(), pos.y() - old_tick.height())
+    def remove_banner(self, banner):
+        """
+        Close and remove a banner. Move leaving banners
+        :param banner: banner to remove
+        :type banner: Banner
+        """
 
-        tick.close()
+        # Shift banners when one is removed
+        self.banners.remove(banner)
+
+        for visible_banner in self.banners:
+            if (visible_banner.pos().y() - banner.pos().y()) >= 50:
+                pos = visible_banner.pos()
+                visible_banner.move(pos.x(), pos.y() - visible_banner.height())
+
+        banner.close()
 
 
-class Tick(QWidget):
+class Banner(QWidget):
     """
-        Class who create a tick.
+        Class who create a banner.
     """
 
-    closed = pyqtSignal(QObject)
+    banner_closed = pyqtSignal(QObject)
 
     def __init__(self, parent=None):
-        super(Tick, self).__init__(parent)
+        super(Banner, self).__init__(parent)
         self.setFixedSize(400, 50)
         self.setWindowFlags(Qt.SplashScreen)
         # Animation
@@ -139,6 +139,10 @@ class Tick(QWidget):
         self.color_levels = {
             'OK': {
                 'color': '#27ae60',
+                'title': 'OK'
+            },
+            'INFO': {
+                'color': '#3572a5',
                 'title': 'INFO'
             },
             'WARN': {
@@ -151,13 +155,13 @@ class Tick(QWidget):
             }
         }
 
-    def create_tick(self, level, message):
+    def create_banner(self, level, message):
         """
-        Create tick QWidget and QPropertyAnimation
+        Create banner QWidget and QPropertyAnimation
 
-        :param level: OK, WARN, or ALERT defines color of tick
+        :param level: OK, WARN, or ALERT defines color of banner
         :type level: str
-        :param message: message to display in tick
+        :param message: message to display in banner
         :type message: str
         """
 
@@ -195,17 +199,17 @@ class Tick(QWidget):
                 border-radius: 0px;
             """
         )
-        valid_btn.clicked.connect(self.close_tick)
-        valid_btn.setIcon(QIcon(get_image_path('tick')))
+        valid_btn.clicked.connect(self.close_banner)
+        valid_btn.setIcon(QIcon(get_image_path('banner')))
 
         layout.addWidget(valid_btn)
 
         if len(message) > 76:
             message = message[:76] + '...'
 
-        tick_msg = QLabel('<b>%s</b>: ' % self.color_levels[level]['title'] + message)
-        tick_msg.setWordWrap(True)
-        layout.addWidget(tick_msg)
+        banner_qlabel = QLabel('<b>%s</b>: ' % self.color_levels[level]['title'] + message)
+        banner_qlabel.setWordWrap(True)
+        layout.addWidget(banner_qlabel)
 
         # Animation
         start_value = QPoint(0, 0)
@@ -220,26 +224,26 @@ class Tick(QWidget):
         )
         self.animation.setEndValue(end_value)
 
-    def close_tick(self):
+    def close_banner(self):
         """
-        Send signal to manager to close tick
+        Send signal to manager to close banner
 
         """
 
-        self.closed.emit(self)
+        self.banner_closed.emit(self)
 
-# Main instance of TickManager()
-tickManager = TickManager()
+# Main instance of BannerManager()
+bannerManager = BannerManager()
 
 
-def send_tick(level, message):
+def send_banner(level, message):
     """
-    Direct access to send a tick
+    Direct access to send a banner
 
-    :param level: OK, WARNING or CRITICAL defines color of tick
+    :param level: OK, WARNING or CRITICAL defines color of banner
     :type level: str
-    :param message: message to display in tick
+    :param message: message to display in banner
     :type message: str
     """
 
-    tickManager.send_tick(level, message)
+    bannerManager.display_banner(level, message)

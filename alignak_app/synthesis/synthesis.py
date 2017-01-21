@@ -34,7 +34,7 @@ from alignak_app.core.action_manager import ActionManager, ACK, DOWNTIME, PROCES
 from alignak_app.synthesis.host import Host
 from alignak_app.synthesis.services_view import ServicesView
 from alignak_app.widgets.title import get_widget_title
-from alignak_app.widgets.tick import send_tick
+from alignak_app.widgets.banner import send_banner
 
 try:
     __import__('PyQt5')
@@ -199,7 +199,7 @@ class Synthesis(QWidget):
 
     def check_action_manager(self):
         """
-        Check ActionManager and send tick if items to send
+        Check ActionManager and send banner if items to send
 
         """
 
@@ -214,16 +214,16 @@ class Synthesis(QWidget):
                 if items_to_send[action]['hosts']:
                     for item in items_to_send[action]['hosts']:
                         host = self.app_backend.get_host(item['host_id'])
-                        send_tick('OK', '%s for %s is done !' % (title, host['name']))
+                        send_banner('OK', '%s for %s is done !' % (title, host['name']))
                 # For Services
                 if items_to_send[action]['services']:
                     for item in items_to_send[action]['services']:
                         service = self.app_backend.get_service(item['host_id'], item['service_id'])
-                        send_tick('OK', '%s for %s is done !' % (title, service['name']))
+                        send_banner('OK', '%s for %s is done !' % (title, service['name']))
 
             # Send PROCESS
             if items_to_send[PROCESS]:
                 for item in items_to_send[PROCESS]:
                     requested_action = item['post']['_links']['self']['title'].replace('Action', '')
                     action_title = requested_action.capitalize()
-                    send_tick('OK', '%s for %s is processed...' % (action_title, item['name']))
+                    send_banner('OK', '%s for %s is processed...' % (action_title, item['name']))

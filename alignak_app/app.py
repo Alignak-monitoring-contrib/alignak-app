@@ -25,7 +25,6 @@
 
 import sys
 from logging import DEBUG, INFO
-from time import sleep
 
 from alignak_app.core.logs import create_logger
 from alignak_app.core.notifier import AppNotifier
@@ -33,7 +32,7 @@ from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import init_config, get_app_config
 from alignak_app.systray.tray_icon import TrayIcon
 from alignak_app.widgets.login import AppLogin
-from alignak_app.widgets.tick import tickManager, send_tick
+from alignak_app.widgets.banner import bannerManager, send_banner
 from alignak_app.core.backend import AppBackend
 
 try:
@@ -67,7 +66,7 @@ class AlignakApp(object):
 
         # Initialize configuration
         init_config()
-        tickManager.start()
+        bannerManager.start()
 
         # Define level of logger
         if get_app_config('Alignak-App', 'debug', boolean=True):
@@ -106,11 +105,11 @@ class AlignakApp(object):
     @staticmethod
     def can_close():
         """
-        Check if tick for bad identifier is send and close application.
+        Check if banner for bad identifier is send and close application.
 
         """
 
-        if len(tickManager.ticks_to_send) == 0:
+        if len(bannerManager.banners_to_send) == 0:
             QMessageBox.critical(None, 'Connection ERROR', 'Application will close !')
             sys.exit(0)
 
@@ -137,7 +136,7 @@ class AlignakApp(object):
             app_backend = AppBackend()
             connect = app_backend.login()
             if not connect:
-                send_tick(
+                send_banner(
                     'ALERT',
                     'Your connection information are not accepted ! '
                     'Check your config file !'
@@ -146,7 +145,7 @@ class AlignakApp(object):
                 timer.start(6000)
                 timer.timeout.connect(self.can_close)
             else:
-                send_tick('OK', 'Connected to Alignak Backend')
+                send_banner('OK', 'Connected to Alignak Backend')
 
         if 'token' not in app_backend.user:
             app_backend.user['token'] = app_backend.backend.token

@@ -29,7 +29,7 @@ from alignak_app import __short_version__
 from alignak_app.core.backend import AppBackend, Backend
 from alignak_app.core.utils import get_app_config, set_app_config, get_css
 from alignak_app.widgets.title import get_widget_title
-from alignak_app.widgets.tick import send_tick
+from alignak_app.widgets.banner import send_banner
 
 
 try:
@@ -129,12 +129,12 @@ class AppLogin(QDialog):
         resp = self.app_backend.login(str(username), str(password))
 
         if resp:
-            send_tick('OK', 'Connected to Alignak Backend')
+            send_banner('OK', 'Connected to Alignak Backend')
             self.app_backend.user['username'] = str(username)
             self.app_backend.user['token'] = str(self.app_backend.backend.token)
             self.accept()
         else:
-            send_tick('WARN', 'Your connection information are not accepted !')
+            send_banner('WARN', 'Your connection information are not accepted !')
             logger.warning('Connection informations are not accepted !')
 
     def handle_server(self):
