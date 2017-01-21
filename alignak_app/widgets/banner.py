@@ -142,7 +142,7 @@ class Banner(QWidget):
                 'title': 'OK'
             },
             'INFO': {
-                'color': '#3572a5',
+                'color': '#3884c3',
                 'title': 'INFO'
             },
             'WARN': {
@@ -240,7 +240,7 @@ def send_banner(level, message):
     """
     Direct access to send a banner
 
-    :param level: OK, WARNING or CRITICAL defines color of banner
+    :param level: INFO, OK, WARN or ALERT defines color of banner
     :type level: str
     :param message: message to display in banner
     :type message: str
