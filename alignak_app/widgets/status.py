@@ -59,7 +59,8 @@ class AlignakStatus(QWidget):
         # General settings
         self.setWindowTitle(__application__)
         self.setWindowIcon(QIcon(get_image_path('icon')))
-        self.setToolTip('Daemons Status')
+        self.setToolTip('Alignak Status')
+        self.setStyleSheet(get_css())
         # Fields
         self.daemons = [
             'poller',
@@ -71,7 +72,7 @@ class AlignakStatus(QWidget):
         ]
         self.daemons_labels = {}
         self.info = None
-        self.setStyleSheet(get_css())
+        self.old_bad_daemons = 0
 
     def center(self):
         """
@@ -109,10 +110,18 @@ class AlignakStatus(QWidget):
         if get_app_config('Backend', 'web_service', boolean=True):
             if self.alignak_ws_request():
                 self.create_daemons_labels(layout)
-                self.update_status()
+
+                # Default text and color
+                self.info.setText('All daemons are alive.')
+                self.info.setStyleSheet('color: #27ae60;')
+
+                # Update status for first start
+                self.check_status()
+
+                # Start checks
                 timer = QTimer(self)
                 timer.start(60000)
-                timer.timeout.connect(self.update_status)
+                timer.timeout.connect(self.check_status)
             else:
                 self.no_web_service(layout)
 
@@ -232,7 +241,7 @@ class AlignakStatus(QWidget):
         layout.addWidget(info_label, 2, 0)
         self.add_button(3, layout)
 
-    def update_status(self):
+    def check_status(self):
         """
         Check daemons states and update icons
 
@@ -271,18 +280,23 @@ class AlignakStatus(QWidget):
             bad_daemons += cur_bad_daemons
 
         if self.sender() and ('status_trayicon' not in self.sender().objectName()):
-            if not bad_daemons:
-                self.info.setText('All daemons are alive...')
+            if not bad_daemons and self.old_bad_daemons != 0:
+                self.info.setText('All daemons are alive.')
                 self.info.setStyleSheet('color: #27ae60;')
-                send_banner('OK', 'Alignak daemons are alive')
-            elif bad_daemons != total_daemons:
-                self.info.setText('Some daemons are down !')
-                self.info.setStyleSheet('color: #e74c3c;')
-                send_banner('WARN', 'Some daemons are DOWN !')
-            else:
-                self.info.setText('ALL daemons are down !')
-                self.info.setStyleSheet('color: #e74c3c;')
-                send_banner('ALERT', 'ALL daemons are DOWN !')
+                send_banner('OK', 'All daemons are alive.')
+                # Reset old bad daemons count
+                self.old_bad_daemons = 0
+            if bad_daemons:
+                if bad_daemons != total_daemons:
+                    self.info.setText('Some daemons are down !')
+                    self.info.setStyleSheet('color: #e74c3c;')
+                    send_banner('WARN', 'Some daemons are DOWN !')
+                else:
+                    self.info.setText('ALL daemons are down !')
+                    self.info.setStyleSheet('color: #e74c3c;')
+                    send_banner('ALERT', 'ALL daemons are DOWN !')
+
+        self.old_bad_daemons = bad_daemons
 
     def show_states(self):
         """
@@ -291,7 +305,7 @@ class AlignakStatus(QWidget):
         """
 
         if get_app_config('Backend', 'web_service', boolean=True) and self.alignak_ws_request():
-            self.update_status()
+            self.check_status()
         else:
             self.no_web_service(self.layout())
 
