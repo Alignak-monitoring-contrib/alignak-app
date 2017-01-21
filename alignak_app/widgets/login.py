@@ -27,22 +27,22 @@ from logging import getLogger
 
 from alignak_app import __short_version__
 from alignak_app.core.backend import AppBackend, Backend
-from alignak_app.core.utils import get_app_config, set_app_config, get_css
+from alignak_app.core.utils import get_app_config, set_app_config, get_css, get_image_path
 from alignak_app.widgets.title import get_widget_title
 from alignak_app.widgets.banner import send_banner
 
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
+    # from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QDialog, QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QLabel  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QLineEdit, Qt  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QLineEdit, Qt, QIcon  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication  # pylint: disable=import-error
     from PyQt4.Qt import QDialog, QPushButton  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
-    from PyQt4.Qt import QLineEdit, Qt  # pylint: disable=import-error
+    from PyQt4.Qt import QLineEdit, Qt, QIcon  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
@@ -57,11 +57,13 @@ class AppLogin(QDialog):
         super(AppLogin, self).__init__(parent)
         self.setWindowTitle('Connect to Alignak')
         self.resize(320, 150)
+        self.setStyleSheet(get_css())
+        self.setWindowIcon(QIcon(get_image_path('icon')))
+        # Fields
         self.app_backend = AppBackend()
         self.backend_url = None
         self.username_line = None
         self.password_line = None
-        self.setStyleSheet(get_css())
 
     def create_widget(self):
         """
