@@ -38,13 +38,13 @@ try:
     from PyQt5.QtWidgets import QGridLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QLabel, QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon, QPixmap  # pylint: disable=no-name-in-module
-    from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
+    from PyQt5.QtCore import Qt, QTimer  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication, QWidget  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout  # pylint: disable=import-error
     from PyQt4.Qt import QLabel, QPushButton  # pylint: disable=import-error
     from PyQt4.QtGui import QIcon, QPixmap  # pylint: disable=import-error
-    from PyQt4.QtCore import Qt  # pylint: disable=import-error
+    from PyQt4.QtCore import Qt, QTimer  # pylint: disable=import-error
 
 logger = getLogger(__name__)
 
@@ -110,6 +110,9 @@ class AlignakStatus(QWidget):
             if self.alignak_ws_request():
                 self.create_daemons_labels(layout)
                 self.update_status()
+                timer = QTimer(self)
+                timer.start(60000)
+                timer.timeout.connect(self.update_status)
             else:
                 self.no_web_service(layout)
 
@@ -166,7 +169,6 @@ class AlignakStatus(QWidget):
             self.daemons_labels[daemon] = {
                 'label': QLabel(daemon.capitalize() + 's'),
                 'icon': QLabel(),
-                'status': 0
             }
 
             self.daemons_labels[daemon]['icon'].setAlignment(Qt.AlignCenter)
@@ -236,7 +238,8 @@ class AlignakStatus(QWidget):
 
         """
 
-        daemons_status = 'OK'
+        bad_daemons = 0
+        total_daemons = 0
 
         for daemon in self.daemons:
             # Reset to zero state of daemon
@@ -244,33 +247,42 @@ class AlignakStatus(QWidget):
 
             alignak_map = self.alignak_ws_request().json()
 
-            bad_daemons = ''
+            daemon_message = ''
+            cur_bad_daemons = 0
 
             # Update daemons QPixmap for each daemon
             for sub_daemon in alignak_map[daemon]:
                 if not alignak_map[daemon][sub_daemon]['alive']:
-                    self.daemons_labels[daemon]['status'] += 1
-                    bad_daemons += '<p>%s is not alive </p>' % sub_daemon.capitalize()
-                    daemons_status = 'DOWN'
+                    cur_bad_daemons += 1
+                    daemon_message += '<p>%s is not alive </p>' % sub_daemon.capitalize()
+                total_daemons += 1
 
-            if self.daemons_labels[daemon]['status'] == 0:
+            if not cur_bad_daemons:
                 self.daemons_labels[daemon]['icon'].setPixmap(QPixmap(get_image_path('valid')))
                 self.daemons_labels[daemon]['icon'].setToolTip('All %ss are alive ' % daemon)
                 self.daemons_labels[daemon]['label'].setToolTip('All %ss are alive ' % daemon)
 
             else:
                 self.daemons_labels[daemon]['icon'].setPixmap(QPixmap(get_image_path('unvalid')))
-                self.daemons_labels[daemon]['icon'].setToolTip(bad_daemons)
-                self.daemons_labels[daemon]['label'].setToolTip(bad_daemons)
+                self.daemons_labels[daemon]['icon'].setToolTip(daemon_message)
+                self.daemons_labels[daemon]['label'].setToolTip(daemon_message)
 
-        if 'OK' in daemons_status:
-            self.info.setText('All daemons are alive...')
-            self.info.setStyleSheet('color: #27ae60;')
-            send_banner('OK', 'Alignak daemons are alive')
-        else:
-            self.info.setText('Some daemons are down !')
-            self.info.setStyleSheet('color: #e74c3c;')
-            send_banner('WARN', 'Some daemons are DOWN !')
+            # Add current bad daemons to bad daemons total
+            bad_daemons += cur_bad_daemons
+
+        if self.sender() and ('status_trayicon' not in self.sender().objectName()):
+            if not bad_daemons:
+                self.info.setText('All daemons are alive...')
+                self.info.setStyleSheet('color: #27ae60;')
+                send_banner('OK', 'Alignak daemons are alive')
+            elif bad_daemons != total_daemons:
+                self.info.setText('Some daemons are down !')
+                self.info.setStyleSheet('color: #e74c3c;')
+                send_banner('WARN', 'Some daemons are DOWN !')
+            else:
+                self.info.setText('ALL daemons are down !')
+                self.info.setStyleSheet('color: #e74c3c;')
+                send_banner('ALERT', 'ALL daemons are DOWN !')
 
     def show_states(self):
         """

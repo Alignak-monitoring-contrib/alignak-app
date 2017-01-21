@@ -253,7 +253,7 @@ class TrayIcon(QSystemTrayIcon):
 
         self.alignak_status = AlignakStatus()
         self.alignak_status.create_status()
-
+        self.alignak_status.setObjectName('status_trayicon')
         self.action_factory.get('icon').triggered.connect(self.alignak_status.show_states)
 
         self.menu.addAction(self.action_factory.get('icon'))
