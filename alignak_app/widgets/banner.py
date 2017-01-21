@@ -73,7 +73,7 @@ class BannerManager(object):
 
             banner = self.banners_to_send[0]
             banner.animation.start()
-            banner.closed.connect(self.banner_listener)
+            banner.banner_closed.connect(self.banner_listener)
 
             banner.show()
 
