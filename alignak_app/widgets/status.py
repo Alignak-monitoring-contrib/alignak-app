@@ -220,6 +220,10 @@ class AlignakStatus(QWidget):
 
         """
 
+        # Clean all items before, if
+        for i in reversed(range(layout.count())):
+            layout.itemAt(i).widget().setParent(None)
+
         title = get_widget_title(
             'alignak status',
             self
