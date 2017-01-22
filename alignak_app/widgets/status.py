@@ -35,13 +35,13 @@ from alignak_app.widgets.banner import send_banner
 try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QApplication, QWidget  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QGridLayout  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QGridLayout, QAction  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QLabel, QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon, QPixmap  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import Qt, QTimer  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication, QWidget  # pylint: disable=import-error
-    from PyQt4.Qt import QGridLayout  # pylint: disable=import-error
+    from PyQt4.Qt import QGridLayout, QAction  # pylint: disable=import-error
     from PyQt4.Qt import QLabel, QPushButton  # pylint: disable=import-error
     from PyQt4.QtGui import QIcon, QPixmap  # pylint: disable=import-error
     from PyQt4.QtCore import Qt, QTimer  # pylint: disable=import-error
@@ -243,17 +243,15 @@ class AlignakStatus(QWidget):
 
     def check_status(self):
         """
-        Check daemons states and update icons
+        Check daemons states, update icons and display banner if changes.
 
         """
 
         bad_daemons = 0
         total_daemons = 0
+        arbiter_down = False
 
         for daemon in self.daemons:
-            # Reset to zero state of daemon
-            self.daemons_labels[daemon]['status'] = 0
-
             alignak_map = self.alignak_ws_request().json()
 
             daemon_message = ''
@@ -264,6 +262,8 @@ class AlignakStatus(QWidget):
                 if not alignak_map[daemon][sub_daemon]['alive']:
                     cur_bad_daemons += 1
                     daemon_message += '<p>%s is not alive </p>' % sub_daemon.capitalize()
+                    if daemon == self.daemons[3]:
+                        arbiter_down = True
                 total_daemons += 1
 
             if not cur_bad_daemons:
@@ -279,7 +279,7 @@ class AlignakStatus(QWidget):
             # Add current bad daemons to bad daemons total
             bad_daemons += cur_bad_daemons
 
-        if self.sender() and ('status_trayicon' not in self.sender().objectName()):
+        if self.sender() and not (isinstance(self.sender(), QAction)):
             if not bad_daemons and (self.old_bad_daemons != 0):
                 self.info.setText('All daemons are alive.')
                 self.info.setStyleSheet('color: #27ae60;')
@@ -287,14 +287,14 @@ class AlignakStatus(QWidget):
                 # Reset old bad daemons count
                 self.old_bad_daemons = 0
             if bad_daemons:
-                if bad_daemons != total_daemons:
-                    self.info.setText('Some daemons are down !')
+                self.info.setText('%d on %d daemons are down !' % (bad_daemons, total_daemons))
+                self.info.setStyleSheet('color: #e74c3c;')
+                send_banner('WARN', '%d on %d daemons are down !' % (bad_daemons, total_daemons))
+
+                if arbiter_down:
+                    self.info.setText('Arbiter daemons are down !')
                     self.info.setStyleSheet('color: #e74c3c;')
-                    send_banner('WARN', 'Some daemons are DOWN !')
-                else:
-                    self.info.setText('ALL daemons are down !')
-                    self.info.setStyleSheet('color: #e74c3c;')
-                    send_banner('ALERT', 'ALL daemons are DOWN !')
+                    send_banner('ALERT', 'Arbiter daemons are down !')
 
         self.old_bad_daemons = bad_daemons
 
