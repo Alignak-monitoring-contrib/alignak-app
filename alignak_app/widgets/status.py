@@ -283,7 +283,7 @@ class AlignakStatus(QWidget):
             # Add current bad daemons to bad daemons total
             bad_daemons += cur_bad_daemons
 
-        if self.sender() and not (isinstance(self.sender(), QAction)):
+        if self.sender() and not isinstance(self.sender(), QAction):
             if not bad_daemons and (self.old_bad_daemons != 0):
                 self.info.setText('All daemons are alive.')
                 self.info.setStyleSheet('color: #27ae60;')
