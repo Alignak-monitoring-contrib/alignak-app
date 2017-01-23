@@ -187,10 +187,6 @@ class Banner(QWidget):
                 border: 1px solid #d2d2d2;
                 font-size: 14px;
             }
-            QToolTip {
-                background-color: black;
-                color: white;
-            }
             """ % color)
 
         valid_btn = QPushButton()
@@ -206,8 +202,8 @@ class Banner(QWidget):
 
         layout.addWidget(valid_btn)
 
-        if len(message) > 76:
-            message = message[:76] + '...'
+        if len(message) > 80:
+            message = message[:80] + '...'
 
         banner_qlabel = QLabel('<b>%s</b>: %s' % (title, message))
         banner_qlabel.setWordWrap(True)
