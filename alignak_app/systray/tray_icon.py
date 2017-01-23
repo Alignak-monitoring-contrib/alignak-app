@@ -29,7 +29,7 @@ from logging import getLogger
 
 from alignak_app.core.utils import get_app_config, get_image_path
 from alignak_app.synthesis.synthesis import Synthesis
-from alignak_app.systray.actions_factory import ActionFactory
+from alignak_app.systray.qactions_factory import QActionFactory
 from alignak_app.widgets.about import AppAbout
 from alignak_app.widgets.status import AlignakStatus
 
@@ -63,7 +63,7 @@ class TrayIcon(QSystemTrayIcon):
         self.hosts_menu.setIcon(QIcon(get_image_path('host')))
         self.services_menu = QMenu(self.menu)
         self.services_menu.setIcon(QIcon(get_image_path('service')))
-        self.action_factory = ActionFactory()
+        self.qaction_factory = QActionFactory()
         self.alignak_status = None
         self.app_about = None
         self.synthesis = None
@@ -103,47 +103,47 @@ class TrayIcon(QSystemTrayIcon):
 
         self.hosts_menu.setTitle('Hosts (N/A)')
 
-        self.action_factory.create(
+        self.qaction_factory.create(
             'hosts_up',
             'Hosts UP, Wait...',
             self.hosts_menu
         )
-        self.action_factory.get('hosts_up').triggered.connect(self.open_url)
+        self.qaction_factory.get('hosts_up').triggered.connect(self.open_url)
 
-        self.action_factory.create(
+        self.qaction_factory.create(
             'hosts_unreach',
             'Hosts UNREACHABLE, Wait...',
             self.hosts_menu
         )
-        self.action_factory.get('hosts_unreach').triggered.connect(self.open_url)
+        self.qaction_factory.get('hosts_unreach').triggered.connect(self.open_url)
 
-        self.action_factory.create(
+        self.qaction_factory.create(
             'hosts_down',
             'Hosts DOWN, Wait...',
             self.hosts_menu
         )
-        self.action_factory.get('hosts_down').triggered.connect(self.open_url)
+        self.qaction_factory.get('hosts_down').triggered.connect(self.open_url)
 
         self.hosts_menu.addSeparator()
 
-        self.action_factory.create(
+        self.qaction_factory.create(
             'acknowledged',
             'Hosts ACKNOWLEDGE, Wait...',
             self.hosts_menu
         )
 
-        self.action_factory.create(
+        self.qaction_factory.create(
             'downtime',
             'Hosts DOWNTIME, Wait...',
             self.hosts_menu
         )
 
         # Add hosts actions to menu
-        self.hosts_menu.addAction(self.action_factory.get('hosts_up'))
-        self.hosts_menu.addAction(self.action_factory.get('hosts_unreach'))
-        self.hosts_menu.addAction(self.action_factory.get('hosts_down'))
-        self.hosts_menu.addAction(self.action_factory.get('hosts_acknowledged'))
-        self.hosts_menu.addAction(self.action_factory.get('hosts_downtime'))
+        self.hosts_menu.addAction(self.qaction_factory.get('hosts_up'))
+        self.hosts_menu.addAction(self.qaction_factory.get('hosts_unreach'))
+        self.hosts_menu.addAction(self.qaction_factory.get('hosts_down'))
+        self.hosts_menu.addAction(self.qaction_factory.get('hosts_acknowledged'))
+        self.hosts_menu.addAction(self.qaction_factory.get('hosts_downtime'))
 
         self.menu.addMenu(self.hosts_menu)
 
@@ -157,35 +157,35 @@ class TrayIcon(QSystemTrayIcon):
 
         self.services_menu.setTitle('Services (N/A)')
 
-        self.action_factory.create(
+        self.qaction_factory.create(
             'services_ok',
             'Services OK, Wait...',
             self
         )
-        self.action_factory.get('services_ok').triggered.connect(self.open_url)
+        self.qaction_factory.get('services_ok').triggered.connect(self.open_url)
 
-        self.action_factory.create(
+        self.qaction_factory.create(
             'services_warning',
             'Services WARNING, Wait...',
             self.services_menu
         )
-        self.action_factory.get('services_warning').triggered.connect(self.open_url)
+        self.qaction_factory.get('services_warning').triggered.connect(self.open_url)
 
-        self.action_factory.create(
+        self.qaction_factory.create(
             'services_critical',
             'Services CRITICAL, Wait...',
             self.services_menu
         )
-        self.action_factory.get('services_critical').triggered.connect(self.open_url)
+        self.qaction_factory.get('services_critical').triggered.connect(self.open_url)
 
-        self.action_factory.create(
+        self.qaction_factory.create(
             'services_unknown',
             'Services UNKNOWN, Wait...',
             self.services_menu
         )
-        self.action_factory.get('services_unknown').triggered.connect(self.open_url)
+        self.qaction_factory.get('services_unknown').triggered.connect(self.open_url)
 
-        self.action_factory.create(
+        self.qaction_factory.create(
             'services_unreachable',
             'Services UNREACHABLE, Wait...',
             self.services_menu
@@ -193,26 +193,26 @@ class TrayIcon(QSystemTrayIcon):
 
         self.services_menu.addSeparator()
 
-        self.action_factory.create(
+        self.qaction_factory.create(
             'acknowledged',
             'Services ACKNOWLEDGE, Wait...',
             self.services_menu
         )
 
-        self.action_factory.create(
+        self.qaction_factory.create(
             'downtime',
             'Services DOWNTIME, Wait...',
             self.services_menu
         )
 
         # Add services actions to menu
-        self.services_menu.addAction(self.action_factory.get('services_ok'))
-        self.services_menu.addAction(self.action_factory.get('services_warning'))
-        self.services_menu.addAction(self.action_factory.get('services_critical'))
-        self.services_menu.addAction(self.action_factory.get('services_unknown'))
-        self.services_menu.addAction(self.action_factory.get('services_unreachable'))
-        self.services_menu.addAction(self.action_factory.get('services_acknowledged'))
-        self.services_menu.addAction(self.action_factory.get('services_downtime'))
+        self.services_menu.addAction(self.qaction_factory.get('services_ok'))
+        self.services_menu.addAction(self.qaction_factory.get('services_warning'))
+        self.services_menu.addAction(self.qaction_factory.get('services_critical'))
+        self.services_menu.addAction(self.qaction_factory.get('services_unknown'))
+        self.services_menu.addAction(self.qaction_factory.get('services_unreachable'))
+        self.services_menu.addAction(self.qaction_factory.get('services_acknowledged'))
+        self.services_menu.addAction(self.qaction_factory.get('services_downtime'))
 
         self.menu.addMenu(self.services_menu)
 
@@ -224,7 +224,7 @@ class TrayIcon(QSystemTrayIcon):
         :type backend: AppBackend
         """
 
-        self.action_factory.create(
+        self.qaction_factory.create(
             'database',
             'Host Synthesis View',
             self
@@ -233,9 +233,9 @@ class TrayIcon(QSystemTrayIcon):
         self.synthesis = Synthesis()
         self.synthesis.initialize(backend)
 
-        self.action_factory.get('database').triggered.connect(self.synthesis.show)
+        self.qaction_factory.get('database').triggered.connect(self.synthesis.show)
 
-        self.menu.addAction(self.action_factory.get('database'))
+        self.menu.addAction(self.qaction_factory.get('database'))
 
         logger.info('Create Synthesis Action')
 
@@ -245,7 +245,7 @@ class TrayIcon(QSystemTrayIcon):
 
         """
 
-        self.action_factory.create(
+        self.qaction_factory.create(
             'icon',
             'Alignak Status',
             self
@@ -253,9 +253,9 @@ class TrayIcon(QSystemTrayIcon):
 
         self.alignak_status = AlignakStatus()
         self.alignak_status.create_status()
-        self.action_factory.get('icon').triggered.connect(self.alignak_status.show_states)
+        self.qaction_factory.get('icon').triggered.connect(self.alignak_status.show_states)
 
-        self.menu.addAction(self.action_factory.get('icon'))
+        self.menu.addAction(self.qaction_factory.get('icon'))
 
         logger.info('Create Status Action')
 
@@ -268,15 +268,15 @@ class TrayIcon(QSystemTrayIcon):
         self.app_about = AppAbout()
         self.app_about.create_window()
 
-        self.action_factory.create(
+        self.qaction_factory.create(
             'about',
             'About',
             self
         )
 
-        self.action_factory.get('about').triggered.connect(self.app_about.show_about)
+        self.qaction_factory.get('about').triggered.connect(self.app_about.show_about)
 
-        self.menu.addAction(self.action_factory.get('about'))
+        self.menu.addAction(self.qaction_factory.get('about'))
 
         logger.info('Create About Action')
 
@@ -288,15 +288,15 @@ class TrayIcon(QSystemTrayIcon):
 
         logger.info('Create Quit Action')
 
-        self.action_factory.create(
+        self.qaction_factory.create(
             'exit',
             'Quit',
             self
         )
 
-        self.action_factory.get('exit').triggered.connect(self.quit_app)
+        self.qaction_factory.get('exit').triggered.connect(self.quit_app)
 
-        self.menu.addAction(self.action_factory.get('exit'))
+        self.menu.addAction(self.qaction_factory.get('exit'))
 
     def update_menu_actions(self, hosts, services):
         """
@@ -342,30 +342,30 @@ class TrayIcon(QSystemTrayIcon):
 
         self.services_menu.setTitle('Services (' + str(services_nb) + ')')
 
-        self.action_factory.get('hosts_up').setText(
+        self.qaction_factory.get('hosts_up').setText(
             'Hosts UP (' + str(hosts['up']) + ')')
-        self.action_factory.get('hosts_down').setText(
+        self.qaction_factory.get('hosts_down').setText(
             'Hosts DOWN (' + str(hosts['down']) + ')')
-        self.action_factory.get('hosts_unreach').setText(
+        self.qaction_factory.get('hosts_unreach').setText(
             'Hosts UNREACHABLE (' + str(hosts['unreachable']) + ')')
-        self.action_factory.get('hosts_acknowledged').setText(
+        self.qaction_factory.get('hosts_acknowledged').setText(
             'Hosts ACKNOWLEDGE (' + str(hosts['acknowledge']) + ')')
-        self.action_factory.get('hosts_downtime').setText(
+        self.qaction_factory.get('hosts_downtime').setText(
             'Hosts DOWNTIME (' + str(hosts['downtime']) + ')')
 
-        self.action_factory.get('services_ok').setText(
+        self.qaction_factory.get('services_ok').setText(
             'Services OK (' + str(services['ok']) + ')')
-        self.action_factory.get('services_critical').setText(
+        self.qaction_factory.get('services_critical').setText(
             'Services CRITICAL (' + str(services['critical']) + ')')
-        self.action_factory.get('services_warning').setText(
+        self.qaction_factory.get('services_warning').setText(
             'Services WARNING (' + str(services['warning']) + ')')
-        self.action_factory.get('services_unknown').setText(
+        self.qaction_factory.get('services_unknown').setText(
             'Services UNKNOWN (' + str(services['unknown']) + ')')
-        self.action_factory.get('services_unreachable').setText(
+        self.qaction_factory.get('services_unreachable').setText(
             'Services UNREACHABLE (' + str(services['unreachable']) + ')')
-        self.action_factory.get('services_acknowledged').setText(
+        self.qaction_factory.get('services_acknowledged').setText(
             'Services ACKNOWLEDGE (' + str(services['acknowledge']) + ')')
-        self.action_factory.get('services_downtime').setText(
+        self.qaction_factory.get('services_downtime').setText(
             'Services DOWNTIME (' + str(services['downtime']) + ')')
 
     @staticmethod

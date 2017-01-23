@@ -71,48 +71,48 @@ class TestTrayIcon(unittest2.TestCase):
         """Hosts QActions are created"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
-        self.assertFalse(under_test.action_factory.actions)
+        self.assertFalse(under_test.qaction_factory.actions)
 
         under_test.create_hosts_actions()
 
-        self.assertIsInstance(under_test.action_factory.get('hosts_up'), QAction)
-        self.assertIsInstance(under_test.action_factory.get('hosts_down'), QAction)
-        self.assertIsInstance(under_test.action_factory.get('hosts_unreach'), QAction)
+        self.assertIsInstance(under_test.qaction_factory.get('hosts_up'), QAction)
+        self.assertIsInstance(under_test.qaction_factory.get('hosts_down'), QAction)
+        self.assertIsInstance(under_test.qaction_factory.get('hosts_unreach'), QAction)
 
     def test_services_actions(self):
         """Services QActions are created"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
-        self.assertFalse(under_test.action_factory.actions)
+        self.assertFalse(under_test.qaction_factory.actions)
 
         under_test.create_services_actions()
 
-        self.assertIsInstance(under_test.action_factory.get('services_ok'), QAction)
-        self.assertIsInstance(under_test.action_factory.get('services_warning'), QAction)
-        self.assertIsInstance(under_test.action_factory.get('services_critical'), QAction)
-        self.assertIsInstance(under_test.action_factory.get('services_unknown'), QAction)
+        self.assertIsInstance(under_test.qaction_factory.get('services_ok'), QAction)
+        self.assertIsInstance(under_test.qaction_factory.get('services_warning'), QAction)
+        self.assertIsInstance(under_test.qaction_factory.get('services_critical'), QAction)
+        self.assertIsInstance(under_test.qaction_factory.get('services_unknown'), QAction)
 
     def test_about_action(self):
         """About QAction is created"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
-        self.assertFalse(under_test.action_factory.actions)
+        self.assertFalse(under_test.qaction_factory.actions)
 
         under_test.create_about_action()
 
-        self.assertIsNotNone(under_test.action_factory)
-        self.assertIsInstance(under_test.action_factory.get('about'), QAction)
+        self.assertIsNotNone(under_test.qaction_factory)
+        self.assertIsInstance(under_test.qaction_factory.get('about'), QAction)
 
     def test_quit_action(self):
         """Quit QAction is created"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
-        self.assertFalse(under_test.action_factory.actions)
+        self.assertFalse(under_test.qaction_factory.actions)
 
         under_test.create_quit_action()
 
-        self.assertIsNotNone(under_test.action_factory.get('exit'))
-        self.assertIsInstance(under_test.action_factory.get('exit'), QAction)
+        self.assertIsNotNone(under_test.qaction_factory.get('exit'))
+        self.assertIsInstance(under_test.qaction_factory.get('exit'), QAction)
 
     def test_build_menu(self):
         """Build Menu add QActions"""
@@ -123,7 +123,7 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertIsNone(under_test.app_about)
         self.assertIsNone(under_test.synthesis)
         self.assertIsNone(under_test.alignak_status)
-        self.assertIsNotNone(under_test.action_factory)
+        self.assertIsNotNone(under_test.qaction_factory)
 
         under_test.build_menu(self.backend)
 
@@ -132,7 +132,7 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertIsNotNone(under_test.app_about)
         self.assertIsNotNone(under_test.synthesis)
         self.assertIsNotNone(under_test.alignak_status)
-        self.assertIsNotNone(under_test.action_factory)
+        self.assertIsNotNone(under_test.qaction_factory)
 
     def test_update_menus_actions(self):
         """Update Menu QActions"""
@@ -141,20 +141,20 @@ class TestTrayIcon(unittest2.TestCase):
         under_test.build_menu(self.backend)
 
         self.assertEqual('Hosts UP, Wait...',
-                         under_test.action_factory.get('hosts_up').text())
+                         under_test.qaction_factory.get('hosts_up').text())
         self.assertEqual('Hosts DOWN, Wait...',
-                         under_test.action_factory.get('hosts_down').text())
+                         under_test.qaction_factory.get('hosts_down').text())
         self.assertEqual('Hosts UNREACHABLE, Wait...',
-                         under_test.action_factory.get('hosts_unreach').text())
+                         under_test.qaction_factory.get('hosts_unreach').text())
 
         self.assertEqual('Services OK, Wait...',
-                         under_test.action_factory.get('services_ok').text())
+                         under_test.qaction_factory.get('services_ok').text())
         self.assertEqual('Services WARNING, Wait...',
-                         under_test.action_factory.get('services_warning').text())
+                         under_test.qaction_factory.get('services_warning').text())
         self.assertEqual('Services CRITICAL, Wait...',
-                         under_test.action_factory.get('services_critical').text())
+                         under_test.qaction_factory.get('services_critical').text())
         self.assertEqual('Services UNKNOWN, Wait...',
-                         under_test.action_factory.get('services_unknown').text())
+                         under_test.qaction_factory.get('services_unknown').text())
 
         hosts_states = dict(
             up=1,
@@ -176,27 +176,27 @@ class TestTrayIcon(unittest2.TestCase):
         under_test.update_menu_actions(hosts_states, services_states)
 
         self.assertEqual('Hosts UP (1)',
-                         under_test.action_factory.get('hosts_up').text())
+                         under_test.qaction_factory.get('hosts_up').text())
         self.assertEqual('Hosts DOWN (2)',
-                         under_test.action_factory.get('hosts_down').text())
+                         under_test.qaction_factory.get('hosts_down').text())
         self.assertEqual('Hosts UNREACHABLE (3)',
-                         under_test.action_factory.get('hosts_unreach').text())
+                         under_test.qaction_factory.get('hosts_unreach').text())
         self.assertEqual('Hosts ACKNOWLEDGE (4)',
-                         under_test.action_factory.get('hosts_acknowledged').text())
+                         under_test.qaction_factory.get('hosts_acknowledged').text())
         self.assertEqual('Hosts DOWNTIME (5)',
-                         under_test.action_factory.get('hosts_downtime').text())
+                         under_test.qaction_factory.get('hosts_downtime').text())
 
         self.assertEqual('Services OK (4)',
-                         under_test.action_factory.get('services_ok').text())
+                         under_test.qaction_factory.get('services_ok').text())
         self.assertEqual('Services WARNING (5)',
-                         under_test.action_factory.get('services_warning').text())
+                         under_test.qaction_factory.get('services_warning').text())
         self.assertEqual('Services CRITICAL (6)',
-                         under_test.action_factory.get('services_critical').text())
+                         under_test.qaction_factory.get('services_critical').text())
         self.assertEqual('Services UNKNOWN (7)',
-                         under_test.action_factory.get('services_unknown').text())
+                         under_test.qaction_factory.get('services_unknown').text())
         self.assertEqual('Services UNREACHABLE (8)',
-                         under_test.action_factory.get('services_unreachable').text())
+                         under_test.qaction_factory.get('services_unreachable').text())
         self.assertEqual('Services ACKNOWLEDGE (9)',
-                         under_test.action_factory.get('services_acknowledged').text())
+                         under_test.qaction_factory.get('services_acknowledged').text())
         self.assertEqual('Services DOWNTIME (10)',
-                         under_test.action_factory.get('services_downtime').text())
+                         under_test.qaction_factory.get('services_downtime').text())

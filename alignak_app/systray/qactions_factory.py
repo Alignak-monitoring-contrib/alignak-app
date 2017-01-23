@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Action_Factory build actions for TrayIcon.
+    QAction Factory manage creation of QActions for TrayIcon.
 """
 
 from logging import getLogger
@@ -39,9 +39,9 @@ except ImportError:  # pragma: no cover
 logger = getLogger(__name__)
 
 
-class ActionFactory(object):
+class QActionFactory(object):
     """
-        Create QAction with his icon and content
+        Create QActions with its icon and content
     """
 
     def __init__(self):
