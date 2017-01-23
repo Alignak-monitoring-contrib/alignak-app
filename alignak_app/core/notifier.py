@@ -45,9 +45,9 @@ class AppNotifier(QSystemTrayIcon):
     Class who manage notifications and states of hosts and services.
     """
 
-    def __init__(self, icon, backend, parent=None):
+    def __init__(self, icon, app_backend, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
-        self.backend = backend
+        self.app_backend = app_backend
         self.tray_icon = None
         self.popup = None
         self.notify = True
@@ -112,11 +112,11 @@ class AppNotifier(QSystemTrayIcon):
         old_states = {}
         diff = self.basic_diff_model()
 
-        if self.backend.states:
+        if self.app_backend.states:
             logger.info('Store old states...')
-            old_states = copy.deepcopy(self.backend.states)
+            old_states = copy.deepcopy(self.app_backend.states)
 
-        current_states = self.backend.synthesis_count()
+        current_states = self.app_backend.synthesis_count()
 
         if old_states:
             diff = self.diff_last_check(old_states)
@@ -155,24 +155,24 @@ class AppNotifier(QSystemTrayIcon):
         """
 
         logger.debug('Old_states : ' + str(old_states))
-        logger.debug('New states : ' + str(self.backend.states))
+        logger.debug('New states : ' + str(self.app_backend.states))
 
         diff = self.basic_diff_model()
 
-        if old_states == self.backend.states:
+        if old_states == self.app_backend.states:
             logger.info('[No changes] since the last check...')
             self.notify = False
         else:
             logger.info('[Changes] since the last check !')
             self.notify = True
-            for key, _ in self.backend.states['hosts'].items():
-                if old_states['hosts'][key] != self.backend.states['hosts'][key]:
-                    cur_diff = self.backend.states['hosts'][key] - old_states['hosts'][key]
+            for key, _ in self.app_backend.states['hosts'].items():
+                if old_states['hosts'][key] != self.app_backend.states['hosts'][key]:
+                    cur_diff = self.app_backend.states['hosts'][key] - old_states['hosts'][key]
                     diff['hosts'][key] = cur_diff
-            for key, _ in self.backend.states['services'].items():
-                if old_states['services'][key] != self.backend.states['services'][key]:
+            for key, _ in self.app_backend.states['services'].items():
+                if old_states['services'][key] != self.app_backend.states['services'][key]:
                     cur_diff = \
-                        self.backend.states['services'][key] \
+                        self.app_backend.states['services'][key] \
                         - old_states['services'][key]
                     diff['services'][key] = cur_diff
 

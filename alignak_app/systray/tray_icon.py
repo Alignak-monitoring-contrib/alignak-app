@@ -68,16 +68,16 @@ class TrayIcon(QSystemTrayIcon):
         self.app_about = None
         self.synthesis = None
 
-    def build_menu(self, backend):
+    def build_menu(self, app_backend):
         """
         Initialize and create each action of menu.
 
-        :param backend: Backend data
-        :type backend: AppBackend
+        :param app_backend: Backend data
+        :type app_backend: AppBackend
         """
 
         # Create actions
-        self.create_synthesis_action(backend)
+        self.create_synthesis_action(app_backend)
 
         self.create_status_action()
         self.menu.addSeparator()
@@ -216,12 +216,12 @@ class TrayIcon(QSystemTrayIcon):
 
         self.menu.addMenu(self.services_menu)
 
-    def create_synthesis_action(self, backend):
+    def create_synthesis_action(self, app_backend):
         """
         Create Synthesis QWidget and "synthesis view" action
 
-        :param backend: Backend data
-        :type backend: AppBackend
+        :param app_backend: Backend data
+        :type app_backend: AppBackend
         """
 
         self.qaction_factory.create(
@@ -231,7 +231,7 @@ class TrayIcon(QSystemTrayIcon):
         )
 
         self.synthesis = Synthesis()
-        self.synthesis.initialize(backend)
+        self.synthesis.initialize(app_backend)
 
         self.qaction_factory.get('database').triggered.connect(self.synthesis.show)
 
