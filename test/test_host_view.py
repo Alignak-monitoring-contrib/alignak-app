@@ -34,7 +34,7 @@ try:
     from PyQt5.QtWidgets import QWidget, QLabel
 except ImportError:
     from PyQt4.Qt import QApplication, QPushButton
-    from PyQt4.QtWidgets import QWidget, QLabel
+    from PyQt4.Qt import QWidget, QLabel
 
 
 class TestServicesView(unittest2.TestCase):
