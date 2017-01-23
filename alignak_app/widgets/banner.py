@@ -34,9 +34,9 @@ try:
     from PyQt5.QtCore import QPropertyAnimation  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QHBoxLayout, QApplication  # pylint: disable=import-error
-    from PyQt4.Qt import QWidget, QPushButton, QLabel, QIcon  # pylint: disable=import-error
-    from PyQt4.QtCore import Qt, QTimer, QPoint, pyqtSignal  # pylint: disable=import-error
-    from PyQt4.QtCore import QObject, pyqtSignal  # pylint: disable=import-error
+    from PyQt4.Qt import QWidget, QPushButton, QLabel  # pylint: disable=import-error
+    from PyQt4.Qt import Qt, QTimer, QPoint, QIcon  # pylint: disable=import-error
+    from PyQt4.Qt import QObject, pyqtSignal  # pylint: disable=import-error
     from PyQt4.QtCore import QPropertyAnimation  # pylint: disable=import-error
 
 

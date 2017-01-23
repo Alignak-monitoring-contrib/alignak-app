@@ -37,13 +37,11 @@ try:
     from PyQt5.QtWidgets import QWidget, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QLabel  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QPixmap, Qt, QIcon  # pylint: disable=no-name-in-module
-    from PyQt5.QtCore import QTimer  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QPushButton  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
     from PyQt4.Qt import QPixmap, Qt, QIcon  # pylint: disable=import-error
-    from PyQt4.QtCore import QTimer  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)

@@ -23,12 +23,10 @@
     App Synthesis manage widget for Host Synthesis QWidget.
 """
 
-import datetime
 import json
 
 from logging import getLogger
 
-from alignak_app.core.backend import AppBackend
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.action_manager import ActionManager, ACK, DOWNTIME, PROCESS
 from alignak_app.synthesis.host import Host
@@ -38,14 +36,12 @@ from alignak_app.widgets.banner import send_banner
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QStringListModel, QIcon  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QCompleter, QLineEdit, QTimer  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QApplication  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QPushButton  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout  # pylint: disable=import-error
     from PyQt4.Qt import QStringListModel, QIcon  # pylint: disable=import-error
@@ -79,7 +75,7 @@ class Synthesis(QWidget):
         Create the QWidget with its items and layout.
 
         :param app_backend: app_backend of alignak.
-        :type app_backend: AppBackend
+        :type app_backend: alignak_app.core.backend.AppBackend
         """
 
         logger.info('Create Synthesis View...')
