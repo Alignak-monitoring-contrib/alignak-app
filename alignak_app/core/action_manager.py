@@ -50,7 +50,7 @@ class ActionManager(object):
         }
         self.processed_to_check = []
 
-    def check_items(self):
+    def check_items(self):  # pragma: no cover, this is not testable
         """
         Check items to see if actions are done
 
@@ -134,17 +134,20 @@ class ActionManager(object):
         :type item: dict
         """
 
-        if ACK in item['action']:
-            if not item['service_id']:
-                self.acks_to_check['hosts'].append(item)
+        if item:
+            if ACK in item['action']:
+                if not item['service_id']:
+                    self.acks_to_check['hosts'].append(item)
+                else:
+                    self.acks_to_check['services'].append(item)
+            elif DOWNTIME in item['action']:
+                if not item['service_id']:
+                    self.downtimes_to_check['hosts'].append(item)
+                else:
+                    self.downtimes_to_check['services'].append(item)
+            elif PROCESS in item['action']:
+                self.processed_to_check.append(item)
             else:
-                self.acks_to_check['services'].append(item)
-        elif DOWNTIME in item['action']:
-            if not item['service_id']:
-                self.downtimes_to_check['hosts'].append(item)
-            else:
-                self.downtimes_to_check['services'].append(item)
-        elif PROCESS in item['action']:
-            self.processed_to_check.append(item)
+                logger.error('Endpoint %s is not valid', item['action'])
         else:
-            logger.error('Endpoint %s is not valid', item['action'])
+            logger.error('Item is %s', item)
