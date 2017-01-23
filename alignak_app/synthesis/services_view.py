@@ -134,9 +134,9 @@ class ServicesView(QWidget):
         else:
             service.downtime_btn.setEnabled(True)
 
-    def add_acknowledge(self):  # pragma: no cover
+    def add_acknowledge(self):  # pragma: no cover, no testability
         """
-        Handle action for "ack_button"
+        Handle action for "acknowledge_btn"
 
         """
 
@@ -176,10 +176,10 @@ class ServicesView(QWidget):
 
             self.sender().acknowledge_btn.setEnabled(False)
 
-    def add_downtime(self):
+    def add_downtime(self):  # pragma: no cover, no testability
         """
-        TEST
-        :return:
+        Handle action for "downtime_btn"
+
         """
 
         service = self.sender().service
@@ -219,36 +219,3 @@ class ServicesView(QWidget):
             self.action_manager.add_item(item_action)
 
             self.sender().downtime_btn.setEnabled(False)
-
-    @staticmethod
-    def get_service_icon(state):
-        """
-        Return QPixmap with the icon corresponding to the status.
-
-        :param state: state of the host.
-        :type state: str
-        :return: QPixmap with image
-        :rtype: QPixmap
-        """
-
-        if 'OK' in state:
-            icon_name = 'services_ok'
-        elif 'WARNING' in state:
-            icon_name = 'services_warning'
-        elif 'CRITICAL' in state:
-            icon_name = 'services_critical'
-        elif 'UNKNOWN' in state:
-            icon_name = 'services_unknown'
-        elif 'UNREACHABLE' in state:
-            icon_name = 'services_unreachable'
-        else:
-            icon_name = 'services_none'
-
-        icon = QPixmap(get_image_path(icon_name))
-        icon_label = QLabel()
-        icon_label.setFixedSize(16, 16)
-        icon_label.setScaledContents(True)
-        icon_label.setPixmap(icon)
-        icon_label.setToolTip('Service is ' + state)
-
-        return icon_label
