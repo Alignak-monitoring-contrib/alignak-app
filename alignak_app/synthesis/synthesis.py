@@ -74,7 +74,7 @@ class Synthesis(QWidget):
         self.app_backend = None
         self.action_manager = None
 
-    def create_widget(self, app_backend):
+    def initialize(self, app_backend):
         """
         Create the QWidget with its items and layout.
 
