@@ -220,6 +220,7 @@ class Host(QWidget):
 
             post = self.app_backend.post(ACK, data)
             item_process = {
+                'action': PROCESS,
                 'name': self.host['name'],
                 'href': post
             }
@@ -262,6 +263,7 @@ class Host(QWidget):
 
             post = self.app_backend.post(DOWNTIME, data)
             item_process = {
+                'action': PROCESS,
                 'name': self.host['name'],
                 'href': post
             }
