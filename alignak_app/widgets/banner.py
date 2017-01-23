@@ -174,8 +174,10 @@ class Banner(QWidget):
 
         try:
             color = self.color_levels[level]['color']
+            title = self.color_levels[level]['title']
         except KeyError:
-            color = 'black'
+            color = '#383838'
+            title = 'ERROR'
 
         self.setStyleSheet(
             """
@@ -207,7 +209,7 @@ class Banner(QWidget):
         if len(message) > 76:
             message = message[:76] + '...'
 
-        banner_qlabel = QLabel('<b>%s</b>: ' % self.color_levels[level]['title'] + message)
+        banner_qlabel = QLabel('<b>%s</b>: %s' % (title, message))
         banner_qlabel.setWordWrap(True)
         layout.addWidget(banner_qlabel)
 
