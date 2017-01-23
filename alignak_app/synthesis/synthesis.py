@@ -155,15 +155,7 @@ class Synthesis(QWidget):
         self.line_search.setPlaceholderText('Type a host name to display its data')
         self.line_search.setToolTip('Type a host name to display its data')
 
-    def show_synthesis(self):
-        """
-        Show synthesis view for TrayIcon
-
-        """
-
-        self.show()
-
-    def refresh_all_views(self):
+    def refresh_all_views(self):  # pragma: no cover
         """
         Handle Event when "line_search" is clicked.
 

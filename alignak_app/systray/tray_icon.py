@@ -233,7 +233,7 @@ class TrayIcon(QSystemTrayIcon):
         self.synthesis = Synthesis()
         self.synthesis.initialize(backend)
 
-        self.action_factory.get('database').triggered.connect(self.synthesis.show_synthesis)
+        self.action_factory.get('database').triggered.connect(self.synthesis.show)
 
         self.menu.addAction(self.action_factory.get('database'))
 
