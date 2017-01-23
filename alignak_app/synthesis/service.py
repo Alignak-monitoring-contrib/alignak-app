@@ -87,7 +87,7 @@ class Service(QWidget):
 
         # row, column, rowSpan, colSPan
         # Service name
-        service_name = QLabel(service['name'].title())
+        service_name = QLabel(service['display_name'])
         service_name.setToolTip('Service is ' + service['ls_state'])
         service_name.setObjectName(service['ls_state'])
         service_name.setMinimumWidth(200)
