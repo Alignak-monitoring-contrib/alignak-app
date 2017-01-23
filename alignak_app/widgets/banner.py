@@ -80,9 +80,9 @@ class BannerManager(object):
             self.banners_to_send.remove(banner)
             self.banners.append(banner)
 
-    def display_banner(self, level, message):
+    def add_banner(self, level, message):
         """
-        Display message in a banner
+        Add Banner() to send in BannerManager
 
         :param level: OK, WARN, or ALERT
         :type level: str
@@ -96,9 +96,9 @@ class BannerManager(object):
 
     def banner_listener(self, sender):
         """
-        Listener who listen if banner is banner_closed
+        Listener who listen if banner is "banner_closed"
 
-        :param sender: the banner who emit banner_closed signal
+        :param sender: the banner who emit "banner_closed" signal
         :type sender: Banner
         """
 
@@ -248,4 +248,4 @@ def send_banner(level, message):
     :type message: str
     """
 
-    bannerManager.display_banner(level, message)
+    bannerManager.add_banner(level, message)
