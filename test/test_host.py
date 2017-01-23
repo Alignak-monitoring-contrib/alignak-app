@@ -39,7 +39,7 @@ except ImportError:
 
 class TestServicesView(unittest2.TestCase):
     """
-        This file test the ServicesView class.
+        This file test the Host class.
     """
 
     init_config()
@@ -57,7 +57,7 @@ class TestServicesView(unittest2.TestCase):
             pass
 
     def test_init_view(self):
-        """Init Host View"""
+        """Initialize Host QWidget"""
 
         under_test = Host(parent=self.widget)
 
