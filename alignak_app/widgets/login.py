@@ -161,21 +161,39 @@ class AppLogin(QDialog):
         layout = QGridLayout()
         server_dialog.setLayout(layout)
 
-        server_desc = QLabel(
-            '<b>Server:</b> Here you can define alignak server url. '
+        # Description
+        desc_label = QLabel(
+            '<h3>Alignak Backend</h3><p>Here you can define alignak server url.</p>'
             '<b>Be sure to enter a valid address</b>'
         )
-        server_desc.setWordWrap(True)
-        layout.addWidget(server_desc)
+        desc_label.setWordWrap(True)
+        layout.addWidget(desc_label, 0, 0, 1, 3)
+
+        # Server URL
+        url_desc = QLabel('Server')
+        layout.addWidget(url_desc, 1, 0, 1, 1)
 
         server_url = QLineEdit()
-        server_url.setPlaceholderText('alignak server url')
+        server_url.setPlaceholderText('alignak backend url')
         server_url.setText(get_app_config('Backend', 'alignak_url'))
-        layout.addWidget(server_url)
+        layout.addWidget(server_url, 1, 1, 1, 2)
 
+        # Server Port
+        port_desc = QLabel('Port')
+        layout.addWidget(port_desc, 2, 0, 1, 1)
+
+        server_port = QLineEdit()
+        server_port.setPlaceholderText('alignak backend port')
+        cur_port = get_app_config('Backend', 'alignak_backend').split(':')[2]
+        server_port.setText(cur_port)
+        layout.addWidget(server_port, 2, 1, 1, 2)
+
+        # Valid Button
         valid_btn = QPushButton('Valid')
         valid_btn.clicked.connect(server_dialog.accept)
-        layout.addWidget(valid_btn)
+        layout.addWidget(valid_btn, 3, 0, 1, 3)
 
         if server_dialog.exec_() == QDialog.Accepted:
+            backend_url = '%(alignak_url)s:' + str(server_port.text()).rstrip()
+            set_app_config('Backend', 'alignak_backend', backend_url)
             set_app_config('Backend', 'alignak_url', str(server_url.text()).rstrip())
