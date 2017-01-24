@@ -119,16 +119,18 @@ class ServicesView(QWidget):
         :type service: Service
         """
 
-        if service.service['ls_acknowledged'] \
-                or 'OK' in service.service['ls_state'] \
-                or service.service['display_name'] in self.action_manager.acks_to_check['services']:
+        if 'OK' in service.service['ls_state']:
+            service.acknowledge_btn.setEnabled(False)
+        elif service.service['ls_acknowledged'] or \
+                service.service['display_name'] in self.action_manager.acks_to_check['services']:
             service.acknowledge_btn.setEnabled(False)
         else:
             service.acknowledge_btn.setEnabled(True)
 
-        if service.service['ls_downtimed'] \
-                or 'OK' in service.service['ls_state'] \
-                or service.service['display_name'] in \
+        if 'OK' in service.service['ls_state']:
+            service.downtime_btn.setEnabled(False)
+        if service.service['ls_downtimed'] or \
+                service.service['display_name'] in \
                 self.action_manager.downtimes_to_check['services']:
             service.downtime_btn.setEnabled(False)
         else:

@@ -313,18 +313,22 @@ class Host(QWidget):
         logger.debug('ACK: is ' + str(self.host['ls_acknowledged']))
         logger.debug('DOWNTIME: is ' + str(self.host['ls_downtimed']))
 
-        if self.host['ls_acknowledged'] \
-                or 'UP' in self.host['ls_state'] \
-                or self.host['name'] in self.action_manager.acks_to_check:
+        if 'UP' in self.host['ls_state']:
+            self.acknowledge_btn.setEnabled(False)
+            self.acknowledge_btn.setText('Acknowledge this host')
+        elif self.host['ls_acknowledged'] or \
+                self.host['name'] in self.action_manager.acks_to_check['hosts']:
             self.acknowledge_btn.setEnabled(False)
             self.acknowledge_btn.setText('Acknowledged !')
         else:
             self.acknowledge_btn.setEnabled(True)
-            self.acknowledge_btn.setText('Acknowledge this problem')
+            self.acknowledge_btn.setText('Acknowledge this host')
 
-        if self.host['ls_downtimed'] \
-                or 'UP' in self.host['ls_state'] \
-                or self.host['name'] in self.action_manager.downtimes_to_check:
+        if 'UP' in self.host['ls_state']:
+            self.downtime_btn.setEnabled(False)
+            self.downtime_btn.setText('Schedule a downtime')
+        if self.host['ls_downtimed'] or \
+                self.host['name'] in self.action_manager.downtimes_to_check['hosts']:
             self.downtime_btn.setEnabled(False)
             self.downtime_btn.setText('Downtimed !')
         else:
