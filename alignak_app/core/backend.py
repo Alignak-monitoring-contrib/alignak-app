@@ -50,8 +50,11 @@ class AppBackend(object):
         """
         Connect to app_backend with credentials in settings.cfg.
 
+        :return: True if connected or False if not
+        :rtype: bool
         """
 
+        connect = False
         # Credentials
         if not username and not password:
             if self.user:
@@ -81,7 +84,6 @@ class AppBackend(object):
                     str(e)
                 )
                 print(e, 'Please, check your [settings.cfg] and logs.')
-                sys.exit()
         elif username and not password:
             # Username as token : recommended
             self.backend.authenticated = True
@@ -177,9 +179,10 @@ class AppBackend(object):
 
         wanted_host = None
 
-        for host in hosts['_items']:
-            if host[key] == value:
-                wanted_host = host
+        if hosts:
+            for host in hosts['_items']:
+                if host[key] == value:
+                    wanted_host = host
 
         return wanted_host
 
@@ -260,7 +263,10 @@ class AppBackend(object):
 
         user = self.get('user', params)
 
-        return user['_items'][0]
+        if user:
+            return user['_items'][0]
+        else:
+            return None
 
     def synthesis_count(self):
         """
