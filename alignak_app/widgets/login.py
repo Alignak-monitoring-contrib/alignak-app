@@ -110,7 +110,6 @@ class AppLogin(QDialog):
         login_button = QPushButton('Login', self)
         login_button.clicked.connect(self.handle_login)
         login_button.setDefault(True)
-        self.password_line.returnPressed.connect(login_button.click)
         layout.addWidget(login_button, 5, 0, 1, 2)
 
         self.setLayout(layout)
