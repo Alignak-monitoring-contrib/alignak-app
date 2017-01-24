@@ -203,8 +203,9 @@ class Host(QWidget):
 
         """
 
-        if self.host:
-            user = self.app_backend.get_user()
+        user = self.app_backend.get_user()
+
+        if self.host and user:
 
             comment = 'Acknowledge by %s, from Alignak-app' % user['name']
 
@@ -240,8 +241,9 @@ class Host(QWidget):
 
         """
 
-        if self.host:
-            user = self.app_backend.get_user()
+        user = self.app_backend.get_user()
+
+        if self.host and user:
 
             comment = 'Schedule downtime by %s, from Alignak-app' % user['name']
 
