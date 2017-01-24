@@ -40,7 +40,7 @@ class TestServicesView(unittest2.TestCase):
     """
 
     service = {
-        'name': 'My Service',
+        'display_name': 'My Service',
         'ls_state': 'OK',
         'ls_last_check': 0.0,
         'ls_output': 'Output of the service'

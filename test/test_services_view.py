@@ -75,7 +75,7 @@ class TestServicesView(unittest2.TestCase):
 
         # If service is acknowledged, acknowledge_btn is not enable
         test_service_ack = {
-            'name': 'My Service',
+            'display_name': 'My Service',
             'ls_state': 'WARNING',
             'ls_last_check': 0.0,
             'ls_output': 'Output of the service',
@@ -93,7 +93,7 @@ class TestServicesView(unittest2.TestCase):
 
         # If service is downtimed, downtime_btn is not enable
         test_service_down = {
-            'name': 'My Service',
+            'display_name': 'My Service',
             'ls_state': 'WARNING',
             'ls_last_check': 0.0,
             'ls_output': 'Output of the service',
@@ -111,7 +111,7 @@ class TestServicesView(unittest2.TestCase):
 
         # If service is not OK, acknowledged and downtimed, buttons are enable
         test_service_not_ok = {
-            'name': 'My Service',
+            'display_name': 'My Service',
             'ls_state': 'WARNING',
             'ls_last_check': 0.0,
             'ls_output': 'Output of the service',

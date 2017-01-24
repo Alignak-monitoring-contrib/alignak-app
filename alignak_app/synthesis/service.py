@@ -118,7 +118,7 @@ class Service(QWidget):
 
         # Output
         output_name = QLabel('<b>Output:</b>')
-        output_name.setToolTip('Output of %s' % service['name'])
+        output_name.setToolTip('Output of %s' % service['display_name'])
         layout.addWidget(output_name, 1, 3, 1, 1)
         output_service = QLabel(service['ls_output'])
         output_service.setToolTip(service['ls_output'])
