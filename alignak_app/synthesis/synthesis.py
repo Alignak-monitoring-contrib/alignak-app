@@ -93,9 +93,8 @@ class Synthesis(QWidget):
         # button
         button = QPushButton('Search / Refresh', self)
         button.setToolTip('Type name of a host to display his data')
-        button.clicked.connect(self.refresh_all_views)
+        button.clicked.connect(self.display_views)
         self.line_search.returnPressed.connect(button.click)
-        self.line_search.textChanged.connect(self.refresh_all_views)
 
         # Create views
         self.host_view = Host(self)
@@ -151,7 +150,7 @@ class Synthesis(QWidget):
         self.line_search.setPlaceholderText('Type a host name to display its data')
         self.line_search.setToolTip('Type a host name to display its data')
 
-    def refresh_all_views(self):  # pragma: no cover
+    def display_views(self):  # pragma: no cover
         """
         Handle Event when "line_search" is clicked.
 
@@ -169,6 +168,37 @@ class Synthesis(QWidget):
         if data:
             self.host_view.update_view(data)
             self.services_view.display_services(data['services'], data['host'])
+        else:
+            data = {
+                'host': {
+                    'name': host_name,
+                    'alias': 'N/A',
+                    'ls_state': 'N/A',
+                    'ls_last_check': 0.0,
+                    'ls_output': 'N/A',
+                    'ls_acknowledged': False,
+                    'ls_downtimed': False
+                },
+                'services': None
+            }
+            self.host_view.update_view(data)
+            self.services_view.display_services(None, {'name': 'NO HOST'})
+
+    def refresh_all_views(self):
+        """
+        Refresh Host and Service QWidgets
+
+        """
+
+        host_name = str(self.line_search.text()).rstrip()
+
+        # Collect host data and associated services
+        data = self.app_backend.get_host_with_services(host_name)
+
+        # Refresh
+        if data:
+            self.host_view.update_view(data)
+            self.services_view.update_services()
         else:
             data = {
                 'host': {

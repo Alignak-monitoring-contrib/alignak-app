@@ -69,10 +69,13 @@ class Service(QWidget):
         self.acknowledge_btn = None
         self.downtime_btn = None
         self.service = None
+        self.service_name = None
+        self.last_check = None
+        self.output_service = None
 
     def initialize(self, service):
         """
-        Inititialize QWidget
+        Inititialize Service QWidget
 
         :param service: service data
         :type service: dict
@@ -85,15 +88,14 @@ class Service(QWidget):
 
         layout.addWidget(self.get_service_icon(service['ls_state']), 0, 0, 2, 1)
 
-        # row, column, rowSpan, colSPan
         # Service name
-        service_name = QLabel(service['display_name'])
-        service_name.setToolTip('Service is ' + service['ls_state'])
-        service_name.setObjectName(service['ls_state'])
-        service_name.setMinimumWidth(200)
-        service_name.setWordWrap(True)
-        layout.addWidget(service_name, 0, 1, 2, 1)
-        layout.setAlignment(service_name, Qt.AlignLeft)
+        self.service_name = QLabel(service['display_name'])
+        self.service_name.setToolTip('Service is ' + service['ls_state'])
+        self.service_name.setObjectName(service['ls_state'])
+        self.service_name.setMinimumWidth(200)
+        self.service_name.setWordWrap(True)
+        layout.addWidget(self.service_name, 0, 1, 2, 1)
+        layout.setAlignment(self.service_name, Qt.AlignLeft)
 
         # Buttons
         self.acknowledge_btn = QPushButton()
@@ -113,22 +115,40 @@ class Service(QWidget):
         layout.addWidget(check_name, 0, 3, 1, 1)
         diff_last_check = get_diff_since_last_check(service['ls_last_check'])
 
-        last_check = QLabel(str(diff_last_check))
-        layout.addWidget(last_check, 0, 4, 1, 1)
+        self.last_check = QLabel(str(diff_last_check))
+        layout.addWidget(self.last_check, 0, 4, 1, 1)
 
         # Output
         output_name = QLabel('<b>Output:</b>')
         output_name.setToolTip('Output of %s' % service['display_name'])
         layout.addWidget(output_name, 1, 3, 1, 1)
-        output_service = QLabel(service['ls_output'])
-        output_service.setToolTip(service['ls_output'])
-        output_service.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        self.output_service = QLabel(service['ls_output'])
+        self.output_service.setToolTip(service['ls_output'])
+        self.output_service.setTextInteractionFlags(Qt.TextSelectableByMouse)
 
         scroll = QScrollArea()
-        scroll.setWidget(output_service)
+        scroll.setWidget(self.output_service)
         scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll.setMaximumHeight(60)
         layout.addWidget(scroll, 1, 4, 2, 1)
+
+    def update_service(self, service):
+        """
+        Update last check and output of service
+
+        :param service: a service from Backend
+        :type service: dict
+        """
+
+        self.service = service
+        self.service_name.setObjectName(service['ls_state'])
+        self.service_name.repaint()
+
+        diff_last_check = get_diff_since_last_check(service['ls_last_check'])
+        self.last_check.setText(str(diff_last_check))
+
+        self.output_service.setText(service['ls_output'])
+        self.output_service.setToolTip(service['ls_output'])
 
     def get_service_icon(self, state):
         """

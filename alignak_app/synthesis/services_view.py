@@ -59,6 +59,7 @@ class ServicesView(QWidget):
         self.current_host = None
         self.action_manager = action_manager
         self.app_backend = app_backend
+        self.services_widget = []
 
     def display_services(self, services, host):  # pylint: disable=too-many-locals
         """
@@ -85,6 +86,8 @@ class ServicesView(QWidget):
         layout = QGridLayout()
         widget.setLayout(layout)
 
+        # Reset pos and QWidget List
+        self.services_widget = []
         pos = 0
 
         if not services:
@@ -94,13 +97,19 @@ class ServicesView(QWidget):
             layout.addWidget(output_service, 0, 0)
         else:
             for service in services:
+                # Create Service QWidget
                 service_widget = Service()
                 service_widget.initialize(service)
                 service_widget.acknowledged.connect(self.add_acknowledge)
                 service_widget.downtimed.connect(self.add_downtime)
+
+                # Update buttons
                 self.update_service_buttons(service_widget)
                 layout.addWidget(service_widget, pos, 0)
                 pos += 1
+
+                # Add to QWidget list
+                self.services_widget.append(service_widget)
 
         logger.debug('Number of services: ' + str(pos))
 
@@ -110,6 +119,22 @@ class ServicesView(QWidget):
 
         self.layout.addWidget(scroll)
         self.show()
+
+    def update_services(self):
+        """
+        Manage update of each Service QWidget in QWidget List
+
+        """
+
+        if self.services_widget:
+            for service_widget in self.services_widget:
+                cur_service = service_widget.service
+                updated_service = self.app_backend.get_service(
+                    self.current_host['_id'],
+                    cur_service['_id']
+                )
+                service_widget.update_service(updated_service)
+                self.update_service_buttons(service_widget)
 
     def update_service_buttons(self, service):
         """
