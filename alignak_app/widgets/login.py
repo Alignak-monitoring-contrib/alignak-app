@@ -73,17 +73,25 @@ class AppLogin(QDialog):
 
         # QDialog title
         popup_title = get_widget_title('', self)
-        layout.addWidget(popup_title, 0, 0, 1, 2)
+        layout.addWidget(popup_title, 0, 0, 1, 3)
 
         # Login text
         login_line = QLabel('<b>Login</b>')
         login_line.setObjectName('login')
         layout.addWidget(login_line, 1, 0, 1, 1)
 
-        # Configure button
-        conf_button = QPushButton('Server')
-        conf_button.clicked.connect(self.handle_server)
+        # Configuration button
+        conf_button = QPushButton()
+        conf_button.setFixedSize(32, 32)
+        conf_button.setIcon(QIcon(get_image_path('refresh')))
         layout.addWidget(conf_button, 1, 1, 1, 1)
+
+        # Server button
+        server_button = QPushButton()
+        server_button.clicked.connect(self.handle_server)
+        server_button.setFixedSize(32, 32)
+        server_button.setIcon(QIcon(get_image_path('host')))
+        layout.addWidget(server_button, 1, 2, 1, 1)
 
         # Welcome text
         welcome = QLabel(
@@ -91,26 +99,26 @@ class AppLogin(QDialog):
             __short_version__ +
             '</b><br>Please enter your credentials'
         )
-        layout.addWidget(welcome, 2, 0, 1, 2)
+        layout.addWidget(welcome, 2, 0, 1, 3)
         layout.setAlignment(welcome, Qt.AlignTrailing)
 
         # Username field
         self.username_line = QLineEdit(self)
         self.username_line.setPlaceholderText('Username')
         self.username_line.setFocus()
-        layout.addWidget(self.username_line, 3, 0, 1, 2)
+        layout.addWidget(self.username_line, 3, 0, 1, 3)
 
         # Password field
         self.password_line = QLineEdit(self)
         self.password_line.setPlaceholderText('Password')
         self.password_line.setEchoMode(QLineEdit.Password)
-        layout.addWidget(self.password_line, 4, 0, 1, 2)
+        layout.addWidget(self.password_line, 4, 0, 1, 3)
 
         # Login button
         login_button = QPushButton('Login', self)
         login_button.clicked.connect(self.handle_login)
         login_button.setDefault(True)
-        layout.addWidget(login_button, 5, 0, 1, 2)
+        layout.addWidget(login_button, 5, 0, 1, 3)
 
         self.setLayout(layout)
 
