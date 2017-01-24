@@ -52,6 +52,46 @@ class TestUtils(unittest2.TestCase):
 
         self.assertIsNotNone(utils.app_config)
 
+    def test_set_app_config(self):
+        """Reload config"""
+
+        # Reset and Init "app_config"
+        utils.app_config = None
+        self.assertIsNone(utils.app_config)
+        utils.init_config()
+
+        # Get current url
+        under_test = utils.get_app_config('Backend', 'alignak_url')
+        self.assertEqual('http://94.76.229.155', under_test)
+
+        # Change url
+        utils.set_app_config('Backend', 'alignak_url', 'http://127.0.0.1')
+        new_under_test = utils.get_app_config('Backend', 'alignak_url')
+        self.assertEqual('http://127.0.0.1', new_under_test)
+
+        # Back url to normal
+        utils.set_app_config('Backend', 'alignak_url', 'http://94.76.229.155')
+        last_under_test = utils.get_app_config('Backend', 'alignak_url')
+
+        self.assertEqual('http://94.76.229.155', last_under_test)
+
+    def test_reload_config(self):
+        """TODO"""
+
+        # Reset and Init "app_config"
+        utils.app_config = None
+        self.assertIsNone(utils.app_config)
+        utils.init_config()
+
+        cur_config = utils.app_config
+
+        utils.init_config()
+
+        new_config = utils.app_config
+
+        self.assertFalse(cur_config is new_config)
+        self.assertTrue(utils.app_config is new_config)
+
     def test_get_image_path(self):
         """Get Right Image Path"""
         utils.init_config()
