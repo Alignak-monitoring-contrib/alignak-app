@@ -27,11 +27,12 @@ import sys
 import webbrowser
 from logging import getLogger
 
-from alignak_app.core.utils import get_app_config, get_image_path
+from alignak_app.core.utils import get_app_config, get_image_path, init_config
 from alignak_app.synthesis.synthesis import Synthesis
 from alignak_app.systray.qactions_factory import QActionFactory
 from alignak_app.widgets.about import AppAbout
 from alignak_app.widgets.status import AlignakStatus
+from alignak_app.widgets.banner import send_banner
 
 try:
     __import__('PyQt5')
@@ -86,6 +87,7 @@ class TrayIcon(QSystemTrayIcon):
         self.create_services_actions()
         self.menu.addSeparator()
 
+        self.create_reload_configuration()
         self.create_about_action()
         self.menu.addSeparator()
 
@@ -259,6 +261,24 @@ class TrayIcon(QSystemTrayIcon):
 
         logger.info('Create Status Action')
 
+    def create_reload_configuration(self):
+        """
+        Create "reload" action
+
+        """
+
+        self.qaction_factory.create(
+            'refresh',
+            'Reload Configuration',
+            self
+        )
+
+        self.qaction_factory.get('refresh').triggered.connect(self.reload_configuration)
+
+        self.menu.addAction(self.qaction_factory.get('refresh'))
+
+        logger.info('Create Reload Action')
+
     def create_about_action(self):
         """
         Create AppAbout QWidget and "about" action.
@@ -407,3 +427,13 @@ class TrayIcon(QSystemTrayIcon):
 
         logger.debug('Open url : ' + webui_url + endurl)
         webbrowser.open(webui_url + endurl)
+
+    @staticmethod
+    def reload_configuration():
+        """
+        Reload configuration
+
+        """
+
+        init_config()
+        send_banner('INFO', 'Configuration reloaded')
