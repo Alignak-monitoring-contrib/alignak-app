@@ -27,7 +27,8 @@ from logging import getLogger
 
 from alignak_app import __short_version__
 from alignak_app.core.backend import AppBackend, Backend
-from alignak_app.core.utils import get_app_config, set_app_config, get_css, get_image_path
+from alignak_app.core.utils import get_app_config, set_app_config, init_config
+from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.widgets.title import get_widget_title
 from alignak_app.widgets.banner import send_banner
 
@@ -53,7 +54,7 @@ class AppLogin(QDialog):
 
     def __init__(self, parent=None):
         super(AppLogin, self).__init__(parent)
-        self.setWindowTitle('Connect to Alignak')
+        self.setWindowTitle('Login to Alignak')
         self.resize(320, 150)
         self.setStyleSheet(get_css())
         self.setWindowIcon(QIcon(get_image_path('icon')))
@@ -81,17 +82,20 @@ class AppLogin(QDialog):
         layout.addWidget(login_line, 1, 0, 1, 1)
 
         # Configuration button
-        conf_button = QPushButton()
-        conf_button.setFixedSize(32, 32)
-        conf_button.setIcon(QIcon(get_image_path('refresh')))
-        layout.addWidget(conf_button, 1, 1, 1, 1)
+        refresh_conf_btn = QPushButton()
+        refresh_conf_btn.clicked.connect(init_config)
+        refresh_conf_btn.setFixedSize(32, 32)
+        refresh_conf_btn.setIcon(QIcon(get_image_path('refresh')))
+        refresh_conf_btn.setToolTip('Reload configuration')
+        layout.addWidget(refresh_conf_btn, 1, 1, 1, 1)
 
         # Server button
-        server_button = QPushButton()
-        server_button.clicked.connect(self.handle_server)
-        server_button.setFixedSize(32, 32)
-        server_button.setIcon(QIcon(get_image_path('host')))
-        layout.addWidget(server_button, 1, 2, 1, 1)
+        server_btn = QPushButton()
+        server_btn.clicked.connect(self.handle_server)
+        server_btn.setFixedSize(32, 32)
+        server_btn.setIcon(QIcon(get_image_path('host')))
+        server_btn.setToolTip('Change Alignak Server')
+        layout.addWidget(server_btn, 1, 2, 1, 1)
 
         # Welcome text
         welcome = QLabel(
