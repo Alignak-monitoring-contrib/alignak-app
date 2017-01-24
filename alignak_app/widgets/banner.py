@@ -66,19 +66,24 @@ class BannerManager(object):
 
         """
 
+        total_height_banner = len(self.banners) * Banner.banner_height
+
         if self.banners_to_send:
-            for visible_banner in self.banners:
-                pos = visible_banner.pos()
-                visible_banner.move(pos.x(), pos.y() + visible_banner.height())
+            if total_height_banner > QApplication.desktop().screenGeometry().height():
+                pass
+            else:
+                for visible_banner in self.banners:
+                    pos = visible_banner.pos()
+                    visible_banner.move(pos.x(), pos.y() + visible_banner.height())
 
-            banner = self.banners_to_send[0]
-            banner.animation.start()
-            banner.banner_closed.connect(self.banner_listener)
+                banner = self.banners_to_send[0]
+                banner.animation.start()
+                banner.banner_closed.connect(self.banner_listener)
 
-            banner.show()
+                banner.show()
 
-            self.banners_to_send.remove(banner)
-            self.banners.append(banner)
+                self.banners_to_send.remove(banner)
+                self.banners.append(banner)
 
     def add_banner(self, level, message):
         """
@@ -115,7 +120,7 @@ class BannerManager(object):
         self.banners.remove(banner)
 
         for visible_banner in self.banners:
-            if (visible_banner.pos().y() - banner.pos().y()) >= 50:
+            if (visible_banner.pos().y() - banner.pos().y()) >= Banner.banner_height:
                 pos = visible_banner.pos()
                 visible_banner.move(pos.x(), pos.y() - visible_banner.height())
 
@@ -128,10 +133,12 @@ class Banner(QWidget):
     """
 
     banner_closed = pyqtSignal(QObject)
+    banner_height = 50
+    banner_width = 400
 
     def __init__(self, parent=None):
         super(Banner, self).__init__(parent)
-        self.setFixedSize(400, 50)
+        self.setFixedSize(self.banner_width, self.banner_height)
         self.setWindowFlags(Qt.SplashScreen)
         # Animation
         self.animation = QPropertyAnimation(self, b'pos')
@@ -190,7 +197,7 @@ class Banner(QWidget):
             """ % color)
 
         valid_btn = QPushButton()
-        valid_btn.setMaximumSize(50, 50)
+        valid_btn.setMaximumSize(self.banner_height, self.banner_height)
         valid_btn.setStyleSheet(
             """
                 border: 1px solid #d2d2d2;
