@@ -61,7 +61,6 @@ class Synthesis(QWidget):
         super(Synthesis, self).__init__(parent)
         self.setMinimumSize(1000, 700)
         self.setWindowTitle('Hosts Synthesis View')
-        self.setWindowIcon(QIcon(get_image_path('icon')))
         self.setStyleSheet(get_css())
         # Fields
         self.line_search = QLineEdit()

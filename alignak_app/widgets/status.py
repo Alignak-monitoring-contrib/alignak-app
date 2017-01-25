@@ -58,7 +58,6 @@ class AlignakStatus(QWidget):
         super(AlignakStatus, self).__init__(parent)
         # General settings
         self.setWindowTitle(__application__)
-        self.setWindowIcon(QIcon(get_image_path('icon')))
         self.setToolTip('Alignak Status')
         self.setStyleSheet(get_css())
         # Fields
@@ -74,16 +73,6 @@ class AlignakStatus(QWidget):
         self.info = None
         self.old_bad_daemons = 0
         self.app_widget = AppQWidget()
-
-    def center(self):
-        """
-        Center QWidget
-
-        """
-
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        center = QApplication.desktop().screenGeometry(screen).center()
-        self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
 
     def create_status(self):
         """
