@@ -29,8 +29,8 @@ import requests
 
 from alignak_app import __application__
 from alignak_app.core.utils import get_image_path, get_app_config, get_css
-from alignak_app.widgets.title import get_widget_title
 from alignak_app.widgets.banner import send_banner
+from alignak_app.widgets.app_widget import AppQWidget
 
 try:
     __import__('PyQt5')
@@ -73,6 +73,7 @@ class AlignakStatus(QWidget):
         self.daemons_labels = {}
         self.info = None
         self.old_bad_daemons = 0
+        self.app_widget = AppQWidget()
 
     def center(self):
         """
@@ -83,18 +84,6 @@ class AlignakStatus(QWidget):
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
         center = QApplication.desktop().screenGeometry(screen).center()
         self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
-
-    def show_at_start(self):
-        """
-        Show AlignakStatus on start
-
-        """
-
-        request = self.alignak_ws_request()
-
-        if get_app_config('Backend', 'web_service', boolean=True) and request:
-            self.center()
-            self.show()
 
     def create_status(self):
         """
@@ -125,6 +114,10 @@ class AlignakStatus(QWidget):
             else:
                 self.no_web_service(layout)
 
+        # Use AppQWidget
+        self.app_widget.initialize('Alignak Status')
+        self.app_widget.add_widget(self)
+
         self.show_at_start()
 
     @staticmethod
@@ -154,24 +147,17 @@ class AlignakStatus(QWidget):
 
         """
 
-        title = get_widget_title(
-            'alignak status',
-            self
-        )
-        layout.addWidget(title, 0, 0, 1, 2)
-        layout.setAlignment(Qt.AlignCenter)
-
         help_txt = QLabel('(Hover your mouse over each daemon to learn more)')
         help_txt.setObjectName('help')
-        layout.addWidget(help_txt, 1, 0, 1, 2)
+        layout.addWidget(help_txt, 0, 0, 1, 2)
         layout.setAlignment(help_txt, Qt.AlignCenter)
 
-        layout.addWidget(QLabel('<b>Daemon Name</b> '), 2, 0, 1, 1)
+        layout.addWidget(QLabel('<b>Daemon Name</b> '), 1, 0, 1, 1)
         status_title = QLabel('<b>Status</b>')
         status_title.setAlignment(Qt.AlignCenter)
-        layout.addWidget(status_title, 2, 1, 1, 1)
+        layout.addWidget(status_title, 1, 1, 1, 1)
 
-        line = 3
+        line = 2
 
         for daemon in self.daemons:
             # Initialize dict for each daemon category
@@ -210,7 +196,7 @@ class AlignakStatus(QWidget):
         button.setObjectName('valid')
         button.setFixedSize(30, 30)
 
-        button.clicked.connect(self.close)
+        button.clicked.connect(self.app_widget.close)
         layout.addWidget(button, pos, 0, 1, 2)
         layout.setAlignment(button, Qt.AlignCenter)
 
@@ -224,16 +210,10 @@ class AlignakStatus(QWidget):
         for i in reversed(range(layout.count())):
             layout.itemAt(i).widget().setParent(None)
 
-        title = get_widget_title(
-            'alignak status',
-            self
-        )
-        layout.addWidget(title, 0, 0)
-
         info_title_label = QLabel(
             '<br><span style="color: blue;">Alignak <b>Web Service</b> is not available !</span>'
         )
-        layout.addWidget(info_title_label, 1, 0)
+        layout.addWidget(info_title_label, 0, 0)
 
         info_label = QLabel(
             'Install it on your <b>Alignak server</b>. '
@@ -242,8 +222,8 @@ class AlignakStatus(QWidget):
         info_label.setWordWrap(True)
         info_label.setAlignment(Qt.AlignTop)
 
-        layout.addWidget(info_label, 2, 0)
-        self.add_button(3, layout)
+        layout.addWidget(info_label, 1, 0)
+        self.add_button(2, layout)
 
     def check_status(self):
         """
@@ -313,5 +293,15 @@ class AlignakStatus(QWidget):
         else:
             self.no_web_service(self.layout())
 
-        self.center()
-        self.show()
+        self.app_widget.center()
+        self.app_widget.show()
+
+    def show_at_start(self):
+        """
+        Show AlignakStatus on start
+
+        """
+
+        if get_app_config('Backend', 'web_service', boolean=True) and self.alignak_ws_request():
+            self.app_widget.center()
+            self.app_widget.show()
