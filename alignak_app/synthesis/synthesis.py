@@ -31,7 +31,7 @@ from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.action_manager import ActionManager, ACK, DOWNTIME, PROCESS
 from alignak_app.synthesis.host import Host
 from alignak_app.synthesis.services_view import ServicesView
-from alignak_app.widgets.title import get_widget_title
+from alignak_app.widgets.app_widget import AppQWidget
 from alignak_app.widgets.banner import send_banner
 
 try:
@@ -69,6 +69,7 @@ class Synthesis(QWidget):
         self.services_view = None
         self.app_backend = None
         self.action_manager = None
+        self.app_widget = AppQWidget()
 
     def initialize(self, app_backend):
         """
@@ -83,9 +84,6 @@ class Synthesis(QWidget):
         # App_backend
         self.app_backend = app_backend
         self.action_manager = ActionManager(app_backend)
-
-        # Title
-        popup_title = get_widget_title('host synthesis view', self)
 
         # Search Line
         self.create_line_search()
@@ -104,14 +102,17 @@ class Synthesis(QWidget):
         # Layout
         # row, column, rowSpan, colSPan
         layout = QGridLayout()
-        layout.addWidget(popup_title, 0, 0, 1, 4)
-        layout.addWidget(self.line_search, 1, 0, 1, 3)
-        layout.addWidget(button, 1, 3, 1, 1)
-        layout.addWidget(self.host_view, 2, 0, 1, 4)
+        layout.addWidget(self.line_search, 0, 0, 1, 3)
+        layout.addWidget(button, 0, 3, 1, 1)
+        layout.addWidget(self.host_view, 1, 0, 1, 4)
         layout.setAlignment(self.host_view, Qt.AlignLeft)
-        layout.addWidget(self.services_view, 3, 0, 8, 4)
+
+        layout.addWidget(self.services_view, 2, 0, 1, 4)
 
         self.setLayout(layout)
+
+        self.app_widget.initialize('Host Synthesis View')
+        self.app_widget.add_widget(self)
 
         # Refresh and Action process
         refresh_timer = QTimer(self)

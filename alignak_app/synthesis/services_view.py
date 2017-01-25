@@ -40,7 +40,7 @@ except ImportError:  # pragma: no cover
     from PyQt4.Qt import QScrollArea  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
-    from PyQt4.Qt import Qt  # pylint: disable=import-error
+    from PyQt4.Qt import Qt, QApplication  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
@@ -114,8 +114,8 @@ class ServicesView(QWidget):
         logger.debug('Number of services: ' + str(pos))
 
         scroll = QScrollArea()
-        scroll.setWidget(widget)
         scroll.setWidgetResizable(True)
+        scroll.setWidget(widget)
 
         self.layout.addWidget(scroll)
         self.show()
@@ -128,13 +128,14 @@ class ServicesView(QWidget):
 
         if self.services_widget:
             for service_widget in self.services_widget:
-                cur_service = service_widget.service
                 updated_service = self.app_backend.get_service(
                     self.current_host['_id'],
-                    cur_service['_id']
+                    service_widget.service['_id']
                 )
                 service_widget.update_service(updated_service)
                 self.update_service_buttons(service_widget)
+
+                QApplication.processEvents()
 
     def update_service_buttons(self, service):
         """

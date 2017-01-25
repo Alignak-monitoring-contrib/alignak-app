@@ -101,12 +101,14 @@ class Service(QWidget):
         self.acknowledge_btn = QPushButton()
         self.acknowledge_btn.setIcon(QIcon(get_image_path('acknowledged')))
         self.acknowledge_btn.setFixedSize(25, 25)
+        self.acknowledge_btn.setToolTip('Acknowledge this service')
         self.acknowledge_btn.clicked.connect(self.emit_acknowledge)
         layout.addWidget(self.acknowledge_btn, 0, 2, 1, 1)
 
         self.downtime_btn = QPushButton()
         self.downtime_btn.setIcon(QIcon(get_image_path('downtime')))
         self.downtime_btn.setFixedSize(25, 25)
+        self.downtime_btn.setToolTip('Schedule a downtime for this service')
         self.downtime_btn.clicked.connect(self.emit_downtime)
         layout.addWidget(self.downtime_btn, 1, 2, 1, 1)
 
@@ -142,7 +144,6 @@ class Service(QWidget):
 
         self.service = service
         self.service_name.setObjectName(service['ls_state'])
-        self.service_name.repaint()
 
         diff_last_check = get_diff_since_last_check(service['ls_last_check'])
         self.last_check.setText(str(diff_last_check))

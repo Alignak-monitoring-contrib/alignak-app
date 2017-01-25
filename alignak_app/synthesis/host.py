@@ -55,7 +55,6 @@ class Host(QWidget):
     def __init__(self, parent=None):
         super(Host, self).__init__(parent)
         self.setFixedHeight(150)
-        self.setMinimumWidth(parent.width())
         self.setToolTip('Host View')
         # Fields
         self.acknowledge_btn = None
