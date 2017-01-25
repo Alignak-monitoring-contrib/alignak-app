@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Title manage creation of widgets title.
+    App Widget manage creation of a QWidget to make a tempalte for all QWidgets of Alignak-app
 """
 
 import sys
@@ -46,19 +46,21 @@ except ImportError:  # pragma: no cover
 
 class AppQWidget(QWidget):
     """
-    Class who create popup title.
+        Class who create a QWidget template.
     """
 
     def __init__(self, parent=None):
         super(AppQWidget, self).__init__(parent)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.offset = None
 
     def initialize(self, title):
         """
-        TODO
-        :param title:
-        :return:
+        Initialize the QWidget, with its "title"
+
+        :param title: title of the QWidget
+        :type title: str
         """
 
         self.setWindowTitle(title)
@@ -66,6 +68,17 @@ class AppQWidget(QWidget):
         main_layout = QVBoxLayout()
         main_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(main_layout)
+
+        main_layout.addWidget(self.get_logo_widget())
+        main_layout.addWidget(self.get_title_widget(title))
+
+    def get_logo_widget(self):
+        """
+        Return the logo QWidget
+
+        :return: logo QWidget
+        :rtype: QWidget
+        """
 
         logo_widget = QWidget()
         logo_widget.setFixedHeight(45)
@@ -98,8 +111,27 @@ class AppQWidget(QWidget):
         close_btn.clicked.connect(self.close)
         logo_layout.addWidget(close_btn, 3)
 
-        main_layout.addWidget(logo_widget)
-        main_layout.addStretch()
+        return logo_widget
+
+    @staticmethod
+    def get_title_widget(title):
+        """
+        Return the title QWidget
+
+        :return: title QWidget
+        :rtype: QWidget
+        """
+
+        title_widget = QWidget()
+        title_widget.setAttribute(Qt.WA_TransparentForMouseEvents)
+        title_layout = QVBoxLayout()
+        title_widget.setLayout(title_layout)
+        title_widget.setFixedHeight(50)
+        title_widget.setStyleSheet(
+            """
+                background-color: #1a5b7b;
+            """
+        )
 
         title_label = QLabel('<h2>%s</h2>' % title)
         title_label.setStyleSheet(
@@ -108,25 +140,45 @@ class AppQWidget(QWidget):
                 color: white;
             """
         )
-        title_label.setFixedHeight(50)
-        title_label.setContentsMargins(self.width() / 2, 0, 0, 0)
-        main_layout.addWidget(title_label, 1)
-        main_layout.addStretch(self.width())
+        title_layout.addWidget(title_label)
+        title_layout.setAlignment(title_label, Qt.AlignCenter)
+
+        return title_widget
+
+    def center(self):
+        """
+        Center QWidget
+
+        """
+
+        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+        center = QApplication.desktop().screenGeometry(screen).center()
+        self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
+
+    def show_widget(self):
+        """
+        Show and center AppQWidget
+
+        """
+
+        self.center()
+        self.show()
 
     def add_widget(self, widget):
         """
-        TODO
-        :param widget:
-        :return:
+        Add the main QWidget of AppQWidget
+
+        :param widget: QWidget to add
+        :type widget: QWidget
         """
 
+        self.setMinimumSize(widget.size())
         self.layout().addWidget(widget, 2)
 
     def mousePressEvent(self, event):
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         self.offset = event.pos()
-        QApplication.setOverrideCursor(Qt.DragMoveCursor)
 
     def mouseMoveEvent(self, event):
         """ QWidget.mousePressEvent(QMouseEvent) """
@@ -137,10 +189,6 @@ class AppQWidget(QWidget):
         y_w = self.offset.y()
         self.move(x - x_w, y - y_w)
 
-    def mouseReleaseEvent(self, _):
-        """ QWidget.mouseReleaseEvent(QMouseEvent) """
-
-        QApplication.restoreOverrideCursor()
 
 if __name__ == '__main__':
     init_config()
@@ -160,6 +208,6 @@ if __name__ == '__main__':
 
     app_widget.add_widget(widget_test)
 
-    app_widget.show()
+    app_widget.show_widget()
 
     sys.exit(app.exec_())
