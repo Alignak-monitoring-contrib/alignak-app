@@ -26,7 +26,7 @@
 from alignak_app import __application__
 from alignak_app import __releasenotes__, __version__, __copyright__, __doc_url__, __project_url__
 from alignak_app.core.utils import get_image_path, get_template, get_css
-from alignak_app.widgets.title import get_widget_title
+from alignak_app.widgets.app_widget import AppQWidget
 
 try:
     __import__('PyQt5')
@@ -53,23 +53,12 @@ class AppAbout(QWidget):
         QWidget.__init__(self, parent)
         # General settings
         self.setWindowTitle(__application__ + ': About')
-        self.setContentsMargins(0, 0, 0, 0)
-        self.setWindowIcon(QIcon(get_image_path('icon')))
         self.setToolTip('About')
         self.setWindowFlags(Qt.FramelessWindowHint)
         # Fields
         self.button = None
         self.setStyleSheet(get_css())
-
-    def center(self):
-        """
-        Center QWidget
-
-        """
-
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        center = QApplication.desktop().screenGeometry(screen).center()
-        self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
+        self.app_widget = AppQWidget()
 
     def create_window(self):
         """
@@ -79,10 +68,6 @@ class AppAbout(QWidget):
 
         layout = QVBoxLayout()
         self.setWindowIcon(QIcon(get_image_path('icon')))
-
-        # Popup title
-        title = get_widget_title('about ' + __application__, self)
-        layout.addWidget(title)
 
         # About infos
         about_dict = dict(
@@ -108,6 +93,10 @@ class AppAbout(QWidget):
 
         self.setLayout(layout)
 
+        # Add to AppQWidget
+        self.app_widget.initialize('About ' + __application__)
+        self.app_widget.add_widget(self)
+
     def create_button(self):
         """
         Create valid button for About
@@ -126,5 +115,5 @@ class AppAbout(QWidget):
         Show QWidget
 
         """
-        self.center()
-        self.show()
+
+        self.app_widget.show_widget()
