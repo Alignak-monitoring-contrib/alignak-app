@@ -91,7 +91,6 @@ class AppNotification(QWidget):
         button.clicked.connect(self.close_notification)
 
         self.app_widget.initialize('Notification')
-        self.app_widget.setWindowFlags(self.app_widget.windowFlags() | Qt.SplashScreen)
         self.app_widget.add_widget(self)
 
     def close_notification(self):
