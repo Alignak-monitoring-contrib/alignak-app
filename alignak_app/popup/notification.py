@@ -29,7 +29,7 @@ from alignak_app import __application__
 from alignak_app.core.utils import get_app_config
 from alignak_app.core.utils import get_css
 from alignak_app.popup.notification_factory import NotificationFactory
-from alignak_app.widgets.title import get_widget_title
+from alignak_app.widgets.app_widget import AppQWidget
 
 try:
     __import__('PyQt5')
@@ -58,6 +58,7 @@ class AppNotification(QWidget):
         self.setWindowTitle(__application__)
         self.setMaximumWidth(455)
         self.setWindowFlags(Qt.SplashScreen | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        self.setStyleSheet(get_css())
         # Fields
         self.main_layout = QVBoxLayout(self)
         self.notification_type = None
@@ -65,7 +66,7 @@ class AppNotification(QWidget):
         self.button = None
         self.timer = QTimer(self)
         self.pin = False
-        self.setStyleSheet(get_css())
+        self.app_widget = AppQWidget()
 
     def initialize_notification(self):
         """
@@ -73,26 +74,25 @@ class AppNotification(QWidget):
 
         """
 
-        # Create and add Layout for notification title
-        popup_title = get_widget_title('notification', self)
-        self.main_layout.addWidget(popup_title, 0)
-        self.main_layout.setAlignment(popup_title, Qt.AlignCenter)
-
         # Create Label for notification type
         self.notification_type = QLabel(self)
         self.notification_type.setAlignment(Qt.AlignCenter)
         self.notification_type.setObjectName('state')
         self.notification_type.setMinimumSize(425, 40)
 
-        self.main_layout.addWidget(self.notification_type, 1)
+        self.main_layout.addWidget(self.notification_type, 0)
 
         # Fill and add StateFactory
         self.fill_state_factory()
-        self.main_layout.addWidget(self.popup_factory, 2)
+        self.main_layout.addWidget(self.popup_factory, 1)
 
         # Create and add button
         button = self.popup_factory.add_valid_button()
         button.clicked.connect(self.close_notification)
+
+        self.app_widget.initialize('Notification')
+        self.app_widget.setWindowFlags(self.app_widget.windowFlags() | Qt.SplashScreen)
+        self.app_widget.add_widget(self)
 
     def close_notification(self):
         """
@@ -101,7 +101,7 @@ class AppNotification(QWidget):
         """
 
         self.pin = False
-        self.close()
+        self.app_widget.close()
 
     def fill_state_factory(self):
         """
@@ -234,27 +234,27 @@ class AppNotification(QWidget):
         if 'top' in points and 'right' in points:
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             top_right = QApplication.desktop().screenGeometry(screen).topRight()
-            self.move(top_right.x() - self.width(), top_right.y())
+            self.app_widget.move(top_right.x() - self.width(), top_right.y())
             msg = '[top:right] ' + str(top_right)
         elif 'top' in points and 'left' in points:  # pragma: no cover - not fully testable
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             top_left = QApplication.desktop().screenGeometry(screen).topLeft()
-            self.move(top_left)
+            self.app_widget.move(top_left)
             msg = '[top:left] ' + str(top_left)
         elif 'bottom' in points and 'right' in points:  # pragma: no cover - not fully testable
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             bottom_right = QApplication.desktop().screenGeometry(screen).bottomRight()
-            self.move(bottom_right.x() - self.width(), bottom_right.y() - self.height())
+            self.app_widget.move(bottom_right.x() - self.width(), bottom_right.y() - self.height())
             msg = '[bottom:right] ' + str(bottom_right)
         elif 'bottom' in points and 'left' in points:  # pragma: no cover - not fully testable
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             bottom_left = QApplication.desktop().screenGeometry(screen).bottomLeft()
-            self.move(bottom_left.x(), bottom_left.y() - self.height())
+            self.app_widget.move(bottom_left.x(), bottom_left.y() - self.height())
             msg = '[top:right] ' + str(bottom_left)
         else:  # pragma: no cover - not fully testable
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             center = QApplication.desktop().screenGeometry(screen).center()
-            self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
+            self.app_widget.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
             msg = '[center] ' + str(center)
 
         logger.debug('Position ' + msg)
@@ -291,7 +291,7 @@ class AppNotification(QWidget):
         logger.info('Send notification...')
 
         # Start notification...
-        self.show()
+        self.app_widget.show()
 
         # ...until the end of the term
         self.timer.timeout.connect(self.close_pin)
@@ -305,7 +305,7 @@ class AppNotification(QWidget):
         """
 
         if not self.pin:
-            self.close()
+            self.app_widget.close()
         else:
             pass
 

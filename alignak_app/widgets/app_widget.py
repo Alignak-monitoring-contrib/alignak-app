@@ -25,6 +25,7 @@
 
 import sys
 
+from logging import getLogger
 from alignak_app.core.utils import get_image_path, init_config
 
 try:
@@ -42,6 +43,9 @@ except ImportError:  # pragma: no cover
     from PyQt4.Qt import QHBoxLayout, QPushButton, QIcon  # pylint: disable=import-error
     from PyQt4.QtCore import Qt  # pylint: disable=import-error
     from PyQt4.QtGui import QPixmap, QPainter, QSizePolicy  # pylint: disable=import-error
+
+
+logger = getLogger(__name__)
 
 
 class AppQWidget(QWidget):
@@ -64,6 +68,7 @@ class AppQWidget(QWidget):
         """
 
         self.setWindowTitle(title)
+        self.setObjectName(title)
 
         main_layout = QVBoxLayout()
         main_layout.setContentsMargins(0, 0, 0, 0)
@@ -183,11 +188,14 @@ class AppQWidget(QWidget):
     def mouseMoveEvent(self, event):
         """ QWidget.mousePressEvent(QMouseEvent) """
 
-        x = event.globalX()
-        y = event.globalY()
-        x_w = self.offset.x()
-        y_w = self.offset.y()
-        self.move(x - x_w, y - y_w)
+        try:
+            x = event.globalX()
+            y = event.globalY()
+            x_w = self.offset.x()
+            y_w = self.offset.y()
+            self.move(x - x_w, y - y_w)
+        except AttributeError as e:
+            logger.warning('Move Event %s: %s', self.objectName(), str(e))
 
 
 if __name__ == '__main__':
