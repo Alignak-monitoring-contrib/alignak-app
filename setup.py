@@ -79,11 +79,6 @@ images = os.listdir(dir_path + '/etc/images')
 for image in images:
     data_files.append((paths['images'], ['etc/images/' + image]))
 
-# Templates
-templates = os.listdir(dir_path + '/etc/templates')
-for template in templates:
-    data_files.append((paths['templates'], ['etc/templates/' + template]))
-
 # StyleSheet
 stylesheet = os.listdir(dir_path + '/etc/css')
 for style in stylesheet:

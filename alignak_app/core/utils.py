@@ -30,7 +30,6 @@ import time
 
 from logging import getLogger
 
-from string import Template
 import configparser
 from configparser import NoOptionError
 
@@ -191,40 +190,6 @@ def set_app_config(section, option, new_value):
 
     except NoOptionError as e:
         logger.error('Can\'t set Option in configuration file : ' + str(e))
-
-
-# Application Templates
-def get_template(name, values):
-    """
-        Return content of the choosen template with its values.
-
-    :param name: name of the template.
-    :type name: str
-    :param values: dict of values to substitute.
-    :type values: dict
-    :return: content of a template
-    :rtype: str
-    """
-
-    tpl_content = ''
-
-    tpl_path = get_app_root() \
-        + app_config.get('Config', 'path') \
-        + app_config.get('Config', 'tpl') \
-        + '/'
-
-    try:
-        tpl_file = open(tpl_path + name)
-    except IOError as e:  # pragma: no cover - not testable
-        logger.error('Failed open template : ' + str(e))
-        sys.exit('Failed open template : ' + str(e))
-
-    if tpl_file:
-        tpl = Template(tpl_file.read())
-        tpl_content = tpl.safe_substitute(values)
-
-    return tpl_content
-
 
 def get_image_path(name):
     """

@@ -24,8 +24,9 @@
 """
 
 from alignak_app import __application__
-from alignak_app import __releasenotes__, __version__, __copyright__, __doc_url__, __project_url__
-from alignak_app.core.utils import get_image_path, get_template, get_css
+from alignak_app import __releasenotes__, __version__, __copyright__
+from alignak_app import __doc_url__, __project_url__, __alignak_url__
+from alignak_app.core.utils import get_css
 from alignak_app.widgets.app_widget import AppQWidget
 
 try:
@@ -52,7 +53,6 @@ class AppAbout(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
         # General settings
-        self.setWindowTitle(__application__ + ': About')
         self.setToolTip('About')
         # Fields
         self.setStyleSheet(get_css())
@@ -66,19 +66,7 @@ class AppAbout(QWidget):
 
         layout = QVBoxLayout()
 
-        # About infos
-        about_dict = dict(
-            application=__application__,
-            version=__version__,
-            copyright=__copyright__,
-            project_url=__project_url__,
-            doc_url=__doc_url__,
-            releasenotes=__releasenotes__
-        )
-
-        msg = get_template('about.tpl', about_dict)
-
-        about_label = QLabel(msg)
+        about_label = QLabel(self.get_about_text())
         about_label.setTextInteractionFlags(Qt.TextBrowserInteraction)
         about_label.setOpenExternalLinks(True)
         layout.addWidget(about_label)
@@ -88,6 +76,44 @@ class AppAbout(QWidget):
         # Add to AppQWidget
         self.app_widget.initialize('About ' + __application__)
         self.app_widget.add_widget(self)
+
+    @staticmethod
+    def get_about_text():
+        """
+
+        :return:
+        """
+
+        text_replacement = (
+            __application__,
+            __version__,
+            __copyright__,
+            __project_url__,
+            __project_url__,
+            __doc_url__,
+            __doc_url__,
+            __releasenotes__,
+            __alignak_url__,
+            __alignak_url__,
+        )
+
+        about_text = \
+            """
+            <h4>Application version</h4>
+            %s, version: %s
+            <h4>Copyright</h4>
+            %s
+            <h4>Home page</h4>
+            <a href="%s">%s</a>
+            <h4>User documentation</h4>
+            <a href="%s">%s</a>
+            <h4>Release notes</h4>
+            %s
+            <h4>About Alignak Solution</h4>
+            <a href="%s">%s</a>
+            """ % text_replacement
+
+        return about_text
 
     def show_about(self):
         """

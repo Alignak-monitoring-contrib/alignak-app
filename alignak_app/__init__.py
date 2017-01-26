@@ -42,6 +42,7 @@ __description__ = u"Applet, in system tray, for Alignak monitoring solution"
 __releasenotes__ = u"Applet, in system tray, for Alignak monitoring solution"
 __project_url__ = "https://github.com/Alignak-monitoring-contrib/alignak-app"
 __doc_url__ = "http://alignak-app.readthedocs.io/en/develop/"
+__alignak_url__ = "http://alignak-monitoring.github.io/"
 
 # Application Manifest
 manifest = {
