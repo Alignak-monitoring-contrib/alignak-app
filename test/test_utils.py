@@ -76,7 +76,7 @@ class TestUtils(unittest2.TestCase):
         self.assertEqual('http://94.76.229.155', last_under_test)
 
     def test_reload_config(self):
-        """TODO"""
+        """Reload Configuration"""
 
         # Reset and Init "app_config"
         utils.app_config = None

@@ -137,10 +137,7 @@ class AlignakApp(object):
             connect = app_backend.login()
             if not connect:
                 send_banner(
-                    'ALERT',
-                    'Your connection information are not accepted ! '
-                    'Check your config file !'
-                )
+                    'ALERT', 'Backend connection refused... Check your configuration !')
                 timer = QTimer()
                 timer.start(6000)
                 timer.timeout.connect(self.can_close)

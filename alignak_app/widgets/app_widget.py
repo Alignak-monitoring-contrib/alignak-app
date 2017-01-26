@@ -31,18 +31,16 @@ from alignak_app.core.utils import get_image_path, init_config
 try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QWidget, QStyle  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QWidget, QStyle, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QLabel, QStyleOption  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QHBoxLayout, QPushButton, QIcon  # pylint: disable=no-name-in-module
-    from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
-    from PyQt5.QtGui import QPixmap, QPainter, QSizePolicy  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QHBoxLayout, QPushButton  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import Qt, QIcon, QPixmap # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QStyle, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QLabel, QStyleOption  # pylint: disable=import-error
-    from PyQt4.Qt import QHBoxLayout, QPushButton, QIcon  # pylint: disable=import-error
-    from PyQt4.QtCore import Qt  # pylint: disable=import-error
-    from PyQt4.QtGui import QPixmap, QPainter, QSizePolicy  # pylint: disable=import-error
+    from PyQt4.Qt import QHBoxLayout, QPushButton  # pylint: disable=import-error
+    from PyQt4.Qt import Qt, QIcon, QPixmap  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)

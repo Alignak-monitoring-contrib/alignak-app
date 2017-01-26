@@ -151,8 +151,8 @@ class TestNotification(unittest2.TestCase):
         """Position Change from Initial Position"""
         under_test = AppNotification()
 
-        initial_position = under_test.pos()
+        initial_position = under_test.app_widget.pos()
 
         under_test.set_position()
 
-        self.assertNotEqual(under_test.pos(), initial_position)
+        self.assertNotEqual(under_test.app_widget.pos(), initial_position)

@@ -244,7 +244,7 @@ class AppLogin(QDialog):
             self.app_backend.user['token'] = str(self.app_backend.backend.token)
             self.accept()
         else:
-            send_banner('WARN', 'Your connection information are not accepted !')
+            send_banner('WARN', 'Backend connection refused...')
             logger.warning('Connection informations are not accepted !')
 
     def handle_server(self):
