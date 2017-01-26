@@ -172,24 +172,8 @@ class AlignakStatus(QWidget):
         layout.setAlignment(self.info, Qt.AlignCenter)
         line += 1
 
-        self.add_button(line, layout)
-
-    def add_button(self, pos, layout):
-        """
-        Add a button
-
-        """
-
-        button = QPushButton(self)
-        button.setIcon(QIcon(get_image_path('checked')))
-        button.setObjectName('valid')
-        button.setFixedSize(30, 30)
-
-        button.clicked.connect(self.app_widget.close)
-        layout.addWidget(button, pos, 0, 1, 2)
-        layout.setAlignment(button, Qt.AlignCenter)
-
-    def no_web_service(self, layout):
+    @staticmethod
+    def no_web_service(layout):
         """
         Display information text if "web_service" is not configured
 
@@ -212,7 +196,6 @@ class AlignakStatus(QWidget):
         info_label.setAlignment(Qt.AlignTop)
 
         layout.addWidget(info_label, 1, 0)
-        self.add_button(2, layout)
 
     def check_status(self):
         """
@@ -282,8 +265,7 @@ class AlignakStatus(QWidget):
         else:
             self.no_web_service(self.layout())
 
-        self.app_widget.center()
-        self.app_widget.show()
+        self.app_widget.show_widget()
 
     def show_at_start(self):
         """
@@ -292,5 +274,4 @@ class AlignakStatus(QWidget):
         """
 
         if get_app_config('Backend', 'web_service', boolean=True) and self.alignak_ws_request():
-            self.app_widget.center()
-            self.app_widget.show()
+            self.app_widget.show_widget()
