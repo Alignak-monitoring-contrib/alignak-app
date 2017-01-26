@@ -99,14 +99,18 @@ class AppQWidget(QWidget):
         minimize_btn = QPushButton()
         minimize_btn.setIcon(QIcon(get_image_path('minimize')))
         minimize_btn.setFixedSize(24, 24)
-        minimize_btn.clicked.connect(self.showMinimized)
+        minimize_btn.clicked.connect(self.minimize)
+        if self.objectName() == 'Notification':
+            minimize_btn.setEnabled(False)
         logo_layout.addStretch(self.width())
         logo_layout.addWidget(minimize_btn, 1)
 
         maximize_btn = QPushButton()
         maximize_btn.setIcon(QIcon(get_image_path('maximize')))
         maximize_btn.setFixedSize(24, 24)
-        maximize_btn.clicked.connect(self.showMaximized)
+        maximize_btn.clicked.connect(self.minimize_maximize)
+        if self.objectName() == 'Notification':
+            maximize_btn.setEnabled(False)
         logo_layout.addWidget(maximize_btn, 2)
 
         close_btn = QPushButton()
@@ -116,6 +120,28 @@ class AppQWidget(QWidget):
         logo_layout.addWidget(close_btn, 3)
 
         return logo_widget
+
+    def minimize(self):
+        """
+        TODO
+        :return:
+        """
+
+        if self.windowState() == Qt.WindowMinimized:
+            self.setWindowState(Qt.WindowNoState)
+        else:
+            self.setWindowState(Qt.WindowMinimized)
+
+    def minimize_maximize(self):
+        """
+        TODO
+        :return:
+        """
+
+        if self.windowState() == Qt.WindowMaximized:
+            self.setWindowState(Qt.WindowNoState)
+        else:
+            self.setWindowState(Qt.WindowMaximized)
 
     @staticmethod
     def get_title_widget(title):
