@@ -136,11 +136,11 @@ class AppLogin(QDialog):
                 border-radius: 5px;
                 outline: none;
             }
-            QPushButton:pressed#valid {
+            QPushButton#valid:pressed {
                 background-color: #59b75c;
                 color: white;
             }
-            QPushButton:hover#valid {
+            QPushButton#valid:hover {
                 background-color: #59b75c;
                 color: white;
             }
