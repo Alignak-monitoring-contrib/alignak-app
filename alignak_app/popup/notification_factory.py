@@ -127,25 +127,6 @@ class NotificationFactory(QWidget):
         # Increment vertically position for next widget
         self.pos += 1
 
-    def add_valid_button(self):
-        """
-        Create valid button for popup
-
-        :return button
-        :rtype QPushButton
-        """
-
-        button = QPushButton(self)
-        button.setToolTip('Close')
-        button.setObjectName('valid')
-        button.setIcon(QIcon(get_image_path('checked')))
-        button.setFixedSize(30, 30)
-
-        self.main_layout.addWidget(button, self.pos, 0, 2, 5)
-        self.main_layout.setAlignment(button, Qt.AlignCenter)
-
-        return button
-
     def update_states(self, state_name, nb_items, diff, percent):
         """
         Update nb_items, diff and progress_bar value.

@@ -57,7 +57,6 @@ class AppNotification(QWidget):
         # General settings
         self.setWindowTitle(__application__)
         self.setMaximumWidth(455)
-        self.setWindowFlags(Qt.SplashScreen | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.setStyleSheet(get_css())
         # Fields
         self.main_layout = QVBoxLayout(self)
@@ -74,6 +73,10 @@ class AppNotification(QWidget):
 
         """
 
+        self.app_widget.setWindowFlags(
+            self.app_widget.windowFlags() | Qt.SplashScreen | Qt.WindowStaysOnTopHint
+        )
+
         # Create Label for notification type
         self.notification_type = QLabel(self)
         self.notification_type.setAlignment(Qt.AlignCenter)
@@ -85,10 +88,6 @@ class AppNotification(QWidget):
         # Fill and add StateFactory
         self.fill_state_factory()
         self.main_layout.addWidget(self.popup_factory, 1)
-
-        # Create and add button
-        button = self.popup_factory.add_valid_button()
-        button.clicked.connect(self.close_notification)
 
         self.app_widget.initialize('Notification')
         self.app_widget.add_widget(self)
