@@ -54,9 +54,7 @@ class AppAbout(QWidget):
         # General settings
         self.setWindowTitle(__application__ + ': About')
         self.setToolTip('About')
-        self.setWindowFlags(Qt.FramelessWindowHint)
         # Fields
-        self.button = None
         self.setStyleSheet(get_css())
         self.app_widget = AppQWidget()
 
@@ -67,7 +65,6 @@ class AppAbout(QWidget):
         """
 
         layout = QVBoxLayout()
-        self.setWindowIcon(QIcon(get_image_path('icon')))
 
         # About infos
         about_dict = dict(
@@ -86,29 +83,11 @@ class AppAbout(QWidget):
         about_label.setOpenExternalLinks(True)
         layout.addWidget(about_label)
 
-        # Button
-        self.create_button()
-        layout.addWidget(self.button)
-        layout.setAlignment(self.button, Qt.AlignCenter)
-
         self.setLayout(layout)
 
         # Add to AppQWidget
         self.app_widget.initialize('About ' + __application__)
         self.app_widget.add_widget(self)
-
-    def create_button(self):
-        """
-        Create valid button for About
-
-        """
-
-        self.button = QPushButton(self)
-        self.button.setIcon(QIcon(get_image_path('checked')))
-        self.button.setFixedSize(30, 30)
-        self.button.setObjectName('valid')
-
-        self.button.clicked.connect(self.close)
 
     def show_about(self):
         """
