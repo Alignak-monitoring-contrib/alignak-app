@@ -191,6 +191,7 @@ def set_app_config(section, option, new_value):
     except NoOptionError as e:
         logger.error('Can\'t set Option in configuration file : ' + str(e))
 
+
 def get_image_path(name):
     """
     Return the path of wanted image

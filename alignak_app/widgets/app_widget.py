@@ -34,7 +34,7 @@ try:
     from PyQt5.QtWidgets import QWidget, QStyle, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QLabel, QStyleOption  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QHBoxLayout, QPushButton  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import Qt, QIcon, QPixmap # pylint: disable=no-name-in-module
+    from PyQt5.Qt import Qt, QIcon, QPixmap  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QStyle, QVBoxLayout  # pylint: disable=import-error
