@@ -35,7 +35,7 @@ try:
     from PyQt5.QtWidgets import QScrollArea  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QWidget, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QLabel  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import Qt  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import Qt, QApplication  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QScrollArea  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QVBoxLayout  # pylint: disable=import-error
