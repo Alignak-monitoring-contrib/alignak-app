@@ -3,20 +3,38 @@ QLabel {
     color:black;
 }
 
-QPushButton#valid {
-    background-color: #eee;
-    border: 2px solid #78909C;
-    border-radius: 15px;
-    text-align: center;
-}
-
-QPushButton#valid:hover {
-    background-color: #ddd;
-}
-
 QToolTip {
     background-color: black;
     color: #1fb3e3;
+}
+
+/****** APP QWIDGET ******/
+QWidget#title {
+	background-color: #1a5b7b;
+}
+
+QLabel#title {
+	background-color: #1a5b7b;
+	color: white;
+}
+
+/****** LOGIN ******/
+QPushButton#valid {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+
+QPushButton#valid:pressed {
+    background-color: #59b75c;
+    color: white;
+}
+
+QPushButton#valid:hover {
+    background-color: #59b75c;
+    color: white;
 }
 
 /****** NOTIFICATION ******/
@@ -64,7 +82,7 @@ QWidget#states {
 	border-radius: 16px;
 }
 
-QLabel#title {
+QLabel#last_check {
 	border-style: solid;
 	border-width:0px 0px 1px 0px;
 	border-color: #03a9f4;

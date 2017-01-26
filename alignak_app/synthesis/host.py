@@ -148,7 +148,7 @@ class Host(QWidget):
         check_widget.setLayout(check_layout)
 
         check_label = QLabel('<b>My last Check</b>')
-        check_label.setObjectName('title')
+        check_label.setObjectName('last_check')
         check_layout.addWidget(check_label, 0, 0, 1, 2)
         check_layout.setAlignment(check_label, Qt.AlignCenter)
 

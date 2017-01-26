@@ -26,7 +26,7 @@
 import sys
 
 from logging import getLogger
-from alignak_app.core.utils import get_image_path, init_config
+from alignak_app.core.utils import get_image_path, init_config, get_css
 
 try:
     __import__('PyQt5')
@@ -55,6 +55,7 @@ class AppQWidget(QWidget):
         super(AppQWidget, self).__init__(parent)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setStyleSheet(get_css())
         self.offset = None
 
     def initialize(self, title):
@@ -126,23 +127,14 @@ class AppQWidget(QWidget):
         """
 
         title_widget = QWidget()
+        title_layout = QVBoxLayout(title_widget)
         title_widget.setAttribute(Qt.WA_TransparentForMouseEvents)
-        title_layout = QVBoxLayout()
-        title_widget.setLayout(title_layout)
         title_widget.setFixedHeight(50)
-        title_widget.setStyleSheet(
-            """
-                background-color: #1a5b7b;
-            """
-        )
+        title_widget.setObjectName('title')
 
         title_label = QLabel('<h2>%s</h2>' % title)
-        title_label.setStyleSheet(
-            """
-                background-color: #1a5b7b;
-                color: white;
-            """
-        )
+        title_label.setObjectName('title')
+
         title_layout.addWidget(title_label)
         title_layout.setAlignment(title_label, Qt.AlignCenter)
 

@@ -127,29 +127,9 @@ class AppLogin(QDialog):
         login_button.setObjectName('valid')
         login_button.setMinimumHeight(30)
         login_button.setDefault(True)
-        login_button.setStyleSheet(
-            """
-            QPushButton#valid {
-                background-color: #4caf50;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                outline: none;
-            }
-            QPushButton#valid:pressed {
-                background-color: #59b75c;
-                color: white;
-            }
-            QPushButton#valid:hover {
-                background-color: #59b75c;
-                color: white;
-            }
-            """
-        )
         login_layout.addWidget(login_button, 5, 0, 1, 3)
 
         main_layout.addWidget(login_widget)
-
         self.setLayout(main_layout)
 
     def get_logo_widget(self):
@@ -207,19 +187,11 @@ class AppLogin(QDialog):
         title_layout = QVBoxLayout()
         title_widget.setLayout(title_layout)
         title_widget.setFixedHeight(50)
-        title_widget.setStyleSheet(
-            """
-                background-color: #1a5b7b;
-            """
-        )
+        title_widget.setObjectName('title')
 
         title_label = QLabel('<h2>%s</h2>' % title)
-        title_label.setStyleSheet(
-            """
-                background-color: #1a5b7b;
-                color: white;
-            """
-        )
+        title_label.setObjectName('title')
+
         title_layout.addWidget(title_label)
         title_layout.setAlignment(title_label, Qt.AlignCenter)
 

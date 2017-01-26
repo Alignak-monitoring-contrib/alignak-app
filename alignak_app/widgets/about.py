@@ -70,6 +70,7 @@ class AppAbout(QWidget):
         about_label.setTextInteractionFlags(Qt.TextBrowserInteraction)
         about_label.setOpenExternalLinks(True)
         layout.addWidget(about_label)
+        layout.setAlignment(about_label, Qt.AlignHCenter | Qt.AlignTop)
 
         self.setLayout(layout)
 
