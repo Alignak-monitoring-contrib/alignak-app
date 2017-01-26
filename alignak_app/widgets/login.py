@@ -29,19 +29,20 @@ from alignak_app import __short_version__
 from alignak_app.core.backend import AppBackend, Backend
 from alignak_app.core.utils import get_app_config, set_app_config, init_config
 from alignak_app.core.utils import get_css, get_image_path
-from alignak_app.widgets.title import get_widget_title
 from alignak_app.widgets.banner import send_banner
 
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QDialog, QPushButton  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QGridLayout, QLabel  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QLineEdit, Qt, QIcon  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QWidget, QDialog  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QPushButton, QGridLayout  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel, QPixmap  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QDialog, QPushButton  # pylint: disable=import-error
-    from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
-    from PyQt4.Qt import QLineEdit, Qt, QIcon  # pylint: disable=import-error
+    from PyQt4.Qt import QDialog, QWidget  # pylint: disable=import-error
+    from PyQt4.Qt import QPushButton, QWidget, QGridLayout  # pylint: disable=import-error
+    from PyQt4.Qt import QHBoxLayout, QVBoxLayout  # pylint: disable=import-error
+    from PyQt4.Qt import QLineEdit, Qt, QIcon, QLabel, QPixmap  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
@@ -55,7 +56,7 @@ class AppLogin(QDialog):
     def __init__(self, parent=None):
         super(AppLogin, self).__init__(parent)
         self.setWindowTitle('Login to Alignak')
-        self.resize(320, 150)
+        self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(get_css())
         self.setWindowIcon(QIcon(get_image_path('icon')))
         # Fields
@@ -63,6 +64,12 @@ class AppLogin(QDialog):
         self.backend_url = None
         self.username_line = None
         self.password_line = None
+        self.offset = None
+
+    def showEvent(self, _):
+        """ QDialog.showEvent(QShowEvent) """
+
+        self.username_line.setFocus()
 
     def create_widget(self):
         """
@@ -70,16 +77,18 @@ class AppLogin(QDialog):
 
         """
 
-        layout = QGridLayout(self)
+        # Main layout
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(0, 0, 0, 0)
 
-        # QDialog title
-        popup_title = get_widget_title('', self)
-        layout.addWidget(popup_title, 0, 0, 1, 3)
+        main_layout.addWidget(self.get_logo_widget())
 
-        # Login text
-        login_line = QLabel('<b>Login</b>')
-        login_line.setObjectName('login')
-        layout.addWidget(login_line, 1, 0, 1, 1)
+        title = '<b>Welcome to Alignak-app v%s</b>' % __short_version__
+        main_layout.addWidget(self.get_title_widget(title))
+
+        # Login QWidget
+        login_widget = QWidget(self)
+        login_layout = QGridLayout(login_widget)
 
         # Configuration button
         refresh_conf_btn = QPushButton()
@@ -87,44 +96,134 @@ class AppLogin(QDialog):
         refresh_conf_btn.setFixedSize(32, 32)
         refresh_conf_btn.setIcon(QIcon(get_image_path('refresh')))
         refresh_conf_btn.setToolTip('Reload configuration')
-        layout.addWidget(refresh_conf_btn, 1, 1, 1, 1)
+        login_layout.addWidget(refresh_conf_btn, 2, 1, 1, 1)
 
         # Server button
         server_btn = QPushButton()
         server_btn.clicked.connect(self.handle_server)
         server_btn.setFixedSize(32, 32)
         server_btn.setIcon(QIcon(get_image_path('host')))
-        server_btn.setToolTip('Change Alignak Server')
-        layout.addWidget(server_btn, 1, 2, 1, 1)
+        server_btn.setToolTip('Modify Alignak Server')
+        login_layout.addWidget(server_btn, 2, 2, 1, 1)
 
         # Welcome text
-        welcome = QLabel(
-            '<b>Welcome to Alignak-app v' +
-            __short_version__ +
-            '</b><br>Please enter your credentials'
-        )
-        layout.addWidget(welcome, 2, 0, 1, 3)
-        layout.setAlignment(welcome, Qt.AlignTrailing)
+        login_label = QLabel('Log-in to use the application')
+        login_layout.addWidget(login_label, 2, 0, 1, 1)
 
         # Username field
         self.username_line = QLineEdit(self)
         self.username_line.setPlaceholderText('Username')
-        self.username_line.setFocus()
-        layout.addWidget(self.username_line, 3, 0, 1, 3)
+        login_layout.addWidget(self.username_line, 3, 0, 1, 3)
 
         # Password field
         self.password_line = QLineEdit(self)
         self.password_line.setPlaceholderText('Password')
         self.password_line.setEchoMode(QLineEdit.Password)
-        layout.addWidget(self.password_line, 4, 0, 1, 3)
+        login_layout.addWidget(self.password_line, 4, 0, 1, 3)
 
         # Login button
-        login_button = QPushButton('Login', self)
+        login_button = QPushButton('LOGIN', self)
         login_button.clicked.connect(self.handle_login)
+        login_button.setObjectName('valid')
+        login_button.setMinimumHeight(30)
         login_button.setDefault(True)
-        layout.addWidget(login_button, 5, 0, 1, 3)
+        login_button.setStyleSheet(
+            """
+            QPushButton#valid {
+                background-color: #4caf50;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                outline: none;
+            }
+            QPushButton:pressed#valid {
+                background-color: #59b75c;
+                color: white;
+            }
+            QPushButton:hover#valid {
+                background-color: #59b75c;
+                color: white;
+            }
+            """
+        )
+        login_layout.addWidget(login_button, 5, 0, 1, 3)
 
-        self.setLayout(layout)
+        main_layout.addWidget(login_widget)
+
+        self.setLayout(main_layout)
+
+    def get_logo_widget(self):
+        """
+        Return the logo QWidget
+
+        :return: logo QWidget
+        :rtype: QWidget
+        """
+
+        logo_widget = QWidget()
+        logo_widget.setFixedHeight(45)
+        logo_layout = QHBoxLayout()
+        logo_widget.setLayout(logo_layout)
+
+        logo_label = QLabel()
+        logo_label.setPixmap(QPixmap(get_image_path('alignak')))
+        logo_label.setFixedSize(121, 35)
+        logo_label.setScaledContents(True)
+
+        logo_layout.addWidget(logo_label, 0)
+
+        minimize_btn = QPushButton()
+        minimize_btn.setIcon(QIcon(get_image_path('minimize')))
+        minimize_btn.setFixedSize(24, 24)
+        minimize_btn.clicked.connect(self.showMinimized)
+        logo_layout.addStretch(self.width())
+        logo_layout.addWidget(minimize_btn, 1)
+
+        maximize_btn = QPushButton()
+        maximize_btn.setIcon(QIcon(get_image_path('maximize')))
+        maximize_btn.setFixedSize(24, 24)
+        maximize_btn.clicked.connect(self.showMaximized)
+        logo_layout.addWidget(maximize_btn, 2)
+
+        close_btn = QPushButton()
+        close_btn.setIcon(QIcon(get_image_path('exit')))
+        close_btn.setFixedSize(24, 24)
+        close_btn.clicked.connect(self.close)
+        logo_layout.addWidget(close_btn, 3)
+
+        return logo_widget
+
+    @staticmethod
+    def get_title_widget(title):
+        """
+        Return the title QWidget
+
+        :return: title QWidget
+        :rtype: QWidget
+        """
+
+        title_widget = QWidget()
+        title_widget.setAttribute(Qt.WA_TransparentForMouseEvents)
+        title_layout = QVBoxLayout()
+        title_widget.setLayout(title_layout)
+        title_widget.setFixedHeight(50)
+        title_widget.setStyleSheet(
+            """
+                background-color: #1a5b7b;
+            """
+        )
+
+        title_label = QLabel('<h2>%s</h2>' % title)
+        title_label.setStyleSheet(
+            """
+                background-color: #1a5b7b;
+                color: white;
+            """
+        )
+        title_layout.addWidget(title_label)
+        title_layout.setAlignment(title_label, Qt.AlignCenter)
+
+        return title_widget
 
     def handle_login(self):
         """
@@ -197,3 +296,20 @@ class AppLogin(QDialog):
             backend_url = '%(alignak_url)s:' + str(server_port.text()).rstrip()
             set_app_config('Backend', 'alignak_backend', backend_url)
             set_app_config('Backend', 'alignak_url', str(server_url.text()).rstrip())
+
+    def mousePressEvent(self, event):
+        """ QWidget.mousePressEvent(QMouseEvent) """
+
+        self.offset = event.pos()
+
+    def mouseMoveEvent(self, event):
+        """ QWidget.mousePressEvent(QMouseEvent) """
+
+        try:
+            x = event.globalX()
+            y = event.globalY()
+            x_w = self.offset.x()
+            y_w = self.offset.y()
+            self.move(x - x_w, y - y_w)
+        except AttributeError as e:
+            logger.warning('Move Event %s: %s', self.objectName(), str(e))
