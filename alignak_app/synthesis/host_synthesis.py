@@ -63,8 +63,6 @@ class HostSynthesis(QWidget):
 
     def __init__(self, app_backend, parent=None):
         super(HostSynthesis, self).__init__(parent)
-        self.app_qwidget = AppQWidget()
-        self.app_qwidget.initialize('Host Synthesis View')
         self.app_backend = app_backend
         self.action_manager = ActionManager(app_backend)
         self.host = {}
@@ -75,6 +73,11 @@ class HostSynthesis(QWidget):
         TODO
         :return:
         """
+
+        # Clean all items before
+        if self.layout():
+            for i in reversed(range(self.layout().count())):
+                self.layout().itemAt(i).widget().setParent(None)
 
         main_layout = QHBoxLayout(self)
         self.host = backend_data['host']
@@ -131,36 +134,23 @@ class HostSynthesis(QWidget):
         for service in backend_data['services']:
             service_widget = Service()
             service_widget.initialize(service)
+
+            service_widget.acknowledge_btn.clicked.connect(self.add_acknowledge)
+            service_widget.acknowledge_btn.setObjectName(
+                'service:%s:%s' % (service['_id'], service['display_name'])
+            )
+            if 'OK' in service['ls_state'] or service['ls_acknowledged']:
+                service_widget.acknowledge_btn.setEnabled(False)
+
+            service_widget.downtime_btn.clicked.connect(self.add_downtime)
+            service_widget.downtime_btn.setObjectName(
+                'service:%s:%s' % (service['_id'], service['display_name'])
+            )
+            if 'OK' in service['ls_state'] or service['ls_downtimed']:
+                service_widget.downtime_btn.setEnabled(False)
+
             services_list.insertItem(pos, service['display_name'])
             self.stack.addWidget(service_widget)
-            # service_state = QLabel()
-            # service_state.setPixmap(self.get_service_icon(service['ls_state']))
-            # service_state.setMaximumSize(25, 25)
-            # service_state.setScaledContents(True)
-            # services_layout.addWidget(service_state, pos, 0)
-            #
-            # service_name = QLabel(service['display_name'])
-            # services_layout.addWidget(service_name, pos, 1)
-            #
-            # acknowledge_btn = QPushButton()
-            # acknowledge_btn.setObjectName('service:%s:%s' % (service['_id'], service['display_name']))
-            # acknowledge_btn.setIcon(QIcon(get_image_path('acknowledged')))
-            # acknowledge_btn.setFixedSize(25, 25)
-            # acknowledge_btn.setToolTip('Acknowledge this service')
-            # acknowledge_btn.clicked.connect(self.add_acknowledge)
-            # if 'OK' in service['ls_state'] or service['ls_acknowledged']:
-            #     acknowledge_btn.setEnabled(False)
-            # services_layout.addWidget(acknowledge_btn, pos, 2)
-            #
-            # downtime_btn = QPushButton()
-            # downtime_btn.setObjectName('service:%s:%s' % (service['_id'], service['name']))
-            # downtime_btn.setIcon(QIcon(get_image_path('downtime')))
-            # downtime_btn.setFixedSize(25, 25)
-            # downtime_btn.setToolTip('Schedule a downtime for this service')
-            # downtime_btn.clicked.connect(self.add_downtime)
-            # if 'OK' in service['ls_state'] or service['ls_downtimed']:
-            #     downtime_btn.setEnabled(False)
-            # services_layout.addWidget(downtime_btn, pos, 3)
 
             pos += 1
 
@@ -169,7 +159,7 @@ class HostSynthesis(QWidget):
         action_timer.start(10000)
         action_timer.timeout.connect(self.check_action_manager)
 
-        self.app_qwidget.add_widget(self)
+        # self.app_qwidget.add_widget(self)
 
     def display(self, i):
         """
@@ -186,6 +176,7 @@ class HostSynthesis(QWidget):
         """
 
         # Get who emit SIGNAL
+        print(self.sender().objectName())
         item_type = self.sender().objectName().split(':')[0]
 
         if self.host:
@@ -399,7 +390,7 @@ if __name__ == '__main__':
     app_backend_test = AppBackend()
     app_backend_test.login()
 
-    backend_data_test = app_backend_test.get_host_with_services('passive-02')
+    backend_data_test = app_backend_test.get_host_with_services('always_down')
 
     app = QApplication(sys.argv)
 

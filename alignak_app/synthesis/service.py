@@ -59,9 +59,6 @@ class Service(QWidget):
         'DEFAULT': 'services_none'
     }
 
-    acknowledged = pyqtSignal(QObject)
-    downtimed = pyqtSignal(QObject)
-
     def __init__(self, parent=None):
         super(Service, self).__init__(parent)
         self.setStyleSheet(get_css())
@@ -69,7 +66,6 @@ class Service(QWidget):
         self.acknowledge_btn = None
         self.downtime_btn = None
         self.service = None
-        self.service_name = None
         self.last_check = None
         self.output_service = None
 
@@ -89,27 +85,25 @@ class Service(QWidget):
         layout.addWidget(self.get_service_icon(service['ls_state']), 0, 0, 2, 1)
 
         # Service name
-        self.service_name = QLabel(service['display_name'])
-        self.service_name.setToolTip('Service is ' + service['ls_state'])
-        self.service_name.setObjectName(service['ls_state'])
-        self.service_name.setMinimumWidth(200)
-        self.service_name.setWordWrap(True)
-        layout.addWidget(self.service_name, 0, 1, 2, 1)
-        layout.setAlignment(self.service_name, Qt.AlignLeft)
+        service_name = QLabel(service['display_name'])
+        service_name.setToolTip('Service is ' + service['ls_state'])
+        service_name.setObjectName(service['ls_state'])
+        service_name.setMinimumWidth(200)
+        service_name.setWordWrap(True)
+        layout.addWidget(service_name, 0, 1, 2, 1)
+        layout.setAlignment(service_name, Qt.AlignLeft)
 
         # Buttons
         self.acknowledge_btn = QPushButton()
         self.acknowledge_btn.setIcon(QIcon(get_image_path('acknowledged')))
         self.acknowledge_btn.setFixedSize(25, 25)
         self.acknowledge_btn.setToolTip('Acknowledge this service')
-        self.acknowledge_btn.clicked.connect(self.emit_acknowledge)
         layout.addWidget(self.acknowledge_btn, 0, 2, 1, 1)
 
         self.downtime_btn = QPushButton()
         self.downtime_btn.setIcon(QIcon(get_image_path('downtime')))
         self.downtime_btn.setFixedSize(25, 25)
         self.downtime_btn.setToolTip('Schedule a downtime for this service')
-        self.downtime_btn.clicked.connect(self.emit_downtime)
         layout.addWidget(self.downtime_btn, 1, 2, 1, 1)
 
         # Last check
@@ -143,7 +137,6 @@ class Service(QWidget):
         """
 
         self.service = service
-        self.service_name.setObjectName(service['ls_state'])
 
         diff_last_check = get_diff_since_last_check(service['ls_last_check'])
         self.last_check.setText(str(diff_last_check))
@@ -175,19 +168,3 @@ class Service(QWidget):
         icon_label.setToolTip('Service is ' + state)
 
         return icon_label
-
-    def emit_acknowledge(self):
-        """
-        Emit pyqtSignal for acknowledge
-
-        """
-
-        self.acknowledged.emit(self)
-
-    def emit_downtime(self):
-        """
-        Emit pyqtSignal for downtimes
-
-        """
-
-        self.downtimed.emit(self)

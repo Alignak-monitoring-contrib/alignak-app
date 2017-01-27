@@ -29,6 +29,7 @@ from logging import getLogger
 
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.action_manager import ActionManager, ACK, DOWNTIME, PROCESS
+from alignak_app.synthesis.host_synthesis import HostSynthesis
 from alignak_app.synthesis.host import Host
 from alignak_app.synthesis.services_view import ServicesView
 from alignak_app.widgets.app_widget import AppQWidget
@@ -64,10 +65,9 @@ class Synthesis(QWidget):
         self.setStyleSheet(get_css())
         # Fields
         self.line_search = QLineEdit()
-        self.host_view = None
-        self.services_view = None
         self.app_backend = None
         self.action_manager = None
+        self.host_synthesis = None
         self.app_widget = AppQWidget()
 
     def initialize(self, app_backend):
@@ -90,37 +90,19 @@ class Synthesis(QWidget):
         # button
         button = QPushButton('Search / Refresh', self)
         button.setToolTip('Type name of a host to display his data')
-        button.clicked.connect(self.display_views)
+        button.clicked.connect(self.display_host_synthesis)
         self.line_search.returnPressed.connect(button.click)
 
-        # Create views
-        self.host_view = Host(self)
-        self.host_view.init_view(self.app_backend, self.action_manager)
-        self.services_view = ServicesView(self.action_manager, self.app_backend)
-
-        # Layout
-        # row, column, rowSpan, colSPan
         layout = QGridLayout()
-        layout.addWidget(self.line_search, 0, 0, 1, 3)
-        layout.addWidget(button, 0, 3, 1, 1)
-        layout.addWidget(self.host_view, 1, 0, 1, 4)
-        layout.setAlignment(self.host_view, Qt.AlignLeft)
-
-        layout.addWidget(self.services_view, 2, 0, 1, 4)
-
         self.setLayout(layout)
+
+        layout.addWidget(self.line_search, 0, 0, 1, 3)
+        layout.addWidget(button, 0, 3, 1, 1)  # Create views
+        self.host_synthesis = HostSynthesis(app_backend)
+        layout.addWidget(self.host_synthesis, 1, 0, 1, 4)
 
         self.app_widget.initialize('Host Synthesis View')
         self.app_widget.add_widget(self)
-
-        # Refresh and Action process
-        refresh_timer = QTimer(self)
-        refresh_timer.start(10000)
-        refresh_timer.timeout.connect(self.refresh_all_views)
-
-        action_timer = QTimer(self)
-        action_timer.start(10000)
-        action_timer.timeout.connect(self.check_action_manager)
 
     def create_line_search(self):
         """
@@ -150,98 +132,14 @@ class Synthesis(QWidget):
         self.line_search.setPlaceholderText('Type a host name to display its data')
         self.line_search.setToolTip('Type a host name to display its data')
 
-    def display_views(self):  # pragma: no cover
+    def display_host_synthesis(self):
         """
-        Handle Event when "line_search" is clicked.
-
-        """
-
-        # Get item that is searched
-        host_name = str(self.line_search.text()).rstrip()
-
-        logger.debug('Desired host: ' + host_name)
-
-        # Collect host data and associated services
-        data = self.app_backend.get_host_with_services(host_name)
-
-        # Write result ot "result_label"
-        if data:
-            self.host_view.update_view(data)
-            self.services_view.display_services(data['services'], data['host'])
-        else:
-            data = {
-                'host': {
-                    'name': host_name,
-                    'alias': 'N/A',
-                    'ls_state': 'N/A',
-                    'ls_last_check': 0.0,
-                    'ls_output': 'N/A',
-                    'ls_acknowledged': False,
-                    'ls_downtimed': False
-                },
-                'services': None
-            }
-            self.host_view.update_view(data)
-            self.services_view.display_services(None, {'name': 'NO HOST'})
-
-    def refresh_all_views(self):
-        """
-        Refresh Host and Service QWidgets
-
+        TODO
+        :return:
         """
 
         host_name = str(self.line_search.text()).rstrip()
+        backend_data = self.app_backend.get_host_with_services(host_name)
 
-        # Collect host data and associated services
-        data = self.app_backend.get_host_with_services(host_name)
-
-        # Refresh
-        if data:
-            self.host_view.update_view(data)
-            self.services_view.update_services()
-        else:
-            data = {
-                'host': {
-                    'name': host_name,
-                    'alias': 'N/A',
-                    'ls_state': 'N/A',
-                    'ls_last_check': 0.0,
-                    'ls_output': 'N/A',
-                    'ls_acknowledged': False,
-                    'ls_downtimed': False
-                },
-                'services': None
-            }
-            self.host_view.update_view(data)
-            self.services_view.display_services(None, {'name': 'NO HOST'})
-
-    def check_action_manager(self):
-        """
-        Check ActionManager and send banner if items to send
-
-        """
-
-        items_to_send = self.action_manager.check_items()
-        actions = [ACK, DOWNTIME]
-
-        if items_to_send:
-            # Send ACKs and DOWNTIMEs
-            for action in actions:
-                title = action.replace('action', '').capitalize()
-                # For Hosts
-                if items_to_send[action]['hosts']:
-                    for item in items_to_send[action]['hosts']:
-                        host = self.app_backend.get_host(item['host_id'])
-                        send_banner('OK', '%s for %s is done !' % (title, host['name']))
-                # For Services
-                if items_to_send[action]['services']:
-                    for item in items_to_send[action]['services']:
-                        service = self.app_backend.get_service(item['host_id'], item['service_id'])
-                        send_banner('OK', '%s for %s is done !' % (title, service['name']))
-
-            # Send PROCESS
-            if items_to_send[PROCESS]:
-                for item in items_to_send[PROCESS]:
-                    requested_action = item['post']['_links']['self']['title'].replace('Action', '')
-                    action_title = requested_action.capitalize()
-                    send_banner('OK', '%s for %s is processed...' % (action_title, item['name']))
+        # self.host_synthesis = HostSynthesis(self.app_backend)
+        self.host_synthesis.initialize(backend_data)
