@@ -27,13 +27,10 @@ import json
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_image_path, get_css
-from alignak_app.core.action_manager import ActionManager, ACK, DOWNTIME, PROCESS
+from alignak_app.core.utils import get_css
+from alignak_app.core.action_manager import ActionManager
 from alignak_app.synthesis.host_synthesis import HostSynthesis
-from alignak_app.synthesis.host import Host
-from alignak_app.synthesis.services_view import ServicesView
 from alignak_app.widgets.app_widget import AppQWidget
-from alignak_app.widgets.banner import send_banner
 
 try:
     __import__('PyQt5')
