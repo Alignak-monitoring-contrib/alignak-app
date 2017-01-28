@@ -40,17 +40,17 @@ try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QWidget, QPushButton, QLabel  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QStackedWidget  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QStringListModel, QIcon, QPixmap, QListWidget  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QCompleter, QLineEdit, QTimer, QListWidgetItem, Qt  # pylint: disable=no-name-in-module
-    # from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QGridLayout, QHBoxLayout  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QStackedWidget  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QIcon, QPixmap, QListWidget  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QTimer, QListWidgetItem, Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication  # pylint: disable=import-error
-    from PyQt4.Qt import QWidget, QPushButton  # pylint: disable=import-error
-    from PyQt4.Qt import QGridLayout, QVBoxLayout, QStackedWidget  # pylint: disable=import-error
-    from PyQt4.Qt import QStringListModel, QIcon  # pylint: disable=import-error
-    from PyQt4.Qt import QCompleter, QLineEdit, QTimer  # pylint: disable=import-error
-    from PyQt4.QtCore import Qt  # pylint: disable=import-error
+    from PyQt4.Qt import QWidget, QPushButton, QLabel  # pylint: disable=import-error
+    from PyQt4.Qt import QGridLayout, QHBoxLayout  # pylint: disable=import-error
+    from PyQt4.Qt import QStackedWidget  # pylint: disable=import-error
+    from PyQt4.Qt import QIcon, QPixmap, QListWidget  # pylint: disable=import-error
+    from PyQt4.Qt import QTimer, QListWidgetItem, Qt  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
@@ -410,21 +410,3 @@ class HostSynthesis(QWidget):
             icon = QPixmap(get_image_path('hosts_none'))
 
         return icon
-
-
-if __name__ == '__main__':
-    init_config()
-
-    app_backend_test = AppBackend()
-    app_backend_test.login()
-
-    backend_data_test = app_backend_test.get_host_with_services('always_down')
-
-    app = QApplication(sys.argv)
-
-    host_synthesis = HostSynthesis(app_backend_test)
-    host_synthesis.initialize(backend_data_test)
-
-    host_synthesis.app_qwidget.show_widget()
-
-    sys.exit(app.exec_())
