@@ -97,9 +97,9 @@ class Synthesis(QWidget):
         self.setLayout(layout)
 
         layout.addWidget(self.line_search, 0, 0, 1, 3)
-        layout.addWidget(button, 0, 3, 1, 1)  # Create views
-        self.host_synthesis = HostSynthesis(app_backend)
-        layout.addWidget(self.host_synthesis, 1, 0, 1, 4)
+        layout.setAlignment(self.line_search, Qt.AlignTop)
+        layout.addWidget(button, 0, 3, 1, 1)
+        layout.setAlignment(button, Qt.AlignTop)
 
         self.app_widget.initialize('Host Synthesis View')
         self.app_widget.add_widget(self)
@@ -141,5 +141,12 @@ class Synthesis(QWidget):
         host_name = str(self.line_search.text()).rstrip()
         backend_data = self.app_backend.get_host_with_services(host_name)
 
-        # self.host_synthesis = HostSynthesis(self.app_backend)
+        # Remove host_synthesis and delete it
+        if self.host_synthesis:
+            self.layout().removeWidget(self.host_synthesis)
+            self.host_synthesis.deleteLater()
+            self.host_synthesis = None
+
+        self.host_synthesis = HostSynthesis(self.app_backend)
         self.host_synthesis.initialize(backend_data)
+        self.layout().addWidget(self.host_synthesis, 1, 0, 1, 4)

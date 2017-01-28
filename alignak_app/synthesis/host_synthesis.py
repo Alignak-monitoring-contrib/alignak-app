@@ -42,8 +42,8 @@ try:
     from PyQt5.QtWidgets import QWidget, QPushButton, QLabel  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QStackedWidget  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QStringListModel, QIcon, QPixmap, QListWidget  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QCompleter, QLineEdit, QTimer  # pylint: disable=no-name-in-module
-    from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QCompleter, QLineEdit, QTimer, QListWidgetItem, Qt  # pylint: disable=no-name-in-module
+    # from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QPushButton  # pylint: disable=import-error
@@ -74,29 +74,90 @@ class HostSynthesis(QWidget):
         :return:
         """
 
-        # Clean all items before
-        if self.layout():
-            for i in reversed(range(self.layout().count())):
-                self.layout().itemAt(i).widget().setParent(None)
-
         main_layout = QHBoxLayout(self)
         self.host = backend_data['host']
 
+        main_layout.addWidget(self.get_host_widget(backend_data))
+        main_layout.addWidget(self.get_services_widget(backend_data))
+
+        action_timer = QTimer(self)
+        action_timer.start(10000)
+        action_timer.timeout.connect(self.check_action_manager)
+
+    def get_services_widget(self, backend_data):
+        """
+
+        :param backend_data:
+        :return:
+        """
+
+        services_widget = QWidget()
+        services_layout = QGridLayout(services_widget)
+
+        # Init Vars
+        pos = 0
+        self.stack = QStackedWidget()
+        services_list = QListWidget()
+
+        services_layout.addWidget(services_list)
+        services_layout.addWidget(self.stack)
+
+        for service in backend_data['services']:
+            # Service QWidget
+            service_widget = Service()
+            service_widget.initialize(service)
+
+            # Connect ACK button
+            service_widget.acknowledge_btn.clicked.connect(self.add_acknowledge)
+            service_widget.acknowledge_btn.setObjectName(
+                'service:%s:%s' % (service['_id'], service['display_name'])
+            )
+            if 'OK' in service['ls_state'] or service['ls_acknowledged']:
+                service_widget.acknowledge_btn.setEnabled(False)
+
+            # Connect DOWN button
+            service_widget.downtime_btn.clicked.connect(self.add_downtime)
+            service_widget.downtime_btn.setObjectName(
+                'service:%s:%s' % (service['_id'], service['display_name'])
+            )
+            if 'OK' in service['ls_state'] or service['ls_downtimed']:
+                service_widget.downtime_btn.setEnabled(False)
+
+            # Add widget to QStackedWidget
+            self.stack.addWidget(service_widget)
+            # Add item to QListWidget
+            list_item = QListWidgetItem()
+            list_item.setText(service['display_name'])
+            list_item.setIcon(
+                QIcon(get_image_path('services_%s' % service['ls_state']))
+            )
+            services_list.insertItem(pos, list_item)
+
+            pos += 1
+
+        services_list.currentRowChanged.connect(self.display)
+
+        return services_widget
+
+    def get_host_widget(self, backend_data):
+        """
+        TODO
+        :return:
+        """
+
         host_widget = QWidget()
-        main_layout.addWidget(host_widget)
         host_layout = QGridLayout(host_widget)
 
+        # Overall State
         host_overall_state = QLabel()
         host_overall_state.setPixmap(self.get_real_state_icon(backend_data['services']))
-        host_layout.addWidget(host_overall_state)
+        host_layout.addWidget(host_overall_state, 0, 0, 1, 2)
 
+        # Hostname
         host_name = QLabel(backend_data['host']['alias'])
-        host_layout.addWidget(host_name)
+        host_layout.addWidget(host_name, 1, 0, 1, 2)
 
-        host_real_state = QLabel()
-        host_real_state.setPixmap(self.get_host_icon(backend_data['host']['ls_state']))
-        host_layout.addWidget(host_real_state)
-
+        # ACK
         acknowledge_btn = QPushButton()
         acknowledge_btn.setObjectName(
             'host:%s:%s' % (backend_data['host']['_id'], backend_data['host']['name'])
@@ -107,8 +168,9 @@ class HostSynthesis(QWidget):
         acknowledge_btn.clicked.connect(self.add_acknowledge)
         if 'UP' in backend_data['host']['ls_state'] or backend_data['host']['ls_acknowledged']:
             acknowledge_btn.setEnabled(False)
-        host_layout.addWidget(acknowledge_btn)
+        host_layout.addWidget(acknowledge_btn, 2, 0, 1, 1)
 
+        # DOWN
         downtime_btn = QPushButton()
         downtime_btn.setObjectName(
             'host:%s:%s' % (backend_data['host']['_id'], backend_data['host']['name'])
@@ -119,47 +181,13 @@ class HostSynthesis(QWidget):
         downtime_btn.clicked.connect(self.add_downtime)
         if 'UP' in backend_data['host']['ls_state'] or backend_data['host']['ls_downtimed']:
             downtime_btn.setEnabled(False)
-        host_layout.addWidget(downtime_btn)
+        host_layout.addWidget(downtime_btn, 2, 1, 1, 1)
 
-        services_widget = QWidget()
-        main_layout.addWidget(services_widget)
-        services_layout = QGridLayout(services_widget)
+        host_real_state = QLabel()
+        host_real_state.setPixmap(self.get_host_icon(backend_data['host']['ls_state']))
+        host_layout.addWidget(host_real_state, 3, 0, 1, 2)
 
-        pos = 0
-        self.stack = QStackedWidget()
-        services_list = QListWidget()
-        services_layout.addWidget(services_list)
-        services_layout.addWidget(self.stack)
-
-        for service in backend_data['services']:
-            service_widget = Service()
-            service_widget.initialize(service)
-
-            service_widget.acknowledge_btn.clicked.connect(self.add_acknowledge)
-            service_widget.acknowledge_btn.setObjectName(
-                'service:%s:%s' % (service['_id'], service['display_name'])
-            )
-            if 'OK' in service['ls_state'] or service['ls_acknowledged']:
-                service_widget.acknowledge_btn.setEnabled(False)
-
-            service_widget.downtime_btn.clicked.connect(self.add_downtime)
-            service_widget.downtime_btn.setObjectName(
-                'service:%s:%s' % (service['_id'], service['display_name'])
-            )
-            if 'OK' in service['ls_state'] or service['ls_downtimed']:
-                service_widget.downtime_btn.setEnabled(False)
-
-            services_list.insertItem(pos, service['display_name'])
-            self.stack.addWidget(service_widget)
-
-            pos += 1
-
-        services_list.currentRowChanged.connect(self.display)
-        action_timer = QTimer(self)
-        action_timer.start(10000)
-        action_timer.timeout.connect(self.check_action_manager)
-
-        # self.app_qwidget.add_widget(self)
+        return host_widget
 
     def display(self, i):
         """
