@@ -57,8 +57,7 @@ class Synthesis(QWidget):
 
     def __init__(self, parent=None):
         super(Synthesis, self).__init__(parent)
-        self.setMinimumSize(1000, 700)
-        self.setWindowTitle('Hosts Synthesis View')
+        self.setMinimumSize(1000, 600)
         self.setStyleSheet(get_css())
         # Fields
         self.line_search = QLineEdit()
@@ -93,9 +92,9 @@ class Synthesis(QWidget):
         layout = QGridLayout()
         self.setLayout(layout)
 
-        layout.addWidget(self.line_search, 0, 0, 1, 3)
+        layout.addWidget(self.line_search, 0, 0, 1, 4)
         layout.setAlignment(self.line_search, Qt.AlignTop)
-        layout.addWidget(button, 0, 3, 1, 1)
+        layout.addWidget(button, 0, 4, 1, 1)
         layout.setAlignment(button, Qt.AlignTop)
 
         self.app_widget.initialize('Host Synthesis View')
@@ -146,4 +145,4 @@ class Synthesis(QWidget):
 
         self.host_synthesis = HostSynthesis(self.app_backend)
         self.host_synthesis.initialize(backend_data)
-        self.layout().addWidget(self.host_synthesis, 1, 0, 1, 4)
+        self.layout().addWidget(self.host_synthesis, 1, 0, 1, 5)
