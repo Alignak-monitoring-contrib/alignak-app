@@ -234,11 +234,11 @@ class HostSynthesis(QWidget):
 
         # Get who emit SIGNAL
         print(self.sender().objectName())
-        item_type = self.sender().objectName().split(':')[0]
+        item_type = str(self.sender().objectName().split(':')[0])
 
         if self.host:
             if 'service' in item_type:
-                service_id = self.sender().objectName().split(':')[1]
+                service_id = str(self.sender().objectName().split(':')[1])
             else:
                 service_id = None
             host_id = self.host['_id']
@@ -247,7 +247,7 @@ class HostSynthesis(QWidget):
 
             comment = '%s %s acknowledged by %s, from Alignak-app' % (
                 item_type.capitalize(),
-                self.sender().objectName().split(':')[2],
+                str(self.sender().objectName().split(':')[2]),
                 user['name']
             )
 
@@ -262,7 +262,7 @@ class HostSynthesis(QWidget):
             post = self.app_backend.post(ACK, data)
             item_process = {
                 'action': PROCESS,
-                'name': self.sender().objectName().split(':')[2],
+                'name': str(self.sender().objectName().split(':')[2]),
                 'post': post
             }
             self.action_manager.add_item(item_process)
@@ -283,11 +283,11 @@ class HostSynthesis(QWidget):
         """
 
         # Get who emit SIGNAL
-        item_type = self.sender().objectName().split(':')[0]
+        item_type = str(self.sender().objectName().split(':')[0])
 
         if self.host:
             if 'service' in item_type:
-                service_id = self.sender().objectName().split(':')[1]
+                service_id = str(self.sender().objectName().split(':')[1])
             else:
                 service_id = None
             host_id = self.host['_id']
@@ -313,7 +313,7 @@ class HostSynthesis(QWidget):
             post = self.app_backend.post(DOWNTIME, data)
             item_process = {
                 'action': PROCESS,
-                'name': self.sender().objectName().split(':')[2],
+                'name': str(self.sender().objectName().split(':')[2]),
                 'post': post
             }
             self.action_manager.add_item(item_process)
