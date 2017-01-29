@@ -119,11 +119,13 @@ class Service(QWidget):
         output_name.setToolTip('Output of %s' % service['display_name'])
         layout.addWidget(output_name, 1, 3, 1, 1)
         self.output_service = QLabel(service['ls_output'])
+        self.output_service.setObjectName('output')
         self.output_service.setToolTip(service['ls_output'])
         self.output_service.setTextInteractionFlags(Qt.TextSelectableByMouse)
 
         scroll = QScrollArea()
         scroll.setWidget(self.output_service)
+        scroll.setObjectName('output')
         scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll.setMaximumHeight(60)
         layout.addWidget(scroll, 1, 4, 2, 1)

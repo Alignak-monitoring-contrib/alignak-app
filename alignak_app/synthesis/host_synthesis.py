@@ -23,16 +23,12 @@
     TODO
 """
 
-import json
 import datetime
-import sys
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_image_path, init_config
-from alignak_app.core.backend import AppBackend
+from alignak_app.core.utils import get_image_path, get_diff_since_last_check
 from alignak_app.core.action_manager import ActionManager, ACK, DOWNTIME, PROCESS
-from alignak_app.widgets.app_widget import AppQWidget
 from alignak_app.widgets.banner import send_banner
 from alignak_app.synthesis.service import Service
 
@@ -40,15 +36,15 @@ try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QWidget, QPushButton, QLabel  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QGridLayout, QHBoxLayout  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QStackedWidget  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QStackedWidget, QScrollArea  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QIcon, QPixmap, QListWidget  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QTimer, QListWidgetItem, Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QPushButton, QLabel  # pylint: disable=import-error
-    from PyQt4.Qt import QGridLayout, QHBoxLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QStackedWidget  # pylint: disable=import-error
+    from PyQt4.Qt import QGridLayout, QVBoxLayout  # pylint: disable=import-error
+    from PyQt4.Qt import QStackedWidget, QScrollArea  # pylint: disable=import-error
     from PyQt4.Qt import QIcon, QPixmap, QListWidget  # pylint: disable=import-error
     from PyQt4.Qt import QTimer, QListWidgetItem, Qt  # pylint: disable=import-error
 
@@ -74,15 +70,19 @@ class HostSynthesis(QWidget):
         :return:
         """
 
-        main_layout = QHBoxLayout(self)
-        self.host = backend_data['host']
+        if backend_data:
+            main_layout = QVBoxLayout(self)
+            self.host = backend_data['host']
 
-        main_layout.addWidget(self.get_host_widget(backend_data))
-        main_layout.addWidget(self.get_services_widget(backend_data))
+            host_widget = self.get_host_widget(backend_data)
+            main_layout.addWidget(host_widget)
+            main_layout.setAlignment(host_widget, Qt.AlignCenter)
 
-        action_timer = QTimer(self)
-        action_timer.start(10000)
-        action_timer.timeout.connect(self.check_action_manager)
+            main_layout.addWidget(self.get_services_widget(backend_data))
+
+            action_timer = QTimer(self)
+            action_timer.start(10000)
+            action_timer.timeout.connect(self.check_action_manager)
 
     def get_services_widget(self, backend_data):
         """
@@ -126,8 +126,11 @@ class HostSynthesis(QWidget):
             # Add widget to QStackedWidget
             self.stack.addWidget(service_widget)
             # Add item to QListWidget
+            label = QLabel(service['display_name'])
+            label.setObjectName(service['ls_state'])
             list_item = QListWidgetItem()
-            list_item.setText(service['display_name'])
+            services_list.addItem(list_item)
+            services_list.setItemWidget(list_item, label)
             list_item.setIcon(
                 QIcon(get_image_path('services_%s' % service['ls_state']))
             )
@@ -151,11 +154,23 @@ class HostSynthesis(QWidget):
         # Overall State
         host_overall_state = QLabel()
         host_overall_state.setPixmap(self.get_real_state_icon(backend_data['services']))
-        host_layout.addWidget(host_overall_state, 0, 0, 1, 2)
+        host_overall_state.setFixedSize(72, 72)
+        host_overall_state.setScaledContents(True)
+        host_layout.addWidget(host_overall_state, 0, 0, 1, 1)
 
         # Hostname
-        host_name = QLabel(backend_data['host']['alias'])
-        host_layout.addWidget(host_name, 1, 0, 1, 2)
+        host_name = QLabel('<h2>%s</h2>' % backend_data['host']['alias'])
+        host_layout.addWidget(host_name, 1, 0, 1, 1)
+
+        host_real_state = QLabel()
+        host_real_state.setPixmap(self.get_host_icon(backend_data['host']['ls_state']))
+        host_real_state.setFixedSize(48, 48)
+        host_real_state.setScaledContents(True)
+        host_layout.addWidget(host_real_state, 2, 0, 1, 1)
+
+        # Real state text
+        real_state = QLabel('Host real state, excluding services')
+        host_layout.addWidget(real_state, 3, 0, 1, 1)
 
         # ACK
         acknowledge_btn = QPushButton()
@@ -163,12 +178,12 @@ class HostSynthesis(QWidget):
             'host:%s:%s' % (backend_data['host']['_id'], backend_data['host']['name'])
         )
         acknowledge_btn.setIcon(QIcon(get_image_path('acknowledged')))
-        acknowledge_btn.setFixedSize(25, 25)
+        acknowledge_btn.setFixedSize(32, 32)
         acknowledge_btn.setToolTip('Acknowledge this host')
         acknowledge_btn.clicked.connect(self.add_acknowledge)
         if 'UP' in backend_data['host']['ls_state'] or backend_data['host']['ls_acknowledged']:
             acknowledge_btn.setEnabled(False)
-        host_layout.addWidget(acknowledge_btn, 2, 0, 1, 1)
+        host_layout.addWidget(acknowledge_btn, 0, 1, 1, 1)
 
         # DOWN
         downtime_btn = QPushButton()
@@ -176,16 +191,30 @@ class HostSynthesis(QWidget):
             'host:%s:%s' % (backend_data['host']['_id'], backend_data['host']['name'])
         )
         downtime_btn.setIcon(QIcon(get_image_path('downtime')))
-        downtime_btn.setFixedSize(25, 25)
+        downtime_btn.setFixedSize(32, 32)
         downtime_btn.setToolTip('Schedule a downtime for this host')
         downtime_btn.clicked.connect(self.add_downtime)
         if 'UP' in backend_data['host']['ls_state'] or backend_data['host']['ls_downtimed']:
             downtime_btn.setEnabled(False)
-        host_layout.addWidget(downtime_btn, 2, 1, 1, 1)
+        host_layout.addWidget(downtime_btn, 1, 1, 1, 1)
 
-        host_real_state = QLabel()
-        host_real_state.setPixmap(self.get_host_icon(backend_data['host']['ls_state']))
-        host_layout.addWidget(host_real_state, 3, 0, 1, 2)
+        last_check_title = QLabel('<b>Last check:</b>')
+        host_layout.addWidget(last_check_title, 2, 2, 1, 1)
+
+        diff_last_check = get_diff_since_last_check(backend_data['host']['ls_last_check'])
+        host_last_check = QLabel(str(diff_last_check))
+        host_layout.addWidget(host_last_check, 2, 3, 1, 1)
+
+        output = QLabel(backend_data['host']['ls_output'])
+        output.setObjectName('output')
+        output.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        scroll = QScrollArea()
+        scroll.setWidget(output)
+        scroll.setObjectName('output')
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setMinimumWidth(500)
+        scroll.setMaximumHeight(60)
+        host_layout.addWidget(scroll, 3, 2, 1, 2)
 
         return host_widget
 
