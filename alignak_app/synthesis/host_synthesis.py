@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    Host Synthesis display data of choosen host in Synthesis
 """
 
 import datetime
@@ -66,8 +66,8 @@ class HostSynthesis(QWidget):
 
     def initialize(self, backend_data):
         """
-        TODO
-        :return:
+        Inititalize the QWidget
+
         """
 
         if backend_data:
@@ -84,68 +84,14 @@ class HostSynthesis(QWidget):
             action_timer.start(10000)
             action_timer.timeout.connect(self.check_action_manager)
 
-    def get_services_widget(self, backend_data):
-        """
-
-        :param backend_data:
-        :return:
-        """
-
-        services_widget = QWidget()
-        services_layout = QGridLayout(services_widget)
-
-        # Init Vars
-        pos = 0
-        self.stack = QStackedWidget()
-        services_list = QListWidget()
-
-        services_layout.addWidget(services_list)
-        services_layout.addWidget(self.stack)
-
-        for service in backend_data['services']:
-            # Service QWidget
-            service_widget = Service()
-            service_widget.initialize(service)
-
-            # Connect ACK button
-            service_widget.acknowledge_btn.clicked.connect(self.add_acknowledge)
-            service_widget.acknowledge_btn.setObjectName(
-                'service:%s:%s' % (service['_id'], service['display_name'])
-            )
-            if 'OK' in service['ls_state'] or service['ls_acknowledged']:
-                service_widget.acknowledge_btn.setEnabled(False)
-
-            # Connect DOWN button
-            service_widget.downtime_btn.clicked.connect(self.add_downtime)
-            service_widget.downtime_btn.setObjectName(
-                'service:%s:%s' % (service['_id'], service['display_name'])
-            )
-            if 'OK' in service['ls_state'] or service['ls_downtimed']:
-                service_widget.downtime_btn.setEnabled(False)
-
-            # Add widget to QStackedWidget
-            self.stack.addWidget(service_widget)
-            # Add item to QListWidget
-            label = QLabel(service['display_name'])
-            label.setObjectName(service['ls_state'])
-            list_item = QListWidgetItem()
-            services_list.addItem(list_item)
-            services_list.setItemWidget(list_item, label)
-            list_item.setIcon(
-                QIcon(get_image_path('services_%s' % service['ls_state']))
-            )
-            services_list.insertItem(pos, list_item)
-
-            pos += 1
-
-        services_list.currentRowChanged.connect(self.display)
-
-        return services_widget
-
     def get_host_widget(self, backend_data):
         """
-        TODO
-        :return:
+        Return QWidget for host
+
+        :param backend_data: data of AppBackend
+        :type backend_data: dict
+        :return: QWidget with with host data
+        :rtype: QWidget
         """
 
         host_widget = QWidget()
@@ -218,13 +164,76 @@ class HostSynthesis(QWidget):
 
         return host_widget
 
-    def display(self, i):
+    def get_services_widget(self, backend_data):
         """
-        TODO
-        :param i:
-        :return:
+        Return QWidget for services
+
+        :param backend_data: data of AppBackend
+        :type backend_data: dict
+        :return: QWidget with Service in QStackedWidget
+        :rtype: QWidget
         """
-        self.stack.setCurrentIndex(i)
+
+        services_widget = QWidget()
+        services_layout = QGridLayout(services_widget)
+
+        # Init Vars
+        pos = 0
+        self.stack = QStackedWidget()
+        services_list = QListWidget()
+
+        services_layout.addWidget(services_list)
+        services_layout.addWidget(self.stack)
+
+        for service in backend_data['services']:
+            # Service QWidget
+            service_widget = Service()
+            service_widget.initialize(service)
+
+            # Connect ACK button
+            service_widget.acknowledge_btn.clicked.connect(self.add_acknowledge)
+            service_widget.acknowledge_btn.setObjectName(
+                'service:%s:%s' % (service['_id'], service['display_name'])
+            )
+            if 'OK' in service['ls_state'] or service['ls_acknowledged']:
+                service_widget.acknowledge_btn.setEnabled(False)
+
+            # Connect DOWN button
+            service_widget.downtime_btn.clicked.connect(self.add_downtime)
+            service_widget.downtime_btn.setObjectName(
+                'service:%s:%s' % (service['_id'], service['display_name'])
+            )
+            if 'OK' in service['ls_state'] or service['ls_downtimed']:
+                service_widget.downtime_btn.setEnabled(False)
+
+            # Add widget to QStackedWidget
+            self.stack.addWidget(service_widget)
+            # Add item to QListWidget
+            label = QLabel(service['display_name'])
+            label.setObjectName(service['ls_state'])
+            list_item = QListWidgetItem()
+            services_list.addItem(list_item)
+            services_list.setItemWidget(list_item, label)
+            list_item.setIcon(
+                QIcon(get_image_path('services_%s' % service['ls_state']))
+            )
+            services_list.insertItem(pos, list_item)
+
+            pos += 1
+
+        services_list.currentRowChanged.connect(self.display_current_service)
+
+        return services_widget
+
+    def display_current_service(self, index):
+        """
+        Display the current selected Service QWidget
+
+        :param index: index of QStackedWidget
+        :type index: int
+        """
+
+        self.stack.setCurrentIndex(index)
 
     def add_acknowledge(self):  # pragma: no cover, no testability
         """
