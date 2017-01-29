@@ -224,12 +224,16 @@ class AlignakStatus(QWidget):
                     total_daemons += 1
 
                 if not cur_bad_daemons:
-                    self.daemons_labels[daemon]['icon'].setPixmap(QPixmap(get_image_path('valid')))
+                    self.daemons_labels[daemon]['icon'].setPixmap(
+                        QPixmap(get_image_path('valid'))
+                    )
                     self.daemons_labels[daemon]['icon'].setToolTip('All %ss are alive ' % daemon)
                     self.daemons_labels[daemon]['label'].setToolTip('All %ss are alive ' % daemon)
 
                 else:
-                    self.daemons_labels[daemon]['icon'].setPixmap(QPixmap(get_image_path('unvalid')))
+                    self.daemons_labels[daemon]['icon'].setPixmap(
+                        QPixmap(get_image_path('unvalid'))
+                    )
                     self.daemons_labels[daemon]['icon'].setToolTip(daemon_message)
                     self.daemons_labels[daemon]['label'].setToolTip(daemon_message)
             else:
