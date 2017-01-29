@@ -100,9 +100,9 @@ class ActionManager(object):
             for item in self.downtimes_to_check['services']:
                 # Get service
                 service = self.app_backend.get_service(item['host_id'], item['service_id'])
-                if service['ls_acknowledged']:
+                if service['ls_downtimed']:
                     self.downtimes_to_check['services'].remove(item)
-                    done_actions[ACK]['services'].append(item)
+                    done_actions[DOWNTIME]['services'].append(item)
 
         # Check process
         if self.processed_to_check:
