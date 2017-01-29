@@ -208,29 +208,32 @@ class AlignakStatus(QWidget):
         arbiter_down = False
 
         for daemon in self.daemons:
-            alignak_map = self.alignak_ws_request().json()
-
             daemon_message = ''
             cur_bad_daemons = 0
 
-            # Update daemons QPixmap for each daemon
-            for sub_daemon in alignak_map[daemon]:
-                if not alignak_map[daemon][sub_daemon]['alive']:
-                    cur_bad_daemons += 1
-                    daemon_message += '<p>%s is not alive </p>' % sub_daemon.capitalize()
-                    if daemon == self.daemons[3]:
-                        arbiter_down = True
-                total_daemons += 1
+            if self.alignak_ws_request():
+                alignak_map = self.alignak_ws_request().json()
 
-            if not cur_bad_daemons:
-                self.daemons_labels[daemon]['icon'].setPixmap(QPixmap(get_image_path('valid')))
-                self.daemons_labels[daemon]['icon'].setToolTip('All %ss are alive ' % daemon)
-                self.daemons_labels[daemon]['label'].setToolTip('All %ss are alive ' % daemon)
+                # Update daemons QPixmap for each daemon
+                for sub_daemon in alignak_map[daemon]:
+                    if not alignak_map[daemon][sub_daemon]['alive']:
+                        cur_bad_daemons += 1
+                        daemon_message += '<p>%s is not alive </p>' % sub_daemon.capitalize()
+                        if daemon == self.daemons[3]:
+                            arbiter_down = True
+                    total_daemons += 1
 
+                if not cur_bad_daemons:
+                    self.daemons_labels[daemon]['icon'].setPixmap(QPixmap(get_image_path('valid')))
+                    self.daemons_labels[daemon]['icon'].setToolTip('All %ss are alive ' % daemon)
+                    self.daemons_labels[daemon]['label'].setToolTip('All %ss are alive ' % daemon)
+
+                else:
+                    self.daemons_labels[daemon]['icon'].setPixmap(QPixmap(get_image_path('unvalid')))
+                    self.daemons_labels[daemon]['icon'].setToolTip(daemon_message)
+                    self.daemons_labels[daemon]['label'].setToolTip(daemon_message)
             else:
-                self.daemons_labels[daemon]['icon'].setPixmap(QPixmap(get_image_path('unvalid')))
-                self.daemons_labels[daemon]['icon'].setToolTip(daemon_message)
-                self.daemons_labels[daemon]['label'].setToolTip(daemon_message)
+                pass
 
             # Add current bad daemons to bad daemons total
             bad_daemons += cur_bad_daemons
