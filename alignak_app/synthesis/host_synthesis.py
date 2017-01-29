@@ -343,7 +343,7 @@ class HostSynthesis(QWidget):
                 # For Hosts
                 if items_to_send[action]['hosts']:
                     for item in items_to_send[action]['hosts']:
-                        host = self.app_backend.get_host(item['host_id'])
+                        host = self.app_backend.get_host(item['host_id'], '_id')
                         send_banner('OK', '%s for %s is done !' % (title, host['name']))
                 # For Services
                 if items_to_send[action]['services']:
@@ -356,7 +356,7 @@ class HostSynthesis(QWidget):
                     requested_action = item['post']['_links']['self']['title'].replace(
                         'Action', '')
                     action_title = requested_action.capitalize()
-                    send_banner('OK', '%s for %s is processed...' % (action_title, item['name']))
+                    send_banner('INFO', '%s for %s is processed...' % (action_title, item['name']))
 
     @staticmethod
     def get_service_icon(state):
