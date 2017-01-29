@@ -62,14 +62,12 @@ class TestServicesView(unittest2.TestCase):
 
         self.assertFalse(under_test.app_backend)
         self.assertFalse(under_test.action_manager)
-        self.assertFalse(under_test.host_view)
-        self.assertFalse(under_test.services_view)
+        self.assertIsNone(under_test.host_synthesis)
         self.assertTrue(under_test.line_search)
 
         under_test.initialize(self.app_backend)
 
         self.assertTrue(under_test.app_backend)
         self.assertTrue(under_test.action_manager)
-        self.assertTrue(under_test.host_view)
-        self.assertTrue(under_test.services_view)
+        self.assertIsNone(under_test.host_synthesis)
         self.assertTrue(under_test.line_search)

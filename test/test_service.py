@@ -60,9 +60,6 @@ class TestServicesView(unittest2.TestCase):
 
         under_test = Service()
 
-        self.assertIsNotNone(under_test.acknowledged)
-        self.assertIsNotNone(under_test.downtimed)
-
         self.assertIsNone(under_test.service)
         self.assertIsNone(under_test.acknowledge_btn)
         self.assertIsNone(under_test.downtime_btn)
