@@ -88,6 +88,7 @@ class Synthesis(QWidget):
         button.setToolTip('Type name of a host to display his data')
         button.clicked.connect(self.display_host_synthesis)
         self.line_search.returnPressed.connect(button.click)
+        self.line_search.textChanged.connect(button.click)
 
         layout = QGridLayout()
         self.setLayout(layout)
