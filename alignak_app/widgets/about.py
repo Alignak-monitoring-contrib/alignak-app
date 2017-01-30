@@ -105,13 +105,13 @@ class AppAbout(QWidget):
             <h4>Copyright</h4>
             %s
             <h4>Home page</h4>
-            <a href="%s">%s</a>
+            <p><a href="%s">%s</a></p>
             <h4>User documentation</h4>
-            <a href="%s">%s</a>
+            <p><a href="%s">%s</a></p>
             <h4>Release notes</h4>
             %s
             <h4>About Alignak Solution</h4>
-            <a href="%s">%s</a>
+            <p><a href="%s">%s</a></p>
             """ % text_replacement
 
         return about_text

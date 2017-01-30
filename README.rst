@@ -63,6 +63,8 @@ To install Alignak-app::
     # Then you will be able for next runs to
     alignak-app start
 
+    # An installer for Windows is also available on this repository.
+
 You can find more help in the documentation below.
 
 Documentation
@@ -70,7 +72,7 @@ Documentation
 
 Documentation for Alignak-app is available on `Read The Docs <http://alignak-app.readthedocs.io/en/develop/index.html>`_.
 You will find everything you need to install and configure the application.
-To learn more about Alignak, visit `http://alignak-monitoring.github.io <http://alignak-monitoring.github.io/>`_ website.
+To learn more about Alignak, visit `http://www.alignak.net/ <http://www.alignak.net/>`_ website.
 
 Bugs / Enhancements
 ===================
