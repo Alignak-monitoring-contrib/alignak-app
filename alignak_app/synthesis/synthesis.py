@@ -88,7 +88,7 @@ class Synthesis(QWidget):
         button.setToolTip('Type name of a host to display his data')
         button.clicked.connect(self.display_host_synthesis)
         self.line_search.returnPressed.connect(button.click)
-        self.line_search.textChanged.connect(button.click)
+        self.line_search.cursorPositionChanged.connect(button.click)
 
         layout = QGridLayout()
         self.setLayout(layout)
@@ -126,6 +126,11 @@ class Synthesis(QWidget):
 
         # Create completer from model
         completer = QCompleter()
+        try:
+            completer.setFilterMode(Qt.MatchContains)
+        except AttributeError as e:
+            completer.setCaseSensitivity(Qt.CaseInsensitive)
+
         completer.setModel(model)
 
         # Add completer to "line edit"
