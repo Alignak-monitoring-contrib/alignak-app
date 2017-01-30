@@ -63,6 +63,7 @@ class HostSynthesis(QWidget):
         self.action_manager = ActionManager(app_backend)
         self.host = {}
         self.stack = None
+        self.services_list = None
 
     def initialize(self, backend_data):
         """
@@ -180,9 +181,9 @@ class HostSynthesis(QWidget):
         # Init Vars
         pos = 0
         self.stack = QStackedWidget()
-        services_list = QListWidget()
+        self.services_list = QListWidget()
 
-        services_layout.addWidget(services_list)
+        services_layout.addWidget(self.services_list)
         services_layout.addWidget(self.stack)
 
         for service in backend_data['services']:
@@ -212,16 +213,17 @@ class HostSynthesis(QWidget):
             label = QLabel(service['display_name'])
             label.setObjectName(service['ls_state'])
             list_item = QListWidgetItem()
-            services_list.addItem(list_item)
-            services_list.setItemWidget(list_item, label)
+            self.services_list.addItem(list_item)
+            self.services_list.setItemWidget(list_item, label)
             list_item.setIcon(
                 QIcon(get_image_path('services_%s' % service['ls_state']))
             )
-            services_list.insertItem(pos, list_item)
+            self.services_list.insertItem(pos, list_item)
 
             pos += 1
 
-        services_list.currentRowChanged.connect(self.display_current_service)
+
+        self.services_list.currentRowChanged.connect(self.display_current_service)
 
         return services_widget
 

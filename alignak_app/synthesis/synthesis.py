@@ -100,6 +100,10 @@ class Synthesis(QWidget):
         self.app_widget.initialize('Host Synthesis View')
         self.app_widget.add_widget(self)
 
+        refresh_timer = QTimer(self)
+        refresh_timer.start(10000)
+        refresh_timer.timeout.connect(self.display_host_synthesis)
+
     def create_line_search(self):
         """
         Add all hosts to QLineEdit and set QCompleter
@@ -137,12 +141,18 @@ class Synthesis(QWidget):
         host_name = str(self.line_search.text()).rstrip()
         backend_data = self.app_backend.get_host_with_services(host_name)
 
+        old_row = -1
+
         # Remove host_synthesis and delete it
         if self.host_synthesis:
+            if self.host_synthesis.services_list:
+                old_row = self.host_synthesis.services_list.currentRow()
             self.layout().removeWidget(self.host_synthesis)
             self.host_synthesis.deleteLater()
             self.host_synthesis = None
 
         self.host_synthesis = HostSynthesis(self.app_backend)
         self.host_synthesis.initialize(backend_data)
+        if old_row >= 0:
+            self.host_synthesis.services_list.setCurrentRow(old_row)
         self.layout().addWidget(self.host_synthesis, 1, 0, 1, 5)
