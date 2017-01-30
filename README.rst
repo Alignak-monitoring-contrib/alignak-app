@@ -2,29 +2,15 @@
 Alignak App
 ===========
 
-Informations
-============
-
-.. image:: https://badge.fury.io/py/alignak_app.svg
-    :target: https://badge.fury.io/py/alignak_app
-    :alt: Pypi
-
-.. image:: https://img.shields.io/badge/license-GNU%20General%20Public%20License%20v3.0-blue.svg
-    :target: https://github.com/Alignak-monitoring-contrib/alignak-app/blob/develop/LICENSE
-    :alt: Licence
-
-Alignak-App is a desktop application, in system tray, for Alignak solution. It can be installed on any Linux or Windows Dekstop / Server with a graphical interface who can run Python.
-
-This application is useful for people with an Alignak installation in their business and who want to keep an eye on their supervision constantly.
-
-For **installation**, please read the documentation below.
-
-Build status (stable release)
-=============================
+*Alignak desktop application*
 
 .. image:: https://travis-ci.org/Alignak-monitoring-contrib/alignak-app.svg?branch=master
     :target: https://travis-ci.org/Alignak-monitoring-contrib/alignak-app
-    :alt: Build
+    :alt: Master branch build status
+
+.. image:: https://travis-ci.org/Alignak-monitoring-contrib/alignak-app.svg?branch=develop
+    :target: https://travis-ci.org/Alignak-monitoring-contrib/alignak-backend-import
+    :alt: Develop branch build status
 
 .. image:: https://landscape.io/github/Alignak-monitoring-contrib/alignak-app/master/landscape.svg?style=flat
    :target: https://landscape.io/github/Alignak-monitoring-contrib/alignak-app/master
@@ -32,35 +18,27 @@ Build status (stable release)
 
 .. image:: https://coveralls.io/repos/github/Alignak-monitoring-contrib/alignak-app/badge.svg?branch=master
     :target: https://coveralls.io/github/Alignak-monitoring-contrib/alignak-app?branch=master
-    :alt: Coverage
+    :alt: Code coverage
 
 .. image:: http://readthedocs.org/projects/alignak-app/badge/?version=latest
     :target: http://alignak-app.readthedocs.io/en/develop/?badge=latest
     :alt: Documentation Status
 
+.. image:: https://badge.fury.io/py/alignak_app.svg
+    :target: https://badge.fury.io/py/alignak_app
+    :alt: Last PyPi version
+
+.. image:: https://img.shields.io/badge/License-AGPL%20v3-blue.svg
+    :target: http://www.gnu.org/licenses/agpl-3.0
+    :alt: License AGPL v3
 
 
-Build status (development release)
-==================================
+Alignak-App is a desktop application, residing in the system tray, for the Alignak framework. It can be installed on any Linux or Windows Dekstop / Server with a graphical interface which can run Python.
 
-.. image:: https://travis-ci.org/Alignak-monitoring-contrib/alignak-app.svg?branch=develop
-    :target: https://travis-ci.org/Alignak-monitoring-contrib/alignak-app
-    :alt: Build
+This application is useful for people with an Alignak installation in their business and who want to keep an eye on their supervision constantly.
 
-.. image:: https://landscape.io/github/Alignak-monitoring-contrib/alignak-app/develop/landscape.svg?style=flat
-   :target: https://landscape.io/github/Alignak-monitoring-contrib/alignak-app/develop
-   :alt: Code Health
-
-.. image:: https://coveralls.io/repos/github/Alignak-monitoring-contrib/alignak-app/badge.svg?branch=develop&service=github
-    :target: https://coveralls.io/github/Alignak-monitoring-contrib/alignak-app?branch=develop
-    :alt: Coverage
-
-.. image:: http://readthedocs.org/projects/alignak-app/badge/?version=develop
-    :target: http://alignak-app.readthedocs.io/en/develop/?badge=develop
-    :alt: Documentation Status
-
-Quick Install
-=============
+Installation
+============
 
 To install Alignak-app::
 
@@ -98,11 +76,6 @@ Bugs / Enhancements
 ===================
 
 Please open any issue or idea on this `repository <https://github.com/Alignak-monitoring-contrib/alignak-app/issues>`_.
-
-License
-=======
-
-Alignak App is available under the `GPL version 3 <http://opensource.org/licenses/GPL-3.0>`_.
 
 Preview (Debian and Windows)
 ============================
