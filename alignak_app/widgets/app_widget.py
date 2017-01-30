@@ -123,8 +123,8 @@ class AppQWidget(QWidget):
 
     def minimize(self):
         """
-        TODO
-        :return:
+        Minimize QWidget
+
         """
 
         if self.windowState() == Qt.WindowMinimized:
@@ -134,8 +134,8 @@ class AppQWidget(QWidget):
 
     def minimize_maximize(self):
         """
-        TODO
-        :return:
+        Minimize / Maximize QWidget
+
         """
 
         if self.windowState() == Qt.WindowMaximized:

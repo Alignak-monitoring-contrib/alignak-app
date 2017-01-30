@@ -130,8 +130,8 @@ class Synthesis(QWidget):
 
     def display_host_synthesis(self):
         """
-        TODO
-        :return:
+        Display Synthesis QWidget. Remove and delete HostSynthesis if exists
+
         """
 
         host_name = str(self.line_search.text()).rstrip()
