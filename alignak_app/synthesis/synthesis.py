@@ -152,8 +152,8 @@ class Synthesis(QWidget):
             self.host_synthesis.deleteLater()
             self.host_synthesis = None
 
-        self.host_synthesis = HostSynthesis(self.app_backend)
+        self.host_synthesis = HostSynthesis(self.app_backend, self.action_manager)
         self.host_synthesis.initialize(backend_data)
-        if old_row >= 0:
+        if old_row >= 0 and self.host_synthesis.services_list:
             self.host_synthesis.services_list.setCurrentRow(old_row)
         self.layout().addWidget(self.host_synthesis, 1, 0, 1, 5)

@@ -57,10 +57,10 @@ class HostSynthesis(QWidget):
         Class who create the Synthesis QWidget.
     """
 
-    def __init__(self, app_backend, parent=None):
+    def __init__(self, app_backend, action_manager, parent=None):
         super(HostSynthesis, self).__init__(parent)
         self.app_backend = app_backend
-        self.action_manager = ActionManager(app_backend)
+        self.action_manager = action_manager
         self.host = {}
         self.stack = None
         self.services_list = None
