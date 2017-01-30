@@ -2,8 +2,8 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Alignak-app"
-#define ShortVersion "0.5"
-#define MyAppVersion ShortVersion + ".1"
+#define ShortVersion "0.6"
+#define MyAppVersion ShortVersion + ".0"
 #define MyAppPublisher "Alignak (Estrada Matthieu)"
 #define MyAppURL "https://github.com/Alignak-monitoring-contrib/alignak-app"
 #define MyAppExeName "alignak-app.exe"
