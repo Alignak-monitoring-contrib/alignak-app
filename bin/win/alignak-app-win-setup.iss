@@ -46,30 +46,13 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "{#RootApp}\alignak-app\dist\alignak-app.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#RootApp}\alignak-app\etc\css\*"; DestDir: "{userappdata}\Python\alignak_app\css"; Flags: ignoreversion
 Source: "{#RootApp}\alignak-app\etc\images\*"; DestDir: "{userappdata}\Python\alignak_app\images"; Flags: ignoreversion
-Source: "{#RootApp}\alignak-app\etc\settings.cfg"; DestDir: "{app}"; Flags: ignoreversion; Permissions: everyone-full
+Source: "{#RootApp}\alignak-app\etc\settings.cfg"; DestDir: "{app}"; Flags: ignoreversion isreadme; Permissions: everyone-full;
 Source: "{#RootApp}\alignak-app\bin\win\vc_redist.x64.exe"; DestDir: {tmp}; Flags: deleteafterinstall
 Source: "{#RootApp}\alignak-app\bin\win\icon_64.ico"; DestDir: {app}; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName} v{#MyAppVersion}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon_64.ico";
 Name: "{commondesktop}\{#MyAppName} v{#MyAppVersion}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon_64.ico"; Tasks: desktopicon
-
-[Code]
-procedure CurStepChanged(CurStep: TSetupStep);
-begin
-  if CurStep = ssPostInstall then
-  begin
-    MsgBox(ExpandConstant(
-      'Configuration file is located under folder'
-      + #13#10 
-      + ' [ {app} ] !' 
-      + #13#10 
-      + #13#10
-      + 'For any assistance, please consult: https://github.com/Alignak-monitoring-contrib/alignak-app !'),
-       mbInformation,
-        MB_OK);
-  end
-end;
 
 [Run]
 Filename: {tmp}\vc_redist.x64.exe; Parameters: "/q /passive /Q:a /c:""msiexec /q /i vcredist.msi"" "; Check: IsWin64; StatusMsg: Installing VC++ 64bits Redistributables...
