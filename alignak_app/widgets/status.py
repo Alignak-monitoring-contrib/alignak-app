@@ -85,7 +85,7 @@ class AlignakStatus(QWidget):
         self.setLayout(layout)
 
         # Display daemons status or info windows
-        if get_app_config('Backend', 'web_service', boolean=True):
+        if get_app_config('Backend', 'alignak_ws'):
             if self.alignak_ws_request():
                 self.create_daemons_labels(layout)
 
@@ -267,7 +267,7 @@ class AlignakStatus(QWidget):
 
         """
 
-        if get_app_config('Backend', 'web_service', boolean=True) and self.alignak_ws_request():
+        if get_app_config('Backend', 'alignak_ws') and self.alignak_ws_request():
             self.check_status()
         else:
             self.no_web_service(self.layout())
@@ -280,5 +280,5 @@ class AlignakStatus(QWidget):
 
         """
 
-        if get_app_config('Backend', 'web_service', boolean=True) and self.alignak_ws_request():
+        if get_app_config('Backend', 'alignak_ws') and self.alignak_ws_request():
             self.app_widget.show_widget()
