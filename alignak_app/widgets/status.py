@@ -164,7 +164,6 @@ class AlignakStatus(QWidget):
 
         alignak_daemon = self.app_backend.get('alignakdaemon')
         for daemon in alignak_daemon['_items']:
-            daemon['alive'] = False
             if not daemon['alive']:
                 bad_daemons += 1
                 daemon_msg[daemon['type']] += '<p>%s is not alive</p>' % daemon['name'].capitalize()
