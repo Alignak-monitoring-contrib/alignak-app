@@ -102,7 +102,7 @@ class Synthesis(QWidget):
         self.app_widget.add_widget(self)
 
         refresh_timer = QTimer(self)
-        refresh_timer.start(10000)
+        refresh_timer.start(30000)
         refresh_timer.timeout.connect(self.display_host_synthesis)
 
     def create_line_search(self):

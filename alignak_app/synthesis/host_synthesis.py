@@ -28,7 +28,7 @@ import datetime
 from logging import getLogger
 
 from alignak_app.core.utils import get_image_path, get_diff_since_last_check
-from alignak_app.core.action_manager import ActionManager, ACK, DOWNTIME, PROCESS
+from alignak_app.core.action_manager import ACK, DOWNTIME, PROCESS
 from alignak_app.widgets.banner import send_banner
 from alignak_app.synthesis.service import Service
 
@@ -82,7 +82,7 @@ class HostSynthesis(QWidget):
             main_layout.addWidget(self.get_services_widget(backend_data))
 
             action_timer = QTimer(self)
-            action_timer.start(10000)
+            action_timer.start(4000)
             action_timer.timeout.connect(self.check_action_manager)
 
     def get_host_widget(self, backend_data):
@@ -222,7 +222,6 @@ class HostSynthesis(QWidget):
 
             pos += 1
 
-
         self.services_list.currentRowChanged.connect(self.display_current_service)
 
         return services_widget
@@ -244,7 +243,6 @@ class HostSynthesis(QWidget):
         """
 
         # Get who emit SIGNAL
-        print(self.sender().objectName())
         item_type = str(self.sender().objectName().split(':')[0])
 
         if self.host:
@@ -345,24 +343,29 @@ class HostSynthesis(QWidget):
         """
 
         items_to_send = self.action_manager.check_items()
+
         actions = [ACK, DOWNTIME]
 
         if items_to_send:
+
             # Send ACKs and DOWNTIMEs
             for action in actions:
                 title = action.replace('action', '').capitalize()
                 # For Hosts
                 if items_to_send[action]['hosts']:
+                    logger.debug('%s to send: %s', action, items_to_send[action]['hosts'])
                     for item in items_to_send[action]['hosts']:
                         host = self.app_backend.get_host(item['host_id'], '_id')
                         send_banner('OK', '%s for %s is done !' % (title, host['name']))
                 # For Services
                 if items_to_send[action]['services']:
+                    logger.debug('%s to send: %s', action, items_to_send[action]['services'])
                     for item in items_to_send[action]['services']:
                         service = self.app_backend.get_service(item['host_id'], item['service_id'])
                         send_banner('OK', '%s for %s is done !' % (title, service['name']))
             # Send PROCESS
             if items_to_send[PROCESS]:
+                logger.debug('PROCESS to send: %s', items_to_send[PROCESS])
                 for item in items_to_send[PROCESS]:
                     requested_action = item['post']['_links']['self']['title'].replace(
                         'Action', '')
