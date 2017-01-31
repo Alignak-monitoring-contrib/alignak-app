@@ -140,7 +140,7 @@ class ActionManager(object):
         """
 
         if item:
-            logger.debug('Add item %s' % item)
+            logger.debug('Add item %s', item)
             if ACK in item['action']:
                 if not item['service_id']:
                     self.acks_to_check['hosts'].append(item)
