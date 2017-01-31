@@ -34,19 +34,19 @@ try:
     from PyQt5.QtWidgets import QWidget, QStyle, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QLabel, QStyleOption  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QHBoxLayout, QPushButton  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import Qt, QIcon, QPixmap  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import Qt, QIcon, QPixmap, QFrame  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QStyle, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QLabel, QStyleOption  # pylint: disable=import-error
     from PyQt4.Qt import QHBoxLayout, QPushButton  # pylint: disable=import-error
-    from PyQt4.Qt import Qt, QIcon, QPixmap  # pylint: disable=import-error
+    from PyQt4.Qt import Qt, QIcon, QPixmap, QFrame  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
 
 
-class AppQWidget(QWidget):
+class AppQWidget(QFrame):
     """
         Class who create a QWidget template.
     """
@@ -67,7 +67,7 @@ class AppQWidget(QWidget):
         """
 
         self.setWindowTitle(title)
-        self.setObjectName(title)
+        self.setObjectName('app_widget')
 
         main_layout = QVBoxLayout()
         main_layout.setContentsMargins(0, 0, 0, 0)
@@ -75,6 +75,8 @@ class AppQWidget(QWidget):
 
         main_layout.addWidget(self.get_logo_widget())
         main_layout.addWidget(self.get_title_widget(title))
+
+        self.setAttribute(Qt.WA_TransparentForMouseEvents)
 
     def get_logo_widget(self):
         """
@@ -100,7 +102,7 @@ class AppQWidget(QWidget):
         minimize_btn.setIcon(QIcon(get_image_path('minimize')))
         minimize_btn.setFixedSize(24, 24)
         minimize_btn.clicked.connect(self.minimize)
-        if self.objectName() == 'Notification':
+        if 'Notification' in self.windowTitle():
             minimize_btn.setEnabled(False)
         logo_layout.addStretch(self.width())
         logo_layout.addWidget(minimize_btn, 1)
@@ -109,7 +111,7 @@ class AppQWidget(QWidget):
         maximize_btn.setIcon(QIcon(get_image_path('maximize')))
         maximize_btn.setFixedSize(24, 24)
         maximize_btn.clicked.connect(self.minimize_maximize)
-        if self.objectName() == 'Notification':
+        if 'Notification' in self.windowTitle():
             maximize_btn.setEnabled(False)
         logo_layout.addWidget(maximize_btn, 2)
 
@@ -199,19 +201,21 @@ class AppQWidget(QWidget):
     def mousePressEvent(self, event):
         """ QWidget.mousePressEvent(QMouseEvent) """
 
-        self.offset = event.pos()
+        if 'Notification' not in self.windowTitle():
+            self.offset = event.pos()
 
     def mouseMoveEvent(self, event):
         """ QWidget.mousePressEvent(QMouseEvent) """
 
-        try:
-            x = event.globalX()
-            y = event.globalY()
-            x_w = self.offset.x()
-            y_w = self.offset.y()
-            self.move(x - x_w, y - y_w)
-        except AttributeError as e:
-            logger.warning('Move Event %s: %s', self.objectName(), str(e))
+        if 'Notification' not in self.windowTitle():
+            try:
+                x = event.globalX()
+                y = event.globalY()
+                x_w = self.offset.x()
+                y_w = self.offset.y()
+                self.move(x - x_w, y - y_w)
+            except AttributeError as e:
+                logger.warning('Move Event %s: %s', self.objectName(), str(e))
 
 
 if __name__ == '__main__':

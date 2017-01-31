@@ -3,6 +3,11 @@ QLabel {
     color:black;
 }
 
+QFrame#app_widget {
+    border: 2px solid #1fb4e4;
+    border-style: inset;
+}
+
 QToolTip {
     background-color: black;
     color: #1fb3e3;
