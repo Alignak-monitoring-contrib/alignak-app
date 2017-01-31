@@ -54,6 +54,15 @@ class AlignakStatus(QWidget):
         Class who create QWidget for Daemons status.
     """
 
+    daemons = [
+        'poller',
+        'receiver',
+        'reactionner',
+        'arbiter',
+        'scheduler',
+        'broker'
+    ]
+
     def __init__(self, parent=None):
         super(AlignakStatus, self).__init__(parent)
         # General settings
@@ -61,74 +70,43 @@ class AlignakStatus(QWidget):
         self.setToolTip('Alignak Status')
         self.setStyleSheet(get_css())
         # Fields
-        self.daemons = [
-            'poller',
-            'receiver',
-            'reactionner',
-            'arbiter',
-            'scheduler',
-            'broker'
-        ]
+        self.app_backend = None
         self.daemons_labels = {}
         self.info = None
         self.old_bad_daemons = 0
         self.app_widget = AppQWidget()
 
-    def create_status(self):
+    def create_status(self, app_backend):
         """
         Create grid layout for status QWidget
 
         """
 
+        self.app_backend = app_backend
+
         # Add Layout
         layout = QGridLayout()
         self.setLayout(layout)
 
-        # Display daemons status or info windows
-        if get_app_config('Backend', 'alignak_ws'):
-            if self.alignak_ws_request():
-                self.create_daemons_labels(layout)
+        self.create_daemons_labels(layout)
 
-                # Default text and color
-                self.info.setText('All daemons are alive.')
-                self.info.setStyleSheet('color: #27ae60;')
+        # Default text and color
+        self.info.setText('All daemons are alive.')
+        self.info.setStyleSheet('color: #27ae60;')
 
-                # Update status for first start
-                self.check_status()
+        # Update status for first start
+        self.check_status()
 
-                # Start checks
-                timer = QTimer(self)
-                timer.start(60000)
-                timer.timeout.connect(self.check_status)
-            else:
-                self.no_web_service(layout)
+        # Start checks
+        timer = QTimer(self)
+        timer.start(60000)
+        timer.timeout.connect(self.check_status)
 
         # Use AppQWidget
         self.app_widget.initialize('Alignak Status')
         self.app_widget.add_widget(self)
 
-        self.show_at_start()
-
-    @staticmethod
-    def alignak_ws_request():
-        """
-        Request to get json data from alignak web service
-
-        :return: request on alignak_map
-        :rtype: requests.models.Response
-        """
-
-        request = None
-
-        try:
-            request = requests.get(
-                get_app_config('Backend', 'alignak_ws') + '/alignak_map'
-            )
-
-        except requests.ConnectionError as e:
-            logger.error('Bad value in "web_service_url" option : ' + str(e))
-
-        return request
+        self.show_states()
 
     def create_daemons_labels(self, layout):
         """
@@ -172,31 +150,6 @@ class AlignakStatus(QWidget):
         layout.setAlignment(self.info, Qt.AlignCenter)
         line += 1
 
-    @staticmethod
-    def no_web_service(layout):
-        """
-        Display information text if "web_service" is not configured
-
-        """
-
-        # Clean all items before, if
-        for i in reversed(range(layout.count())):
-            layout.itemAt(i).widget().setParent(None)
-
-        info_title_label = QLabel(
-            '<br><span style="color: blue;">Alignak <b>Web Service</b> is not available !</span>'
-        )
-        layout.addWidget(info_title_label, 0, 0)
-
-        info_label = QLabel(
-            'Install it on your <b>Alignak server</b>. '
-            'And configure the <b>settings.cfg</b> accordingly in <b>Alignak-app</b>.'
-        )
-        info_label.setWordWrap(True)
-        info_label.setAlignment(Qt.AlignTop)
-
-        layout.addWidget(info_label, 1, 0)
-
     def check_status(self):
         """
         Check daemons states, update icons and display banner if changes.
@@ -207,40 +160,43 @@ class AlignakStatus(QWidget):
         total_daemons = 0
         arbiter_down = False
 
-        for daemon in self.daemons:
-            daemon_message = ''
-            cur_bad_daemons = 0
+        daemon_msg = dict((element, '') for element in self.daemons)
 
-            if self.alignak_ws_request():
-                alignak_map = self.alignak_ws_request().json()
+        alignak_daemon = self.app_backend.get('alignakdaemon')
+        for daemon in alignak_daemon['_items']:
+            daemon['alive'] = False
+            if not daemon['alive']:
+                bad_daemons += 1
+                daemon_msg[daemon['type']] += '<p>%s is not alive</p>' % daemon['name'].capitalize()
+                if daemon == self.daemons[3]:
+                    arbiter_down = True
 
-                # Update daemons QPixmap for each daemon
-                for sub_daemon in alignak_map[daemon]:
-                    if not alignak_map[daemon][sub_daemon]['alive']:
-                        cur_bad_daemons += 1
-                        daemon_message += '<p>%s is not alive </p>' % sub_daemon.capitalize()
-                        if daemon == self.daemons[3]:
-                            arbiter_down = True
-                    total_daemons += 1
-
-                if not cur_bad_daemons:
-                    self.daemons_labels[daemon]['icon'].setPixmap(
-                        QPixmap(get_image_path('valid'))
-                    )
-                    self.daemons_labels[daemon]['icon'].setToolTip('All %ss are alive ' % daemon)
-                    self.daemons_labels[daemon]['label'].setToolTip('All %ss are alive ' % daemon)
-
-                else:
-                    self.daemons_labels[daemon]['icon'].setPixmap(
-                        QPixmap(get_image_path('unvalid'))
-                    )
-                    self.daemons_labels[daemon]['icon'].setToolTip(daemon_message)
-                    self.daemons_labels[daemon]['label'].setToolTip(daemon_message)
+            if not bad_daemons:
+                self.daemons_labels[daemon['type']]['icon'].setPixmap(
+                    QPixmap(get_image_path('valid'))
+                )
+                self.daemons_labels[daemon['type']]['icon'].setToolTip(
+                    'All %ss are alive ' % daemon['type']
+                )
+                self.daemons_labels[daemon['type']]['label'].setToolTip(
+                    'All %ss are alive ' % daemon['type']
+                )
             else:
-                pass
+                self.daemons_labels[daemon['type']]['icon'].setPixmap(
+                    QPixmap(get_image_path('unvalid'))
+                )
+                self.daemons_labels[daemon['type']]['icon'].setToolTip(
+                    daemon_msg[daemon['type']]
+                )
+                self.daemons_labels[daemon['type']]['label'].setToolTip(
+                    daemon_msg[daemon['type']]
+                )
 
-            # Add current bad daemons to bad daemons total
-            bad_daemons += cur_bad_daemons
+            total_daemons += 1
+
+        if bad_daemons:
+            self.info.setText('%d on %d daemons are down !' % (bad_daemons, total_daemons))
+            self.info.setStyleSheet('color: #e74c3c;')
 
         if self.sender() and not isinstance(self.sender(), QAction):
             if not bad_daemons and (self.old_bad_daemons != 0):
@@ -267,18 +223,5 @@ class AlignakStatus(QWidget):
 
         """
 
-        if get_app_config('Backend', 'alignak_ws') and self.alignak_ws_request():
-            self.check_status()
-        else:
-            self.no_web_service(self.layout())
-
+        self.check_status()
         self.app_widget.show_widget()
-
-    def show_at_start(self):
-        """
-        Show AlignakStatus on start
-
-        """
-
-        if get_app_config('Backend', 'alignak_ws') and self.alignak_ws_request():
-            self.app_widget.show_widget()

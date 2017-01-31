@@ -80,7 +80,7 @@ class TrayIcon(QSystemTrayIcon):
         # Create actions
         self.create_synthesis_action(app_backend)
 
-        self.create_status_action()
+        self.create_status_action(app_backend)
         self.menu.addSeparator()
 
         self.create_hosts_actions()
@@ -243,10 +243,12 @@ class TrayIcon(QSystemTrayIcon):
 
         logger.info('Create Synthesis Action')
 
-    def create_status_action(self):
+    def create_status_action(self, app_backend):
         """
         Create AlignakStatus QWidget and "status" action
 
+        :param app_backend: AppBackend data
+        :type app_backend: AppBackend
         """
 
         self.qaction_factory.create(
@@ -256,7 +258,7 @@ class TrayIcon(QSystemTrayIcon):
         )
 
         self.alignak_status = AlignakStatus()
-        self.alignak_status.create_status()
+        self.alignak_status.create_status(app_backend)
         self.qaction_factory.get('icon').triggered.connect(self.alignak_status.show_states)
 
         self.menu.addAction(self.qaction_factory.get('icon'))
