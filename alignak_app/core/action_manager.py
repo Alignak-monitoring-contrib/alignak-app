@@ -72,6 +72,7 @@ class ActionManager(object):
 
         # Check hosts acknowledges
         if self.acks_to_check['hosts']:
+            logger.debug('Hosts ACK: %s', self.acks_to_check['hosts'])
             for item in self.acks_to_check['hosts']:
                 # Get host
                 host = self.app_backend.get_host(item['host_id'], '_id')
@@ -80,6 +81,7 @@ class ActionManager(object):
                     done_actions[ACK]['hosts'].append(item)
         # Check services acknowledges
         if self.acks_to_check['services']:
+            logger.debug('Services ACK: %s', self.acks_to_check['services'])
             for item in self.acks_to_check['services']:
                 # Get service
                 service = self.app_backend.get_service(item['host_id'], item['service_id'])
@@ -89,6 +91,7 @@ class ActionManager(object):
 
         # Check host downtimes
         if self.downtimes_to_check['hosts']:
+            logger.debug('Hosts DOWN: %s', self.downtimes_to_check['hosts'])
             for item in self.downtimes_to_check['hosts']:
                 # Get host
                 host = self.app_backend.get_host(item['host_id'], '_id')
@@ -97,6 +100,7 @@ class ActionManager(object):
                     done_actions[DOWNTIME]['hosts'].append(item)
                     # Check services acknowledges
         if self.downtimes_to_check['services']:
+            logger.debug('Services DOWN: %s', self.downtimes_to_check['services'])
             for item in self.downtimes_to_check['services']:
                 # Get service
                 service = self.app_backend.get_service(item['host_id'], item['service_id'])
@@ -106,6 +110,7 @@ class ActionManager(object):
 
         # Check process
         if self.processed_to_check:
+            logger.debug('Item PROCESS: %s', self.processed_to_check)
             for item in self.processed_to_check:
                 resp = self.app_backend.backend.get(item['post']['_links']['self']['href'])
                 if resp[PROCESS]:
@@ -135,6 +140,7 @@ class ActionManager(object):
         """
 
         if item:
+            logger.debug('Add item %s' % item)
             if ACK in item['action']:
                 if not item['service_id']:
                     self.acks_to_check['hosts'].append(item)
