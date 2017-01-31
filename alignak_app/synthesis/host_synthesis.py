@@ -109,15 +109,76 @@ class HostSynthesis(QWidget):
         host_name = QLabel('<h2>%s</h2>' % backend_data['host']['alias'])
         host_layout.addWidget(host_name, 1, 0, 1, 1)
 
+        # Real State
         host_real_state = QLabel()
         host_real_state.setPixmap(self.get_host_icon(backend_data['host']['ls_state']))
         host_real_state.setFixedSize(48, 48)
         host_real_state.setScaledContents(True)
         host_layout.addWidget(host_real_state, 2, 0, 1, 1)
 
-        # Real state text
         real_state = QLabel('Host real state, excluding services')
         host_layout.addWidget(real_state, 3, 0, 1, 1)
+
+        # Buttons
+        self.create_buttons(host_layout, backend_data)
+        self.create_host_details(host_layout, backend_data)
+
+        return host_widget
+
+    @staticmethod
+    def create_host_details(host_layout, backend_data):
+        """
+        Create QLabels for host details
+
+        :param host_layout: layout of QWidget
+        :type host_layout: QGridLayout
+        :param backend_data: data of AppBackend
+        :type backend_data: dict
+        """
+
+        # Host details
+        acknowledge = QLabel('<b>Acknowledged:</b> %s' % backend_data['host']['ls_acknowledged'])
+        host_layout.addWidget(acknowledge, 0, 2, 1, 1)
+
+        downtime = QLabel('<b>Downtimed:</b> %s' % backend_data['host']['ls_downtimed'])
+        host_layout.addWidget(downtime, 1, 2, 1, 1)
+
+        diff_last_check = get_diff_since_last_check(backend_data['host']['ls_last_check'])
+        host_last_check = QLabel('<b>Last check:</b> %s' % str(diff_last_check))
+        host_layout.addWidget(host_last_check, 2, 2, 1, 1)
+
+        output = QLabel(backend_data['host']['ls_output'])
+        output.setObjectName('output')
+        output.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        scroll = QScrollArea()
+        scroll.setWidget(output)
+        scroll.setObjectName('output')
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll.setMinimumWidth(500)
+        scroll.setMaximumHeight(60)
+        host_layout.addWidget(scroll, 3, 2, 1, 2)
+
+        alias = QLabel('<b>Alias:</b> %s' % backend_data['host']['alias'])
+        host_layout.addWidget(alias, 0, 3, 1, 1)
+
+        address = QLabel('<b>Address:</b> %s' % backend_data['host']['address'])
+        host_layout.addWidget(address, 1, 3, 1, 1)
+
+        business_impact = QLabel('<b>Importance:</b> %s' % backend_data['host']['business_impact'])
+        host_layout.addWidget(business_impact, 2, 3, 1, 1)
+
+        parents = QLabel('<b>Parents:</b> %s' % backend_data['host']['parents'])
+        host_layout.addWidget(parents, 0, 4, 1, 1)
+
+    def create_buttons(self, host_layout, backend_data):
+        """
+        Create QPushButtons for Acknowledge and Donwtime actions
+
+        :param host_layout: layout of QWidget
+        :type host_layout: QGridLayout
+        :param backend_data: data of AppBackend
+        :type backend_data: dict
+        """
 
         # ACK
         acknowledge_btn = QPushButton()
@@ -144,26 +205,6 @@ class HostSynthesis(QWidget):
         if 'UP' in backend_data['host']['ls_state'] or backend_data['host']['ls_downtimed']:
             downtime_btn.setEnabled(False)
         host_layout.addWidget(downtime_btn, 1, 1, 1, 1)
-
-        last_check_title = QLabel('<b>Last check:</b>')
-        host_layout.addWidget(last_check_title, 2, 2, 1, 1)
-
-        diff_last_check = get_diff_since_last_check(backend_data['host']['ls_last_check'])
-        host_last_check = QLabel(str(diff_last_check))
-        host_layout.addWidget(host_last_check, 2, 3, 1, 1)
-
-        output = QLabel(backend_data['host']['ls_output'])
-        output.setObjectName('output')
-        output.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        scroll = QScrollArea()
-        scroll.setWidget(output)
-        scroll.setObjectName('output')
-        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll.setMinimumWidth(500)
-        scroll.setMaximumHeight(60)
-        host_layout.addWidget(scroll, 3, 2, 1, 2)
-
-        return host_widget
 
     def get_services_widget(self, backend_data):
         """
