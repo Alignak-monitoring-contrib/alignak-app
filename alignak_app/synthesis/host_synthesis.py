@@ -54,7 +54,7 @@ logger = getLogger(__name__)
 
 class HostSynthesis(QWidget):
     """
-        Class who create the Synthesis QWidget.
+        Class who create the HostSynthesis QWidget for host and its services.
     """
 
     def __init__(self, app_backend, action_manager, parent=None):
