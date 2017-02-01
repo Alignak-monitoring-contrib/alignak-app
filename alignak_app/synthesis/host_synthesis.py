@@ -377,7 +377,7 @@ class HostSynthesis(QWidget):
 
             self.sender().setEnabled(False)
 
-    def check_action_manager(self):
+    def check_action_manager(self):  # pragma: no cover, no testability
         """
         Check ActionManager and send banner if items to send
 
