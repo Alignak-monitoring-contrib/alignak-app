@@ -45,6 +45,7 @@ class TestHostSynthesis(unittest2.TestCase):
         'display_name': 'My Service',
         '_id': '11111',
         'ls_state': 'OK',
+        '_overall_state_id': 2,
         'ls_last_check': 0.0,
         'ls_output': 'Output of the service',
         'ls_acknowledged': False,
