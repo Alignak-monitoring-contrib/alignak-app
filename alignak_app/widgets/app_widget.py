@@ -90,7 +90,6 @@ class AppQWidget(QFrame):
         logo_widget.setObjectName('logo')
         logo_layout = QHBoxLayout()
         logo_widget.setLayout(logo_layout)
-        logo_widget.setAttribute(Qt.WA_TransparentForMouseEvents)
 
         logo_label = QLabel()
         logo_label.setPixmap(QPixmap(get_image_path('alignak')))
@@ -101,6 +100,7 @@ class AppQWidget(QFrame):
 
         title_label = QLabel('<h3>%s</h3>' % title)
         title_label.setObjectName('title')
+        title_label.setAttribute(Qt.WA_TransparentForMouseEvents)
 
         logo_layout.addWidget(title_label, 1)
         logo_layout.setAlignment(title_label, Qt.AlignHCenter)
@@ -108,6 +108,7 @@ class AppQWidget(QFrame):
         minimize_btn = QPushButton()
         minimize_btn.setIcon(QIcon(get_image_path('minimize')))
         minimize_btn.setFixedSize(22, 22)
+        minimize_btn.setObjectName('app_widget')
         minimize_btn.clicked.connect(self.minimize)
         if 'Notification' in self.windowTitle():
             minimize_btn.setEnabled(False)
@@ -116,6 +117,7 @@ class AppQWidget(QFrame):
         maximize_btn = QPushButton()
         maximize_btn.setIcon(QIcon(get_image_path('maximize')))
         maximize_btn.setFixedSize(22, 22)
+        maximize_btn.setObjectName('app_widget')
         maximize_btn.clicked.connect(self.minimize_maximize)
         if 'Notification' in self.windowTitle():
             maximize_btn.setEnabled(False)
@@ -124,6 +126,7 @@ class AppQWidget(QFrame):
         close_btn = QPushButton()
         close_btn.setIcon(QIcon(get_image_path('exit')))
         close_btn.setFixedSize(22, 22)
+        close_btn.setObjectName('app_widget')
         close_btn.clicked.connect(self.close)
         logo_layout.addWidget(close_btn, 4)
 
