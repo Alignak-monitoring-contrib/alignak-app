@@ -34,7 +34,7 @@ except ImportError:
     from PyQt4.Qt import QWidget, QLabel
 
 
-class TestServicesView(unittest2.TestCase):
+class TestService(unittest2.TestCase):
     """
         This file test the Service class.
     """
