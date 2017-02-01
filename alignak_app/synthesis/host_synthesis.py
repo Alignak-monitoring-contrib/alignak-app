@@ -414,34 +414,6 @@ class HostSynthesis(QWidget):
                     send_banner('INFO', '%s for %s is processed...' % (action_title, item['name']))
 
     @staticmethod
-    def get_service_icon(state):
-        """
-        Return QPixmap with the icon corresponding to the status.
-
-        :param state: state of the host.
-        :type state: str
-        :return: QPushButton with QIcon
-        :rtype: QPushButton
-        """
-
-        state_model = {
-            'OK': 'services_ok',
-            'WARNING': 'services_warning',
-            'CRITICAL': 'services_critical',
-            'UNKNOWN': 'services_unknown',
-            'UNREACHABLE': 'services_unreachable',
-            'DEFAULT': 'services_none'
-        }
-
-        try:
-            icon_name = state_model[state]
-        except KeyError:
-            icon_name = state_model['DEFAULT']
-        icon = QPixmap(get_image_path(icon_name))
-
-        return icon
-
-    @staticmethod
     def get_host_icon(state):
         """
         Return QPixmap with the icon corresponding to the status.
