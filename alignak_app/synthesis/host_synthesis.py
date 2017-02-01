@@ -99,25 +99,28 @@ class HostSynthesis(QWidget):
         host_layout = QGridLayout(host_widget)
 
         # Overall State
+        host_services_status = QLabel('Host Services Status')
+        host_layout.addWidget(host_services_status, 0, 0, 1, 1)
+
         host_overall_state = QLabel()
         host_overall_state.setPixmap(self.get_real_state_icon(backend_data['services']))
         host_overall_state.setFixedSize(72, 72)
         host_overall_state.setScaledContents(True)
-        host_layout.addWidget(host_overall_state, 0, 0, 1, 1)
+        host_layout.addWidget(host_overall_state, 1, 0, 1, 1)
 
         # Hostname
         host_name = QLabel('<h2>%s</h2>' % backend_data['host']['alias'])
-        host_layout.addWidget(host_name, 1, 0, 1, 1)
+        host_layout.addWidget(host_name, 2, 0, 1, 1)
 
         # Real State
         host_real_state = QLabel()
         host_real_state.setPixmap(self.get_host_icon(backend_data['host']['ls_state']))
         host_real_state.setFixedSize(48, 48)
         host_real_state.setScaledContents(True)
-        host_layout.addWidget(host_real_state, 2, 0, 1, 1)
+        host_layout.addWidget(host_real_state, 3, 0, 1, 1)
 
         real_state = QLabel('Host real state, excluding services')
-        host_layout.addWidget(real_state, 3, 0, 1, 1)
+        host_layout.addWidget(real_state, 4, 0, 1, 1)
 
         # Buttons
         self.create_buttons(host_layout, backend_data)
@@ -431,7 +434,7 @@ class HostSynthesis(QWidget):
         elif 'DOWN' in state:
             icon_name = 'hosts_down'
         else:
-            icon_name = 'hosts_none'
+            icon_name = 'unvalid'
 
         icon = QPixmap(get_image_path(icon_name))
 
@@ -442,27 +445,28 @@ class HostSynthesis(QWidget):
         """
         Calculate real state and return QPixmap
 
-        :param services: dict of services. None if search is not found
+        :param services: dict of services
         :type services: dict
+        :return: QPixmap with right icon state
+        :rtype: QPixmap
         """
 
         if services:
-            icon_names = ['hosts_up', 'hosts_none', 'hosts_unreach', 'hosts_down']
+            icon_names = [
+                'all_services_ok',
+                'all_services_ok',
+                'all_services_ok',
+                'all_services_warning',
+                'all_services_critical'
+            ]
             state_lvl = []
             for service in services:
-                if 'UNREACHABLE' in service['ls_state'] or 'CRITICAL' in service['ls_state']:
-                    state_lvl.append(3)
-                elif 'WARNING' in service['ls_state'] or 'UNKNOWN' in service['ls_state']:
-                    state_lvl.append(2)
-                elif service['ls_downtimed']:
-                    state_lvl.append(1)
-                else:
-                    state_lvl.append(0)
+                state_lvl.append(service['_overall_state_id'])
 
             result = max(state_lvl)
 
             icon = QPixmap(get_image_path(icon_names[result]))
         else:
-            icon = QPixmap(get_image_path('hosts_none'))
+            icon = QPixmap(get_image_path('unvalid'))
 
         return icon
