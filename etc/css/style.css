@@ -15,6 +15,16 @@ QFrame#app_widget {
     border-style: solid;
 }
 
+QPushButton#app_widget {
+    background-color: #78909c;
+    border: none;
+    outline: none;
+}
+
+QPushButton#app_widget:hover {
+    background-color: #889da6;
+}
+
 QWidget#logo {
     background-color: #78909c;
 }
