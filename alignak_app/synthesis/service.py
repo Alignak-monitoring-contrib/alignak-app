@@ -130,22 +130,6 @@ class Service(QWidget):
         scroll.setMaximumHeight(60)
         layout.addWidget(scroll, 1, 4, 2, 1)
 
-    def update_service(self, service):
-        """
-        Update last check and output of service
-
-        :param service: a service from Backend
-        :type service: dict
-        """
-
-        self.service = service
-
-        diff_last_check = get_diff_since_last_check(service['ls_last_check'])
-        self.last_check.setText(str(diff_last_check))
-
-        self.output_service.setText(service['ls_output'])
-        self.output_service.setToolTip(service['ls_output'])
-
     def get_service_icon(self, state):
         """
         Return QPixmap with the icon corresponding to the status.
