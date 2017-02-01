@@ -90,6 +90,7 @@ class AppQWidget(QFrame):
         logo_widget.setObjectName('logo')
         logo_layout = QHBoxLayout()
         logo_widget.setLayout(logo_layout)
+        logo_widget.setAttribute(Qt.WA_TransparentForMouseEvents)
 
         logo_label = QLabel()
         logo_label.setPixmap(QPixmap(get_image_path('alignak')))
