@@ -51,7 +51,6 @@ class TestServicesView(unittest2.TestCase):
         """Create QApplication"""
         try:
             cls.app = QApplication(sys.argv)
-            cls.widget = QWidget()
         except:
             pass
 
@@ -69,3 +68,29 @@ class TestServicesView(unittest2.TestCase):
         self.assertIsNotNone(under_test.service)
         self.assertIsNotNone(under_test.acknowledge_btn)
         self.assertIsNotNone(under_test.downtime_btn)
+
+    def test_get_service_icon(self):
+        """Get Service Icon"""
+
+        under_test = Service()
+
+        icon_ok = under_test.get_service_icon('OK')
+
+        self.assertIsInstance(icon_ok, QLabel)
+        self.assertEqual(icon_ok.objectName(), 'service')
+        self.assertEqual(icon_ok.toolTip(), 'Service is OK')
+
+        icon_warning = under_test.get_service_icon('WARNING')
+        self.assertEqual(icon_warning.toolTip(), 'Service is WARNING')
+
+        icon_critical = under_test.get_service_icon('CRITICAL')
+        self.assertEqual(icon_critical.toolTip(), 'Service is CRITICAL')
+
+        icon_unknown = under_test.get_service_icon('UNKNOWN')
+        self.assertEqual(icon_unknown.toolTip(), 'Service is UNKNOWN')
+
+        icon_unreachable = under_test.get_service_icon('UNREACHABLE')
+        self.assertEqual(icon_unreachable.toolTip(), 'Service is UNREACHABLE')
+
+        icon_bad = under_test.get_service_icon('BAD')
+        self.assertEqual(icon_bad.toolTip(), 'Service is ERROR')

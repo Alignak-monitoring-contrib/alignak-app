@@ -143,6 +143,7 @@ class Service(QWidget):
         try:
             icon_name = self.state_model[state]
         except KeyError:
+            state = 'ERROR'
             icon_name = self.state_model['DEFAULT']
         icon = QPixmap(get_image_path(icon_name))
 
