@@ -3,23 +3,28 @@ QLabel {
     color:black;
 }
 
-QFrame#app_widget {
-    border: 2px solid #1fb4e4;
-    border-style: inset;
-}
-
 QToolTip {
     background-color: black;
     color: #1fb3e3;
 }
 
 /****** APP QWIDGET ******/
+QFrame#app_widget {
+    border-width: 2px;
+    border-color: #78909c;
+    border-style: solid;
+}
+
+QWidget#logo {
+    background-color: #78909c;
+}
+
 QWidget#title {
-    background-color: #1a5b7b;
+    background-color: #78909c;
 }
 
 QLabel#title {
-    background-color: #1a5b7b;
+    background-color: #78909c;
     color: white;
 }
 
@@ -72,6 +77,7 @@ QLabel#output {
 QScrollArea#output {
     background-color: black;
 }
+
 QCheckBox {
     font-weight: bold;
     background-color: #eee;

@@ -73,12 +73,11 @@ class AppQWidget(QFrame):
         main_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(main_layout)
 
-        main_layout.addWidget(self.get_logo_widget())
-        main_layout.addWidget(self.get_title_widget(title))
+        main_layout.addWidget(self.get_logo_widget(title))
 
         self.setAttribute(Qt.WA_TransparentForMouseEvents)
 
-    def get_logo_widget(self):
+    def get_logo_widget(self, title):
         """
         Return the logo QWidget
 
@@ -88,6 +87,7 @@ class AppQWidget(QFrame):
 
         logo_widget = QWidget()
         logo_widget.setFixedHeight(45)
+        logo_widget.setObjectName('logo')
         logo_layout = QHBoxLayout()
         logo_widget.setLayout(logo_layout)
 
@@ -98,28 +98,33 @@ class AppQWidget(QFrame):
 
         logo_layout.addWidget(logo_label, 0)
 
+        title_label = QLabel('<h3>%s</h3>' % title)
+        title_label.setObjectName('title')
+
+        logo_layout.addWidget(title_label, 1)
+        logo_layout.setAlignment(title_label, Qt.AlignHCenter)
+
         minimize_btn = QPushButton()
         minimize_btn.setIcon(QIcon(get_image_path('minimize')))
-        minimize_btn.setFixedSize(24, 24)
+        minimize_btn.setFixedSize(22, 22)
         minimize_btn.clicked.connect(self.minimize)
         if 'Notification' in self.windowTitle():
             minimize_btn.setEnabled(False)
-        logo_layout.addStretch(self.width())
-        logo_layout.addWidget(minimize_btn, 1)
+        logo_layout.addWidget(minimize_btn, 2)
 
         maximize_btn = QPushButton()
         maximize_btn.setIcon(QIcon(get_image_path('maximize')))
-        maximize_btn.setFixedSize(24, 24)
+        maximize_btn.setFixedSize(22, 22)
         maximize_btn.clicked.connect(self.minimize_maximize)
         if 'Notification' in self.windowTitle():
             maximize_btn.setEnabled(False)
-        logo_layout.addWidget(maximize_btn, 2)
+        logo_layout.addWidget(maximize_btn, 3)
 
         close_btn = QPushButton()
         close_btn.setIcon(QIcon(get_image_path('exit')))
-        close_btn.setFixedSize(24, 24)
+        close_btn.setFixedSize(22, 22)
         close_btn.clicked.connect(self.close)
-        logo_layout.addWidget(close_btn, 3)
+        logo_layout.addWidget(close_btn, 4)
 
         return logo_widget
 
@@ -144,29 +149,6 @@ class AppQWidget(QFrame):
             self.setWindowState(Qt.WindowNoState)
         else:
             self.setWindowState(Qt.WindowMaximized)
-
-    @staticmethod
-    def get_title_widget(title):
-        """
-        Return the title QWidget
-
-        :return: title QWidget
-        :rtype: QWidget
-        """
-
-        title_widget = QWidget()
-        title_layout = QVBoxLayout(title_widget)
-        title_widget.setAttribute(Qt.WA_TransparentForMouseEvents)
-        title_widget.setFixedHeight(50)
-        title_widget.setObjectName('title')
-
-        title_label = QLabel('<h2>%s</h2>' % title)
-        title_label.setObjectName('title')
-
-        title_layout.addWidget(title_label)
-        title_layout.setAlignment(title_label, Qt.AlignCenter)
-
-        return title_widget
 
     def center(self):
         """
