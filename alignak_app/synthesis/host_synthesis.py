@@ -39,14 +39,14 @@ try:
     from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QStackedWidget, QScrollArea  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QIcon, QPixmap, QListWidget  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QTimer, QListWidgetItem, Qt  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QTimer, QListWidgetItem, Qt, QCheckBox  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QPushButton, QLabel  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QStackedWidget, QScrollArea  # pylint: disable=import-error
     from PyQt4.Qt import QIcon, QPixmap, QListWidget  # pylint: disable=import-error
-    from PyQt4.Qt import QTimer, QListWidgetItem, Qt  # pylint: disable=import-error
+    from PyQt4.Qt import QTimer, QListWidgetItem, Qt, QCheckBox  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
@@ -209,6 +209,19 @@ class HostSynthesis(QWidget):
             downtime_btn.setEnabled(False)
         host_layout.addWidget(downtime_btn, 1, 1, 1, 1)
 
+    def sort_services_list(self):
+        """
+        Sort services. If State is check, services with this state are displayed. Else they not.
+
+        """
+
+        for i in range(self.services_list.count()):
+            if self.sender().objectName() in self.services_list.item(i).text():
+                if self.sender().isChecked():
+                    self.services_list.item(i).setHidden(False)
+                else:
+                    self.services_list.item(i).setHidden(True)
+
     def get_services_widget(self, backend_data):
         """
         Return QWidget for services
@@ -222,14 +235,44 @@ class HostSynthesis(QWidget):
         services_widget = QWidget()
         services_layout = QGridLayout(services_widget)
 
+        ok_check_box = QCheckBox('OK')
+        ok_check_box.setObjectName('OK')
+        ok_check_box.setChecked(True)
+        ok_check_box.stateChanged.connect(self.sort_services_list)
+        services_layout.addWidget(ok_check_box, 0, 0, 1, 1)
+
+        unknown_check_box = QCheckBox('UNKNOWN')
+        unknown_check_box.setObjectName('UNKNOWN')
+        unknown_check_box.setChecked(True)
+        unknown_check_box.stateChanged.connect(self.sort_services_list)
+        services_layout.addWidget(unknown_check_box, 0, 1, 1, 1)
+
+        warning_check_box = QCheckBox('WARNING')
+        warning_check_box.setObjectName('WARNING')
+        warning_check_box.setChecked(True)
+        warning_check_box.stateChanged.connect(self.sort_services_list)
+        services_layout.addWidget(warning_check_box, 0, 2, 1, 1)
+
+        unreachable_check_box = QCheckBox('UNREACHABLE')
+        unreachable_check_box.setObjectName('UNREACHABLE')
+        unreachable_check_box.setChecked(True)
+        unreachable_check_box.stateChanged.connect(self.sort_services_list)
+        services_layout.addWidget(unreachable_check_box, 0, 3, 1, 1)
+
+        critical_check_box = QCheckBox('CRITICAL')
+        critical_check_box.setObjectName('CRITICAL')
+        critical_check_box.setChecked(True)
+        critical_check_box.stateChanged.connect(self.sort_services_list)
+        services_layout.addWidget(critical_check_box, 0, 4, 1, 1)
+
         # Init Vars
-        pos = 0
         self.stack = QStackedWidget()
         self.services_list = QListWidget()
 
-        services_layout.addWidget(self.services_list)
-        services_layout.addWidget(self.stack)
+        services_layout.addWidget(self.services_list, 1, 0, 1, 5)
+        services_layout.addWidget(self.stack, 2, 0, 1, 5)
 
+        pos = 0
         for service in backend_data['services']:
             # Service QWidget
             service_widget = Service()
@@ -253,15 +296,14 @@ class HostSynthesis(QWidget):
 
             # Add widget to QStackedWidget
             self.stack.addWidget(service_widget)
+
             # Add item to QListWidget
-            label = QLabel(service['display_name'])
-            label.setObjectName(service['ls_state'])
             list_item = QListWidgetItem()
-            self.services_list.addItem(list_item)
-            self.services_list.setItemWidget(list_item, label)
+            list_item.setText('%s: %s' % (service['display_name'], service['ls_state']))
             list_item.setIcon(
                 QIcon(get_image_path('services_%s' % service['ls_state']))
             )
+            self.services_list.addItem(list_item)
             self.services_list.insertItem(pos, list_item)
 
             pos += 1

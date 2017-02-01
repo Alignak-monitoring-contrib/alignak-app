@@ -72,6 +72,39 @@ QLabel#output {
 QScrollArea#output {
     background-color: black;
 }
+QCheckBox {
+    font-weight: bold;
+    background-color: #eee;
+}
+
+QCheckBox::unchecked {
+    background-color: #eee;
+    border: none;
+}
+
+QCheckBox::indicator::unchecked {
+    background-color: #eee;
+}
+
+QCheckBox#OK {
+    color: #27ae60;
+}
+
+QCheckBox#WARNING {
+    color: #e67e22;
+}
+
+QCheckBox#CRITICAL {
+    color: #e74c3c;
+}
+
+QCheckBox#UNKNOWN {
+    color: #2980b9;
+}
+
+QCheckBox#UNREACHABLE {
+    color: dark-grey;
+}
 
 QLabel#OK {
     border-style: solid;
