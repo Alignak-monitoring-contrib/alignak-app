@@ -76,16 +76,17 @@ QListWidget::item {
 
 QListWidget::item:selected {
     border: none;
-    background-color: #beebff;
+    color: black;
+    background-color: #e2dede;
 }
 
 QLabel#output {
-    background-color: black;
-    color: #1fb3e3;
+    background-color: white;
+    color: black;
 }
 
 QScrollArea#output {
-    background-color: black;
+    background-color: white;
 }
 
 QCheckBox {
