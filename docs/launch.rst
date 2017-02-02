@@ -45,7 +45,4 @@ If you're having trouble getting started and running the app, here are some thin
 3. The application generates a log file in its root folder (see :ref:`config`). Search for ``ERROR`` messages.
 4. Alignak-App must be installed in your `$HOME` folder, defines by the ``--user`` pip parameter (see :ref:`install`).
 
-Thanks
-======
 
-Thanks to `ddurieux <https://github.com/ddurieux>`_, `mohierf <https://github.com/mohierf>`_ and `spea1 <https://github.com/spea1>`_ for their help and contribution.

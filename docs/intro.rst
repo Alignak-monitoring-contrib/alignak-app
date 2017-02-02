@@ -39,6 +39,11 @@ Release cycle
 Other features will come in the next versions and you can propose new features through  `project issues <https://github.com/Alignak-monitoring-contrib/alignak-app>`_.
 Each feature is discussed in a separate issue.
 
+Thanks
+------
+
+Thanks to `ddurieux <https://github.com/ddurieux>`_, `mohierf <https://github.com/mohierf>`_ and `spea1 <https://github.com/spea1>`_ for their help and contribution.
+
 .. _Alignak: https://alignak-monitoring.github.io
 .. _GNU Affero General Public License: http://www.gnu.org/licenses/agpl.txt
 .. _Alignak WebUI: http://alignak-web-ui.readthedocs.io
