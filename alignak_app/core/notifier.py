@@ -72,7 +72,7 @@ class AppNotifier(QSystemTrayIcon):
             check_interval *= 1000
         else:
             logger.warning('Notifier will not send notifications !')
-            check_interval = 12000
+            check_interval = 30000
 
         timer = QTimer(self)
         timer.start(check_interval)
