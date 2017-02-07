@@ -145,21 +145,25 @@ class Synthesis(QWidget):
 
         """
 
-        host_name = str(self.line_search.text()).rstrip()
-        backend_data = self.app_backend.get_host_with_services(host_name)
+        if self.isVisible():
+            host_name = str(self.line_search.text()).rstrip()
+            if host_name:
+                backend_data = self.app_backend.get_host_with_services(host_name)
+            else:
+                backend_data = None
 
-        old_row = -1
+            old_row = -1
 
-        # Remove host_synthesis and delete it
-        if self.host_synthesis:
-            if self.host_synthesis.services_list:
-                old_row = self.host_synthesis.services_list.currentRow()
-            self.layout().removeWidget(self.host_synthesis)
-            self.host_synthesis.deleteLater()
-            self.host_synthesis = None
+            # Remove host_synthesis and delete it
+            if self.host_synthesis:
+                if self.host_synthesis.services_list:
+                    old_row = self.host_synthesis.services_list.currentRow()
+                self.layout().removeWidget(self.host_synthesis)
+                self.host_synthesis.deleteLater()
+                self.host_synthesis = None
 
-        self.host_synthesis = HostSynthesis(self.app_backend, self.action_manager)
-        self.host_synthesis.initialize(backend_data)
-        if old_row >= 0 and self.host_synthesis.services_list:
-            self.host_synthesis.services_list.setCurrentRow(old_row)
-        self.layout().addWidget(self.host_synthesis, 1, 0, 1, 5)
+            self.host_synthesis = HostSynthesis(self.app_backend, self.action_manager)
+            self.host_synthesis.initialize(backend_data)
+            if old_row >= 0 and self.host_synthesis.services_list:
+                self.host_synthesis.services_list.setCurrentRow(old_row)
+            self.layout().addWidget(self.host_synthesis, 1, 0, 1, 5)
