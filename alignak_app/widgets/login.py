@@ -83,8 +83,13 @@ class AppLogin(QDialog):
 
         main_layout.addWidget(self.get_logo_widget())
 
-        title = '<b>Welcome to Alignak-app v%s</b>' % __short_version__
-        main_layout.addWidget(self.get_title_widget(title))
+        title = QLabel(
+            '<h2>Welcome to Alignak-app</h2><span style="text-align:center;">Version %s</span>'
+            % __short_version__
+        )
+        title.setObjectName('title_login')
+        main_layout.addWidget(title)
+        main_layout.setAlignment(title, Qt.AlignCenter)
 
         # Login QWidget
         login_widget = QWidget(self)
@@ -93,7 +98,7 @@ class AppLogin(QDialog):
         # Configuration button
         refresh_conf_btn = QPushButton()
         refresh_conf_btn.clicked.connect(init_config)
-        refresh_conf_btn.setFixedSize(32, 32)
+        refresh_conf_btn.setFixedSize(25, 25)
         refresh_conf_btn.setIcon(QIcon(get_image_path('refresh')))
         refresh_conf_btn.setToolTip('Reload configuration')
         login_layout.addWidget(refresh_conf_btn, 2, 1, 1, 1)
@@ -101,7 +106,7 @@ class AppLogin(QDialog):
         # Server button
         server_btn = QPushButton()
         server_btn.clicked.connect(self.handle_server)
-        server_btn.setFixedSize(32, 32)
+        server_btn.setFixedSize(25, 25)
         server_btn.setIcon(QIcon(get_image_path('host')))
         server_btn.setToolTip('Modify Alignak Server')
         login_layout.addWidget(server_btn, 2, 2, 1, 1)
@@ -142,6 +147,7 @@ class AppLogin(QDialog):
 
         logo_widget = QWidget()
         logo_widget.setFixedHeight(45)
+        logo_widget.setObjectName('title')
         logo_layout = QHBoxLayout()
         logo_widget.setLayout(logo_layout)
 
@@ -155,6 +161,7 @@ class AppLogin(QDialog):
         minimize_btn = QPushButton()
         minimize_btn.setIcon(QIcon(get_image_path('minimize')))
         minimize_btn.setFixedSize(24, 24)
+        minimize_btn.setObjectName('app_widget')
         minimize_btn.clicked.connect(self.showMinimized)
         logo_layout.addStretch(self.width())
         logo_layout.addWidget(minimize_btn, 1)
@@ -162,40 +169,18 @@ class AppLogin(QDialog):
         maximize_btn = QPushButton()
         maximize_btn.setIcon(QIcon(get_image_path('maximize')))
         maximize_btn.setFixedSize(24, 24)
+        maximize_btn.setObjectName('app_widget')
         maximize_btn.clicked.connect(self.showMaximized)
         logo_layout.addWidget(maximize_btn, 2)
 
         close_btn = QPushButton()
         close_btn.setIcon(QIcon(get_image_path('exit')))
+        close_btn.setObjectName('app_widget')
         close_btn.setFixedSize(24, 24)
         close_btn.clicked.connect(self.close)
         logo_layout.addWidget(close_btn, 3)
 
         return logo_widget
-
-    @staticmethod
-    def get_title_widget(title):
-        """
-        Return the title QWidget
-
-        :return: title QWidget
-        :rtype: QWidget
-        """
-
-        title_widget = QWidget()
-        title_widget.setAttribute(Qt.WA_TransparentForMouseEvents)
-        title_layout = QVBoxLayout()
-        title_widget.setLayout(title_layout)
-        title_widget.setFixedHeight(50)
-        title_widget.setObjectName('title')
-
-        title_label = QLabel('<h2>%s</h2>' % title)
-        title_label.setObjectName('title')
-
-        title_layout.addWidget(title_label)
-        title_layout.setAlignment(title_label, Qt.AlignCenter)
-
-        return title_widget
 
     def handle_login(self):
         """

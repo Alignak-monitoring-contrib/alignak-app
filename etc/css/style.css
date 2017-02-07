@@ -168,6 +168,10 @@ QLabel#login_welcome {
     text-align: center;
 }
 
+QLabel#title_login {
+    margin-left: 2px;
+}
+
 /****** TITLE ******/
 QWidget#popup_title {
     background-color: #002b36;
