@@ -129,9 +129,9 @@ class Synthesis(QWidget):
         try:
             completer.setFilterMode(Qt.MatchContains)
         except AttributeError as e:
-            completer.setCaseSensitivity(Qt.CaseInsensitive)
             logger.warning('Can\'t use FilterMode : %s', e)
 
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
         completer.setModel(model)
 
         # Add completer to "line edit"
