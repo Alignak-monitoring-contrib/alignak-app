@@ -64,6 +64,7 @@ class HostSynthesis(QWidget):
         self.host = {}
         self.stack = None
         self.services_list = None
+        self.check_boxes = {}
 
     def initialize(self, backend_data):
         """
@@ -235,35 +236,35 @@ class HostSynthesis(QWidget):
         services_widget = QWidget()
         services_layout = QGridLayout(services_widget)
 
-        ok_check_box = QCheckBox('OK')
-        ok_check_box.setObjectName('OK')
-        ok_check_box.setChecked(True)
-        ok_check_box.stateChanged.connect(self.sort_services_list)
-        services_layout.addWidget(ok_check_box, 0, 0, 1, 1)
+        self.check_boxes['OK'] = QCheckBox('OK')
+        self.check_boxes['OK'].setObjectName('OK')
+        self.check_boxes['OK'].setChecked(True)
+        self.check_boxes['OK'].stateChanged.connect(self.sort_services_list)
+        services_layout.addWidget(self.check_boxes['OK'], 0, 0, 1, 1)
 
-        unknown_check_box = QCheckBox('UNKNOWN')
-        unknown_check_box.setObjectName('UNKNOWN')
-        unknown_check_box.setChecked(True)
-        unknown_check_box.stateChanged.connect(self.sort_services_list)
-        services_layout.addWidget(unknown_check_box, 0, 1, 1, 1)
+        self.check_boxes['UNKNOWN'] = QCheckBox('UNKNOWN')
+        self.check_boxes['UNKNOWN'].setObjectName('UNKNOWN')
+        self.check_boxes['UNKNOWN'].setChecked(True)
+        self.check_boxes['UNKNOWN'].stateChanged.connect(self.sort_services_list)
+        services_layout.addWidget(self.check_boxes['UNKNOWN'], 0, 1, 1, 1)
 
-        warning_check_box = QCheckBox('WARNING')
-        warning_check_box.setObjectName('WARNING')
-        warning_check_box.setChecked(True)
-        warning_check_box.stateChanged.connect(self.sort_services_list)
-        services_layout.addWidget(warning_check_box, 0, 2, 1, 1)
+        self.check_boxes['WARNING'] = QCheckBox('WARNING')
+        self.check_boxes['WARNING'].setObjectName('WARNING')
+        self.check_boxes['WARNING'].setChecked(True)
+        self.check_boxes['WARNING'].stateChanged.connect(self.sort_services_list)
+        services_layout.addWidget(self.check_boxes['WARNING'], 0, 2, 1, 1)
 
-        unreachable_check_box = QCheckBox('UNREACHABLE')
-        unreachable_check_box.setObjectName('UNREACHABLE')
-        unreachable_check_box.setChecked(True)
-        unreachable_check_box.stateChanged.connect(self.sort_services_list)
-        services_layout.addWidget(unreachable_check_box, 0, 3, 1, 1)
+        self.check_boxes['UNREACHABLE'] = QCheckBox('UNREACHABLE')
+        self.check_boxes['UNREACHABLE'].setObjectName('UNREACHABLE')
+        self.check_boxes['UNREACHABLE'].setChecked(True)
+        self.check_boxes['UNREACHABLE'].stateChanged.connect(self.sort_services_list)
+        services_layout.addWidget(self.check_boxes['UNREACHABLE'], 0, 3, 1, 1)
 
-        critical_check_box = QCheckBox('CRITICAL')
-        critical_check_box.setObjectName('CRITICAL')
-        critical_check_box.setChecked(True)
-        critical_check_box.stateChanged.connect(self.sort_services_list)
-        services_layout.addWidget(critical_check_box, 0, 4, 1, 1)
+        self.check_boxes['CRITICAL'] = QCheckBox('CRITICAL')
+        self.check_boxes['CRITICAL'].setObjectName('CRITICAL')
+        self.check_boxes['CRITICAL'].setChecked(True)
+        self.check_boxes['CRITICAL'].stateChanged.connect(self.sort_services_list)
+        services_layout.addWidget(self.check_boxes['CRITICAL'], 0, 4, 1, 1)
 
         # Init Vars
         self.stack = QStackedWidget()
