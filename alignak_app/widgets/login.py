@@ -244,15 +244,26 @@ class AppLogin(QDialog):
         server_port.setText(cur_port)
         layout.addWidget(server_port, 2, 1, 1, 2)
 
+        # Server Processes
+        proc_desc = QLabel('Processes')
+        layout.addWidget(proc_desc, 3, 0, 1, 1)
+
+        server_proc = QLineEdit()
+        server_proc.setPlaceholderText('alignak backend processes')
+        cur_proc = get_app_config('Backend', 'processes')
+        server_proc.setText(cur_proc)
+        layout.addWidget(server_proc, 3, 1, 1, 2)
+
         # Valid Button
         valid_btn = QPushButton('Valid')
         valid_btn.clicked.connect(server_dialog.accept)
-        layout.addWidget(valid_btn, 3, 0, 1, 3)
+        layout.addWidget(valid_btn, 4, 0, 1, 3)
 
         if server_dialog.exec_() == QDialog.Accepted:
             backend_url = '%(alignak_url)s:' + str(server_port.text()).rstrip()
             set_app_config('Backend', 'alignak_backend', backend_url)
             set_app_config('Backend', 'alignak_url', str(server_url.text()).rstrip())
+            set_app_config('Backend', 'processes', str(server_proc.text()).rstrip())
 
     def mousePressEvent(self, event):
         """ QWidget.mousePressEvent(QMouseEvent) """

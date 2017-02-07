@@ -64,7 +64,9 @@ class AppBackend(object):
 
         # Create Backend object
         backend_url = get_app_config('Backend', 'alignak_backend')
-        self.backend = Backend(backend_url)
+        processes = int(get_app_config('Backend', 'processes'))
+
+        self.backend = Backend(backend_url, processes=processes)
 
         logger.debug('Backend URL : ' + backend_url)
         logger.info('Try to connect to app_backend...')
