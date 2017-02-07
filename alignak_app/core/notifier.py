@@ -65,10 +65,14 @@ class AppNotifier(QSystemTrayIcon):
         self.popup.initialize_notification()
 
         check_interval = int(get_app_config('Alignak-App', 'check_interval'))
-        logger.info('Start notifier...')
-        logger.debug('Will be notify in ' + str(check_interval) + 's')
+        if bool(check_interval):
+            logger.info('Start notifier...')
+            logger.debug('Will be notify in ' + str(check_interval) + 's')
 
-        check_interval *= 1000
+            check_interval *= 1000
+        else:
+            logger.warning('Notifier will not send notifications !')
+            check_interval = 12000
 
         timer = QTimer(self)
         timer.start(check_interval)
@@ -132,17 +136,19 @@ class AppNotifier(QSystemTrayIcon):
             level_notif = 'OK'
 
         if self.notify:
-            logger.info('Send notification..')
-            # Trigger changes and send notification
+            # Update Menus
             self.tray_icon.update_menu_actions(
                 current_states['hosts'],
                 current_states['services']
             )
-            self.popup.send_notification(
-                level_notif, current_states['hosts'],
-                current_states['services'],
-                diff
-            )
+
+            # Send notification
+            if bool(int(get_app_config('Alignak-App', 'check_interval'))):
+                self.popup.send_notification(
+                    level_notif, current_states['hosts'],
+                    current_states['services'],
+                    diff
+                )
         else:
             logger.info('No Notify.')
 
