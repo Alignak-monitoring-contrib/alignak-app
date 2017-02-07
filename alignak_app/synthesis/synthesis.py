@@ -55,6 +55,8 @@ class Synthesis(QWidget):
         Class who create the Synthesis QWidget.
     """
 
+    first_display = True
+
     def __init__(self, parent=None):
         super(Synthesis, self).__init__(parent)
         self.setMinimumSize(1000, 600)
@@ -80,12 +82,9 @@ class Synthesis(QWidget):
         self.app_backend = app_backend
         self.action_manager = ActionManager(app_backend)
 
-        # Search Line
-        self.create_line_search()
-
         # button
         button = QPushButton('Search / Refresh', self)
-        button.setToolTip('Type name of a host to display his data')
+        button.setToolTip('Type a host name to display its data')
         button.clicked.connect(self.display_host_synthesis)
         self.line_search.returnPressed.connect(button.click)
         self.line_search.cursorPositionChanged.connect(button.click)
@@ -146,13 +145,17 @@ class Synthesis(QWidget):
         """
 
         if self.isVisible():
+            # If first display, create line search from hosts list
+            if self.first_display:
+                self.create_line_search()
+                self.first_display = False
+
             host_name = str(self.line_search.text()).rstrip()
+            backend_data = None
+            old_row = -1
+
             if host_name:
                 backend_data = self.app_backend.get_host_with_services(host_name)
-            else:
-                backend_data = None
-
-            old_row = -1
 
             # Remove host_synthesis and delete it
             if self.host_synthesis:
@@ -162,6 +165,7 @@ class Synthesis(QWidget):
                 self.host_synthesis.deleteLater()
                 self.host_synthesis = None
 
+            # Create the new host_synthesis
             self.host_synthesis = HostSynthesis(self.app_backend, self.action_manager)
             self.host_synthesis.initialize(backend_data)
             if old_row >= 0 and self.host_synthesis.services_list:
