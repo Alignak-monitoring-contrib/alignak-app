@@ -173,7 +173,7 @@ class NotificationFactory(QWidget):
         if isinstance(diff, int):
             self.state_data[state_name]['diff'].setText('<b>(' + "{0:+d}".format(diff) + ')</b>')
         else:
-            self.state_data[state_name]['diff'].setText('<b>(' + diff + ')</b>')
+            self.state_data[state_name]['diff'].setText('')
 
         self.state_data[state_name]['progress_bar'].setFormat('%.01f%%' % percent)
         self.state_data[state_name]['progress_bar'].setValue(float(percent))

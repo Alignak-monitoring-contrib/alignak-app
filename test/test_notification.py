@@ -91,20 +91,20 @@ class TestNotification(unittest2.TestCase):
         # Send a CRITICAL notification
         changes = {
             'hosts': {
-                'up': 'no changes',
-                'down': 'no changes',
-                'unreachable': 'no changes',
-                'acknowledge': 'no changes',
-                'downtime': 'no changes',
+                'up': '',
+                'down': '',
+                'unreachable': '',
+                'acknowledge': '',
+                'downtime': ''
             },
             'services': {
-                'ok': 'no changes',
-                'warning': 'no changes',
-                'critical': 'no changes',
-                'unknown': 'no changes',
-                'unreachable': 'no changes',
-                'acknowledge': 'no changes',
-                'downtime': 'no changes',
+                'ok': '',
+                'warning': '',
+                'critical': '',
+                'unknown': '',
+                'unreachable': '',
+                'acknowledge': '',
+                'downtime': ''
             }
         }
         under_test.send_notification('CRITICAL', hosts_states, services_states, changes)
@@ -120,7 +120,7 @@ class TestNotification(unittest2.TestCase):
         )
         self.assertEqual(
             under_test.popup_factory.state_data['hosts_up']['diff'].text(),
-            '<b>(no changes)</b>'
+            ''
         )
         assert 'Background-color: #e74c3c;' in under_test.styleSheet()
 
