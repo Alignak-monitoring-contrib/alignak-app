@@ -67,6 +67,7 @@ class Synthesis(QWidget):
         self.action_manager = None
         self.host_synthesis = None
         self.app_widget = AppQWidget()
+        self.old_checkbox_states = {}
 
     def initialize(self, app_backend):
         """
@@ -152,7 +153,6 @@ class Synthesis(QWidget):
 
             host_name = str(self.line_search.text()).rstrip()
             backend_data = None
-            old_checkbox_states = {}
             old_row = -1
 
             if host_name:
@@ -163,7 +163,7 @@ class Synthesis(QWidget):
                 if self.host_synthesis.services_list:
                     old_row = self.host_synthesis.services_list.currentRow()
                 if self.host_synthesis.check_boxes:
-                    old_checkbox_states = {
+                    self.old_checkbox_states = {
                         'OK': self.host_synthesis.check_boxes['OK'].isChecked(),
                         'UNKNOWN': self.host_synthesis.check_boxes['UNKNOWN'].isChecked(),
                         'WARNING': self.host_synthesis.check_boxes['WARNING'].isChecked(),
@@ -179,20 +179,20 @@ class Synthesis(QWidget):
             self.host_synthesis.initialize(backend_data)
             if old_row >= 0 and self.host_synthesis.services_list:
                 self.host_synthesis.services_list.setCurrentRow(old_row)
-            if old_checkbox_states and self.host_synthesis.check_boxes:
+            if self.old_checkbox_states and self.host_synthesis.check_boxes:
                 self.host_synthesis.check_boxes['OK'].setChecked(
-                    old_checkbox_states['OK']
+                    self.old_checkbox_states['OK']
                 )
                 self.host_synthesis.check_boxes['UNKNOWN'].setChecked(
-                    old_checkbox_states['UNKNOWN']
+                    self.old_checkbox_states['UNKNOWN']
                 )
                 self.host_synthesis.check_boxes['WARNING'].setChecked(
-                    old_checkbox_states['WARNING']
+                    self.old_checkbox_states['WARNING']
                 )
                 self.host_synthesis.check_boxes['UNREACHABLE'].setChecked(
-                    old_checkbox_states['UNREACHABLE']
+                    self.old_checkbox_states['UNREACHABLE']
                 )
                 self.host_synthesis.check_boxes['CRITICAL'].setChecked(
-                    old_checkbox_states['CRITICAL']
+                    self.old_checkbox_states['CRITICAL']
                 )
             self.layout().addWidget(self.host_synthesis, 1, 0, 1, 5)
