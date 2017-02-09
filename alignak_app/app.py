@@ -46,6 +46,7 @@ except ImportError:
     from PyQt4.QtCore import QTimer  # pylint: disable=import-error
 
 # Initialize logger
+init_config()
 logger = create_logger()
 
 
@@ -65,7 +66,7 @@ class AlignakApp(object):
         """
 
         # Initialize configuration
-        init_config()
+
         bannerManager.start()
 
         # Define level of logger
