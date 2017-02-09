@@ -81,7 +81,7 @@ class AppLogin(QDialog):
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
 
-        main_layout.addWidget(self.get_logo_widget())
+        main_layout.addWidget(self.get_logo_widget(self))
 
         title = QLabel(
             '<h2>Welcome to Alignak-app</h2><span style="text-align:center;">Version %s</span>'
@@ -137,7 +137,8 @@ class AppLogin(QDialog):
         main_layout.addWidget(login_widget)
         self.setLayout(main_layout)
 
-    def get_logo_widget(self):
+    @staticmethod
+    def get_logo_widget(widget):
         """
         Return the logo QWidget
 
@@ -162,22 +163,22 @@ class AppLogin(QDialog):
         minimize_btn.setIcon(QIcon(get_image_path('minimize')))
         minimize_btn.setFixedSize(24, 24)
         minimize_btn.setObjectName('app_widget')
-        minimize_btn.clicked.connect(self.showMinimized)
-        logo_layout.addStretch(self.width())
+        minimize_btn.clicked.connect(widget.showMinimized)
+        logo_layout.addStretch(widget.width())
         logo_layout.addWidget(minimize_btn, 1)
 
         maximize_btn = QPushButton()
         maximize_btn.setIcon(QIcon(get_image_path('maximize')))
         maximize_btn.setFixedSize(24, 24)
         maximize_btn.setObjectName('app_widget')
-        maximize_btn.clicked.connect(self.showMaximized)
+        maximize_btn.clicked.connect(widget.showMaximized)
         logo_layout.addWidget(maximize_btn, 2)
 
         close_btn = QPushButton()
         close_btn.setIcon(QIcon(get_image_path('exit')))
         close_btn.setObjectName('app_widget')
         close_btn.setFixedSize(24, 24)
-        close_btn.clicked.connect(self.close)
+        close_btn.clicked.connect(widget.close)
         logo_layout.addWidget(close_btn, 3)
 
         return logo_widget
@@ -196,7 +197,7 @@ class AppLogin(QDialog):
         resp = self.app_backend.login(str(username), str(password))
 
         if resp:
-            send_banner('OK', 'Connected to Alignak Backend')
+            send_banner('OK', 'Welcome %s, you are connected to Alignak Backend' % username)
             self.app_backend.user['username'] = str(username)
             self.app_backend.user['token'] = str(self.app_backend.backend.token)
             self.accept()
@@ -210,12 +211,18 @@ class AppLogin(QDialog):
 
         """
 
-        server_dialog = QDialog(self)
+        server_dialog = QDialog()
         server_dialog.setWindowTitle('Server Configuration')
+        server_dialog.setWindowFlags(Qt.FramelessWindowHint)
+        server_dialog.setStyleSheet(get_css())
         server_dialog.setMinimumSize(250, 100)
 
-        layout = QGridLayout()
-        server_dialog.setLayout(layout)
+        main_layout = QVBoxLayout(server_dialog)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.addWidget(self.get_logo_widget(server_dialog))
+
+        server_widget = QWidget(self)
+        server_layout = QGridLayout(server_widget)
 
         # Description
         desc_label = QLabel(
@@ -223,41 +230,40 @@ class AppLogin(QDialog):
             '<b>Be sure to enter a valid address</b>'
         )
         desc_label.setWordWrap(True)
-        layout.addWidget(desc_label, 0, 0, 1, 3)
+        server_layout.addWidget(desc_label, 0, 0, 1, 3)
 
         # Server URL
-        url_desc = QLabel('Server')
-        layout.addWidget(url_desc, 1, 0, 1, 1)
+        server_layout.addWidget(QLabel('Server'), 1, 0, 1, 1)
 
         server_url = QLineEdit()
         server_url.setPlaceholderText('alignak backend url')
         server_url.setText(get_app_config('Backend', 'alignak_url'))
-        layout.addWidget(server_url, 1, 1, 1, 2)
+        server_layout.addWidget(server_url, 1, 1, 1, 2)
 
         # Server Port
-        port_desc = QLabel('Port')
-        layout.addWidget(port_desc, 2, 0, 1, 1)
+        server_layout.addWidget(QLabel('Port'), 2, 0, 1, 1)
 
         server_port = QLineEdit()
         server_port.setPlaceholderText('alignak backend port')
         cur_port = get_app_config('Backend', 'alignak_backend').split(':')[2]
         server_port.setText(cur_port)
-        layout.addWidget(server_port, 2, 1, 1, 2)
+        server_layout.addWidget(server_port, 2, 1, 1, 2)
 
         # Server Processes
-        proc_desc = QLabel('Processes')
-        layout.addWidget(proc_desc, 3, 0, 1, 1)
+        server_layout.addWidget(QLabel('Processes'), 3, 0, 1, 1)
 
         server_proc = QLineEdit()
         server_proc.setPlaceholderText('alignak backend processes')
         cur_proc = get_app_config('Backend', 'processes')
         server_proc.setText(cur_proc)
-        layout.addWidget(server_proc, 3, 1, 1, 2)
+        server_layout.addWidget(server_proc, 3, 1, 1, 2)
 
         # Valid Button
         valid_btn = QPushButton('Valid')
         valid_btn.clicked.connect(server_dialog.accept)
-        layout.addWidget(valid_btn, 4, 0, 1, 3)
+        server_layout.addWidget(valid_btn, 4, 0, 1, 3)
+
+        main_layout.addWidget(server_widget)
 
         if server_dialog.exec_() == QDialog.Accepted:
             backend_url = '%(alignak_url)s:' + str(server_port.text()).rstrip()
