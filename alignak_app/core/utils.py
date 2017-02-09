@@ -232,9 +232,6 @@ def get_diff_since_last_check(last_check):
     ft_check = datetime.datetime.fromtimestamp(last_check).strftime(format_time)
     ft_time = datetime.datetime.fromtimestamp(cur_time).strftime(format_time)
 
-    logger.debug('Check: ' + str(ft_check))
-    logger.debug('CurTime: ' + str(ft_time))
-
     time_delta = \
         datetime.datetime.strptime(ft_time, format_time) - \
         datetime.datetime.strptime(ft_check, format_time)
