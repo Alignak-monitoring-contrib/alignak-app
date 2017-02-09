@@ -87,7 +87,7 @@ class TestHostSynthesis(unittest2.TestCase):
     def test_initialize(self):
         """Initialize Host Synthesis"""
 
-        under_test = HostSynthesis(None, self.action_manager)
+        under_test = HostSynthesis(self.action_manager)
 
         self.assertIsNone(under_test.app_backend)
         self.assertIsNotNone(under_test.action_manager)
@@ -116,7 +116,7 @@ class TestHostSynthesis(unittest2.TestCase):
     def test_get_host_widget(self):
         """Get Host QWidget"""
 
-        under_test = HostSynthesis(None, self.action_manager)
+        under_test = HostSynthesis(self.action_manager)
         widget_test = under_test.get_host_widget(self.backend_data)
 
         self.assertIsNotNone(widget_test)
@@ -125,7 +125,7 @@ class TestHostSynthesis(unittest2.TestCase):
     def test_get_services_widget(self):
         """Get Services QWidget"""
 
-        under_test = HostSynthesis(None, self.action_manager)
+        under_test = HostSynthesis(self.action_manager)
 
         self.assertIsNone(under_test.stack)
         self.assertIsNone(under_test.services_list)
@@ -143,7 +143,7 @@ class TestHostSynthesis(unittest2.TestCase):
     def test_display_current_service(self):
         """Display Current Service"""
 
-        under_test = HostSynthesis(None, self.action_manager)
+        under_test = HostSynthesis(self.action_manager)
         under_test.initialize(self.backend_data)
 
         under_test.display_current_service(1)
@@ -157,7 +157,7 @@ class TestHostSynthesis(unittest2.TestCase):
     def test_get_icons(self):
         """Get Host Icon and Host Real State Icon"""
 
-        under_test = HostSynthesis(None, None)
+        under_test = HostSynthesis(self.action_manager)
 
         host_icon_test = under_test.get_host_icon('UP')
 

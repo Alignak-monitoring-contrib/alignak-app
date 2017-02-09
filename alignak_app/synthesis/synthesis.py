@@ -175,7 +175,7 @@ class Synthesis(QWidget):
                 self.host_synthesis = None
 
             # Create the new host_synthesis
-            self.host_synthesis = HostSynthesis(self.app_backend, self.action_manager)
+            self.host_synthesis = HostSynthesis(self.action_manager)
             self.host_synthesis.initialize(backend_data)
             if old_row >= 0 and self.host_synthesis.services_list:
                 self.host_synthesis.services_list.setCurrentRow(old_row)
