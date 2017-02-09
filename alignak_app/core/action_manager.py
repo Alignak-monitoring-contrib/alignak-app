@@ -49,6 +49,8 @@ class ActionManager(object):
             'services': []
         }
         self.processed_to_check = []
+        self.acknowledged = []
+        self.downtimed = []
 
     def check_items(self):  # pragma: no cover, this is not testable
         """

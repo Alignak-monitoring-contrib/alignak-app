@@ -193,7 +193,9 @@ class HostSynthesis(QWidget):
         acknowledge_btn.setFixedSize(32, 32)
         acknowledge_btn.setToolTip('Acknowledge this host')
         acknowledge_btn.clicked.connect(self.add_acknowledge)
-        if 'UP' in backend_data['host']['ls_state'] or backend_data['host']['ls_acknowledged']:
+        if 'UP' in backend_data['host']['ls_state'] \
+                or backend_data['host']['ls_acknowledged'] \
+                or backend_data['host']['_id'] in self.action_manager.acknowledged:
             acknowledge_btn.setEnabled(False)
         host_layout.addWidget(acknowledge_btn, 0, 1, 1, 1)
 
@@ -206,7 +208,9 @@ class HostSynthesis(QWidget):
         downtime_btn.setFixedSize(32, 32)
         downtime_btn.setToolTip('Schedule a downtime for this host')
         downtime_btn.clicked.connect(self.add_downtime)
-        if 'UP' in backend_data['host']['ls_state'] or backend_data['host']['ls_downtimed']:
+        if 'UP' in backend_data['host']['ls_state'] \
+                or backend_data['host']['ls_downtimed'] \
+                or backend_data['host']['_id'] in self.action_manager.downtimed:
             downtime_btn.setEnabled(False)
         host_layout.addWidget(downtime_btn, 1, 1, 1, 1)
 
@@ -284,7 +288,9 @@ class HostSynthesis(QWidget):
             service_widget.acknowledge_btn.setObjectName(
                 'service:%s:%s' % (service['_id'], service['display_name'])
             )
-            if 'OK' in service['ls_state'] or service['ls_acknowledged']:
+            if 'OK' in service['ls_state'] \
+                    or service['ls_acknowledged'] \
+                    or service['_id'] in self.action_manager.acknowledged:
                 service_widget.acknowledge_btn.setEnabled(False)
 
             # Connect DOWN button
@@ -292,7 +298,9 @@ class HostSynthesis(QWidget):
             service_widget.downtime_btn.setObjectName(
                 'service:%s:%s' % (service['_id'], service['display_name'])
             )
-            if 'OK' in service['ls_state'] or service['ls_downtimed']:
+            if 'OK' in service['ls_state'] \
+                    or service['ls_downtimed'] \
+                    or service['_id'] in self.action_manager.downtimed:
                 service_widget.downtime_btn.setEnabled(False)
 
             # Add widget to QStackedWidget
@@ -333,11 +341,14 @@ class HostSynthesis(QWidget):
         item_type = str(self.sender().objectName().split(':')[0])
 
         if self.host:
+            host_id = self.host['_id']
+
             if 'service' in item_type:
                 service_id = str(self.sender().objectName().split(':')[1])
+                self.action_manager.acknowledged.append(service_id)
             else:
                 service_id = None
-            host_id = self.host['_id']
+                self.action_manager.acknowledged.append(host_id)
 
             user = self.app_backend.get_user()
 
@@ -382,11 +393,14 @@ class HostSynthesis(QWidget):
         item_type = str(self.sender().objectName().split(':')[0])
 
         if self.host:
+            host_id = self.host['_id']
+
             if 'service' in item_type:
                 service_id = str(self.sender().objectName().split(':')[1])
+                self.action_manager.downtimed.append(service_id)
             else:
                 service_id = None
-            host_id = self.host['_id']
+                self.action_manager.downtimed.append(host_id)
 
             user = self.app_backend.get_user()
 
