@@ -56,6 +56,10 @@ class HostSynthesis(QWidget):
     """
         Class who create the HostSynthesis QWidget for host and its services.
     """
+    state = {
+        True: 'Yes',
+        False: 'No'
+    }
 
     def __init__(self, action_manager, parent=None):
         super(HostSynthesis, self).__init__(parent)
@@ -141,10 +145,14 @@ class HostSynthesis(QWidget):
         """
 
         # Host details
-        acknowledge = QLabel('<b>Acknowledged:</b> %s' % backend_data['host']['ls_acknowledged'])
+        acknowledge = QLabel(
+            '<b>Acknowledged:</b> %s' % HostSynthesis.state[backend_data['host']['ls_acknowledged']]
+        )
         host_layout.addWidget(acknowledge, 0, 2, 1, 1)
 
-        downtime = QLabel('<b>Downtimed:</b> %s' % backend_data['host']['ls_downtimed'])
+        downtime = QLabel(
+            '<b>Downtimed:</b> %s' % HostSynthesis.state[backend_data['host']['ls_downtimed']]
+        )
         host_layout.addWidget(downtime, 1, 2, 1, 1)
 
         diff_last_check = get_diff_since_last_check(backend_data['host']['ls_last_check'])
@@ -171,7 +179,7 @@ class HostSynthesis(QWidget):
         business_impact = QLabel('<b>Importance:</b> %s' % backend_data['host']['business_impact'])
         host_layout.addWidget(business_impact, 2, 3, 1, 1)
 
-        parents = QLabel('<b>Parents:</b> %s' % backend_data['host']['parents'])
+        parents = QLabel('<b>Parents:</b> %s' % str(backend_data['host']['parents']))
         host_layout.addWidget(parents, 0, 4, 1, 1)
 
     def create_buttons(self, host_layout, backend_data):
@@ -430,7 +438,7 @@ class HostSynthesis(QWidget):
 
             item_action = {
                 'action': DOWNTIME,
-                'host_id': self.current_host['_id'],
+                'host_id': host_id,
                 'service_id': service_id
             }
             self.action_manager.add_item(item_action)
