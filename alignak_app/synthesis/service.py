@@ -65,9 +65,6 @@ class Service(QWidget):
         # Fields
         self.acknowledge_btn = None
         self.downtime_btn = None
-        self.service = None
-        self.last_check = None
-        self.output_service = None
 
     def initialize(self, service):
         """
@@ -76,8 +73,6 @@ class Service(QWidget):
         :param service: service data
         :type service: dict
         """
-
-        self.service = service
 
         layout = QGridLayout()
         self.setLayout(layout)
@@ -111,20 +106,20 @@ class Service(QWidget):
         layout.addWidget(check_name, 0, 3, 1, 1)
         diff_last_check = get_diff_since_last_check(service['ls_last_check'])
 
-        self.last_check = QLabel(str(diff_last_check))
-        layout.addWidget(self.last_check, 0, 4, 1, 1)
+        last_check = QLabel(str(diff_last_check))
+        layout.addWidget(last_check, 0, 4, 1, 1)
 
         # Output
         output_name = QLabel('<b>Output:</b>')
         output_name.setToolTip('Output of %s' % service['display_name'])
         layout.addWidget(output_name, 1, 3, 1, 1)
-        self.output_service = QLabel(service['ls_output'])
-        self.output_service.setObjectName('output')
-        self.output_service.setToolTip(service['ls_output'])
-        self.output_service.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        output_service = QLabel(service['ls_output'])
+        output_service.setObjectName('output')
+        output_service.setToolTip(service['ls_output'])
+        output_service.setTextInteractionFlags(Qt.TextSelectableByMouse)
 
         scroll = QScrollArea()
-        scroll.setWidget(self.output_service)
+        scroll.setWidget(output_service)
         scroll.setObjectName('output')
         scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll.setMaximumHeight(60)

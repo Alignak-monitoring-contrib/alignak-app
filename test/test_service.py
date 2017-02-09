@@ -59,13 +59,11 @@ class TestService(unittest2.TestCase):
 
         under_test = Service()
 
-        self.assertIsNone(under_test.service)
         self.assertIsNone(under_test.acknowledge_btn)
         self.assertIsNone(under_test.downtime_btn)
 
         under_test.initialize(self.service)
 
-        self.assertIsNotNone(under_test.service)
         self.assertIsNotNone(under_test.acknowledge_btn)
         self.assertIsNotNone(under_test.downtime_btn)
 
