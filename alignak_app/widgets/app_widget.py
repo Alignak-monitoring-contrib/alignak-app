@@ -172,6 +172,7 @@ class AppQWidget(QFrame):
 
         self.center()
         self.show()
+        QWidget.activateWindow(self)
 
     def add_widget(self, widget):
         """
