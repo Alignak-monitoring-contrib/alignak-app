@@ -1,6 +1,7 @@
 /****** GENERAL ******/
 QLabel {
     color:black;
+    font-family: Roboto,Helvetica,Arial,sans-serif;
 }
 
 QToolTip {
@@ -8,11 +9,16 @@ QToolTip {
     color: #1fb3e3;
 }
 
+.QWidget {
+    background-color: white;
+}
+
 /****** APP QWIDGET ******/
 QFrame#app_widget {
     border-width: 2px;
     border-color: #78909c;
     border-style: solid;
+    background-color: white;
 }
 
 QPushButton#app_widget {
@@ -57,6 +63,24 @@ QPushButton#valid:hover {
     color: white;
 }
 
+QLabel#login_msg {
+    color: red;
+}
+
+QLabel#login {
+    color: #1fb4e4;
+    font-size: 18px;
+}
+
+QLabel#login_welcome {
+    font-size: 14px;
+    text-align: center;
+}
+
+QLabel#title_login {
+    margin-left: 2px;
+}
+
 /****** NOTIFICATION ******/
 QProgressBar {
     color: black;
@@ -91,16 +115,26 @@ QScrollArea#output {
 
 QCheckBox {
     font-weight: bold;
-    background-color: #eee;
+    border: 1px solid #78909c;
+    border-radius: 3px;
+}
+
+QCheckBox::indicator {
+    border: 2px ridge #78909c;
+    border-radius: 5px;
+    width: 8px;
+    height: 8px;
+    background: #27ae60;
+    margin-left: 2px;
 }
 
 QCheckBox::unchecked {
-    background-color: #eee;
+    background-color: white;
     border: none;
 }
 
 QCheckBox::indicator::unchecked {
-    background-color: #eee;
+    background-color: white;
 }
 
 QCheckBox#OK {
@@ -151,25 +185,6 @@ QLabel#UNREACHABLE {
     border-style: solid;
     border-width:0px 0px 2px 0px;
     border-color: dark-grey;
-}
-
-/****** LOGIN ******/
-QLabel#login_msg {
-    color: red;
-}
-
-QLabel#login {
-    color: #1fb4e4; 
-    font-size: 18px;
-}
-
-QLabel#login_welcome {
-    font-size: 14px; 
-    text-align: center;
-}
-
-QLabel#title_login {
-    margin-left: 2px;
 }
 
 /****** TITLE ******/
