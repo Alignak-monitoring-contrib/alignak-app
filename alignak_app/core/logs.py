@@ -24,6 +24,7 @@
 """
 
 import os
+import sys
 
 from logging import getLogger
 from logging import Formatter
@@ -51,7 +52,12 @@ def create_logger():  # pragma: no cover
     if get_app_config('Log', 'location'):
         path = get_app_config('Log', 'location')
     else:
-        path = get_app_root() + '/alignak_app'
+        if 'linux' in sys.platform or 'sunos5' in sys.platform:
+            path = get_app_root() + '/alignak_app'
+        elif 'win32' in sys.platform:
+            path = 'C:\\ProgramData\\Alignak-app'
+        else:
+            path = '.'
 
     filename = get_app_config('Log', 'filename') + '.log'
 
