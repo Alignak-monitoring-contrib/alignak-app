@@ -128,26 +128,29 @@ class Service(QWidget):
         layout.addWidget(business_impact, 3, 0, 1, 2)
 
         if '_DETAILLEDESC' in service['customs']:
-            desc = service['customs']['_DETAILLEDESC']
+            description = service['customs']['_DETAILLEDESC']
         else:
-            desc = ''
+            description = ''
         if '_IMPACT' in service['customs']:
-            imp = service['customs']['_IMPACT']
+            impact = service['customs']['_IMPACT']
         else:
-            imp = ''
+            impact = ''
         if '_FIXACTIONS' in service['customs']:
-            fixact = service['customs']['_FIXACTIONS']
+            fix_actions = service['customs']['_FIXACTIONS']
         else:
-            fixact = ''
+            fix_actions = ''
 
-        description = QLabel('<b>Description:</b> %s' % desc)
-        layout.addWidget(description, 3, 2, 1, 2)
+        desc_label = QLabel('<b>Description:</b> %s' % description)
+        desc_label.setWordWrap(True)
+        layout.addWidget(desc_label, 3, 2, 1, 3)
 
-        impact = QLabel('<b>Impact:</b> %s' % imp)
-        layout.addWidget(impact, 4, 0, 1, 2)
+        impact_label = QLabel('<b>Impact:</b> %s' % impact)
+        impact_label.setWordWrap(True)
+        layout.addWidget(impact_label, 4, 0, 1, 2)
 
-        fix_actions = QLabel('<b>Fix actions:</b> %s' % fixact)
-        layout.addWidget(fix_actions, 4, 2, 1, 2)
+        fixactions_label = QLabel('<b>Fix actions:</b> %s' % fix_actions)
+        fixactions_label.setWordWrap(True)
+        layout.addWidget(fixactions_label, 4, 2, 1, 3)
 
     def get_service_icon(self, state):
         """
