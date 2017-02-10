@@ -141,17 +141,10 @@ QScrollArea#output {
 
 QCheckBox {
     font-weight: bold;
-    border: 1px solid #78909c;
-    border-radius: 3px;
 }
 
 QCheckBox::indicator {
-    border: 2px ridge #78909c;
-    border-radius: 5px;
-    width: 8px;
-    height: 8px;
-    background: #27ae60;
-    margin-left: 2px;
+    border: none;
 }
 
 QCheckBox::unchecked {
@@ -165,22 +158,62 @@ QCheckBox::indicator::unchecked {
 
 QCheckBox#OK {
     color: #27ae60;
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+    border-radius: 5px;
+}
+
+QCheckBox#OK::unchecked {
+    color: grey;
+    border: none;
 }
 
 QCheckBox#WARNING {
     color: #e67e22;
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+    border-radius: 5px;
+}
+
+QCheckBox#WARNING::unchecked {
+    color: grey;
+    border: none;
 }
 
 QCheckBox#CRITICAL {
     color: #e74c3c;
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+    border-radius: 5px;
+}
+
+QCheckBox#CRITICAL::unchecked {
+    color: grey;
+    border: none;
 }
 
 QCheckBox#UNKNOWN {
     color: #2980b9;
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+    border-radius: 5px;
+}
+
+QCheckBox#UNKNOWN::unchecked {
+    color: grey;
+    border: none;
 }
 
 QCheckBox#UNREACHABLE {
     color: dark-grey;
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+    border-radius: 5px;
+}
+
+QCheckBox#UNREACHABLE::unchecked {
+    color: grey;
+    border: none;
 }
 
 QLabel#OK {
