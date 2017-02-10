@@ -22,7 +22,7 @@ Alignak App
 
 .. image:: http://readthedocs.org/projects/alignak-app/badge/?version=develop
     :target: http://alignak-app.readthedocs.io/en/develop/?badge=develop
-    :alt: Deveopment documentation Status
+    :alt: Development documentation Status
 
 .. image:: https://badge.fury.io/py/alignak_app.svg
     :target: https://badge.fury.io/py/alignak_app
