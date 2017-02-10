@@ -51,6 +51,8 @@ class TestHostSynthesis(unittest2.TestCase):
         'ls_output': 'Output of the service',
         'ls_acknowledged': False,
         'ls_downtimed': False,
+        'business_impact': '2',
+        'customs': {},
     }
 
     backend_data = {

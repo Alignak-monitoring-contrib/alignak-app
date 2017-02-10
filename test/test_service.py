@@ -43,7 +43,9 @@ class TestService(unittest2.TestCase):
         'display_name': 'My Service',
         'ls_state': 'OK',
         'ls_last_check': 0.0,
-        'ls_output': 'Output of the service'
+        'ls_output': 'Output of the service',
+        'business_impact': '2',
+        'customs': {},
     }
 
     @classmethod
