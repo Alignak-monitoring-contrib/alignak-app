@@ -108,8 +108,8 @@ QListWidget {
     outline: none;
 }
 
-QListWidget::item {
-    border: none;
+QListWidget::item { 
+    height:30px;
 }
 
 QListWidget::item:selected {
