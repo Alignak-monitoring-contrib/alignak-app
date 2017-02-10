@@ -59,7 +59,6 @@ class Synthesis(QWidget):
 
     def __init__(self, parent=None):
         super(Synthesis, self).__init__(parent)
-        self.setMinimumSize(1000, 600)
         self.setStyleSheet(get_css())
         # Fields
         self.line_search = QLineEdit()
@@ -102,6 +101,7 @@ class Synthesis(QWidget):
 
         self.app_widget.initialize('Host Synthesis View')
         self.app_widget.add_widget(self)
+        self.app_widget.setMinimumSize(1200, 700)
 
         refresh_timer = QTimer(self)
         refresh_timer.start(30000)
