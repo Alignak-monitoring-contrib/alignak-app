@@ -50,7 +50,7 @@ def create_logger():  # pragma: no cover
 
     # Define path and file for "file_handler"
     if get_app_config('Log', 'location'):
-        path = get_app_config('Log', 'location')
+        path = str(get_app_config('Log', 'location'))
     else:
         if 'linux' in sys.platform or 'sunos5' in sys.platform:
             path = get_app_root() + '/alignak_app'
