@@ -116,8 +116,9 @@ class AppLogin(QDialog):
         login_layout.addWidget(server_btn, 2, 2, 1, 1)
 
         # Welcome text
-        login_label = QLabel('Log-in to use the application')
+        login_label = QLabel('<b>Log-in</b> to use the application')
         login_layout.addWidget(login_label, 2, 0, 1, 1)
+        login_layout.setAlignment(login_label, Qt.AlignCenter)
 
         # Username field
         self.username_line = QLineEdit(self)
