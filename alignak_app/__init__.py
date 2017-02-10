@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- codinf: utf-8 -*-
 
-# Copyright (c) 2015-2016:
+# Copyright (c) 2015-2017:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -31,7 +31,7 @@
 
 
 # Application version and manifest
-VERSION = (0, 5, 1)
+VERSION = (0, 6, 0)
 __application__ = u"Alignak-App"
 __short_version__ = '.'.join((str(each) for each in VERSION[:2]))
 __version__ = '.'.join((str(each) for each in VERSION[:4]))
