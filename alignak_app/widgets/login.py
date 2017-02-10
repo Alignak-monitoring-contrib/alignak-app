@@ -61,6 +61,7 @@ class AppLogin(QDialog):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(get_css())
         self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setMinimumSize(310, 300)
         # Fields
         self.app_backend = AppBackend()
         self.backend_url = None
@@ -95,6 +96,7 @@ class AppLogin(QDialog):
 
         # Login QWidget
         login_widget = QWidget(self)
+        login_widget.setObjectName('login')
         login_layout = QGridLayout(login_widget)
 
         # Configuration button
@@ -224,6 +226,7 @@ class AppLogin(QDialog):
         main_layout.addWidget(self.get_logo_widget(server_dialog))
 
         server_widget = QWidget(self)
+        server_widget.setObjectName('login')
         server_layout = QGridLayout(server_widget)
 
         # Description

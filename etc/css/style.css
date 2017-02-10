@@ -45,6 +45,20 @@ QLabel#title {
 }
 
 /****** LOGIN ******/
+QWidget#login {
+	border-width: 0px 2px 2px 2px;
+    border-color: #78909c;
+    border-style: solid;
+    background-color: white;
+}
+
+QDialog {
+    border-width: 2px 2px 0px 2px;
+    border-color: #78909c;
+    border-style: solid;
+    background-color: white;
+}
+
 QPushButton#valid {
     background-color: #4caf50;
     color: white;
@@ -159,7 +173,7 @@ QCheckBox#UNREACHABLE {
 
 QLabel#OK {
     border-style: solid;
-    border-width:0px 0px 2px 0px;
+    border-width: 0px 0px 2px 0px;
     border-color: #27ae60;
 }
 
