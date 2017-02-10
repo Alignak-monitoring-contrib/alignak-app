@@ -141,6 +141,7 @@ QScrollArea#output {
 
 QCheckBox {
     font-weight: bold;
+    outline: none;
 }
 
 QCheckBox::indicator {

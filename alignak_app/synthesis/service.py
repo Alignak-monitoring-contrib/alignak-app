@@ -200,12 +200,10 @@ class Service(QWidget):
         layout.setAlignment(importance_label, Qt.AlignLeft)
 
         for i in range(1, stars_nb):
-            print(i)
             star_label = QLabel()
             star_label.setFixedSize(16, 16)
             star_label.setScaledContents(True)
             star_label.setPixmap(QPixmap(get_image_path('star')))
             layout.addWidget(star_label)
-            layout.setAlignment(Qt.AlignTrailing)
 
         return stars_widget
