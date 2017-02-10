@@ -118,6 +118,18 @@ QListWidget::item:selected {
     background-color: #e2dede;
 }
 
+QPushButton#search {
+    background-color: #3884c3;
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+}
+
+QPushButton#search:hover {
+    background-color: #03a9f4;
+}
+
 QLabel#output {
     background-color: white;
     color: black;

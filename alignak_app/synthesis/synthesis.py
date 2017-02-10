@@ -85,6 +85,8 @@ class Synthesis(QWidget):
 
         # button
         button = QPushButton('Search / Refresh', self)
+        button.setObjectName('search')
+        button.setMinimumHeight(20)
         button.setToolTip('Type a host name to display its data')
         button.clicked.connect(self.display_host_synthesis)
         self.line_search.returnPressed.connect(button.click)
