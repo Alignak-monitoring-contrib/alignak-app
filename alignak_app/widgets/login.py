@@ -23,6 +23,8 @@
     Login manage login form
 """
 
+import sys
+
 from logging import getLogger
 
 from alignak_app import __short_version__
@@ -253,6 +255,8 @@ class AppLogin(QDialog):
         server_layout.addWidget(QLabel('Processes'), 3, 0, 1, 1)
 
         server_proc = QLineEdit()
+        if 'win32' in sys.platform:
+            server_proc.setEnabled(False)
         server_proc.setPlaceholderText('alignak backend processes')
         cur_proc = get_app_config('Backend', 'processes')
         server_proc.setText(cur_proc)
