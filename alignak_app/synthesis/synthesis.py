@@ -36,13 +36,13 @@ try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QStringListModel, QIcon  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QStringListModel  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QCompleter, QLineEdit, QTimer  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QWidget, QPushButton  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QStringListModel, QIcon  # pylint: disable=import-error
+    from PyQt4.Qt import QStringListModel  # pylint: disable=import-error
     from PyQt4.Qt import QCompleter, QLineEdit, QTimer  # pylint: disable=import-error
     from PyQt4.QtCore import Qt  # pylint: disable=import-error
 

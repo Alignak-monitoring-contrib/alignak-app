@@ -31,17 +31,13 @@ from alignak_app.widgets.app_widget import AppQWidget
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QVBoxLayout  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QLabel, QPushButton  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QWidget, QApplication  # pylint: disable=no-name-in-module
-    from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QVBoxLayout, QLabel  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QWidget  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     __import__('PyQt4')
-    from PyQt4.Qt import QVBoxLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QLabel, QPushButton  # pylint: disable=import-error
-    from PyQt4.Qt import QWidget, QApplication  # pylint: disable=import-error
-    from PyQt4.QtGui import QIcon  # pylint: disable=import-error
+    from PyQt4.Qt import QVBoxLayout, QLabel  # pylint: disable=import-error
+    from PyQt4.Qt import QWidget  # pylint: disable=import-error
     from PyQt4.QtCore import Qt  # pylint: disable=import-error
 
 

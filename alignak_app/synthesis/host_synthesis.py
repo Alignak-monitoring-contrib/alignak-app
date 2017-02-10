@@ -34,14 +34,12 @@ from alignak_app.synthesis.service import Service
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QWidget, QPushButton, QLabel  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QStackedWidget, QScrollArea  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QIcon, QPixmap, QListWidget  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QTimer, QListWidgetItem, Qt, QCheckBox  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QApplication  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QPushButton, QLabel  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QStackedWidget, QScrollArea  # pylint: disable=import-error

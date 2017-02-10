@@ -39,11 +39,9 @@ try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QDialog, QMessageBox  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QTimer  # pylint: disable=no-name-in-module
 except ImportError:
     from PyQt4.QtGui import QDialog, QMessageBox  # pylint: disable=import-error
     from PyQt4.QtGui import QIcon  # pylint: disable=import-error
-    from PyQt4.QtCore import QTimer  # pylint: disable=import-error
 
 # Initialize logger
 init_config()

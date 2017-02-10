@@ -42,7 +42,7 @@ try:
     from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel, QPixmap  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QDialog, QWidget  # pylint: disable=import-error
-    from PyQt4.Qt import QPushButton, QWidget, QGridLayout  # pylint: disable=import-error
+    from PyQt4.Qt import QPushButton, QGridLayout  # pylint: disable=import-error
     from PyQt4.Qt import QHBoxLayout, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QLineEdit, Qt, QIcon, QLabel, QPixmap  # pylint: disable=import-error
 

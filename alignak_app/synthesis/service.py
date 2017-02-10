@@ -31,15 +31,13 @@ try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QScrollArea  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QIcon, QPixmap  # pylint: disable=no-name-in-module
-    from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QObject, pyqtSignal  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QIcon, QPixmap, Qt  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QLabel   # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QScrollArea  # pylint: disable=import-error
-    from PyQt4.Qt import QWidget, QPushButton, Qt, QIcon  # pylint: disable=import-error
-    from PyQt4.QtCore import QObject, pyqtSignal  # pylint: disable=import-error
-    from PyQt4.Qt import QGridLayout, QLabel, QPixmap  # pylint: disable=import-error
+    from PyQt4.Qt import QWidget, QPushButton  # pylint: disable=import-error
+    from PyQt4.Qt import QIcon, QPixmap, Qt  # pylint: disable=import-error
+    from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
