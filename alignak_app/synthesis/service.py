@@ -121,7 +121,33 @@ class Service(QWidget):
         scroll.setObjectName('output')
         scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll.setMaximumHeight(60)
-        layout.addWidget(scroll, 1, 4, 2, 1)
+        layout.addWidget(scroll, 1, 4, 2, 2)
+
+        # Service details
+        business_impact = QLabel('<b>Importance:</b> %s' % service['business_impact'])
+        layout.addWidget(business_impact, 3, 0, 1, 2)
+
+        if '_DETAILLEDESC' in service['customs']:
+            desc = service['customs']['_DETAILLEDESC']
+        else:
+            desc = ''
+        if '_IMPACT' in service['customs']:
+            imp = service['customs']['_IMPACT']
+        else:
+            imp = ''
+        if '_FIXACTIONS' in service['customs']:
+            fixact = service['customs']['_FIXACTIONS']
+        else:
+            fixact = ''
+
+        description = QLabel('<b>Description:</b> %s' % desc)
+        layout.addWidget(description, 3, 2, 1, 2)
+
+        impact = QLabel('<b>Impact:</b> %s' % imp)
+        layout.addWidget(impact, 4, 0, 1, 2)
+
+        fix_actions = QLabel('<b>Fix actions:</b> %s' % fixact)
+        layout.addWidget(fix_actions, 4, 2, 1, 2)
 
     def get_service_icon(self, state):
         """
