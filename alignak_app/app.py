@@ -104,17 +104,6 @@ class AlignakApp(object):
             sys.exit()
 
     @staticmethod
-    def can_close():
-        """
-        Check if banner for bad identifier is send and close application.
-
-        """
-
-        if len(bannerManager.banners_to_send) == 0:
-            QMessageBox.critical(None, 'Connection ERROR', 'Application will close !')
-            sys.exit(0)
-
-    @staticmethod
     def get_icon():
         """
         Set icon of application.
@@ -137,11 +126,12 @@ class AlignakApp(object):
             app_backend = AppBackend()
             connect = app_backend.login()
             if not connect:
-                send_banner(
-                    'ALERT', 'Backend connection refused... Check your configuration !')
-                timer = QTimer()
-                timer.start(6000)
-                timer.timeout.connect(self.can_close)
+                QMessageBox.critical(
+                    None,
+                    'Connection ERROR',
+                    'Backend is not available or token is wrong. <br>Application will close !'
+                )
+                sys.exit('Connection ERROR')
             else:
                 send_banner('OK', 'Connected to Alignak Backend')
 
