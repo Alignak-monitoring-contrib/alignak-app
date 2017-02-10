@@ -181,8 +181,11 @@ class HostSynthesis(QWidget):
         address = QLabel('<b>Address:</b> %s' % backend_data['host']['address'])
         host_layout.addWidget(address, 1, 3, 1, 1)
 
-        business_impact = QLabel('<b>Importance:</b> %s' % backend_data['host']['business_impact'])
-        host_layout.addWidget(business_impact, 2, 3, 1, 1)
+        stars_widget = Service.get_stars_widget(
+            int(backend_data['host']['business_impact'])
+        )
+        host_layout.addWidget(stars_widget, 2, 3, 1, 1)
+        host_layout.setAlignment(stars_widget, Qt.AlignLeft)
 
         parents = QLabel('<b>Parents:</b> %s' % str(backend_data['host']['parents']))
         host_layout.addWidget(parents, 0, 4, 1, 1)

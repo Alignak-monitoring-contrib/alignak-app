@@ -29,12 +29,12 @@ from alignak_app.core.utils import get_image_path, get_diff_since_last_check, ge
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QScrollArea  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QScrollArea, QHBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QIcon, QPixmap, Qt  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QLabel   # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QScrollArea  # pylint: disable=import-error
+    from PyQt4.Qt import QScrollArea, QHBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QWidget, QPushButton  # pylint: disable=import-error
     from PyQt4.Qt import QIcon, QPixmap, Qt  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
@@ -124,8 +124,9 @@ class Service(QWidget):
         layout.addWidget(scroll, 1, 4, 2, 2)
 
         # Service details
-        business_impact = QLabel('<b>Importance:</b> %s' % service['business_impact'])
-        layout.addWidget(business_impact, 3, 0, 1, 2)
+        business_impact = self.get_stars_widget(int(service['business_impact']))
+        layout.addWidget(business_impact, 3, 0, 2, 2)
+        layout.setAlignment(business_impact, Qt.AlignLeft)
 
         if '_DETAILLEDESC' in service['customs']:
             description = service['customs']['_DETAILLEDESC']
@@ -142,15 +143,15 @@ class Service(QWidget):
 
         desc_label = QLabel('<b>Description:</b> %s' % description)
         desc_label.setWordWrap(True)
-        layout.addWidget(desc_label, 3, 2, 1, 3)
+        layout.addWidget(desc_label, 3, 2, 2, 3)
 
         impact_label = QLabel('<b>Impact:</b> %s' % impact)
         impact_label.setWordWrap(True)
-        layout.addWidget(impact_label, 4, 0, 1, 2)
+        layout.addWidget(impact_label, 5, 0, 2, 2)
 
         fixactions_label = QLabel('<b>Fix actions:</b> %s' % fix_actions)
         fixactions_label.setWordWrap(True)
-        layout.addWidget(fixactions_label, 4, 2, 1, 3)
+        layout.addWidget(fixactions_label, 5, 2, 2, 3)
 
     def get_service_icon(self, state):
         """
@@ -177,3 +178,34 @@ class Service(QWidget):
         icon_label.setToolTip('Service is ' + state)
 
         return icon_label
+
+    @staticmethod
+    def get_stars_widget(stars_nb):
+        """
+        Return QWidget with stars icons
+
+        :param stars_nb: number of stars to display
+        :type stars_nb: int
+        :return: QWidget with stars
+        :rtype: QWidget
+        """
+
+        stars_widget = QWidget()
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        stars_widget.setLayout(layout)
+
+        importance_label = QLabel('<b>Importance:</b>')
+        layout.addWidget(importance_label)
+        layout.setAlignment(importance_label, Qt.AlignLeft)
+
+        for i in range(1, stars_nb):
+            print(i)
+            star_label = QLabel()
+            star_label.setFixedSize(16, 16)
+            star_label.setScaledContents(True)
+            star_label.setPixmap(QPixmap(get_image_path('star')))
+            layout.addWidget(star_label)
+            layout.setAlignment(Qt.AlignTrailing)
+
+        return stars_widget
