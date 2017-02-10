@@ -253,31 +253,40 @@ class HostSynthesis(QWidget):
         services_widget = QWidget()
         services_layout = QGridLayout(services_widget)
 
-        self.check_boxes['OK'] = QCheckBox('OK')
+        services_number = self.get_services_state_number(backend_data['services'])
+
+        self.check_boxes['OK'] = QCheckBox('OK: %d' % services_number['OK'])
+        self.check_boxes['OK'].setIcon(QIcon(get_image_path('services_ok')))
         self.check_boxes['OK'].setObjectName('OK')
         self.check_boxes['OK'].setChecked(True)
         self.check_boxes['OK'].stateChanged.connect(self.sort_services_list)
         services_layout.addWidget(self.check_boxes['OK'], 0, 0, 1, 1)
 
-        self.check_boxes['UNKNOWN'] = QCheckBox('UNKNOWN')
+        self.check_boxes['UNKNOWN'] = QCheckBox('UNKNOWN: %d' % services_number['UNKNOWN'])
+        self.check_boxes['UNKNOWN'].setIcon(QIcon(get_image_path('services_unknown')))
         self.check_boxes['UNKNOWN'].setObjectName('UNKNOWN')
         self.check_boxes['UNKNOWN'].setChecked(True)
         self.check_boxes['UNKNOWN'].stateChanged.connect(self.sort_services_list)
         services_layout.addWidget(self.check_boxes['UNKNOWN'], 0, 1, 1, 1)
 
-        self.check_boxes['WARNING'] = QCheckBox('WARNING')
+        self.check_boxes['WARNING'] = QCheckBox('WARNING: %d' % services_number['WARNING'])
+        self.check_boxes['WARNING'].setIcon(QIcon(get_image_path('services_warning')))
         self.check_boxes['WARNING'].setObjectName('WARNING')
         self.check_boxes['WARNING'].setChecked(True)
         self.check_boxes['WARNING'].stateChanged.connect(self.sort_services_list)
         services_layout.addWidget(self.check_boxes['WARNING'], 0, 2, 1, 1)
 
-        self.check_boxes['UNREACHABLE'] = QCheckBox('UNREACHABLE')
+        self.check_boxes['UNREACHABLE'] = QCheckBox(
+            'UNREACHABLE: %d' % services_number['UNREACHABLE']
+        )
+        self.check_boxes['UNREACHABLE'].setIcon(QIcon(get_image_path('services_unreachable')))
         self.check_boxes['UNREACHABLE'].setObjectName('UNREACHABLE')
         self.check_boxes['UNREACHABLE'].setChecked(True)
         self.check_boxes['UNREACHABLE'].stateChanged.connect(self.sort_services_list)
         services_layout.addWidget(self.check_boxes['UNREACHABLE'], 0, 3, 1, 1)
 
-        self.check_boxes['CRITICAL'] = QCheckBox('CRITICAL')
+        self.check_boxes['CRITICAL'] = QCheckBox('CRITICAL: %d' % services_number['CRITICAL'])
+        self.check_boxes['CRITICAL'].setIcon(QIcon(get_image_path('services_critical')))
         self.check_boxes['CRITICAL'].setObjectName('CRITICAL')
         self.check_boxes['CRITICAL'].setChecked(True)
         self.check_boxes['CRITICAL'].stateChanged.connect(self.sort_services_list)
@@ -333,6 +342,37 @@ class HostSynthesis(QWidget):
         self.services_list.currentRowChanged.connect(self.display_current_service)
 
         return services_widget
+
+    @staticmethod
+    def get_services_state_number(services):
+        """
+        Calculate the service number of each state
+
+        :param services: list of service dict
+        :type: list
+        :return: dict of service number
+        :rtype: dict
+        """
+
+        nb_state = {
+            'OK': 0,
+            'UNKNOWN': 0,
+            'WARNING': 0,
+            'UNREACHABLE': 0,
+            'CRITICAL': 0,
+            'ACKNOWLEDGED': 0,
+            'DOWNTIMED': 0
+        }
+
+        for service in services:
+            if service['ls_acknowledged']:
+                nb_state['ACKNOWLEDGED'] += 1
+            elif service['ls_downtimed']:
+                nb_state['DOWNTIMED'] += 1
+            else:
+                nb_state[service['ls_state']] += 1
+
+        return nb_state
 
     def display_current_service(self, index):
         """
@@ -513,10 +553,14 @@ class HostSynthesis(QWidget):
     @staticmethod
     def get_result_overall_state_id(list_text, services):
         """
+        Return text from result of maximum overall state
 
-        :param list_text:
-        :param services:
-        :return:
+        :param list_text: list of text to return
+        :type list_text: list
+        :param services: list of service dict from backend
+        :type services: list
+        :return: the resulting text
+        :rtype: str
         """
 
         state_lvl = []
@@ -529,8 +573,10 @@ class HostSynthesis(QWidget):
 
     def get_real_state_text(self, services):
         """
-        Return real state text
-        :return:
+        Return real state text corresponding to max overall state
+
+        :return: the real state text
+        :rtype: str
         """
 
         overall_texts = [
