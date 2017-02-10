@@ -106,26 +106,33 @@ class HostSynthesis(QWidget):
         # Overall State
         host_services_status = QLabel('Host Services Status')
         host_layout.addWidget(host_services_status, 0, 0, 1, 1)
+        host_layout.setAlignment(host_services_status, Qt.AlignCenter)
 
         host_overall_state = QLabel()
         host_overall_state.setPixmap(self.get_real_state_icon(backend_data['services']))
         host_overall_state.setFixedSize(72, 72)
         host_overall_state.setScaledContents(True)
+        host_overall_state.setToolTip(self.get_real_state_text(backend_data['services']))
         host_layout.addWidget(host_overall_state, 1, 0, 1, 1)
+        host_layout.setAlignment(host_overall_state, Qt.AlignCenter)
 
         # Hostname
         host_name = QLabel('<h2>%s</h2>' % backend_data['host']['alias'])
         host_layout.addWidget(host_name, 2, 0, 1, 1)
+        host_layout.setAlignment(host_name, Qt.AlignCenter)
 
         # Real State
         host_real_state = QLabel()
         host_real_state.setPixmap(self.get_host_icon(backend_data['host']['ls_state']))
         host_real_state.setFixedSize(48, 48)
         host_real_state.setScaledContents(True)
+        host_real_state.setToolTip('Host is %s' % backend_data['host']['ls_state'])
         host_layout.addWidget(host_real_state, 3, 0, 1, 1)
+        host_layout.setAlignment(host_real_state, Qt.AlignCenter)
 
         real_state = QLabel('Host real state, excluding services')
         host_layout.addWidget(real_state, 4, 0, 1, 1)
+        host_layout.setAlignment(real_state, Qt.AlignCenter)
 
         # Buttons
         self.create_buttons(host_layout, backend_data)
@@ -506,7 +513,41 @@ class HostSynthesis(QWidget):
         return icon
 
     @staticmethod
-    def get_real_state_icon(services):
+    def get_result_overall_state_id(list_text, services):
+        """
+
+        :param list_text:
+        :param services:
+        :return:
+        """
+
+        state_lvl = []
+        for service in services:
+            state_lvl.append(service['_overall_state_id'])
+
+        result = max(state_lvl)
+
+        return list_text[result]
+
+    def get_real_state_text(self, services):
+        """
+        Return real state text
+        :return:
+        """
+
+        overall_texts = [
+            'Host and its services are ok',
+            'Host and its services are ok or acknowledged',
+            'Host and its services are ok or downtimed',
+            'Host or some of its services are warning or unknown',
+            'Host or some of its services are critical !',
+        ]
+
+        text_result = self.get_result_overall_state_id(overall_texts, services)
+
+        return text_result
+
+    def get_real_state_icon(self, services):
         """
         Calculate real state and return QPixmap
 
@@ -524,13 +565,10 @@ class HostSynthesis(QWidget):
                 'all_services_warning',
                 'all_services_critical'
             ]
-            state_lvl = []
-            for service in services:
-                state_lvl.append(service['_overall_state_id'])
 
-            result = max(state_lvl)
+            text_result = self.get_result_overall_state_id(icon_names, services)
 
-            icon = QPixmap(get_image_path(icon_names[result]))
+            icon = QPixmap(get_image_path(text_result))
         else:
             icon = QPixmap(get_image_path('unvalid'))
 
