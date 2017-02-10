@@ -330,10 +330,16 @@ class HostSynthesis(QWidget):
 
             # Add item to QListWidget
             list_item = QListWidgetItem()
+            if service['ls_acknowledged']:
+                img = get_image_path('acknowledged')
+            elif service['ls_downtimed']:
+                img = get_image_path('downtime')
+            else:
+                img = get_image_path('services_%s' % service['ls_state'])
+
             list_item.setText('%s: %s' % (service['display_name'], service['ls_state']))
-            list_item.setIcon(
-                QIcon(get_image_path('services_%s' % service['ls_state']))
-            )
+            list_item.setIcon(QIcon(img))
+
             self.services_list.addItem(list_item)
             self.services_list.insertItem(pos, list_item)
 
