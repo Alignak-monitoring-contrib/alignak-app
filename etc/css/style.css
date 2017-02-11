@@ -108,10 +108,6 @@ QListWidget {
     outline: none;
 }
 
-QListWidget::item { 
-    height:30px;
-}
-
 QListWidget::item:selected {
     border: none;
     color: black;

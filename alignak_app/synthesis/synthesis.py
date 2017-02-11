@@ -101,7 +101,7 @@ class Synthesis(QWidget):
 
         self.app_widget.initialize('Host Synthesis View')
         self.app_widget.add_widget(self)
-        self.app_widget.setMinimumSize(1200, 700)
+        self.app_widget.setMinimumSize(1300, 750)
 
         refresh_timer = QTimer(self)
         refresh_timer.start(30000)

@@ -309,6 +309,8 @@ class HostSynthesis(QWidget):
         # Init Vars
         self.stack = QStackedWidget()
         self.services_list = QListWidget()
+        self.services_list.setMinimumHeight(155)
+        self.services_list.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
         services_layout.addWidget(self.services_list, 1, 0, 1, 5)
         services_layout.addWidget(self.stack, 2, 0, 1, 5)
