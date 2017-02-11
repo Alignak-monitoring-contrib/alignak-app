@@ -81,7 +81,7 @@ class Service(QWidget):
         # Service name
         service_name = QLabel(
             '<h3><a href="%s" style="color: black; text-decoration: none">%s</a></h3>' % (
-                get_app_config('Alignak', 'alignak_webui') + '/service/' + service['_id'],
+                get_app_config('Alignak', 'webui') + '/service/' + service['_id'],
                 service['display_name']
 
             )

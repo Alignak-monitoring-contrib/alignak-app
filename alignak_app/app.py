@@ -76,7 +76,7 @@ class AlignakApp(object):
             logger.info('Logger set to INFO')
 
         # If not app_backend url, stop application
-        if get_app_config('Alignak', 'alignak_backend'):
+        if get_app_config('Alignak', 'backend'):
             # If not username and password, create login form, else connect with config data.
             if not get_app_config('Alignak', 'username') and \
                     not get_app_config('Alignak', 'password'):

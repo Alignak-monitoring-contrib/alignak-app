@@ -63,7 +63,7 @@ class AppBackend(object):
                 password = get_app_config('Alignak', 'password')
 
         # Create Backend object
-        backend_url = get_app_config('Alignak', 'alignak_backend')
+        backend_url = get_app_config('Alignak', 'backend')
         processes = int(get_app_config('Alignak', 'processes'))
 
         self.backend = Backend(backend_url, processes=processes)
