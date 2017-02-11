@@ -123,6 +123,18 @@ class Service(QWidget):
         scroll.setMaximumHeight(60)
         layout.addWidget(scroll, 1, 4, 2, 2)
 
+        self.add_services_details(service, layout)
+
+    def add_services_details(self, service, layout):
+        """
+        Add the service details
+
+        :param service: service dict data from AppBackend
+        :type service: dict
+        :param layout: layout of Service
+        :type layout: QGridLayout
+        """
+
         # Service details
         business_impact = self.get_stars_widget(int(service['business_impact']))
         layout.addWidget(business_impact, 3, 0, 2, 2)
@@ -199,7 +211,7 @@ class Service(QWidget):
         layout.addWidget(importance_label)
         layout.setAlignment(importance_label, Qt.AlignLeft)
 
-        for i in range(1, stars_nb):
+        for _ in range(1, stars_nb):
             star_label = QLabel()
             star_label.setFixedSize(16, 16)
             star_label.setScaledContents(True)
