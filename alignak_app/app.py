@@ -76,10 +76,10 @@ class AlignakApp(object):
             logger.info('Logger set to INFO')
 
         # If not app_backend url, stop application
-        if get_app_config('Backend', 'alignak_backend'):
+        if get_app_config('Alignak', 'alignak_backend'):
             # If not username and password, create login form, else connect with config data.
-            if not get_app_config('Backend', 'username') and \
-                    not get_app_config('Backend', 'password'):
+            if not get_app_config('Alignak', 'username') and \
+                    not get_app_config('Alignak', 'password'):
                 login = AppLogin()
                 login.create_widget()
 
@@ -88,11 +88,11 @@ class AlignakApp(object):
                 else:
                     logger.warning('Application close.')
                     exit(0)
-            elif get_app_config('Backend', 'username') and \
-                    not get_app_config('Backend', 'password'):
+            elif get_app_config('Alignak', 'username') and \
+                    not get_app_config('Alignak', 'password'):
                 self.run()
-            elif get_app_config('Backend', 'username') and \
-                    get_app_config('Backend', 'password'):
+            elif get_app_config('Alignak', 'username') and \
+                    get_app_config('Alignak', 'password'):
                 self.run()
             else:
                 logger.error('Please configure Alignak-app before starting it.')

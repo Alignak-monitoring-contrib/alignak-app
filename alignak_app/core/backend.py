@@ -59,12 +59,12 @@ class AppBackend(object):
             if self.user:
                 username = self.user['token']
             else:
-                username = get_app_config('Backend', 'username')
-                password = get_app_config('Backend', 'password')
+                username = get_app_config('Alignak', 'username')
+                password = get_app_config('Alignak', 'password')
 
         # Create Backend object
-        backend_url = get_app_config('Backend', 'alignak_backend')
-        processes = int(get_app_config('Backend', 'processes'))
+        backend_url = get_app_config('Alignak', 'alignak_backend')
+        processes = int(get_app_config('Alignak', 'processes'))
 
         self.backend = Backend(backend_url, processes=processes)
 

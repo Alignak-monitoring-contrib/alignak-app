@@ -117,7 +117,7 @@ class HostSynthesis(QWidget):
         # Hostname
         host_name = QLabel(
             '<h2><a href="%s" style="color: black;text-decoration: none;">%s</a></h2>' % (
-                get_app_config('Backend', 'alignak_webui') +
+                get_app_config('Alignak', 'alignak_webui') +
                 '/host/' +
                 backend_data['host']['name'],
                 backend_data['host']['alias'],
