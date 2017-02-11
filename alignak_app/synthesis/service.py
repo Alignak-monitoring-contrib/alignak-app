@@ -25,7 +25,8 @@
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_image_path, get_diff_since_last_check, get_css
+from alignak_app.core.utils import get_diff_since_last_check, get_css
+from alignak_app.core.utils import get_image_path, get_app_config
 
 try:
     __import__('PyQt5')
@@ -78,8 +79,16 @@ class Service(QWidget):
         layout.addWidget(self.get_service_icon(service['ls_state']), 0, 0, 2, 1)
 
         # Service name
-        service_name = QLabel(service['display_name'])
-        service_name.setToolTip('Service is ' + service['ls_state'])
+        service_name = QLabel(
+            '<h3><a href="%s" style="color: black; text-decoration: none">%s</a></h3>' % (
+                get_app_config('Backend', 'alignak_webui') + '/service/' + service['_id'],
+                service['display_name']
+
+            )
+        )
+        service_name.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        service_name.setOpenExternalLinks(True)
+        service_name.setToolTip('Service is %s. See in WebUI ?' % service['ls_state'])
         service_name.setObjectName(service['ls_state'])
         service_name.setMinimumWidth(200)
         service_name.setWordWrap(True)

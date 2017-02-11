@@ -27,7 +27,7 @@ import datetime
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_image_path, get_diff_since_last_check
+from alignak_app.core.utils import get_image_path, get_diff_since_last_check, get_app_config
 from alignak_app.core.action_manager import ACK, DOWNTIME, PROCESS
 from alignak_app.widgets.banner import send_banner
 from alignak_app.synthesis.service import Service
@@ -115,7 +115,18 @@ class HostSynthesis(QWidget):
         host_layout.setAlignment(host_overall_state, Qt.AlignCenter)
 
         # Hostname
-        host_name = QLabel('<h2>%s</h2>' % backend_data['host']['alias'])
+        host_name = QLabel(
+            '<h2><a href="%s" style="color: black;text-decoration: none;">%s</a></h2>' % (
+                get_app_config('Backend', 'alignak_webui') +
+                '/host/' +
+                backend_data['host']['name'],
+                backend_data['host']['alias'],
+            )
+        )
+        host_name.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        host_name.setOpenExternalLinks(True)
+        host_name.setObjectName('hostname')
+        host_name.setToolTip('Host is %s. See in WebUI ?' % backend_data['host']['ls_state'])
         host_layout.addWidget(host_name, 2, 0, 1, 1)
         host_layout.setAlignment(host_name, Qt.AlignCenter)
 
