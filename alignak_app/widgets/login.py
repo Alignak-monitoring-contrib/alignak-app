@@ -197,7 +197,7 @@ class AppLogin(QDialog):
         username = self.username_line.text()
         password = self.password_line.text()
 
-        self.app_backend.backend = Backend(get_app_config('Backend', 'alignak_backend'))
+        self.app_backend.backend = Backend(get_app_config('Alignak', 'backend'))
 
         resp = self.app_backend.login(str(username), str(password))
 
@@ -232,7 +232,7 @@ class AppLogin(QDialog):
 
         # Description
         desc_label = QLabel(
-            '<h3>Alignak Backend</h3><p>Here you can define alignak server url.</p>'
+            '<h3>Alignak Backend</h3><p>Here you can define alignak settings.</p>'
             '<b>Be sure to enter a valid address</b>'
         )
         desc_label.setWordWrap(True)
@@ -243,7 +243,7 @@ class AppLogin(QDialog):
 
         server_url = QLineEdit()
         server_url.setPlaceholderText('alignak backend url')
-        server_url.setText(get_app_config('Backend', 'alignak_url'))
+        server_url.setText(get_app_config('Alignak', 'url'))
         server_layout.addWidget(server_url, 1, 1, 1, 2)
 
         # Server Port
@@ -251,7 +251,7 @@ class AppLogin(QDialog):
 
         server_port = QLineEdit()
         server_port.setPlaceholderText('alignak backend port')
-        cur_port = get_app_config('Backend', 'alignak_backend').split(':')[2]
+        cur_port = get_app_config('Alignak', 'backend').split(':')[2]
         server_port.setText(cur_port)
         server_layout.addWidget(server_port, 2, 1, 1, 2)
 
@@ -262,7 +262,7 @@ class AppLogin(QDialog):
         if 'win32' in sys.platform:
             server_proc.setEnabled(False)
         server_proc.setPlaceholderText('alignak backend processes')
-        cur_proc = get_app_config('Backend', 'processes')
+        cur_proc = get_app_config('Alignak', 'processes')
         server_proc.setText(cur_proc)
         server_layout.addWidget(server_proc, 3, 1, 1, 2)
 
@@ -274,10 +274,10 @@ class AppLogin(QDialog):
         main_layout.addWidget(server_widget)
 
         if server_dialog.exec_() == QDialog.Accepted:
-            backend_url = '%(alignak_url)s:' + str(server_port.text()).rstrip()
-            set_app_config('Backend', 'alignak_backend', backend_url)
-            set_app_config('Backend', 'alignak_url', str(server_url.text()).rstrip())
-            set_app_config('Backend', 'processes', str(server_proc.text()).rstrip())
+            backend_url = '%(url)s:' + str(server_port.text()).rstrip()
+            set_app_config('Alignak', 'backend', backend_url)
+            set_app_config('Alignak', 'url', str(server_url.text()).rstrip())
+            set_app_config('Alignak', 'processes', str(server_proc.text()).rstrip())
 
     def mousePressEvent(self, event):
         """ QWidget.mousePressEvent(QMouseEvent) """

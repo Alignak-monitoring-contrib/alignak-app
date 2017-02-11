@@ -27,9 +27,9 @@ from alignak_app.core.backend import AppBackend
 from alignak_app.core.utils import init_config, get_app_config
 
 
-class TestBackend(unittest2.TestCase):
+class TestAppBackend(unittest2.TestCase):
     """
-        This file test methods of AlignakData class
+        This file test methods of AppBackend class
     """
 
     # Create config for all methods.
@@ -45,7 +45,7 @@ class TestBackend(unittest2.TestCase):
         # Compare config url and app_backend
         self.assertEquals(
             under_test.backend.url_endpoint_root,
-            get_app_config('Backend', 'alignak_backend')
+            get_app_config('Alignak', 'backend')
         )
         self.assertTrue(under_test.backend.authenticated)
 

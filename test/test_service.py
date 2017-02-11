@@ -44,6 +44,7 @@ class TestService(unittest2.TestCase):
         'ls_state': 'OK',
         'ls_last_check': 0.0,
         'ls_output': 'Output of the service',
+        '_id': '000',
         'business_impact': '2',
         'customs': {},
     }

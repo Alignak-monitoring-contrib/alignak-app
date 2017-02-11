@@ -61,19 +61,19 @@ class TestUtils(unittest2.TestCase):
         utils.init_config()
 
         # Get current url
-        under_test = utils.get_app_config('Backend', 'alignak_url')
-        self.assertEqual('http://94.76.229.155', under_test)
+        under_test = utils.get_app_config('Alignak', 'url')
+        self.assertEqual('http://demo.alignak.net', under_test)
 
         # Change url
-        utils.set_app_config('Backend', 'alignak_url', 'http://127.0.0.1')
-        new_under_test = utils.get_app_config('Backend', 'alignak_url')
+        utils.set_app_config('Alignak', 'url', 'http://127.0.0.1')
+        new_under_test = utils.get_app_config('Alignak', 'url')
         self.assertEqual('http://127.0.0.1', new_under_test)
 
         # Back url to normal
-        utils.set_app_config('Backend', 'alignak_url', 'http://94.76.229.155')
-        last_under_test = utils.get_app_config('Backend', 'alignak_url')
+        utils.set_app_config('Alignak', 'url', 'http://demo.alignak.net')
+        last_under_test = utils.get_app_config('Alignak', 'url')
 
-        self.assertEqual('http://94.76.229.155', last_under_test)
+        self.assertEqual('http://demo.alignak.net', last_under_test)
 
     def test_reload_config(self):
         """Reload Configuration"""
