@@ -95,11 +95,36 @@ class AlignakApp(object):
                     get_app_config('Alignak', 'password'):
                 self.run()
             else:
-                logger.error('Please configure Alignak-app before starting it.')
+                self.error_message(
+                    'Configuration ERROR',
+                    'Something seems wrong in your configuration.'
+                    'Please configure Alignak-app before starting it.'
+                )
+                logger.error('Something seems wrong in your configuration.'
+                             'Please configure Alignak-app before starting it.')
                 sys.exit()
         else:
-            logger.error('Please configure Alignak-app before starting it.')
+            self.error_message(
+                'Configuration ERROR',
+                'Something seems wrong in your configuration.'
+                'Please configure Alignak-app before starting it.'
+            )
+            logger.error('Something seems wrong in your configuration.'
+                         'Please configure Alignak-app before starting it.')
             sys.exit()
+
+    @staticmethod
+    def error_message(title, message):
+        """
+
+        :return:
+        """
+
+        QMessageBox.critical(
+            None,
+            title,
+            message
+        )
 
     @staticmethod
     def get_icon():
@@ -124,8 +149,7 @@ class AlignakApp(object):
             app_backend = AppBackend()
             connect = app_backend.login()
             if not connect:
-                QMessageBox.critical(
-                    None,
+                self.error_message(
                     'Connection ERROR',
                     'Backend is not available or token is wrong. <br>Application will close !'
                 )
