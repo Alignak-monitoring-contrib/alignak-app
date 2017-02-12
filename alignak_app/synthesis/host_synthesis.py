@@ -248,7 +248,10 @@ class HostSynthesis(QWidget):
         """
 
         for i in range(self.services_list.count()):
-            if self.sender().objectName() in self.services_list.item(i).text():
+            current_filter = str(self.sender().text()).split(':')[0]
+            item_to_filter = str(self.services_list.item(i).text()).split()
+
+            if current_filter in item_to_filter:
                 if self.sender().isChecked():
                     self.services_list.item(i).setHidden(False)
                 else:
@@ -267,28 +270,33 @@ class HostSynthesis(QWidget):
         services_widget = QWidget()
         services_layout = QGridLayout(services_widget)
 
+        # Add aggregation filters and get current row
+        row = self.add_aggregations_filters(services_layout, backend_data['services'])
+
+        # Get number of each state for services
         services_number = self.get_services_state_number(backend_data['services'])
 
+        # Create states CheckBox
         self.check_boxes['OK'] = QCheckBox('OK: %d' % services_number['OK'])
         self.check_boxes['OK'].setIcon(QIcon(get_image_path('services_ok')))
         self.check_boxes['OK'].setObjectName('OK')
         self.check_boxes['OK'].setChecked(True)
         self.check_boxes['OK'].stateChanged.connect(self.sort_services_list)
-        services_layout.addWidget(self.check_boxes['OK'], 0, 0, 1, 1)
+        services_layout.addWidget(self.check_boxes['OK'], row + 1, 0, 1, 1)
 
         self.check_boxes['UNKNOWN'] = QCheckBox('UNKNOWN: %d' % services_number['UNKNOWN'])
         self.check_boxes['UNKNOWN'].setIcon(QIcon(get_image_path('services_unknown')))
         self.check_boxes['UNKNOWN'].setObjectName('UNKNOWN')
         self.check_boxes['UNKNOWN'].setChecked(True)
         self.check_boxes['UNKNOWN'].stateChanged.connect(self.sort_services_list)
-        services_layout.addWidget(self.check_boxes['UNKNOWN'], 0, 1, 1, 1)
+        services_layout.addWidget(self.check_boxes['UNKNOWN'], row + 2, 0, 1, 1)
 
         self.check_boxes['WARNING'] = QCheckBox('WARNING: %d' % services_number['WARNING'])
         self.check_boxes['WARNING'].setIcon(QIcon(get_image_path('services_warning')))
         self.check_boxes['WARNING'].setObjectName('WARNING')
         self.check_boxes['WARNING'].setChecked(True)
         self.check_boxes['WARNING'].stateChanged.connect(self.sort_services_list)
-        services_layout.addWidget(self.check_boxes['WARNING'], 0, 2, 1, 1)
+        services_layout.addWidget(self.check_boxes['WARNING'], row + 3, 0, 1, 1)
 
         self.check_boxes['UNREACHABLE'] = QCheckBox(
             'UNREACHABLE: %d' % services_number['UNREACHABLE']
@@ -297,23 +305,69 @@ class HostSynthesis(QWidget):
         self.check_boxes['UNREACHABLE'].setObjectName('UNREACHABLE')
         self.check_boxes['UNREACHABLE'].setChecked(True)
         self.check_boxes['UNREACHABLE'].stateChanged.connect(self.sort_services_list)
-        services_layout.addWidget(self.check_boxes['UNREACHABLE'], 0, 3, 1, 1)
+        services_layout.addWidget(self.check_boxes['UNREACHABLE'], row + 4, 0, 1, 1)
 
         self.check_boxes['CRITICAL'] = QCheckBox('CRITICAL: %d' % services_number['CRITICAL'])
         self.check_boxes['CRITICAL'].setIcon(QIcon(get_image_path('services_critical')))
         self.check_boxes['CRITICAL'].setObjectName('CRITICAL')
         self.check_boxes['CRITICAL'].setChecked(True)
         self.check_boxes['CRITICAL'].stateChanged.connect(self.sort_services_list)
-        services_layout.addWidget(self.check_boxes['CRITICAL'], 0, 4, 1, 1)
+        services_layout.addWidget(self.check_boxes['CRITICAL'], row + 5, 0, 1, 1)
 
-        self.generate_services_qwidgets(services_layout, backend_data['services'])
+        row += 1
+        self.generate_services_qwidgets(row, services_layout, backend_data['services'])
 
         return services_widget
 
-    def generate_services_qwidgets(self, services_layout, services_list):
+    def add_aggregations_filters(self, services_layout, services_list):
+        """
+        Add aggregations filter and return current row to maintain layout
+
+        :param services_layout: layout of services
+        :type services_layout: QGridLayout
+        :param services_list: list of service dict
+        :type services_list: list
+        :return: current row
+        :rtype: int
+        """
+
+        col = 1
+        row = 0
+        aggregations = ['Global']
+
+        for service in services_list:
+            if service['aggregation']:
+                if not service['aggregation'].capitalize() in aggregations:
+                    aggregations.append(service['aggregation'].capitalize())
+
+        for aggregation in aggregations:
+            self.check_boxes[aggregation] = QCheckBox(aggregation.capitalize())
+            self.check_boxes[aggregation].setIcon(QIcon(get_image_path('tree')))
+            self.check_boxes[aggregation].setObjectName('aggregation')
+            self.check_boxes[aggregation].setChecked(True)
+            self.check_boxes[aggregation].stateChanged.connect(self.sort_services_list)
+            services_layout.addWidget(self.check_boxes[aggregation], row, col, 1, 1)
+
+            col += 1
+            if col == 5:
+                row += 1
+                col = 1
+
+        # Filters title
+        if row == 0:
+            row = 1
+        filter_title = QLabel('States / Filters')
+        services_layout.addWidget(filter_title, 0, 0, row, 1)
+        services_layout.setAlignment(filter_title, Qt.AlignCenter | Qt.AlignBottom)
+
+        return row
+
+    def generate_services_qwidgets(self, row, services_layout, services_list):
         """
         Generate Service QWidgets, add them to QStackedWidget and QListWidget
 
+        :param row: current row for services layout
+        :type row: int
         :param services_layout: layout for services
         :type services_layout: QGridLayout
         :param services_list: list of service dict
@@ -326,8 +380,8 @@ class HostSynthesis(QWidget):
         self.services_list.setMinimumHeight(155)
         self.services_list.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
-        services_layout.addWidget(self.services_list, 2, 0, 1, 5)
-        services_layout.addWidget(self.stack, 3, 0, 1, 5)
+        services_layout.addWidget(self.services_list, row, 1, 5, 5)
+        services_layout.addWidget(self.stack, row + 5, 0, 1, 5)
 
         # Sorted services
         def get_key(item):
@@ -345,15 +399,10 @@ class HostSynthesis(QWidget):
         sorted_services = sorted(services_list, key=get_key)
 
         # Fill QStackedWidget and QListWidget
-        aggregations = []
         for service in sorted_services:
             # Service QWidget
             service_widget = Service()
             service_widget.initialize(service)
-
-            if service['aggregation']:
-                if not service['aggregation'] in aggregations:
-                    aggregations.append(service['aggregation'])
 
             # Connect ACK button
             service_widget.acknowledge_btn.clicked.connect(self.add_acknowledge)
@@ -365,7 +414,10 @@ class HostSynthesis(QWidget):
                 service_name = service['name']
 
             service_widget.acknowledge_btn.setObjectName(
-                'service:%s:%s:%s' % (service['_id'], service_name, service['aggregation'])
+                'service:%s:%s' % (
+                    service['_id'],
+                    service_name,
+                )
             )
             if 'OK' in service['ls_state'] \
                     or service['ls_acknowledged'] \
@@ -394,35 +446,21 @@ class HostSynthesis(QWidget):
             else:
                 img = get_image_path('services_%s' % service['ls_state'])
 
+            if not service['aggregation']:
+                service['aggregation'] = 'Global'
+
             list_item.setText(
-                '%s is %s - [%s]' % (service_name, service['ls_state'], service['aggregation'])
+                '%s is %s - [ %s ]' % (
+                    service_name,
+                    service['ls_state'],
+                    service['aggregation'].capitalize()
+                )
             )
             list_item.setIcon(QIcon(img))
 
             self.services_list.addItem(list_item)
 
         self.services_list.currentRowChanged.connect(self.display_current_service)
-        self.add_aggregations_filters(services_layout, aggregations)
-
-    def add_aggregations_filters(self, services_layout, aggregations):
-        """
-        TODO
-        :param services_layout:
-        :param aggregations:
-        :return:
-        """
-
-        col = 0
-
-        for aggregation in aggregations:
-            self.check_boxes[aggregation] = QCheckBox(aggregation.capitalize())
-            self.check_boxes[aggregation].setIcon(QIcon(get_image_path('tree')))
-            self.check_boxes[aggregation].setObjectName(aggregation)
-            self.check_boxes[aggregation].setChecked(True)
-            self.check_boxes[aggregation].stateChanged.connect(self.sort_services_list)
-            services_layout.addWidget(self.check_boxes[aggregation], 1, col, 1, 1)
-
-            col += 1
 
     @staticmethod
     def get_services_state_number(services):
