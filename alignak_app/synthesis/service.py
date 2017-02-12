@@ -78,11 +78,18 @@ class Service(QWidget):
 
         layout.addWidget(self.get_service_icon(service['ls_state']), 0, 0, 2, 1)
 
+        if service['display_name'] != '':
+            service_name = service['display_name']
+        elif service['alias'] != '':
+            service_name = service['alias']
+        else:
+            service_name = service['name']
+
         # Service name
         service_name = QLabel(
             '<h3><a href="%s" style="color: black; text-decoration: none">%s</a></h3>' % (
                 get_app_config('Alignak', 'webui') + '/service/' + service['_id'],
-                service['display_name']
+                service_name
 
             )
         )
@@ -116,9 +123,16 @@ class Service(QWidget):
         last_check = QLabel(str(diff_last_check))
         layout.addWidget(last_check, 0, 4, 1, 1)
 
+        if service['display_name'] != '':
+            service_name = service['display_name']
+        elif service['alias'] != '':
+            service_name = service['alias']
+        else:
+            service_name = service['name']
+
         # Output
         output_name = QLabel('<b>Output:</b>')
-        output_name.setToolTip('Output of %s' % service['display_name'])
+        output_name.setToolTip('Output of %s' % service_name)
         layout.addWidget(output_name, 1, 3, 1, 1)
         output_service = QLabel(service['ls_output'])
         output_service.setObjectName('output')

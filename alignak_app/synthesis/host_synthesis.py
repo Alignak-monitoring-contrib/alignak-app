@@ -323,8 +323,15 @@ class HostSynthesis(QWidget):
 
             # Connect ACK button
             service_widget.acknowledge_btn.clicked.connect(self.add_acknowledge)
+            if service['display_name'] != '':
+                service_name = service['display_name']
+            elif service['alias'] != '':
+                service_name = service['alias']
+            else:
+                service_name = service['name']
+
             service_widget.acknowledge_btn.setObjectName(
-                'service:%s:%s' % (service['_id'], service['display_name'])
+                'service:%s:%s' % (service['_id'], service_name)
             )
             if 'OK' in service['ls_state'] \
                     or service['ls_acknowledged'] \
@@ -334,7 +341,7 @@ class HostSynthesis(QWidget):
             # Connect DOWN button
             service_widget.downtime_btn.clicked.connect(self.add_downtime)
             service_widget.downtime_btn.setObjectName(
-                'service:%s:%s' % (service['_id'], service['display_name'])
+                'service:%s:%s' % (service['_id'], service_name)
             )
             if 'OK' in service['ls_state'] \
                     or service['ls_downtimed'] \
@@ -353,7 +360,7 @@ class HostSynthesis(QWidget):
             else:
                 img = get_image_path('services_%s' % service['ls_state'])
 
-            list_item.setText('%s: %s' % (service['display_name'], service['ls_state']))
+            list_item.setText('%s: %s' % (service_name, service['ls_state']))
             list_item.setIcon(QIcon(img))
 
             self.services_list.addItem(list_item)

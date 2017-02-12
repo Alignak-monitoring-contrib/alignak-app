@@ -117,7 +117,7 @@ class Synthesis(QWidget):
         hosts_list = []
         params = {'where': json.dumps({'_is_template': False})}
 
-        all_hosts = self.app_backend.get('host', params)
+        all_hosts = self.app_backend.get('host', params, ['name'])
 
         if all_hosts:
             for host in all_hosts['_items']:
