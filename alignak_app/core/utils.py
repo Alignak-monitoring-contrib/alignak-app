@@ -44,7 +44,7 @@ def get_app_root():
     """
 
     # Get HOME and USER
-    if 'linux' in sys.platform or 'sunos5' in sys.platform:
+    if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
         app_root = os.environ['HOME']
         app_root += '/.local'
     elif 'win32' in sys.platform:  # pragma: no cover - not testable

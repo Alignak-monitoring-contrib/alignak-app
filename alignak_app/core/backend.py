@@ -107,7 +107,7 @@ class AppBackend(object):
 
         return connect
 
-    def get(self, endpoint, params=None):
+    def get(self, endpoint, params=None, projection=None):
         """
         Collect state of Hosts, via app_backend API.
 
@@ -115,14 +115,21 @@ class AppBackend(object):
         :type endpoint: str
         :param params: dict of parameters for the app_backend API
         :type params: dict
+        :param projection: list of field to get, if None, get all
+        :type projection: list|None
         :return desired request of app_backend
         :rtype: dict
         """
 
         request = None
 
-        if not params:
+        if params is None:
             params = {'max_results': 50}
+        if projection is not None:
+            generate_proj = {}
+            for field in projection:
+                generate_proj[field] = 1
+            params['projection'] = json.dumps(generate_proj)
 
         # Request
         try:
@@ -174,16 +181,14 @@ class AppBackend(object):
         :return: None if not found or item dict
         """
 
-        params = {'where': json.dumps({'_is_template': False})}
+        params = {'where': json.dumps({'_is_template': False, key: value})}
 
         hosts = self.get('host', params)
 
-        wanted_host = None
-
-        if hosts:
-            for host in hosts['_items']:
-                if host[key] == value:
-                    wanted_host = host
+        if len(hosts['_items']) > 0:
+            wanted_host = hosts['_items'][0]
+        else:
+            wanted_host = None
 
         return wanted_host
 
@@ -208,7 +213,10 @@ class AppBackend(object):
 
         services = self.get('service', params=params)
 
-        wanted_service = None
+        if len(services['_items']) > 0:
+            wanted_service = services['_items'][0]
+        else:
+            wanted_service = None
 
         for service in services['_items']:
             if service['_id'] == service_id:
