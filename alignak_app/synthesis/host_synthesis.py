@@ -306,20 +306,54 @@ class HostSynthesis(QWidget):
         self.check_boxes['CRITICAL'].stateChanged.connect(self.sort_services_list)
         services_layout.addWidget(self.check_boxes['CRITICAL'], 0, 4, 1, 1)
 
-        # Init Vars
+        self.generate_services_qwidgets(services_layout, backend_data['services'])
+
+        return services_widget
+
+    def generate_services_qwidgets(self, services_layout, services_list):
+        """
+        Generate Service QWidgets, add them to QStackedWidget and QListWidget
+
+        :param services_layout: layout for services
+        :type services_layout: QGridLayout
+        :param services_list: list of service dict
+        :type services_list: list
+        """
+
+        # Init QStackedWidget and QListWidget
         self.stack = QStackedWidget()
         self.services_list = QListWidget()
         self.services_list.setMinimumHeight(155)
         self.services_list.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
-        services_layout.addWidget(self.services_list, 1, 0, 1, 5)
-        services_layout.addWidget(self.stack, 2, 0, 1, 5)
+        services_layout.addWidget(self.services_list, 2, 0, 1, 5)
+        services_layout.addWidget(self.stack, 3, 0, 1, 5)
 
-        pos = 0
-        for service in backend_data['services']:
+        # Sorted services
+        def get_key(item):
+            """
+            Get keys function to sort services
+
+            :param item: item to sort
+            :type item dict
+            :return: item name in lowerCase to get InsensitiveCase
+            :rtype: str
+            """
+
+            return item['name'].lower()
+
+        sorted_services = sorted(services_list, key=get_key)
+
+        # Fill QStackedWidget and QListWidget
+        aggregations = []
+        for service in sorted_services:
             # Service QWidget
             service_widget = Service()
             service_widget.initialize(service)
+
+            if service['aggregation']:
+                if not service['aggregation'] in aggregations:
+                    aggregations.append(service['aggregation'])
 
             # Connect ACK button
             service_widget.acknowledge_btn.clicked.connect(self.add_acknowledge)
@@ -331,7 +365,7 @@ class HostSynthesis(QWidget):
                 service_name = service['name']
 
             service_widget.acknowledge_btn.setObjectName(
-                'service:%s:%s' % (service['_id'], service_name)
+                'service:%s:%s:%s' % (service['_id'], service_name, service['aggregation'])
             )
             if 'OK' in service['ls_state'] \
                     or service['ls_acknowledged'] \
@@ -360,17 +394,35 @@ class HostSynthesis(QWidget):
             else:
                 img = get_image_path('services_%s' % service['ls_state'])
 
-            list_item.setText('%s: %s' % (service_name, service['ls_state']))
+            list_item.setText(
+                '%s is %s - [%s]' % (service_name, service['ls_state'], service['aggregation'])
+            )
             list_item.setIcon(QIcon(img))
 
             self.services_list.addItem(list_item)
-            self.services_list.insertItem(pos, list_item)
-
-            pos += 1
 
         self.services_list.currentRowChanged.connect(self.display_current_service)
+        self.add_aggregations_filters(services_layout, aggregations)
 
-        return services_widget
+    def add_aggregations_filters(self, services_layout, aggregations):
+        """
+        TODO
+        :param services_layout:
+        :param aggregations:
+        :return:
+        """
+
+        col = 0
+
+        for aggregation in aggregations:
+            self.check_boxes[aggregation] = QCheckBox(aggregation.capitalize())
+            self.check_boxes[aggregation].setIcon(QIcon(get_image_path('tree')))
+            self.check_boxes[aggregation].setObjectName(aggregation)
+            self.check_boxes[aggregation].setChecked(True)
+            self.check_boxes[aggregation].stateChanged.connect(self.sort_services_list)
+            services_layout.addWidget(self.check_boxes[aggregation], 1, col, 1, 1)
+
+            col += 1
 
     @staticmethod
     def get_services_state_number(services):
