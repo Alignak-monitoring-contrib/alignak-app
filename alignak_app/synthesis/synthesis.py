@@ -160,18 +160,16 @@ class Synthesis(QWidget):
             if host_name:
                 backend_data = self.app_backend.get_host_with_services(host_name)
 
-            # Remove host_synthesis and delete it
+            # Store old data, remove and delete host_synthesis
             if self.host_synthesis:
+                # Store old data
                 if self.host_synthesis.services_list:
                     old_row = self.host_synthesis.services_list.currentRow()
                 if self.host_synthesis.check_boxes:
-                    self.old_checkbox_states = {
-                        'OK': self.host_synthesis.check_boxes['OK'].isChecked(),
-                        'UNKNOWN': self.host_synthesis.check_boxes['UNKNOWN'].isChecked(),
-                        'WARNING': self.host_synthesis.check_boxes['WARNING'].isChecked(),
-                        'UNREACHABLE': self.host_synthesis.check_boxes['UNREACHABLE'].isChecked(),
-                        'CRITICAL': self.host_synthesis.check_boxes['CRITICAL'].isChecked(),
-                    }
+                    for key in self.host_synthesis.check_boxes:
+                        self.old_checkbox_states[key] = self.host_synthesis.check_boxes[key].isChecked()
+
+                # Remove and delete QWidget
                 self.layout().removeWidget(self.host_synthesis)
                 self.host_synthesis.deleteLater()
                 self.host_synthesis = None
@@ -179,22 +177,15 @@ class Synthesis(QWidget):
             # Create the new host_synthesis
             self.host_synthesis = HostSynthesis(self.action_manager)
             self.host_synthesis.initialize(backend_data)
+
+            # Restore old data
             if old_row >= 0 and self.host_synthesis.services_list:
                 self.host_synthesis.services_list.setCurrentRow(old_row)
             if self.old_checkbox_states and self.host_synthesis.check_boxes:
-                self.host_synthesis.check_boxes['OK'].setChecked(
-                    self.old_checkbox_states['OK']
-                )
-                self.host_synthesis.check_boxes['UNKNOWN'].setChecked(
-                    self.old_checkbox_states['UNKNOWN']
-                )
-                self.host_synthesis.check_boxes['WARNING'].setChecked(
-                    self.old_checkbox_states['WARNING']
-                )
-                self.host_synthesis.check_boxes['UNREACHABLE'].setChecked(
-                    self.old_checkbox_states['UNREACHABLE']
-                )
-                self.host_synthesis.check_boxes['CRITICAL'].setChecked(
-                    self.old_checkbox_states['CRITICAL']
-                )
+                for key, checked in self.old_checkbox_states.items():
+                    try:
+                        self.host_synthesis.check_boxes[key].setChecked(checked)
+                    except KeyError as e:
+                        logger.warning('Can\'t reapply filter [%s]: %s', key, checked)
+
             self.layout().addWidget(self.host_synthesis, 1, 0, 1, 5)
