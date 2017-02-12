@@ -43,6 +43,7 @@ class TestHostSynthesis(unittest2.TestCase):
     """
 
     service = {
+        'name': 'my_service',
         'display_name': 'My Service',
         '_id': '11111',
         'ls_state': 'OK',
@@ -53,6 +54,7 @@ class TestHostSynthesis(unittest2.TestCase):
         'ls_downtimed': False,
         'business_impact': '2',
         'customs': {},
+        'aggregation': 'IO'
     }
 
     backend_data = {
