@@ -153,6 +153,18 @@ QCheckBox::indicator::unchecked {
     background-color: white;
 }
 
+QCheckBox#aggregation {
+    color: black;
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+    border-radius: 5px;
+}
+
+QCheckBox#aggregation::unchecked {
+    color: grey;
+    border: none
+}
+
 QCheckBox#OK {
     color: #27ae60;
     border-style: solid;
