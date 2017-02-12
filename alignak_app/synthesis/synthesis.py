@@ -167,7 +167,8 @@ class Synthesis(QWidget):
                     old_row = self.host_synthesis.services_list.currentRow()
                 if self.host_synthesis.check_boxes:
                     for key in self.host_synthesis.check_boxes:
-                        self.old_checkbox_states[key] = self.host_synthesis.check_boxes[key].isChecked()
+                        self.old_checkbox_states[key] = \
+                            self.host_synthesis.check_boxes[key].isChecked()
 
                 # Remove and delete QWidget
                 self.layout().removeWidget(self.host_synthesis)

@@ -337,7 +337,7 @@ class HostSynthesis(QWidget):
 
         for service in services_list:
             if service['aggregation']:
-                if not service['aggregation'].capitalize() in aggregations:
+                if service['aggregation'].capitalize() not in aggregations:
                     aggregations.append(service['aggregation'].capitalize())
 
         for aggregation in aggregations:
