@@ -247,7 +247,7 @@ class AppBackend(object):
             }
             projection = ['name', 'alias', 'display_name', 'ls_state', 'ls_acknowledged',
                           'ls_downtimed', 'ls_last_check', 'ls_output', 'business_impact',
-                          'customs', '_overall_state_id']
+                          'customs', '_overall_state_id', 'aggregation']
             services = self.get('service', params=params, projection=projection)
 
             services_host = services['_items']
