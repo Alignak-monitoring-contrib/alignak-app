@@ -187,6 +187,6 @@ class Synthesis(QWidget):
                     try:
                         self.host_synthesis.check_boxes[key].setChecked(checked)
                     except KeyError as e:
-                        logger.warning('Can\'t reapply filter [%s]: %s', key, checked)
+                        logger.warning('Can\'t reapply filter [%s]: %s', e, checked)
 
             self.layout().addWidget(self.host_synthesis, 1, 0, 1, 5)
