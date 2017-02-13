@@ -91,20 +91,20 @@ class TestNotification(unittest2.TestCase):
         # Send a CRITICAL notification
         changes = {
             'hosts': {
-                'up': '',
-                'down': '',
-                'unreachable': '',
-                'acknowledge': '',
-                'downtime': ''
+                'up': 0,
+                'down': 0,
+                'unreachable': 0,
+                'acknowledge': 0,
+                'downtime': 0
             },
             'services': {
-                'ok': '',
-                'warning': '',
-                'critical': '',
-                'unknown': '',
-                'unreachable': '',
-                'acknowledge': '',
-                'downtime': ''
+                'ok': 0,
+                'warning': 0,
+                'critical': 0,
+                'unknown': 0,
+                'unreachable': 0,
+                'acknowledge': 0,
+                'downtime': 0
             }
         }
         under_test.send_notification('CRITICAL', hosts_states, services_states, changes)

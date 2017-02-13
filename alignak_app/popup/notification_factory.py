@@ -170,7 +170,7 @@ class NotificationFactory(QWidget):
                     QPixmap(get_image_path(state_name))
                 )
 
-        if isinstance(diff, int):
+        if diff != 0:
             self.state_data[state_name]['diff'].setText('<b>(' + "{0:+d}".format(diff) + ')</b>')
         else:
             self.state_data[state_name]['diff'].setText('')

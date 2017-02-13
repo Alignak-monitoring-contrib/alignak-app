@@ -88,20 +88,20 @@ class AppNotifier(QSystemTrayIcon):
         """
         changes = {
             'hosts': {
-                'up': '',
-                'down': '',
-                'unreachable': '',
-                'acknowledge': '',
-                'downtime': ''
+                'up': 0,
+                'down': 0,
+                'unreachable': 0,
+                'acknowledge': 0,
+                'downtime': 0
             },
             'services': {
-                'ok': '',
-                'warning': '',
-                'critical': '',
-                'unknown': '',
-                'unreachable': '',
-                'acknowledge': '',
-                'downtime': ''
+                'ok': 0,
+                'warning': 0,
+                'critical': 0,
+                'unknown': 0,
+                'unreachable': 0,
+                'acknowledge': 0,
+                'downtime': 0
             }
         }
         return changes
