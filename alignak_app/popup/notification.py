@@ -30,6 +30,7 @@ from alignak_app.core.utils import get_app_config
 from alignak_app.core.utils import get_css
 from alignak_app.popup.notification_factory import NotificationFactory
 from alignak_app.widgets.app_widget import AppQWidget
+from alignak_app.widgets.banner import send_banner
 
 try:
     __import__('PyQt5')
@@ -217,6 +218,35 @@ class AppNotification(QWidget):
                 diff['services']['downtime'],
                 percentages['services_downtime']
             )
+            self.diff_message(diff)
+
+    def diff_message(self, diff):
+        """
+
+        :param diff:
+        :return:
+        """
+
+        hosts_msg = ''
+        for host_state in diff['hosts']:
+            if diff['hosts'][host_state]:
+                hosts_msg += 'Hosts %s: <b>%s</b><br>' % (
+                    str(host_state).upper(),
+                    "{0:+d}".format(diff['hosts'][host_state])
+                )
+
+        services_msg = ''
+        for service_state in diff['services']:
+            if diff['services'][service_state]:
+                services_msg += 'Services %s: <b>%s</b><br>' % (
+                    str(service_state).upper(),
+                    "{0:+d}".format(diff['services'][service_state])
+                )
+
+        if hosts_msg:
+            send_banner('INFO', hosts_msg)
+        if services_msg:
+            send_banner('INFO', services_msg)
 
     def set_position(self):
         """
