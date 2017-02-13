@@ -698,15 +698,18 @@ class HostSynthesis(QWidget):
         :rtype: str
         """
 
-        overall_texts = [
-            'Host and its services are ok',
-            'Host and its services are ok or acknowledged',
-            'Host and its services are ok or downtimed',
-            'Host or some of its services are warning or unknown',
-            'Host or some of its services are critical !',
-        ]
+        if services:
+            overall_texts = [
+                'Host and its services are ok',
+                'Host and its services are ok or acknowledged',
+                'Host and its services are ok or downtimed',
+                'Host or some of its services are warning or unknown',
+                'Host or some of its services are critical !',
+            ]
 
-        text_result = self.get_result_overall_state_id(overall_texts, services)
+            text_result = self.get_result_overall_state_id(overall_texts, services)
+        else:
+            text_result = 'Can\'t get host real state'
 
         return text_result
 
@@ -714,8 +717,8 @@ class HostSynthesis(QWidget):
         """
         Calculate real state and return QPixmap
 
-        :param services: dict of services
-        :type services: dict
+        :param services: list of service dict
+        :type services: list
         :return: QPixmap with right icon state
         :rtype: QPixmap
         """
@@ -733,6 +736,9 @@ class HostSynthesis(QWidget):
 
             icon = QPixmap(get_image_path(text_result))
         else:
-            icon = QPixmap(get_image_path('unvalid'))
+            logger.warning(
+                'Services not found. Can\'t get real state icon for %s', self.host['name']
+            )
+            icon = QPixmap(get_image_path('all_services_none'))
 
         return icon
