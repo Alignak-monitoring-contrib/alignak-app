@@ -144,7 +144,9 @@ class Dashboard(QWidget):
 
         # Update content of DashboardFactory
 
-        percentages = self.dashboard_factory.get_percentages_states(synthesis['hosts'], synthesis['services'])
+        percentages = self.dashboard_factory.get_percentages_states(
+            synthesis['hosts'], synthesis['services']
+        )
 
         # Hosts
         self.dashboard_factory.update_states(

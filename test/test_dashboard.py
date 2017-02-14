@@ -72,22 +72,25 @@ class TestNotification(unittest2.TestCase):
         self.assertEqual('', under_test.dashboard_type.text())
 
         # Simulate dicts of states
-        hosts_states = dict(
-            up=1,
-            down=1,
-            unreachable=1,
-            acknowledge=1,
-            downtime=1
-        )
-        services_states = dict(
-            ok=1,
-            warning=1,
-            critical=1,
-            unknown=1,
-            unreachable=1,
-            acknowledge=1,
-            downtime=1,
-        )
+        synthesis = {
+            'hosts': {
+                'up': 1,
+                'down': 2,
+                'unreachable': 3,
+                'acknowledge': 4,
+                'downtime': 5,
+            },
+            'services': {
+                'ok': 4,
+                'warning': 5,
+                'critical': 6,
+                'unknown': 7,
+                'unreachable': 8,
+                'acknowledge': 9,
+                'downtime': 10,
+
+            }
+        }
 
         # Send a CRITICAL dashboard
         changes = {
@@ -108,7 +111,7 @@ class TestNotification(unittest2.TestCase):
                 'downtime': 0
             }
         }
-        under_test.display_dashboard('CRITICAL', hosts_states, services_states, changes)
+        under_test.update_dashboard(synthesis, changes, True)
 
         self.assertEqual('CRITICAL', under_test.dashboard_type.text())
         self.assertEqual(
@@ -117,7 +120,7 @@ class TestNotification(unittest2.TestCase):
         )
         self.assertEqual(
             under_test.dashboard_factory.state_data['hosts_up']['progress_bar'].value(),
-            20
+            6
         )
         self.assertEqual(
             under_test.dashboard_factory.state_data['hosts_up']['diff'].text(),
