@@ -37,11 +37,13 @@ try:
     from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import QTimer, Qt  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QObject, pyqtSignal  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QApplication, QWidget  # pylint: disable=import-error
     from PyQt4.Qt import QLabel  # pylint: disable=import-error
     from PyQt4.Qt import QVBoxLayout  # pylint: disable=import-error
     from PyQt4.QtCore import QTimer, Qt  # pylint: disable=import-error
+    from PyQt4.Qt import QObject, pyqtSignal  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
@@ -51,6 +53,8 @@ class Dashboard(QWidget):
     """
         Class who manage Dashboard QWidget.
     """
+
+    dashboard_updated = pyqtSignal(dict, dict, bool)
 
     def __init__(self, parent=None):
         super(Dashboard, self).__init__(parent)
@@ -92,6 +96,8 @@ class Dashboard(QWidget):
         self.app_widget.initialize('Dashboard')
         self.app_widget.add_widget(self)
 
+        self.dashboard_updated.connect(self.update_dashboard)
+
     def fill_state_factory(self):
         """
         Inititalize each state in factory so that it can be modified later
@@ -116,96 +122,108 @@ class Dashboard(QWidget):
         self.dashboard_factory.create_state_labels('acknowledged', item_type='services')
         self.dashboard_factory.create_state_labels('downtime', item_type='services')
 
-    def update_dashboard(self, hosts_states, services_states, diff):
+    def update_dashboard(self, synthesis, diff_synthesis, notify):
         """
         Update Dashboard widgets
 
-        :param hosts_states: states of hosts
-        :type hosts_states: dict
-        :param services_states: states of services
-        :type services_states: dict
-        :param diff: dict of changes since the last check of notifier.
-        :type diff: dict
+        :param synthesis: backend synthesis data
+        :type synthesis: dict
+        :param diff_synthesis: synthesis diff since last notifier check
+        :type diff_synthesis: dict
+        :param notify: display dashboard or not
+        :type notify: bool
         """
 
-        percentages = self.dashboard_factory.get_percentages_states(hosts_states, services_states)
+        # Set position of dashboard
+        self.set_position()
+        send_diff_banners(diff_synthesis)
 
-        if percentages:
-            # Hosts
-            self.dashboard_factory.update_states(
-                'hosts_up',
-                hosts_states['up'],
-                diff['hosts']['up'],
-                percentages['up']
-            )
-            self.dashboard_factory.update_states(
-                'hosts_down',
-                hosts_states['down'],
-                diff['hosts']['down'],
-                percentages['down']
-            )
-            self.dashboard_factory.update_states(
-                'hosts_unreach',
-                hosts_states['unreachable'],
-                diff['hosts']['unreachable'],
-                percentages['hosts_unreachable']
-            )
-            self.dashboard_factory.update_states(
-                'hosts_acknowledged',
-                hosts_states['acknowledge'],
-                diff['hosts']['acknowledge'],
-                percentages['hosts_acknowledge']
-            )
-            self.dashboard_factory.update_states(
-                'hosts_downtime',
-                hosts_states['downtime'],
-                diff['hosts']['downtime'],
-                percentages['hosts_downtime']
-            )
+        # Dashboard title
+        self.dashboard_type.setText(self.get_dashboard_title(synthesis))
+        self.set_style_sheet(self.get_dashboard_title(synthesis))
 
-            # Services
-            self.dashboard_factory.update_states(
-                'services_ok',
-                services_states['ok'],
-                diff['services']['ok'],
-                percentages['ok']
-            )
-            self.dashboard_factory.update_states(
-                'services_warning',
-                services_states['warning'],
-                diff['services']['warning'],
-                percentages['warning']
-            )
-            self.dashboard_factory.update_states(
-                'services_critical',
-                services_states['critical'],
-                diff['services']['critical'],
-                percentages['critical']
-            )
-            self.dashboard_factory.update_states(
-                'services_unknown',
-                services_states['unknown'],
-                diff['services']['unknown'],
-                percentages['unknown']
-            )
-            self.dashboard_factory.update_states(
-                'services_unreachable',
-                services_states['unreachable'],
-                diff['services']['unreachable'],
-                percentages['services_unreachable']
-            )
-            self.dashboard_factory.update_states(
-                'services_acknowledged',
-                services_states['acknowledge'],
-                diff['services']['acknowledge'],
-                percentages['services_acknowledge']
-            )
-            self.dashboard_factory.update_states(
-                'services_downtime',
-                services_states['downtime'],
-                diff['services']['downtime'],
-                percentages['services_downtime']
-            )
+        # Update content of DashboardFactory
+
+        percentages = self.dashboard_factory.get_percentages_states(synthesis['hosts'], synthesis['services'])
+
+        # Hosts
+        self.dashboard_factory.update_states(
+            'hosts_up',
+            synthesis['hosts']['up'],
+            diff_synthesis['hosts']['up'],
+            percentages['up']
+        )
+        self.dashboard_factory.update_states(
+            'hosts_down',
+            synthesis['hosts']['down'],
+            diff_synthesis['hosts']['down'],
+            percentages['down']
+        )
+        self.dashboard_factory.update_states(
+            'hosts_unreach',
+            synthesis['hosts']['unreachable'],
+            diff_synthesis['hosts']['unreachable'],
+            percentages['hosts_unreachable']
+        )
+        self.dashboard_factory.update_states(
+            'hosts_acknowledged',
+            synthesis['hosts']['acknowledge'],
+            diff_synthesis['hosts']['acknowledge'],
+            percentages['hosts_acknowledge']
+        )
+        self.dashboard_factory.update_states(
+            'hosts_downtime',
+            synthesis['hosts']['downtime'],
+            diff_synthesis['hosts']['downtime'],
+            percentages['hosts_downtime']
+        )
+
+        # Services
+        self.dashboard_factory.update_states(
+            'services_ok',
+            synthesis['services']['ok'],
+            diff_synthesis['services']['ok'],
+            percentages['ok']
+        )
+        self.dashboard_factory.update_states(
+            'services_warning',
+            synthesis['services']['warning'],
+            diff_synthesis['services']['warning'],
+            percentages['warning']
+        )
+        self.dashboard_factory.update_states(
+            'services_critical',
+            synthesis['services']['critical'],
+            diff_synthesis['services']['critical'],
+            percentages['critical']
+        )
+        self.dashboard_factory.update_states(
+            'services_unknown',
+            synthesis['services']['unknown'],
+            diff_synthesis['services']['unknown'],
+            percentages['unknown']
+        )
+        self.dashboard_factory.update_states(
+            'services_unreachable',
+            synthesis['services']['unreachable'],
+            diff_synthesis['services']['unreachable'],
+            percentages['services_unreachable']
+        )
+        self.dashboard_factory.update_states(
+            'services_acknowledged',
+            synthesis['services']['acknowledge'],
+            diff_synthesis['services']['acknowledge'],
+            percentages['services_acknowledge']
+        )
+        self.dashboard_factory.update_states(
+            'services_downtime',
+            synthesis['services']['downtime'],
+            diff_synthesis['services']['downtime'],
+            percentages['services_downtime']
+        )
+
+        if notify:
+            self.display_dashboard()
 
     def set_position(self):
         """
@@ -246,30 +264,26 @@ class Dashboard(QWidget):
 
         logger.debug('Position ' + msg)
 
-    def display_dashboard(self, level_notif, hosts_states, services_states, diff):
+    def display_dashboard(self):
         """
         Update dashboard and display it
 
-        :param level_notif: state to display in label_state.
-        :type level_notif: str
-        :param hosts_states: dict of hosts states
-        :type hosts_states: dict
-        :param services_states: dict of services states.
-        :type services_states: dict
+        :param synthesis: backend synthesis data
+        :type synthesis: dict
         :param diff: dict of changes since the last check of notifier.
         :type diff: dict
         """
 
-        # Set position of dashboard
-        self.set_position()
-
-        # Prepare dashboard
-        self.dashboard_type.setText(level_notif)
-        self.set_style_sheet(level_notif)
-
-        # Update content of DashboardFactory
-        self.update_dashboard(hosts_states, services_states, diff)
-        send_diff_banners(diff)
+        # # Set position of dashboard
+        # self.set_position()
+        #
+        # # Prepare dashboard
+        # self.dashboard_type.setText(self.get_dashboard_title(synthesis))
+        # self.set_style_sheet(self.get_dashboard_title(synthesis))
+        #
+        # # Update content of DashboardFactory
+        # self.update_dashboard(synthesis['hosts'], synthesis['services'], diff)
+        # send_diff_banners(diff)
 
         # Retrieve duration
         duration = int(get_app_config('Alignak-App', 'duration'))
@@ -295,6 +309,30 @@ class Dashboard(QWidget):
             self.app_widget.close()
         else:
             pass
+
+    @staticmethod
+    def get_dashboard_title(synthesis):
+        """
+        Return dashboard title
+
+        :param synthesis: backend synthesis data
+        :type synthesis: dict
+        :return: dashboard title
+        :rtype: str
+        """
+
+        if synthesis['services']['critical'] > 0 or synthesis['hosts']['down'] > 0:
+            dashboard_title = 'CRITICAL'
+        elif synthesis['services']['unknown'] > 0 or \
+                synthesis['services']['warning'] > 0 or \
+                synthesis['hosts']['unreachable'] > 0:
+            dashboard_title = 'WARNING'
+        else:
+            dashboard_title = 'OK'
+
+        logger.debug('Dashboard title : ' + dashboard_title)
+
+        return dashboard_title
 
     def mousePressEvent(self, _):
         """

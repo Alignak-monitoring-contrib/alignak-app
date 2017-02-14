@@ -153,31 +153,12 @@ class AppNotifier(object):
                 self.old_synthesis = copy.deepcopy(synthesis)
                 self.changes = True
 
-        # TODO: MOVE THIS Define dashboard level
-        if synthesis['services']['critical'] > 0 or synthesis['hosts']['down'] > 0:
-            level_notif = 'CRITICAL'
-        elif synthesis['services']['unknown'] > 0 or \
-                synthesis['services']['warning'] > 0 or \
-                synthesis['hosts']['unreachable'] > 0:
-            level_notif = 'WARNING'
-        else:
-            level_notif = 'OK'
-
         # TODO Review this part
         if self.changes:
             self.tray_icon.update_tray.emit(synthesis)
-
-            # Send dashboard
-            if self.notify:
-                self.dashboard.display_dashboard(
-                    level_notif, synthesis['hosts'],
-                    synthesis['services'],
-                    diff_synthesis
-                )
+            self.dashboard.dashboard_updated.emit(synthesis, diff_synthesis, self.notify)
         else:
             logger.info('No Notify.')
-
-        logger.debug('Dashboard Level : ' + str(level_notif))
 
     def diff_last_states(self, synthesis):
         """
