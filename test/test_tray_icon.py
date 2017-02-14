@@ -27,7 +27,7 @@ from alignak_app.core.backend import AppBackend
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import init_config
 from alignak_app.systray.tray_icon import TrayIcon
-from alignak_app.popup.notification import AppNotification
+from alignak_app.dashboard.notification import AppNotification
 
 try:
     __import__('PyQt5')

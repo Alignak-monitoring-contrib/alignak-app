@@ -24,7 +24,7 @@ import sys
 import unittest2
 
 from alignak_app.core.utils import init_config
-from alignak_app.popup.notification import AppNotification
+from alignak_app.dashboard.notification import AppNotification
 
 try:
     __import__('PyQt5')

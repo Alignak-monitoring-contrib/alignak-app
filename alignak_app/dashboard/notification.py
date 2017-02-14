@@ -28,7 +28,7 @@ from logging import getLogger
 from alignak_app import __application__
 from alignak_app.core.utils import get_app_config
 from alignak_app.core.utils import get_css
-from alignak_app.popup.notification_factory import NotificationFactory
+from alignak_app.dashboard.notification_factory import NotificationFactory
 from alignak_app.widgets.app_widget import AppQWidget
 from alignak_app.widgets.banner import send_diff_banners
 
@@ -230,7 +230,7 @@ class AppNotification(QWidget):
         pos = get_app_config('Alignak-App', 'position')
         points = pos.split(':')
 
-        # Move notification popup
+        # Move notification dashboard
         if 'top' in points and 'right' in points:
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             top_right = QApplication.desktop().screenGeometry(screen).topRight()
@@ -273,7 +273,7 @@ class AppNotification(QWidget):
         :type diff: dict
         """
 
-        # Set position of popup
+        # Set position of dashboard
         self.set_position()
 
         # Prepare notification
