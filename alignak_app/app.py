@@ -38,12 +38,12 @@ from alignak_app.core.backend import AppBackend
 try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QDialog, QMessageBox  # pylint: disable=no-name-in-module
-    from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QIcon, QTimer  # pylint: disable=no-name-in-module
 except ImportError:
-    from PyQt4.QtGui import QDialog, QMessageBox  # pylint: disable=import-error
-    from PyQt4.QtGui import QIcon  # pylint: disable=import-error
+    from PyQt4.Qt import QDialog, QMessageBox  # pylint: disable=import-error
+    from PyQt4.Qt import QIcon, QTimer  # pylint: disable=import-error
 
-# Initialize logger
+# Initialize logger and config
 init_config()
 logger = create_logger()
 
@@ -56,6 +56,7 @@ class AlignakApp(object):
     def __init__(self):
         self.tray_icon = None
         self.notifier = None
+        self.notifier_timer = QTimer()
 
     def start(self):
         """
@@ -161,15 +162,16 @@ class AlignakApp(object):
         if 'token' not in app_backend.user:
             app_backend.user['token'] = app_backend.backend.token
 
-        # Initialize notifier
-        self.notifier = AppNotifier(app_backend)
-
-        # Create QSystemTrayIcon
+        # Initialize notifier and create QSystemTrayIcon
         self.tray_icon = TrayIcon(self.get_icon())
-        self.tray_icon.build_menu(self.notifier.app_backend, self.notifier.popup)
+        self.notifier = AppNotifier(app_backend, self.tray_icon)
+        self.tray_icon.build_menu(app_backend, self.notifier.popup)
         self.tray_icon.show()
 
         # If all is OK ;)
         start = bool(app_backend.get('livesynthesis'))
         if start:
-            self.notifier.start(self.tray_icon)
+            self.notifier.set_interval()
+            self.notifier_timer.start(self.notifier.interval)
+            self.notifier_timer.timeout.connect(self.notifier.check_data)
+

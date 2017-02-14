@@ -45,36 +45,31 @@ class AppNotifier(object):
         Class who manage notifications and states of hosts and services.
     """
 
-    def __init__(self, app_backend):
+    def __init__(self, app_backend, tray_icon):
         self.app_backend = app_backend
-        self.tray_icon = None
+        self.tray_icon = tray_icon
         self.popup = Dashboard()
         self.popup.initialize()
         self.notify = True
-        self.timer = QTimer()
+        self.interval = 0
 
-    def start(self, tray_icon):
+    def set_interval(self):
         """
-        Start process loop of application with a QTimer.
+        Set interval from config.
 
-        :param tray_icon: TrayIcon object
-        :type tray_icon: alignak_app.systray.tray_icon.TrayIcon
         """
 
-        self.tray_icon = tray_icon
-
-        check_interval = int(get_app_config('Alignak-App', 'check_interval'))
-        if bool(check_interval):
+        interval = int(get_app_config('Alignak-App', 'check_interval'))
+        if bool(interval):
             logger.info('Start notifier...')
-            logger.debug('Display Dashboard in ' + str(check_interval) + 's')
+            logger.debug('Dashboard will be displayed in ' + str(interval) + 's')
 
-            check_interval *= 1000
+            interval *= 1000
         else:
             logger.info('Notifier will not display Dashboard !')
-            check_interval = 30000
+            interval = 30000
 
-        self.timer.start(check_interval)
-        self.timer.timeout.connect(self.check_data)
+        self.interval = interval
 
     @staticmethod
     def basic_diff_model():
@@ -121,7 +116,7 @@ class AppNotifier(object):
         current_states = self.app_backend.synthesis_count()
 
         if old_states:
-            diff = self.diff_last_check(old_states)
+            diff = self.diff_since_last_check(old_states)
 
         # Define dashboard level
         if current_states['services']['critical'] > 0 or current_states['hosts']['down'] > 0:
@@ -152,7 +147,7 @@ class AppNotifier(object):
 
         logger.debug('Dashboard Level : ' + str(level_notif))
 
-    def diff_last_check(self, old_states):
+    def diff_since_last_check(self, old_states):
         """
         Check if there have been any change since the last check
 

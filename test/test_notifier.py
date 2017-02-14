@@ -65,19 +65,20 @@ class TestAppNotifier(unittest2.TestCase):
 
     def test_start_process(self):
         """Start Notifier Process"""
-        under_test = AppNotifier(self.backend)
 
-        self.assertIsNone(under_test.tray_icon)
+        # Tray_icon for notifier
+        tray_icon = TrayIcon(self.icon)
+        under_test = AppNotifier(self.backend, tray_icon)
+
+        self.assertIsNotNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.app_backend)
         self.assertIsNotNone(under_test.popup)
         self.assertTrue(under_test.notify)
 
-        # Tray_icon for notifier
-        tray_icon = TrayIcon(self.icon)
         tray_icon.build_menu(self.backend, under_test.popup)
 
         # Start notifier
-        under_test.start(tray_icon)
+        under_test.set_interval()
 
         self.assertIsNotNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.app_backend)
@@ -86,12 +87,13 @@ class TestAppNotifier(unittest2.TestCase):
 
     def test_check_data(self):
         """Check Data modify Actions"""
-        under_test = AppNotifier(self.backend)
+
+        tray_icon = TrayIcon(self.icon)
+        under_test = AppNotifier(self.backend, tray_icon)
+        tray_icon.build_menu(self.backend, under_test.popup)
 
         # Start notifier
-        tray_icon = TrayIcon(self.icon)
-        tray_icon.build_menu(self.backend, under_test.popup)
-        under_test.start(tray_icon)
+        under_test.set_interval()
 
         # Check Actions are pending
         self.assertEqual('Hosts UP, Wait...',
@@ -113,12 +115,12 @@ class TestAppNotifier(unittest2.TestCase):
         self.backend = AppBackend()
         self.backend.login()
 
-        under_test = AppNotifier(self.backend)
+        tray_icon = TrayIcon(self.icon)
+        under_test = AppNotifier(self.backend, tray_icon)
 
         # Start notifier
-        tray_icon = TrayIcon(self.icon)
         tray_icon.build_menu(self.backend, under_test.popup)
-        under_test.start(tray_icon)
+        under_test.set_interval()
 
         # "start_process" set notify to True
         self.assertTrue(under_test.notify)
@@ -132,13 +134,13 @@ class TestAppNotifier(unittest2.TestCase):
 
         # Copy state
         old_states = copy.deepcopy(under_test.app_backend.states)
-        under_test.diff_last_check(old_states)
+        under_test.diff_since_last_check(old_states)
 
         # "check_changes" set notify to False if no changes
         self.assertFalse(under_test.notify)
 
         # Modify "states" to set notify to True
         under_test.app_backend.states['hosts']['up'] += 1
-        under_test.diff_last_check(old_states)
+        under_test.diff_since_last_check(old_states)
 
         self.assertTrue(under_test.notify)
