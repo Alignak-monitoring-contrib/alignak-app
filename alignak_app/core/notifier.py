@@ -46,12 +46,19 @@ class AppNotifier(object):
     """
 
     def __init__(self, app_backend, tray_icon):
+        """
+
+        :param app_backend: App Backend
+        :type app_backend: alignak_app.core.backend.AppBackend
+        :param tray_icon:
+        """
         self.app_backend = app_backend
         self.tray_icon = tray_icon
-        self.popup = Dashboard()
-        self.popup.initialize()
+        self.dashboard = Dashboard()
+        self.dashboard.initialize()
         self.notify = True
         self.interval = 0
+        self.old_synthesis = self.basic_diff_model()
 
     def set_interval(self):
         """
@@ -105,74 +112,73 @@ class AppNotifier(object):
 
         """
 
-        # Init dict
-        old_states = {}
-        diff = self.basic_diff_model()
+        synthesis = self.app_backend.synthesis_count()
+        print('Old synthesis ', self.old_synthesis)
+        print('New synthesis ', synthesis)
 
-        if self.app_backend.states:
-            logger.info('Store old states...')
-            old_states = copy.deepcopy(self.app_backend.states)
-
-        current_states = self.app_backend.synthesis_count()
-
-        if old_states:
-            diff = self.diff_since_last_check(old_states)
+        if self.old_synthesis != synthesis:
+            print('Changes')
+            diff_synthesis = self.diff_since_last_check(synthesis)
+            self.old_synthesis = copy.deepcopy(synthesis)
+            self.notify = True
+        else:
+            print('No Changes')
+            diff_synthesis = self.basic_diff_model()
+            self.old_synthesis = copy.deepcopy(synthesis)
+            self.notify = False
 
         # Define dashboard level
-        if current_states['services']['critical'] > 0 or current_states['hosts']['down'] > 0:
+        if synthesis['services']['critical'] > 0 or synthesis['hosts']['down'] > 0:
             level_notif = 'CRITICAL'
-        elif current_states['services']['unknown'] > 0 or \
-                current_states['services']['warning'] > 0 or \
-                current_states['hosts']['unreachable'] > 0:
+        elif synthesis['services']['unknown'] > 0 or \
+                synthesis['services']['warning'] > 0 or \
+                synthesis['hosts']['unreachable'] > 0:
             level_notif = 'WARNING'
         else:
             level_notif = 'OK'
 
         if self.notify:
+            self.tray_icon.update_tray.emit(self)
             # Update Menus
             self.tray_icon.update_menu_actions(
-                current_states['hosts'],
-                current_states['services']
+                synthesis['hosts'],
+                synthesis['services']
             )
 
             # Send dashboard
             if bool(int(get_app_config('Alignak-App', 'check_interval'))):
-                self.popup.display_dashboard(
-                    level_notif, current_states['hosts'],
-                    current_states['services'],
-                    diff
+                self.dashboard.display_dashboard(
+                    level_notif, synthesis['hosts'],
+                    synthesis['services'],
+                    diff_synthesis
                 )
         else:
             logger.info('No Notify.')
 
         logger.debug('Dashboard Level : ' + str(level_notif))
 
-    def diff_since_last_check(self, old_states):
+    def diff_since_last_check(self, synthesis):
         """
         Check if there have been any change since the last check
 
+        :param synthesis: new synthesis states in dict
+        :type synthesis: dict
+        :return: diff of twice synthesis in a dict
+        :rtype: dict
         """
 
-        logger.debug('Old_states : ' + str(old_states))
-        logger.debug('New states : ' + str(self.app_backend.states))
+        logger.debug('Old_states : ' + str(self.old_synthesis))
+        logger.debug('New states : ' + str(synthesis))
 
-        diff = self.basic_diff_model()
+        diff_synthesis = self.basic_diff_model()
 
-        if old_states == self.app_backend.states:
-            logger.info('[No changes] since the last check...')
-            self.notify = False
-        else:
-            logger.info('[Changes] since the last check !')
-            self.notify = True
-            for key, _ in self.app_backend.states['hosts'].items():
-                if old_states['hosts'][key] != self.app_backend.states['hosts'][key]:
-                    cur_diff = self.app_backend.states['hosts'][key] - old_states['hosts'][key]
-                    diff['hosts'][key] = cur_diff
-            for key, _ in self.app_backend.states['services'].items():
-                if old_states['services'][key] != self.app_backend.states['services'][key]:
-                    cur_diff = \
-                        self.app_backend.states['services'][key] \
-                        - old_states['services'][key]
-                    diff['services'][key] = cur_diff
+        for key, _ in self.old_synthesis['hosts'].items():
+            if synthesis['hosts'][key] != self.old_synthesis['hosts'][key]:
+                cur_diff = synthesis['hosts'][key] - self.old_synthesis['hosts'][key]
+                diff_synthesis['hosts'][key] = cur_diff
+        for key, _ in self.old_synthesis['services'].items():
+            if synthesis['services'][key] != self.old_synthesis['services'][key]:
+                cur_diff = synthesis['services'][key] - self.old_synthesis['services'][key]
+                diff_synthesis['services'][key] = cur_diff
 
-        return diff
+        return diff_synthesis

@@ -28,6 +28,7 @@ import webbrowser
 from logging import getLogger
 
 from alignak_app.core.utils import get_app_config, get_image_path, init_config
+from alignak_app.core.notifier import AppNotifier
 from alignak_app.synthesis.synthesis import Synthesis
 from alignak_app.systray.qactions_factory import QActionFactory
 from alignak_app.widgets.about import AppAbout
@@ -39,12 +40,14 @@ try:
     from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
     from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QObject, pyqtSignal  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     try:
         __import__('PyQt4')
         from PyQt4.Qt import QSystemTrayIcon  # pylint: disable=import-error
         from PyQt4.Qt import QMenu  # pylint: disable=import-error
         from PyQt4.QtGui import QIcon  # pylint: disable=import-error
+        from PyQt4.Qt import QObject, pyqtSignal  # pylint: disable=import-error
     except ImportError:
         sys.exit('\nYou must have PyQt installed to run this app.\nPlease read the doc.')
 
@@ -56,6 +59,8 @@ class TrayIcon(QSystemTrayIcon):
     """
         Class who create QMenu and QAction.
     """
+
+    update_tray = pyqtSignal(AppNotifier)
 
     def __init__(self, icon, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
@@ -96,6 +101,16 @@ class TrayIcon(QSystemTrayIcon):
         self.create_quit_action()
 
         self.setContextMenu(self.menu)
+
+        self.update_tray.connect(self.apply_changes)
+
+    def apply_changes(self):
+        """
+        TODO
+        :return:
+        """
+
+        print('update tray icon')
 
     def create_dashboard_action(self, dashboard):
         """

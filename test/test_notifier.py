@@ -72,17 +72,17 @@ class TestAppNotifier(unittest2.TestCase):
 
         self.assertIsNotNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.app_backend)
-        self.assertIsNotNone(under_test.popup)
+        self.assertIsNotNone(under_test.dashboard)
         self.assertTrue(under_test.notify)
 
-        tray_icon.build_menu(self.backend, under_test.popup)
+        tray_icon.build_menu(self.backend, under_test.dashboard)
 
         # Start notifier
         under_test.set_interval()
 
         self.assertIsNotNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.app_backend)
-        self.assertIsNotNone(under_test.popup)
+        self.assertIsNotNone(under_test.dashboard)
         self.assertTrue(under_test.notify)
 
     def test_check_data(self):
@@ -90,7 +90,7 @@ class TestAppNotifier(unittest2.TestCase):
 
         tray_icon = TrayIcon(self.icon)
         under_test = AppNotifier(self.backend, tray_icon)
-        tray_icon.build_menu(self.backend, under_test.popup)
+        tray_icon.build_menu(self.backend, under_test.dashboard)
 
         # Start notifier
         under_test.set_interval()
@@ -119,7 +119,7 @@ class TestAppNotifier(unittest2.TestCase):
         under_test = AppNotifier(self.backend, tray_icon)
 
         # Start notifier
-        tray_icon.build_menu(self.backend, under_test.popup)
+        tray_icon.build_menu(self.backend, under_test.dashboard)
         under_test.set_interval()
 
         # "start_process" set notify to True

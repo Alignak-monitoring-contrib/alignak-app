@@ -165,7 +165,7 @@ class AlignakApp(object):
         # Initialize notifier and create QSystemTrayIcon
         self.tray_icon = TrayIcon(self.get_icon())
         self.notifier = AppNotifier(app_backend, self.tray_icon)
-        self.tray_icon.build_menu(app_backend, self.notifier.popup)
+        self.tray_icon.build_menu(app_backend, self.notifier.dashboard)
         self.tray_icon.show()
 
         # If all is OK ;)

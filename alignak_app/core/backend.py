@@ -24,6 +24,7 @@
 """
 
 import json
+import copy
 from logging import getLogger
 
 from alignak_backend_client.client import Backend, BackendException
@@ -39,10 +40,27 @@ class AppBackend(object):
         Alignak-App.
     """
 
+    # states_model = {
+    #     'hosts': {
+    #         'up': 0,
+    #         'down': 0,
+    #         'unreachable': 0,
+    #         'acknowledge': 0,
+    #         'downtime': 0
+    #     },
+    #     'services': {
+    #         'ok': 0,
+    #         'critical': 0,
+    #         'unknown': 0,
+    #         'warning': 0,
+    #         'unreachable': 0,
+    #         'acknowledge': 0,
+    #         'downtime': 0
+    #     }
+    # }
+
     def __init__(self):
         self.backend = None
-        self.first_check = True
-        self.states = {}
         self.user = {}
 
     def login(self, username=None, password=None):
@@ -296,13 +314,8 @@ class AppBackend(object):
         :rtype: dict
         """
 
-        if not self.backend.authenticated:
-            logger.warning('Connection to app_backend is lost, application will try to reconnect !')
-            self.login()
-
         logger.info('GET synthesis count states...')
 
-        # Initialize dicts for states
         states = {
             'hosts': {
                 'up': 0,
@@ -321,7 +334,6 @@ class AppBackend(object):
                 'downtime': 0
             }
         }
-
         live_synthesis = self.get('livesynthesis')
 
         if live_synthesis:
@@ -357,7 +369,5 @@ class AppBackend(object):
                 states['services']['downtime'] += realm['services_in_downtime']
 
         logger.info('Store current states...')
-        self.states['hosts'] = states['hosts']
-        self.states['services'] = states['services']
 
         return states
