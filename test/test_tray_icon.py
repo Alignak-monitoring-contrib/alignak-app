@@ -27,7 +27,7 @@ from alignak_app.core.backend import AppBackend
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import init_config
 from alignak_app.systray.tray_icon import TrayIcon
-from alignak_app.dashboard.notification import AppNotification
+from alignak_app.dashboard.app_dashboard import Dashboard
 
 try:
     __import__('PyQt5')
@@ -118,7 +118,7 @@ class TestTrayIcon(unittest2.TestCase):
     def test_build_menu(self):
         """Build Menu add QActions"""
         under_test = TrayIcon(TestTrayIcon.icon)
-        dashboard_test = AppNotification()
+        dashboard_test = Dashboard()
 
         # Assert no actions in Menu
         self.assertFalse(under_test.menu.actions())
@@ -140,7 +140,7 @@ class TestTrayIcon(unittest2.TestCase):
         """Update Menu QActions"""
         under_test = TrayIcon(TestTrayIcon.icon)
 
-        dashboard_test = AppNotification()
+        dashboard_test = Dashboard()
         under_test.build_menu(self.backend, dashboard_test)
 
         self.assertEqual('Hosts UP, Wait...',

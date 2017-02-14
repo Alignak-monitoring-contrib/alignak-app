@@ -24,7 +24,7 @@ import sys
 import unittest2
 
 from alignak_app.core.utils import init_config
-from alignak_app.dashboard.notification import AppNotification
+from alignak_app.dashboard.app_dashboard import Dashboard
 
 try:
     __import__('PyQt5')
@@ -51,24 +51,24 @@ class TestNotification(unittest2.TestCase):
     def test_initialize_notification(self):
         """Inititalize Notification"""
 
-        under_test = AppNotification()
+        under_test = Dashboard()
 
-        self.assertIsNone(under_test.notification_type)
-        self.assertIsNotNone(under_test.popup_factory)
+        self.assertIsNone(under_test.dashboard_type)
+        self.assertIsNotNone(under_test.dashboard_factory)
 
         # Create all the label
-        under_test.initialize_notification()
+        under_test.initialize()
 
-        self.assertEqual('state', under_test.notification_type.objectName())
-        self.assertIsNotNone(under_test.popup_factory)
+        self.assertEqual('state', under_test.dashboard_type.objectName())
+        self.assertIsNotNone(under_test.dashboard_factory)
 
     def test_send_notifications(self):
         """Send Notification"""
-        under_test = AppNotification()
+        under_test = Dashboard()
 
-        under_test.initialize_notification()
+        under_test.initialize()
 
-        self.assertEqual('', under_test.notification_type.text())
+        self.assertEqual('', under_test.dashboard_type.text())
 
         # Simulate dicts of states
         hosts_states = dict(
@@ -107,19 +107,19 @@ class TestNotification(unittest2.TestCase):
                 'downtime': 0
             }
         }
-        under_test.send_notification('CRITICAL', hosts_states, services_states, changes)
+        under_test.display_dashboard('CRITICAL', hosts_states, services_states, changes)
 
-        self.assertEqual('CRITICAL', under_test.notification_type.text())
+        self.assertEqual('CRITICAL', under_test.dashboard_type.text())
         self.assertEqual(
-            under_test.popup_factory.state_data['hosts_up']['nb_items'].text(),
+            under_test.dashboard_factory.state_data['hosts_up']['nb_items'].text(),
             '1'
         )
         self.assertEqual(
-            under_test.popup_factory.state_data['hosts_up']['progress_bar'].value(),
+            under_test.dashboard_factory.state_data['hosts_up']['progress_bar'].value(),
             20
         )
         self.assertEqual(
-            under_test.popup_factory.state_data['hosts_up']['diff'].text(),
+            under_test.dashboard_factory.state_data['hosts_up']['diff'].text(),
             ''
         )
         assert 'Background-color: #e74c3c;' in under_test.styleSheet()
@@ -131,7 +131,7 @@ class TestNotification(unittest2.TestCase):
         critical_css = "Background-color: #e74c3c;"
         none_css = "Background-color: #EEE;"
 
-        under_test = AppNotification()
+        under_test = Dashboard()
 
         css = {
             'OK': ok_css,
@@ -149,7 +149,7 @@ class TestNotification(unittest2.TestCase):
 
     def test_set_position(self):
         """Position Change from Initial Position"""
-        under_test = AppNotification()
+        under_test = Dashboard()
 
         initial_position = under_test.app_widget.pos()
 

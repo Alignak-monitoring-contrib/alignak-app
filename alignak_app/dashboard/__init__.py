@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The Popup package contains classes who create QWidgets notifications.
+    The Dashboard package contains classes who manage Dashboard QWidget.
 """

@@ -75,8 +75,8 @@ class TrayIcon(QSystemTrayIcon):
 
         :param app_backend: AppBackend object
         :type app_backend: alignak_app.core.backend.AppBackend
-        :param dashboard: AppNotification QWidget
-        :type dashboard: alignak_app.popup.notification.AppNotification
+        :param dashboard: Dashboard QWidget
+        :type dashboard: alignak_app.dashboard.app_dashboard.Dashboard
         """
 
         # Create actions
@@ -101,8 +101,8 @@ class TrayIcon(QSystemTrayIcon):
         """
         Create dashboard action
 
-        :param dashboard: AppNotification QWidget
-        :type dashboard: alignak_app.popup.notification.AppNotification
+        :param dashboard: Dashboard QWidget
+        :type dashboard: alignak_app.dashboard.app_dashboard.Dashboard
         """
 
         logger.info('Create Dashboard action')

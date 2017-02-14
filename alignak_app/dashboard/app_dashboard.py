@@ -20,15 +20,14 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Notification build notifications QWidgets.
+    App Dashboard create, update and display Dashboard QWidget.
 """
 
 from logging import getLogger
 
 from alignak_app import __application__
-from alignak_app.core.utils import get_app_config
-from alignak_app.core.utils import get_css
-from alignak_app.dashboard.notification_factory import NotificationFactory
+from alignak_app.core.utils import get_app_config, get_css
+from alignak_app.dashboard.dashboard_factory import DashboardFactory
 from alignak_app.widgets.app_widget import AppQWidget
 from alignak_app.widgets.banner import send_diff_banners
 
@@ -48,29 +47,29 @@ except ImportError:  # pragma: no cover
 logger = getLogger(__name__)
 
 
-class AppNotification(QWidget):
+class Dashboard(QWidget):
     """
-        Class who create QWidget notifications.
+        Class who manage Dashboard QWidget.
     """
 
     def __init__(self, parent=None):
-        super(AppNotification, self).__init__(parent)
+        super(Dashboard, self).__init__(parent)
         # General settings
         self.setWindowTitle(__application__)
         self.setMaximumWidth(455)
         self.setStyleSheet(get_css())
         # Fields
         self.main_layout = QVBoxLayout(self)
-        self.notification_type = None
-        self.popup_factory = NotificationFactory(self)
+        self.dashboard_type = None
+        self.dashboard_factory = DashboardFactory(self)
         self.button = None
         self.timer = QTimer(self)
         self.pin = False
         self.app_widget = AppQWidget()
 
-    def initialize_notification(self):
+    def initialize(self):
         """
-        Initialize Notification
+        Initialize Dashboard QWidget
 
         """
 
@@ -78,29 +77,20 @@ class AppNotification(QWidget):
             self.app_widget.windowFlags() | Qt.SplashScreen | Qt.WindowStaysOnTopHint
         )
 
-        # Create Label for notification type
-        self.notification_type = QLabel(self)
-        self.notification_type.setAlignment(Qt.AlignCenter)
-        self.notification_type.setObjectName('state')
-        self.notification_type.setMinimumSize(425, 40)
+        # Create Label for dashboard type
+        self.dashboard_type = QLabel(self)
+        self.dashboard_type.setAlignment(Qt.AlignCenter)
+        self.dashboard_type.setObjectName('state')
+        self.dashboard_type.setMinimumSize(425, 40)
 
-        self.main_layout.addWidget(self.notification_type, 0)
+        self.main_layout.addWidget(self.dashboard_type, 0)
 
         # Fill and add StateFactory
         self.fill_state_factory()
-        self.main_layout.addWidget(self.popup_factory, 1)
+        self.main_layout.addWidget(self.dashboard_factory, 1)
 
         self.app_widget.initialize('Dashboard')
         self.app_widget.add_widget(self)
-
-    def close_notification(self):
-        """
-        Close notification and set pin at False
-
-        """
-
-        self.pin = False
-        self.app_widget.close()
 
     def fill_state_factory(self):
         """
@@ -108,29 +98,27 @@ class AppNotification(QWidget):
 
         """
 
-        # self.popup_factory = PopupFactory(self)
-
         # Hosts
-        self.popup_factory.create_state_labels('hosts_up')
-        self.popup_factory.create_state_labels('hosts_unreach')
-        self.popup_factory.create_state_labels('hosts_down')
-        self.popup_factory.create_state_labels('acknowledged', item_type='hosts')
-        self.popup_factory.create_state_labels('downtime', item_type='hosts')
+        self.dashboard_factory.create_state_labels('hosts_up')
+        self.dashboard_factory.create_state_labels('hosts_unreach')
+        self.dashboard_factory.create_state_labels('hosts_down')
+        self.dashboard_factory.create_state_labels('acknowledged', item_type='hosts')
+        self.dashboard_factory.create_state_labels('downtime', item_type='hosts')
 
-        self.popup_factory.add_separator()
+        self.dashboard_factory.add_separator()
 
         # Services
-        self.popup_factory.create_state_labels('services_ok')
-        self.popup_factory.create_state_labels('services_warning')
-        self.popup_factory.create_state_labels('services_critical')
-        self.popup_factory.create_state_labels('services_unknown')
-        self.popup_factory.create_state_labels('services_unreachable')
-        self.popup_factory.create_state_labels('acknowledged', item_type='services')
-        self.popup_factory.create_state_labels('downtime', item_type='services')
+        self.dashboard_factory.create_state_labels('services_ok')
+        self.dashboard_factory.create_state_labels('services_warning')
+        self.dashboard_factory.create_state_labels('services_critical')
+        self.dashboard_factory.create_state_labels('services_unknown')
+        self.dashboard_factory.create_state_labels('services_unreachable')
+        self.dashboard_factory.create_state_labels('acknowledged', item_type='services')
+        self.dashboard_factory.create_state_labels('downtime', item_type='services')
 
-    def update_popup(self, hosts_states, services_states, diff):
+    def update_dashboard(self, hosts_states, services_states, diff):
         """
-        Create notification content
+        Update Dashboard widgets
 
         :param hosts_states: states of hosts
         :type hosts_states: dict
@@ -140,35 +128,35 @@ class AppNotification(QWidget):
         :type diff: dict
         """
 
-        percentages = self.popup_factory.get_percentages_states(hosts_states, services_states)
+        percentages = self.dashboard_factory.get_percentages_states(hosts_states, services_states)
 
         if percentages:
             # Hosts
-            self.popup_factory.update_states(
+            self.dashboard_factory.update_states(
                 'hosts_up',
                 hosts_states['up'],
                 diff['hosts']['up'],
                 percentages['up']
             )
-            self.popup_factory.update_states(
+            self.dashboard_factory.update_states(
                 'hosts_down',
                 hosts_states['down'],
                 diff['hosts']['down'],
                 percentages['down']
             )
-            self.popup_factory.update_states(
+            self.dashboard_factory.update_states(
                 'hosts_unreach',
                 hosts_states['unreachable'],
                 diff['hosts']['unreachable'],
                 percentages['hosts_unreachable']
             )
-            self.popup_factory.update_states(
+            self.dashboard_factory.update_states(
                 'hosts_acknowledged',
                 hosts_states['acknowledge'],
                 diff['hosts']['acknowledge'],
                 percentages['hosts_acknowledge']
             )
-            self.popup_factory.update_states(
+            self.dashboard_factory.update_states(
                 'hosts_downtime',
                 hosts_states['downtime'],
                 diff['hosts']['downtime'],
@@ -176,49 +164,48 @@ class AppNotification(QWidget):
             )
 
             # Services
-            self.popup_factory.update_states(
+            self.dashboard_factory.update_states(
                 'services_ok',
                 services_states['ok'],
                 diff['services']['ok'],
                 percentages['ok']
             )
-            self.popup_factory.update_states(
+            self.dashboard_factory.update_states(
                 'services_warning',
                 services_states['warning'],
                 diff['services']['warning'],
                 percentages['warning']
             )
-            self.popup_factory.update_states(
+            self.dashboard_factory.update_states(
                 'services_critical',
                 services_states['critical'],
                 diff['services']['critical'],
                 percentages['critical']
             )
-            self.popup_factory.update_states(
+            self.dashboard_factory.update_states(
                 'services_unknown',
                 services_states['unknown'],
                 diff['services']['unknown'],
                 percentages['unknown']
             )
-            self.popup_factory.update_states(
+            self.dashboard_factory.update_states(
                 'services_unreachable',
                 services_states['unreachable'],
                 diff['services']['unreachable'],
                 percentages['services_unreachable']
             )
-            self.popup_factory.update_states(
+            self.dashboard_factory.update_states(
                 'services_acknowledged',
                 services_states['acknowledge'],
                 diff['services']['acknowledge'],
                 percentages['services_acknowledge']
             )
-            self.popup_factory.update_states(
+            self.dashboard_factory.update_states(
                 'services_downtime',
                 services_states['downtime'],
                 diff['services']['downtime'],
                 percentages['services_downtime']
             )
-            send_diff_banners(diff)
 
     def set_position(self):
         """
@@ -230,7 +217,7 @@ class AppNotification(QWidget):
         pos = get_app_config('Alignak-App', 'position')
         points = pos.split(':')
 
-        # Move notification dashboard
+        # Move dashboard dashboard
         if 'top' in points and 'right' in points:
             screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             top_right = QApplication.desktop().screenGeometry(screen).topRight()
@@ -259,9 +246,9 @@ class AppNotification(QWidget):
 
         logger.debug('Position ' + msg)
 
-    def send_notification(self, level_notif, hosts_states, services_states, diff):
+    def display_dashboard(self, level_notif, hosts_states, services_states, diff):
         """
-        Send notification.
+        Update dashboard and display it
 
         :param level_notif: state to display in label_state.
         :type level_notif: str
@@ -276,22 +263,22 @@ class AppNotification(QWidget):
         # Set position of dashboard
         self.set_position()
 
-        # Prepare notification
-        self.notification_type.setText(level_notif)
+        # Prepare dashboard
+        self.dashboard_type.setText(level_notif)
         self.set_style_sheet(level_notif)
 
-        # Update content of PopupFactory
-        self.update_popup(hosts_states, services_states, diff)
+        # Update content of DashboardFactory
+        self.update_dashboard(hosts_states, services_states, diff)
+        send_diff_banners(diff)
 
         # Retrieve duration
         duration = int(get_app_config('Alignak-App', 'duration'))
         duration *= 1000
-        logger.debug('Notification Duration : ' + str(duration))
+        logger.debug('Dashboard Duration : ' + str(duration))
 
-        logger.info('Send notification...')
-
-        # Start notification...
+        # Display dashboard...
         self.app_widget.show()
+        logger.info('Display dashboard...')
 
         # ...until the end of the term
         self.timer.timeout.connect(self.close_pin)

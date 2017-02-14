@@ -27,7 +27,7 @@ import copy
 from logging import getLogger
 
 from alignak_app.core.utils import get_app_config
-from alignak_app.dashboard.notification import AppNotification
+from alignak_app.dashboard.app_dashboard import Dashboard
 
 try:
     __import__('PyQt5')
@@ -42,15 +42,15 @@ logger = getLogger(__name__)
 
 class AppNotifier(QSystemTrayIcon):
     """
-    Class who manage notifications and states of hosts and services.
+        Class who manage notifications and states of hosts and services.
     """
 
     def __init__(self, icon, app_backend, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
         self.app_backend = app_backend
         self.tray_icon = None
-        self.popup = AppNotification()
-        self.popup.initialize_notification()
+        self.popup = Dashboard()
+        self.popup.initialize()
         self.notify = True
 
     def start(self, tray_icon):
@@ -66,11 +66,11 @@ class AppNotifier(QSystemTrayIcon):
         check_interval = int(get_app_config('Alignak-App', 'check_interval'))
         if bool(check_interval):
             logger.info('Start notifier...')
-            logger.debug('Will be notify in ' + str(check_interval) + 's')
+            logger.debug('Display Dashboard in ' + str(check_interval) + 's')
 
             check_interval *= 1000
         else:
-            logger.warning('Notifier will not send notifications !')
+            logger.info('Notifier will not display Dashboard !')
             check_interval = 30000
 
         timer = QTimer(self)
@@ -124,7 +124,7 @@ class AppNotifier(QSystemTrayIcon):
         if old_states:
             diff = self.diff_last_check(old_states)
 
-        # Define notification level
+        # Define dashboard level
         if current_states['services']['critical'] > 0 or current_states['hosts']['down'] > 0:
             level_notif = 'CRITICAL'
         elif current_states['services']['unknown'] > 0 or \
@@ -141,9 +141,9 @@ class AppNotifier(QSystemTrayIcon):
                 current_states['services']
             )
 
-            # Send notification
+            # Send dashboard
             if bool(int(get_app_config('Alignak-App', 'check_interval'))):
-                self.popup.send_notification(
+                self.popup.display_dashboard(
                     level_notif, current_states['hosts'],
                     current_states['services'],
                     diff
@@ -151,7 +151,7 @@ class AppNotifier(QSystemTrayIcon):
         else:
             logger.info('No Notify.')
 
-        logger.debug('Notification Level : ' + str(level_notif))
+        logger.debug('Dashboard Level : ' + str(level_notif))
 
     def diff_last_check(self, old_states):
         """

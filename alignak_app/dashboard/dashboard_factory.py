@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Notification Factory manage the creation of notification Qwidgets:
+    Dashboard Factory manage the creation of Dashboard Qwidget
 """
 
 from logging import getLogger
@@ -28,26 +28,24 @@ from alignak_app.core.utils import get_image_path, get_css
 
 try:
     __import__('PyQt5')
-    from PyQt5.Qt import QWidget, QLabel, QGridLayout  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QPixmap, QProgressBar  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QFrame, QIcon  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QWidget, QLabel, QGridLayout, QIcon  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QPixmap, QProgressBar, QFrame  # pylint: disable=no-name-in-module
     from PyQt5.QtCore import Qt  # pylint: disable=import-error
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QWidget, QLabel, QGridLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QPixmap, QProgressBar  # pylint: disable=import-error
-    from PyQt4.Qt import QFrame, QIcon  # pylint: disable=import-error
+    from PyQt4.Qt import QWidget, QLabel, QGridLayout, QIcon  # pylint: disable=import-error
+    from PyQt4.Qt import QPixmap, QProgressBar, QFrame  # pylint: disable=import-error
     from PyQt4.QtCore import Qt  # pylint: disable=import-error
 
 logger = getLogger(__name__)
 
 
-class NotificationFactory(QWidget):
+class DashboardFactory(QWidget):
     """
-        Class who generate a QWidget with 4 QLabels and 1 QProgressBar.
+        Class who help to create Dashboard QWidget.
     """
 
     def __init__(self, parent=None):
-        super(NotificationFactory, self).__init__(parent)
+        super(DashboardFactory, self).__init__(parent)
         self.pos = 0
         self.setMaximumWidth(parent.width())
         self.state_data = {}
@@ -129,7 +127,7 @@ class NotificationFactory(QWidget):
 
     def update_states(self, state_name, nb_items, diff, percent):
         """
-        Update nb_items, diff and progress_bar value.
+        Update nb_items, diff and progress_bar value for hte given "state_name"
 
         :param state_name: name of the state to be update
         :type state_name: str
