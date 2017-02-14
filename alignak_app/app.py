@@ -155,7 +155,8 @@ class AlignakApp(object):
                 )
                 sys.exit('Connection ERROR')
             else:
-                send_banner('OK', 'Connected to Alignak Backend')
+                username = app_backend.get_user(projection=['name'])['name']
+                send_banner('OK', 'Welcome %s, you are connected to Alignak Backend' % username)
 
         if 'token' not in app_backend.user:
             app_backend.user['token'] = app_backend.backend.token

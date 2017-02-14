@@ -259,10 +259,12 @@ class AppBackend(object):
 
         return host_data
 
-    def get_user(self):
+    def get_user(self, projection=None):
         """
-        Retrieve user by token.
+        Get current user. The token must already be acquired
 
+        :param projection: list of field to get, if None, get all
+        :type projection: list|None
         :return user items
         :rtype dict
         """
@@ -273,7 +275,13 @@ class AppBackend(object):
             })
         }
 
-        user = self.get('user', params)
+        if projection is not None:
+            generate_proj = {}
+            for field in projection:
+                generate_proj[field] = 1
+            params['projection'] = json.dumps(generate_proj)
+
+        user = self.get('user', params, projection=projection)
 
         if user:
             return user['_items'][0]

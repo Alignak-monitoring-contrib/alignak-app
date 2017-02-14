@@ -522,7 +522,7 @@ class HostSynthesis(QWidget):
                 service_id = None
                 self.action_manager.acknowledged.append(host_id)
 
-            user = self.app_backend.get_user()
+            user = self.app_backend.get_user(projection=['_id', 'name'])
 
             comment = '%s %s acknowledged by %s, from Alignak-app' % (
                 item_type.capitalize(),
@@ -574,7 +574,7 @@ class HostSynthesis(QWidget):
                 service_id = None
                 self.action_manager.downtimed.append(host_id)
 
-            user = self.app_backend.get_user()
+            user = self.app_backend.get_user(projection=['_id', 'name'])
 
             comment = 'Schedule downtime by %s, from Alignak-app' % user['name']
 
