@@ -49,7 +49,8 @@ class AppNotifier(QSystemTrayIcon):
         QSystemTrayIcon.__init__(self, icon, parent)
         self.app_backend = app_backend
         self.tray_icon = None
-        self.popup = None
+        self.popup = AppNotification()
+        self.popup.initialize_notification()
         self.notify = True
 
     def start(self, tray_icon):
@@ -61,8 +62,6 @@ class AppNotifier(QSystemTrayIcon):
         """
 
         self.tray_icon = tray_icon
-        self.popup = AppNotification()
-        self.popup.initialize_notification()
 
         check_interval = int(get_app_config('Alignak-App', 'check_interval'))
         if bool(check_interval):

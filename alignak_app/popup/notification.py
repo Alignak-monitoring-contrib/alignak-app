@@ -90,7 +90,7 @@ class AppNotification(QWidget):
         self.fill_state_factory()
         self.main_layout.addWidget(self.popup_factory, 1)
 
-        self.app_widget.initialize('Notification')
+        self.app_widget.initialize('Dashboard')
         self.app_widget.add_widget(self)
 
     def close_notification(self):
@@ -219,54 +219,6 @@ class AppNotification(QWidget):
                 percentages['services_downtime']
             )
             send_diff_banners(diff)
-
-    # @staticmethod
-    # def send_diff_banners(self, diff):
-    #     """
-    #
-    #     :param diff:
-    #     :return:
-    #     """
-    #
-    #     hi = 1
-    #     hosts_msg = ''
-    #     for host_state in diff['hosts']:
-    #         if diff['hosts'][host_state]:
-    #             if hi % 2:
-    #                 hosts_msg += 'Hosts %s: <b>%s</b>, ' % (
-    #                     str(host_state).upper(),
-    #                     "{0:+d}".format(diff['hosts'][host_state])
-    #                 )
-    #             else:
-    #                 hosts_msg += 'Hosts %s: <b>%s</b><br>' % (
-    #                     str(host_state).upper(),
-    #                     "{0:+d}".format(diff['hosts'][host_state])
-    #                 )
-    #             hi += 1
-    #
-    #     si = 1
-    #     services_msg = ''
-    #     for service_state in diff['services']:
-    #         if diff['services'][service_state]:
-    #             if si % 2:
-    #                 services_msg += 'Services %s: <b>%s</b>, ' % (
-    #                     str(service_state).upper(),
-    #                     "{0:+d}".format(diff['services'][service_state])
-    #                 )
-    #             else:
-    #                 services_msg += 'Services %s: <b>%s</b><br>' % (
-    #                     str(service_state).upper(),
-    #                     "{0:+d}".format(diff['services'][service_state])
-    #                 )
-    #             si += 1
-    #
-    #     hosts_lvl = get_hosts_level_banner(hosts_msg)
-    #     services_lvl = get_services_level_banner(services_msg)
-    #
-    #     if hosts_msg:
-    #         send_banner(hosts_lvl, hosts_msg)
-    #     if services_msg:
-    #         send_banner(services_lvl, services_msg)
 
     def set_position(self):
         """

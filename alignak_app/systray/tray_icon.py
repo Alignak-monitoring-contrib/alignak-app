@@ -69,17 +69,19 @@ class TrayIcon(QSystemTrayIcon):
         self.app_about = None
         self.synthesis = None
 
-    def build_menu(self, app_backend):
+    def build_menu(self, app_backend, dashboard):
         """
         Initialize and create each action of menu.
 
-        :param app_backend: Backend data
-        :type app_backend: AppBackend
+        :param app_backend: AppBackend object
+        :type app_backend: alignak_app.core.backend.AppBackend
+        :param dashboard: AppNotification QWidget
+        :type dashboard: alignak_app.popup.notification.AppNotification
         """
 
         # Create actions
         self.create_synthesis_action(app_backend)
-
+        self.create_dashboard_action(dashboard)
         self.create_status_action(app_backend)
         self.menu.addSeparator()
 
@@ -95,11 +97,31 @@ class TrayIcon(QSystemTrayIcon):
 
         self.setContextMenu(self.menu)
 
+    def create_dashboard_action(self, dashboard):
+        """
+        Create dashboard action
+
+        :param dashboard: AppNotification QWidget
+        :type dashboard: alignak_app.popup.notification.AppNotification
+        """
+
+        logger.info('Create Dashboard action')
+
+        self.qaction_factory.create(
+            'dashboard',
+            'Dashboard',
+            self
+        )
+
+        self.qaction_factory.get('dashboard').triggered.connect(dashboard.app_widget.show)
+
+        self.menu.addAction(self.qaction_factory.get('dashboard'))
+
     def create_hosts_actions(self):
         """
-            Create hosts actions.
+        Create hosts actions.
 
-            """
+        """
 
         logger.info('Create Host Actions')
 
