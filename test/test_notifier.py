@@ -69,12 +69,12 @@ class TestAppNotifier(unittest2.TestCase):
 
         self.assertIsNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.app_backend)
-        self.assertIsNone(under_test.popup)
+        self.assertIsNotNone(under_test.popup)
         self.assertTrue(under_test.notify)
 
         # Tray_icon for notifier
         tray_icon = TrayIcon(self.icon)
-        tray_icon.build_menu(self.backend)
+        tray_icon.build_menu(self.backend, under_test.popup)
 
         # Start notifier
         under_test.start(tray_icon)
@@ -90,7 +90,7 @@ class TestAppNotifier(unittest2.TestCase):
 
         # Start notifier
         tray_icon = TrayIcon(self.icon)
-        tray_icon.build_menu(self.backend)
+        tray_icon.build_menu(self.backend, under_test.popup)
         under_test.start(tray_icon)
 
         # Check Actions are pending
@@ -117,7 +117,7 @@ class TestAppNotifier(unittest2.TestCase):
 
         # Start notifier
         tray_icon = TrayIcon(self.icon)
-        tray_icon.build_menu(self.backend)
+        tray_icon.build_menu(self.backend, under_test.popup)
         under_test.start(tray_icon)
 
         # "start_process" set notify to True
