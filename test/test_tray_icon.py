@@ -159,24 +159,27 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertEqual('Services UNKNOWN, Wait...',
                          under_test.qaction_factory.get('services_unknown').text())
 
-        hosts_states = dict(
-            up=1,
-            down=2,
-            unreachable=3,
-            acknowledge=4,
-            downtime=5,
-        )
-        services_states = dict(
-            ok=4,
-            warning=5,
-            critical=6,
-            unknown=7,
-            unreachable=8,
-            acknowledge=9,
-            downtime=10
-        )
+        synthesis = {
+            'hosts': {
+                'up': 1,
+                'down': 2,
+                'unreachable': 3,
+                'acknowledge': 4,
+                'downtime': 5,
+            },
+            'services': {
+                'ok': 4,
+                'warning': 5,
+                'critical': 6,
+                'unknown': 7,
+                'unreachable': 8,
+                'acknowledge': 9,
+                'downtime': 10,
 
-        under_test.update_menu_actions(hosts_states, services_states)
+            }
+        }
+
+        under_test.update_menu_actions(synthesis)
 
         self.assertEqual('Hosts UP (1)',
                          under_test.qaction_factory.get('hosts_up').text())

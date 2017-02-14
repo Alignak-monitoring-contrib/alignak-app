@@ -133,9 +133,6 @@ class AppNotifier(object):
 
         synthesis = self.app_backend.synthesis_count()
 
-        print('Old synthesis ', self.old_synthesis)
-        print('New synthesis ', synthesis)
-
         if self.first_start:
             # Simulate old state
             self.old_synthesis = copy.deepcopy(synthesis)
@@ -168,15 +165,10 @@ class AppNotifier(object):
 
         # TODO Review this part
         if self.changes:
-            self.tray_icon.update_tray.emit(self)
-            # Update Menus
-            self.tray_icon.update_menu_actions(
-                synthesis['hosts'],
-                synthesis['services']
-            )
+            self.tray_icon.update_tray.emit(synthesis)
 
             # Send dashboard
-            if bool(int(get_app_config('Alignak-App', 'check_interval'))):
+            if self.notify:
                 self.dashboard.display_dashboard(
                     level_notif, synthesis['hosts'],
                     synthesis['services'],

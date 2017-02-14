@@ -60,7 +60,7 @@ class TrayIcon(QSystemTrayIcon):
         Class who create QMenu and QAction.
     """
 
-    update_tray = pyqtSignal(AppNotifier)
+    update_tray = pyqtSignal(dict)
 
     def __init__(self, icon, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
@@ -102,18 +102,7 @@ class TrayIcon(QSystemTrayIcon):
 
         self.setContextMenu(self.menu)
 
-        self.update_tray.connect(self.apply_changes)
-
-    def apply_changes(self, sender):
-        """
-        TODO
-        :return:
-        """
-
-        try:
-            assert isinstance(sender, AppNotifier)
-        except TypeError as e:
-            logger.error('Bad object received: %s', e)
+        self.update_tray.connect(self.update_menu_actions)
 
     def create_dashboard_action(self, dashboard):
         """
@@ -362,44 +351,48 @@ class TrayIcon(QSystemTrayIcon):
 
         self.menu.addAction(self.qaction_factory.get('exit'))
 
-    def update_menu_actions(self, hosts, services):
+    def update_menu_actions(self, synthesis):
         """
-        Update items Menu
+        Update items Menu, triggered by pyqtSignal
 
-        :param hosts: number of hosts UP, DOWN or UNREACHABLE
-        :type hosts: dict
-        :param services: number of services OK, CRITICAL, WARNING or UNKNOWN
-        :type services: dict
+        :param synthesis: hosts and services synthesis
+        :type synthesis: dict
         """
+
+        try:
+            assert isinstance(synthesis, dict)
+        except TypeError as e:
+            logger.error('Bad object received: %s', e)
 
         logger.info('Update menus...')
 
-        host_nb = hosts['up'] + \
-            hosts['down'] + \
-            hosts['unreachable'] + \
-            hosts['downtime'] + \
-            hosts['acknowledge']
-        services_nb = services['ok'] + \
-            services['warning'] + \
-            services['critical'] + \
-            services['unknown'] + \
-            services['unreachable'] + \
-            services['downtime'] + \
-            services['acknowledge']
+        host_nb = synthesis['hosts']['up'] + \
+            synthesis['hosts']['down'] + \
+            synthesis['hosts']['unreachable'] + \
+            synthesis['hosts']['downtime'] + \
+            synthesis['hosts']['acknowledge']
+        services_nb = synthesis['services']['ok'] + \
+            synthesis['services']['warning'] + \
+            synthesis['services']['critical'] + \
+            synthesis['services']['unknown'] + \
+            synthesis['services']['unreachable'] + \
+            synthesis['services']['downtime'] + \
+            synthesis['services']['acknowledge']
 
-        if hosts['down'] != 0:
+        if synthesis['hosts']['down'] != 0:
             self.hosts_menu.setIcon(QIcon(get_image_path('hosts_down')))
-        elif hosts['down'] == 0 and hosts['unreachable'] > hosts['up']:
+        elif synthesis['hosts']['down'] == 0 and \
+                synthesis['hosts']['unreachable'] > synthesis['hosts']['up']:
             self.hosts_menu.setIcon(QIcon(get_image_path('hosts_unreach')))
         else:
             self.hosts_menu.setIcon(QIcon(get_image_path('hosts_up')))
 
         self.hosts_menu.setTitle('Hosts (' + str(host_nb) + ')')
 
-        if services['critical'] != 0:
+        if synthesis['services']['critical'] != 0:
             self.services_menu.setIcon(QIcon(get_image_path('services_critical')))
         else:
-            if services['unknown'] != 0 or services['warning'] != 0:
+            if synthesis['services']['unknown'] != 0 or synthesis['services']['warning'] != 0:
                 self.services_menu.setIcon(QIcon(get_image_path('services_warning')))
             else:
                 self.services_menu.setIcon(QIcon(get_image_path('services_ok')))
@@ -407,30 +400,30 @@ class TrayIcon(QSystemTrayIcon):
         self.services_menu.setTitle('Services (' + str(services_nb) + ')')
 
         self.qaction_factory.get('hosts_up').setText(
-            'Hosts UP (' + str(hosts['up']) + ')')
+            'Hosts UP (' + str(synthesis['hosts']['up']) + ')')
         self.qaction_factory.get('hosts_down').setText(
-            'Hosts DOWN (' + str(hosts['down']) + ')')
+            'Hosts DOWN (' + str(synthesis['hosts']['down']) + ')')
         self.qaction_factory.get('hosts_unreach').setText(
-            'Hosts UNREACHABLE (' + str(hosts['unreachable']) + ')')
+            'Hosts UNREACHABLE (' + str(synthesis['hosts']['unreachable']) + ')')
         self.qaction_factory.get('hosts_acknowledged').setText(
-            'Hosts ACKNOWLEDGE (' + str(hosts['acknowledge']) + ')')
+            'Hosts ACKNOWLEDGE (' + str(synthesis['hosts']['acknowledge']) + ')')
         self.qaction_factory.get('hosts_downtime').setText(
-            'Hosts DOWNTIME (' + str(hosts['downtime']) + ')')
+            'Hosts DOWNTIME (' + str(synthesis['hosts']['downtime']) + ')')
 
         self.qaction_factory.get('services_ok').setText(
-            'Services OK (' + str(services['ok']) + ')')
+            'Services OK (' + str(synthesis['services']['ok']) + ')')
         self.qaction_factory.get('services_critical').setText(
-            'Services CRITICAL (' + str(services['critical']) + ')')
+            'Services CRITICAL (' + str(synthesis['services']['critical']) + ')')
         self.qaction_factory.get('services_warning').setText(
-            'Services WARNING (' + str(services['warning']) + ')')
+            'Services WARNING (' + str(synthesis['services']['warning']) + ')')
         self.qaction_factory.get('services_unknown').setText(
-            'Services UNKNOWN (' + str(services['unknown']) + ')')
+            'Services UNKNOWN (' + str(synthesis['services']['unknown']) + ')')
         self.qaction_factory.get('services_unreachable').setText(
-            'Services UNREACHABLE (' + str(services['unreachable']) + ')')
+            'Services UNREACHABLE (' + str(synthesis['services']['unreachable']) + ')')
         self.qaction_factory.get('services_acknowledged').setText(
-            'Services ACKNOWLEDGE (' + str(services['acknowledge']) + ')')
+            'Services ACKNOWLEDGE (' + str(synthesis['services']['acknowledge']) + ')')
         self.qaction_factory.get('services_downtime').setText(
-            'Services DOWNTIME (' + str(services['downtime']) + ')')
+            'Services DOWNTIME (' + str(synthesis['services']['downtime']) + ')')
 
     @staticmethod
     def quit_app():  # pragma: no cover
@@ -479,5 +472,6 @@ class TrayIcon(QSystemTrayIcon):
 
         """
 
+        logger.info('Reload configuration...')
         init_config()
         send_banner('INFO', 'Configuration reloaded')
