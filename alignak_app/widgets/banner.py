@@ -23,7 +23,7 @@
     Banner send some banner notifications with a message.
 """
 
-from alignak_app.core.utils import get_image_path
+from alignak_app.core.utils import get_image_path, get_app_config
 
 try:
     __import__('PyQt5')
@@ -212,7 +212,11 @@ class Banner(QWidget):
         if len(message) > 80:
             message = message[:80] + '...'
 
-        banner_qlabel = QLabel('<b>%s</b>: %s' % (title, message))
+        if get_app_config('Alignak-App', 'banner_title', boolean=True):
+            banner_qlabel = QLabel('<b>%s</b>: %s' % (title, message))
+        else:
+            banner_qlabel = QLabel('%s' % message)
+
         banner_qlabel.setWordWrap(True)
         layout.addWidget(banner_qlabel)
 
