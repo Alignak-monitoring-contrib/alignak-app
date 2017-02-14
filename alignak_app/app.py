@@ -174,4 +174,3 @@ class AlignakApp(object):
             self.notifier.set_interval()
             self.notifier_timer.start(self.notifier.interval)
             self.notifier_timer.timeout.connect(self.notifier.check_data)
-
