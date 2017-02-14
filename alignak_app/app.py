@@ -162,7 +162,7 @@ class AlignakApp(object):
             app_backend.user['token'] = app_backend.backend.token
 
         # Initialize notifier
-        self.notifier = AppNotifier(self.get_icon(), app_backend)
+        self.notifier = AppNotifier(app_backend)
 
         # Create QSystemTrayIcon
         self.tray_icon = TrayIcon(self.get_icon())

@@ -40,25 +40,25 @@ except ImportError:  # pragma: no cover
 logger = getLogger(__name__)
 
 
-class AppNotifier(QSystemTrayIcon):
+class AppNotifier(object):
     """
         Class who manage notifications and states of hosts and services.
     """
 
-    def __init__(self, icon, app_backend, parent=None):
-        QSystemTrayIcon.__init__(self, icon, parent)
+    def __init__(self, app_backend):
         self.app_backend = app_backend
         self.tray_icon = None
         self.popup = Dashboard()
         self.popup.initialize()
         self.notify = True
+        self.timer = QTimer()
 
     def start(self, tray_icon):
         """
         Start process loop of application with a QTimer.
 
-        :param tray_icon: QSystemTrayIcon menu.
-        :type tray_icon: :class:`~alignak_app.tray_icon.TrayIcon`
+        :param tray_icon: TrayIcon object
+        :type tray_icon: alignak_app.systray.tray_icon.TrayIcon
         """
 
         self.tray_icon = tray_icon
@@ -73,9 +73,8 @@ class AppNotifier(QSystemTrayIcon):
             logger.info('Notifier will not display Dashboard !')
             check_interval = 30000
 
-        timer = QTimer(self)
-        timer.start(check_interval)
-        timer.timeout.connect(self.check_data)
+        self.timer.start(check_interval)
+        self.timer.timeout.connect(self.check_data)
 
     @staticmethod
     def basic_diff_model():
