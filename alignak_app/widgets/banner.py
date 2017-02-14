@@ -134,7 +134,7 @@ class Banner(QWidget):
 
     banner_closed = pyqtSignal(QObject)
     banner_height = 50
-    banner_width = 400
+    banner_width = 450
 
     def __init__(self, parent=None):
         super(Banner, self).__init__(parent)
@@ -252,3 +252,96 @@ def send_banner(level, message):
     """
 
     bannerManager.add_banner(level, message)
+
+
+def get_hosts_level_banner(msg):
+    """
+    Return the level of the banner for hosts
+
+    :param msg: msg to parse
+    :type msg: str
+    :return: the level of banner
+    :rtype: str
+    """
+
+    if 'UP: <b>+' in msg:
+        level = 'OK'
+    elif 'UNREACHABLE: <b>+' in msg:
+        level = 'WARN'
+    elif 'DOWN: <b>+' in msg:
+        level = 'ALERT'
+    else:
+        level = 'INFO'
+
+    return level
+
+
+def get_services_level_banner(msg):
+    """
+    Return the level of the banner for services
+
+    :param msg: msg to parse
+    :type msg: str
+    :return: the level of banner
+    :rtype: str
+    """
+
+    if 'OK: <b>+' in msg:
+        level = 'OK'
+    elif 'WARNING: <b>+' in msg or 'UNKNOWN: <b>+' in msg:
+        level = 'WARN'
+    elif 'CRITICAL: <b>+' in msg or 'UNREACHABLE: <b>+' in msg:
+        level = 'ALERT'
+    else:
+        level = 'INFO'
+
+    return level
+
+
+def send_diff_banners(diff):
+    """
+    Send banners for hosts and services diff since the last check
+
+    :param diff: dict of diff for hosts and services
+    :type diff: dict
+    """
+
+    hi = 1
+    hosts_msg = ''
+    for host_state in diff['hosts']:
+        if diff['hosts'][host_state]:
+            if hi % 2:
+                hosts_msg += 'Hosts %s: <b>%s</b>, ' % (
+                    str(host_state).upper(),
+                    "{0:+d}".format(diff['hosts'][host_state])
+                )
+            else:
+                hosts_msg += 'Hosts %s: <b>%s</b><br>' % (
+                    str(host_state).upper(),
+                    "{0:+d}".format(diff['hosts'][host_state])
+                )
+            hi += 1
+
+    si = 1
+    services_msg = ''
+    for service_state in diff['services']:
+        if diff['services'][service_state]:
+            if si % 2:
+                services_msg += 'Services %s: <b>%s</b>, ' % (
+                    str(service_state).upper(),
+                    "{0:+d}".format(diff['services'][service_state])
+                )
+            else:
+                services_msg += 'Services %s: <b>%s</b><br>' % (
+                    str(service_state).upper(),
+                    "{0:+d}".format(diff['services'][service_state])
+                )
+            si += 1
+
+    hosts_lvl = get_hosts_level_banner(hosts_msg)
+    services_lvl = get_services_level_banner(services_msg)
+
+    if hosts_msg:
+        send_banner(hosts_lvl, hosts_msg)
+    if services_msg:
+        send_banner(services_lvl, services_msg)
