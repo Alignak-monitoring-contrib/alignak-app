@@ -35,7 +35,7 @@ except ImportError:
 
 class TestNotification(unittest2.TestCase):
     """
-        This file test the AppPopup class.
+        This file test the Dashboard class and by same time the DashboardFactory
     """
 
     init_config()
@@ -48,8 +48,8 @@ class TestNotification(unittest2.TestCase):
         except:
             pass
 
-    def test_initialize_notification(self):
-        """Inititalize Notification"""
+    def test_initialize_dashboard(self):
+        """Initialize Dashboard"""
 
         under_test = Dashboard()
 
@@ -62,8 +62,9 @@ class TestNotification(unittest2.TestCase):
         self.assertEqual('state', under_test.dashboard_type.objectName())
         self.assertIsNotNone(under_test.dashboard_factory)
 
-    def test_send_notifications(self):
-        """Send Notification"""
+    def test_display_dashboard(self):
+        """Display Dashboard"""
+
         under_test = Dashboard()
 
         under_test.initialize()
@@ -88,7 +89,7 @@ class TestNotification(unittest2.TestCase):
             downtime=1,
         )
 
-        # Send a CRITICAL notification
+        # Send a CRITICAL dashboard
         changes = {
             'hosts': {
                 'up': 0,
@@ -126,6 +127,7 @@ class TestNotification(unittest2.TestCase):
 
     def test_get_style_sheet(self):
         """Get Style Sheet according to States"""
+
         ok_css = "Background-color: #27ae60;"
         warning_css = "Background-color: #e67e22;"
         critical_css = "Background-color: #e74c3c;"
@@ -148,7 +150,8 @@ class TestNotification(unittest2.TestCase):
             assert expected_css in current_css
 
     def test_set_position(self):
-        """Position Change from Initial Position"""
+        """Dashboard Position change"""
+
         under_test = Dashboard()
 
         initial_position = under_test.app_widget.pos()
