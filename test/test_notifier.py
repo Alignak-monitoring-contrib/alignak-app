@@ -110,37 +110,37 @@ class TestAppNotifier(unittest2.TestCase):
         self.assertNotEqual('Services OK, Wait...',
                             under_test.tray_icon.qaction_factory.get('services_ok').text())
 
-    def test_states_change(self):
-        """States and Notify Changes"""
-        self.backend = AppBackend()
-        self.backend.login()
-
-        tray_icon = TrayIcon(self.icon)
-        under_test = AppNotifier(self.backend, tray_icon)
-
-        # Start notifier
-        tray_icon.build_menu(self.backend, under_test.dashboard)
-        under_test.set_interval()
-
-        # "start_process" set notify to True
-        self.assertTrue(under_test.notify)
-
-        # "get_all_state" to fill states
-        # 1 - First time, states are fill
-        self.assertFalse(under_test.app_backend.states)
-        under_test.app_backend.synthesis_count()
-        # 2 - Next time, states will be filled
-        self.assertTrue(under_test.app_backend.states)
-
-        # Copy state
-        old_states = copy.deepcopy(under_test.app_backend.states)
-        under_test.diff_since_last_check(old_states)
-
-        # "check_changes" set notify to False if no changes
-        self.assertFalse(under_test.notify)
-
-        # Modify "states" to set notify to True
-        under_test.app_backend.states['hosts']['up'] += 1
-        under_test.diff_since_last_check(old_states)
-
-        self.assertTrue(under_test.notify)
+    # def test_states_change(self):
+    #     """States and Notify Changes"""
+    #     self.backend = AppBackend()
+    #     self.backend.login()
+    #
+    #     tray_icon = TrayIcon(self.icon)
+    #     under_test = AppNotifier(self.backend, tray_icon)
+    #
+    #     # Start notifier
+    #     tray_icon.build_menu(self.backend, under_test.dashboard)
+    #     under_test.set_interval()
+    #
+    #     # "start_process" set notify to True
+    #     self.assertTrue(under_test.notify)
+    #
+    #     # "get_all_state" to fill states
+    #     # 1 - First time, states are fill
+    #     self.assertFalse(under_test.app_backend.states)
+    #     under_test.app_backend.synthesis_count()
+    #     # 2 - Next time, states will be filled
+    #     self.assertTrue(under_test.app_backend.states)
+    #
+    #     # Copy state
+    #     old_states = copy.deepcopy(under_test.app_backend.states)
+    #     under_test.diff_since_last_check(old_states)
+    #
+    #     # "check_changes" set notify to False if no changes
+    #     self.assertFalse(under_test.notify)
+    #
+    #     # Modify "states" to set notify to True
+    #     under_test.app_backend.states['hosts']['up'] += 1
+    #     under_test.diff_since_last_check(old_states)
+    #
+    #     self.assertTrue(under_test.notify)
