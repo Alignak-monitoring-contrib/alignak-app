@@ -29,6 +29,7 @@ from alignak_app.core.notifier import AppNotifier
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import init_config
 from alignak_app.systray.tray_icon import TrayIcon
+from alignak_app.dashboard.app_dashboard import Dashboard
 
 try:
     __import__('PyQt5')
@@ -55,6 +56,8 @@ class TestAppNotifier(unittest2.TestCase):
     backend = AppBackend()
     backend.login()
 
+
+
     @classmethod
     def setUpClass(cls):
         """Create QApplication"""
@@ -63,34 +66,40 @@ class TestAppNotifier(unittest2.TestCase):
         except:
             pass
 
-    def test_start_process(self):
-        """Start Notifier Process"""
+    def test_other_objects_do_not_modify_notifier(self):
+        """Other objects do not Modify Notifier"""
 
-        # Tray_icon for notifier
+        # TrayIcon and Dashboard for notifier
         tray_icon = TrayIcon(self.icon)
-        under_test = AppNotifier(self.backend, tray_icon)
+        dashboard = Dashboard()
+        dashboard.initialize()
+
+        under_test = AppNotifier()
+        under_test.initialise(self.backend, tray_icon, dashboard)
 
         self.assertIsNotNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.app_backend)
         self.assertIsNotNone(under_test.dashboard)
-        self.assertTrue(under_test.notify)
+        self.assertFalse(under_test.changes)
 
-        tray_icon.build_menu(self.backend, under_test.dashboard)
-
-        # Start notifier
-        under_test.set_interval()
+        tray_icon.build_menu(self.backend, dashboard)
 
         self.assertIsNotNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.app_backend)
         self.assertIsNotNone(under_test.dashboard)
-        self.assertTrue(under_test.notify)
+        self.assertFalse(under_test.changes)
 
     def test_check_data(self):
-        """Check Data modify Actions"""
+        """Check Data modify TrayIcon Actions"""
 
+        # TrayIcon and Dashboard for notifier
         tray_icon = TrayIcon(self.icon)
-        under_test = AppNotifier(self.backend, tray_icon)
-        tray_icon.build_menu(self.backend, under_test.dashboard)
+        dashboard = Dashboard()
+        dashboard.initialize()
+
+        under_test = AppNotifier()
+        under_test.initialise(self.backend, tray_icon, dashboard)
+        tray_icon.build_menu(self.backend, dashboard)
 
         # Start notifier
         under_test.set_interval()
@@ -110,37 +119,23 @@ class TestAppNotifier(unittest2.TestCase):
         self.assertNotEqual('Services OK, Wait...',
                             under_test.tray_icon.qaction_factory.get('services_ok').text())
 
-    # def test_states_change(self):
-    #     """States and Notify Changes"""
-    #     self.backend = AppBackend()
-    #     self.backend.login()
-    #
-    #     tray_icon = TrayIcon(self.icon)
-    #     under_test = AppNotifier(self.backend, tray_icon)
-    #
-    #     # Start notifier
-    #     tray_icon.build_menu(self.backend, under_test.dashboard)
-    #     under_test.set_interval()
-    #
-    #     # "start_process" set notify to True
-    #     self.assertTrue(under_test.notify)
-    #
-    #     # "get_all_state" to fill states
-    #     # 1 - First time, states are fill
-    #     self.assertFalse(under_test.app_backend.states)
-    #     under_test.app_backend.synthesis_count()
-    #     # 2 - Next time, states will be filled
-    #     self.assertTrue(under_test.app_backend.states)
-    #
-    #     # Copy state
-    #     old_states = copy.deepcopy(under_test.app_backend.states)
-    #     under_test.diff_since_last_check(old_states)
-    #
-    #     # "check_changes" set notify to False if no changes
-    #     self.assertFalse(under_test.notify)
-    #
-    #     # Modify "states" to set notify to True
-    #     under_test.app_backend.states['hosts']['up'] += 1
-    #     under_test.diff_since_last_check(old_states)
-    #
-    #     self.assertTrue(under_test.notify)
+    def test_states_change(self):
+        """States and Notify Changes"""
+        self.backend = AppBackend()
+        self.backend.login()
+
+        # TrayIcon and Dashboard for notifier
+        dashboard = Dashboard()
+        dashboard.initialize()
+
+        tray_icon = TrayIcon(self.icon)
+        tray_icon.build_menu(self.backend, dashboard)
+
+        # Initialize Notifier
+        under_test = AppNotifier()
+        under_test.initialise(self.backend, tray_icon, dashboard)
+
+        # Changes are True, first_start is True
+        self.assertFalse(under_test.changes)
+        self.assertTrue(under_test.first_start)
+        self.assertIsNone(under_test.old_synthesis)

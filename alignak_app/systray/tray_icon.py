@@ -104,13 +104,16 @@ class TrayIcon(QSystemTrayIcon):
 
         self.update_tray.connect(self.apply_changes)
 
-    def apply_changes(self):
+    def apply_changes(self, sender):
         """
         TODO
         :return:
         """
 
-        print('update tray icon')
+        try:
+            assert isinstance(sender, AppNotifier)
+        except TypeError as e:
+            logger.error('Bad object received: %s', e)
 
     def create_dashboard_action(self, dashboard):
         """

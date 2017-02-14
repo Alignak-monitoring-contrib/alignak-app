@@ -45,20 +45,35 @@ class AppNotifier(object):
         Class who manage notifications and states of hosts and services.
     """
 
-    def __init__(self, app_backend, tray_icon):
-        """
+    first_start = True
 
-        :param app_backend: App Backend
-        :type app_backend: alignak_app.core.backend.AppBackend
-        :param tray_icon:
-        """
-        self.app_backend = app_backend
-        self.tray_icon = tray_icon
-        self.dashboard = Dashboard()
-        self.dashboard.initialize()
+    def __init__(self):
+        self.app_backend = None
+        self.tray_icon = None
+        self.dashboard = None
+        self.changes = False
         self.notify = True
         self.interval = 0
-        self.old_synthesis = self.basic_diff_model()
+        self.old_synthesis = None
+
+    def initialise(self, app_backend, tray_icon, dashboard):
+        """
+       AppNotifier manage notifications and changes
+
+       :param app_backend: AppBackend object
+       :type app_backend: alignak_app.core.backend.AppBackend
+       :param tray_icon: TrayIcon object
+       :type tray_icon: alignak_app.systray.tray_icon.TrayIcon
+       :param dashboard: Dashboard object
+       :type dashboard: alignak_app.dashboard.app_dashboard.Dashboard
+       """
+
+        self.app_backend = app_backend
+        self.tray_icon = tray_icon
+        self.dashboard = dashboard
+
+        # Define interval
+        self.set_interval()
 
     def set_interval(self):
         """
@@ -67,25 +82,28 @@ class AppNotifier(object):
         """
 
         interval = int(get_app_config('Alignak-App', 'check_interval'))
+
         if bool(interval):
             logger.info('Start notifier...')
             logger.debug('Dashboard will be displayed in ' + str(interval) + 's')
 
             interval *= 1000
         else:
-            logger.info('Notifier will not display Dashboard !')
+            logger.info('Notifier will not notify Dashboard !')
             interval = 30000
+            self.notify = False
 
         self.interval = interval
 
     @staticmethod
-    def basic_diff_model():
+    def none_synthesis_model():
         """
-        Define a basic model of dict for diff
+        Return a synthesis data model
 
-        :return: model dict for diff
+        :return: synthesis model dict
         :rtype: dict
         """
+
         changes = {
             'hosts': {
                 'up': 0,
@@ -104,30 +122,41 @@ class AppNotifier(object):
                 'downtime': 0
             }
         }
+
         return changes
 
     def check_data(self):
         """
-        Collect data from Backend-Client.
+        Collect data from Backend API object
 
         """
 
         synthesis = self.app_backend.synthesis_count()
+
         print('Old synthesis ', self.old_synthesis)
         print('New synthesis ', synthesis)
 
-        if self.old_synthesis != synthesis:
-            print('Changes')
-            diff_synthesis = self.diff_since_last_check(synthesis)
+        if self.first_start:
+            # Simulate old state
             self.old_synthesis = copy.deepcopy(synthesis)
-            self.notify = True
-        else:
-            print('No Changes')
-            diff_synthesis = self.basic_diff_model()
-            self.old_synthesis = copy.deepcopy(synthesis)
-            self.notify = False
+            diff_synthesis = self.none_synthesis_model()
 
-        # Define dashboard level
+            # Changes to true to apply changes
+            self.first_start = False
+            self.changes = True
+        else:
+            if self.old_synthesis == synthesis:
+                # No changes
+                self.old_synthesis = copy.deepcopy(synthesis)
+                diff_synthesis = self.none_synthesis_model()
+                self.changes = False
+            else:
+                # Changes: Get differences
+                diff_synthesis = self.diff_last_states(synthesis)
+                self.old_synthesis = copy.deepcopy(synthesis)
+                self.changes = True
+
+        # TODO: MOVE THIS Define dashboard level
         if synthesis['services']['critical'] > 0 or synthesis['hosts']['down'] > 0:
             level_notif = 'CRITICAL'
         elif synthesis['services']['unknown'] > 0 or \
@@ -137,7 +166,8 @@ class AppNotifier(object):
         else:
             level_notif = 'OK'
 
-        if self.notify:
+        # TODO Review this part
+        if self.changes:
             self.tray_icon.update_tray.emit(self)
             # Update Menus
             self.tray_icon.update_menu_actions(
@@ -157,7 +187,7 @@ class AppNotifier(object):
 
         logger.debug('Dashboard Level : ' + str(level_notif))
 
-    def diff_since_last_check(self, synthesis):
+    def diff_last_states(self, synthesis):
         """
         Check if there have been any change since the last check
 
@@ -170,7 +200,7 @@ class AppNotifier(object):
         logger.debug('Old_states : ' + str(self.old_synthesis))
         logger.debug('New states : ' + str(synthesis))
 
-        diff_synthesis = self.basic_diff_model()
+        diff_synthesis = self.none_synthesis_model()
 
         for key, _ in self.old_synthesis['hosts'].items():
             if synthesis['hosts'][key] != self.old_synthesis['hosts'][key]:

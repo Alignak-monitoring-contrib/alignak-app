@@ -34,6 +34,7 @@ from alignak_app.systray.tray_icon import TrayIcon
 from alignak_app.widgets.login import AppLogin
 from alignak_app.widgets.banner import bannerManager, send_banner
 from alignak_app.core.backend import AppBackend
+from alignak_app.dashboard.app_dashboard import Dashboard
 
 try:
     __import__('PyQt5')
@@ -57,6 +58,7 @@ class AlignakApp(object):
         self.tray_icon = None
         self.notifier = None
         self.notifier_timer = QTimer()
+        self.dashboard = None
 
     def start(self):
         """
@@ -96,36 +98,28 @@ class AlignakApp(object):
                     get_app_config('Alignak', 'password'):
                 self.run()
             else:
-                self.error_message(
-                    'Configuration ERROR',
-                    'Something seems wrong in your configuration.'
-                    'Please configure Alignak-app before starting it.'
-                )
-                logger.error('Something seems wrong in your configuration.'
-                             'Please configure Alignak-app before starting it.')
-                sys.exit()
+                self.error_message()
+
         else:
-            self.error_message(
-                'Configuration ERROR',
-                'Something seems wrong in your configuration.'
-                'Please configure Alignak-app before starting it.'
-            )
-            logger.error('Something seems wrong in your configuration.'
-                         'Please configure Alignak-app before starting it.')
-            sys.exit()
+            self.error_message()
 
     @staticmethod
-    def error_message(title, message):
+    def error_message():
+        """
+        Display a QMessageBox error
+
         """
 
-        :return:
-        """
+        logger.error('Something seems wrong in your configuration.'
+                     'Please configure Alignak-app before starting it.')
 
         QMessageBox.critical(
             None,
-            title,
-            message
+            'Configuration ERROR',
+            'Something seems wrong in your configuration.'
+            'Please configure Alignak-app before starting it.'
         )
+        sys.exit()
 
     @staticmethod
     def get_icon():
@@ -145,12 +139,13 @@ class AlignakApp(object):
 
         """
 
-        # If not login form
+        # If not login form, app try
         if not app_backend:
             app_backend = AppBackend()
             connect = app_backend.login()
             if not connect:
-                self.error_message(
+                QMessageBox.critical(
+                    None,
                     'Connection ERROR',
                     'Backend is not available or token is wrong. <br>Application will close !'
                 )
@@ -162,15 +157,24 @@ class AlignakApp(object):
         if 'token' not in app_backend.user:
             app_backend.user['token'] = app_backend.backend.token
 
-        # Initialize notifier and create QSystemTrayIcon
+        # Dashboard
+        self.dashboard = Dashboard()
+        self.dashboard.initialize()
+
+        # TrayIcon
         self.tray_icon = TrayIcon(self.get_icon())
-        self.notifier = AppNotifier(app_backend, self.tray_icon)
-        self.tray_icon.build_menu(app_backend, self.notifier.dashboard)
+        self.tray_icon.build_menu(app_backend, self.dashboard)
         self.tray_icon.show()
 
-        # If all is OK ;)
         start = bool(app_backend.get('livesynthesis'))
+
         if start:
-            self.notifier.set_interval()
+            # Notifier
+            self.notifier = AppNotifier()
+            self.notifier.initialise(app_backend, self.tray_icon, self.dashboard)
+
             self.notifier_timer.start(self.notifier.interval)
             self.notifier_timer.timeout.connect(self.notifier.check_data)
+        else:
+            # In case of...
+            self.error_message()
