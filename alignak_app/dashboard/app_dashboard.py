@@ -94,7 +94,7 @@ class Dashboard(QWidget):
 
     def fill_state_factory(self):
         """
-        Populate the factory so that it can be modified later
+        Inititalize each state in factory so that it can be modified later
 
         """
 
