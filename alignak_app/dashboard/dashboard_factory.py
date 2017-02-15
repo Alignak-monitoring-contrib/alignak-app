@@ -246,19 +246,25 @@ class DashboardFactory(QWidget):
         :type label_state: str
         """
 
-        if "hosts_up" in label_state or "services_ok" in label_state:
-            bar_color = "#27ae60"
-        elif "hosts_down" in label_state or "services_critical" in label_state:
-            bar_color = "#e74c3c"
-        elif "hosts_unreachable" in label_state or "services_warning" in label_state:
-            bar_color = "#e67e22"
-        elif "services_unknown" in label_state:
-            bar_color = "#2980b9"
-        else:
-            bar_color = "grey"
+        progressbar_colors = {
+            'hosts_up': '#27ae60',
+            'hosts_down': '#e74c3c',
+            'hosts_unreachable': '#e67e22',
+            'hosts_acknowledge': '#95a5a6',
+            'hosts_downtime': '#7e8ccf',
+            'services_ok': '#27ae60',
+            'services_warning': '#e67e22',
+            'services_critical': '#e74c3c',
+            'services_unknown': '#2980b9',
+            'services_acknowledge': '#95a5a6',
+            'services_downtime': '#7e8ccf',
+            'services_unreachable': 'grey'
+        }
 
         self.state_data[label_state]['progress_bar'].setStyleSheet(
-            """QProgressBar::chunk {
+            """
+            QProgressBar::chunk {
                 background-color: %s;
-}           """ % bar_color
+            }
+            """ % progressbar_colors[label_state]
         )
