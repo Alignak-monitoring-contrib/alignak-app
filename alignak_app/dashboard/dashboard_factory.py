@@ -177,60 +177,42 @@ class DashboardFactory(QWidget):
         self.state_data[state_name]['progress_bar'].setValue(float(percent))
 
     @staticmethod
-    def get_percentages_states(hosts_states, services_states):
+    def get_percentages_states(synthesis):
         """
         Calculates and return the sum of the items and their percentages
 
-        :param hosts_states: number of hosts for each states
-        :type hosts_states: dict
-        :param services_states: number of services for each states
-        :type services_states: dict
-        :return: percentages
+        :param synthesis: backend synthesis data
+        :type synthesis: dict
+        :return: percentages of each states
         :rtype: dict
         """
 
         # Initialize percentage
-        percentages = {}
+        percentages = {
+            'hosts': {},
+            'services': {},
+        }
 
         # Get sum for hosts and services
-        hosts_sum = hosts_states['up'] \
-            + hosts_states['down'] \
-            + hosts_states['unreachable'] \
-            + hosts_states['acknowledge'] \
-            + hosts_states['downtime']
-        services_sum = services_states['ok'] \
-            + services_states['warning'] \
-            + services_states['critical'] \
-            + services_states['unknown'] \
-            + services_states['unreachable'] \
-            + services_states['acknowledge'] \
-            + services_states['downtime']
+        hosts_sum = 0
+        services_sum = 0
+        for h_state in synthesis['hosts']:
+            hosts_sum += synthesis['hosts'][h_state]
+        for s_state in synthesis['services']:
+            services_sum += synthesis['services'][s_state]
 
         # Calculates the percentage
         try:
             # Hosts
-            percentages['up'] = float((hosts_states['up'] * 100) / hosts_sum)
-            percentages['down'] = float((hosts_states['down'] * 100) / hosts_sum)
-            percentages['hosts_unreachable'] = float(
-                (hosts_states['unreachable'] * 100) / hosts_sum
-            )
-            percentages['hosts_acknowledge'] = float(
-                (hosts_states['acknowledge'] * 100) / hosts_sum
-            )
-            percentages['hosts_downtime'] = float((hosts_states['downtime'] * 100) / hosts_sum)
-
+            for state in synthesis['hosts']:
+                percentages['hosts'][state] = float(
+                    (synthesis['hosts'][state] * 100) / hosts_sum
+                )
             # Services
-            percentages['ok'] = float((services_states['ok'] * 100) / services_sum)
-            percentages['warning'] = float((services_states['warning'] * 100) / services_sum)
-            percentages['critical'] = float((services_states['critical'] * 100) / services_sum)
-            percentages['unknown'] = float((services_states['unknown'] * 100) / services_sum)
-            percentages['services_unreachable'] = \
-                float((services_states['unreachable'] * 100) / services_sum)
-            percentages['services_acknowledge'] = \
-                float((services_states['acknowledge'] * 100) / services_sum)
-            percentages['services_downtime'] = float(
-                (services_states['downtime'] * 100) / services_sum
-            )
+            for state in synthesis['services']:
+                percentages['services'][state] = float(
+                    (synthesis['services'][state] * 100) / services_sum
+                )
         except ZeroDivisionError as e:
             logger.error(str(e))
 

@@ -144,40 +144,38 @@ class Dashboard(QWidget):
 
         # Update content of DashboardFactory
 
-        percentages = self.dashboard_factory.get_percentages_states(
-            synthesis['hosts'], synthesis['services']
-        )
+        percentages = self.dashboard_factory.get_percentages_states(synthesis)
 
         # Hosts
         self.dashboard_factory.update_states(
             'hosts_up',
             synthesis['hosts']['up'],
             diff_synthesis['hosts']['up'],
-            percentages['up']
+            percentages['hosts']['up']
         )
         self.dashboard_factory.update_states(
             'hosts_down',
             synthesis['hosts']['down'],
             diff_synthesis['hosts']['down'],
-            percentages['down']
+            percentages['hosts']['down']
         )
         self.dashboard_factory.update_states(
             'hosts_unreach',
             synthesis['hosts']['unreachable'],
             diff_synthesis['hosts']['unreachable'],
-            percentages['hosts_unreachable']
+            percentages['hosts']['unreachable']
         )
         self.dashboard_factory.update_states(
             'hosts_acknowledged',
             synthesis['hosts']['acknowledge'],
             diff_synthesis['hosts']['acknowledge'],
-            percentages['hosts_acknowledge']
+            percentages['hosts']['acknowledge']
         )
         self.dashboard_factory.update_states(
             'hosts_downtime',
             synthesis['hosts']['downtime'],
             diff_synthesis['hosts']['downtime'],
-            percentages['hosts_downtime']
+            percentages['hosts']['downtime']
         )
 
         # Services
@@ -185,43 +183,43 @@ class Dashboard(QWidget):
             'services_ok',
             synthesis['services']['ok'],
             diff_synthesis['services']['ok'],
-            percentages['ok']
+            percentages['services']['ok']
         )
         self.dashboard_factory.update_states(
             'services_warning',
             synthesis['services']['warning'],
             diff_synthesis['services']['warning'],
-            percentages['warning']
+            percentages['services']['warning']
         )
         self.dashboard_factory.update_states(
             'services_critical',
             synthesis['services']['critical'],
             diff_synthesis['services']['critical'],
-            percentages['critical']
+            percentages['services']['critical']
         )
         self.dashboard_factory.update_states(
             'services_unknown',
             synthesis['services']['unknown'],
             diff_synthesis['services']['unknown'],
-            percentages['unknown']
+            percentages['services']['unknown']
         )
         self.dashboard_factory.update_states(
             'services_unreachable',
             synthesis['services']['unreachable'],
             diff_synthesis['services']['unreachable'],
-            percentages['services_unreachable']
+            percentages['services']['unreachable']
         )
         self.dashboard_factory.update_states(
             'services_acknowledged',
             synthesis['services']['acknowledge'],
             diff_synthesis['services']['acknowledge'],
-            percentages['services_acknowledge']
+            percentages['services']['acknowledge']
         )
         self.dashboard_factory.update_states(
             'services_downtime',
             synthesis['services']['downtime'],
             diff_synthesis['services']['downtime'],
-            percentages['services_downtime']
+            percentages['services']['downtime']
         )
 
         if notify:
