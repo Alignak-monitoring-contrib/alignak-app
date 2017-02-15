@@ -54,7 +54,7 @@ class Dashboard(QWidget):
         Class who manage Dashboard QWidget.
     """
 
-    dashboard_updated = pyqtSignal(dict, dict, bool)
+    dashboard_updated = pyqtSignal(dict, dict, bool, name='dashboard')
 
     def __init__(self, parent=None):
         super(Dashboard, self).__init__(parent)

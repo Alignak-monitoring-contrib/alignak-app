@@ -132,7 +132,7 @@ class Banner(QWidget):
         Class who create a banner.
     """
 
-    banner_closed = pyqtSignal(QObject)
+    banner_closed = pyqtSignal(QWidget, name='banner')
     banner_height = 50
     banner_width = 450
 

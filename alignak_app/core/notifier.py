@@ -153,8 +153,8 @@ class AppNotifier(object):
                 self.old_synthesis = copy.deepcopy(synthesis)
                 self.changes = True
 
-        # TODO Review this part
         if self.changes:
+            # Emit pyqtSignals to update TrayIcon and Dashboard
             self.tray_icon.update_tray.emit(synthesis)
             self.dashboard.dashboard_updated.emit(synthesis, diff_synthesis, self.notify)
         else:

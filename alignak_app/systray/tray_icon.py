@@ -60,7 +60,7 @@ class TrayIcon(QSystemTrayIcon):
         Class who create QMenu and QAction.
     """
 
-    update_tray = pyqtSignal(dict)
+    update_tray = pyqtSignal(dict, name='tray_icon')
 
     def __init__(self, icon, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
