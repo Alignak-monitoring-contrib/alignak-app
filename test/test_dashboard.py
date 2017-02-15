@@ -115,7 +115,7 @@ class TestNotification(unittest2.TestCase):
 
         self.assertEqual('CRITICAL', under_test.dashboard_type.text())
         self.assertEqual(
-            under_test.dashboard_factory.state_data['hosts_up']['nb_items'].text(),
+            under_test.dashboard_factory.state_data['hosts_up']['state_number'].text(),
             '1'
         )
         self.assertEqual(

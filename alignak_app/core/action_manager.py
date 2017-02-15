@@ -77,7 +77,7 @@ class ActionManager(object):
             logger.debug('Hosts ACK: %s', self.acks_to_check['hosts'])
             for item in self.acks_to_check['hosts']:
                 # Get host
-                host = self.app_backend.get_host(item['host_id'], '_id')
+                host = self.app_backend.get_host('_id', item['host_id'])
                 if host['ls_acknowledged']:
                     self.acks_to_check['hosts'].remove(item)
                     done_actions[ACK]['hosts'].append(item)
@@ -96,7 +96,7 @@ class ActionManager(object):
             logger.debug('Hosts DOWN: %s', self.downtimes_to_check['hosts'])
             for item in self.downtimes_to_check['hosts']:
                 # Get host
-                host = self.app_backend.get_host(item['host_id'], '_id')
+                host = self.app_backend.get_host('_id', item['host_id'])
                 if host['ls_downtimed']:
                     self.downtimes_to_check['hosts'].remove(item)
                     done_actions[DOWNTIME]['hosts'].append(item)

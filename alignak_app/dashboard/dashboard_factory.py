@@ -46,42 +46,35 @@ class DashboardFactory(QWidget):
 
     def __init__(self, parent=None):
         super(DashboardFactory, self).__init__(parent)
-        self.pos = 0
+        self.row = 0
         self.setMaximumWidth(parent.width())
         self.state_data = {}
         self.main_layout = QGridLayout()
         self.setLayout(self.main_layout)
         self.setStyleSheet(get_css())
 
-    def create_state_labels(self, state_name, item_type=None):
+    def create_state_labels(self, state_name):
         """
-        Generate 4 QLabel and 1 QProgressBar and store in "state_data"
-        QLabels are: icon | state_label | nb_items | diff
+        Generate 4 QLabel and 1 QProgressBar and store them in "state_data"
+        QLabels are: state_icon | state_text | state_number | state_diff
         QProgressBar get value of percent.
-        All are added horizontally.
+        All are added on one row define by "row" value
 
         :param state_name: name of the state to be stored
         :type state_name: str
-        :param item_type: if needed, precise if "hosts" or "services"
-        :type item_type: str
         """
 
         # Icon
         icon = QPixmap(get_image_path(state_name))
-        label_icon = QLabel()
-        label_icon.setFixedSize(16, 16)
-        label_icon.setScaledContents(True)
-        label_icon.setPixmap(icon)
-
-        if item_type:
-            state_name = item_type + '_' + state_name
+        state_icon = QLabel()
+        state_icon.setFixedSize(16, 16)
+        state_icon.setScaledContents(True)
+        state_icon.setPixmap(icon)
 
         # Initialize Labels
-        state_label = QLabel(self.define_label(state_name))
-
-        nb_items = QLabel('0')
-
-        diff = QLabel('<b>(0)</b>')
+        state_text = QLabel(self.define_label(state_name))
+        state_number = QLabel()
+        state_diff = QLabel()
 
         # QProgressBar
         progress_bar = QProgressBar()
@@ -89,25 +82,25 @@ class DashboardFactory(QWidget):
         progress_bar.setFixedHeight(20)
 
         # Layout
-        self.main_layout.addWidget(label_icon, self.pos, 0)
-        self.main_layout.addWidget(state_label, self.pos, 1)
-        self.main_layout.addWidget(nb_items, self.pos, 2)
-        self.main_layout.setAlignment(nb_items, Qt.AlignCenter)
-        self.main_layout.addWidget(diff, self.pos, 3)
-        self.main_layout.addWidget(progress_bar, self.pos, 4)
+        self.main_layout.addWidget(state_icon, self.row, 0)
+        self.main_layout.addWidget(state_text, self.row, 1)
+        self.main_layout.addWidget(state_number, self.row, 2)
+        self.main_layout.setAlignment(state_number, Qt.AlignCenter)
+        self.main_layout.addWidget(state_diff, self.row, 3)
+        self.main_layout.addWidget(progress_bar, self.row, 4)
 
         # Store state
         self.state_data[state_name] = {
-            'icon': label_icon,
-            'nb_items': nb_items,
-            'diff': diff,
+            'icon': state_icon,
+            'state_number': state_number,
+            'diff': state_diff,
             'progress_bar': progress_bar
         }
 
         self.bar_style_sheet(state_name)
 
         # Increment vertically position for next widget
-        self.pos += 1
+        self.row += 1
 
     def add_separator(self):
         """
@@ -120,10 +113,10 @@ class DashboardFactory(QWidget):
         separator.setMinimumSize(self.width(), 2)
 
         # Add to layout
-        self.main_layout.addWidget(separator, self.pos, 0, 1, 5)
+        self.main_layout.addWidget(separator, self.row, 0, 1, 5)
 
         # Increment vertically position for next widget
-        self.pos += 1
+        self.row += 1
 
     def update_states(self, state_name, nb_items, diff, percent):
         """
@@ -139,10 +132,10 @@ class DashboardFactory(QWidget):
         :type percent: int
         """
 
-        self.state_data[state_name]['nb_items'].setText(str(nb_items))
+        self.state_data[state_name]['state_number'].setText(str(nb_items))
 
         if nb_items == 0 and 'downtime' not in state_name and 'acknowledge' not in state_name:
-            if "hosts" in state_name:
+            if 'hosts' in state_name:
                 self.state_data[state_name]['icon'].setPixmap(
                     QPixmap(get_image_path('hosts_none'))
                 )
@@ -156,7 +149,7 @@ class DashboardFactory(QWidget):
             )
 
         if diff != 0:
-            self.state_data[state_name]['diff'].setText('<b>(' + "{0:+d}".format(diff) + ')</b>')
+            self.state_data[state_name]['diff'].setText('<b>(%s)</b>' % "{0:+d}".format(diff))
         else:
             self.state_data[state_name]['diff'].setText('')
 
@@ -234,7 +227,7 @@ class DashboardFactory(QWidget):
         try:
             return label_model[name]
         except KeyError as e:
-            logger.error('Notification name : ' + name)
+            logger.error('Bad label state name: %s', name)
             logger.error(str(e))
             return 'Unknow field'
 

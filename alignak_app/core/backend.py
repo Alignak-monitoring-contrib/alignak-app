@@ -40,25 +40,6 @@ class AppBackend(object):
         Alignak-App.
     """
 
-    # states_model = {
-    #     'hosts': {
-    #         'up': 0,
-    #         'down': 0,
-    #         'unreachable': 0,
-    #         'acknowledge': 0,
-    #         'downtime': 0
-    #     },
-    #     'services': {
-    #         'ok': 0,
-    #         'critical': 0,
-    #         'unknown': 0,
-    #         'warning': 0,
-    #         'unreachable': 0,
-    #         'acknowledge': 0,
-    #         'downtime': 0
-    #     }
-    # }
-
     def __init__(self):
         self.backend = None
         self.user = {}
@@ -86,7 +67,7 @@ class AppBackend(object):
 
         self.backend = Backend(backend_url, processes=processes)
 
-        logger.debug('Backend URL : ' + backend_url)
+        logger.debug('Backend URL : %s', backend_url)
         logger.info('Try to connect to app_backend...')
 
         if username and password:
@@ -96,13 +77,9 @@ class AppBackend(object):
                 if connect:
                     self.user['username'] = username
                     self.user['token'] = self.backend.token
-                logger.info('Connection by password: ' + str(connect))
+                logger.info('Connection by password: %s', str(connect))
             except BackendException as e:  # pragma: no cover
-                logger.error(
-                    'Connection to Backend has failed. ' +
-                    str(e)
-                )
-                print(e, 'Please, check your [settings.cfg] and logs.')
+                logger.error('Connection to Backend has failed: %s', str(e))
         elif username and not password:
             # Username as token : recommended
             self.backend.authenticated = True
@@ -111,15 +88,14 @@ class AppBackend(object):
             else:
                 self.backend.token = username
                 self.user['token'] = username
-            logger.info('Connection by token: ' + str(self.backend.authenticated))
 
             # Test to check token
             connect = bool(self.get('livesynthesis'))
+            logger.info('Connection by token: %s' + str(connect))
         else:
             # Else exit
             logger.error(
-                'Connection to Backend has failed. ' +
-                '\nCheck [Backend] section in configuration file.'
+                'Connection to Backend has failed.\nCheck [Backend] section in configuration file.'
             )
             connect = False
 
@@ -127,12 +103,12 @@ class AppBackend(object):
 
     def get(self, endpoint, params=None, projection=None):
         """
-        Collect state of Hosts, via app_backend API.
+        GET on alignak Backend REST API.
 
         :param endpoint: endpoint (API URL)
         :type endpoint: str
         :param params: dict of parameters for the app_backend API
-        :type params: dict
+        :type params: dict|None
         :param projection: list of field to get, if None, get all
         :type projection: list|None
         :return desired request of app_backend
@@ -155,23 +131,24 @@ class AppBackend(object):
                 endpoint,
                 params
             )
-            logger.debug('GET: ' + endpoint)
-            logger.debug('..with params: ' + str(params))
-            logger.debug('...Response > ' + str(request['_status']))
+            logger.debug('GET: %s', endpoint)
+            logger.debug('..with params: %s', str(params))
+            logger.debug('...Response > %s', str(request['_status']))
         except BackendException as e:
-            logger.error(str(e))
+            logger.error('GET failed: %s', str(e))
 
         return request
 
     def post(self, endpoint, data, headers=None):
         """
+        POST on alignak Backend REST API
 
         :param endpoint: endpoint (API URL)
         :type endpoint: str
-        :param data: properties of item to create
+        :param data: properties of item to create | add
         :type data: dict
         :param headers: headers (example: Content-Type)
-        :type headers: dict
+        :type headers: dict|None
         :return: response (creation information)
         :rtype: dict
         """
@@ -180,23 +157,24 @@ class AppBackend(object):
 
         try:
             resp = self.backend.post(endpoint, data, headers=headers)
-            logger.debug('POST on ' + endpoint)
-            logger.debug('..with data: ' + str(data))
-            logger.debug('...Response > ' + str(resp))
+            logger.debug('POST on %s', endpoint)
+            logger.debug('..with data: %s', str(data))
+            logger.debug('...Response > %s', str(resp))
         except BackendException as e:
-            logger.error(str(e))
+            logger.error('POST failed: %s', str(e))
 
         return resp
 
-    def get_host(self, value, key):
+    def get_host(self, key, value):
         """
-        Return the desired host.
+        Return the host corresponding to "key"/"value" pair
 
+        :param key: key corresponding to value
+        :type key: str
         :param value: value of key
         :type value: str
-        :param key: key of host to verify
-        :type key: str
         :return: None if not found or item dict
+        :rtype: dict|None
         """
 
         params = {'where': json.dumps({'_is_template': False, key: value})}
@@ -214,9 +192,9 @@ class AppBackend(object):
         """
         Returns the desired service of the specified host
 
-        :param host_id: _id of host
+        :param host_id: "_id" of host
         :type host_id: str
-        :param service_id: _id of wanted service
+        :param service_id: "_id" of wanted service
         :type service_id: str
         :return: wanted service
         :rtype: dict
@@ -254,7 +232,7 @@ class AppBackend(object):
 
         host_data = None
 
-        host = self.get_host(host_name, 'name')
+        host = self.get_host('name', host_name)
 
         if host:
             params = {
@@ -284,7 +262,7 @@ class AppBackend(object):
         :param projection: list of field to get, if None, get all
         :type projection: list|None
         :return user items
-        :rtype dict
+        :rtype dict|None
         """
 
         params = {
@@ -308,13 +286,11 @@ class AppBackend(object):
 
     def synthesis_count(self):
         """
-        Check and return the hosts and services states.
+        Get on "synthesis" endpoint and return the states of hosts and services
 
-        :return: each number of states for hosts and services.
+        :return: states of hosts and services.
         :rtype: dict
         """
-
-        logger.info('GET synthesis count states...')
 
         states = {
             'hosts': {

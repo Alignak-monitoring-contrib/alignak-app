@@ -134,7 +134,7 @@ class Dashboard(QWidget):
         :type notify: bool
         """
 
-        logger.info("Update DashBoard")
+        logger.info('Update DashBoard...')
         send_diff_banners(diff_synthesis)
 
         # Set position of dashboard
@@ -204,7 +204,7 @@ class Dashboard(QWidget):
             self.app_widget.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
             msg = '[center] ' + str(center)
 
-        logger.debug('Position ' + msg)
+        logger.debug('Position %s', msg)
 
     def display_dashboard(self):
         """
@@ -215,7 +215,7 @@ class Dashboard(QWidget):
         # Retrieve duration
         duration = int(get_app_config('Alignak-App', 'duration'))
         duration *= 1000
-        logger.debug('Dashboard Duration : ' + str(duration))
+        logger.debug('Dashboard Duration : %s', str(duration))
 
         # Display dashboard...
         self.app_widget.show()
@@ -257,7 +257,7 @@ class Dashboard(QWidget):
         else:
             dashboard_title = 'OK'
 
-        logger.debug('Dashboard title : ' + dashboard_title)
+        logger.debug('Dashboard title : %s', dashboard_title)
 
         return dashboard_title
 

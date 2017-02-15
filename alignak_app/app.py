@@ -143,7 +143,7 @@ class AlignakApp(object):
         if start:
             # Notifier
             self.notifier = AppNotifier()
-            self.notifier.initialise(app_backend, self.tray_icon, self.dashboard)
+            self.notifier.initialize(app_backend, self.tray_icon, self.dashboard)
 
             self.notifier_timer.start(self.notifier.interval)
             self.notifier_timer.timeout.connect(self.notifier.check_data)

@@ -71,14 +71,16 @@ class AppAbout(QWidget):
         self.setLayout(layout)
 
         # Add to AppQWidget
-        self.app_widget.initialize('About ' + __application__)
+        self.app_widget.initialize('About %s' % __application__)
         self.app_widget.add_widget(self)
 
     @staticmethod
     def get_about_text():
         """
+        Return about text
 
-        :return:
+        :return: about text
+        :rtype: str
         """
 
         text_replacement = (

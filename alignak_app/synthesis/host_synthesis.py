@@ -54,6 +54,7 @@ class HostSynthesis(QWidget):
     """
         Class who create the HostSynthesis QWidget for host and its services.
     """
+
     state = {
         True: 'Yes',
         False: 'No'
@@ -628,7 +629,7 @@ class HostSynthesis(QWidget):
                 if items_to_send[action]['hosts']:
                     logger.debug('%s to send: %s', action, items_to_send[action]['hosts'])
                     for item in items_to_send[action]['hosts']:
-                        host = self.app_backend.get_host(item['host_id'], '_id')
+                        host = self.app_backend.get_host('_id', item['host_id'])
                         send_banner('OK', '%s for %s is done !' % (title, host['name']))
                 # For Services
                 if items_to_send[action]['services']:

@@ -188,41 +188,16 @@ class AppQWidget(QFrame):
     def mousePressEvent(self, event):
         """ QWidget.mousePressEvent(QMouseEvent) """
 
-        if 'Notification' not in self.windowTitle():
-            self.offset = event.pos()
+        self.offset = event.pos()
 
     def mouseMoveEvent(self, event):
         """ QWidget.mousePressEvent(QMouseEvent) """
 
-        if 'Notification' not in self.windowTitle():
-            try:
-                x = event.globalX()
-                y = event.globalY()
-                x_w = self.offset.x()
-                y_w = self.offset.y()
-                self.move(x - x_w, y - y_w)
-            except AttributeError as e:
-                logger.warning('Move Event %s: %s', self.objectName(), str(e))
-
-
-if __name__ == '__main__':
-    init_config()
-
-    app = QApplication(sys.argv)
-
-    app_widget = AppQWidget()
-    app_widget.initialize('Alignak Status')
-
-    widget_test = QWidget()
-    widget_test.setMinimumSize(800, 600)
-    layout_test = QVBoxLayout()
-    widget_test.setLayout(layout_test)
-
-    label_text = QLabel('This is a text')
-    layout_test.addWidget(label_text)
-
-    app_widget.add_widget(widget_test)
-
-    app_widget.show_widget()
-
-    sys.exit(app.exec_())
+        try:
+            x = event.globalX()
+            y = event.globalY()
+            x_w = self.offset.x()
+            y_w = self.offset.y()
+            self.move(x - x_w, y - y_w)
+        except AttributeError as e:
+            logger.warning('Move Event %s: %s', self.objectName(), str(e))

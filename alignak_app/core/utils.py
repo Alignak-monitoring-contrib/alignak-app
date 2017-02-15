@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Application configuration
+    Utils manage configurations
 """
 
 import os
@@ -45,11 +45,9 @@ def get_app_root():
 
     # Get HOME and USER
     if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-        app_root = os.environ['HOME']
-        app_root += '/.local'
+        app_root = '%s/.local' % os.environ['HOME']
     elif 'win32' in sys.platform:  # pragma: no cover - not testable
-        app_root = os.environ['USERPROFILE']
-        app_root += '\\AppData\\Roaming\\Python\\'
+        app_root = '%s\\AppData\\Roaming\\Python\\' % os.environ['USERPROFILE']
     else:  # pragma: no cover - not testable
         sys.exit('Application can\'t find the user HOME.')
 
@@ -60,8 +58,8 @@ def get_app_root():
 
     return app_root
 
-# Application Configuration
 
+# Application Configuration
 default_parameters = {
     'check_interval': 30,
     'duration': 8,
@@ -95,27 +93,29 @@ app_config = None
 
 def get_filenames():  # pylint: disable=redefined-variable-type
     """
+    Return filenames depending platform
 
-    :return:
+    :return: filenames str or list
+    :rtype: str|list
     """
 
     if 'linux' in sys.platform or 'sunos5' in sys.platform:
-        config_filenames = get_app_root() + '/alignak_app/settings.cfg'
+        config_filenames = '%s/alignak_app/settings.cfg' % get_app_root()
     elif 'win32' in sys.platform:  # pragma: no cover - not testable
         config_filenames = [  # pylint: disable=redefined-variable-type
-            get_app_root() + '\\alignak_app\\settings.cfg',
+            '%s\\alignak_app\\settings.cfg' % get_app_root(),
             'C:\\Program Files (x86)\\Alignak-app\\settings.cfg',
             'C:\\Program Files\\Alignak-app\\settings.cfg'
         ]
     else:
-        config_filenames = get_app_root() + '/alignak_app/settings.cfg'
+        config_filenames = '%s/alignak_app/settings.cfg' % get_app_root()
 
     return config_filenames
 
 
 def init_config():
     """
-    Create app_config
+    Initialize configuration
 
     """
 
@@ -129,9 +129,9 @@ def init_config():
         app_config.read(get_filenames())
         logger.info('Configuration file is OK.')
     except Exception as e:
-        logger.error('Configuration file is missing in [' + str(get_filenames()) + '] !')
+        logger.error('Configuration file is missing in [%s] !', str(get_filenames()))
         logger.error(str(e))
-        sys.exit('Configuration file is missing in [' + str(get_filenames()) + '] !')
+        sys.exit('Configuration file is missing in [%s] !' % str(get_filenames()))
 
 
 def get_app_config(section, option, boolean=False):
@@ -144,15 +144,15 @@ def get_app_config(section, option, boolean=False):
         try:
             return app_config.getboolean(section, option)
         except NoOptionError as e:
-            logger.error('Missing Option in configuration file : ' + str(e))
-            logger.error('Replace by : ' + option + ': ' + str(default_parameters[option]))
+            logger.error('Missing Option in configuration file : %s', str(e))
+            logger.error('Replace by > %s: %s' % (option, str(default_parameters[option])))
             return default_parameters[option]
     else:
         try:
             return app_config.get(section, option)
         except NoOptionError as e:
-            logger.error('Missing Option in configuration file : ' + str(e))
-            logger.error('Replace by : ' + option + ': ' + str(default_parameters[option]))
+            logger.error('Missing Option in configuration file : %s', str(e))
+            logger.error('Replace by > %s: %s' % (option, str(default_parameters[option])))
             return default_parameters[option]
 
 
@@ -244,9 +244,9 @@ def get_diff_since_last_check(last_check):
     seconds = s - (minutes * 60)
 
     if hours == 0:
-        delta = str(minutes) + 'm ' + str(seconds) + 's ago'
+        delta = '%sm %s ago' % (str(minutes), str(seconds))
     else:
-        delta = str(hours) + 'h ' + str(minutes) + 'm ' + str(seconds) + 's ago'
+        delta = '%sh %sm %s ago' % (str(hours), str(minutes), str(seconds))
 
     return delta
 
@@ -260,8 +260,8 @@ def get_css():
     """
 
     try:
-        with open(get_app_root() + app_config.get('Config', 'path') + '/css/style.css') as css:
+        with open('%s/css/style.css' % (get_app_root() + app_config.get('Config', 'path'))) as css:
             return css.read()
     except IOError as e:
-        logger.error('CSS File is missing : ' + str(e))
+        logger.error('CSS File is missing : %s', str(e))
         return ""
