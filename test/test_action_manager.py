@@ -112,8 +112,8 @@ class TestBanner(unittest2.TestCase):
 
         under_test = ActionManager(self.test_backend)
 
-        self.assertFalse(under_test.downtimes_to_check['hosts'])
-        self.assertFalse(under_test.downtimes_to_check['services'])
+        self.assertFalse(under_test.acks_to_check['hosts'])
+        self.assertFalse(under_test.acks_to_check['services'])
 
         item_with_host = {
             'action': ACK,
@@ -140,7 +140,7 @@ class TestBanner(unittest2.TestCase):
         self.assertTrue(under_test.acks_to_check['services'])
 
     def test_add_downtime_item(self):
-        """ActionManager Add ACK Item"""
+        """ActionManager Add DOWNTIME Item"""
 
         under_test = ActionManager(self.test_backend)
 

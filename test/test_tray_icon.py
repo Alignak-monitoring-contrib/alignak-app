@@ -78,7 +78,9 @@ class TestTrayIcon(unittest2.TestCase):
 
         self.assertIsInstance(under_test.qaction_factory.get('hosts_up'), QAction)
         self.assertIsInstance(under_test.qaction_factory.get('hosts_down'), QAction)
-        self.assertIsInstance(under_test.qaction_factory.get('hosts_unreach'), QAction)
+        self.assertIsInstance(under_test.qaction_factory.get('hosts_unreachable'), QAction)
+        self.assertIsInstance(under_test.qaction_factory.get('hosts_acknowledge'), QAction)
+        self.assertIsInstance(under_test.qaction_factory.get('hosts_downtime'), QAction)
 
     def test_services_actions(self):
         """Services QActions are created"""
@@ -92,6 +94,8 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertIsInstance(under_test.qaction_factory.get('services_warning'), QAction)
         self.assertIsInstance(under_test.qaction_factory.get('services_critical'), QAction)
         self.assertIsInstance(under_test.qaction_factory.get('services_unknown'), QAction)
+        self.assertIsInstance(under_test.qaction_factory.get('services_acknowledge'), QAction)
+        self.assertIsInstance(under_test.qaction_factory.get('services_downtime'), QAction)
 
     def test_about_action(self):
         """About QAction is created"""
@@ -148,7 +152,7 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertEqual('Hosts DOWN, Wait...',
                          under_test.qaction_factory.get('hosts_down').text())
         self.assertEqual('Hosts UNREACHABLE, Wait...',
-                         under_test.qaction_factory.get('hosts_unreach').text())
+                         under_test.qaction_factory.get('hosts_unreachable').text())
 
         self.assertEqual('Services OK, Wait...',
                          under_test.qaction_factory.get('services_ok').text())
@@ -186,9 +190,9 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertEqual('Hosts DOWN (2)',
                          under_test.qaction_factory.get('hosts_down').text())
         self.assertEqual('Hosts UNREACHABLE (3)',
-                         under_test.qaction_factory.get('hosts_unreach').text())
+                         under_test.qaction_factory.get('hosts_unreachable').text())
         self.assertEqual('Hosts ACKNOWLEDGE (4)',
-                         under_test.qaction_factory.get('hosts_acknowledged').text())
+                         under_test.qaction_factory.get('hosts_acknowledge').text())
         self.assertEqual('Hosts DOWNTIME (5)',
                          under_test.qaction_factory.get('hosts_downtime').text())
 
@@ -203,6 +207,6 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertEqual('Services UNREACHABLE (8)',
                          under_test.qaction_factory.get('services_unreachable').text())
         self.assertEqual('Services ACKNOWLEDGE (9)',
-                         under_test.qaction_factory.get('services_acknowledged').text())
+                         under_test.qaction_factory.get('services_acknowledge').text())
         self.assertEqual('Services DOWNTIME (10)',
                          under_test.qaction_factory.get('services_downtime').text())
