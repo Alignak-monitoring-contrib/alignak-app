@@ -110,7 +110,7 @@ class AppQWidget(QFrame):
         minimize_btn.setFixedSize(22, 22)
         minimize_btn.setObjectName('app_widget')
         minimize_btn.clicked.connect(self.minimize)
-        if 'Notification' in self.windowTitle():
+        if 'Dashboard' in self.windowTitle():
             minimize_btn.setEnabled(False)
         logo_layout.addWidget(minimize_btn, 2)
 
@@ -119,7 +119,7 @@ class AppQWidget(QFrame):
         maximize_btn.setFixedSize(22, 22)
         maximize_btn.setObjectName('app_widget')
         maximize_btn.clicked.connect(self.minimize_maximize)
-        if 'Notification' in self.windowTitle():
+        if 'Dashboard' in self.windowTitle():
             maximize_btn.setEnabled(False)
         logo_layout.addWidget(maximize_btn, 3)
 

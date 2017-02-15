@@ -68,7 +68,6 @@ class Dashboard(QWidget):
         self.dashboard_factory = DashboardFactory(self)
         self.button = None
         self.timer = QTimer(self)
-        self.pin = False
         self.app_widget = AppQWidget()
 
     def initialize(self):
@@ -97,6 +96,9 @@ class Dashboard(QWidget):
         self.app_widget.add_widget(self)
 
         self.dashboard_updated.connect(self.update_dashboard)
+
+        # Set position of dashboard
+        self.set_position()
 
     def fill_state_factory(self):
         """
@@ -137,9 +139,6 @@ class Dashboard(QWidget):
         logger.info('Update DashBoard...')
         send_diff_banners(diff_synthesis)
 
-        # Set position of dashboard
-        self.set_position()
-
         # Dashboard title
         self.dashboard_type.setText(self.get_dashboard_title(synthesis))
         self.set_style_sheet(self.get_dashboard_title(synthesis))
@@ -176,35 +175,31 @@ class Dashboard(QWidget):
         # Get position choosed by user
         pos = get_app_config('Alignak-App', 'position')
         points = pos.split(':')
+        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
 
         # Move dashboard dashboard
         if 'top' in points and 'right' in points:
-            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             top_right = QApplication.desktop().screenGeometry(screen).topRight()
             self.app_widget.move(top_right.x() - self.width(), top_right.y())
-            msg = '[top:right] ' + str(top_right)
+            log_msg = '[top:right] ' + str(top_right)
         elif 'top' in points and 'left' in points:  # pragma: no cover - not fully testable
-            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             top_left = QApplication.desktop().screenGeometry(screen).topLeft()
             self.app_widget.move(top_left)
-            msg = '[top:left] ' + str(top_left)
+            log_msg = '[top:left] ' + str(top_left)
         elif 'bottom' in points and 'right' in points:  # pragma: no cover - not fully testable
-            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             bottom_right = QApplication.desktop().screenGeometry(screen).bottomRight()
             self.app_widget.move(bottom_right.x() - self.width(), bottom_right.y() - self.height())
-            msg = '[bottom:right] ' + str(bottom_right)
+            log_msg = '[bottom:right] ' + str(bottom_right)
         elif 'bottom' in points and 'left' in points:  # pragma: no cover - not fully testable
-            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             bottom_left = QApplication.desktop().screenGeometry(screen).bottomLeft()
             self.app_widget.move(bottom_left.x(), bottom_left.y() - self.height())
-            msg = '[top:right] ' + str(bottom_left)
+            log_msg = '[top:right] ' + str(bottom_left)
         else:  # pragma: no cover - not fully testable
-            screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
             center = QApplication.desktop().screenGeometry(screen).center()
             self.app_widget.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
-            msg = '[center] ' + str(center)
+            log_msg = '[center] ' + str(center)
 
-        logger.debug('Position %s', msg)
+        logger.debug('Dashboard Position %s', log_msg)
 
     def display_dashboard(self):
         """
@@ -222,20 +217,9 @@ class Dashboard(QWidget):
         logger.info('Display dashboard...')
 
         # ...until the end of the term
-        self.timer.timeout.connect(self.close_pin)
+        self.timer.timeout.connect(self.app_widget.close)
         self.timer.setSingleShot(True)
         self.timer.start(duration)
-
-    def close_pin(self):
-        """
-        Check if pin is set to True, else close
-
-        """
-
-        if not self.pin:
-            self.app_widget.close()
-        else:
-            pass
 
     @staticmethod
     def get_dashboard_title(synthesis):
@@ -260,15 +244,6 @@ class Dashboard(QWidget):
         logger.debug('Dashboard title : %s', dashboard_title)
 
         return dashboard_title
-
-    def mousePressEvent(self, _):
-        """
-        Reimplement Mouse press event
-
-        """
-
-        self.timer.stop()
-        self.pin = True
 
     def set_style_sheet(self, title):
         """
