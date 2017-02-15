@@ -145,14 +145,14 @@ def get_app_config(section, option, boolean=False):
             return app_config.getboolean(section, option)
         except NoOptionError as e:
             logger.error('Missing Option in configuration file : %s', str(e))
-            logger.error('Replace by > %s: %s' % (option, str(default_parameters[option])))
+            logger.error('Replace by > %s: %s', option, str(default_parameters[option]))
             return default_parameters[option]
     else:
         try:
             return app_config.get(section, option)
         except NoOptionError as e:
             logger.error('Missing Option in configuration file : %s', str(e))
-            logger.error('Replace by > %s: %s' % (option, str(default_parameters[option])))
+            logger.error('Replace by > %s: %s', option, str(default_parameters[option]))
             return default_parameters[option]
 
 
