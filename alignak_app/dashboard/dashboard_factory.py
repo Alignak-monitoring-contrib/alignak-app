@@ -139,10 +139,9 @@ class DashboardFactory(QWidget):
         :type percent: int
         """
 
-        logger.debug('Update: ' + str(nb_items) + ' for ' + state_name)
-
         self.state_data[state_name]['nb_items'].setText(str(nb_items))
-        if nb_items == 0 and 'downtime' not in state_name and 'acknowledged' not in state_name:
+
+        if nb_items == 0 and 'downtime' not in state_name and 'acknowledge' not in state_name:
             if "hosts" in state_name:
                 self.state_data[state_name]['icon'].setPixmap(
                     QPixmap(get_image_path('hosts_none'))
@@ -152,21 +151,9 @@ class DashboardFactory(QWidget):
                     QPixmap(get_image_path('services_none'))
                 )
         else:
-            # Check if downtime
-            if 'hosts_downtime' in state_name or 'services_downtime' in state_name:
-                self.state_data[state_name]['icon'].setPixmap(
-                    QPixmap(get_image_path('downtime'))
-                )
-            # Check if ack
-            elif 'hosts_acknowledged' in state_name or 'services_acknowledged' in state_name:
-                self.state_data[state_name]['icon'].setPixmap(
-                    QPixmap(get_image_path('acknowledged'))
-                )
-            # Else apply normal icon
-            else:
-                self.state_data[state_name]['icon'].setPixmap(
-                    QPixmap(get_image_path(state_name))
-                )
+            self.state_data[state_name]['icon'].setPixmap(
+                QPixmap(get_image_path(state_name))
+            )
 
         if diff != 0:
             self.state_data[state_name]['diff'].setText('<b>(' + "{0:+d}".format(diff) + ')</b>')
@@ -232,15 +219,15 @@ class DashboardFactory(QWidget):
         label_model = {
             "hosts_up": "Hosts UP:",
             "hosts_down": "Hosts DOWN:",
-            "hosts_unreach": "Hosts UNREACHABLE:",
-            "hosts_acknowledged": "Hosts ACKNOWLEDGE:",
+            "hosts_unreachable": "Hosts UNREACHABLE:",
+            "hosts_acknowledge": "Hosts ACKNOWLEDGE:",
             "hosts_downtime": "Hosts DOWNTIME:",
             "services_ok": "Services OK:",
             "services_warning": "Services WARNING:",
             "services_critical": "Services CRITICAL:",
             "services_unknown": "Services UNKNOWN:",
             "services_unreachable": "Services UNREACHABLE:",
-            "services_acknowledged": "Services ACKNOWLEDGED:",
+            "services_acknowledge": "Services ACKNOWLEDGED:",
             "services_downtime": "Services DOWNTIME:",
         }
 
