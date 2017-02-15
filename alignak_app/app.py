@@ -103,43 +103,15 @@ class AlignakApp(object):
         else:
             self.error_message()
 
-    @staticmethod
-    def error_message():
-        """
-        Display a QMessageBox error
-
-        """
-
-        logger.error('Something seems wrong in your configuration.'
-                     'Please configure Alignak-app before starting it.')
-
-        QMessageBox.critical(
-            None,
-            'Configuration ERROR',
-            'Something seems wrong in your configuration.'
-            'Please configure Alignak-app before starting it.'
-        )
-        sys.exit()
-
-    @staticmethod
-    def get_icon():
-        """
-        Set icon of application.
-
-        """
-
-        img = get_image_path('icon')
-        icon = QIcon(img)
-
-        return icon
-
     def run(self, app_backend=None):  # pragma: no cover
         """
         Start all Alignak-app processes
 
+        :param app_backend: AppBackend object
+        :type app_backend: alignak_app.core.backend.AppBackend | None
         """
 
-        # If not login form, app try
+        # If not login form, app try anyway to connect by token
         if not app_backend:
             app_backend = AppBackend()
             connect = app_backend.login()
@@ -162,7 +134,7 @@ class AlignakApp(object):
         self.dashboard.initialize()
 
         # TrayIcon
-        self.tray_icon = TrayIcon(self.get_icon())
+        self.tray_icon = TrayIcon(QIcon(get_image_path('icon')))
         self.tray_icon.build_menu(app_backend, self.dashboard)
         self.tray_icon.show()
 
@@ -178,3 +150,21 @@ class AlignakApp(object):
         else:
             # In case of...
             self.error_message()
+
+    @staticmethod
+    def error_message():
+        """
+        Display a QMessageBox error in case app fail to start
+
+        """
+
+        logger.error('Something seems wrong in your configuration.'
+                     'Please configure Alignak-app before starting it.')
+
+        QMessageBox.critical(
+            None,
+            'Configuration ERROR',
+            'Something seems wrong in your configuration.'
+            'Please configure Alignak-app before starting it.'
+        )
+        sys.exit()

@@ -52,18 +52,13 @@ class TestApp(unittest2.TestCase):
 
         self.assertIsNone(under_test.tray_icon)
         self.assertIsNone(under_test.notifier)
+        self.assertIsNone(under_test.dashboard)
+        self.assertFalse(under_test.notifier_timer.isActive())
 
         # Build alignak_app
         under_test.start()
 
         self.assertIsNotNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.notifier)
-
-    def test_get_icon(self):
-        """Get Icon"""
-
-        under_test = AlignakApp()
-
-        icon = under_test.get_icon()
-
-        self.assertIsInstance(icon, QIcon, 'This is a test for QIcon')
+        self.assertIsNotNone(under_test.dashboard)
+        self.assertTrue(under_test.notifier_timer.isActive())
