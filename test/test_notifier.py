@@ -75,7 +75,7 @@ class TestAppNotifier(unittest2.TestCase):
         dashboard.initialize()
 
         under_test = AppNotifier()
-        under_test.initialise(self.backend, tray_icon, dashboard)
+        under_test.initialize(self.backend, tray_icon, dashboard)
 
         self.assertIsNotNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.app_backend)
@@ -98,7 +98,7 @@ class TestAppNotifier(unittest2.TestCase):
         dashboard.initialize()
 
         under_test = AppNotifier()
-        under_test.initialise(self.backend, tray_icon, dashboard)
+        under_test.initialize(self.backend, tray_icon, dashboard)
         tray_icon.build_menu(self.backend, dashboard)
 
         # Start notifier
@@ -133,7 +133,7 @@ class TestAppNotifier(unittest2.TestCase):
 
         # Initialize Notifier
         under_test = AppNotifier()
-        under_test.initialise(self.backend, tray_icon, dashboard)
+        under_test.initialize(self.backend, tray_icon, dashboard)
 
         # Changes are True, first_start is True
         self.assertFalse(under_test.changes)

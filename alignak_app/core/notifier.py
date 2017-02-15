@@ -27,7 +27,6 @@ import copy
 from logging import getLogger
 
 from alignak_app.core.utils import get_app_config
-from alignak_app.dashboard.app_dashboard import Dashboard
 
 try:
     __import__('PyQt5')
@@ -56,7 +55,7 @@ class AppNotifier(object):
         self.interval = 0
         self.old_synthesis = None
 
-    def initialise(self, app_backend, tray_icon, dashboard):
+    def initialize(self, app_backend, tray_icon, dashboard):
         """
        AppNotifier manage notifications and changes
 
@@ -77,7 +76,7 @@ class AppNotifier(object):
 
     def set_interval(self):
         """
-        Set interval from config.
+        Set interval from config
 
         """
 
@@ -127,7 +126,7 @@ class AppNotifier(object):
 
     def check_data(self):
         """
-        Collect data from Backend API object
+        Check data from Backend API, emit pyqtSignal if there is change to update QWidgets
 
         """
 
@@ -155,14 +154,15 @@ class AppNotifier(object):
 
         if self.changes:
             # Emit pyqtSignals to update TrayIcon and Dashboard
+            logger.info('Changes since last check...')
             self.tray_icon.update_tray.emit(synthesis)
             self.dashboard.dashboard_updated.emit(synthesis, diff_synthesis, self.notify)
         else:
-            logger.info('No Notify.')
+            logger.info('No Changes.')
 
     def diff_last_states(self, synthesis):
         """
-        Check if there have been any change since the last check
+        Return the synthesis differences since the last check
 
         :param synthesis: new synthesis states in dict
         :type synthesis: dict
