@@ -127,7 +127,7 @@ class DashboardFactory(QWidget):
 
     def update_states(self, state_name, nb_items, diff, percent):
         """
-        Update nb_items, diff and progress_bar value for hte given "state_name"
+        Update nb_items, diff and progress_bar value for the given "state_name"
 
         :param state_name: name of the state to be update
         :type state_name: str
