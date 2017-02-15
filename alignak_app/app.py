@@ -71,7 +71,7 @@ class AlignakApp(object):
         bannerManager.start()
 
         # Define level of logger
-        if get_app_config('Alignak-App', 'debug', boolean=True):
+        if get_app_config('Log', 'debug', boolean=True):
             logger.setLevel(DEBUG)
             logger.info('Logger set to DEBUG')
         else:
