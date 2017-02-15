@@ -82,7 +82,7 @@ default_parameters = {
     'unvalid': 'unvalid.svg',
     'hosts_up': 'host_up.svg',
     'hosts_down': 'host_down.svg',
-    'hosts_unreach': 'host_unreach.svg',
+    'hosts_unreachable': 'host_unreachable.svg',
     'services_ok': 'service_ok.svg',
     'services_critical': 'service_critical.svg',
     'services_unknown': 'service_unknown.svg',

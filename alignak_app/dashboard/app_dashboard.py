@@ -145,7 +145,6 @@ class Dashboard(QWidget):
         self.set_style_sheet(self.get_dashboard_title(synthesis))
 
         # Update content of DashboardFactory
-
         percentages = self.dashboard_factory.get_percentages_states(synthesis)
 
         # Hosts
@@ -211,22 +210,7 @@ class Dashboard(QWidget):
         """
         Update dashboard and display it
 
-        :param synthesis: backend synthesis data
-        :type synthesis: dict
-        :param diff: dict of changes since the last check of notifier.
-        :type diff: dict
         """
-
-        # # Set position of dashboard
-        # self.set_position()
-        #
-        # # Prepare dashboard
-        # self.dashboard_type.setText(self.get_dashboard_title(synthesis))
-        # self.set_style_sheet(self.get_dashboard_title(synthesis))
-        #
-        # # Update content of DashboardFactory
-        # self.update_dashboard(synthesis['hosts'], synthesis['services'], diff)
-        # send_diff_banners(diff)
 
         # Retrieve duration
         duration = int(get_app_config('Alignak-App', 'duration'))

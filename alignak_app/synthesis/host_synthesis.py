@@ -216,7 +216,7 @@ class HostSynthesis(QWidget):
         acknowledge_btn.setObjectName(
             'host:%s:%s' % (backend_data['host']['_id'], backend_data['host']['name'])
         )
-        acknowledge_btn.setIcon(QIcon(get_image_path('acknowledged')))
+        acknowledge_btn.setIcon(QIcon(get_image_path('hosts_acknowledge')))
         acknowledge_btn.setFixedSize(32, 32)
         acknowledge_btn.setToolTip('Acknowledge this host')
         acknowledge_btn.clicked.connect(self.add_acknowledge)
@@ -231,7 +231,7 @@ class HostSynthesis(QWidget):
         downtime_btn.setObjectName(
             'host:%s:%s' % (backend_data['host']['_id'], backend_data['host']['name'])
         )
-        downtime_btn.setIcon(QIcon(get_image_path('downtime')))
+        downtime_btn.setIcon(QIcon(get_image_path('hosts_downtime')))
         downtime_btn.setFixedSize(32, 32)
         downtime_btn.setToolTip('Schedule a downtime for this host')
         downtime_btn.clicked.connect(self.add_downtime)
@@ -659,7 +659,7 @@ class HostSynthesis(QWidget):
         if 'UP' in state:
             icon_name = 'hosts_up'
         elif 'UNREACHABLE' in state:
-            icon_name = 'hosts_unreach'
+            icon_name = 'hosts_unreachable'
         elif 'DOWN' in state:
             icon_name = 'hosts_down'
         else:

@@ -220,15 +220,15 @@ class DashboardFactory(QWidget):
             "hosts_up": "Hosts UP:",
             "hosts_down": "Hosts DOWN:",
             "hosts_unreachable": "Hosts UNREACHABLE:",
-            "hosts_acknowledge": "Hosts ACKNOWLEDGE:",
-            "hosts_downtime": "Hosts DOWNTIME:",
+            "hosts_acknowledge": "Hosts ACKNOWLEDGED:",
+            "hosts_downtime": "Hosts DOWNTIMED:",
             "services_ok": "Services OK:",
             "services_warning": "Services WARNING:",
             "services_critical": "Services CRITICAL:",
             "services_unknown": "Services UNKNOWN:",
             "services_unreachable": "Services UNREACHABLE:",
             "services_acknowledge": "Services ACKNOWLEDGED:",
-            "services_downtime": "Services DOWNTIME:",
+            "services_downtime": "Services DOWNTIMED:",
         }
 
         try:
@@ -250,7 +250,7 @@ class DashboardFactory(QWidget):
             bar_color = "#27ae60"
         elif "hosts_down" in label_state or "services_critical" in label_state:
             bar_color = "#e74c3c"
-        elif "hosts_unreach" in label_state or "services_warning" in label_state:
+        elif "hosts_unreachable" in label_state or "services_warning" in label_state:
             bar_color = "#e67e22"
         elif "services_unknown" in label_state:
             bar_color = "#2980b9"
