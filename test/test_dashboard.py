@@ -23,7 +23,7 @@ import sys
 
 import unittest2
 
-from alignak_app.core.utils import init_config
+from alignak_app.core.utils import init_config, set_app_config
 from alignak_app.dashboard.app_dashboard import Dashboard
 
 try:
@@ -159,6 +159,12 @@ class TestNotification(unittest2.TestCase):
 
         initial_position = under_test.app_widget.pos()
 
+        # Test set_position affect Dashboard
+        set_app_config('Dashboard', 'position', 'top:right')
         under_test.set_position()
-
         self.assertNotEqual(under_test.app_widget.pos(), initial_position)
+
+        # Test new configuration not affect Dashbard position
+        new_position = under_test.app_widget.pos()
+        set_app_config('Dashboard', 'position', 'top:left')
+        self.assertEqual(under_test.app_widget.pos(), new_position)
