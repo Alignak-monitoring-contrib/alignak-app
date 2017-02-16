@@ -95,12 +95,42 @@ QLabel#title_login {
     margin-left: 2px;
 }
 
-/****** NOTIFICATION ******/
+/****** DASHBOARD ******/
 QProgressBar {
     color: black;
     border: 2px solid grey;
     border-radius: 5px;
     text-align: center;
+}
+
+/****** BANNER ******/
+QLabel#banner {
+    color: white;
+    font-size: 14px;
+}
+
+QPushButton#banner {
+    border: none;
+}
+
+QWidget#bannerOK {
+    background-color: #27ae60;
+}
+
+QWidget#bannerINFO {
+    background-color: #3884c3;
+}
+
+QWidget#bannerWARN {
+    background-color: #e67e22;
+}
+
+QWidget#bannerALERT {
+    background-color: #e74c3c;
+}
+
+QWidget#bannerERROR {
+    background-color: #383838;
 }
 
 /****** SYNTHESIS VIEW ******/

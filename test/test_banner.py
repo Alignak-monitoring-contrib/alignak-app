@@ -53,14 +53,14 @@ class TestBanner(unittest2.TestCase):
         self.assertIsNotNone(under_test.banner_closed)
 
         self.assertIsNotNone(under_test.animation)
-        self.assertIsNotNone(under_test.color_levels)
+        self.assertIsNotNone(under_test.banner_type)
         self.assertIsNone(under_test.layout())
 
         under_test.create_banner('OK', 'test message')
         assert '#27ae60' in under_test.styleSheet()
 
         self.assertIsNotNone(under_test.animation)
-        self.assertIsNotNone(under_test.color_levels)
+        self.assertIsNotNone(under_test.banner_type)
 
         self.assertIsNotNone(under_test.layout())
 

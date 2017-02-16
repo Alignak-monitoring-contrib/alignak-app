@@ -23,7 +23,7 @@
     Banner send some banner notifications with a message.
 """
 
-from alignak_app.core.utils import get_image_path, get_app_config
+from alignak_app.core.utils import get_image_path, get_app_config, get_css
 
 try:
     __import__('PyQt5')
@@ -143,31 +143,14 @@ class Banner(QWidget):
         # Animation
         self.animation = QPropertyAnimation(self, b'pos')
         # Color model
-        self.color_levels = {
-            'OK': {
-                'color': '#27ae60',
-                'title': 'OK'
-            },
-            'INFO': {
-                'color': '#3884c3',
-                'title': 'INFO'
-            },
-            'WARN': {
-                'color': '#e67e22',
-                'title': 'WARN'
-            },
-            'ALERT': {
-                'color': '#e74c3c',
-                'title': 'ALERT'
-            }
-        }
+        self.banner_type = ['OK', 'INFO', 'WARN', 'ALERT']
 
-    def create_banner(self, level, message):
+    def create_banner(self, banner_type, message):
         """
-        Create banner QWidget and QPropertyAnimation
+        Create banner QWidget and its QPropertyAnimation
 
-        :param level: OK, WARN, or ALERT defines color of banner
-        :type level: str
+        :param banner_type: defines type of banner: OK, INFO, WARN, or ALERT
+        :type banner_type: str
         :param message: message to display in banner
         :type message: str
         """
@@ -179,33 +162,17 @@ class Banner(QWidget):
 
         self.setToolTip(message)
 
-        try:
-            color = self.color_levels[level]['color']
-            title = self.color_levels[level]['title']
-        except KeyError:
-            color = '#383838'
-            title = 'ERROR'
+        if banner_type not in self.banner_type:
+            banner_type = 'ERROR'
 
-        self.setStyleSheet(
-            """
-            QWidget {
-                background-color: %s;
-                color: white;
-                border: 1px solid #d2d2d2;
-                font-size: 14px;
-            }
-            """ % color)
+        self.setStyleSheet(get_css())
+        self.setObjectName('banner%s' % banner_type)
 
         valid_btn = QPushButton()
         valid_btn.setMaximumSize(self.banner_height, self.banner_height)
-        valid_btn.setStyleSheet(
-            """
-                border: 1px solid #d2d2d2;
-                border-radius: 0px;
-            """
-        )
+        valid_btn.setObjectName('banner')
         valid_btn.clicked.connect(self.close_banner)
-        valid_btn.setIcon(QIcon(get_image_path('banner')))
+        valid_btn.setIcon(QIcon(get_image_path(banner_type.lower())))
 
         layout.addWidget(valid_btn)
 
@@ -213,11 +180,12 @@ class Banner(QWidget):
             message = message[:170] + '...'
 
         if get_app_config('Alignak-App', 'banner_title', boolean=True):
-            banner_qlabel = QLabel('<b>%s</b>: %s' % (title, message))
+            banner_qlabel = QLabel('<b>%s</b>: %s' % (banner_type, message))
         else:
             banner_qlabel = QLabel('%s' % message)
 
         banner_qlabel.setWordWrap(True)
+        banner_qlabel.setObjectName('banner')
         layout.addWidget(banner_qlabel)
 
         # Animation
