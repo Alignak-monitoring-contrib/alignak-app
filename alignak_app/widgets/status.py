@@ -73,6 +73,7 @@ class AlignakStatus(QWidget):
         self.info = None
         self.old_bad_daemons = 0
         self.app_widget = AppQWidget()
+        self.first_start = True
 
     def create_status(self, app_backend):
         """
@@ -103,8 +104,6 @@ class AlignakStatus(QWidget):
         # Use AppQWidget
         self.app_widget.initialize('Alignak Status')
         self.app_widget.add_widget(self)
-
-        self.show_states()
 
     def create_daemons_labels(self, layout):
         """
@@ -191,26 +190,38 @@ class AlignakStatus(QWidget):
 
             total_daemons += 1
 
+        # First Start
+        if self.first_start and not bad_daemons:
+            self.info.setText('All daemons are alive.')
+            self.info.setStyleSheet('color: #27ae60;')
+            send_banner('INFO', 'All daemons are alive.')
+            logger.info('All daemons are alive.')
+            self.first_start = False
+
+        # Update text even if status is not diplay
         if bad_daemons:
             self.info.setText('%d on %d daemons are down !' % (bad_daemons, total_daemons))
             self.info.setStyleSheet('color: #e74c3c;')
 
-        if self.sender() and not isinstance(self.sender(), QAction):
+        if not isinstance(self.sender(), QAction):
             if not bad_daemons and (self.old_bad_daemons != 0):
                 self.info.setText('All daemons are alive.')
                 self.info.setStyleSheet('color: #27ae60;')
-                send_banner('OK', 'All daemons are alive.')
+                send_banner('OK', 'All daemons are back alive.')
+                logger.info('All daemons are back alive.')
                 # Reset old bad daemons count
                 self.old_bad_daemons = 0
             if bad_daemons:
                 self.info.setText('%d on %d daemons are down !' % (bad_daemons, total_daemons))
                 self.info.setStyleSheet('color: #e74c3c;')
                 send_banner('WARN', '%d on %d daemons are down !' % (bad_daemons, total_daemons))
+                logger.warning('%d on %d daemons are down !', bad_daemons, total_daemons)
 
                 if arbiter_down:
                     self.info.setText('Arbiter daemons are down !')
                     self.info.setStyleSheet('color: #e74c3c;')
                     send_banner('ALERT', 'Arbiter daemons are down !')
+                    logger.critical('Arbiter daemons are down !')
 
         self.old_bad_daemons = bad_daemons
 
