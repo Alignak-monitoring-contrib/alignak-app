@@ -664,7 +664,7 @@ class HostSynthesis(QWidget):
         elif 'DOWN' in state:
             icon_name = 'hosts_down'
         else:
-            icon_name = 'unvalid'
+            icon_name = 'error'
 
         icon = QPixmap(get_image_path(icon_name))
 

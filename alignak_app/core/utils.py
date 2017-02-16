@@ -77,7 +77,7 @@ default_parameters = {
     'about': 'about.svg',
     'exit': 'exit.svg',
     'checked': 'checked.svg',
-    'unvalid': 'unvalid.svg',
+    'error': 'error.svg',
     'hosts_up': 'host_up.svg',
     'hosts_down': 'host_down.svg',
     'hosts_unreachable': 'host_unreachable.svg',
@@ -212,7 +212,7 @@ def get_image_path(name):
         return img
     except NoOptionError as e:
         logger.error('Bad Option : ' + str(e))
-        return img_path + app_config.get('Images', 'unvalid')
+        return img_path + app_config.get('Images', 'error')
 
 
 def get_diff_since_last_check(last_check):

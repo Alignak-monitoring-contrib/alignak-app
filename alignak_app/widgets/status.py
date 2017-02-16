@@ -180,7 +180,7 @@ class AlignakStatus(QWidget):
                 )
             else:
                 self.daemons_labels[daemon['type']]['icon'].setPixmap(
-                    QPixmap(get_image_path('unvalid'))
+                    QPixmap(get_image_path('error'))
                 )
                 self.daemons_labels[daemon['type']]['icon'].setToolTip(
                     daemon_msg[daemon['type']]
