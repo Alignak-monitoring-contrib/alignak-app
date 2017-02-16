@@ -104,6 +104,7 @@ class AlignakStatus(QWidget):
         # Use AppQWidget
         self.app_widget.initialize('Alignak Status')
         self.app_widget.add_widget(self)
+        # self.app_widget.setMinimumSize(400, 400)
 
     def create_daemons_labels(self, layout):
         """

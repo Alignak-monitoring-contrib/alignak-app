@@ -73,6 +73,7 @@ class AppAbout(QWidget):
         # Add to AppQWidget
         self.app_widget.initialize('About %s' % __application__)
         self.app_widget.add_widget(self)
+        self.app_widget.setMinimumSize(400, 400)
 
     @staticmethod
     def get_about_text():
