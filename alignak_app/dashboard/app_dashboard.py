@@ -137,7 +137,6 @@ class Dashboard(QWidget):
         """
 
         logger.info('Update DashBoard...')
-        send_diff_banners(diff_synthesis)
 
         # Dashboard title
         self.dashboard_type.setText(self.get_dashboard_title(synthesis))
@@ -163,8 +162,11 @@ class Dashboard(QWidget):
                 percentages['services'][state]
             )
 
-        if notify:
+        if notify and get_app_config('Dashboard', 'pop', boolean=True):
             self.display_dashboard()
+
+        if get_app_config('Banners', 'changes', boolean=True):
+            send_diff_banners(diff_synthesis)
 
     def set_position(self):
         """
@@ -173,7 +175,7 @@ class Dashboard(QWidget):
         """
 
         # Get position choosed by user
-        pos = get_app_config('Alignak-App', 'position')
+        pos = get_app_config('Dashboard', 'position')
         points = pos.split(':')
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
 
@@ -208,7 +210,7 @@ class Dashboard(QWidget):
         """
 
         # Retrieve duration
-        duration = int(get_app_config('Alignak-App', 'duration'))
+        duration = int(get_app_config('Dashboard', 'duration'))
         duration *= 1000
         logger.debug('Dashboard Duration : %s', str(duration))
 

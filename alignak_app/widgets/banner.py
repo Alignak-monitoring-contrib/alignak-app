@@ -179,7 +179,7 @@ class Banner(QWidget):
         if len(message) > 170:
             message = message[:170] + '...'
 
-        if get_app_config('Alignak-App', 'banner_title', boolean=True):
+        if get_app_config('Banners', 'title', boolean=True):
             banner_qlabel = QLabel('<b>%s</b>: %s' % (banner_type, message))
         else:
             banner_qlabel = QLabel('%s' % message)

@@ -23,10 +23,9 @@
     App Widget manage creation of a QWidget to make a tempalte for all QWidgets of Alignak-app
 """
 
-import sys
 
 from logging import getLogger
-from alignak_app.core.utils import get_image_path, init_config, get_css
+from alignak_app.core.utils import get_image_path, get_app_config, get_css
 
 try:
     __import__('PyQt5')
@@ -110,8 +109,6 @@ class AppQWidget(QFrame):
         minimize_btn.setFixedSize(22, 22)
         minimize_btn.setObjectName('app_widget')
         minimize_btn.clicked.connect(self.minimize)
-        if 'Dashboard' in self.windowTitle():
-            minimize_btn.setEnabled(False)
         logo_layout.addWidget(minimize_btn, 2)
 
         maximize_btn = QPushButton()
@@ -119,8 +116,6 @@ class AppQWidget(QFrame):
         maximize_btn.setFixedSize(22, 22)
         maximize_btn.setObjectName('app_widget')
         maximize_btn.clicked.connect(self.minimize_maximize)
-        if 'Dashboard' in self.windowTitle():
-            maximize_btn.setEnabled(False)
         logo_layout.addWidget(maximize_btn, 3)
 
         close_btn = QPushButton()
@@ -188,16 +183,32 @@ class AppQWidget(QFrame):
     def mousePressEvent(self, event):
         """ QWidget.mousePressEvent(QMouseEvent) """
 
-        self.offset = event.pos()
+        sticky = False
+
+        if 'Dashboard' in self.windowTitle():
+            sticky = get_app_config('Dashboard', 'sticky', boolean=True)
+
+        if not sticky:
+            self.offset = event.pos()
+        else:
+            pass
 
     def mouseMoveEvent(self, event):
         """ QWidget.mousePressEvent(QMouseEvent) """
 
-        try:
-            x = event.globalX()
-            y = event.globalY()
-            x_w = self.offset.x()
-            y_w = self.offset.y()
-            self.move(x - x_w, y - y_w)
-        except AttributeError as e:
-            logger.warning('Move Event %s: %s', self.objectName(), str(e))
+        sticky = False
+
+        if 'Dashboard' in self.windowTitle():
+            sticky = get_app_config('Dashboard', 'sticky', boolean=True)
+
+        if not sticky:
+            try:
+                x = event.globalX()
+                y = event.globalY()
+                x_w = self.offset.x()
+                y_w = self.offset.y()
+                self.move(x - x_w, y - y_w)
+            except AttributeError as e:
+                logger.warning('Move Event %s: %s', self.objectName(), str(e))
+        else:
+            pass
