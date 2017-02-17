@@ -29,7 +29,7 @@ from alignak_app import __application__
 from alignak_app.core.utils import get_app_config, get_css
 from alignak_app.dashboard.dashboard_factory import DashboardFactory
 from alignak_app.widgets.app_widget import AppQWidget
-from alignak_app.widgets.banner import send_diff_banners
+from alignak_app.widgets.banner import send_diff_banners, send_banner
 
 try:
     __import__('PyQt5')
@@ -145,28 +145,31 @@ class Dashboard(QWidget):
         # Update content of DashboardFactory
         percentages = self.dashboard_factory.get_percentages_states(synthesis)
 
-        # Hosts
-        for state in synthesis['hosts']:
-            self.dashboard_factory.update_states(
-                'hosts_%s' % state,
-                synthesis['hosts'][state],
-                diff_synthesis['hosts'][state],
-                percentages['hosts'][state]
-            )
+        if percentages['hosts'] and synthesis['hosts']:
+            # Hosts
+            for state in synthesis['hosts']:
+                self.dashboard_factory.update_states(
+                    'hosts_%s' % state,
+                    synthesis['hosts'][state],
+                    diff_synthesis['hosts'][state],
+                    percentages['hosts'][state]
+                )
 
-        for state in synthesis['services']:
-            self.dashboard_factory.update_states(
-                'services_%s' % state,
-                synthesis['services'][state],
-                diff_synthesis['services'][state],
-                percentages['services'][state]
-            )
+            for state in synthesis['services']:
+                self.dashboard_factory.update_states(
+                    'services_%s' % state,
+                    synthesis['services'][state],
+                    diff_synthesis['services'][state],
+                    percentages['services'][state]
+                )
 
-        if notify and get_app_config('Dashboard', 'pop', boolean=True):
-            self.display_dashboard()
+            if notify and get_app_config('Dashboard', 'pop', boolean=True):
+                self.display_dashboard()
 
-        if get_app_config('Banners', 'changes', boolean=True):
-            send_diff_banners(diff_synthesis)
+            if get_app_config('Banners', 'changes', boolean=True):
+                send_diff_banners(diff_synthesis)
+        else:
+            send_banner('ERROR', 'Synthesis seems unreachable')
 
     def set_position(self):
         """

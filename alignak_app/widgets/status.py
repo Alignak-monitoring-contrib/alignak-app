@@ -161,35 +161,38 @@ class AlignakStatus(QWidget):
         daemon_msg = dict((element, '') for element in self.daemons)
 
         alignak_daemon = self.app_backend.get('alignakdaemon')
-        for daemon in alignak_daemon['_items']:
-            if not daemon['alive']:
-                bad_daemons += 1
-                daemon_msg[daemon['type']] += '<p>%s is not alive</p>' % daemon['name'].capitalize()
-                if daemon == self.daemons[3]:
-                    arbiter_down = True
+        if alignak_daemon:
+            for daemon in alignak_daemon['_items']:
+                if not daemon['alive']:
+                    bad_daemons += 1
+                    daemon_msg[daemon['type']] += '<p>%s is not alive</p>' % daemon['name'].capitalize()
+                    if daemon == self.daemons[3]:
+                        arbiter_down = True
 
-            if not bad_daemons:
-                self.daemons_labels[daemon['type']]['icon'].setPixmap(
-                    QPixmap(get_image_path('valid'))
-                )
-                self.daemons_labels[daemon['type']]['icon'].setToolTip(
-                    'All %ss are alive ' % daemon['type']
-                )
-                self.daemons_labels[daemon['type']]['label'].setToolTip(
-                    'All %ss are alive ' % daemon['type']
-                )
-            else:
-                self.daemons_labels[daemon['type']]['icon'].setPixmap(
-                    QPixmap(get_image_path('error'))
-                )
-                self.daemons_labels[daemon['type']]['icon'].setToolTip(
-                    daemon_msg[daemon['type']]
-                )
-                self.daemons_labels[daemon['type']]['label'].setToolTip(
-                    daemon_msg[daemon['type']]
-                )
+                if not bad_daemons:
+                    self.daemons_labels[daemon['type']]['icon'].setPixmap(
+                        QPixmap(get_image_path('valid'))
+                    )
+                    self.daemons_labels[daemon['type']]['icon'].setToolTip(
+                        'All %ss are alive ' % daemon['type']
+                    )
+                    self.daemons_labels[daemon['type']]['label'].setToolTip(
+                        'All %ss are alive ' % daemon['type']
+                    )
+                else:
+                    self.daemons_labels[daemon['type']]['icon'].setPixmap(
+                        QPixmap(get_image_path('error'))
+                    )
+                    self.daemons_labels[daemon['type']]['icon'].setToolTip(
+                        daemon_msg[daemon['type']]
+                    )
+                    self.daemons_labels[daemon['type']]['label'].setToolTip(
+                        daemon_msg[daemon['type']]
+                    )
 
-            total_daemons += 1
+                total_daemons += 1
+        else:
+            arbiter_down = True
 
         # First Start
         if self.first_start and not bad_daemons:

@@ -43,6 +43,7 @@ class AppBackend(object):
     def __init__(self):
         self.backend = None
         self.user = {}
+        self.connected = False
 
     def login(self, username=None, password=None):
         """
@@ -99,6 +100,8 @@ class AppBackend(object):
             )
             connect = False
 
+        self.connected = connect
+
         return connect
 
     def get(self, endpoint, params=None, projection=None):
@@ -136,6 +139,7 @@ class AppBackend(object):
             logger.debug('...Response > %s', str(request['_status']))
         except BackendException as e:
             logger.error('GET failed: %s', str(e))
+            return request
 
         return request
 
@@ -181,7 +185,7 @@ class AppBackend(object):
 
         hosts = self.get('host', params)
 
-        if len(hosts['_items']) > 0:
+        if hosts and len(hosts['_items']) > 0:
             wanted_host = hosts['_items'][0]
         else:
             wanted_host = None
