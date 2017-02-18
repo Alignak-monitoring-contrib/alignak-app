@@ -186,7 +186,7 @@ class AppQWidget(QFrame):
         sticky = False
 
         if 'Dashboard' in self.windowTitle():
-            sticky = get_app_config('Dashboard', 'sticky', boolean=True)
+            sticky = bool(get_app_config('Dashboard', 'sticky', boolean=True))
 
         if not sticky:
             self.offset = event.pos()
@@ -199,7 +199,7 @@ class AppQWidget(QFrame):
         sticky = False
 
         if 'Dashboard' in self.windowTitle():
-            sticky = get_app_config('Dashboard', 'sticky', boolean=True)
+            sticky = bool(get_app_config('Dashboard', 'sticky', boolean=True))
 
         if not sticky:
             try:

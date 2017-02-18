@@ -584,11 +584,11 @@ class HostSynthesis(QWidget):
             start_time = datetime.datetime.now()
             end_time = start_time + datetime.timedelta(days=1)
 
-            if sys.version_info < (3,0):
+            if sys.version_info < (3, 0):
                 # Function for python 2
                 def totimestamp(dt):
-                    # return td.total_seconds()
-                    return  time.mktime(dt.timetuple())
+                    """Return timestamp of given datetime"""
+                    return time.mktime(dt.timetuple())
 
                 start_stamp = totimestamp(start_time)
                 end_stamp = totimestamp(end_time)
