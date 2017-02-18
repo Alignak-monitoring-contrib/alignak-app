@@ -24,6 +24,8 @@
 """
 
 import datetime
+import time
+import sys
 
 from logging import getLogger
 
@@ -582,14 +584,27 @@ class HostSynthesis(QWidget):
             start_time = datetime.datetime.now()
             end_time = start_time + datetime.timedelta(days=1)
 
+            if sys.version_info < (3,0):
+                # Function for python 2
+                def totimestamp(dt):
+                    # return td.total_seconds()
+                    return  time.mktime(dt.timetuple())
+
+                start_stamp = totimestamp(start_time)
+                end_stamp = totimestamp(end_time)
+            else:
+                start_stamp = start_time.timestamp()
+                end_stamp = end_time.timestamp()
+
+            print(start_time)
             data = {
                 'action': 'add',
                 'host': host_id,
                 'service': service_id,
                 'user': user['_id'],
                 'comment': comment,
-                'start_time': start_time.timestamp(),
-                'end_time': end_time.timestamp(),
+                'start_time': start_stamp,
+                'end_time': end_stamp,
                 'fixed': True
             }
 
