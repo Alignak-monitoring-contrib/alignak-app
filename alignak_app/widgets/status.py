@@ -165,7 +165,8 @@ class AlignakStatus(QWidget):
             for daemon in alignak_daemon['_items']:
                 if not daemon['alive']:
                     bad_daemons += 1
-                    daemon_msg[daemon['type']] += '<p>%s is not alive</p>' % daemon['name'].capitalize()
+                    daemon_msg[daemon['type']] += \
+                        '<p>%s is not alive</p>' % daemon['name'].capitalize()
                     if daemon == self.daemons[3]:
                         arbiter_down = True
 
