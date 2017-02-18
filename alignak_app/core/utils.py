@@ -61,15 +61,16 @@ def get_app_root():
 
 # Application Configuration
 default_parameters = {
-    'check_interval': 30,
+    'synthesis_interval': 30,
     'duration': 8,
-    'notifications': True,
     'position': 'top:right',
     'debug': False,
     'username': '',
     'password': '',
-    'alignak_url': 'http://127.0.0.1',
-    'webui_url': 'http://127.0.0.1:5001',
+    'url': 'http://127.0.0.1',
+    'backend': 'http://127.0.0.1:5000',
+    'webui': 'http://127.0.0.1:5001',
+    'processes': '1',
     'path': '/alignak_app',
     'img': '/images',
     'tpl': '/templates',

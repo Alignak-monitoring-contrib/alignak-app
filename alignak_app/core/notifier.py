@@ -80,7 +80,7 @@ class AppNotifier(object):
 
         """
 
-        interval = int(get_app_config('Alignak-App', 'check_interval'))
+        interval = int(get_app_config('Alignak-App', 'synthesis_interval'))
 
         if bool(interval):
             logger.info('Start notifier...')
