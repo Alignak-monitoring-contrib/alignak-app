@@ -98,9 +98,36 @@ QLabel#title_login {
 /****** DASHBOARD ******/
 QProgressBar {
     color: black;
-    border: 2px solid grey;
-    border-radius: 5px;
+    border: none;
     text-align: center;
+}
+
+QProgressBar#services_ok::chunk, QProgressBar#hosts_up::chunk {
+    background-color: #27ae60;
+}
+
+QProgressBar#services_warning::chunk, QProgressBar#hosts_unreachable::chunk {
+    background-color: #e67e22;
+}
+
+QProgressBar#services_critical::chunk, QProgressBar#hosts_down::chunk {
+    background-color: #e74c3c;
+}
+
+QProgressBar#services_unknown::chunk {
+    background-color: #2980b9;
+}
+
+QProgressBar#services_unreachable::chunk {
+    background-color: grey;
+}
+
+QProgressBar#services_acknowledge::chunk, QProgressBar#hosts_acknowledge::chunk {
+    background-color: #95a5a6;
+}
+
+QProgressBar#services_downtime::chunk, QProgressBar#hosts_downtime::chunk {
+    background-color: #7e8ccf;
 }
 
 /****** BANNER ******/
