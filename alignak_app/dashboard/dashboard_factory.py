@@ -80,6 +80,7 @@ class DashboardFactory(QWidget):
         progress_bar = QProgressBar()
         progress_bar.setValue(0)
         progress_bar.setFixedHeight(20)
+        progress_bar.setObjectName(state_name)
 
         # Layout
         self.main_layout.addWidget(state_icon, self.row, 0)
@@ -96,8 +97,6 @@ class DashboardFactory(QWidget):
             'diff': state_diff,
             'progress_bar': progress_bar
         }
-
-        self.bar_style_sheet(state_name)
 
         # Increment vertically position for next widget
         self.row += 1
@@ -132,8 +131,10 @@ class DashboardFactory(QWidget):
         :type percent: int
         """
 
+        # State number
         self.state_data[state_name]['state_number'].setText(str(nb_items))
 
+        # Icon
         if nb_items == 0 and 'downtime' not in state_name and 'acknowledge' not in state_name:
             if 'hosts' in state_name:
                 self.state_data[state_name]['icon'].setPixmap(
@@ -148,13 +149,19 @@ class DashboardFactory(QWidget):
                 QPixmap(get_image_path(state_name))
             )
 
+        # Diff between last check
         if diff != 0:
             self.state_data[state_name]['diff'].setText('<b>(%s)</b>' % "{0:+d}".format(diff))
         else:
             self.state_data[state_name]['diff'].setText('')
 
-        self.state_data[state_name]['progress_bar'].setFormat('%.01f%%' % percent)
-        self.state_data[state_name]['progress_bar'].setValue(float(percent))
+        # ProgressBar
+        if percent == 0.0:
+            self.state_data[state_name]['progress_bar'].setFormat('-')
+            self.state_data[state_name]['progress_bar'].setValue(0)
+        else:
+            self.state_data[state_name]['progress_bar'].setFormat('%.02f%%' % percent)
+            self.state_data[state_name]['progress_bar'].setValue(float(percent))
 
     @staticmethod
     def get_percentages_states(synthesis):
@@ -175,9 +182,9 @@ class DashboardFactory(QWidget):
 
         # Get sum for hosts and services
         hosts_sum = 0
-        services_sum = 0
         for h_state in synthesis['hosts']:
             hosts_sum += synthesis['hosts'][h_state]
+        services_sum = 0
         for s_state in synthesis['services']:
             services_sum += synthesis['services'][s_state]
 
@@ -185,14 +192,12 @@ class DashboardFactory(QWidget):
         try:
             # Hosts
             for state in synthesis['hosts']:
-                percentages['hosts'][state] = float(
-                    (synthesis['hosts'][state] * 100) / hosts_sum
-                )
+                percentages['hosts'][state] = \
+                    float(synthesis['hosts'][state]) * 100.0 / float(hosts_sum)
             # Services
             for state in synthesis['services']:
-                percentages['services'][state] = float(
-                    (synthesis['services'][state] * 100) / services_sum
-                )
+                percentages['services'][state] = \
+                    float(synthesis['services'][state]) * 100.0 / float(services_sum)
         except ZeroDivisionError as e:
             logger.error(str(e))
 
@@ -230,34 +235,3 @@ class DashboardFactory(QWidget):
             logger.error('Bad label state name: %s', name)
             logger.error(str(e))
             return 'Unknow field'
-
-    def bar_style_sheet(self, label_state):
-        """
-        Define the color of QProgressBar
-
-        :param label_state: type of state
-        :type label_state: str
-        """
-
-        progressbar_colors = {
-            'hosts_up': '#27ae60',
-            'hosts_down': '#e74c3c',
-            'hosts_unreachable': '#e67e22',
-            'hosts_acknowledge': '#95a5a6',
-            'hosts_downtime': '#7e8ccf',
-            'services_ok': '#27ae60',
-            'services_warning': '#e67e22',
-            'services_critical': '#e74c3c',
-            'services_unknown': '#2980b9',
-            'services_acknowledge': '#95a5a6',
-            'services_downtime': '#7e8ccf',
-            'services_unreachable': 'grey'
-        }
-
-        self.state_data[label_state]['progress_bar'].setStyleSheet(
-            """
-            QProgressBar::chunk {
-                background-color: %s;
-            }
-            """ % progressbar_colors[label_state]
-        )
