@@ -238,9 +238,8 @@ class HostSynthesis(QWidget):
         downtime_btn.setFixedSize(32, 32)
         downtime_btn.setToolTip('Schedule a downtime for this host')
         downtime_btn.clicked.connect(self.add_downtime)
-        if 'UP' in backend_data['host']['ls_state'] \
-                or backend_data['host']['ls_downtimed'] \
-                or backend_data['host']['_id'] in self.action_manager.downtimed:
+        if backend_data['host']['ls_downtimed'] or \
+                backend_data['host']['_id'] in self.action_manager.downtimed:
             downtime_btn.setEnabled(False)
         host_layout.addWidget(downtime_btn, 1, 1, 1, 1)
 
@@ -432,9 +431,7 @@ class HostSynthesis(QWidget):
             service_widget.downtime_btn.setObjectName(
                 'service:%s:%s' % (service['_id'], service_name)
             )
-            if 'OK' in service['ls_state'] \
-                    or service['ls_downtimed'] \
-                    or service['_id'] in self.action_manager.downtimed:
+            if service['ls_downtimed'] or service['_id'] in self.action_manager.downtimed:
                 service_widget.downtime_btn.setEnabled(False)
 
             # Add widget to QStackedWidget
