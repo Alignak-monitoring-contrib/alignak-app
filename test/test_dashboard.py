@@ -111,7 +111,7 @@ class TestNotification(unittest2.TestCase):
                 'downtime': 0
             }
         }
-        under_test.update_dashboard(synthesis, changes, True)
+        under_test.update_dashboard(synthesis, changes)
 
         self.assertEqual('CRITICAL', under_test.dashboard_type.text())
         self.assertEqual(
