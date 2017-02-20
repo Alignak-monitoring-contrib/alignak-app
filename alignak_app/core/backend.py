@@ -169,7 +169,7 @@ class AppBackend(object):
 
         return resp
 
-    def get_host(self, key, value):
+    def get_host(self, key, value, projection=None):
         """
         Return the host corresponding to "key"/"value" pair
 
@@ -177,13 +177,15 @@ class AppBackend(object):
         :type key: str
         :param value: value of key
         :type value: str
+        :param projection: list of field to get, if None, get all
+        :type projection: list|None
         :return: None if not found or item dict
         :rtype: dict|None
         """
 
         params = {'where': json.dumps({'_is_template': False, key: value})}
 
-        hosts = self.get('host', params)
+        hosts = self.get('host', params, projection=projection)
 
         if hosts and len(hosts['_items']) > 0:
             wanted_host = hosts['_items'][0]
@@ -192,7 +194,7 @@ class AppBackend(object):
 
         return wanted_host
 
-    def get_service(self, host_id, service_id):
+    def get_service(self, host_id, service_id, projection=None):
         """
         Returns the desired service of the specified host
 
@@ -200,6 +202,8 @@ class AppBackend(object):
         :type host_id: str
         :param service_id: "_id" of wanted service
         :type service_id: str
+        :param projection: list of field to get, if None, get all
+        :type projection: list|None
         :return: wanted service
         :rtype: dict
         """
@@ -211,7 +215,7 @@ class AppBackend(object):
             })
         }
 
-        services = self.get('service', params=params)
+        services = self.get('service', params=params, projection=projection)
 
         if len(services['_items']) > 0:
             wanted_service = services['_items'][0]
@@ -236,7 +240,9 @@ class AppBackend(object):
 
         host_data = None
 
-        host = self.get_host('name', host_name)
+        host_projection = ['name', 'alias', 'ls_state', '_id', 'ls_acknowledged', 'ls_downtimed',
+                           'ls_last_check', 'ls_output', 'address', 'business_impact', 'parents']
+        host = self.get_host('name', host_name, projection=host_projection)
 
         if host:
             params = {
@@ -245,10 +251,10 @@ class AppBackend(object):
                     'host': host['_id']
                 })
             }
-            projection = ['name', 'alias', 'display_name', 'ls_state', 'ls_acknowledged',
-                          'ls_downtimed', 'ls_last_check', 'ls_output', 'business_impact',
-                          'customs', '_overall_state_id', 'aggregation']
-            services = self.get('service', params=params, projection=projection)
+            service_projection = ['name', 'alias', 'display_name', 'ls_state', 'ls_acknowledged',
+                                  'ls_downtimed', 'ls_last_check', 'ls_output', 'business_impact',
+                                  'customs', '_overall_state_id', 'aggregation']
+            services = self.get('service', params=params, projection=service_projection)
 
             services_host = services['_items']
 

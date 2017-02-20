@@ -77,7 +77,7 @@ class ActionManager(object):
             logger.debug('Hosts ACK: %s', self.acks_to_check['hosts'])
             for item in self.acks_to_check['hosts']:
                 # Get host
-                host = self.app_backend.get_host('_id', item['host_id'])
+                host = self.app_backend.get_host('_id', item['host_id'], ['ls_acknowledged'])
                 if host['ls_acknowledged']:
                     self.acks_to_check['hosts'].remove(item)
                     done_actions[ACK]['hosts'].append(item)
@@ -86,7 +86,11 @@ class ActionManager(object):
             logger.debug('Services ACK: %s', self.acks_to_check['services'])
             for item in self.acks_to_check['services']:
                 # Get service
-                service = self.app_backend.get_service(item['host_id'], item['service_id'])
+                service = self.app_backend.get_service(
+                    item['host_id'],
+                    item['service_id'],
+                    ['ls_acknowledged']
+                )
                 if service['ls_acknowledged']:
                     self.acks_to_check['services'].remove(item)
                     done_actions[ACK]['services'].append(item)
@@ -96,16 +100,20 @@ class ActionManager(object):
             logger.debug('Hosts DOWN: %s', self.downtimes_to_check['hosts'])
             for item in self.downtimes_to_check['hosts']:
                 # Get host
-                host = self.app_backend.get_host('_id', item['host_id'])
+                host = self.app_backend.get_host('_id', item['host_id'], ['ls_downtimed'])
                 if host['ls_downtimed']:
                     self.downtimes_to_check['hosts'].remove(item)
                     done_actions[DOWNTIME]['hosts'].append(item)
-                    # Check services acknowledges
+        # Check services downtimes
         if self.downtimes_to_check['services']:
             logger.debug('Services DOWN: %s', self.downtimes_to_check['services'])
             for item in self.downtimes_to_check['services']:
                 # Get service
-                service = self.app_backend.get_service(item['host_id'], item['service_id'])
+                service = self.app_backend.get_service(
+                    item['host_id'],
+                    item['service_id'],
+                    ['ls_downtimed']
+                )
                 if service['ls_downtimed']:
                     self.downtimes_to_check['services'].remove(item)
                     done_actions[DOWNTIME]['services'].append(item)

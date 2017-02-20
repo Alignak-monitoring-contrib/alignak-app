@@ -636,22 +636,6 @@ class HostSynthesis(QWidget):
         actions = [ACK, DOWNTIME]
 
         if items_to_send:
-
-            # Send ACKs and DOWNTIMEs
-            for action in actions:
-                title = action.replace('action', '').capitalize()
-                # For Hosts
-                if items_to_send[action]['hosts']:
-                    logger.debug('%s to send: %s', action, items_to_send[action]['hosts'])
-                    for item in items_to_send[action]['hosts']:
-                        host = self.app_backend.get_host('_id', item['host_id'])
-                        send_banner('OK', '%s for %s is done !' % (title, host['name']))
-                # For Services
-                if items_to_send[action]['services']:
-                    logger.debug('%s to send: %s', action, items_to_send[action]['services'])
-                    for item in items_to_send[action]['services']:
-                        service = self.app_backend.get_service(item['host_id'], item['service_id'])
-                        send_banner('OK', '%s for %s is done !' % (title, service['name']))
             # Send PROCESS
             if items_to_send[PROCESS]:
                 logger.debug('PROCESS to send: %s', items_to_send[PROCESS])
@@ -660,6 +644,26 @@ class HostSynthesis(QWidget):
                         'Action', '')
                     action_title = requested_action.capitalize()
                     send_banner('INFO', '%s for %s is processed...' % (action_title, item['name']))
+
+            # Send ACKs and DOWNTIMEs
+            for action in actions:
+                title = action.replace('action', '').capitalize()
+                # For Hosts
+                if items_to_send[action]['hosts']:
+                    logger.debug('%s to send: %s', action, items_to_send[action]['hosts'])
+                    for item in items_to_send[action]['hosts']:
+                        host = self.app_backend.get_host('_id', item['host_id'], ['name'])
+                        send_banner('OK', '%s for %s is done !' % (title, host['name']))
+                # For Services
+                if items_to_send[action]['services']:
+                    logger.debug('%s to send: %s', action, items_to_send[action]['services'])
+                    for item in items_to_send[action]['services']:
+                        service = self.app_backend.get_service(
+                            item['host_id'],
+                            item['service_id'],
+                            ['name']
+                        )
+                        send_banner('OK', '%s for %s is done !' % (title, service['name']))
 
     @staticmethod
     def get_host_icon(state):
