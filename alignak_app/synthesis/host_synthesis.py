@@ -102,6 +102,7 @@ class HostSynthesis(QWidget):
         """
 
         host_widget = QWidget()
+        host_widget.setObjectName('host')
         host_layout = QGridLayout(host_widget)
 
         # Overall State
@@ -178,9 +179,10 @@ class HostSynthesis(QWidget):
         host_last_check = QLabel('<b>Last check:</b> %s' % str(diff_last_check))
         host_layout.addWidget(host_last_check, 2, 2, 1, 1)
 
-        output = QLabel(backend_data['host']['ls_output'])
+        output = QLabel('<b>Output:</b> %s' % backend_data['host']['ls_output'])
         output.setObjectName('output')
         output.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        output.setCursor(Qt.IBeamCursor)
         scroll = QScrollArea()
         scroll.setWidget(output)
         scroll.setObjectName('output')
@@ -270,6 +272,7 @@ class HostSynthesis(QWidget):
         """
 
         services_widget = QWidget()
+        services_widget.setObjectName('services')
         services_layout = QGridLayout(services_widget)
 
         # Add aggregation filters and get current row

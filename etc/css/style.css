@@ -161,6 +161,12 @@ QWidget#bannerERROR {
 }
 
 /****** SYNTHESIS VIEW ******/
+QWidget#services {
+    border-style: solid;
+    border-width: 2px 0px 0px 0px;
+    border-color: #ddd;
+}
+
 QListWidget {
     outline: none;
 }
@@ -188,8 +194,9 @@ QLabel#output {
     color: black;
 }
 
-QScrollArea#output {
-    background-color: white;
+QScrollArea#output, QLabel#output {
+    border: none;
+    background-color: #eee;
 }
 
 QCheckBox {

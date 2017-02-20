@@ -86,21 +86,20 @@ class Service(QWidget):
             service_name = service['name']
 
         # Service name
-        service_name = QLabel(
+        service_label = QLabel(
             '<h3><a href="%s" style="color: black; text-decoration: none">%s</a></h3>' % (
                 get_app_config('Alignak', 'webui') + '/service/' + service['_id'],
                 service_name
-
             )
         )
-        service_name.setTextInteractionFlags(Qt.TextBrowserInteraction)
-        service_name.setOpenExternalLinks(True)
-        service_name.setToolTip('Service is %s. See in WebUI ?' % service['ls_state'])
-        service_name.setObjectName(service['ls_state'])
-        service_name.setMinimumWidth(200)
-        service_name.setWordWrap(True)
-        layout.addWidget(service_name, 0, 1, 2, 1)
-        layout.setAlignment(service_name, Qt.AlignLeft)
+        service_label.setTextInteractionFlags(Qt.TextBrowserInteraction)
+        service_label.setOpenExternalLinks(True)
+        service_label.setToolTip('Service is %s. See in WebUI ?' % service['ls_state'])
+        service_label.setObjectName(service['ls_state'])
+        service_label.setMinimumWidth(200)
+        service_label.setWordWrap(True)
+        layout.addWidget(service_label, 0, 1, 2, 1)
+        layout.setAlignment(service_label, Qt.AlignLeft)
 
         # Buttons
         self.acknowledge_btn = QPushButton()
@@ -123,28 +122,19 @@ class Service(QWidget):
         last_check = QLabel(str(diff_last_check))
         layout.addWidget(last_check, 0, 4, 1, 1)
 
-        if service['display_name'] != '':
-            service_name = service['display_name']
-        elif service['alias'] != '':
-            service_name = service['alias']
-        else:
-            service_name = service['name']
-
         # Output
-        output_name = QLabel('<b>Output:</b>')
-        output_name.setToolTip('Output of %s' % service_name)
-        layout.addWidget(output_name, 1, 3, 1, 1)
-        output_service = QLabel(service['ls_output'])
+        output_service = QLabel('<b>Output:</b> %s' % service['ls_output'])
         output_service.setObjectName('output')
         output_service.setToolTip(service['ls_output'])
         output_service.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        output_service.setCursor(Qt.IBeamCursor)
 
         scroll = QScrollArea()
         scroll.setWidget(output_service)
         scroll.setObjectName('output')
         scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll.setMaximumHeight(60)
-        layout.addWidget(scroll, 1, 4, 2, 2)
+        layout.addWidget(scroll, 1, 3, 2, 2)
 
         self.add_services_details(service, layout)
 
