@@ -27,7 +27,7 @@ import json
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_css
+from alignak_app.core.utils import get_css, get_app_config
 from alignak_app.core.action_manager import ActionManager
 from alignak_app.synthesis.host_synthesis import HostSynthesis
 from alignak_app.widgets.app_widget import AppQWidget
@@ -103,8 +103,18 @@ class Synthesis(QWidget):
         self.app_widget.add_widget(self)
         self.app_widget.setMinimumSize(1300, 750)
 
+        item_interval = int(get_app_config('Alignak-App', 'item_interval'))
+        if bool(item_interval) and item_interval > 0:
+            logger.debug('Hosts synthesis will be refresh in %ss', str(item_interval))
+            item_interval *= 1000
+        else:
+            logger.error(
+                '"item_interval" option must be greater than 0. Replace by default: 30s'
+            )
+            item_interval = 30000
+
         refresh_timer = QTimer(self)
-        refresh_timer.start(30000)
+        refresh_timer.start(item_interval)
         refresh_timer.timeout.connect(self.display_host_synthesis)
 
     def create_line_search(self):
