@@ -66,6 +66,7 @@ default_parameters = {
     'item_interval': 30,
     'duration': 8,
     'position': 'top:right',
+    'animation': 1000,
     'debug': False,
     'username': '',
     'password': '',

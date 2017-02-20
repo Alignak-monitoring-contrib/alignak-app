@@ -23,6 +23,8 @@
     Banner send some banner notifications with a message.
 """
 
+from logging import getLogger
+
 from alignak_app.core.utils import get_image_path, get_app_config, get_css
 
 try:
@@ -38,6 +40,9 @@ except ImportError:  # pragma: no cover
     from PyQt4.Qt import Qt, QTimer, QPoint, QIcon  # pylint: disable=import-error
     from PyQt4.Qt import QObject, pyqtSignal  # pylint: disable=import-error
     from PyQt4.QtCore import QPropertyAnimation  # pylint: disable=import-error
+
+
+logger = getLogger(__name__)
 
 
 class BannerManager(object):
@@ -89,7 +94,7 @@ class BannerManager(object):
         """
         Add Banner() to send in BannerManager
 
-        :param level: OK, WARN, or ALERT
+        :param level: OK, INFO, WARN, ALERT or ERROR
         :type level: str
         :param message: message to display
         :type message: str
@@ -189,8 +194,16 @@ class Banner(QWidget):
         layout.addWidget(banner_qlabel)
 
         # Animation
+        banner_duration = int(get_app_config('Banners', 'animation'))
+        if banner_duration < 0:
+            logger.debug('Banner animation: %sms', str(banner_duration))
+            logger.error(
+                '"animation" option must be equal or greater than 0. Replace by default: 1000ms'
+            )
+            banner_duration = 1000
+        self.animation.setDuration(banner_duration)
+
         start_value = QPoint(0, 0)
-        self.animation.setDuration(1000)
         self.animation.setStartValue(start_value)
 
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
