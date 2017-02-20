@@ -86,11 +86,13 @@ class BannerManager(object):
                 banner.banner_closed.connect(self.banner_listener)
 
                 banner.show()
+                if banner.timer:
+                    banner.start_timer()
 
                 self.banners_to_send.remove(banner)
                 self.banners.append(banner)
 
-    def add_banner(self, level, message):
+    def add_banner(self, level, message, duration=0):
         """
         Add Banner() to send in BannerManager
 
@@ -98,10 +100,14 @@ class BannerManager(object):
         :type level: str
         :param message: message to display
         :type message: str
+        :param duration: duration before close banner
+        :type duration: int
         """
 
         banner = Banner()
         banner.create_banner(level, message)
+        if duration:
+            banner.timer = duration
         self.banners_to_send.append(banner)
 
     def banner_listener(self, sender):
@@ -147,8 +153,8 @@ class Banner(QWidget):
         self.setWindowFlags(Qt.SplashScreen)
         # Animation
         self.animation = QPropertyAnimation(self, b'pos')
-        # Color model
         self.banner_type = ['OK', 'INFO', 'WARN', 'ALERT']
+        self.timer = 0
 
     def create_banner(self, banner_type, message):
         """
@@ -214,6 +220,18 @@ class Banner(QWidget):
         )
         self.animation.setEndValue(end_value)
 
+    def start_timer(self):
+        """
+        Start timer to close banner
+
+        """
+
+        timer = QTimer(self)
+
+        timer.timeout.connect(self.close_banner)
+        timer.setSingleShot(True)
+        timer.start(int(self.timer))
+
     def close_banner(self):
         """
         Send signal to manager to close banner
@@ -226,7 +244,7 @@ class Banner(QWidget):
 bannerManager = BannerManager()
 
 
-def send_banner(level, message):
+def send_banner(level, message, duration=0):
     """
     Direct access to send a banner
 
@@ -234,9 +252,11 @@ def send_banner(level, message):
     :type level: str
     :param message: message to display in banner
     :type message: str
+    :param duration: duration before close banner
+    :type duration: int
     """
 
-    bannerManager.add_banner(level, message)
+    bannerManager.add_banner(level, message, duration)
 
 
 def get_hosts_level_banner(msg):
@@ -326,7 +346,13 @@ def send_diff_banners(diff):
     hosts_lvl = get_hosts_level_banner(hosts_msg)
     services_lvl = get_services_level_banner(services_msg)
 
+    duration = int(get_app_config('Banners', 'duration'))
+    if bool(duration) and duration > 0:
+        duration *= 1000
+    else:
+        duration = 0
+
     if hosts_msg:
-        send_banner(hosts_lvl, hosts_msg)
+        send_banner(hosts_lvl, hosts_msg, duration=duration)
     if services_msg:
-        send_banner(services_lvl, services_msg)
+        send_banner(services_lvl, services_msg, duration=duration)
