@@ -51,7 +51,6 @@ class AppNotifier(object):
         self.tray_icon = None
         self.dashboard = None
         self.changes = False
-        self.notify = True
         self.interval = 0
         self.old_synthesis = None
 
@@ -74,6 +73,8 @@ class AppNotifier(object):
         # Define interval
         self.set_interval()
 
+        logger.info('Start notifier...')
+
     def set_interval(self):
         """
         Set interval from config
@@ -82,15 +83,15 @@ class AppNotifier(object):
 
         interval = int(get_app_config('Alignak-App', 'synthesis_interval'))
 
-        if bool(interval):
-            logger.info('Start notifier...')
-            logger.debug('Dashboard will be displayed in ' + str(interval) + 's')
+        if bool(interval) and interval > 0:
 
+            logger.debug('Dashboard will be displayed in %ss', str(interval))
             interval *= 1000
         else:
-            logger.info('Notifier will not notify Dashboard !')
+            logger.error(
+                '"synthesis_interval" option must be greater than 0. Replace by default: 30s'
+            )
             interval = 30000
-            self.notify = False
 
         self.interval = interval
 
@@ -156,7 +157,7 @@ class AppNotifier(object):
             # Emit pyqtSignals to update TrayIcon and Dashboard
             logger.info('Changes since last check...')
             self.tray_icon.update_tray.emit(synthesis)
-            self.dashboard.dashboard_updated.emit(synthesis, diff_synthesis, self.notify)
+            self.dashboard.dashboard_updated.emit(synthesis, diff_synthesis)
         else:
             logger.info('No Changes.')
 

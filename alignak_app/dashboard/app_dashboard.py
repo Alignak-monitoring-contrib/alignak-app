@@ -124,7 +124,7 @@ class Dashboard(QWidget):
         self.dashboard_factory.create_state_labels('services_acknowledge')
         self.dashboard_factory.create_state_labels('services_downtime')
 
-    def update_dashboard(self, synthesis, diff_synthesis, notify):
+    def update_dashboard(self, synthesis, diff_synthesis):
         """
         Update Dashboard widgets
 
@@ -132,8 +132,6 @@ class Dashboard(QWidget):
         :type synthesis: dict
         :param diff_synthesis: synthesis diff since last notifier check
         :type diff_synthesis: dict
-        :param notify: display dashboard or not
-        :type notify: bool
         """
 
         logger.info('Update DashBoard...')
@@ -163,7 +161,7 @@ class Dashboard(QWidget):
                     percentages['services'][state]
                 )
 
-            if notify and get_app_config('Dashboard', 'pop', boolean=True):
+            if get_app_config('Dashboard', 'pop', boolean=True):
                 self.display_dashboard()
 
             if get_app_config('Banners', 'changes', boolean=True):
