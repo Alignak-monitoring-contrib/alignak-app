@@ -177,7 +177,6 @@ class AppQWidget(QFrame):
         :type widget: QWidget
         """
 
-        self.setMinimumSize(widget.size())
         self.layout().addWidget(widget, 2)
 
     def mousePressEvent(self, event):

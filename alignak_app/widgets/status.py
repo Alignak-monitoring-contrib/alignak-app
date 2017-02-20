@@ -26,7 +26,7 @@
 from logging import getLogger
 
 from alignak_app import __application__
-from alignak_app.core.utils import get_image_path, get_css
+from alignak_app.core.utils import get_image_path, get_css, get_app_config
 from alignak_app.widgets.banner import send_banner
 from alignak_app.widgets.app_widget import AppQWidget
 
@@ -97,14 +97,23 @@ class AlignakStatus(QWidget):
         self.check_status()
 
         # Start checks
+        daemon_interval = int(get_app_config('Alignak-App', 'daemon_interval'))
+        if bool(daemon_interval) and daemon_interval > 0:
+            logger.debug('Alignak Daemons will be checked in %ss', str(daemon_interval))
+            daemon_interval *= 1000
+        else:
+            logger.error(
+                '"daemon_interval" option must be greater than 0. Replace by default: 60s'
+            )
+            daemon_interval = 60000
         timer = QTimer(self)
-        timer.start(60000)
+        timer.start(daemon_interval)
         timer.timeout.connect(self.check_status)
 
         # Use AppQWidget
         self.app_widget.initialize('Alignak Status')
         self.app_widget.add_widget(self)
-        # self.app_widget.setMinimumSize(400, 400)
+        self.app_widget.setMinimumSize(400, 400)
 
     def create_daemons_labels(self, layout):
         """

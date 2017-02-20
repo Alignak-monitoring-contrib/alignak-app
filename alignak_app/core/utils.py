@@ -62,6 +62,7 @@ def get_app_root():
 # Application Configuration
 default_parameters = {
     'synthesis_interval': 30,
+    'daemon_interval': 60,
     'duration': 8,
     'position': 'top:right',
     'debug': False,
