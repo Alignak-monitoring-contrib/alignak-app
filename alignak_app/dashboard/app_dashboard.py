@@ -167,7 +167,8 @@ class Dashboard(QWidget):
             if get_app_config('Banners', 'changes', boolean=True):
                 send_diff_banners(diff_synthesis)
         else:
-            send_banner('ERROR', 'Synthesis seems unreachable')
+            send_banner('ERROR', 'Alignak Backend seems unreachable ! Synthesis data is empty...')
+            logger.error('Backend synthesis seems unreachable !')
 
     def set_position(self):
         """
