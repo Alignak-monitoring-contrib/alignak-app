@@ -40,21 +40,26 @@ try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QDialog, QMessageBox  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QIcon, QTimer  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QObject, pyqtSignal  # pylint: disable=no-name-in-module
 except ImportError:
     from PyQt4.Qt import QDialog, QMessageBox  # pylint: disable=import-error
     from PyQt4.Qt import QIcon, QTimer  # pylint: disable=import-error
+    from PyQt4.Qt import QObject, pyqtSignal  # pylint: disable=import-error
 
 # Initialize logger and config
 init_config()
 logger = create_logger()
 
 
-class AlignakApp(object):
+class AlignakApp(QObject):
     """
         Class who build Alignak-app and initialize configuration, notifier and systray icon.
     """
 
-    def __init__(self):
+    reconnect_mode = pyqtSignal(AppBackend, str, name='backend_connected')
+
+    def __init__(self, parent=None):
+        super(AlignakApp, self).__init__(parent)
         self.tray_icon = None
         self.notifier = None
         self.notifier_timer = QTimer()
@@ -102,6 +107,15 @@ class AlignakApp(object):
         else:
             self.display_error_msg()
 
+    def reconnect(self, sender, error):
+        """
+        TODO
+        :return:
+        """
+
+        print(sender)
+        send_banner('ERROR', 'Alignak Backend seems unreachable ! %s' % error)
+
     def run(self, app_backend=None):  # pragma: no cover
         """
         Start all Alignak-app processes and create AppBackend if connection by config file.
@@ -132,6 +146,7 @@ class AlignakApp(object):
         self.tray_icon.build_menu(app_backend, self.dashboard)
         self.tray_icon.show()
 
+        app_backend.app = self
         start = bool(app_backend.get_user(projection=['name']))
 
         if start:
@@ -141,6 +156,8 @@ class AlignakApp(object):
 
             self.notifier_timer.start(self.notifier.interval)
             self.notifier_timer.timeout.connect(self.notifier.check_data)
+
+            self.reconnect_mode.connect(self.reconnect)
         else:
             # In case of...
             self.display_error_msg()

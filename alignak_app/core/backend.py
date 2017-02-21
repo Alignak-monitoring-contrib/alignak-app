@@ -44,6 +44,7 @@ class AppBackend(object):
         self.backend = None
         self.user = {}
         self.connected = False
+        self.app = None
 
     def login(self, username=None, password=None):
         """
@@ -128,18 +129,21 @@ class AppBackend(object):
                 generate_proj[field] = 1
             params['projection'] = json.dumps(generate_proj)
 
-        # Request
-        try:
-            request = self.backend.get_all(
-                endpoint,
-                params
-            )
-            logger.debug('GET: %s', endpoint)
-            logger.debug('..with params: %s', str(params))
-            logger.debug('...Response > %s', str(request['_status']))
-        except BackendException as e:
-            logger.error('GET failed: %s', str(e))
-            return request
+        if self.connected:
+            # Request
+            try:
+                request = self.backend.get_all(
+                    endpoint,
+                    params
+                )
+                logger.debug('GET: %s', endpoint)
+                logger.debug('..with params: %s', str(params))
+                logger.debug('...Response > %s', str(request['_status']))
+            except BackendException as e:
+                logger.error('GET failed: %s', str(e))
+                self.connected = False
+                self.app.reconnect_mode.emit(self, str(e))
+                return request
 
         return request
 
@@ -159,13 +163,17 @@ class AppBackend(object):
 
         resp = None
 
-        try:
-            resp = self.backend.post(endpoint, data, headers=headers)
-            logger.debug('POST on %s', endpoint)
-            logger.debug('..with data: %s', str(data))
-            logger.debug('...Response > %s', str(resp))
-        except BackendException as e:
-            logger.error('POST failed: %s', str(e))
+        if self.connected:
+            try:
+                resp = self.backend.post(endpoint, data, headers=headers)
+                logger.debug('POST on %s', endpoint)
+                logger.debug('..with data: %s', str(data))
+                logger.debug('...Response > %s', str(resp))
+            except BackendException as e:
+                logger.error('POST failed: %s', str(e))
+                self.connected = False
+                self.app.reconnect_mode.emit(self, str(e))
+                return resp
 
         return resp
 
