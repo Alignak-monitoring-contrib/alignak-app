@@ -22,11 +22,10 @@
 """
     Alignak App
 
-    This module is an appindicator for Alignak.
+    This module is desktop application, in system tray, for Alignak solution.
 
-    Application notify you when you have hosts / services DOWN.
-    You'll be notified on your desktop and you can reach your Hosts and Services on your WebUI
-    from this application.
+    Application notify you when you have changes in your monitoring
+    You'll be notified on your desktop and you can trigger actions inside application
 """
 
 

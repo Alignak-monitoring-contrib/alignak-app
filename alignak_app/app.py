@@ -66,8 +66,7 @@ class AlignakApp(object):
 
         """
 
-        # Initialize configuration
-
+        # Start BannerManager
         bannerManager.start()
 
         # Define level of logger
@@ -89,7 +88,7 @@ class AlignakApp(object):
                 if login.exec_() == QDialog.Accepted:
                     self.run(login.app_backend)
                 else:
-                    logger.warning('Application close.')
+                    logger.info('Alignak-App closes...')
                     exit(0)
             elif get_app_config('Alignak', 'username') and \
                     not get_app_config('Alignak', 'password'):
@@ -98,14 +97,14 @@ class AlignakApp(object):
                     get_app_config('Alignak', 'password'):
                 self.run()
             else:
-                self.error_message()
+                self.display_error_msg()
 
         else:
-            self.error_message()
+            self.display_error_msg()
 
     def run(self, app_backend=None):  # pragma: no cover
         """
-        Start all Alignak-app processes
+        Start all Alignak-app processes and create AppBackend if connection by config file.
 
         :param app_backend: AppBackend object
         :type app_backend: alignak_app.core.backend.AppBackend | None
@@ -115,16 +114,11 @@ class AlignakApp(object):
         if not app_backend:
             app_backend = AppBackend()
             connect = app_backend.login()
-            if not connect:
-                QMessageBox.critical(
-                    None,
-                    'Connection ERROR',
-                    'Backend is not available or token is wrong. <br>Application will close !'
-                )
-                sys.exit('Connection ERROR')
-            else:
+            if connect:
                 username = app_backend.get_user(projection=['name'])['name']
                 send_banner('OK', 'Welcome %s, you are connected to Alignak Backend' % username)
+            else:
+                self.display_error_msg()
 
         if 'token' not in app_backend.user:
             app_backend.user['token'] = app_backend.backend.token
@@ -138,7 +132,7 @@ class AlignakApp(object):
         self.tray_icon.build_menu(app_backend, self.dashboard)
         self.tray_icon.show()
 
-        start = bool(app_backend.get('livesynthesis'))
+        start = bool(app_backend.get_user(projection=['name']))
 
         if start:
             # Notifier
@@ -149,10 +143,10 @@ class AlignakApp(object):
             self.notifier_timer.timeout.connect(self.notifier.check_data)
         else:
             # In case of...
-            self.error_message()
+            self.display_error_msg()
 
     @staticmethod
-    def error_message():
+    def display_error_msg():
         """
         Display a QMessageBox error in case app fail to start
 
@@ -163,7 +157,7 @@ class AlignakApp(object):
 
         QMessageBox.critical(
             None,
-            'Configuration ERROR',
+            'Configuration / Connection ERROR',
             'Something seems wrong in your configuration.'
             'Please configure Alignak-app before starting it.'
         )
