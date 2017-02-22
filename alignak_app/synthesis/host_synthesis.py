@@ -245,17 +245,23 @@ class HostSynthesis(QWidget):
             downtime_btn.setEnabled(False)
         host_layout.addWidget(downtime_btn, 1, 1, 1, 1)
 
-    def sort_services_list(self):
+    def filter_services(self):
         """
-        Sort services. If State is check, services with this state are displayed. Else they not.
+        Filter services State / Aggregation
 
         """
 
         for i in range(self.services_list.count()):
-            current_filter = str(self.sender().text()).split(':')[0]
-            item_to_filter = str(self.services_list.item(i).text()).split()
+            sender_filter = str(self.sender().text()).split(':')[0]
+            item_aggregation = str(self.services_list.item(i).text()).split('[')[2].split(']')[0]
+            item_state = str(self.services_list.item(i).text()).split('[')[1].split(']')[0]
 
-            if current_filter in item_to_filter:
+            if sender_filter == item_aggregation:
+                if self.sender().isChecked() and self.check_boxes[item_state].isChecked():
+                    self.services_list.item(i).setHidden(False)
+                else:
+                    self.services_list.item(i).setHidden(True)
+            if sender_filter == item_state and self.check_boxes[item_aggregation].isChecked():
                 if self.sender().isChecked():
                     self.services_list.item(i).setHidden(False)
                 else:
@@ -286,21 +292,21 @@ class HostSynthesis(QWidget):
         self.check_boxes['OK'].setIcon(QIcon(get_image_path('services_ok')))
         self.check_boxes['OK'].setObjectName('OK')
         self.check_boxes['OK'].setChecked(True)
-        self.check_boxes['OK'].stateChanged.connect(self.sort_services_list)
+        self.check_boxes['OK'].stateChanged.connect(self.filter_services)
         services_layout.addWidget(self.check_boxes['OK'], row + 1, 0, 1, 1)
 
         self.check_boxes['UNKNOWN'] = QCheckBox('UNKNOWN: %d' % services_number['UNKNOWN'])
         self.check_boxes['UNKNOWN'].setIcon(QIcon(get_image_path('services_unknown')))
         self.check_boxes['UNKNOWN'].setObjectName('UNKNOWN')
         self.check_boxes['UNKNOWN'].setChecked(True)
-        self.check_boxes['UNKNOWN'].stateChanged.connect(self.sort_services_list)
+        self.check_boxes['UNKNOWN'].stateChanged.connect(self.filter_services)
         services_layout.addWidget(self.check_boxes['UNKNOWN'], row + 2, 0, 1, 1)
 
         self.check_boxes['WARNING'] = QCheckBox('WARNING: %d' % services_number['WARNING'])
         self.check_boxes['WARNING'].setIcon(QIcon(get_image_path('services_warning')))
         self.check_boxes['WARNING'].setObjectName('WARNING')
         self.check_boxes['WARNING'].setChecked(True)
-        self.check_boxes['WARNING'].stateChanged.connect(self.sort_services_list)
+        self.check_boxes['WARNING'].stateChanged.connect(self.filter_services)
         services_layout.addWidget(self.check_boxes['WARNING'], row + 3, 0, 1, 1)
 
         self.check_boxes['UNREACHABLE'] = QCheckBox(
@@ -309,14 +315,14 @@ class HostSynthesis(QWidget):
         self.check_boxes['UNREACHABLE'].setIcon(QIcon(get_image_path('services_unreachable')))
         self.check_boxes['UNREACHABLE'].setObjectName('UNREACHABLE')
         self.check_boxes['UNREACHABLE'].setChecked(True)
-        self.check_boxes['UNREACHABLE'].stateChanged.connect(self.sort_services_list)
+        self.check_boxes['UNREACHABLE'].stateChanged.connect(self.filter_services)
         services_layout.addWidget(self.check_boxes['UNREACHABLE'], row + 4, 0, 1, 1)
 
         self.check_boxes['CRITICAL'] = QCheckBox('CRITICAL: %d' % services_number['CRITICAL'])
         self.check_boxes['CRITICAL'].setIcon(QIcon(get_image_path('services_critical')))
         self.check_boxes['CRITICAL'].setObjectName('CRITICAL')
         self.check_boxes['CRITICAL'].setChecked(True)
-        self.check_boxes['CRITICAL'].stateChanged.connect(self.sort_services_list)
+        self.check_boxes['CRITICAL'].stateChanged.connect(self.filter_services)
         services_layout.addWidget(self.check_boxes['CRITICAL'], row + 5, 0, 1, 1)
 
         row += 1
@@ -350,7 +356,7 @@ class HostSynthesis(QWidget):
             self.check_boxes[aggregation].setIcon(QIcon(get_image_path('tree')))
             self.check_boxes[aggregation].setObjectName('aggregation')
             self.check_boxes[aggregation].setChecked(True)
-            self.check_boxes[aggregation].stateChanged.connect(self.sort_services_list)
+            self.check_boxes[aggregation].stateChanged.connect(self.filter_services)
             services_layout.addWidget(self.check_boxes[aggregation], row, col, 1, 1)
 
             col += 1
@@ -453,8 +459,8 @@ class HostSynthesis(QWidget):
                 service['aggregation'] = 'Global'
 
             list_item.setText(
-                '%s is %s - [ %s ]' % (
-                    service_name,
+                '%s - Status: [%s] - Aggregation: [%s]' % (
+                    service_name.capitalize(),
                     service['ls_state'],
                     service['aggregation'].capitalize()
                 )
