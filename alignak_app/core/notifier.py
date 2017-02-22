@@ -84,7 +84,7 @@ class AppNotifier(object):
         interval = int(get_app_config('Alignak-App', 'synthesis_interval'))
 
         if bool(interval) and interval > 0:
-            logger.debug('Dashboard will be displayed in %ss', str(interval))
+            logger.debug('Dashboard will be updated in %ss', str(interval))
             interval *= 1000
         else:
             logger.error(
