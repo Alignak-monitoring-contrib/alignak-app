@@ -56,13 +56,14 @@ class AlignakApp(QObject):
         Class who build Alignak-app and initialize configuration, notifier and systray icon.
     """
 
-    reconnect_mode = pyqtSignal(AppBackend, str, name='backend_connected')
+    reconnecting = pyqtSignal(AppBackend, str, name='reconnecting')
 
     def __init__(self, parent=None):
         super(AlignakApp, self).__init__(parent)
         self.tray_icon = None
         self.notifier = None
         self.notifier_timer = QTimer()
+        self.reconnect_mode = False
         self.dashboard = None
 
     def start(self):
@@ -107,14 +108,48 @@ class AlignakApp(QObject):
         else:
             self.display_error_msg()
 
-    def reconnect(self, sender, error):
+    def reconnect_to_backend(self, app_backend, error):
         """
-        TODO
-        :return:
+        Set AlignakApp in reconnect mode and try to login to Backend
+
+        :param app_backend: AppBackend object
+        :type app_backend: AppBackend
+        :param error: string error to display in banner
+        :type error: str
         """
 
-        print(sender)
-        send_banner('ERROR', 'Alignak Backend seems unreachable ! %s' % error)
+        self.reconnect_mode = True
+        logger.warning('Application reconnecting MODE: %s', self.reconnecting)
+        send_banner('ERROR', 'Alignak Backend seems unreachable ! %s' % error, duration=5000)
+        timer = QTimer(self)
+
+        def connect_to_backend():
+            """Try to log in to Backend"""
+            try:
+                connect = app_backend.login()
+                assert connect
+                # If connect, reconnecting is disable
+                timer.stop()
+                logger.info('Connection restored : %s', connect)
+                send_banner(
+                    'OK',
+                    'Connection with the Backend has been restored ! You are logged in again',
+                    duration=5000
+                )
+                self.reconnect_mode = False
+            except AssertionError:
+                send_banner(
+                    'ERROR',
+                    'Backend is still unreachable... Alignak-app try to reconnect',
+                    duration=5000
+                )
+                logger.error('Backend is still unreachable...')
+
+        if timer.isActive():
+            pass
+        else:
+            timer.start(10000)
+            timer.timeout.connect(connect_to_backend)
 
     def run(self, app_backend=None):  # pragma: no cover
         """
@@ -157,7 +192,7 @@ class AlignakApp(QObject):
             self.notifier_timer.start(self.notifier.interval)
             self.notifier_timer.timeout.connect(self.notifier.check_data)
 
-            self.reconnect_mode.connect(self.reconnect)
+            self.reconnecting.connect(self.reconnect_to_backend)
         else:
             # In case of...
             self.display_error_msg()

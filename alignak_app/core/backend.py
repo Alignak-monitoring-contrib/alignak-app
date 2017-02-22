@@ -90,9 +90,9 @@ class AppBackend(object):
             else:
                 self.backend.token = username
                 self.user['token'] = username
-                self.connected = True
 
             # Test to check token
+            self.connected = True
             connect = bool(self.get('livesynthesis'))
             logger.info('Connection by token: %s', str(connect))
         else:
@@ -142,8 +142,10 @@ class AppBackend(object):
                 logger.debug('...Response > %s', str(request['_status']))
             except BackendException as e:
                 logger.error('GET failed: %s', str(e))
+                logger.warning('Application will check the connection with Backend...')
                 self.connected = False
-                self.app.reconnect_mode.emit(self, str(e))
+                if not self.app.reconnect_mode:
+                    self.app.reconnecting.emit(self, str(e))
                 return request
 
         return request
@@ -172,8 +174,10 @@ class AppBackend(object):
                 logger.debug('...Response > %s', str(resp))
             except BackendException as e:
                 logger.error('POST failed: %s', str(e))
+                logger.warning('Application will check the connection with Backend...')
                 self.connected = False
-                self.app.reconnect_mode.emit(self, str(e))
+                if not self.app.reconnect_mode:
+                    self.app.reconnecting.emit(self, str(e))
                 return resp
 
         return resp
