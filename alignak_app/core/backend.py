@@ -90,6 +90,7 @@ class AppBackend(object):
             else:
                 self.backend.token = username
                 self.user['token'] = username
+                self.connected = True
 
             # Test to check token
             connect = bool(self.get('livesynthesis'))
