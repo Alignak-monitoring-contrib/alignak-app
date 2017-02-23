@@ -167,6 +167,12 @@ QWidget#services {
     border-color: #ddd;
 }
 
+QWidget#service_widget {
+    border-style: solid;
+    border-width: 2px 0px 0px 0px;
+    border-color: #ddd;
+}
+
 QListWidget {
     outline: none;
 }

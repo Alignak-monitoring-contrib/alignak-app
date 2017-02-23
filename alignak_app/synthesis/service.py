@@ -31,12 +31,12 @@ from alignak_app.core.utils import get_image_path, get_app_config
 try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QScrollArea, QHBoxLayout  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QWidget, QPushButton, QFrame  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QIcon, QPixmap, Qt  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QLabel   # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QScrollArea, QHBoxLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QWidget, QPushButton  # pylint: disable=import-error
+    from PyQt4.Qt import QWidget, QPushButton, QFrame  # pylint: disable=import-error
     from PyQt4.Qt import QIcon, QPixmap, Qt  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
 
@@ -44,7 +44,7 @@ except ImportError:  # pragma: no cover
 logger = getLogger(__name__)
 
 
-class Service(QWidget):
+class Service(QFrame):
     """
         Class who create the Service QWidget for SynthesisView.
     """
@@ -60,6 +60,7 @@ class Service(QWidget):
 
     def __init__(self, parent=None):
         super(Service, self).__init__(parent)
+        self.setObjectName('service_widget')
         self.setStyleSheet(get_css())
         # Fields
         self.acknowledge_btn = None
@@ -199,7 +200,6 @@ class Service(QWidget):
         icon_label.setMaximumSize(32, 32)
         icon_label.setScaledContents(True)
         icon_label.setPixmap(icon)
-        icon_label.setObjectName('service')
         icon_label.setToolTip('Service is ' + state)
 
         return icon_label
