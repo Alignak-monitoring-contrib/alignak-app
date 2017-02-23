@@ -287,60 +287,22 @@ class HostSynthesis(QWidget):
         # Get number of each state for services
         services_stats = self.get_services_state_number(backend_data['services'])
 
-        # Create states CheckBox
-        self.check_boxes['OK'] = QCheckBox(
-            'OK: %d (%.02f%%)' % (
-                services_stats['nb']['OK'], services_stats['percent']['OK']
-            )
-        )
-        self.check_boxes['OK'].setIcon(QIcon(get_image_path('services_ok')))
-        self.check_boxes['OK'].setObjectName('OK')
-        self.check_boxes['OK'].setChecked(True)
-        self.check_boxes['OK'].stateChanged.connect(self.filter_services)
-        services_layout.addWidget(self.check_boxes['OK'], row + 1, 0, 1, 1)
+        states = ['OK', 'UNKNOWN', 'WARNING', 'UNREACHABLE', 'CRITICAL']
+        i_row = 1
 
-        self.check_boxes['UNKNOWN'] = QCheckBox(
-            'UNKNOWN: %d (%.02f%%)' % (
-                services_stats['nb']['UNKNOWN'], services_stats['percent']['UNKNOWN']
+        for state in states:
+            # Create states CheckBox
+            self.check_boxes[state] = QCheckBox(
+                '%s: %d (%.02f%%)' % (
+                    state, services_stats['nb'][state], services_stats['percent'][state]
+                )
             )
-        )
-        self.check_boxes['UNKNOWN'].setIcon(QIcon(get_image_path('services_unknown')))
-        self.check_boxes['UNKNOWN'].setObjectName('UNKNOWN')
-        self.check_boxes['UNKNOWN'].setChecked(True)
-        self.check_boxes['UNKNOWN'].stateChanged.connect(self.filter_services)
-        services_layout.addWidget(self.check_boxes['UNKNOWN'], row + 2, 0, 1, 1)
-
-        self.check_boxes['WARNING'] = QCheckBox(
-            'WARNING: %d (%.02f%%)' % (
-                services_stats['nb']['WARNING'], services_stats['percent']['WARNING'])
-        )
-        self.check_boxes['WARNING'].setIcon(QIcon(get_image_path('services_warning')))
-        self.check_boxes['WARNING'].setObjectName('WARNING')
-        self.check_boxes['WARNING'].setChecked(True)
-        self.check_boxes['WARNING'].stateChanged.connect(self.filter_services)
-        services_layout.addWidget(self.check_boxes['WARNING'], row + 3, 0, 1, 1)
-
-        self.check_boxes['UNREACHABLE'] = QCheckBox(
-            'UNREACHABLE: %d (%.02f%%)' % (
-                services_stats['nb']['UNREACHABLE'], services_stats['percent']['UNREACHABLE']
-            )
-        )
-        self.check_boxes['UNREACHABLE'].setIcon(QIcon(get_image_path('services_unreachable')))
-        self.check_boxes['UNREACHABLE'].setObjectName('UNREACHABLE')
-        self.check_boxes['UNREACHABLE'].setChecked(True)
-        self.check_boxes['UNREACHABLE'].stateChanged.connect(self.filter_services)
-        services_layout.addWidget(self.check_boxes['UNREACHABLE'], row + 4, 0, 1, 1)
-
-        self.check_boxes['CRITICAL'] = QCheckBox(
-            'CRITICAL: %d (%.02f%%)' % (
-                services_stats['nb']['CRITICAL'], services_stats['percent']['CRITICAL']
-            )
-        )
-        self.check_boxes['CRITICAL'].setIcon(QIcon(get_image_path('services_critical')))
-        self.check_boxes['CRITICAL'].setObjectName('CRITICAL')
-        self.check_boxes['CRITICAL'].setChecked(True)
-        self.check_boxes['CRITICAL'].stateChanged.connect(self.filter_services)
-        services_layout.addWidget(self.check_boxes['CRITICAL'], row + 5, 0, 1, 1)
+            self.check_boxes[state].setIcon(QIcon(get_image_path('services_%s' % state.lower())))
+            self.check_boxes[state].setObjectName(state)
+            self.check_boxes[state].setChecked(True)
+            self.check_boxes[state].stateChanged.connect(self.filter_services)
+            services_layout.addWidget(self.check_boxes[state], row + i_row, 0, 1, 1)
+            i_row += 1
 
         row += 1
         self.generate_services_qwidgets(row, services_layout, backend_data['services'])
@@ -491,11 +453,11 @@ class HostSynthesis(QWidget):
     @staticmethod
     def get_services_state_number(services):
         """
-        Calculate the service number of each state
+        Return the number / percentage of each state for host services
 
-        :param services: list of service dict
+        :param services: list of host services dict
         :type: list
-        :return: dict of service number
+        :return: dict of services number / percentage
         :rtype: dict
         """
 
@@ -520,21 +482,20 @@ class HostSynthesis(QWidget):
 
         services_sum = 0
         for service in services:
-            if service['ls_acknowledged']:
-                nb_state['ACKNOWLEDGED'] += 1
-            elif service['ls_downtimed']:
-                nb_state['DOWNTIMED'] += 1
-            else:
-                nb_state[service['ls_state']] += 1
+            nb_state[service['ls_state']] += 1
             services_sum += 1
 
         for state in nb_state:
-            percent_nb[state] = float(nb_state[state]) * 100.0 / float(services_sum)
+            try:
+                percent_nb[state] = float(nb_state[state]) * 100.0 / float(services_sum)
+            except ZeroDivisionError as e:
+                logger.error('%s', e)
 
         services_stats = {
             'nb': nb_state,
             'percent': percent_nb
         }
+
         return services_stats
 
     def display_current_service(self, index):
@@ -770,7 +731,7 @@ class HostSynthesis(QWidget):
 
             text_result = self.get_result_overall_state_id(overall_texts, services)
         else:
-            text_result = 'Can\'t get host real state'
+            text_result = 'No elements found.'
 
         return text_result
 

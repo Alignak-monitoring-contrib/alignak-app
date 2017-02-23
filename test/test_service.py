@@ -78,7 +78,6 @@ class TestService(unittest2.TestCase):
         icon_ok = under_test.get_service_icon('OK')
 
         self.assertIsInstance(icon_ok, QLabel)
-        self.assertEqual(icon_ok.objectName(), 'service')
         self.assertEqual(icon_ok.toolTip(), 'Service is OK')
 
         icon_warning = under_test.get_service_icon('WARNING')
