@@ -285,24 +285,35 @@ class HostSynthesis(QWidget):
         row = self.add_aggregations_filters(services_layout, backend_data['services'])
 
         # Get number of each state for services
-        services_number = self.get_services_state_number(backend_data['services'])
+        services_stats = self.get_services_state_number(backend_data['services'])
 
         # Create states CheckBox
-        self.check_boxes['OK'] = QCheckBox('OK: %d' % services_number['OK'])
+        self.check_boxes['OK'] = QCheckBox(
+            'OK: %d (%.02f%%)' % (
+                services_stats['nb']['OK'], services_stats['percent']['OK']
+            )
+        )
         self.check_boxes['OK'].setIcon(QIcon(get_image_path('services_ok')))
         self.check_boxes['OK'].setObjectName('OK')
         self.check_boxes['OK'].setChecked(True)
         self.check_boxes['OK'].stateChanged.connect(self.filter_services)
         services_layout.addWidget(self.check_boxes['OK'], row + 1, 0, 1, 1)
 
-        self.check_boxes['UNKNOWN'] = QCheckBox('UNKNOWN: %d' % services_number['UNKNOWN'])
+        self.check_boxes['UNKNOWN'] = QCheckBox(
+            'UNKNOWN: %d (%.02f%%)' % (
+                services_stats['nb']['UNKNOWN'], services_stats['percent']['UNKNOWN']
+            )
+        )
         self.check_boxes['UNKNOWN'].setIcon(QIcon(get_image_path('services_unknown')))
         self.check_boxes['UNKNOWN'].setObjectName('UNKNOWN')
         self.check_boxes['UNKNOWN'].setChecked(True)
         self.check_boxes['UNKNOWN'].stateChanged.connect(self.filter_services)
         services_layout.addWidget(self.check_boxes['UNKNOWN'], row + 2, 0, 1, 1)
 
-        self.check_boxes['WARNING'] = QCheckBox('WARNING: %d' % services_number['WARNING'])
+        self.check_boxes['WARNING'] = QCheckBox(
+            'WARNING: %d (%.02f%%)' % (
+                services_stats['nb']['WARNING'], services_stats['percent']['WARNING'])
+        )
         self.check_boxes['WARNING'].setIcon(QIcon(get_image_path('services_warning')))
         self.check_boxes['WARNING'].setObjectName('WARNING')
         self.check_boxes['WARNING'].setChecked(True)
@@ -310,7 +321,9 @@ class HostSynthesis(QWidget):
         services_layout.addWidget(self.check_boxes['WARNING'], row + 3, 0, 1, 1)
 
         self.check_boxes['UNREACHABLE'] = QCheckBox(
-            'UNREACHABLE: %d' % services_number['UNREACHABLE']
+            'UNREACHABLE: %d (%.02f%%)' % (
+                services_stats['nb']['UNREACHABLE'], services_stats['percent']['UNREACHABLE']
+            )
         )
         self.check_boxes['UNREACHABLE'].setIcon(QIcon(get_image_path('services_unreachable')))
         self.check_boxes['UNREACHABLE'].setObjectName('UNREACHABLE')
@@ -318,7 +331,11 @@ class HostSynthesis(QWidget):
         self.check_boxes['UNREACHABLE'].stateChanged.connect(self.filter_services)
         services_layout.addWidget(self.check_boxes['UNREACHABLE'], row + 4, 0, 1, 1)
 
-        self.check_boxes['CRITICAL'] = QCheckBox('CRITICAL: %d' % services_number['CRITICAL'])
+        self.check_boxes['CRITICAL'] = QCheckBox(
+            'CRITICAL: %d (%.02f%%)' % (
+                services_stats['nb']['CRITICAL'], services_stats['percent']['CRITICAL']
+            )
+        )
         self.check_boxes['CRITICAL'].setIcon(QIcon(get_image_path('services_critical')))
         self.check_boxes['CRITICAL'].setObjectName('CRITICAL')
         self.check_boxes['CRITICAL'].setChecked(True)
@@ -491,7 +508,17 @@ class HostSynthesis(QWidget):
             'ACKNOWLEDGED': 0,
             'DOWNTIMED': 0
         }
+        percent_nb = {
+            'OK': 0,
+            'UNKNOWN': 0,
+            'WARNING': 0,
+            'UNREACHABLE': 0,
+            'CRITICAL': 0,
+            'ACKNOWLEDGED': 0,
+            'DOWNTIMED': 0
+        }
 
+        services_sum = 0
         for service in services:
             if service['ls_acknowledged']:
                 nb_state['ACKNOWLEDGED'] += 1
@@ -499,8 +526,16 @@ class HostSynthesis(QWidget):
                 nb_state['DOWNTIMED'] += 1
             else:
                 nb_state[service['ls_state']] += 1
+            services_sum += 1
 
-        return nb_state
+        for state in nb_state:
+            percent_nb[state] = float(nb_state[state]) * 100.0 / float(services_sum)
+
+        services_stats = {
+            'nb': nb_state,
+            'percent': percent_nb
+        }
+        return services_stats
 
     def display_current_service(self, index):
         """
