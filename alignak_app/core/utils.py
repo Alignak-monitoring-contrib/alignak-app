@@ -248,9 +248,9 @@ def get_diff_since_last_check(last_check):
     seconds = s - (minutes * 60)
 
     if hours == 0:
-        delta = '%sm %s ago' % (str(minutes), str(seconds))
+        delta = '%sm %ss ago' % (str(minutes), str(seconds))
     else:
-        delta = '%sh %sm %s ago' % (str(hours), str(minutes), str(seconds))
+        delta = '%sh %sm %ss ago' % (str(hours), str(minutes), str(seconds))
 
     return delta
 
