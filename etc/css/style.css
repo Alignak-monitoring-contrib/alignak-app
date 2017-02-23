@@ -16,13 +16,13 @@ QToolTip {
 /****** APP QWIDGET ******/
 QFrame#app_widget {
     border-width: 2px;
-    border-color: #78909c;
+    border-color: #607d8b;
     border-style: solid;
     background-color: white;
 }
 
 QPushButton#app_widget {
-    background-color: #78909c;
+    background-color: #607d8b;
     border: none;
     outline: none;
 }
@@ -32,29 +32,29 @@ QPushButton#app_widget:hover {
 }
 
 QWidget#logo {
-    background-color: #78909c;
+    background-color: #607d8b;
 }
 
 QWidget#title {
-    background-color: #78909c;
+    background-color: #607d8b;
 }
 
 QLabel#title {
-    background-color: #78909c;
+    background-color: #607d8b;
     color: white;
 }
 
 /****** LOGIN ******/
 QWidget#login {
 	border-width: 0px 2px 2px 2px;
-    border-color: #78909c;
+    border-color: #607d8b;
     border-style: solid;
     background-color: white;
 }
 
 QDialog {
     border-width: 2px 2px 0px 2px;
-    border-color: #78909c;
+    border-color: #607d8b;
     border-style: solid;
     background-color: white;
 }
@@ -284,7 +284,7 @@ QCheckBox#UNKNOWN::unchecked {
 }
 
 QCheckBox#UNREACHABLE {
-    color: dark-grey;
+    color: #9b59b6;
     border-style: solid;
     border-width: 1px 1px 1px 1px;
     border-radius: 5px;
@@ -322,7 +322,7 @@ QLabel#UNKNOWN {
 QLabel#UNREACHABLE {
     border-style: solid;
     border-width:0px 0px 2px 0px;
-    border-color: dark-grey;
+    border-color: 9b59b6;
 }
 
 /****** TITLE ******/
