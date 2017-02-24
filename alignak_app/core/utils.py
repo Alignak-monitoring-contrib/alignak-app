@@ -229,30 +229,44 @@ def get_diff_since_last_check(last_check):
     :rtype: str
     """
 
-    # Get current time
-    cur_time = time.time()
+    if not last_check:
+        return 'n/a'
 
-    format_time = '%H:%M:%S'
-    ft_check = datetime.datetime.fromtimestamp(last_check).strftime(format_time)
-    ft_time = datetime.datetime.fromtimestamp(cur_time).strftime(format_time)
+    time_delta = int(time.time()) - int(last_check)
 
-    time_delta = \
-        datetime.datetime.strptime(ft_time, format_time) - \
-        datetime.datetime.strptime(ft_check, format_time)
+    # If it's now, say it :)
+    if time_delta < 3:
+        if 0 > time_delta > -4:
+            return _('Very soon')
+        if time_delta >= 0:
+            return _('Just now')
 
-    # Calculate hours, minutes and seconds
-    hours = time_delta.seconds // 3600
-    # remaining seconds
-    s = time_delta.seconds - (hours * 3600)
-    minutes = s // 60
-    seconds = s - (minutes * 60)
+    seconds = int(round(time_delta))
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    days, hours = divmod(hours, 24)
+    weeks, days = divmod(days, 7)
+    months, weeks = divmod(weeks, 4)
+    years, months = divmod(months, 12)
 
-    if hours == 0:
-        delta = '%sm %ss ago' % (str(minutes), str(seconds))
+    duration = []
+    if years > 0:
+        duration.append('%dy' % years)
     else:
-        delta = '%sh %sm %ss ago' % (str(hours), str(minutes), str(seconds))
+        if months > 0:
+            duration.append('%dM' % months)
+        if weeks > 0:
+            duration.append('%dw' % weeks)
+        if days > 0:
+            duration.append('%dd' % days)
+        if hours > 0:
+            duration.append('%dh' % hours)
+        if minutes > 0:
+            duration.append('%dm' % minutes)
+        if seconds > 0:
+            duration.append('%ds' % seconds)
 
-    return delta
+    return ' ' + ' '.join(duration) + ' ago'
 
 
 def get_css():
