@@ -186,7 +186,6 @@ QListWidget::item:selected {
 QPushButton#search {
     background-color: #3884c3;
     color: white;
-    font-size: 14px;
     border: none;
     border-radius: 5px;
 }

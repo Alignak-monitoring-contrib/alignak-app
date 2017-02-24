@@ -82,39 +82,40 @@ class Synthesis(QWidget):
         self.app_backend = app_backend
         self.action_manager = ActionManager(app_backend)
 
-        # button
-        button = QPushButton('Search / Refresh', self)
-        button.setObjectName('search')
-        button.setMinimumHeight(25)
-        button.setToolTip('Type a host name to display its data')
-        button.clicked.connect(self.display_host_synthesis)
-        self.line_search.returnPressed.connect(button.click)
-        self.line_search.cursorPositionChanged.connect(button.click)
-
         layout = QGridLayout()
         self.setLayout(layout)
 
-        layout.addWidget(self.line_search, 0, 0, 1, 4)
-        layout.setAlignment(self.line_search, Qt.AlignTop)
+        # button
+        button = QPushButton('Search / Refresh Host', self)
+        button.setObjectName('search')
+        button.setFixedHeight(22)
+        button.setToolTip('Search Host')
+        button.clicked.connect(self.display_host_synthesis)
         layout.addWidget(button, 0, 4, 1, 1)
         layout.setAlignment(button, Qt.AlignTop)
+
+        self.line_search.setFixedHeight(button.height())
+        self.line_search.returnPressed.connect(button.click)
+        self.line_search.cursorPositionChanged.connect(button.click)
+        layout.addWidget(self.line_search, 0, 0, 1, 4)
+        layout.setAlignment(self.line_search, Qt.AlignTop)
 
         self.app_widget.initialize('Host Synthesis View')
         self.app_widget.add_widget(self)
         self.app_widget.setMinimumSize(1300, 750)
 
-        item_interval = int(get_app_config('Alignak-App', 'item_interval'))
-        if bool(item_interval) and item_interval > 0:
-            logger.debug('Hosts synthesis will be refresh in %ss', str(item_interval))
-            item_interval *= 1000
+        refresh_interval = int(get_app_config('Alignak-App', 'item_interval'))
+        if bool(refresh_interval) and refresh_interval > 0:
+            logger.debug('Hosts synthesis will be refresh in %ss', str(refresh_interval))
+            refresh_interval *= 1000
         else:
             logger.error(
                 '"item_interval" option must be greater than 0. Replace by default: 30s'
             )
-            item_interval = 30000
+            refresh_interval = 30000
 
         refresh_timer = QTimer(self)
-        refresh_timer.start(item_interval)
+        refresh_timer.start(refresh_interval)
         refresh_timer.timeout.connect(self.display_host_synthesis)
 
     def create_line_search(self):
