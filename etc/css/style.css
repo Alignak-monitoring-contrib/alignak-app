@@ -160,6 +160,16 @@ QWidget#bannerERROR {
     background-color: #383838;
 }
 
+/****** ACTIONS ******/
+QCheckBox#actions {
+    color: white;
+}
+QCheckBox#actions::indicator::checked {
+    background-color: #607d8b;
+}
+QCheckBox#actions::indicator::unchecked {
+    border: 1px solid #607d8b;
+}
 /****** SYNTHESIS VIEW ******/
 QWidget#services {
     border-style: solid;
