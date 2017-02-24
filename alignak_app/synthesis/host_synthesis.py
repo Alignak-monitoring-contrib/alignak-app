@@ -175,8 +175,11 @@ class HostSynthesis(QWidget):
         )
         host_layout.addWidget(downtime, 1, 2, 1, 1)
 
+        since_last_check = get_diff_since_last_check(backend_data['host']['ls_last_state_changed'])
         diff_last_check = get_diff_since_last_check(backend_data['host']['ls_last_check'])
-        host_last_check = QLabel('<b>Last check:</b> %s' % str(diff_last_check))
+        host_last_check = QLabel(
+            '<b>Since:</b> %s <b>Last check:</b> %s' % (since_last_check, diff_last_check)
+        )
         host_layout.addWidget(host_last_check, 2, 2, 1, 1)
 
         output = QLabel('<b>Output:</b> %s' % backend_data['host']['ls_output'])

@@ -116,12 +116,13 @@ class Service(QFrame):
         layout.addWidget(self.downtime_btn, 1, 2, 1, 1)
 
         # Last check
-        check_name = QLabel('<b>Last check:</b>')
-        layout.addWidget(check_name, 0, 3, 1, 1)
+        since_last_check = get_diff_since_last_check(service['ls_last_state_changed'])
         diff_last_check = get_diff_since_last_check(service['ls_last_check'])
 
-        last_check = QLabel(str(diff_last_check))
-        layout.addWidget(last_check, 0, 4, 1, 1)
+        last_check = QLabel(
+            '<b>Since:</b> %s, <b>Last check:</b> %s' % (since_last_check, diff_last_check)
+        )
+        layout.addWidget(last_check, 0, 3, 1, 2)
 
         # Output
         output_service = QLabel('<b>Output:</b> %s' % service['ls_output'])
