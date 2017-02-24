@@ -47,6 +47,7 @@ class TestService(unittest2.TestCase):
         '_id': '000',
         'business_impact': '2',
         'customs': {},
+        'ls_last_state_changed': 0,
     }
 
     @classmethod

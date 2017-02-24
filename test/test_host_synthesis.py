@@ -54,7 +54,8 @@ class TestHostSynthesis(unittest2.TestCase):
         'ls_downtimed': False,
         'business_impact': '2',
         'customs': {},
-        'aggregation': 'IO'
+        'aggregation': 'IO',
+        'ls_last_state_changed': 0
     }
 
     backend_data = {
@@ -71,6 +72,7 @@ class TestHostSynthesis(unittest2.TestCase):
             'address': '127.0.0.1',
             'business_impact': '2',
             'parents': [],
+            'ls_last_state_changed': 0
         },
         'services': [
             service,
