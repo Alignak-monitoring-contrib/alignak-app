@@ -147,6 +147,8 @@ class AppLogin(QDialog):
         """
         Return the logo QWidget
 
+        :param widget: widget parent, needed for action button
+        :type widget: QWidget
         :return: logo QWidget
         :rtype: QWidget
         """
