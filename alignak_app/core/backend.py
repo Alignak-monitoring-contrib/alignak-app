@@ -254,7 +254,8 @@ class AppBackend(object):
         host_data = None
 
         host_projection = ['name', 'alias', 'ls_state', '_id', 'ls_acknowledged', 'ls_downtimed',
-                           'ls_last_check', 'ls_output', 'address', 'business_impact', 'parents']
+                           'ls_last_check', 'ls_output', 'address', 'business_impact', 'parents',
+                           'ls_last_state_changed']
         host = self.get_host('name', host_name, projection=host_projection)
 
         if host:
@@ -266,7 +267,8 @@ class AppBackend(object):
             }
             service_projection = ['name', 'alias', 'display_name', 'ls_state', 'ls_acknowledged',
                                   'ls_downtimed', 'ls_last_check', 'ls_output', 'business_impact',
-                                  'customs', '_overall_state_id', 'aggregation']
+                                  'customs', '_overall_state_id', 'aggregation',
+                                  'ls_last_state_changed']
             services = self.get('service', params=params, projection=service_projection)
 
             services_host = services['_items']
