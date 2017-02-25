@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Actions display QDialog's for actions
+    Actions display QDialog's for actions : Acknowledge and Downtime
 """
 
 
@@ -108,15 +108,18 @@ class Acknowledge(QDialog):
         # Fields
         self.sticky = True
         self.notify = False
-        self.comment = ''
+        self.ack_comment_edit = None
 
-    def initialize(self, item_type, hostname, comment):
+    def initialize(self, item_type, item_name, comment):
         """
-        TODO
-        :param item_type:
-        :param hostname:
-        :param comment:
-        :return:
+        Initialize Acknowledge QDialog
+
+        :param item_type: type of item to acknowledge : host | service
+        :type item_type: str
+        :param item_name: name of the item to acknowledge
+        :type item_name: str
+        :param comment: the default comment of action
+        :type comment: str
         """
 
         # Main layout
@@ -132,7 +135,7 @@ class Acknowledge(QDialog):
         ack_title = QLabel('<h2>Request an acknowledge</h2>')
         ack_layout.addWidget(ack_title, 0, 0, 1, 2)
 
-        host_label = QLabel('<h2>%s: %s</h2>' % (item_type.capitalize(), hostname))
+        host_label = QLabel('<h2>%s: %s</h2>' % (item_type.capitalize(), item_name))
         ack_layout.addWidget(host_label, 1, 0, 1, 1)
 
         sticky_label = QLabel('Acknowledge is sticky:')
@@ -172,10 +175,10 @@ class Acknowledge(QDialog):
         ack_comment.setObjectName('actions')
         ack_layout.addWidget(ack_comment, 6, 0, 1, 1)
 
-        ack_comment_edit = QTextEdit()
-        ack_comment_edit.setText(comment)
-        ack_comment_edit.setMaximumHeight(60)
-        ack_layout.addWidget(ack_comment_edit, 7, 0, 1, 2)
+        self.ack_comment_edit = QTextEdit()
+        self.ack_comment_edit.setText(comment)
+        self.ack_comment_edit.setMaximumHeight(60)
+        ack_layout.addWidget(self.ack_comment_edit, 7, 0, 1, 2)
 
         # Login button
         login_button = QPushButton('REQUEST ACKNOWLEDGE', self)

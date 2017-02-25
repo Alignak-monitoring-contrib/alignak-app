@@ -33,19 +33,20 @@ from alignak_app.core.utils import get_image_path, get_diff_since_last_check, ge
 from alignak_app.core.action_manager import ACK, DOWNTIME, PROCESS
 from alignak_app.widgets.banner import send_banner
 from alignak_app.synthesis.service import Service
+from alignak_app.synthesis.actions import Acknowledge
 
 try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QWidget, QPushButton, QLabel  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QStackedWidget, QScrollArea  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QIcon, QPixmap, QListWidget  # pylint: disable=no-name-in-module
+    from PyQt5.Qt import QIcon, QPixmap, QListWidget, QDialog  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QTimer, QListWidgetItem, Qt, QCheckBox  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QWidget, QPushButton, QLabel  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QStackedWidget, QScrollArea  # pylint: disable=import-error
-    from PyQt4.Qt import QIcon, QPixmap, QListWidget  # pylint: disable=import-error
+    from PyQt4.Qt import QIcon, QPixmap, QListWidget, QDialog  # pylint: disable=import-error
     from PyQt4.Qt import QTimer, QListWidgetItem, Qt, QCheckBox  # pylint: disable=import-error
 
 
@@ -518,13 +519,15 @@ class HostSynthesis(QWidget):
         """
 
         # Get who emit SIGNAL
-        item_type = str(self.sender().objectName().split(':')[0])
+        button = self.sender()
+        item_type = str(button.objectName().split(':')[0])
+        item_name = str(button.objectName().split(':')[2])
 
         if self.host:
             host_id = self.host['_id']
 
             if 'service' in item_type:
-                service_id = str(self.sender().objectName().split(':')[1])
+                service_id = str(button.objectName().split(':')[1])
                 self.action_manager.acknowledged.append(service_id)
             else:
                 service_id = None
@@ -534,34 +537,46 @@ class HostSynthesis(QWidget):
 
             comment = '%s %s acknowledged by %s, from Alignak-app' % (
                 item_type.capitalize(),
-                str(self.sender().objectName().split(':')[2]),
+                item_name,
                 user['name']
             )
 
-            data = {
-                'action': 'add',
-                'host': host_id,
-                'service': service_id,
-                'user': user['_id'],
-                'comment': comment
-            }
+            ack_dialog = Acknowledge()
+            ack_dialog.initialize(item_type, item_name, comment)
 
-            post = self.app_backend.post(ACK, data)
-            item_process = {
-                'action': PROCESS,
-                'name': str(self.sender().objectName().split(':')[2]),
-                'post': post
-            }
-            self.action_manager.add_item(item_process)
+            if ack_dialog.exec_() == QDialog.Accepted:
+                sticky = ack_dialog.sticky
+                notify = ack_dialog.notify
+                comment = str(ack_dialog.ack_comment_edit.toPlainText())
 
-            item_action = {
-                'action': ACK,
-                'host_id': host_id,
-                'service_id': service_id
-            }
-            self.action_manager.add_item(item_action)
+                data = {
+                    'action': 'add',
+                    'host': host_id,
+                    'service': service_id,
+                    'user': user['_id'],
+                    'comment': comment,
+                    'notify': notify,
+                    'sticky': sticky
+                }
 
-            self.sender().setEnabled(False)
+                post = self.app_backend.post(ACK, data)
+                item_process = {
+                    'action': PROCESS,
+                    'name': item_name,
+                    'post': post
+                }
+                self.action_manager.add_item(item_process)
+
+                item_action = {
+                    'action': ACK,
+                    'host_id': host_id,
+                    'service_id': service_id
+                }
+                self.action_manager.add_item(item_action)
+
+                button.setEnabled(False)
+            else:
+                logger.info('Acknowledge for %s cancelled...', item_name)
 
     def add_downtime(self):  # pragma: no cover, no testability
         """
