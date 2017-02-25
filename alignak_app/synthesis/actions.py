@@ -34,13 +34,13 @@ try:
     from PyQt5.QtWidgets import QDialog, QWidget  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QPushButton, QLabel  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QHBoxLayout  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QVBoxLayout, QLineEdit  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QVBoxLayout, QTextEdit  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QIcon, QPixmap, QCheckBox, Qt  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QDialog, QWidget  # pylint: disable=import-error
     from PyQt4.Qt import QPushButton, QLabel  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QHBoxLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QVBoxLayout, QLineEdit  # pylint: disable=import-error
+    from PyQt4.Qt import QVBoxLayout, QTextEdit  # pylint: disable=import-error
     from PyQt4.Qt import QIcon, QPixmap, QCheckBox, Qt  # pylint: disable=import-error
 
 
@@ -104,15 +104,16 @@ class Acknowledge(QDialog):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(get_css())
         self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setMinimumSize(360, 460)
         # Fields
         self.sticky = True
         self.notify = False
         self.comment = ''
 
-    def initialize(self, hostname, comment):
+    def initialize(self, item_type, hostname, comment):
         """
         TODO
-
+        :param item_type:
         :param hostname:
         :param comment:
         :return:
@@ -131,31 +132,50 @@ class Acknowledge(QDialog):
         ack_title = QLabel('<h2>Request an acknowledge</h2>')
         ack_layout.addWidget(ack_title, 0, 0, 1, 2)
 
-        host_label = QLabel('<b>%s</b>' % hostname)
+        host_label = QLabel('<h2>%s: %s</h2>' % (item_type.capitalize(), hostname))
         ack_layout.addWidget(host_label, 1, 0, 1, 1)
 
         sticky_label = QLabel('Acknowledge is sticky:')
+        sticky_label.setObjectName('actions')
         ack_layout.addWidget(sticky_label, 2, 0, 1, 1)
 
         sticky_checkbox = QCheckBox()
         sticky_checkbox.setObjectName('actions')
         sticky_checkbox.setChecked(self.sticky)
+        sticky_checkbox.setFixedSize(18, 18)
         ack_layout.addWidget(sticky_checkbox, 2, 1, 1, 1)
 
+        sticky_info = QLabel(
+            '<i>If checked, '
+            'the acknowledge will remain until the element returns to an "OK" state.</i>'
+        )
+        sticky_info.setWordWrap(True)
+        ack_layout.addWidget(sticky_info, 3, 0, 1, 2)
+
         notify_label = QLabel('Acknowledge notifies:')
-        ack_layout.addWidget(notify_label, 3, 0, 1, 1)
+        notify_label.setObjectName('actions')
+        ack_layout.addWidget(notify_label, 4, 0, 1, 1)
 
         notify_checkbox = QCheckBox()
         notify_checkbox.setObjectName('actions')
         notify_checkbox.setChecked(self.notify)
-        ack_layout.addWidget(notify_checkbox, 3, 1, 1, 1)
+        notify_checkbox.setFixedSize(18, 18)
+        ack_layout.addWidget(notify_checkbox, 4, 1, 1, 1)
+
+        notify_info = QLabel(
+            '<i>If checked, a notification will be sent out to the concerned contacts.'
+        )
+        notify_info.setWordWrap(True)
+        ack_layout.addWidget(notify_info, 5, 0, 1, 2)
 
         ack_comment = QLabel('Acknowledge comment:')
-        ack_layout.addWidget(ack_comment, 4, 0, 1, 1)
+        ack_comment.setObjectName('actions')
+        ack_layout.addWidget(ack_comment, 6, 0, 1, 1)
 
-        ack_comment_edit = QLineEdit()
+        ack_comment_edit = QTextEdit()
         ack_comment_edit.setText(comment)
-        ack_layout.addWidget(ack_comment_edit, 5, 0, 1, 2)
+        ack_comment_edit.setMaximumHeight(60)
+        ack_layout.addWidget(ack_comment_edit, 7, 0, 1, 2)
 
         # Login button
         login_button = QPushButton('REQUEST ACKNOWLEDGE', self)
@@ -163,7 +183,7 @@ class Acknowledge(QDialog):
         login_button.setObjectName('valid')
         login_button.setMinimumHeight(30)
         login_button.setDefault(True)
-        ack_layout.addWidget(login_button, 6, 0, 1, 2)
+        ack_layout.addWidget(login_button, 8, 0, 1, 2)
 
         main_layout.addWidget(ack_widget)
 
@@ -185,7 +205,7 @@ class Acknowledge(QDialog):
             logger.warning('Move Event %s: %s', self.objectName(), str(e))
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pylint: disable-all
     from PyQt5.QtWidgets import QApplication
     from alignak_app.core.utils import init_config
     import sys
@@ -195,7 +215,7 @@ if __name__ == '__main__':
 
     init_config()
     ack_dialog = Acknowledge()
-    ack_dialog.initialize('pi2', 'Acknowledge requested by App')
+    ack_dialog.initialize('host', 'pi2', 'Acknowledge requested by App')
 
     if ack_dialog.exec_() == ack_dialog.Accepted:
         print('Ok')

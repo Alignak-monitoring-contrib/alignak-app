@@ -161,18 +161,33 @@ QWidget#bannerERROR {
 }
 
 /****** ACTIONS ******/
+QLabel#actions {
+    font-size: 14px;
+}
+
 QCheckBox#actions {
-    width: 20px;
-    height: 20px;
-}
-QCheckBox#actions::checked {
-    /*background: #607d8b;*/
+    background-color: #607d8b;
+    color: white;
     border: 1px solid #607d8b;
-    background-color: yellow;
+    border-radius: 5px;
 }
+
+QCheckBox#actions::indicator {
+    width: 14px;
+    height: 14px;
+    border: none;
+    border: 1px solid #607d8b;
+    border-radius: 5px;
+}
+
+QCheckBox#actions::indicator::checked {
+    background-color: #4caf50;
+}
+
 QCheckBox#actions::indicator::unchecked {
-    border: 1px solid #607d8b;
+    background-color: white;
 }
+
 /****** SYNTHESIS VIEW ******/
 QWidget#services {
     border-style: solid;
