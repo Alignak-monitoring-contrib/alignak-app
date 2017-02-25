@@ -24,6 +24,7 @@
 """
 
 
+import datetime
 from logging import getLogger
 
 from alignak_app.core.utils import get_image_path, get_css
@@ -32,16 +33,20 @@ from alignak_app.core.utils import get_image_path, get_css
 try:
     __import__('PyQt5')
     from PyQt5.QtWidgets import QDialog, QWidget  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QPushButton, QLabel  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QTimeEdit, QDateTimeEdit  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QPushButton, QLabel, QLineEdit  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QGridLayout, QHBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QVBoxLayout, QTextEdit  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QIcon, QPixmap, QCheckBox, Qt  # pylint: disable=no-name-in-module
+    from PyQt5.QtCore import QTime  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
     from PyQt4.Qt import QDialog, QWidget  # pylint: disable=import-error
-    from PyQt4.Qt import QPushButton, QLabel  # pylint: disable=import-error
+    from PyQt4.Qt import QTimeEdit, QDateTimeEdit  # pylint: disable=import-error
+    from PyQt4.Qt import QPushButton, QLabel, QLineEdit  # pylint: disable=import-error
     from PyQt4.Qt import QGridLayout, QHBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QVBoxLayout, QTextEdit  # pylint: disable=import-error
     from PyQt4.Qt import QIcon, QPixmap, QCheckBox, Qt  # pylint: disable=import-error
+    from PyQt4.QtCore import QTime  # pylint: disable=import-error
 
 
 logger = getLogger(__name__)
@@ -100,7 +105,7 @@ class Acknowledge(QDialog):
 
     def __init__(self, parent=None):
         super(Acknowledge, self).__init__(parent)
-        self.setWindowTitle('Login to Alignak')
+        self.setWindowTitle('Request an Acknowledge')
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(get_css())
         self.setWindowIcon(QIcon(get_image_path('icon')))
@@ -180,15 +185,157 @@ class Acknowledge(QDialog):
         self.ack_comment_edit.setMaximumHeight(60)
         ack_layout.addWidget(self.ack_comment_edit, 7, 0, 1, 2)
 
-        # Login button
-        login_button = QPushButton('REQUEST ACKNOWLEDGE', self)
-        login_button.clicked.connect(self.accept)
-        login_button.setObjectName('valid')
-        login_button.setMinimumHeight(30)
-        login_button.setDefault(True)
-        ack_layout.addWidget(login_button, 8, 0, 1, 2)
+        request_btn = QPushButton('REQUEST ACKNOWLEDGE', self)
+        request_btn.clicked.connect(self.accept)
+        request_btn.setObjectName('valid')
+        request_btn.setMinimumHeight(30)
+        request_btn.setDefault(True)
+        ack_layout.addWidget(request_btn, 8, 0, 1, 2)
 
         main_layout.addWidget(ack_widget)
+
+    def mousePressEvent(self, event):
+        """ QWidget.mousePressEvent(QMouseEvent) """
+
+        self.offset = event.pos()
+
+    def mouseMoveEvent(self, event):
+        """ QWidget.mousePressEvent(QMouseEvent) """
+
+        try:
+            x = event.globalX()
+            y = event.globalY()
+            x_w = self.offset.x()
+            y_w = self.offset.y()
+            self.move(x - x_w, y - y_w)
+        except AttributeError as e:
+            logger.warning('Move Event %s: %s', self.objectName(), str(e))
+
+
+class Downtime(QDialog):
+    """
+        Class who create Downtime QDialog for hosts/services
+    """
+
+    def __init__(self, parent=None):
+        super(Downtime, self).__init__(parent)
+        self.setWindowTitle('Request a Downtime')
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setStyleSheet(get_css())
+        self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setMinimumSize(360, 460)
+        # Fields
+        self.fixed = True
+        self.downtime_comment_edit = None
+        self.duration = 86400
+        self.start_time = None
+        self.end_time = None
+
+    def initialize(self, item_type, item_name, comment):
+        """
+        Initialize Downtime QDialog
+
+        :param item_type: type of item to acknowledge : host | service
+        :type item_type: str
+        :param item_name: name of the item to acknowledge
+        :type item_name: str
+        :param comment: the default comment of action
+        :type comment: str
+        """
+
+        # Main layout
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+
+        main_layout.addWidget(get_logo_widget(self))
+
+        downtime_widget = QWidget()
+        downtime_widget.setObjectName('login')
+        downtime_layout = QGridLayout(downtime_widget)
+
+        ack_title = QLabel('<h2>Request a downtime</h2>')
+        downtime_layout.addWidget(ack_title, 0, 0, 1, 3)
+
+        host_label = QLabel('<h2>%s: %s</h2>' % (item_type.capitalize(), item_name))
+        downtime_layout.addWidget(host_label, 1, 0, 1, 1)
+
+        options_label = QLabel('Downtime options:')
+        options_label.setObjectName('actions')
+        downtime_layout.addWidget(options_label, 2, 0, 1, 1)
+
+        fixed_checkbox = QCheckBox()
+        fixed_checkbox.setObjectName('actions')
+        fixed_checkbox.setChecked(self.fixed)
+        fixed_checkbox.setFixedSize(18, 18)
+        downtime_layout.addWidget(fixed_checkbox, 2, 1, 1, 1)
+
+        fixed_label = QLabel('Fixed')
+        fixed_label.setObjectName('actions')
+        downtime_layout.addWidget(fixed_label, 2, 2, 1, 1)
+
+        fixed_info = QLabel(
+            '<i>If checked, downtime will start and end at the times specified'
+            ' by the “start time” and “end time” fields.</i>'
+        )
+        fixed_info.setWordWrap(True)
+        downtime_layout.addWidget(fixed_info, 3, 0, 1, 3)
+
+        duration_label = QLabel('Duration')
+        duration_label.setObjectName('actions')
+        downtime_layout.addWidget(duration_label, 4, 0, 1, 1)
+
+        duration_clock = QLabel()
+        duration_clock.setPixmap(QPixmap(get_image_path('clock')))
+        downtime_layout.addWidget(duration_clock, 4, 1, 1, 1)
+        duration_clock.setFixedSize(16, 16)
+        duration_clock.setScaledContents(True)
+
+        duration = QTimeEdit()
+        duration.setTime(QTime(2, 00))
+        duration.setDisplayFormat("HH'h'mm")
+        downtime_layout.addWidget(duration, 4, 2, 1, 1)
+
+        date_range_label = QLabel('Downtime date range')
+        date_range_label.setObjectName('actions')
+        downtime_layout.addWidget(date_range_label, 5, 0, 1, 1)
+
+        calendar_label = QLabel()
+        calendar_label.setPixmap(QPixmap(get_image_path('calendar')))
+        calendar_label.setFixedSize(16, 16)
+        calendar_label.setScaledContents(True)
+        downtime_layout.addWidget(calendar_label, 5, 1, 1, 1)
+
+        start_time_label = QLabel('Start time:')
+        downtime_layout.addWidget(start_time_label, 6, 0, 1, 1)
+
+        start_date = QDateTimeEdit()
+        start_date.setCalendarPopup(True)
+        start_date.setDateTime(datetime.datetime.now())
+        start_date.setDisplayFormat("dd/MM/yyyy HH'h'mm")
+        downtime_layout.addWidget(start_date, 6, 1, 1, 2)
+
+        end_time_label = QLabel('End time:')
+        downtime_layout.addWidget(end_time_label, 7, 0, 1, 1)
+
+        end_date = QDateTimeEdit()
+        end_date.setCalendarPopup(True)
+        end_date.setDateTime(datetime.datetime.now() + datetime.timedelta(hours=2))
+        end_date.setDisplayFormat("dd/MM/yyyy HH'h'mm")
+        downtime_layout.addWidget(end_date, 7, 1, 1, 2)
+
+        self.downtime_comment_edit = QTextEdit()
+        self.downtime_comment_edit.setText(comment)
+        self.downtime_comment_edit.setMaximumHeight(60)
+        downtime_layout.addWidget(self.downtime_comment_edit, 8, 0, 1, 3)
+
+        request_btn = QPushButton('REQUEST DOWNTIME', self)
+        request_btn.clicked.connect(self.accept)
+        request_btn.setObjectName('valid')
+        request_btn.setMinimumHeight(30)
+        request_btn.setDefault(True)
+        downtime_layout.addWidget(request_btn, 9, 0, 1, 3)
+
+        main_layout.addWidget(downtime_widget)
 
     def mousePressEvent(self, event):
         """ QWidget.mousePressEvent(QMouseEvent) """
@@ -217,12 +364,22 @@ if __name__ == '__main__':  # pylint: disable-all
     app.setQuitOnLastWindowClosed(False)
 
     init_config()
-    ack_dialog = Acknowledge()
-    ack_dialog.initialize('host', 'pi2', 'Acknowledge requested by App')
 
-    if ack_dialog.exec_() == ack_dialog.Accepted:
-        print('Ok')
+    if 0:
+        ack_dialog = Acknowledge()
+        ack_dialog.initialize('host', 'pi2', 'Acknowledge requested by App')
+
+        if ack_dialog.exec_() == ack_dialog.Accepted:
+            print('Ok')
+        else:
+            print('Out')
     else:
-        print('Out')
+        downtime_dialog = Downtime()
+        downtime_dialog.initialize('host', 'pi2', 'Downtime requested by App')
+
+        if downtime_dialog.exec_() == downtime_dialog.Accepted:
+            print('Ok')
+        else:
+            print('Out')
 
     sys.exit(app.exec_())
