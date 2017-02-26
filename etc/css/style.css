@@ -1,6 +1,6 @@
 /****** GENERAL ******/
 QLabel {
-    color:black;
+    color: black;
     font-family: Roboto,Helvetica,Arial,sans-serif;
 }
 
@@ -168,20 +168,20 @@ QLabel#actions {
 QCheckBox#actions {
     background-color: #607d8b;
     color: white;
-    border: 1px solid #607d8b;
-    border-radius: 5px;
+    border: 0.5px solid #607d8b;
+    border-radius: 8px;
 }
 
 QCheckBox#actions::indicator {
     width: 14px;
     height: 14px;
     border: none;
-    border: 1px solid #607d8b;
-    border-radius: 5px;
+    border: 0.5px solid #607d8b;
+    border-radius: 8px;
 }
 
 QCheckBox#actions::indicator::checked {
-    background-color: #4caf50;
+    background-color: #58c75c;
 }
 
 QCheckBox#actions::indicator::unchecked {

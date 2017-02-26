@@ -33,7 +33,7 @@ from alignak_app.core.utils import get_image_path, get_diff_since_last_check, ge
 from alignak_app.core.action_manager import ACK, DOWNTIME, PROCESS
 from alignak_app.widgets.banner import send_banner
 from alignak_app.synthesis.service import Service
-from alignak_app.synthesis.actions import Acknowledge
+from alignak_app.synthesis.actions import Acknowledge, Downtime
 
 try:
     __import__('PyQt5')
@@ -578,20 +578,22 @@ class HostSynthesis(QWidget):
             else:
                 logger.info('Acknowledge for %s cancelled...', item_name)
 
-    def add_downtime(self):  # pragma: no cover, no testability
+    def add_downtime(self):  # pragma: no cover, no testability  pylint: disable=too-many-locals
         """
         Handle action for "downtime_btn"
 
         """
 
         # Get who emit SIGNAL
-        item_type = str(self.sender().objectName().split(':')[0])
+        button = self.sender()
+        item_type = str(button.objectName().split(':')[0])
+        item_name = str(button.objectName().split(':')[2])
 
         if self.host:
             host_id = self.host['_id']
 
             if 'service' in item_type:
-                service_id = str(self.sender().objectName().split(':')[1])
+                service_id = str(button.objectName().split(':')[1])
                 self.action_manager.downtimed.append(service_id)
             else:
                 service_id = None
@@ -601,49 +603,46 @@ class HostSynthesis(QWidget):
 
             comment = 'Schedule downtime by %s, from Alignak-app' % user['name']
 
-            start_time = datetime.datetime.now()
-            end_time = start_time + datetime.timedelta(days=1)
+            downtime_dialog = Downtime()
+            downtime_dialog.initialize(item_type, item_name, comment)
 
-            if sys.version_info < (3, 0):
-                # Function for python 2
-                def totimestamp(dt):
-                    """Return timestamp of given datetime"""
-                    return time.mktime(dt.timetuple())
+            if downtime_dialog.exec_() == QDialog.Accepted:
+                fixed = downtime_dialog.fixed
+                duration = downtime_dialog.duration_to_seconds()
+                start_stamp = downtime_dialog.start_time.dateTime().toTime_t()
+                end_stamp = downtime_dialog.end_time.dateTime().toTime_t()
+                comment = downtime_dialog.comment_edit.toPlainText()
 
-                start_stamp = totimestamp(start_time)
-                end_stamp = totimestamp(end_time)
+                data = {
+                    'action': 'add',
+                    'host': host_id,
+                    'service': service_id,
+                    'user': user['_id'],
+                    'fixed': fixed,
+                    'duration': duration,
+                    'start_time': start_stamp,
+                    'end_time': end_stamp,
+                    'comment': comment,
+                }
+
+                post = self.app_backend.post(DOWNTIME, data)
+                item_process = {
+                    'action': PROCESS,
+                    'name': item_name,
+                    'post': post
+                }
+                self.action_manager.add_item(item_process)
+
+                item_action = {
+                    'action': DOWNTIME,
+                    'host_id': host_id,
+                    'service_id': service_id
+                }
+                self.action_manager.add_item(item_action)
+
+                button.setEnabled(False)
             else:
-                start_stamp = start_time.timestamp()
-                end_stamp = end_time.timestamp()
-
-            print(start_time)
-            data = {
-                'action': 'add',
-                'host': host_id,
-                'service': service_id,
-                'user': user['_id'],
-                'comment': comment,
-                'start_time': start_stamp,
-                'end_time': end_stamp,
-                'fixed': True
-            }
-
-            post = self.app_backend.post(DOWNTIME, data)
-            item_process = {
-                'action': PROCESS,
-                'name': str(self.sender().objectName().split(':')[2]),
-                'post': post
-            }
-            self.action_manager.add_item(item_process)
-
-            item_action = {
-                'action': DOWNTIME,
-                'host_id': host_id,
-                'service_id': service_id
-            }
-            self.action_manager.add_item(item_action)
-
-            self.sender().setEnabled(False)
+                logger.info('Downtime for %s cancelled...', item_name)
 
     def check_action_manager(self):  # pragma: no cover, no testability
         """

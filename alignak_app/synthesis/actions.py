@@ -226,10 +226,10 @@ class Downtime(QDialog):
         self.setMinimumSize(360, 460)
         # Fields
         self.fixed = True
-        self.downtime_comment_edit = None
-        self.duration = 86400
-        self.start_time = None
-        self.end_time = None
+        self.duration = QTimeEdit()
+        self.start_time = QDateTimeEdit()
+        self.end_time = QDateTimeEdit()
+        self.comment_edit = QTextEdit()
 
     def initialize(self, item_type, item_name, comment):
         """
@@ -290,52 +290,74 @@ class Downtime(QDialog):
         duration_clock.setFixedSize(16, 16)
         duration_clock.setScaledContents(True)
 
-        duration = QTimeEdit()
-        duration.setTime(QTime(2, 00))
-        duration.setDisplayFormat("HH'h'mm")
-        downtime_layout.addWidget(duration, 4, 2, 1, 1)
+        self.duration.setTime(QTime(4, 00))
+        self.duration.setDisplayFormat("HH'h'mm")
+        downtime_layout.addWidget(self.duration, 4, 2, 1, 1)
+
+        duration_info = QLabel(
+            '<i>Sets the duration if it is a non-fixed downtime.</i>'
+        )
+        downtime_layout.addWidget(duration_info, 5, 0, 1, 3)
 
         date_range_label = QLabel('Downtime date range')
         date_range_label.setObjectName('actions')
-        downtime_layout.addWidget(date_range_label, 5, 0, 1, 1)
+        downtime_layout.addWidget(date_range_label, 6, 0, 1, 1)
 
         calendar_label = QLabel()
         calendar_label.setPixmap(QPixmap(get_image_path('calendar')))
         calendar_label.setFixedSize(16, 16)
         calendar_label.setScaledContents(True)
-        downtime_layout.addWidget(calendar_label, 5, 1, 1, 1)
+        downtime_layout.addWidget(calendar_label, 6, 1, 1, 1)
 
         start_time_label = QLabel('Start time:')
-        downtime_layout.addWidget(start_time_label, 6, 0, 1, 1)
+        downtime_layout.addWidget(start_time_label, 7, 0, 1, 1)
 
-        start_date = QDateTimeEdit()
-        start_date.setCalendarPopup(True)
-        start_date.setDateTime(datetime.datetime.now())
-        start_date.setDisplayFormat("dd/MM/yyyy HH'h'mm")
-        downtime_layout.addWidget(start_date, 6, 1, 1, 2)
+        self.start_time.setCalendarPopup(True)
+        self.start_time.setDateTime(datetime.datetime.now())
+        self.start_time.setDisplayFormat("dd/MM/yyyy HH'h'mm")
+        downtime_layout.addWidget(self.start_time, 7, 1, 1, 2)
 
         end_time_label = QLabel('End time:')
-        downtime_layout.addWidget(end_time_label, 7, 0, 1, 1)
+        downtime_layout.addWidget(end_time_label, 8, 0, 1, 1)
 
-        end_date = QDateTimeEdit()
-        end_date.setCalendarPopup(True)
-        end_date.setDateTime(datetime.datetime.now() + datetime.timedelta(hours=2))
-        end_date.setDisplayFormat("dd/MM/yyyy HH'h'mm")
-        downtime_layout.addWidget(end_date, 7, 1, 1, 2)
+        self.end_time.setCalendarPopup(True)
+        self.end_time.setDateTime(datetime.datetime.now() + datetime.timedelta(hours=2))
+        self.end_time.setDisplayFormat("dd/MM/yyyy HH'h'mm")
+        downtime_layout.addWidget(self.end_time, 8, 1, 1, 2)
 
-        self.downtime_comment_edit = QTextEdit()
-        self.downtime_comment_edit.setText(comment)
-        self.downtime_comment_edit.setMaximumHeight(60)
-        downtime_layout.addWidget(self.downtime_comment_edit, 8, 0, 1, 3)
+        self.comment_edit.setText(comment)
+        self.comment_edit.setMaximumHeight(60)
+        downtime_layout.addWidget(self.comment_edit, 9, 0, 1, 3)
 
         request_btn = QPushButton('REQUEST DOWNTIME', self)
-        request_btn.clicked.connect(self.accept)
+        request_btn.clicked.connect(self.handle_accept)
         request_btn.setObjectName('valid')
         request_btn.setMinimumHeight(30)
         request_btn.setDefault(True)
-        downtime_layout.addWidget(request_btn, 9, 0, 1, 3)
+        downtime_layout.addWidget(request_btn, 10, 0, 1, 3)
 
         main_layout.addWidget(downtime_widget)
+
+    def duration_to_seconds(self):
+        """
+        Return "duration" QTimeEdit value in seconds
+
+        :return: "duration" in seconds
+        :rtype: int
+        """
+
+        return QTime(0, 0).secsTo(self.duration.time())
+
+    def handle_accept(self):
+        """
+        Check if end_time timestamp is not lower than start_time
+
+        """
+
+        if self.start_time.dateTime().toTime_t() > self.end_time.dateTime().toTime_t():
+            logger.warning('Try to add Downtime with "End Time" lower than "Start Time"')
+        else:
+            self.accept()
 
     def mousePressEvent(self, event):
         """ QWidget.mousePressEvent(QMouseEvent) """
@@ -378,7 +400,11 @@ if __name__ == '__main__':  # pylint: disable-all
         downtime_dialog.initialize('host', 'pi2', 'Downtime requested by App')
 
         if downtime_dialog.exec_() == downtime_dialog.Accepted:
-            print('Ok')
+            print('Fixed: ', downtime_dialog.fixed)
+            print('Duration: ', downtime_dialog.duration_to_seconds())
+            print('Start Time: ', downtime_dialog.start_time.dateTime().toTime_t())
+            print('End Time: ', downtime_dialog.end_time.dateTime().toTime_t())
+            print('Comment: ', downtime_dialog.comment_edit.toPlainText())
         else:
             print('Out')
 
