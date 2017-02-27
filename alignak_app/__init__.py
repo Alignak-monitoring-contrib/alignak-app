@@ -30,12 +30,12 @@
 
 
 # Application version and manifest
-VERSION = (0, 6, 0)
+VERSION = (0, 6, 1)
 __application__ = u"Alignak-App"
 __short_version__ = '.'.join((str(each) for each in VERSION[:2]))
 __version__ = '.'.join((str(each) for each in VERSION[:4]))
 __author__ = u"Estrada Matthieu"
-__copyright__ = u"2015-2016 - %s" % __author__
+__copyright__ = u"2015-2017 - %s" % __author__
 __license__ = u"GNU Affero General Public License, version 3"
 __description__ = u"Applet, in system tray, for Alignak monitoring solution"
 __releasenotes__ = u"Applet, in system tray, for Alignak monitoring solution"

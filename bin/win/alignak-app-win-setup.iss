@@ -19,7 +19,7 @@
 
 #define MyAppName "Alignak-app"
 #define ShortVersion "0.6"
-#define MyAppVersion ShortVersion + ".0"
+#define MyAppVersion ShortVersion + ".1"
 #define MyAppPublisher "Alignak (Estrada Matthieu)"
 #define MyAppURL "https://github.com/Alignak-monitoring-contrib/alignak-app"
 #define MyAppExeName "alignak-app.exe"
@@ -40,7 +40,7 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 LicenseFile={#RootApp}\alignak-app\LICENSE
 OutputDir={#RootApp}\alignak-app\dist\setup
-OutputBaseFilename=Setup {#MyAppName} {#MyAppVersion}-x64-BETA
+OutputBaseFilename=Setup {#MyAppName} {#MyAppVersion}-x64
 SetupIconFile={#RootApp}\alignak-app\bin\win\icon_64.ico
 UninstallDisplayIcon={app}\icon_64.ico
 Compression=lzma
