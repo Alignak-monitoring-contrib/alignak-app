@@ -172,7 +172,8 @@ def set_app_config(section, option, new_value):
     try:
         # Read configuration file and store in list
         file_to_write = ''
-        if 'linux' in sys.platform or 'sunos5' in sys.platform:
+        data = ''
+        if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
             with open(get_filenames(), 'r') as config_file:
                 data = config_file.readlines()
                 file_to_write = get_filenames()  # pylint: disable=redefined-variable-type
@@ -184,6 +185,11 @@ def set_app_config(section, option, new_value):
                     file_to_write = cfg_files
                 except IOError as e:
                     logger.warning(e)
+        else:
+            file_name = '%s/alignak_app/settings.cfg' % get_app_root()
+            with open(file_name) as config_file:
+                data = config_file.readlines()
+                file_to_write = file_name  # pylint: disable=redefined-variable-type
         # Update values
         for d in data:
             if option in d[0:len(option)]:
