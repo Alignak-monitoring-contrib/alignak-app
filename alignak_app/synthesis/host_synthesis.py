@@ -23,9 +23,6 @@
     Host Synthesis display data of choosen host in Synthesis
 """
 
-import datetime
-import time
-import sys
 
 from logging import getLogger
 
