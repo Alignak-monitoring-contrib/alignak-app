@@ -36,12 +36,12 @@ from alignak_app.widgets.banner import send_banner
 
 try:
     __import__('PyQt5')
-    from PyQt5.QtWidgets import QWidget, QDialog  # pylint: disable=no-name-in-module
+    from PyQt5.QtWidgets import QWidget, QDialog, QApplication  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QPushButton, QGridLayout  # pylint: disable=no-name-in-module
     from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout  # pylint: disable=no-name-in-module
     from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel, QPixmap  # pylint: disable=no-name-in-module
 except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QDialog, QWidget  # pylint: disable=import-error
+    from PyQt4.Qt import QDialog, QWidget, QApplication  # pylint: disable=import-error
     from PyQt4.Qt import QPushButton, QGridLayout  # pylint: disable=import-error
     from PyQt4.Qt import QHBoxLayout, QVBoxLayout  # pylint: disable=import-error
     from PyQt4.Qt import QLineEdit, Qt, QIcon, QLabel, QPixmap  # pylint: disable=import-error
@@ -61,7 +61,7 @@ class AppLogin(QDialog):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(get_css())
         self.setWindowIcon(QIcon(get_image_path('icon')))
-        self.setMinimumSize(310, 300)
+        self.setFixedSize(300, 330)
         # Fields
         self.app_backend = AppBackend()
         self.backend_url = None
@@ -141,6 +141,18 @@ class AppLogin(QDialog):
 
         main_layout.addWidget(login_widget)
         self.setLayout(main_layout)
+
+        self.center()
+
+    def center(self):
+        """
+        Center QWidget
+
+        """
+
+        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+        center = QApplication.desktop().screenGeometry(screen).center()
+        self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
 
     @staticmethod
     def get_logo_widget(widget):
@@ -222,7 +234,7 @@ class AppLogin(QDialog):
         server_dialog.setWindowTitle('Server Configuration')
         server_dialog.setWindowFlags(Qt.FramelessWindowHint)
         server_dialog.setStyleSheet(get_css())
-        server_dialog.setMinimumSize(250, 100)
+        server_dialog.setFixedSize(300, 300)
 
         main_layout = QVBoxLayout(server_dialog)
         main_layout.setContentsMargins(0, 0, 0, 0)
