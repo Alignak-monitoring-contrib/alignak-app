@@ -139,21 +139,18 @@ class TrayIcon(QSystemTrayIcon):
             'Hosts UP, Wait...',
             self.hosts_menu
         )
-        self.qaction_factory.get('hosts_up').triggered.connect(self.open_url)
 
         self.qaction_factory.create(
             'hosts_unreachable',
             'Hosts UNREACHABLE, Wait...',
             self.hosts_menu
         )
-        self.qaction_factory.get('hosts_unreachable').triggered.connect(self.open_url)
 
         self.qaction_factory.create(
             'hosts_down',
             'Hosts DOWN, Wait...',
             self.hosts_menu
         )
-        self.qaction_factory.get('hosts_down').triggered.connect(self.open_url)
 
         self.hosts_menu.addSeparator()
 
@@ -168,6 +165,11 @@ class TrayIcon(QSystemTrayIcon):
             'Hosts DOWNTIME, Wait...',
             self.hosts_menu
         )
+
+        if get_app_config('Alignak', 'webui'):
+            self.qaction_factory.get('hosts_up').triggered.connect(self.open_url)
+            self.qaction_factory.get('hosts_unreachable').triggered.connect(self.open_url)
+            self.qaction_factory.get('hosts_down').triggered.connect(self.open_url)
 
         # Add hosts actions to menu
         self.hosts_menu.addAction(self.qaction_factory.get('hosts_up'))
@@ -193,28 +195,24 @@ class TrayIcon(QSystemTrayIcon):
             'Services OK, Wait...',
             self
         )
-        self.qaction_factory.get('services_ok').triggered.connect(self.open_url)
 
         self.qaction_factory.create(
             'services_warning',
             'Services WARNING, Wait...',
             self.services_menu
         )
-        self.qaction_factory.get('services_warning').triggered.connect(self.open_url)
 
         self.qaction_factory.create(
             'services_critical',
             'Services CRITICAL, Wait...',
             self.services_menu
         )
-        self.qaction_factory.get('services_critical').triggered.connect(self.open_url)
 
         self.qaction_factory.create(
             'services_unknown',
             'Services UNKNOWN, Wait...',
             self.services_menu
         )
-        self.qaction_factory.get('services_unknown').triggered.connect(self.open_url)
 
         self.qaction_factory.create(
             'services_unreachable',
@@ -235,6 +233,13 @@ class TrayIcon(QSystemTrayIcon):
             'Services DOWNTIME, Wait...',
             self.services_menu
         )
+
+        if get_app_config('Alignak', 'webui'):
+            self.qaction_factory.get('services_ok').triggered.connect(self.open_url)
+            self.qaction_factory.get('services_warning').triggered.connect(self.open_url)
+            self.qaction_factory.get('services_critical').triggered.connect(self.open_url)
+            self.qaction_factory.get('services_unknown').triggered.connect(self.open_url)
+            self.qaction_factory.get('services_unreachable').triggered.connect(self.open_url)
 
         # Add services actions to menu
         self.services_menu.addAction(self.qaction_factory.get('services_ok'))
@@ -440,24 +445,25 @@ class TrayIcon(QSystemTrayIcon):
 
         """
 
-        target = self.sender()
-
         webui_url = get_app_config('Alignak', 'webui')
 
         # Define each filter for items
-        if "UP" in target.text():
+        if "UP" in self.sender().text():
             endurl = '/hosts/table?search=ls_state:UP'
-        elif "DOWN" in target.text():
+        elif "DOWN" in self.sender().text():
             endurl = '/hosts/table?search=ls_state:DOWN'
-        elif "UNREACHABLE" in target.text():
-            endurl = '/hosts/table?search=ls_state:UNREACHABLE'
-        elif 'OK' in target.text():
+        elif "UNREACHABLE" in self.sender().text():
+            if 'Hosts' in self.sender().text():
+                endurl = '/hosts/table?search=ls_state:UNREACHABLE'
+            else:
+                endurl = '/services/table?search=ls_state:UNREACHABLE'
+        elif 'OK' in self.sender().text():
             endurl = '/services/table?search=ls_state:OK'
-        elif 'CRITICAL' in target.text():
+        elif 'CRITICAL' in self.sender().text():
             endurl = '/services/table?search=ls_state:CRITICAL'
-        elif 'WARNING' in target.text():
+        elif 'WARNING' in self.sender().text():
             endurl = '/services/table?search=ls_state:WARNING'
-        elif 'UNKNOWN' in target.text():
+        elif 'UNKNOWN' in self.sender().text():
             endurl = '/services/table?search=ls_state:UNKNOWN'
         else:
             endurl = '/dashboard'

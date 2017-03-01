@@ -120,14 +120,19 @@ class HostSynthesis(QWidget):
         host_layout.setAlignment(host_overall_state, Qt.AlignCenter)
 
         # Hostname
-        host_name = QLabel(
-            '<h2><a href="%s" style="color: black;text-decoration: none;">%s</a></h2>' % (
-                get_app_config('Alignak', 'webui') +
-                '/host/' +
-                backend_data['host']['name'],
-                backend_data['host']['alias'],
+        host_name = QLabel()
+        if get_app_config('Alignak', 'webui'):
+            host_name.setText(
+                '<h2><a href="%s" style="color: black;text-decoration: none;">%s</a></h2>' % (
+                    get_app_config('Alignak', 'webui') +
+                    '/host/' +
+                    backend_data['host']['name'],
+                    backend_data['host']['alias'],
+                )
             )
-        )
+        else:
+            host_name.setText('<h2>%s</h2>' % backend_data['host']['alias'])
+
         host_name.setTextInteractionFlags(Qt.TextBrowserInteraction)
         host_name.setOpenExternalLinks(True)
         host_name.setObjectName('hostname')

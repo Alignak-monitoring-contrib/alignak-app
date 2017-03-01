@@ -87,12 +87,16 @@ class Service(QFrame):
             service_name = service['name']
 
         # Service name
-        service_label = QLabel(
-            '<h3><a href="%s" style="color: black; text-decoration: none">%s</a></h3>' % (
-                get_app_config('Alignak', 'webui') + '/service/' + service['_id'],
-                service_name
+        service_label = QLabel()
+        if get_app_config('Alignak', 'webui'):
+            service_label.setText(
+                '<h3><a href="%s" style="color: black; text-decoration: none">%s</a></h3>' % (
+                    get_app_config('Alignak', 'webui') + '/service/' + service['_id'],
+                    service_name
+                )
             )
-        )
+        else:
+            service_label.setText('<h3>%s</h3>' % service_name)
         service_label.setTextInteractionFlags(Qt.TextBrowserInteraction)
         service_label.setOpenExternalLinks(True)
         service_label.setToolTip('Service is %s. See in WebUI ?' % service['ls_state'])
