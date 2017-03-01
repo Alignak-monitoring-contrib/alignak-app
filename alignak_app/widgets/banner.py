@@ -128,7 +128,8 @@ class BannerManager(object):
         """
 
         # Shift banners when one is removed
-        self.banners.remove(banner)
+        if banner in self.banners:
+            self.banners.remove(banner)
 
         for visible_banner in self.banners:
             if (visible_banner.pos().y() - banner.pos().y()) >= Banner.banner_height:
