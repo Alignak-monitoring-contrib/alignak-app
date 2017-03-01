@@ -95,7 +95,7 @@ class AlignakApp(QObject):
                     self.run(login.app_backend)
                 else:
                     logger.info('Alignak-App closes...')
-                    exit(0)
+                    sys.exit(0)
             elif get_app_config('Alignak', 'username') and \
                     not get_app_config('Alignak', 'password'):
                 self.run()
