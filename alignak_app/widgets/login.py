@@ -142,9 +142,10 @@ class AppLogin(QDialog):
         main_layout.addWidget(login_widget)
         self.setLayout(main_layout)
 
-        self.center()
+        self.center(self)
 
-    def center(self):
+    @staticmethod
+    def center(widget):
         """
         Center QWidget
 
@@ -152,7 +153,7 @@ class AppLogin(QDialog):
 
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
         center = QApplication.desktop().screenGeometry(screen).center()
-        self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
+        widget.move(center.x() - (widget.width() / 2), center.y() - (widget.height() / 2))
 
     @staticmethod
     def get_logo_widget(widget):
@@ -286,6 +287,8 @@ class AppLogin(QDialog):
         server_layout.addWidget(valid_btn, 4, 0, 1, 3)
 
         main_layout.addWidget(server_widget)
+
+        self.center(server_widget)
 
         if server_dialog.exec_() == QDialog.Accepted:
             backend_url = '%(url)s:' + str(server_port.text()).rstrip()
