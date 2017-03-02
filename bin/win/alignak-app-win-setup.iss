@@ -19,7 +19,9 @@
 
 #define MyAppName "Alignak-app"
 #define ShortVersion "0.6"
-#define MyAppVersion ShortVersion + ".1"
+#define MinorVersion ".1"
+#define PatchVersion ".1"
+#define MyAppVersion ShortVersion + MinorVersion + PatchVersion
 #define MyAppPublisher "Alignak (Estrada Matthieu)"
 #define MyAppURL "https://github.com/Alignak-monitoring-contrib/alignak-app"
 #define MyAppExeName "alignak-app.exe"
@@ -59,12 +61,12 @@ Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
 
 [Files]
-Source: "{#RootApp}\alignak-app\dist\alignak-app.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#RootApp}\alignak-app\etc\css\*"; DestDir: "{userappdata}\Python\alignak_app\css"; Flags: ignoreversion
-Source: "{#RootApp}\alignak-app\etc\images\*"; DestDir: "{userappdata}\Python\alignak_app\images"; Flags: ignoreversion
+Source: "{#RootApp}\alignak-app\dist\alignak-app.exe"; DestDir: "{app}"; Flags: ignoreversion; Permissions: everyone-full;
+Source: "{#RootApp}\alignak-app\etc\css\*"; DestDir: "{app}\css"; Flags: ignoreversion; Permissions: everyone-full;
+Source: "{#RootApp}\alignak-app\etc\images\*"; DestDir: "{app}\images"; Flags: ignoreversion; Permissions: everyone-full;
 Source: "{#RootApp}\alignak-app\etc\settings.cfg"; DestDir: "{app}"; Flags: ignoreversion isreadme; Permissions: everyone-full;
-Source: "{#RootApp}\alignak-app\bin\win\vc_redist.x64.exe"; DestDir: {tmp}; Flags: deleteafterinstall
-Source: "{#RootApp}\alignak-app\bin\win\icon_64.ico"; DestDir: {app}; Flags: ignoreversion
+Source: "{#RootApp}\alignak-app\bin\win\vc_redist.x64.exe"; DestDir: {tmp}; Flags: deleteafterinstall;
+Source: "{#RootApp}\alignak-app\bin\win\icon_64.ico"; DestDir: {app}; Flags: ignoreversion; Permissions: everyone-full;
 
 [Icons]
 Name: "{group}\{#MyAppName} v{#MyAppVersion}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon_64.ico";
