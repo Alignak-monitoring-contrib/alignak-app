@@ -19,9 +19,8 @@
 
 #define MyAppName "Alignak-app"
 #define ShortVersion "0.6"
-#define MinorVersion ".1"
-#define PatchVersion ".1"
-#define MyAppVersion ShortVersion + MinorVersion + PatchVersion
+#define MinorVersion ".2"
+#define MyAppVersion ShortVersion + MinorVersion
 #define MyAppPublisher "Alignak (Estrada Matthieu)"
 #define MyAppURL "https://github.com/Alignak-monitoring-contrib/alignak-app"
 #define MyAppExeName "alignak-app.exe"
