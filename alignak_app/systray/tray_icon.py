@@ -28,28 +28,16 @@ import webbrowser
 from logging import getLogger
 
 from alignak_app.core.utils import get_app_config, get_image_path, init_config
-from alignak_app.core.notifier import AppNotifier
 from alignak_app.synthesis.synthesis import Synthesis
 from alignak_app.systray.qactions_factory import QActionFactory
 from alignak_app.widgets.about import AppAbout
 from alignak_app.widgets.status import AlignakStatus
 from alignak_app.widgets.banner import send_banner
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
-    from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QObject, pyqtSignal  # pylint: disable=no-name-in-module
-except ImportError:  # pragma: no cover
-    try:
-        __import__('PyQt4')
-        from PyQt4.Qt import QSystemTrayIcon  # pylint: disable=import-error
-        from PyQt4.Qt import QMenu  # pylint: disable=import-error
-        from PyQt4.QtGui import QIcon  # pylint: disable=import-error
-        from PyQt4.Qt import QObject, pyqtSignal  # pylint: disable=import-error
-    except ImportError:
-        sys.exit('\nYou must have PyQt installed to run this app.\nPlease read the doc.')
+from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
+from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
+from PyQt5.Qt import pyqtSignal  # pylint: disable=no-name-in-module
 
 
 logger = getLogger(__name__)

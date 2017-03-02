@@ -28,11 +28,7 @@ import os
 
 from alignak_app.app import AlignakApp
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication, QMessageBox
-except ImportError:
-    from PyQt4.Qt import QApplication, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMessageBox
 
 app = QApplication(sys.argv)
 app.setQuitOnLastWindowClosed(False)

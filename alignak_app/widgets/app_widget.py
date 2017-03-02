@@ -27,19 +27,11 @@
 from logging import getLogger
 from alignak_app.core.utils import get_image_path, get_app_config, get_css
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QWidget, QVBoxLayout  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QHBoxLayout, QPushButton  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import Qt, QIcon, QPixmap, QFrame  # pylint: disable=no-name-in-module
-except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QApplication  # pylint: disable=import-error
-    from PyQt4.Qt import QWidget, QVBoxLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QLabel  # pylint: disable=import-error
-    from PyQt4.Qt import QHBoxLayout, QPushButton  # pylint: disable=import-error
-    from PyQt4.Qt import Qt, QIcon, QPixmap, QFrame  # pylint: disable=import-error
+from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QWidget, QVBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QHBoxLayout, QPushButton  # pylint: disable=no-name-in-module
+from PyQt5.Qt import Qt, QIcon, QPixmap, QFrame  # pylint: disable=no-name-in-module
 
 
 logger = getLogger(__name__)

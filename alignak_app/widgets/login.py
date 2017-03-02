@@ -34,17 +34,10 @@ from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.widgets.banner import send_banner
 
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QWidget, QDialog, QApplication  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QPushButton, QGridLayout  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel, QPixmap  # pylint: disable=no-name-in-module
-except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QDialog, QWidget, QApplication  # pylint: disable=import-error
-    from PyQt4.Qt import QPushButton, QGridLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QHBoxLayout, QVBoxLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QLineEdit, Qt, QIcon, QLabel, QPixmap  # pylint: disable=import-error
+from PyQt5.QtWidgets import QWidget, QDialog, QApplication  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QPushButton, QGridLayout  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel, QPixmap  # pylint: disable=no-name-in-module
 
 
 logger = getLogger(__name__)

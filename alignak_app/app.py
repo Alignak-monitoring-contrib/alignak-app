@@ -36,15 +36,9 @@ from alignak_app.widgets.banner import bannerManager, send_banner
 from alignak_app.core.backend import AppBackend
 from alignak_app.dashboard.app_dashboard import Dashboard
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QDialog, QMessageBox  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QIcon, QTimer  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QObject, pyqtSignal  # pylint: disable=no-name-in-module
-except ImportError:
-    from PyQt4.Qt import QDialog, QMessageBox  # pylint: disable=import-error
-    from PyQt4.Qt import QIcon, QTimer  # pylint: disable=import-error
-    from PyQt4.Qt import QObject, pyqtSignal  # pylint: disable=import-error
+from PyQt5.QtWidgets import QDialog, QMessageBox  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QIcon, QTimer  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QObject, pyqtSignal  # pylint: disable=no-name-in-module
 
 # Initialize logger and config
 init_config()

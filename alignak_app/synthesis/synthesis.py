@@ -32,19 +32,11 @@ from alignak_app.core.action_manager import ActionManager
 from alignak_app.synthesis.host_synthesis import HostSynthesis
 from alignak_app.widgets.app_widget import AppQWidget
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QGridLayout  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QStringListModel  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QCompleter, QLineEdit, QTimer  # pylint: disable=no-name-in-module
-    from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
-except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QWidget, QPushButton  # pylint: disable=import-error
-    from PyQt4.Qt import QGridLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QStringListModel  # pylint: disable=import-error
-    from PyQt4.Qt import QCompleter, QLineEdit, QTimer  # pylint: disable=import-error
-    from PyQt4.QtCore import Qt  # pylint: disable=import-error
+from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QGridLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QStringListModel  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QCompleter, QLineEdit, QTimer  # pylint: disable=no-name-in-module
+from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
 
 
 logger = getLogger(__name__)
@@ -139,11 +131,7 @@ class Synthesis(QWidget):
 
         # Create completer from model
         completer = QCompleter()
-        try:
-            completer.setFilterMode(Qt.MatchContains)
-        except AttributeError as e:
-            logger.warning('Can\'t use FilterMode : %s', e)
-
+        completer.setFilterMode(Qt.MatchContains)
         completer.setCaseSensitivity(Qt.CaseInsensitive)
         completer.setModel(model)
 

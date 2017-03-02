@@ -27,19 +27,11 @@ from logging import getLogger
 
 from alignak_app.core.utils import get_image_path, get_app_config, get_css
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QHBoxLayout, QApplication  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QWidget, QPushButton, QLabel  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import Qt, QIcon, QTimer, QPoint  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QObject, pyqtSignal  # pylint: disable=no-name-in-module
-    from PyQt5.QtCore import QPropertyAnimation  # pylint: disable=no-name-in-module
-except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QHBoxLayout, QApplication  # pylint: disable=import-error
-    from PyQt4.Qt import QWidget, QPushButton, QLabel  # pylint: disable=import-error
-    from PyQt4.Qt import Qt, QTimer, QPoint, QIcon  # pylint: disable=import-error
-    from PyQt4.Qt import QObject, pyqtSignal  # pylint: disable=import-error
-    from PyQt4.QtCore import QPropertyAnimation  # pylint: disable=import-error
+from PyQt5.QtWidgets import QHBoxLayout, QApplication  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QWidget, QPushButton, QLabel  # pylint: disable=no-name-in-module
+from PyQt5.Qt import Qt, QIcon, QTimer, QPoint  # pylint: disable=no-name-in-module
+from PyQt5.Qt import pyqtSignal  # pylint: disable=no-name-in-module
+from PyQt5.QtCore import QPropertyAnimation  # pylint: disable=no-name-in-module
 
 
 logger = getLogger(__name__)

@@ -30,19 +30,11 @@ from alignak_app.core.utils import get_image_path, get_css, get_app_config
 from alignak_app.widgets.banner import send_banner
 from alignak_app.widgets.app_widget import AppQWidget
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QWidget  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QGridLayout, QAction  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QLabel, QPushButton  # pylint: disable=no-name-in-module
-    from PyQt5.QtGui import QPixmap  # pylint: disable=no-name-in-module
-    from PyQt5.QtCore import Qt, QTimer  # pylint: disable=no-name-in-module
-except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QWidget  # pylint: disable=import-error
-    from PyQt4.Qt import QGridLayout, QAction  # pylint: disable=import-error
-    from PyQt4.Qt import QLabel, QPushButton  # pylint: disable=import-error
-    from PyQt4.QtGui import QPixmap  # pylint: disable=import-error
-    from PyQt4.QtCore import Qt, QTimer  # pylint: disable=import-error
+from PyQt5.QtWidgets import QWidget  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QGridLayout, QAction  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
+from PyQt5.QtGui import QPixmap  # pylint: disable=no-name-in-module
+from PyQt5.QtCore import Qt, QTimer  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 

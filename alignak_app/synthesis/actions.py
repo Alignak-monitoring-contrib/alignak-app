@@ -30,23 +30,13 @@ from logging import getLogger
 from alignak_app.core.utils import get_image_path, get_css
 
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QDialog, QWidget  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QTimeEdit, QDateTimeEdit  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QPushButton, QLabel, QLineEdit  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QGridLayout, QHBoxLayout  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QVBoxLayout, QTextEdit  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QIcon, QPixmap, QCheckBox, Qt  # pylint: disable=no-name-in-module
-    from PyQt5.QtCore import QTime  # pylint: disable=no-name-in-module
-except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QDialog, QWidget  # pylint: disable=import-error
-    from PyQt4.Qt import QTimeEdit, QDateTimeEdit  # pylint: disable=import-error
-    from PyQt4.Qt import QPushButton, QLabel, QLineEdit  # pylint: disable=import-error
-    from PyQt4.Qt import QGridLayout, QHBoxLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QVBoxLayout, QTextEdit  # pylint: disable=import-error
-    from PyQt4.Qt import QIcon, QPixmap, QCheckBox, Qt  # pylint: disable=import-error
-    from PyQt4.QtCore import QTime  # pylint: disable=import-error
+from PyQt5.QtWidgets import QDialog, QWidget  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QTimeEdit, QDateTimeEdit  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QPushButton, QLabel  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QGridLayout, QHBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QVBoxLayout, QTextEdit  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QIcon, QPixmap, QCheckBox, Qt  # pylint: disable=no-name-in-module
+from PyQt5.QtCore import QTime  # pylint: disable=no-name-in-module
 
 
 logger = getLogger(__name__)

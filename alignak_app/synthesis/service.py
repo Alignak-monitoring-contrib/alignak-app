@@ -28,17 +28,10 @@ from logging import getLogger
 from alignak_app.core.utils import get_diff_since_last_check, get_css
 from alignak_app.core.utils import get_image_path, get_app_config
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QScrollArea, QHBoxLayout  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QWidget, QPushButton, QFrame  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QIcon, QPixmap, Qt  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QGridLayout, QLabel   # pylint: disable=no-name-in-module
-except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QScrollArea, QHBoxLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QWidget, QPushButton, QFrame  # pylint: disable=import-error
-    from PyQt4.Qt import QIcon, QPixmap, Qt  # pylint: disable=import-error
-    from PyQt4.Qt import QGridLayout, QLabel  # pylint: disable=import-error
+from PyQt5.QtWidgets import QScrollArea, QHBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QWidget, QPushButton, QFrame  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QIcon, QPixmap, Qt  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QGridLayout, QLabel   # pylint: disable=no-name-in-module
 
 
 logger = getLogger(__name__)

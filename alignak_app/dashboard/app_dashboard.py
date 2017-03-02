@@ -31,20 +31,11 @@ from alignak_app.dashboard.dashboard_factory import DashboardFactory
 from alignak_app.widgets.app_widget import AppQWidget
 from alignak_app.widgets.banner import send_diff_banners, send_banner
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication, QWidget  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QVBoxLayout  # pylint: disable=no-name-in-module
-    from PyQt5.QtCore import QTimer, Qt  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QObject, pyqtSignal  # pylint: disable=no-name-in-module
-except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QApplication, QWidget  # pylint: disable=import-error
-    from PyQt4.Qt import QLabel  # pylint: disable=import-error
-    from PyQt4.Qt import QVBoxLayout  # pylint: disable=import-error
-    from PyQt4.QtCore import QTimer, Qt  # pylint: disable=import-error
-    from PyQt4.Qt import QObject, pyqtSignal  # pylint: disable=import-error
-
+from PyQt5.QtWidgets import QApplication, QWidget  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QVBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.QtCore import QTimer, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import pyqtSignal  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 

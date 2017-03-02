@@ -29,16 +29,9 @@ from alignak_app import __doc_url__, __project_url__, __alignak_url__
 from alignak_app.core.utils import get_css
 from alignak_app.widgets.app_widget import AppQWidget
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QVBoxLayout, QLabel  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QWidget  # pylint: disable=no-name-in-module
-    from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
-except ImportError:  # pragma: no cover
-    __import__('PyQt4')
-    from PyQt4.Qt import QVBoxLayout, QLabel  # pylint: disable=import-error
-    from PyQt4.Qt import QWidget  # pylint: disable=import-error
-    from PyQt4.QtCore import Qt  # pylint: disable=import-error
+from PyQt5.QtWidgets import QVBoxLayout, QLabel  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QWidget  # pylint: disable=no-name-in-module
+from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
 
 
 class AppAbout(QWidget):
