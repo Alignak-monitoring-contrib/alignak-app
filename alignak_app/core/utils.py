@@ -193,9 +193,9 @@ def get_image_path(name):
 
     if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
         img_path = get_app_root() \
-                   + app_config.get('Config', 'path') \
-                   + app_config.get('Config', 'img') \
-                   + '/'
+            + app_config.get('Config', 'path') \
+            + app_config.get('Config', 'img') \
+            + '/'
     elif 'win32' in sys.platform:  # pragma: no cover - not testable
         img_path = get_app_root() \
             + app_config.get('Config', 'img') \
@@ -271,9 +271,11 @@ def get_css():
 
     try:
         if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-            with open('%s/css/style.css' % (
-                        get_app_root() + app_config.get('Config', 'path'))
-                      ) as css:
+            with open(
+                    '%s/css/style.css' % (
+                        get_app_root() + app_config.get('Config', 'path')
+                    )
+            ) as css:
                 return css.read()
         else:
             with open('%s/css/style.css' % get_app_root()) as css:
