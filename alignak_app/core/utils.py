@@ -272,9 +272,9 @@ def get_css():
     try:
         if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
             with open(
-                    '%s/css/style.css' % (
-                        get_app_root() + app_config.get('Config', 'path')
-                    )
+                '%s/css/style.css' % (
+                    get_app_root() + app_config.get('Config', 'path')
+                )
             ) as css:
                 return css.read()
         else:
