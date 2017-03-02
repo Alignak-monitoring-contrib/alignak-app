@@ -25,7 +25,6 @@
 
 import os
 import sys
-import datetime
 import time
 
 from logging import getLogger
@@ -47,7 +46,7 @@ def get_app_root():
     if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
         app_root = '%s/.local' % os.environ['HOME']
     elif 'win32' in sys.platform:  # pragma: no cover - not testable
-        app_root = '%s\\AppData\\Roaming\\Python\\' % os.environ['USERPROFILE']
+        app_root = '%s\\Alignak-app\\' % os.environ['PROGRAMFILES']
     else:  # pragma: no cover - not testable
         sys.exit('Application can\'t find the user HOME.')
 
@@ -106,11 +105,7 @@ def get_filenames():  # pylint: disable=redefined-variable-type
     if 'linux' in sys.platform or 'sunos5' in sys.platform:
         config_filenames = '%s/alignak_app/settings.cfg' % get_app_root()
     elif 'win32' in sys.platform:  # pragma: no cover - not testable
-        config_filenames = [  # pylint: disable=redefined-variable-type
-            '%s\\alignak_app\\settings.cfg' % get_app_root(),
-            'C:\\Program Files (x86)\\Alignak-app\\settings.cfg',
-            'C:\\Program Files\\Alignak-app\\settings.cfg'
-        ]
+        config_filenames = '%s\\settings.cfg' % get_app_root()
     else:
         config_filenames = '%s/alignak_app/settings.cfg' % get_app_root()
 
@@ -284,8 +279,14 @@ def get_css():
     """
 
     try:
-        with open('%s/css/style.css' % (get_app_root() + app_config.get('Config', 'path'))) as css:
-            return css.read()
+        if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
+            with open('%s/css/style.css' % (
+                        get_app_root() + app_config.get('Config', 'path'))
+                      ) as css:
+                return css.read()
+        else:
+            with open('%s/css/style.css' % get_app_root()) as css:
+                return css.read()
     except IOError as e:
         logger.error('CSS File is missing : %s', str(e))
         return ""
