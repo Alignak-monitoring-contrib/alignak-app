@@ -28,13 +28,6 @@ from logging import getLogger
 
 from alignak_app.core.utils import get_app_config
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
-    from PyQt5.QtCore import QTimer  # pylint: disable=no-name-in-module
-except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QSystemTrayIcon  # pylint: disable=import-error
-    from PyQt4.QtCore import QTimer  # pylint: disable=import-error
 
 logger = getLogger(__name__)
 

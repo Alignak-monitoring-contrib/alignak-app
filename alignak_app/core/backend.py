@@ -24,7 +24,6 @@
 """
 
 import json
-import copy
 from logging import getLogger
 
 from alignak_backend_client.client import Backend, BackendException
