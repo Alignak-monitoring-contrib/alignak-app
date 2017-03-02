@@ -207,17 +207,13 @@ class AlignakStatus(QWidget):
             arbiter_down = True
 
         # Update text
-        if not total_bad_daemons and self.first_start:
+        if not total_bad_daemons:
             self.info.setText('All daemons are alive.')
             self.info.setStyleSheet('color: #27ae60;')
-            self.first_start = False
+            if self.first_start:
+                self.first_start = False
+                send_banner('INFO', 'All daemons are alive.')
             logger.info('All daemons are alive.')
-            send_banner('INFO', 'All daemons are alive.')
-        elif not total_bad_daemons and (self.old_bad_daemons != 0):
-            self.info.setText('All daemons are alive.')
-            self.info.setStyleSheet('color: #27ae60;')
-            self.old_bad_daemons = 0
-            logger.info('All daemons are alive again.')
         else:
             self.info.setText('%d on %d daemons are down !' % (total_bad_daemons, total_daemons))
             self.info.setStyleSheet('color: #e74c3c;')
@@ -234,7 +230,11 @@ class AlignakStatus(QWidget):
                     duration=60000
                 )
                 if arbiter_down:
-                    self.info.setText('Arbiter daemons are down !')
+                    self.info.setText(
+                        'Arbiter daemons are DOWN ! %d on %d daemons are down.' % (
+                            total_bad_daemons, total_daemons
+                        )
+                    )
                     self.info.setStyleSheet('color: #e74c3c;')
                     send_banner('ALERT', 'Arbiter daemons are down !', duration=60000)
                     logger.critical('Arbiter daemons are down !')
