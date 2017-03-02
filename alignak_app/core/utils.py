@@ -166,25 +166,9 @@ def set_app_config(section, option, new_value):
 
     try:
         # Read configuration file and store in list
-        file_to_write = ''
-        data = ''
-        if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-            with open(get_filenames(), 'r') as config_file:
-                data = config_file.readlines()
-                file_to_write = get_filenames()  # pylint: disable=redefined-variable-type
-        elif 'win32' in sys.platform:  # pragma: no cover - not testable
-            for cfg_files in get_filenames():
-                try:
-                    with open(cfg_files, 'r') as config_file:
-                        data = config_file.readlines()
-                    file_to_write = cfg_files
-                except IOError as e:
-                    logger.warning(e)
-        else:
-            file_name = '%s/alignak_app/settings.cfg' % get_app_root()
-            with open(file_name) as config_file:
-                data = config_file.readlines()
-                file_to_write = file_name  # pylint: disable=redefined-variable-type
+        with open(get_filenames(), 'r') as config_file:
+            data = config_file.readlines()
+            file_to_write = get_filenames()
         # Update values
         for d in data:
             if option in d[0:len(option)]:
@@ -207,10 +191,17 @@ def get_image_path(name):
     :rtype: str
     """
 
-    img_path = get_app_root() \
-        + app_config.get('Config', 'path') \
-        + app_config.get('Config', 'img') \
-        + '/'
+    if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
+        img_path = get_app_root() \
+                   + app_config.get('Config', 'path') \
+                   + app_config.get('Config', 'img') \
+                   + '/'
+    elif 'win32' in sys.platform:  # pragma: no cover - not testable
+        img_path = get_app_root() \
+            + app_config.get('Config', 'img') \
+            + '/'
+    else:
+        img_path = '.'
 
     try:
         img = img_path + app_config.get('Images', name)
