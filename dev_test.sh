@@ -40,21 +40,11 @@ TEST_FOLDER=test/test_*.py
 
 # PYTHON VARS #########################################################
 
-# Python 2
+PIP="pip3"
+ARGS_PIP="--user"
 
-PIP_PY2="pip"
-ARGS_PIP_PY2="--user"
-
-CMD_TEST_PY2=~/.local/bin/nosetests
-TEST_ARGS_PY2="-xv --nologcapture --with-coverage --cover-package=${LIB_NAME}"
-
-# Python 3
-
-PIP_PY3="pip3"
-ARGS_PIP_PY3="--user"
-
-CMD_TEST_PY3=~/.local/bin/nosetests-3.4
-TEST_ARGS_PY3="-xv --nologcapture --with-coverage --cover-package=${LIB_NAME}"
+CMD_TEST=~/.local/bin/nosetests-3.4
+TEST_ARGS="-xv --nologcapture --with-coverage --cover-package=${LIB_NAME}"
 
 
 # INFO ################################################################
@@ -75,54 +65,42 @@ function go_to_dir {
 
 function uninstall_lib {
     # Uninstall library
-    if [ "$1" -eq 2 ]; then
-        sh -c "$PIP_PY2 uninstall -y $LIB_NAME"
-    else
-        sh -c "$PIP_PY3 uninstall -y $LIB_NAME"
-    fi
+    sh -c "$PIP uninstall -y $LIB_NAME"
+
 }
 
 function install_lib {
     # Install or upgrade library
-    if [ ! -z "$2" ]; then
-        flag="$2"
+    if [ ! -z "$1" ]; then
+        upgrade="$1"
     else
-        flag=""
+        upgrade=""
     fi
-
-    if [ "$1" -eq 2 ]; then
-        sh -c "$PIP_PY2 install . $ARGS_PIP_PY2 $flag"
-    else
-        sh -c "$PIP_PY3 install . $ARGS_PIP_PY3 $flag"
-    fi
+    echo "------------> $upgrade"
+    sh -c "$PIP install . $ARGS_PIP $upgrade"
 }
 
 function test_app {
     # Launch unit tests
-
-    if [ $1 = "py2" ]; then
-	    sh -c "$CMD_TEST_PY2 $TEST_ARGS_PY2 $TEST_FOLDER"
-    else
-        sh -c "$CMD_TEST_PY3 $TEST_ARGS_PY3 $TEST_FOLDER"
-    fi
+    sh -c "$CMD_TEST $TEST_ARGS $TEST_FOLDER"
 }
 
 function choose_step {
     # Choose between the function.
-    if [ "$2" = "upgrade" ]; then
+    if [ "$1" = "upgrade" ]; then
         go_to_dir
         step_msg "UPGRADE"
-        install_lib $1 "--$2"
-    elif [ "$2" = "remove" ]; then
+        install_lib "--$1"
+    elif [ "$1" = "remove" ]; then
         step_msg "UNINSTALL"
-        uninstall_lib $1
-    elif [ "$2" = "test" ]; then
+        uninstall_lib
+    elif [ "$1" = "test" ]; then
         step_msg  "RUN UNIT TESTS"
-        test_app $1
+        test_app
     else
         go_to_dir
         step_msg "INSTALLATION"
-        install_lib $1
+        install_lib
     fi
 }
 
@@ -133,10 +111,9 @@ function choose_step {
 #                                                                     #
 #######################################################################
 
-usage="$(basename "$0") [-h] [-p n] [-c command] -- script to test and install python libraries.
+usage="$(basename "$0") [-h] [-c command] -- script to test and install python libraries.
 
 -h  show this help text.
--p  [2|3] choose between python 2 or 3. [2] is default !
 -c  choose command to execute:
         - install : install library (default).
         - upgrade : upgrade library.
@@ -149,9 +126,6 @@ usage="$(basename "$0") [-h] [-p n] [-c command] -- script to test and install p
 while getopts 'h:p:c:' opt;
 do
     case "$opt" in
-    p)
-        py=$OPTARG
-        ;;
     c)
         cmd="$OPTARG"
         if [[ "$cmd" =~ ^(install|upgrade|remove|test|start)$ ]]; then
@@ -174,16 +148,11 @@ do
     esac
 done
 
-# Launch functions
-if [ -z "$py" ]; then
-    py=2
-fi
 
 step_msg "CONFIG"
-echo "Python version : $py"
 echo "Command : $cmd"
 
-choose_step "$py" "$cmd"
+choose_step "$cmd"
 
 if [ "$cmd" != "remove" -a "$cmd" != "test" ]; then
     step_msg "RUN COMMAND AFTER"
