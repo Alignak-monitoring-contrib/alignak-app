@@ -95,18 +95,13 @@ class HostSynthesis(QWidget):
         host_widget.setObjectName('host')
         host_layout = QGridLayout(host_widget)
 
-        # Overall State
-        host_services_status = QLabel('Host Services Status')
-        host_layout.addWidget(host_services_status, 0, 0, 1, 1)
-        host_layout.setAlignment(host_services_status, Qt.AlignCenter)
-
-        host_overall_state = QLabel()
-        host_overall_state.setPixmap(self.get_real_state_icon(backend_data['services']))
-        host_overall_state.setFixedSize(72, 72)
-        host_overall_state.setScaledContents(True)
-        host_overall_state.setToolTip(self.get_real_state_text(backend_data['services']))
-        host_layout.addWidget(host_overall_state, 1, 0, 1, 1)
-        host_layout.setAlignment(host_overall_state, Qt.AlignCenter)
+        overall_state_img = QLabel()
+        overall_state_img.setPixmap(self.get_real_state_icon(backend_data['services']))
+        overall_state_img.setFixedSize(72, 72)
+        overall_state_img.setScaledContents(True)
+        overall_state_img.setToolTip(self.get_real_state_text(backend_data['services']))
+        host_layout.addWidget(overall_state_img, 0, 0, 2, 1)
+        host_layout.setAlignment(overall_state_img, Qt.AlignCenter)
 
         # Hostname
         host_name = QLabel()
