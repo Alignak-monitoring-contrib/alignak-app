@@ -27,8 +27,7 @@ from logging import getLogger
 from alignak_app.core.utils import get_image_path, get_css
 
 from PyQt5.Qt import QWidget, QLabel, QGridLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPixmap, QProgressBar, QFrame  # pylint: disable=no-name-in-module
-from PyQt5.QtCore import Qt  # pylint: disable=import-error
+from PyQt5.Qt import QPixmap, QProgressBar, QFrame, Qt  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
