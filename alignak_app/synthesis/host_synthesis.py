@@ -37,6 +37,7 @@ from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-
 from PyQt5.QtWidgets import QStackedWidget, QScrollArea  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QIcon, QPixmap, QListWidget, QDialog  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QTimer, QListWidgetItem, Qt, QCheckBox  # pylint: disable=no-name-in-module
+from PyQt5.QtGui import QFont
 
 
 logger = getLogger(__name__)
@@ -176,13 +177,9 @@ class HostSynthesis(QWidget):
         output.setObjectName('output')
         output.setTextInteractionFlags(Qt.TextSelectableByMouse)
         output.setCursor(Qt.IBeamCursor)
-        scroll = QScrollArea()
-        scroll.setWidget(output)
-        scroll.setObjectName('output')
-        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll.setMinimumWidth(500)
-        scroll.setMaximumHeight(60)
-        host_layout.addWidget(scroll, 3, 2, 1, 2)
+        output.setFont(QFont('Times', 14))
+        output.setWordWrap(True)
+        host_layout.addWidget(output, 3, 2, 1, 4)
 
         alias = QLabel('<b>Alias:</b> %s' % backend_data['host']['alias'])
         host_layout.addWidget(alias, 0, 3, 1, 1)
@@ -363,8 +360,8 @@ class HostSynthesis(QWidget):
         self.services_list.setMinimumHeight(155)
         self.services_list.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
-        services_layout.addWidget(self.services_list, row, 1, 5, 5)
-        services_layout.addWidget(self.stack, row + 5, 0, 1, 5)
+        services_layout.addWidget(self.services_list, row, 1, 5, 7)
+        services_layout.addWidget(self.stack, row + 5, 0, 1, 9)
 
         # Sorted services
         def get_key(item):

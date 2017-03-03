@@ -32,6 +32,7 @@ from PyQt5.QtWidgets import QScrollArea, QHBoxLayout  # pylint: disable=no-name-
 from PyQt5.QtWidgets import QWidget, QPushButton, QFrame  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QIcon, QPixmap, Qt  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QLabel   # pylint: disable=no-name-in-module
+from PyQt5.QtGui import QFont
 
 
 logger = getLogger(__name__)
@@ -122,18 +123,14 @@ class Service(QFrame):
         layout.addWidget(last_check, 0, 3, 1, 2)
 
         # Output
-        output_service = QLabel('<b>Output:</b> %s' % service['ls_output'])
-        output_service.setObjectName('output')
-        output_service.setToolTip(service['ls_output'])
-        output_service.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        output_service.setCursor(Qt.IBeamCursor)
-
-        scroll = QScrollArea()
-        scroll.setWidget(output_service)
-        scroll.setObjectName('output')
-        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll.setMaximumHeight(60)
-        layout.addWidget(scroll, 1, 3, 2, 2)
+        output = QLabel('<b>Output:</b> %s' % service['ls_output'])
+        output.setObjectName('output')
+        output.setToolTip(service['ls_output'])
+        output.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        output.setCursor(Qt.IBeamCursor)
+        output.setFont(QFont('Times', 13))
+        output.setWordWrap(True)
+        layout.addWidget(output, 1, 3, 2, 4)
 
         self.add_services_details(service, layout)
 
