@@ -99,5 +99,6 @@ class TestUtils(unittest2.TestCase):
         expected_img = utils.get_app_root() + '/alignak_app/images/icon.svg'
 
         under_test = utils.get_image_path('icon')
+        print(under_test)
 
         self.assertEqual(under_test, expected_img)

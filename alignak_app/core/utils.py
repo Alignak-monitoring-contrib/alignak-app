@@ -30,7 +30,8 @@ import time
 from logging import getLogger
 
 import configparser
-from configparser import NoOptionError
+from configparser import NoOptionError, NoSectionError
+from alignak_app import __project_url__
 
 
 logger = getLogger(__name__)
@@ -66,7 +67,9 @@ default_parameters = {
     'duration': 8,
     'position': 'top:right',
     'animation': 1000,
-    'debug': False,
+    'filename': 'alignakapp',
+    'location': False,
+    'debug': True,
     'username': '',
     'password': '',
     'url': 'http://127.0.0.1',
@@ -101,7 +104,7 @@ def get_filenames():  # pylint: disable=redefined-variable-type
     :rtype: str|list
     """
 
-    if 'linux' in sys.platform or 'sunos5' in sys.platform:
+    if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
         config_filenames = '%s/alignak_app/settings.cfg' % get_app_root()
     elif 'win32' in sys.platform:  # pragma: no cover - not testable
         config_filenames = '%s\\settings.cfg' % get_app_root()
@@ -141,14 +144,14 @@ def get_app_config(section, option, boolean=False):
     if boolean:
         try:
             return app_config.getboolean(section, option)
-        except NoOptionError as e:
+        except (NoOptionError, NoSectionError) as e:
             logger.error('Missing Option in configuration file : %s', str(e))
             logger.error('Replace by > %s: %s', option, str(default_parameters[option]))
             return default_parameters[option]
     else:
         try:
             return app_config.get(section, option)
-        except NoOptionError as e:
+        except (NoOptionError, NoSectionError) as e:
             logger.error('Missing Option in configuration file : %s', str(e))
             logger.error('Replace by > %s: %s', option, str(default_parameters[option]))
             return default_parameters[option]
@@ -179,6 +182,8 @@ def set_app_config(section, option, new_value):
     except NoOptionError as e:
         logger.error('Can\'t set Option in configuration file : ' + str(e))
 
+error_config = 0
+
 
 def get_image_path(name):
     """
@@ -190,24 +195,48 @@ def get_image_path(name):
     :rtype: str
     """
 
-    if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-        img_path = get_app_root() \
-            + app_config.get('Config', 'path') \
-            + app_config.get('Config', 'img') \
-            + '/'
-    elif 'win32' in sys.platform:  # pragma: no cover - not testable
-        img_path = get_app_root() \
-            + app_config.get('Config', 'img') \
-            + '/'
-    else:
-        img_path = '.'
+    global error_config  # pylint: disable=global-statement
+
+    img_path = get_app_root()
 
     try:
-        img = img_path + app_config.get('Images', name)
+        if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
+            img_path = '%s%s%s/' % (
+                get_app_root(),
+                app_config.get('Config', 'path'),
+                app_config.get('Config', 'img')
+            )
+        elif 'win32' in sys.platform:  # pragma: no cover - not testable
+            img_path = '%s%s/' % (get_app_root(), app_config.get('Config', 'img'))
+        else:
+            img_path = '.'
+
+        img = '%s%s' % (img_path, app_config.get('Images', name))
+
         return img
-    except NoOptionError as e:
+    except (NoOptionError, NoSectionError) as e:
         logger.error('Bad Option : ' + str(e))
-        return img_path + app_config.get('Images', 'error')
+
+        error_config += 1
+        if error_config < 5:
+            if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
+                return img_path + '/alignak_app/images/error.svg'
+            elif 'win32' in sys.platform:
+                return img_path + '/images/error.svg'
+        else:
+            if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
+                img_path += '/alignak_app'
+                sys.exit(
+                    'Alignak has stop because too many error. '
+                    'We can\'t load your files. Please check your %s folder.' % img_path
+                )
+            elif 'win32' in sys.platform:
+                sys.exit(
+                    'Alignak has stop because too many error. '
+                    'We can\'t load your files. Please check your %s folder.' % img_path
+                )
+            else:
+                sys.exit('Your system seems not compatible. Please consult: %s' % __project_url__)
 
 
 def get_diff_since_last_check(last_check):
@@ -279,6 +308,6 @@ def get_css():
         else:
             with open('%s/css/style.css' % get_app_root()) as css:
                 return css.read()
-    except IOError as e:
+    except (IOError, NoSectionError) as e:
         logger.error('CSS File is missing : %s', str(e))
         return ""

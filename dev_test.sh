@@ -55,7 +55,8 @@ TEST_ARGS="-xv --nologcapture --with-coverage --cover-package=${LIB_NAME}"
 
 function step_msg {
     echo -e "
----------------------> [ $1 ]..."
+# $1 ################################################################
+"
 }
 
 function go_to_dir {
