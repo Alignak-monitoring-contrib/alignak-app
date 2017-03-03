@@ -75,7 +75,6 @@ default_parameters = {
     'processes': '1',
     'path': '/alignak_app',
     'img': '/images',
-    'tpl': '/templates',
     'icon': 'alignak.svg',
     'about': 'about.svg',
     'exit': 'exit.svg',
