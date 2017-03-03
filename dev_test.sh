@@ -60,7 +60,6 @@ function step_msg {
 }
 
 function go_to_dir {
-    step_msg  "CD $WORKSPACE"
     cd "$WORKSPACE"
 }
 
@@ -150,8 +149,8 @@ do
 done
 
 
-step_msg "CONFIG"
-echo "Command : $cmd"
+step_msg "COMMAND"
+echo "--[ $cmd ] --"
 
 choose_step "$cmd"
 
