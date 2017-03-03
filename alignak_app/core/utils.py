@@ -226,17 +226,15 @@ def get_image_path(name):
         else:
             if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
                 img_path += '/alignak_app'
-                sys.exit(
-                    'Alignak has stop because too many error. '
+                error_msg = 'Alignak has stop because too many error. ' \
                     'We can\'t load your files. Please check your %s folder.' % img_path
-                )
             elif 'win32' in sys.platform:
-                sys.exit(
-                    'Alignak has stop because too many error. '
+                error_msg = 'Alignak has stop because too many error. ' \
                     'We can\'t load your files. Please check your %s folder.' % img_path
-                )
             else:
-                sys.exit('Your system seems not compatible. Please consult: %s' % __project_url__)
+                error_msg = 'Your system seems not compatible. Please consult: %s' % __project_url__
+            logger.error(error_msg)
+            sys.exit(error_msg)
 
 
 def get_diff_since_last_check(last_check):
