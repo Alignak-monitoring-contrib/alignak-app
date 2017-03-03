@@ -24,10 +24,9 @@ Features
 
 Alignak-App has many features:
 
-  * Support Python 2.7 and Python 3, PyQt4 and PyQt5. (Python 3.5 is recommended)
   * Multi-platfom: Linux / Windows
   * Multi-screen: notifies you on your active screen
-  * Customizable: notifications interval, duration and position, use your own icons
+  * Many configurations
   * Links to your `Alignak WebUI`_ from the menus
   * Search Hosts and Services, acknowledge problems, schedule downtimes and more
 
