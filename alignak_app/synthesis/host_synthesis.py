@@ -163,7 +163,7 @@ class HostSynthesis(QWidget):
         output.setObjectName('output')
         output.setTextInteractionFlags(Qt.TextSelectableByMouse)
         output.setCursor(Qt.IBeamCursor)
-        output.setFont(QFont('Times', 14))
+        output.setFont(QFont('Times', 13))
         output.setWordWrap(True)
         host_layout.addWidget(output, 1, 2, 1, 2)
 
