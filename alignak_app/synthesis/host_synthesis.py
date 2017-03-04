@@ -177,9 +177,9 @@ class HostSynthesis(QWidget):
         host_layout.setAlignment(stars_widget, Qt.AlignLeft)
 
         actions_widget = Service.get_actions_state(
-                backend_data['host']['ls_acknowledged'],
-                backend_data['host']['ls_downtimed']
-            )
+            backend_data['host']['ls_acknowledged'],
+            backend_data['host']['ls_downtimed']
+        )
         host_layout.addWidget(actions_widget, 3, 2, 1, 1)
 
     def create_buttons(self, host_layout, backend_data):
