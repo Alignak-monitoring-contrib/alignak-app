@@ -28,10 +28,10 @@ from logging import getLogger
 from alignak_app.core.utils import get_diff_since_last_check, get_css
 from alignak_app.core.utils import get_image_path, get_app_config
 
-from PyQt5.QtWidgets import QScrollArea, QHBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QHBoxLayout  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QWidget, QPushButton, QFrame  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QIcon, QPixmap, Qt  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QGridLayout, QLabel   # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QGridLayout, QLabel  # pylint: disable=no-name-in-module
 from PyQt5.QtGui import QFont  # pylint: disable=no-name-in-module
 
 
@@ -133,6 +133,58 @@ class Service(QFrame):
         layout.addWidget(output, 1, 3, 2, 4)
 
         self.add_services_details(service, layout)
+
+    @staticmethod
+    def get_actions_state(ack, dowtime):
+        """
+        Return actions with icon
+
+        :param ack: ls_acknowledged of host
+        :type ack: bool
+        :param dowtime: ls_downtimed of host
+        :type dowtime: bool
+        :return: actions state QWidget
+        :rtype: QWidget
+        """
+
+        pixmap = {
+            True: QPixmap(get_image_path('checked')),
+            False: QPixmap(get_image_path('cross'))
+        }
+
+        action_widget = QWidget()
+        action_widget.setStyleSheet(
+            """
+            background-color: #607d8b;
+            border: none;
+            color: white;
+            """
+        )
+        action_layout = QGridLayout(action_widget)
+
+        ack_text = QLabel('Acknowledged:')
+        action_layout.addWidget(ack_text, 0, 0)
+        action_layout.setAlignment(ack_text, Qt.AlignLeft)
+
+        ack_state = QLabel()
+        ack_state.setPixmap(pixmap[ack])
+        ack_state.setFixedSize(12, 12)
+        ack_state.setScaledContents(True)
+        action_layout.addWidget(ack_state, 0, 1)
+        action_layout.setAlignment(ack_state, Qt.AlignLeft)
+
+        down_text = QLabel('Downtimed:')
+        action_layout.addWidget(down_text, 1, 0)
+        action_layout.setAlignment(down_text, Qt.AlignLeft)
+
+        down_state = QLabel()
+        down_state.setPixmap(pixmap[dowtime])
+        down_state.setFixedSize(12, 12)
+        down_state.setScaledContents(True)
+        action_layout.addWidget(down_state, 1, 1)
+        action_layout.setAlignment(down_state, Qt.AlignLeft)
+
+        return action_widget
 
     def add_services_details(self, service, layout):
         """

@@ -69,13 +69,10 @@ class HostSynthesis(QWidget):
         """
 
         if backend_data:
-            main_layout = QVBoxLayout(self)
             self.host = backend_data['host']
 
-            host_widget = self.get_host_widget(backend_data)
-            main_layout.addWidget(host_widget)
-            main_layout.setAlignment(host_widget, Qt.AlignCenter)
-
+            main_layout = QVBoxLayout(self)
+            main_layout.addWidget(self.get_host_widget(backend_data))
             main_layout.addWidget(self.get_services_widget(backend_data))
 
             action_timer = QTimer(self)
@@ -155,23 +152,12 @@ class HostSynthesis(QWidget):
         :type backend_data: dict
         """
 
-        # Host details
-        acknowledge = QLabel(
-            '<b>Acknowledged:</b> %s' % HostSynthesis.state[backend_data['host']['ls_acknowledged']]
-        )
-        host_layout.addWidget(acknowledge, 0, 2, 1, 1)
-
-        downtime = QLabel(
-            '<b>Downtimed:</b> %s' % HostSynthesis.state[backend_data['host']['ls_downtimed']]
-        )
-        host_layout.addWidget(downtime, 1, 2, 1, 1)
-
         since_last_check = get_diff_since_last_check(backend_data['host']['ls_last_state_changed'])
         diff_last_check = get_diff_since_last_check(backend_data['host']['ls_last_check'])
         host_last_check = QLabel(
             '<b>Since:</b> %s <b>Last check:</b> %s' % (since_last_check, diff_last_check)
         )
-        host_layout.addWidget(host_last_check, 2, 2, 1, 1)
+        host_layout.addWidget(host_last_check, 0, 2, 1, 2)
 
         output = QLabel('<b>Output:</b> %s' % backend_data['host']['ls_output'])
         output.setObjectName('output')
@@ -179,13 +165,10 @@ class HostSynthesis(QWidget):
         output.setCursor(Qt.IBeamCursor)
         output.setFont(QFont('Times', 14))
         output.setWordWrap(True)
-        host_layout.addWidget(output, 3, 2, 1, 4)
-
-        alias = QLabel('<b>Alias:</b> %s' % backend_data['host']['alias'])
-        host_layout.addWidget(alias, 0, 3, 1, 1)
+        host_layout.addWidget(output, 1, 2, 1, 2)
 
         address = QLabel('<b>Address:</b> %s' % backend_data['host']['address'])
-        host_layout.addWidget(address, 1, 3, 1, 1)
+        host_layout.addWidget(address, 2, 2, 1, 1)
 
         stars_widget = Service.get_stars_widget(
             int(backend_data['host']['business_impact'])
@@ -193,8 +176,11 @@ class HostSynthesis(QWidget):
         host_layout.addWidget(stars_widget, 2, 3, 1, 1)
         host_layout.setAlignment(stars_widget, Qt.AlignLeft)
 
-        parents = QLabel('<b>Parents:</b> %s' % str(backend_data['host']['parents']))
-        host_layout.addWidget(parents, 0, 4, 1, 1)
+        actions_widget = Service.get_actions_state(
+                backend_data['host']['ls_acknowledged'],
+                backend_data['host']['ls_downtimed']
+            )
+        host_layout.addWidget(actions_widget, 3, 2, 1, 1)
 
     def create_buttons(self, host_layout, backend_data):
         """
@@ -329,7 +315,7 @@ class HostSynthesis(QWidget):
             services_layout.addWidget(self.check_boxes[aggregation], row, col, 1, 1)
 
             col += 1
-            if col == 5:
+            if col == 6:
                 row += 1
                 col = 1
 
@@ -360,8 +346,8 @@ class HostSynthesis(QWidget):
         self.services_list.setMinimumHeight(155)
         self.services_list.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
-        services_layout.addWidget(self.services_list, row, 1, 5, 7)
-        services_layout.addWidget(self.stack, row + 5, 0, 1, 9)
+        services_layout.addWidget(self.services_list, row, 1, 5, 5)
+        services_layout.addWidget(self.stack, row + 5, 0, 1, 6)
 
         # Sorted services
         def get_key(item):
