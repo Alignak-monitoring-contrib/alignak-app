@@ -34,10 +34,10 @@ from alignak_app.synthesis.actions import Acknowledge, Downtime
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QLabel  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QStackedWidget, QScrollArea  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QStackedWidget  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QIcon, QPixmap, QListWidget, QDialog  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QTimer, QListWidgetItem, Qt, QCheckBox  # pylint: disable=no-name-in-module
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont  # pylint: disable=no-name-in-module
 
 
 logger = getLogger(__name__)

@@ -32,7 +32,7 @@ from PyQt5.QtWidgets import QScrollArea, QHBoxLayout  # pylint: disable=no-name-
 from PyQt5.QtWidgets import QWidget, QPushButton, QFrame  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QIcon, QPixmap, Qt  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QLabel   # pylint: disable=no-name-in-module
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont  # pylint: disable=no-name-in-module
 
 
 logger = getLogger(__name__)
