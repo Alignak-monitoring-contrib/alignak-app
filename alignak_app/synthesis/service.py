@@ -147,9 +147,15 @@ class Service(QFrame):
         :rtype: QWidget
         """
 
-        pixmap = {
-            True: QPixmap(get_image_path('checked')),
-            False: QPixmap(get_image_path('cross'))
+        icon_action = {
+            True: {
+                'icon': QPixmap(get_image_path('checked')),
+                'size': 14
+            },
+            False: {
+                'icon': QPixmap(get_image_path('cross')),
+                'size': 12
+            }
         }
 
         action_widget = QWidget()
@@ -167,8 +173,8 @@ class Service(QFrame):
         action_layout.setAlignment(ack_text, Qt.AlignLeft)
 
         ack_state = QLabel()
-        ack_state.setPixmap(pixmap[ack])
-        ack_state.setFixedSize(12, 12)
+        ack_state.setPixmap(icon_action[ack]['icon'])
+        ack_state.setFixedSize(icon_action[ack]['size'], icon_action[ack]['size'])
         ack_state.setScaledContents(True)
         action_layout.addWidget(ack_state, 0, 1)
         action_layout.setAlignment(ack_state, Qt.AlignLeft)
@@ -178,8 +184,8 @@ class Service(QFrame):
         action_layout.setAlignment(down_text, Qt.AlignLeft)
 
         down_state = QLabel()
-        down_state.setPixmap(pixmap[dowtime])
-        down_state.setFixedSize(12, 12)
+        down_state.setPixmap(icon_action[dowtime]['icon'])
+        down_state.setFixedSize(icon_action[dowtime]['size'], icon_action[dowtime]['size'])
         down_state.setScaledContents(True)
         action_layout.addWidget(down_state, 1, 1)
         action_layout.setAlignment(down_state, Qt.AlignLeft)
