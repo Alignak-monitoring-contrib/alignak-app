@@ -48,6 +48,8 @@ class TestService(unittest2.TestCase):
         'business_impact': '2',
         'customs': {},
         'ls_last_state_changed': 0,
+        'ls_acknowledged': True,
+        'ls_downtimed': False,
     }
 
     @classmethod
