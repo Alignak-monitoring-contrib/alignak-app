@@ -37,7 +37,7 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QLabel  # pylint: disable=no-n
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QStackedWidget  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QIcon, QPixmap, QListWidget, QDialog  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QTimer, QListWidgetItem, Qt, QCheckBox  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QTimer, Qt, QCheckBox, QTextEdit  # pylint: disable=no-name-in-module
 from PyQt5.QtGui import QFont  # pylint: disable=no-name-in-module
 
 
@@ -96,7 +96,6 @@ class HostSynthesis(QWidget):
 
         overall_state_img = QLabel()
         overall_state_img.setPixmap(self.get_real_state_icon(backend_data['services']))
-        overall_state_img.setFixedSize(72, 72)
         overall_state_img.setScaledContents(True)
         overall_state_img.setToolTip(self.get_real_state_text(backend_data['services']))
         host_layout.addWidget(overall_state_img, 0, 0, 2, 1)
@@ -160,12 +159,10 @@ class HostSynthesis(QWidget):
         )
         host_layout.addWidget(host_last_check, 0, 2, 1, 2)
 
-        output = QLabel('<b>Output:</b> %s' % backend_data['host']['ls_output'])
+        output = QTextEdit('<b>Output:</b> %s' % backend_data['host']['ls_output'])
         output.setObjectName('output')
         output.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        output.setCursor(Qt.IBeamCursor)
         output.setFont(QFont('Times', 13))
-        output.setWordWrap(True)
         host_layout.addWidget(output, 1, 2, 1, 2)
 
         address = QLabel('<b>Address:</b> %s' % backend_data['host']['address'])

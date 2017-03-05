@@ -30,7 +30,7 @@ from alignak_app.core.utils import get_image_path, get_app_config
 
 from PyQt5.QtWidgets import QHBoxLayout  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QWidget, QPushButton, QFrame  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QIcon, QPixmap, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QIcon, QPixmap, Qt, QTextEdit  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QLabel  # pylint: disable=no-name-in-module
 from PyQt5.QtGui import QFont  # pylint: disable=no-name-in-module
 
@@ -123,14 +123,17 @@ class Service(QFrame):
         layout.addWidget(last_check, 0, 3, 1, 2)
 
         # Output
-        output = QLabel('<b>Output:</b> %s' % service['ls_output'])
+        output = QTextEdit('<b>Output:</b> %s' % service['ls_output'])
         output.setObjectName('output')
         output.setToolTip(service['ls_output'])
         output.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        output.setCursor(Qt.IBeamCursor)
         output.setFont(QFont('Times', 13))
-        output.setWordWrap(True)
         layout.addWidget(output, 1, 3, 2, 4)
+
+        # Service details
+        business_impact = self.get_stars_widget(int(service['business_impact']))
+        layout.addWidget(business_impact, 2, 0, 1, 2)
+        layout.setAlignment(business_impact, Qt.AlignLeft)
 
         self.add_services_details(service, layout)
 
@@ -202,35 +205,33 @@ class Service(QFrame):
         :type layout: QGridLayout
         """
 
-        # Service details
-        business_impact = self.get_stars_widget(int(service['business_impact']))
-        layout.addWidget(business_impact, 3, 0, 2, 2)
-        layout.setAlignment(business_impact, Qt.AlignLeft)
+        detailledesc = False
+        impact = False
+        fixactions = False
 
         if '_DETAILLEDESC' in service['customs']:
-            description = service['customs']['_DETAILLEDESC']
-        else:
-            description = ''
+            desc_label = QLabel('<b>Description:</b> %s' % service['customs']['_DETAILLEDESC'])
+            desc_label.setWordWrap(True)
+            layout.addWidget(desc_label, 3, 0, 1, 4)
+            detailledesc = True
+
         if '_IMPACT' in service['customs']:
-            impact = service['customs']['_IMPACT']
-        else:
-            impact = ''
+            impact_label = QLabel('<b>Impact:</b> %s' % service['customs']['_IMPACT'])
+            impact_label.setWordWrap(True)
+            layout.addWidget(impact_label, 4, 0, 1, 4)
+            impact = True
+
         if '_FIXACTIONS' in service['customs']:
-            fix_actions = service['customs']['_FIXACTIONS']
-        else:
-            fix_actions = ''
+            fixactions_label = QLabel('<b>Fix actions:</b> %s' % service['customs']['_FIXACTIONS'])
+            fixactions_label.setWordWrap(True)
+            layout.addWidget(fixactions_label, 5, 0, 1, 4)
+            fixactions = True
 
-        desc_label = QLabel('<b>Description:</b> %s' % description)
-        desc_label.setWordWrap(True)
-        layout.addWidget(desc_label, 3, 2, 2, 3)
-
-        impact_label = QLabel('<b>Impact:</b> %s' % impact)
-        impact_label.setWordWrap(True)
-        layout.addWidget(impact_label, 5, 0, 2, 2)
-
-        fixactions_label = QLabel('<b>Fix actions:</b> %s' % fix_actions)
-        fixactions_label.setWordWrap(True)
-        layout.addWidget(fixactions_label, 5, 2, 2, 3)
+        if not detailledesc and not impact and not fixactions:
+            layout.addWidget(
+                QLabel('<i>No customs actions defined for this service</i>'),
+                3, 2, 1, 4
+            )
 
     def get_service_icon(self, state):
         """
