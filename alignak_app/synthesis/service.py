@@ -137,6 +137,9 @@ class Service(QFrame):
 
         self.add_services_details(service, layout)
 
+        action_widget = self.get_actions_state(service['ls_acknowledged'], service['ls_downtimed'])
+        layout.addWidget(action_widget, 3, 5, 2, 1)
+
     @staticmethod
     def get_actions_state(ack, dowtime):
         """
@@ -153,15 +156,16 @@ class Service(QFrame):
         icon_action = {
             True: {
                 'icon': QPixmap(get_image_path('checked')),
-                'size': 14
+                'size': 10
             },
             False: {
                 'icon': QPixmap(get_image_path('cross')),
-                'size': 12
+                'size': 8
             }
         }
 
         action_widget = QWidget()
+        action_widget.setFixedSize(200, 60)
         action_widget.setStyleSheet(
             """
             background-color: #607d8b;
@@ -172,6 +176,7 @@ class Service(QFrame):
         action_layout = QGridLayout(action_widget)
 
         ack_text = QLabel('Acknowledged:')
+        ack_text.setFont(QFont('Times', 9))
         action_layout.addWidget(ack_text, 0, 0)
         action_layout.setAlignment(ack_text, Qt.AlignLeft)
 
@@ -183,6 +188,7 @@ class Service(QFrame):
         action_layout.setAlignment(ack_state, Qt.AlignLeft)
 
         down_text = QLabel('Downtimed:')
+        down_text.setFont(QFont('Times', 9))
         action_layout.addWidget(down_text, 1, 0)
         action_layout.setAlignment(down_text, Qt.AlignLeft)
 
@@ -195,9 +201,10 @@ class Service(QFrame):
 
         return action_widget
 
-    def add_services_details(self, service, layout):
+    @staticmethod
+    def add_services_details(service, layout):
         """
-        Add the service details
+        Add the service customs actions only if needed
 
         :param service: service dict data from AppBackend
         :type service: dict
@@ -209,28 +216,32 @@ class Service(QFrame):
         impact = False
         fixactions = False
 
+        row = 3
         if '_DETAILLEDESC' in service['customs']:
             desc_label = QLabel('<b>Description:</b> %s' % service['customs']['_DETAILLEDESC'])
             desc_label.setWordWrap(True)
-            layout.addWidget(desc_label, 3, 0, 1, 4)
+            layout.addWidget(desc_label, row, 0, 1, 4)
             detailledesc = True
+            row += 1
 
         if '_IMPACT' in service['customs']:
             impact_label = QLabel('<b>Impact:</b> %s' % service['customs']['_IMPACT'])
             impact_label.setWordWrap(True)
-            layout.addWidget(impact_label, 4, 0, 1, 4)
+            layout.addWidget(impact_label, row, 0, 1, 4)
             impact = True
+            row += 1
 
         if '_FIXACTIONS' in service['customs']:
             fixactions_label = QLabel('<b>Fix actions:</b> %s' % service['customs']['_FIXACTIONS'])
             fixactions_label.setWordWrap(True)
-            layout.addWidget(fixactions_label, 5, 0, 1, 4)
+            layout.addWidget(fixactions_label, row, 0, 1, 4)
             fixactions = True
+            row += 1
 
         if not detailledesc and not impact and not fixactions:
             layout.addWidget(
                 QLabel('<i>No customs actions defined for this service</i>'),
-                3, 2, 1, 4
+                row, 2, 1, 4
             )
 
     def get_service_icon(self, state):
