@@ -31,6 +31,7 @@ from alignak_app.core.action_manager import ACK, DOWNTIME, PROCESS
 from alignak_app.widgets.banner import send_banner
 from alignak_app.synthesis.service import Service
 from alignak_app.synthesis.actions import Acknowledge, Downtime
+from alignak_app.synthesis.service_widget_item import ServiceListWidgetItem
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QLabel  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
@@ -229,8 +230,8 @@ class HostSynthesis(QWidget):
 
         for i in range(self.services_list.count()):
             sender_filter = str(self.sender().text()).split(':')[0]
-            item_aggregation = str(self.services_list.item(i).text()).split('[')[2].split(']')[0]
-            item_state = str(self.services_list.item(i).text()).split('[')[1].split(']')[0]
+            item_aggregation = str(self.services_list.item(i).aggregation)
+            item_state = str(self.services_list.item(i).state)
 
             if sender_filter == item_aggregation:
                 if self.sender().isChecked() and self.check_boxes[item_state].isChecked():
@@ -303,11 +304,11 @@ class HostSynthesis(QWidget):
 
         for service in services_list:
             if service['aggregation']:
-                if service['aggregation'].capitalize() not in aggregations:
-                    aggregations.append(service['aggregation'].capitalize())
+                if service['aggregation'] not in aggregations:
+                    aggregations.append(service['aggregation'])
 
         for aggregation in aggregations:
-            self.check_boxes[aggregation] = QCheckBox(aggregation.capitalize())
+            self.check_boxes[aggregation] = QCheckBox(aggregation)
             self.check_boxes[aggregation].setIcon(QIcon(get_image_path('tree')))
             self.check_boxes[aggregation].setObjectName('aggregation')
             self.check_boxes[aggregation].setChecked(True)
@@ -372,17 +373,10 @@ class HostSynthesis(QWidget):
 
             # Connect ACK button
             service_widget.acknowledge_btn.clicked.connect(self.add_acknowledge)
-            if service['display_name'] != '':
-                service_name = service['display_name']
-            elif service['alias'] != '':
-                service_name = service['alias']
-            else:
-                service_name = service['name']
-
             service_widget.acknowledge_btn.setObjectName(
                 'service:%s:%s' % (
                     service['_id'],
-                    service_name,
+                    ServiceListWidgetItem.get_service_name(service),
                 )
             )
             if 'OK' in service['ls_state'] \
@@ -393,7 +387,9 @@ class HostSynthesis(QWidget):
             # Connect DOWN button
             service_widget.downtime_btn.clicked.connect(self.add_downtime)
             service_widget.downtime_btn.setObjectName(
-                'service:%s:%s' % (service['_id'], service_name)
+                'service:%s:%s' % (
+                    service['_id'],
+                    ServiceListWidgetItem.get_service_name(service))
             )
             if service['ls_downtimed'] or service['_id'] in self.action_manager.downtimed:
                 service_widget.downtime_btn.setEnabled(False)
@@ -402,25 +398,8 @@ class HostSynthesis(QWidget):
             self.stack.addWidget(service_widget)
 
             # Add item to QListWidget
-            list_item = QListWidgetItem()
-            if service['ls_acknowledged']:
-                img = get_image_path('services_acknowledge')
-            elif service['ls_downtimed']:
-                img = get_image_path('services_downtime')
-            else:
-                img = get_image_path('services_%s' % service['ls_state'])
-
-            if not service['aggregation']:
-                service['aggregation'] = 'Global'
-
-            list_item.setText(
-                '%s - Status: [%s] - Aggregation: [%s]' % (
-                    service_name.capitalize(),
-                    service['ls_state'],
-                    service['aggregation'].capitalize()
-                )
-            )
-            list_item.setIcon(QIcon(img))
+            list_item = ServiceListWidgetItem()
+            list_item.initialize(service)
 
             self.services_list.addItem(list_item)
 
