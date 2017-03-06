@@ -222,12 +222,7 @@ QPushButton#search:hover {
     background-color: #03a9f4;
 }
 
-QLabel#output {
-    background-color: white;
-    color: black;
-}
-
-QScrollArea#output, QLabel#output {
+QTextEdit#output {
     border: none;
     background-color: #eee;
 }
