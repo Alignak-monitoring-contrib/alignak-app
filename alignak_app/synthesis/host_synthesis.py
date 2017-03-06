@@ -231,7 +231,9 @@ class HostSynthesis(QWidget):
             item_state = str(self.services_list.item(i).state)
 
             if sender_filter == item_aggregation:
-                if self.sender().isChecked() and self.check_boxes[item_state].isChecked():
+                if self.sender().isChecked() \
+                        and self.check_boxes[item_state].isChecked() \
+                        and item_aggregation:
                     self.services_list.item(i).setHidden(False)
                 else:
                     self.services_list.item(i).setHidden(True)
