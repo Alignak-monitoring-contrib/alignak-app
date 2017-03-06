@@ -165,7 +165,7 @@ class TestHostSynthesis(unittest2.TestCase):
 
         under_test = HostSynthesis(self.action_manager)
 
-        host_icon_test = under_test.get_host_icon('UP')
+        host_icon_test = under_test.get_host_icon(self.backend_data['host'])
 
         self.assertIsInstance(host_icon_test, QPixmap)
 

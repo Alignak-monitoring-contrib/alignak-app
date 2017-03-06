@@ -74,7 +74,13 @@ class HostSynthesis(QWidget):
 
             main_layout = QVBoxLayout(self)
             main_layout.addWidget(self.get_host_widget(backend_data))
-            main_layout.addWidget(self.get_services_widget(backend_data))
+            if backend_data['services']:
+                main_layout.addWidget(self.get_services_widget(backend_data))
+            else:
+                nothing = QLabel('<b>No services defined for this host.</b>')
+                nothing.setFixedHeight(400)
+                main_layout.addWidget(nothing)
+                main_layout.setAlignment(nothing, Qt.AlignHCenter)
 
             action_timer = QTimer(self)
             action_timer.start(4000)
@@ -124,10 +130,10 @@ class HostSynthesis(QWidget):
 
         # Real State
         host_real_state = QLabel()
-        host_real_state.setPixmap(self.get_host_icon(backend_data['host']['ls_state']))
+        host_real_state.setPixmap(self.get_host_icon(backend_data['host']))
         host_real_state.setFixedSize(48, 48)
         host_real_state.setScaledContents(True)
-        host_real_state.setToolTip('Host is %s' % backend_data['host']['ls_state'])
+        host_real_state.setToolTip(self.get_host_tooltip(backend_data['host']))
         host_layout.addWidget(host_real_state, 3, 0, 1, 1)
         host_layout.setAlignment(host_real_state, Qt.AlignCenter)
 
@@ -173,12 +179,6 @@ class HostSynthesis(QWidget):
         )
         host_layout.addWidget(stars_widget, 2, 3, 1, 1)
         host_layout.setAlignment(stars_widget, Qt.AlignLeft)
-
-        actions_widget = Service.get_actions_state(
-            backend_data['host']['ls_acknowledged'],
-            backend_data['host']['ls_downtimed']
-        )
-        host_layout.addWidget(actions_widget, 3, 2, 1, 1)
 
     def create_buttons(self, host_layout, backend_data):
         """
@@ -336,7 +336,7 @@ class HostSynthesis(QWidget):
         :type row: int
         :param services_layout: layout for services
         :type services_layout: QGridLayout
-        :param services_list: list of service dict
+        :param services_list: list of services dict
         :type services_list: list
         """
 
@@ -646,28 +646,48 @@ class HostSynthesis(QWidget):
                         send_banner('OK', '%s for %s is done !' % (title, service['name']))
 
     @staticmethod
-    def get_host_icon(state):
+    def get_host_icon(host):
         """
         Return QPixmap with the icon corresponding to the status.
 
-        :param state: state of the host.
-        :type state: str
+        :param host: host data from AppBackend
+        :type host: dict
         :return: QPixmap with image
         :rtype: QPixmap
         """
 
-        if 'UP' in state:
-            icon_name = 'hosts_up'
-        elif 'UNREACHABLE' in state:
-            icon_name = 'hosts_unreachable'
-        elif 'DOWN' in state:
-            icon_name = 'hosts_down'
+        if host['ls_acknowledged']:
+            icon_name = 'hosts_acknowledge'
+        elif host['ls_downtimed']:
+            icon_name = 'hosts_downtimed'
         else:
-            icon_name = 'error'
+            icon_name = 'hosts_%s' % host['ls_state'].lower()
 
         icon = QPixmap(get_image_path(icon_name))
 
         return icon
+
+    @staticmethod
+    def get_host_tooltip(host):
+        """
+        Return tooltip text for Host real state
+
+        :param host: host data from Backend
+        :type host: dict
+        :return: tooltip of host real state
+        :rtype: str
+        """
+
+        if host['ls_acknowledged'] and not host['ls_downtimed']:
+            tooltip = 'Host is %s and acknowledged !' % host['ls_state']
+        elif host['ls_downtimed'] and not host['ls_acknowledged']:
+            tooltip = 'Host is %s and downtimed !' % host['ls_state']
+        elif host['ls_acknowledged'] and host['ls_downtimed']:
+            tooltip = 'Host is %s and acknowledged ! A downtime is scheduled !' % host['ls_state']
+        else:
+            tooltip = 'Host is %s' % host['ls_state']
+
+        return tooltip
 
     @staticmethod
     def get_result_overall_state_id(list_text, services):
@@ -709,7 +729,7 @@ class HostSynthesis(QWidget):
 
             text_result = self.get_result_overall_state_id(overall_texts, services)
         else:
-            text_result = 'No elements found.'
+            text_result = 'No services found for this host.'
 
         return text_result
 
