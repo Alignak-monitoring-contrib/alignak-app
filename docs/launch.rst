@@ -41,7 +41,7 @@ Solve Problems
 If you're having trouble getting started and running the app, here are some things to check:
 
 1. Be sure you have correctly set your configuration file (see above) and that you can join your backend.
-3. The application generates a log file in its root folder (see :ref:`config`). Search for ``ERROR`` messages.
-4. If you have installed Alignak-app with pip, be sure to add the flag *--user* (see :ref:`install`).
+2. The application generates a log file in its root folder (see :ref:`config`). Search for ``ERROR`` messages.
+3. If you have installed Alignak-app with pip, be sure to add the flag *--user* (see :ref:`install`).
 
 
