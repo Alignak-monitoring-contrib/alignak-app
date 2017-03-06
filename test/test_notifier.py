@@ -31,17 +31,8 @@ from alignak_app.core.utils import init_config
 from alignak_app.systray.tray_icon import TrayIcon
 from alignak_app.dashboard.app_dashboard import Dashboard
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication
-    from PyQt5.QtGui import QIcon
-    from PyQt5.QtWidgets import QMenu
-    from PyQt5.QtWidgets import QAction
-except ImportError:
-    from PyQt4.QtGui import QIcon
-    from PyQt4.Qt import QApplication
-    from PyQt4.Qt import QMenu
-    from PyQt4.Qt import QAction
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtGui import QIcon
 
 
 class TestAppNotifier(unittest2.TestCase):

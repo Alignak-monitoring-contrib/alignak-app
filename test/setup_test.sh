@@ -25,15 +25,9 @@ BASE_PATH=$(dirname "$THIS_PATH")
 
 cd $BASE_PATH
 
-# install dependencies
-echo ' --------- Update and Install packages ... --------- '
-sudo apt-get update
-sudo apt-get install -qq libegl1-mesa
-
 echo '--------- Upgrade pip ... --------- '
 pip install --upgrade pip
 
-# install prog AND tests requirements :
 echo '--------- Installing application requirements ... --------- '
 pip install -r requirements.txt
 
@@ -42,13 +36,6 @@ pip install -e .
 
 echo '--------- Installing tests requirements ... --------- '
 pip install --upgrade -r test/requirements.txt
-
-PYVERSION=$(python -c "import sys; print(''.join(map(str, sys.version_info[:1])))")
-if [[ "3" == "$PYVERSION" ]] ; then
-    pip install PyQt5
-else
-    sudo apt-get install python-qt4
-fi
 
 echo '--------- Check and copy folder data to home... --------- '
 mkdir -p ~/.local/alignak_app/images/

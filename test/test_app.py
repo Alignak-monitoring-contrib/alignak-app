@@ -24,11 +24,7 @@ import sys
 
 from alignak_app.app import AlignakApp, QIcon
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication
-except ImportError:
-    from PyQt4.Qt import QApplication
+from PyQt5.QtWidgets import QApplication
 
 
 class TestApp(unittest2.TestCase):

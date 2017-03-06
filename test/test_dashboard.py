@@ -26,11 +26,7 @@ import unittest2
 from alignak_app.core.utils import init_config, set_app_config
 from alignak_app.dashboard.app_dashboard import Dashboard
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication
-except ImportError:
-    from PyQt4.Qt import QApplication
+from PyQt5.QtWidgets import QApplication
 
 
 class TestNotification(unittest2.TestCase):

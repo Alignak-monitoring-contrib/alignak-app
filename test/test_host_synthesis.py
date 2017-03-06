@@ -26,15 +26,9 @@ import unittest2
 from alignak_app.synthesis.host_synthesis import HostSynthesis
 from alignak_app.core.action_manager import ActionManager
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication, QWidget
-    from PyQt5.QtWidgets import QStackedWidget, QListWidget
-    from PyQt5.Qt import QPixmap
-except ImportError:
-    from PyQt4.Qt import QApplication, QWidget
-    from PyQt4.Qt import QStackedWidget, QListWidget
-    from PyQt4.Qt import QPixmap
+from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QStackedWidget, QListWidget
+from PyQt5.Qt import QPixmap
 
 
 class TestHostSynthesis(unittest2.TestCase):

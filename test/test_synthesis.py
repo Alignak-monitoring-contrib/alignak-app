@@ -27,13 +27,7 @@ from alignak_app.core.utils import init_config
 from alignak_app.core.backend import AppBackend
 from alignak_app.synthesis.synthesis import Synthesis
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication, QPushButton
-    from PyQt5.QtWidgets import QWidget, QLabel
-except ImportError:
-    from PyQt4.Qt import QApplication, QPushButton
-    from PyQt4.Qt import QWidget, QLabel
+from PyQt5.QtWidgets import QApplication, QWidget
 
 
 class TestServicesView(unittest2.TestCase):
