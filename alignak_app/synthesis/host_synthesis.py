@@ -524,7 +524,10 @@ class HostSynthesis(QWidget):
                 }
                 self.action_manager.add_item(item_action)
 
-                button.setEnabled(False)
+                try:
+                    button.setEnabled(False)
+                except RuntimeError as e:
+                    logger.warning('Can\'t disable Acknowledge btn: %s', e)
             else:
                 logger.info('Acknowledge for %s cancelled...', item_name)
 
@@ -590,7 +593,10 @@ class HostSynthesis(QWidget):
                 }
                 self.action_manager.add_item(item_action)
 
-                button.setEnabled(False)
+                try:
+                    button.setEnabled(False)
+                except RuntimeError as e:
+                    logger.warning('Can\'t disable Downtime btn: %s', e)
             else:
                 logger.info('Downtime for %s cancelled...', item_name)
 
