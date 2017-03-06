@@ -232,16 +232,16 @@ QScrollArea#output, QLabel#output {
     background-color: #eee;
 }
 
-QCheckBox#aggregation, QCheckBox#OK, QCheckBox#WARNING, QCheckBox#UNREACHABLE, QCheckBox#UNKNOWN, QCheckBox#CRITICAL {
+QCheckBox#aggregation, QCheckBox#OK, QCheckBox#WARNING, QCheckBox#UNREACHABLE, QCheckBox#UNKNOWN, QCheckBox#CRITICAL, QCheckBox#ACKNOWLEDGE, QCheckBox#DOWNTIME {
     font-weight: bold;
     outline: none;
 }
 
-QCheckBox#aggregation::indicator, QCheckBox#OK::indicator, QCheckBox#WARNING::indicator, QCheckBox#UNREACHABLE::indicator, QCheckBox#UNKNOWN::indicator, QCheckBox#CRITICAL::indicator {
+QCheckBox#aggregation::indicator, QCheckBox#OK::indicator, QCheckBox#WARNING::indicator, QCheckBox#UNREACHABLE::indicator, QCheckBox#UNKNOWN::indicator, QCheckBox#CRITICAL::indicator, QCheckBox#ACKNOWLEDGE::indicator, QCheckBox#DOWNTIME::indicator {
     border: none;
 }
 
-QCheckBox#aggregation::unchecked, QCheckBox#OK::unchecked, QCheckBox#WARNING::unchecked, QCheckBox#UNREACHABLE::unchecked, QCheckBox#UNKNOWN::unchecked, QCheckBox#CRITICAL::unchecked {
+QCheckBox#aggregation::unchecked, QCheckBox#OK::unchecked, QCheckBox#WARNING::unchecked, QCheckBox#UNREACHABLE::unchecked, QCheckBox#UNKNOWN::unchecked, QCheckBox#CRITICAL::unchecked, QCheckBox#ACKNOWLEDGE::unchecked, QCheckBox#DOWNTIME::unchecked  {
     background-color: white;
     border: none;
 }
@@ -293,6 +293,22 @@ QCheckBox#UNREACHABLE {
     border-radius: 5px;
 }
 
+QCheckBox#ACKNOWLEDGE {
+    color: #f39c12;
+    border-color: #f39c12;
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+    border-radius: 5px;
+}
+
+QCheckBox#DOWNTIME {
+    color: #f1c40f;
+    border-color: #f1c40f;
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+    border-radius: 5px;
+}
+
 QLabel#OK {
     border-style: solid;
     border-width: 0px 0px 2px 0px;
@@ -320,7 +336,19 @@ QLabel#UNKNOWN {
 QLabel#UNREACHABLE {
     border-style: solid;
     border-width:0px 0px 2px 0px;
-    border-color: 9b59b6;
+    border-color: #9b59b6;
+}
+
+QLabel#ACKNOWLEDGE {
+    border-style: solid;
+    border-width:0px 0px 2px 0px;
+    border-color: #f39c12;
+}
+
+QLabel#DOWNTIME {
+    border-style: solid;
+    border-width:0px 0px 2px 0px;
+    border-color: #f1c40f;
 }
 
 /****** TITLE ******/

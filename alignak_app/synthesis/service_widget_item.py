@@ -51,7 +51,7 @@ class ServiceListWidgetItem(QListWidgetItem):
         """
 
         self.aggregation = service['aggregation']
-        self.state = service['ls_state']
+        self.define_state_name(service)
 
         if not service['aggregation']:
             service['aggregation'] = 'Global'
@@ -62,6 +62,7 @@ class ServiceListWidgetItem(QListWidgetItem):
                 service['ls_state'],
             )
         )
+        self.setToolTip(self.get_service_tooltip(service))
 
         if service['ls_acknowledged']:
             img = get_image_path('services_acknowledge')
@@ -70,6 +71,50 @@ class ServiceListWidgetItem(QListWidgetItem):
         else:
             img = get_image_path('services_%s' % service['ls_state'])
         self.setIcon(QIcon(img))
+
+    def define_state_name(self, service):
+        """
+        TODO
+        :param service:
+        :return:
+        """
+
+        if service['ls_acknowledged'] and not service['ls_downtimed']:
+            self.state = 'ACKNOWLEDGE'
+        elif service['ls_downtimed']:
+            self.state = 'DOWNTIME'
+        else:
+            self.state = service['ls_state']
+
+    def get_service_tooltip(self, service):
+        """
+        TODO
+        :param service:
+        :return:
+        """
+
+        if service['ls_acknowledged'] and not service['ls_downtimed']:
+            tooltip = '%s is %s and acknowledged !' % (
+                self.get_service_name(service).capitalize(),
+                service['ls_state']
+            )
+        elif service['ls_downtimed'] and not service['ls_acknowledged']:
+            tooltip = '%s is %s and downtimed !' % (
+                self.get_service_name(service).capitalize(),
+                service['ls_state']
+            )
+        elif service['ls_acknowledged'] and service['ls_downtimed']:
+            tooltip = '%s is %s acknowledged. A downtimed is scheduled !' % (
+                self.get_service_name(service).capitalize(),
+                service['ls_state']
+            )
+        else:
+            tooltip = '%s is %s' % (
+                self.get_service_name(service).capitalize(),
+                service['ls_state']
+            )
+
+        return tooltip
 
     @staticmethod
     def get_service_name(service):

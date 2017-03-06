@@ -263,7 +263,7 @@ class HostSynthesis(QWidget):
         # Get number of each state for services
         services_stats = self.get_services_state_number(backend_data['services'])
 
-        states = ['OK', 'UNKNOWN', 'WARNING', 'UNREACHABLE', 'CRITICAL']
+        states = ['OK', 'UNKNOWN', 'WARNING', 'UNREACHABLE', 'CRITICAL', 'ACKNOWLEDGE', 'DOWNTIME']
         i_row = 1
 
         for state in states:
@@ -346,8 +346,8 @@ class HostSynthesis(QWidget):
         self.services_list.setMinimumHeight(155)
         self.services_list.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
-        services_layout.addWidget(self.services_list, row, 1, 5, 5)
-        services_layout.addWidget(self.stack, row + 5, 0, 1, 6)
+        services_layout.addWidget(self.services_list, row, 1, 7, 5)
+        services_layout.addWidget(self.stack, row + 7, 0, 1, 6)
 
         # Sorted services
         def get_key(item):
@@ -421,8 +421,8 @@ class HostSynthesis(QWidget):
             'WARNING': 0,
             'UNREACHABLE': 0,
             'CRITICAL': 0,
-            'ACKNOWLEDGED': 0,
-            'DOWNTIMED': 0
+            'ACKNOWLEDGE': 0,
+            'DOWNTIME': 0
         }
         percent_nb = {
             'OK': 0,
@@ -430,13 +430,18 @@ class HostSynthesis(QWidget):
             'WARNING': 0,
             'UNREACHABLE': 0,
             'CRITICAL': 0,
-            'ACKNOWLEDGED': 0,
-            'DOWNTIMED': 0
+            'ACKNOWLEDGE': 0,
+            'DOWNTIME': 0
         }
 
         services_sum = 0
         for service in services:
-            nb_state[service['ls_state']] += 1
+            if service['ls_acknowledged']:
+                nb_state['ACKNOWLEDGE'] += 1
+            elif service['ls_downtimed']:
+                nb_state['DOWNTIME'] += 1
+            else:
+                nb_state[service['ls_state']] += 1
             services_sum += 1
 
         for state in nb_state:
