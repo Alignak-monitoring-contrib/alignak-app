@@ -462,7 +462,7 @@ class HostSynthesis(QWidget):
 
         self.stack.setCurrentIndex(index)
 
-    def add_acknowledge(self):  # pragma: no cover, no testability
+    def add_acknowledge(self):  # pragma: no cover, no testability pylint: disable=too-many-locals
         """
         Handle action for "acknowledge_btn"
 
