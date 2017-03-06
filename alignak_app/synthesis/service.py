@@ -225,7 +225,7 @@ class Service(QFrame):
         layout.addWidget(importance_label)
         layout.setAlignment(importance_label, Qt.AlignLeft)
 
-        for _ in range(get_app_config('Alignak', 'bi_less'), stars_nb):
+        for _ in range(int(get_app_config('Alignak', 'bi_less')), stars_nb):
             star_label = QLabel()
             star_label.setFixedSize(16, 16)
             star_label.setScaledContents(True)
