@@ -76,6 +76,7 @@ default_parameters = {
     'backend': 'http://127.0.0.1:5000',
     'webui': 'http://127.0.0.1:5001',
     'processes': '1',
+    'bi_less': 0,
     'path': '/alignak_app',
     'img': '/images',
     'icon': 'alignak.svg',
