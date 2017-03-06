@@ -117,13 +117,13 @@ setup(
 
     classifiers=[
         'Development Status :: 4 - Beta',
-        'Environment :: X11 Applications :: GTK',
+        'Environment :: X11 Applications :: Qt',
+        'Intended Audience :: End Users/Desktop',
         'Intended Audience :: Developers',
         'Intended Audience :: Customer Service',
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Natural Language :: English',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Topic :: System :: Monitoring',
         'Topic :: System :: Systems Administration',
