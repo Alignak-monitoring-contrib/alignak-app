@@ -102,7 +102,7 @@ class AlignakApp(QObject):
         else:
             self.display_error_msg()
 
-    def reconnect_to_backend(self, app_backend, error):
+    def reconnect_to_backend(self, app_backend, error):  # pragma: no cover
         """
         Set AlignakApp in reconnect mode and try to login to Backend
 
@@ -192,7 +192,7 @@ class AlignakApp(QObject):
             self.display_error_msg()
 
     @staticmethod
-    def display_error_msg():
+    def display_error_msg():  # pragma: no cover
         """
         Display a QMessageBox error in case app fail to start
 
