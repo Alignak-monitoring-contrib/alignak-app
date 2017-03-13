@@ -25,7 +25,7 @@ import unittest2
 
 from alignak_app.synthesis.actions import Acknowledge, Downtime, get_logo_widget
 
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QTimeEdit, QDateTimeEdit
 
 
 class TestActions(unittest2.TestCase):
@@ -50,7 +50,7 @@ class TestActions(unittest2.TestCase):
         self.assertIsInstance(under_test, QWidget)
         self.assertEqual(45, under_test.height())
 
-    def test_initialize(self):
+    def test_initialize_acknowledge(self):
         """Initialize Acknowledge"""
 
         under_test = Acknowledge()
@@ -60,3 +60,24 @@ class TestActions(unittest2.TestCase):
         self.assertFalse(under_test.notify)
 
         self.assertEqual('Acknowledge requested by App', under_test.ack_comment_edit.toPlainText())
+
+    def test_initialize_downtime(self):
+        """Initialize Downtime"""
+
+        under_test = Downtime()
+        under_test.initialize('host', 'my_host', 'Downtime requested by App')
+
+        self.assertTrue(under_test.fixed)
+        self.assertTrue(under_test.duration)
+        self.assertIsInstance(under_test.duration, QTimeEdit)
+        self.assertEqual(under_test.duration_to_seconds(), 14400)
+        self.assertTrue(under_test.start_time)
+        self.assertIsInstance(under_test.start_time, QDateTimeEdit)
+        self.assertTrue(under_test.end_time)
+        self.assertIsInstance(under_test.end_time, QDateTimeEdit)
+        self.assertEqual(
+            under_test.end_time.dateTime().toTime_t() - under_test.start_time.dateTime().toTime_t(),
+            7200
+        )
+
+        self.assertEqual('Downtime requested by App', under_test.comment_edit.toPlainText())
