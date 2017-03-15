@@ -25,7 +25,7 @@
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_diff_since_last_check, get_css
+from alignak_app.core.utils import get_diff_since_last_check, get_css, get_date_from_timestamp
 from alignak_app.core.utils import get_image_path, get_app_config
 
 from PyQt5.QtWidgets import QHBoxLayout  # pylint: disable=no-name-in-module
@@ -123,7 +123,8 @@ class Service(QFrame):
         layout.addWidget(last_check, 0, 3, 1, 2)
 
         # Output
-        output = QTextEdit('<b>Output:</b> %s' % service['ls_output'])
+        date_output = get_date_from_timestamp(service['ls_last_check'])
+        output = QTextEdit('<b>Output:</b> [%s] %s' % (date_output, service['ls_output']))
         output.setObjectName('output')
         output.setToolTip(service['ls_output'])
         output.setTextInteractionFlags(Qt.TextSelectableByMouse)

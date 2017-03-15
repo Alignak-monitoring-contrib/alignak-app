@@ -26,7 +26,8 @@
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_image_path, get_diff_since_last_check, get_app_config
+from alignak_app.core.utils import get_image_path, get_app_config
+from alignak_app.core.utils import get_diff_since_last_check, get_date_from_timestamp
 from alignak_app.core.action_manager import ACK, DOWNTIME, PROCESS
 from alignak_app.widgets.banner import send_banner
 from alignak_app.synthesis.service import Service
@@ -165,7 +166,10 @@ class HostSynthesis(QWidget):
         )
         host_layout.addWidget(host_last_check, 0, 2, 1, 2)
 
-        output = QTextEdit('<b>Output:</b> %s' % backend_data['host']['ls_output'])
+        date_output = get_date_from_timestamp(backend_data['host']['ls_last_check'])
+        output = QTextEdit(
+            '<b>Output:</b> [%s] %s' % (date_output, backend_data['host']['ls_output'])
+        )
         output.setObjectName('output')
         output.setTextInteractionFlags(Qt.TextSelectableByMouse)
         output.setFont(QFont('Times', 13))

@@ -31,6 +31,7 @@ from logging import getLogger
 
 import configparser
 from configparser import NoOptionError, NoSectionError
+from datetime import datetime
 from alignak_app import __project_url__
 
 
@@ -286,6 +287,18 @@ def get_diff_since_last_check(last_check):
             duration.append('%ds' % seconds)
 
     return ' ' + ' '.join(duration) + ' ago'
+
+
+def get_date_from_timestamp(timestamp):
+    """
+    Return date from timestamp
+    :param timestamp: timestamp to convert to date
+    :type timestamp: int
+    :return: corresponding date
+    :rtype: str
+    """
+
+    return datetime.fromtimestamp(timestamp)
 
 
 def get_css():
