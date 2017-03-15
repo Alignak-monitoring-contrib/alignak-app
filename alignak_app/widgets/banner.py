@@ -25,6 +25,8 @@
 
 from logging import getLogger
 
+from datetime import datetime
+
 from alignak_app.core.utils import get_image_path, get_app_config, get_css
 
 from PyQt5.QtWidgets import QHBoxLayout, QApplication  # pylint: disable=no-name-in-module
@@ -164,7 +166,8 @@ class Banner(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
 
-        self.setToolTip(message)
+        event_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.setToolTip(event_date)
 
         if banner_type not in self.banner_type:
             banner_type = 'ERROR'
