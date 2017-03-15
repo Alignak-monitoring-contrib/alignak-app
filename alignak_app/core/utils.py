@@ -52,11 +52,6 @@ def get_app_root():
     else:  # pragma: no cover - not testable
         sys.exit('Application can\'t find the user HOME.')
 
-    # Prevent from root user
-    if 'root' in app_root or not app_root:
-        logger.error('Application can\'t find the user HOME or maybe you are connected as ROOT.')
-        sys.exit('Application can\'t find the user HOME or maybe you are connected as ROOT.')
-
     return app_root
 
 
@@ -131,7 +126,7 @@ def init_config():
     try:
         app_config.read(get_filenames())
         logger.info('Configuration file is OK.')
-    except Exception as e:
+    except Exception as e:  # pragma: no cover - not testable
         logger.error('Configuration file is missing in [%s] !', str(get_filenames()))
         logger.error(str(e))
         sys.exit('Configuration file is missing in [%s] !' % str(get_filenames()))
@@ -225,7 +220,7 @@ def get_image_path(name):
                 return img_path + '/alignak_app/images/error.svg'
             elif 'win32' in sys.platform:
                 return img_path + '/images/error.svg'
-        else:
+        else:  # pragma: no cover - not testable
             if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
                 img_path += '/alignak_app'
                 error_msg = 'Alignak has stop because too many error. ' \
@@ -239,7 +234,7 @@ def get_image_path(name):
             sys.exit(error_msg)
 
 
-def get_diff_since_last_check(last_check):
+def get_diff_since_last_check(last_check):  # pragma: no cover - not testable
     """
     Return the diff between the last time stamp
 
