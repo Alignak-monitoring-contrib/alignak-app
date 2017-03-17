@@ -19,7 +19,7 @@
 
 #define MyAppName "Alignak-app"
 #define ShortVersion "0.6"
-#define MinorVersion ".4"
+#define MinorVersion ".5"
 #define MyAppVersion ShortVersion + MinorVersion
 #define MyAppPublisher "Alignak (Estrada Matthieu)"
 #define MyAppURL "https://github.com/Alignak-monitoring-contrib/alignak-app"
@@ -39,6 +39,7 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
+DisableDirPage=no
 LicenseFile={#RootApp}\alignak-app\LICENSE
 OutputDir={#RootApp}\alignak-app\dist\setup
 OutputBaseFilename=Setup {#MyAppName} {#MyAppVersion}-x64
@@ -73,5 +74,7 @@ Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon_64.ico"; Tasks: desktopicon
 
 [Run]
+Filename: "{cmd}"; Parameters: "/c icacls ""{app}"" /grant Everyone:(OI)(CI)F /T"; StatusMsg: Grant permissions; Languages: english;
+Filename: "{cmd}"; Parameters: "/c icacls ""{app}"" /grant ""Tout le monde"":(OI)(CI)F /T"; StatusMsg: Grant permissions; Languages: french;
 Filename: {tmp}\vc_redist.x64.exe; Parameters: "/q /passive /Q:a /c:""msiexec /q /i vcredist.msi"" "; Check: IsWin64; StatusMsg: Installing VC++ 64bits Redistributables...
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent unchecked
