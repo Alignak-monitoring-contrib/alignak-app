@@ -39,7 +39,7 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
-DisableDirPage=no
+DisableDirPage=yes
 LicenseFile={#RootApp}\alignak-app\LICENSE
 OutputDir={#RootApp}\alignak-app\dist\setup
 OutputBaseFilename=Setup {#MyAppName} {#MyAppVersion}-x64
@@ -67,7 +67,6 @@ Source: "{#RootApp}\alignak-app\etc\images\*"; DestDir: "{app}\images"; Flags: i
 Source: "{#RootApp}\alignak-app\etc\settings.cfg"; DestDir: "{app}"; Flags: ignoreversion isreadme; Permissions: users-full admins-full everyone-modify;
 Source: "{#RootApp}\alignak-app\bin\win\vc_redist.x64.exe"; DestDir: {tmp}; Flags: deleteafterinstall;
 Source: "{#RootApp}\alignak-app\bin\win\icon_64.ico"; DestDir: {app}; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
-Source: "{#RootApp}\alignak-app\bin\win\alignakapp.log"; DestDir: {app}; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon_64.ico";
