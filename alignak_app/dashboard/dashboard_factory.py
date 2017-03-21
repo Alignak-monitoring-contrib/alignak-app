@@ -183,7 +183,6 @@ class DashboardFactory(QWidget):
 
         # Calculates the percentage
         try:
-            # Hosts
             for state in synthesis['hosts']:
                 percentages['hosts'][state] = \
                     float(synthesis['hosts'][state]) * 100.0 / float(hosts_sum)
@@ -193,6 +192,18 @@ class DashboardFactory(QWidget):
                     float(synthesis['services'][state]) * 100.0 / float(services_sum)
         except ZeroDivisionError as e:
             logger.error(str(e))
+
+        # Fill percentages if not filled before
+        host_states = ['up', 'unreachable', 'down', 'acknowledge', 'downtime']
+        service_states = [
+            'ok', 'warning', 'critical', 'unknown', 'unreachable', 'acknowledge', 'downtime'
+        ]
+        for host_state in host_states:
+            if host_state not in percentages['hosts']:
+                percentages['hosts'][host_state] = 0.0
+        for service_state in service_states:
+            if service_state not in percentages['services']:
+                percentages['services'][service_state] = 0.0
 
         return percentages
 
