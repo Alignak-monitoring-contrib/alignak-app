@@ -293,7 +293,10 @@ def get_date_from_timestamp(timestamp):
     :rtype: str
     """
 
-    return datetime.fromtimestamp(timestamp)
+    if timestamp:
+        return datetime.fromtimestamp(timestamp)
+    else:
+        return 'n/a'
 
 
 def get_css():
