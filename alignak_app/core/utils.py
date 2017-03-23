@@ -30,7 +30,7 @@ import time
 from logging import getLogger
 
 import configparser
-from configparser import NoOptionError, NoSectionError
+from configparser import NoOptionError, NoSectionError, DuplicateOptionError, DuplicateSectionError
 from datetime import datetime
 from alignak_app import __project_url__
 
@@ -126,9 +126,13 @@ def init_config():
     try:
         app_config.read(get_filenames())
         logger.info('Configuration file is OK.')
-    except Exception as e:  # pragma: no cover - not testable
-        logger.error('Configuration file is missing in [%s] !', str(get_filenames()))
+    except (DuplicateOptionError, DuplicateSectionError) as e:  # pragma: no cover - not testable
+        logger.error('Duplicate Option/Section in file [%s] !', str(get_filenames()))
         logger.error(str(e))
+        sys.exit('Duplicate Option/Section in file [%s] !' % str(get_filenames()))
+    except Exception as f:
+        logger.error('Configuration file is missing in [%s] !', str(get_filenames()))
+        logger.error(str(f))
         sys.exit('Configuration file is missing in [%s] !' % str(get_filenames()))
 
 
@@ -215,7 +219,7 @@ def get_image_path(name):
         logger.error('Bad Option : ' + str(e))
 
         error_config += 1
-        if error_config < 5:
+        if error_config < 7:
             if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
                 return img_path + '/alignak_app/images/error.svg'
             elif 'win32' in sys.platform:
@@ -223,11 +227,11 @@ def get_image_path(name):
         else:  # pragma: no cover - not testable
             if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
                 img_path += '/alignak_app'
-                error_msg = 'Alignak has stop because too many error. ' \
-                    'We can\'t load your files. Please check your %s folder.' % img_path
+                error_msg = 'Alignak has stop because too many error. We can\'t load files.\n' \
+                    ' Make sure that the settings file is present in the directory %s !' % img_path
             elif 'win32' in sys.platform:
-                error_msg = 'Alignak has stop because too many error. ' \
-                    'We can\'t load your files. Please check your %s folder.' % img_path
+                error_msg = 'Alignak has stop because too many error. We can\'t load files.\n' \
+                    ' Make sure that the settings file is present in the directory %s !' % img_path
             else:
                 error_msg = 'Your system seems not compatible. Please consult: %s' % __project_url__
             logger.error(error_msg)
