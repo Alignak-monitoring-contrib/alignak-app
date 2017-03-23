@@ -86,6 +86,7 @@ for style in stylesheet:
 
 # Etc
 data_files.append((paths['app'], ['etc/settings.cfg']))
+data_files.append((paths['app'], ['etc/app_workdir.ini']))
 
 # Bin for Unix
 data_files.append((paths['bin'], ['bin/unix/alignak-app']))

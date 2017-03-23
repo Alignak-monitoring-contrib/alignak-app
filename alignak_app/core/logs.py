@@ -49,16 +49,7 @@ def create_logger():  # pragma: no cover
         stdout_handler = root_logger.handlers[0]
 
     # Define path and file for "file_handler"
-    if get_app_config('Log', 'location'):
-        path = str(get_app_config('Log', 'location'))
-    else:
-        if 'linux' in sys.platform or 'sunos5' in sys.platform:
-            path = get_app_root() + '/alignak_app'
-        elif 'win32' in sys.platform:
-            path = get_app_root()
-        else:
-            path = '.'
-
+    path = get_app_root()
     filename = get_app_config('Log', 'filename') + '.log'
 
     if not os.path.isdir(path):
@@ -66,10 +57,11 @@ def create_logger():  # pragma: no cover
         try:  # pragma: no cover - not testable
             os.makedirs(path)
         except Exception:
-            print('! Can\'t create log file, App will log in current directory !')
+            print('Can\'t create log file in [%s], App will log in current directory !' % path)
             path = '.'
 
     if not os.access(path, os.W_OK):
+        print('Access denied for [%s], App will log in current directory !' % path)
         path = '.'
 
     formatter = Formatter('[%(asctime)s]> %(name)-12s : [%(levelname)s] %(message)s')

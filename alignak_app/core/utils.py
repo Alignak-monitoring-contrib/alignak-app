@@ -44,16 +44,46 @@ def get_app_root():
     Return user home.
     """
 
-    # Get HOME and USER
-    if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-        app_root = '%s/.local' % os.environ['HOME']
-    elif 'win32' in sys.platform:  # pragma: no cover - not testable
-        app_root = '%s\\Alignak-app\\' % os.environ['PROGRAMFILES']
-    else:  # pragma: no cover - not testable
-        sys.exit('Application can\'t find the user HOME.')
+    root_config = configparser.ConfigParser()
+    try:
+        if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
+            root_config.read('%s/.local/alignak_app/app_workdir.ini' % os.environ['HOME'])
+        elif 'win32' in sys.platform:  # pragma: no cover - not testable:
+            root_config.read('%s\\Alignak_app\\app_workdir.ini' % os.environ['PROGRAMFILES'])
+        else:
+            sys.exit('Your system seems not compatible. Please consult: %s' % __project_url__)
+    except (IOError, NoSectionError) as e:
+        sys.exit(e)
+
+    app_root = root_config.get('root_app', 'folder')
+
+    if app_root[len(app_root) - 1:] == '/':
+        app_root = app_root.rstrip('/')
+    if app_root[len(app_root) - 1:] == '\\':
+        app_root = app_root.rstrip('\\')
+
+    if not app_root:
+        app_root = get_main_folder()
 
     return app_root
 
+
+def get_main_folder():
+    """
+    Return the main folder of Application
+
+    :return: main path
+    :rtype: str
+    """
+
+    if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
+        main_folder = '%s/.local/alignak_app' % os.environ['HOME']
+    elif 'win32' in sys.platform:  # pragma: no cover - not testable
+        main_folder = '%s\\Alignak-app' % os.environ['PROGRAMFILES']
+    else:
+        sys.exit('Your system seems not compatible. Please consult: %s' % __project_url__)
+
+    return main_folder
 
 # Application Configuration
 default_parameters = {
@@ -102,11 +132,11 @@ def get_filenames():  # pylint: disable=redefined-variable-type
     """
 
     if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-        config_filenames = '%s/alignak_app/settings.cfg' % get_app_root()
+        config_filenames = '%s/settings.cfg' % get_app_root()
     elif 'win32' in sys.platform:  # pragma: no cover - not testable
         config_filenames = '%s\\settings.cfg' % get_app_root()
     else:
-        config_filenames = '%s/alignak_app/settings.cfg' % get_app_root()
+        sys.exit('Your system seems not compatible. Please consult: %s' % __project_url__)
 
     return config_filenames
 
@@ -198,21 +228,10 @@ def get_image_path(name):
 
     global error_config  # pylint: disable=global-statement
 
-    img_path = get_app_root()
+    img_path = get_main_folder()
 
     try:
-        if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-            img_path = '%s%s%s/' % (
-                get_app_root(),
-                app_config.get('Config', 'path'),
-                app_config.get('Config', 'img')
-            )
-        elif 'win32' in sys.platform:  # pragma: no cover - not testable
-            img_path = '%s%s/' % (get_app_root(), app_config.get('Config', 'img'))
-        else:
-            img_path = '.'
-
-        img = '%s%s' % (img_path, app_config.get('Images', name))
+        img = '%s/images/%s' % (img_path, app_config.get('Images', name))
 
         return img
     except (NoOptionError, NoSectionError) as e:
@@ -220,22 +239,39 @@ def get_image_path(name):
 
         error_config += 1
         if error_config < 7:
-            if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-                return img_path + '/alignak_app/images/error.svg'
-            elif 'win32' in sys.platform:
                 return img_path + '/images/error.svg'
         else:  # pragma: no cover - not testable
-            if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-                img_path += '/alignak_app'
-                error_msg = 'Alignak has stop because too many error. We can\'t load files.\n' \
-                    ' Make sure that the settings file is present in the directory %s !' % img_path
-            elif 'win32' in sys.platform:
+            if img_path:
                 error_msg = 'Alignak has stop because too many error. We can\'t load files.\n' \
                     ' Make sure that the settings file is present in the directory %s !' % img_path
             else:
                 error_msg = 'Your system seems not compatible. Please consult: %s' % __project_url__
             logger.error(error_msg)
             sys.exit(error_msg)
+
+
+def get_css():
+    """
+    Read css file and return its content
+
+    :return: css text
+    :rtype: str
+    """
+
+    try:
+        if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
+            with open(
+                '%s/css/style.css' % (
+                    get_main_folder()
+                )
+            ) as css:
+                return css.read()
+        else:
+            with open('%s/css/style.css' % get_main_folder()) as css:
+                return css.read()
+    except (IOError, NoSectionError) as e:
+        logger.error('CSS File is missing : %s', str(e))
+        return ""
 
 
 def get_diff_since_last_check(last_check):  # pragma: no cover - not testable
@@ -301,27 +337,3 @@ def get_date_from_timestamp(timestamp):
         return datetime.fromtimestamp(timestamp)
     else:
         return 'n/a'
-
-
-def get_css():
-    """
-    Read css file and return its content
-
-    :return: css text
-    :rtype: str
-    """
-
-    try:
-        if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-            with open(
-                '%s/css/style.css' % (
-                    get_app_root() + app_config.get('Config', 'path')
-                )
-            ) as css:
-                return css.read()
-        else:
-            with open('%s/css/style.css' % get_app_root()) as css:
-                return css.read()
-    except (IOError, NoSectionError) as e:
-        logger.error('CSS File is missing : %s', str(e))
-        return ""

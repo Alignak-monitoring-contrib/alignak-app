@@ -47,18 +47,18 @@ PYBIN=python3
 "$PYBIN" -c "import alignak_app" >/dev/null  2>&1
 
 if [ $? -eq 0 ]; then
-    echo "Alignak-app installed: $GREEN OK $END"
+    echo -e "Alignak-app installation: $GREEN OK $END"
 else
-    echo "$RED It seems that your version of Python and PyQt are not compatible or not installed ! $END"
+    echo -e "$RED It seems that Alignak-app is broken... Please check your installation ! $END"
     exit 1
 fi
 
 "$PYBIN" -c "import PyQt5" >/dev/null  2>&1
 
 if [ $? -eq 0 ]; then
-    echo "$GREEN PyQt5 installed: OK $END"
+    echo -e "PyQt5 installed: $GREEN OK $END"
 else
-    echo "$RED It seems that your version of PyQt is not compatible ! $END"
+    echo -e "$RED It seems that your version of PyQt is not compatible ! $END"
     exit 1
 fi
 

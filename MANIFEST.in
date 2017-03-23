@@ -1,5 +1,6 @@
 include README.rst
 include etc/settings.cfg
+include etc/app_workdir.ini
 include etc/css/*.css
 include bin/unix/alignak-app
 include bin/unix/alignak-app.py
