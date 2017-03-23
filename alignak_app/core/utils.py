@@ -52,7 +52,7 @@ def get_app_workdir():
         if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
             root_config.read('%s/.local/alignak_app/app_workdir.ini' % os.environ['HOME'])
         elif 'win32' in sys.platform:  # pragma: no cover - not testable:
-            root_config.read('%s\\Alignak_app\\app_workdir.ini' % os.environ['PROGRAMFILES'])
+            root_config.read('%s\\Alignak-app\\app_workdir.ini' % os.environ['PROGRAMFILES'])
         else:
             sys.exit('Your system seems not compatible. Please consult: %s' % __project_url__)
     except (IOError, NoSectionError) as e:
