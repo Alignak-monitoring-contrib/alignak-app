@@ -1,9 +1,9 @@
 .. _config:
 
-Alignak-app Folders
-===================
+Alignak-app Main Folder
+=======================
 
-During installation, Alignak-app creates a root folder that contains all the files you need: images, logs, and configuration files.
+During installation, Alignak-app creates a root folder that contains all the files application need to run.
 
 On Linux
 --------
@@ -29,6 +29,20 @@ The ROOT folder will be located under::
     C:\Program Files\Alignak-app\
 
 This is to facilitate access to the configuration and respect Windows conventions.
+
+Alignak-app Workdir
+===================
+
+This folder is defined by the ``app_workdir.ini`` file located in the main application folder cited above.
+
+The goal of this file is to define a directory where Alignak-app can write/read without problems to get settings and create log files.
+So make sure that you have the right to write and read.
+
+You must set an **absolute path** for this settings.
+
+Then only put/copy the ``settings.cfg``, located in application main folder, inside the one you have defined.
+
+**Note:** If you have not set this option, application use the same directory than cited above. If you have no rights, application will crash.
 
 Configuration Parameters
 ========================
