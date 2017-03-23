@@ -234,6 +234,9 @@ class HostSynthesis(QWidget):
             item_aggregation = str(self.services_list.item(i).aggregation)
             item_state = str(self.services_list.item(i).state)
 
+            if not item_aggregation:
+                item_aggregation = 'Global'
+
             if sender_filter == item_aggregation:
                 if self.sender().isChecked() \
                         and self.check_boxes[item_state].isChecked() \
