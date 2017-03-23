@@ -39,9 +39,12 @@ logger = getLogger(__name__)
 
 
 # Application Home
-def get_app_root():
+def get_app_workdir():
     """
     Return user home.
+
+    :return: application workdir
+    :rtype: str
     """
 
     root_config = configparser.ConfigParser()
@@ -132,9 +135,9 @@ def get_filenames():  # pylint: disable=redefined-variable-type
     """
 
     if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-        config_filenames = '%s/settings.cfg' % get_app_root()
+        config_filenames = '%s/settings.cfg' % get_app_workdir()
     elif 'win32' in sys.platform:  # pragma: no cover - not testable
-        config_filenames = '%s\\settings.cfg' % get_app_root()
+        config_filenames = '%s\\settings.cfg' % get_app_workdir()
     else:
         sys.exit('Your system seems not compatible. Please consult: %s' % __project_url__)
 
@@ -239,7 +242,7 @@ def get_image_path(name):
 
         error_config += 1
         if error_config < 7:
-                return img_path + '/images/error.svg'
+            return img_path + '/images/error.svg'
         else:  # pragma: no cover - not testable
             if img_path:
                 error_msg = 'Alignak has stop because too many error. We can\'t load files.\n' \

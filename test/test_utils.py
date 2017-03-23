@@ -31,15 +31,6 @@ class TestUtils(unittest2.TestCase):
         This file test methods of `utils.py` file.
     """
 
-    def test_get_app_root(self):
-        """Get Alignak-App Root Folder"""
-
-        expected_home = os.environ['HOME'] + '/.local/alignak_app'
-
-        home = utils.get_app_root()
-
-        self.assertEqual(home, expected_home)
-
     def test_app_config(self):
         """Set and Get app_config"""
 
@@ -96,7 +87,7 @@ class TestUtils(unittest2.TestCase):
         """Get Right Image Path"""
         utils.init_config()
 
-        expected_img = utils.get_app_root() + '/images/icon.svg'
+        expected_img = utils.get_main_folder() + '/images/icon.svg'
 
         under_test = utils.get_image_path('icon')
 
