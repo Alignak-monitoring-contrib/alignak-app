@@ -49,7 +49,7 @@ def create_logger():  # pragma: no cover
 
     # Define path and file for "file_handler"
     path = get_app_workdir()
-    filename = get_app_config('Log', 'filename') + '.log'
+    filename = '%s.log' % get_app_config('Log', 'filename')
 
     if not os.path.isdir(path):
         # noinspection PyBroadException
