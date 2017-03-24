@@ -47,7 +47,7 @@ def get_app_workdir():
     :rtype: str
     """
 
-    root_config = configparser.ConfigParser()
+    root_config = configparser.ConfigParser(os.environ)
     try:
         if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
             root_config.read('%s/.local/alignak_app/app_workdir.ini' % os.environ['HOME'])
@@ -58,17 +58,22 @@ def get_app_workdir():
     except (IOError, NoSectionError) as e:
         sys.exit(e)
 
-    app_root = root_config.get('root_app', 'folder')
+    app_workdir = root_config.get('app_workdir', 'workdir')
 
-    if app_root[len(app_root) - 1:] == '/':
-        app_root = app_root.rstrip('/')
-    if app_root[len(app_root) - 1:] == '\\':
-        app_root = app_root.rstrip('\\')
+    if not app_workdir:
+        logger.warning('App Workdir is empty. Application use %s instead !' % get_main_folder())
+        app_workdir = get_main_folder()
+    if app_workdir[:1] == '~':
+        logger.error('You can\'t use "tilde" in this file. Please use $HOME instead !')
+        logger.warning('App Workdir is not valid. Application use %s instead !' % get_main_folder())
+        app_workdir = get_main_folder()
 
-    if not app_root:
-        app_root = get_main_folder()
+    if app_workdir[len(app_workdir) - 1:] == '/':
+        app_workdir = app_workdir.rstrip('/')
+    if app_workdir[len(app_workdir) - 1:] == '\\':
+        app_workdir = app_workdir.rstrip('\\')
 
-    return app_root
+    return app_workdir
 
 
 def get_main_folder():
@@ -246,7 +251,8 @@ def get_image_path(name):
         else:  # pragma: no cover - not testable
             if img_path:
                 error_msg = 'Alignak has stop because too many error. We can\'t load files.\n' \
-                    ' Make sure that the settings file is present in the directory %s !' % img_path
+                    ' Make sure that the settings file is present in the directory %s !' \
+                            % get_app_workdir()
             else:
                 error_msg = 'Your system seems not compatible. Please consult: %s' % __project_url__
             logger.error(error_msg)
