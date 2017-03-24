@@ -28,7 +28,7 @@ from logging import DEBUG, INFO
 
 from alignak_app.core.logs import create_logger
 from alignak_app.core.notifier import AppNotifier
-from alignak_app.core.utils import get_image_path
+from alignak_app.core.utils import get_image_path, get_main_folder, get_app_workdir
 from alignak_app.core.utils import init_config, get_app_config
 from alignak_app.systray.tray_icon import TrayIcon
 from alignak_app.widgets.login import AppLogin
@@ -70,12 +70,16 @@ class AlignakApp(QObject):
         bannerManager.start()
 
         # Define level of logger
+        logger.name = 'alignak_app.app'
         if get_app_config('Log', 'debug', boolean=True):
             logger.setLevel(DEBUG)
-            logger.info('Logger set to DEBUG')
+            logger.info('Logger Level is: DEBUG')
         else:
             logger.setLevel(INFO)
-            logger.info('Logger set to INFO')
+            logger.info('Logger Level is: INFO')
+
+        logger.info('App WorkDir = %s' % get_app_workdir())
+        logger.info('App MainDir = %s' % get_main_folder())
 
         # If not app_backend url, stop application
         if get_app_config('Alignak', 'backend'):
