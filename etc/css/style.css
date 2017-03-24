@@ -77,9 +77,14 @@ QPushButton#valid:hover {
     color: white;
 }
 
-QLabel#login_msg {
-    color: red;
+QLabel#title_login {
+    font-size: 20px;
 }
+
+QLabel#version_login {
+    font-size: 14px;
+}
+
 
 QLabel#login {
     color: #1fb4e4;

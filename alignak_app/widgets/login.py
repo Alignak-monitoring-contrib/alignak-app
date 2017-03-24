@@ -27,7 +27,7 @@ import sys
 
 from logging import getLogger
 
-from alignak_app import __short_version__
+from alignak_app import __version__
 from alignak_app.core.backend import AppBackend, Backend
 from alignak_app.core.utils import get_app_config, set_app_config, init_config
 from alignak_app.core.utils import get_css, get_image_path
@@ -80,12 +80,16 @@ class AppLogin(QDialog):
         main_layout.addWidget(self.get_logo_widget(self))
 
         title = QLabel(
-            '<h2>Welcome to Alignak-app</h2><span style="text-align:center;">Version %s</span>'
-            % __short_version__
+            'Welcome to <b>Alignak-app</b>'
         )
         title.setObjectName('title_login')
         main_layout.addWidget(title)
         main_layout.setAlignment(title, Qt.AlignCenter)
+
+        version = QLabel('Version %s' % __version__)
+        version.setObjectName('version_login')
+        main_layout.addWidget(version)
+        main_layout.setAlignment(version, Qt.AlignCenter | Qt.AlignTop)
 
         # Login QWidget
         login_widget = QWidget(self)
