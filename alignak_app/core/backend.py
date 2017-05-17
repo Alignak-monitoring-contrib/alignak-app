@@ -229,14 +229,13 @@ class AppBackend(object):
 
         services = self.get('service', params=params, projection=projection)
 
-        if len(services['_items']) > 0:
-            wanted_service = services['_items'][0]
-        else:
-            wanted_service = None
-
-        for service in services['_items']:
-            if service['_id'] == service_id:
-                wanted_service = service
+        wanted_service = None
+        if services:
+            if len(services['_items']) > 0:
+                wanted_service = services['_items'][0]
+            for service in services['_items']:
+                if service['_id'] == service_id:
+                    wanted_service = service
 
         return wanted_service
 
