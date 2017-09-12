@@ -149,7 +149,7 @@ class AppBackend(object):
 
         return request
 
-    def post(self, endpoint, data, headers=None):
+    def post(self, endpoint, data, headers=None):  # pragma: no cover - Post already test by client
         """
         POST on alignak Backend REST API
 
