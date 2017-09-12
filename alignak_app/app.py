@@ -85,7 +85,7 @@ class AlignakApp(QObject):
         if get_app_config('Alignak', 'backend'):
             # If not username and password, create login form, else connect with config data.
             if not get_app_config('Alignak', 'username') and \
-                    not get_app_config('Alignak', 'password'):
+                    not get_app_config('Alignak', 'password'):  # pragma: no cover - Not testable
                 login = AppLogin()
                 login.create_widget()
 
