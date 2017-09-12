@@ -13,7 +13,6 @@ install:
 
 script:
   # so to help eventual debug: knowing what exact versions are in use can be rather useful.
-  - echo "$HOME"
   - pip freeze
   # Code static analysis
   - pep8 --max-line-length=100 --exclude='*.pyc, *.cfg, *.log' --ignore='E402' alignak_app/*
