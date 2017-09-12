@@ -146,7 +146,7 @@ class Synthesis(QWidget):
 
         """
 
-        if self.isVisible():
+        if self.isVisible() or self.first_display:
             # If first display, create line search from hosts list
             if self.first_display:
                 self.create_line_search()

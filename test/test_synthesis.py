@@ -65,3 +65,18 @@ class TestServicesView(unittest2.TestCase):
         self.assertTrue(under_test.action_manager)
         self.assertIsNone(under_test.host_synthesis)
         self.assertTrue(under_test.line_search)
+
+    def test_display_host_synthesis(self):
+        """Display Host Synthesis"""
+
+        under_test = Synthesis()
+
+        under_test.initialize(self.app_backend)
+
+        self.assertIsNone(under_test.host_synthesis)
+        self.assertTrue(under_test.first_display)
+
+        under_test.display_host_synthesis()
+
+        self.assertIsNotNone(under_test.host_synthesis)
+        self.assertFalse(under_test.first_display)
