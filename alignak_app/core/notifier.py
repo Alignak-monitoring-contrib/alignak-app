@@ -79,7 +79,7 @@ class AppNotifier(object):
         if bool(interval) and interval > 0:
             logger.debug('Dashboard will be updated in %ss', str(interval))
             interval *= 1000
-        else:
+        else:  # pragma: no cover - not testable
             logger.error(
                 '"synthesis_interval" option must be greater than 0. Replace by default: 30s'
             )
@@ -133,7 +133,7 @@ class AppNotifier(object):
             # Changes to true to apply changes
             self.first_start = False
             self.changes = True
-        else:
+        else:  # pragma: no cover - not testable
             if self.old_synthesis == synthesis:
                 # No changes
                 self.old_synthesis = copy.deepcopy(synthesis)

@@ -19,7 +19,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-import copy
 import sys
 
 import unittest2
@@ -46,8 +45,6 @@ class TestAppNotifier(unittest2.TestCase):
 
     backend = AppBackend()
     backend.login()
-
-
 
     @classmethod
     def setUpClass(cls):
@@ -130,3 +127,49 @@ class TestAppNotifier(unittest2.TestCase):
         self.assertFalse(under_test.changes)
         self.assertTrue(under_test.first_start)
         self.assertIsNone(under_test.old_synthesis)
+
+    def test_diff_last_state(self):
+        """Diff Last Backend SState"""
+
+        self.backend = AppBackend()
+        self.backend.login()
+
+        # TrayIcon and Dashboard for notifier
+        tray_icon_test = TrayIcon(self.icon)
+        dashboard_test = Dashboard()
+
+        notifier_test = AppNotifier()
+        notifier_test.app_backend = self.backend
+        notifier_test.tray_icon = tray_icon_test
+        notifier_test.dashboard = dashboard_test
+
+        # Notifier check data to get first synthesys counts
+        notifier_test.check_data()
+
+        # Get synthesis test to test diff between check
+        synthesis = self.backend.synthesis_count()
+        under_test = notifier_test.diff_last_states(synthesis)
+
+        fields_test = {
+            'hosts': {'up': 0, 'downtime': 0, 'down': 0, 'acknowledge': 0, 'unreachable': 0},
+            'services': {
+                'ok': 0,
+                'acknowledge': 0,
+                'unknown': 0,
+                'critical': 0,
+                'downtime': 0,
+                'unreachable': 0,
+                'warning': 0
+            }
+        }
+
+        self.assertTrue(under_test)
+        self.assertTrue('hosts' in under_test)
+        self.assertTrue('services' in under_test)
+
+        for state in fields_test['hosts']:
+            self.assertTrue(state in under_test['hosts'])
+            self.assertTrue(isinstance(under_test['hosts'][state], int))
+        for state in fields_test['services']:
+            self.assertTrue(state in under_test['services'])
+            self.assertTrue(isinstance(under_test['services'][state], int))
