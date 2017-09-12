@@ -8,7 +8,7 @@ Alignak App
     :target: https://travis-ci.org/Alignak-monitoring-contrib/alignak-app
     :alt: Develop branch build status
 
-.. image:: https://landscape.io/github/Alignak-monitoring-contrib/alignak-app/develoo/landscape.svg?style=flat
+.. image:: https://landscape.io/github/Alignak-monitoring-contrib/alignak-app/develop/landscape.svg?style=flat
    :target: https://landscape.io/github/Alignak-monitoring-contrib/alignak-app/develop
    :alt: Development code static analysis
 
