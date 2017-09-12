@@ -22,7 +22,7 @@
 import unittest2
 import sys
 
-from alignak_app.app import AlignakApp, QIcon
+from alignak_app.app import AlignakApp
 
 from PyQt5.QtWidgets import QApplication
 
