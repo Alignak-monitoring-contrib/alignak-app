@@ -78,8 +78,8 @@ class AlignakApp(QObject):
             logger.setLevel(INFO)
             logger.info('Logger Level is: INFO')
 
-        logger.info('App WorkDir = %s' % get_app_workdir())
-        logger.info('App MainDir = %s' % get_main_folder())
+        logger.info('App WorkDir = %s', get_app_workdir())
+        logger.info('App MainDir = %s', get_main_folder())
 
         # If not app_backend url, stop application
         if get_app_config('Alignak', 'backend'):

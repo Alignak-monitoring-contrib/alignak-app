@@ -57,7 +57,7 @@ def create_logger():  # pragma: no cover
             os.makedirs(path)
         except Exception:
             print('Can\'t create log file in [%s], App will log in current directory !' % path)
-            path = '.'  # pylint: disable=redefined-variable-type
+            path = '.'
 
     if not os.access(path, os.W_OK):
         print('Access denied for [%s], App will log in current directory !' % path)

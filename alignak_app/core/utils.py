@@ -61,11 +61,11 @@ def get_app_workdir():
     app_workdir = root_config.get('app_workdir', 'workdir')
 
     if not app_workdir:
-        logger.warning('App Workdir is empty. Application use %s instead !' % get_main_folder())
+        logger.warning('App Workdir is empty. Application use %s instead !', get_main_folder())
         app_workdir = get_main_folder()
     if app_workdir[:1] == '~':
         logger.error('You can\'t use "tilde" in this file. Please use $HOME instead !')
-        logger.warning('App Workdir is not valid. Application use %s instead !' % get_main_folder())
+        logger.warning('App Workdir is not valid. Application use %s instead !', get_main_folder())
         app_workdir = get_main_folder()
 
     if app_workdir[len(app_workdir) - 1:] == '/':
@@ -131,7 +131,7 @@ default_parameters = {
 app_config = None
 
 
-def get_filenames():  # pylint: disable=redefined-variable-type
+def get_filenames():
     """
     Return filenames depending platform
 
@@ -344,5 +344,5 @@ def get_date_from_timestamp(timestamp):
 
     if timestamp:
         return datetime.fromtimestamp(timestamp)
-    else:
-        return 'n/a'
+
+    return 'n/a'
