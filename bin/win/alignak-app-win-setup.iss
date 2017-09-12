@@ -18,8 +18,8 @@
 ; along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 #define MyAppName "Alignak-app"
-#define ShortVersion "0.6"
-#define MinorVersion ".6"
+#define ShortVersion "1.0"
+#define MinorVersion ".0"
 #define MyAppVersion ShortVersion + MinorVersion
 #define MyAppPublisher "Alignak (Estrada Matthieu)"
 #define MyAppURL "https://github.com/Alignak-monitoring-contrib/alignak-app"
