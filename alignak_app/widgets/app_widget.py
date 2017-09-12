@@ -119,7 +119,7 @@ class AppQWidget(QFrame):
 
         return logo_widget
 
-    def minimize(self):
+    def minimize(self):  # pragma: no cover - not testable
         """
         Minimize QWidget
 
@@ -130,7 +130,7 @@ class AppQWidget(QFrame):
         else:
             self.setWindowState(Qt.WindowMinimized)
 
-    def minimize_maximize(self):
+    def minimize_maximize(self):  # pragma: no cover - not testable
         """
         Minimize / Maximize QWidget
 
@@ -141,7 +141,7 @@ class AppQWidget(QFrame):
         else:
             self.setWindowState(Qt.WindowMaximized)
 
-    def center(self):
+    def center(self):  # pragma: no cover - not testable
         """
         Center QWidget
 
@@ -151,7 +151,7 @@ class AppQWidget(QFrame):
         center = QApplication.desktop().screenGeometry(screen).center()
         self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
 
-    def show_widget(self):
+    def show_widget(self):  # pragma: no cover - not testable
         """
         Show and center AppQWidget
 
@@ -161,7 +161,7 @@ class AppQWidget(QFrame):
         self.show()
         QWidget.activateWindow(self)
 
-    def add_widget(self, widget):
+    def add_widget(self, widget):  # pragma: no cover - not testable
         """
         Add the main QWidget of AppQWidget
 
@@ -171,7 +171,7 @@ class AppQWidget(QFrame):
 
         self.layout().addWidget(widget, 2)
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event):  # pragma: no cover - not testable
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         sticky = False
@@ -184,7 +184,7 @@ class AppQWidget(QFrame):
         else:
             pass
 
-    def mouseMoveEvent(self, event):
+    def mouseMoveEvent(self, event):  # pragma: no cover - not testable
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         sticky = False
