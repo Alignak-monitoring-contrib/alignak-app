@@ -37,6 +37,9 @@ pip install -e .
 echo '--------- Installing tests requirements ... --------- '
 pip install --upgrade -r test/requirements.txt
 
+echo '--------------------- TESTS ---------------------------'
+python -c "import os; print(os.environ['HOME'])"
+
 echo '--------- Check and copy folder data to home... --------- '
 mkdir -p ~/.local/alignak_app/images/
 mkdir -p ~/.local/alignak_app/css/
@@ -44,3 +47,5 @@ cp -R --verbose etc/images/* ~/.local/alignak_app/images/
 cp -R --verbose etc/css/* ~/.local/alignak_app/css/
 cp --verbose test/etc/settings.cfg ~/.local/alignak_app/
 cp --verbose test/etc/app_workdir.ini ~/.local/alignak_app/
+
+ls -la ~/.local/alignak_app/
