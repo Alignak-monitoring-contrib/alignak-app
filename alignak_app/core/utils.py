@@ -270,11 +270,7 @@ def get_css():
 
     try:
         if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-            with open(
-                            '%s/css/style.css' % (
-                            get_main_folder()
-                    )
-            ) as css:
+            with open('%s/css/style.css' % (get_main_folder())) as css:
                 return css.read()
         else:
             with open('%s/css/style.css' % get_main_folder()) as css:
