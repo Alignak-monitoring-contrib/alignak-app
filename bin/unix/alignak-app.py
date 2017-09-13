@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- codinf: utf-8 -*-
 
-# Copyright (c) 2015-2016:
+# Copyright (c) 2015-2017:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -28,11 +28,7 @@ import os
 
 from alignak_app.app import AlignakApp
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication
-except ImportError:
-    from PyQt4.Qt import QApplication
+from PyQt5.QtWidgets import QApplication, QMessageBox
 
 app = QApplication(sys.argv)
 app.setQuitOnLastWindowClosed(False)
@@ -43,7 +39,13 @@ if 'win32' not in sys.platform:
     except KeyError as e:
         print(
             'You must be in [DESKTOP_SESSION] to launch Alignak-App !\n'
-            'Try to launch without ssh connection.'
+            'Try to launch without ssh connection or set your [DESKTOP_SESSION] variable.'
+        )
+        QMessageBox.critical(
+            None,
+            'No DESKTOP_SESSION found',
+            'You must be in [DESKTOP_SESSION] to launch Alignak-App !\n'
+            'Try to launch without ssh connection or set your [DESKTOP_SESSION] variable.'
         )
         sys.exit()
 

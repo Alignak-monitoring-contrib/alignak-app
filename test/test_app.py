@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2016:
+# Copyright (c) 2015-2017:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -22,13 +22,9 @@
 import unittest2
 import sys
 
-from alignak_app.app import AlignakApp, QIcon
+from alignak_app.app import AlignakApp
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication
-except ImportError:
-    from PyQt4.Qt import QApplication
+from PyQt5.QtWidgets import QApplication
 
 
 class TestApp(unittest2.TestCase):
@@ -52,18 +48,13 @@ class TestApp(unittest2.TestCase):
 
         self.assertIsNone(under_test.tray_icon)
         self.assertIsNone(under_test.notifier)
+        self.assertIsNone(under_test.dashboard)
+        self.assertFalse(under_test.notifier_timer.isActive())
 
         # Build alignak_app
         under_test.start()
 
         self.assertIsNotNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.notifier)
-
-    def test_get_icon(self):
-        """Get Icon"""
-
-        under_test = AlignakApp()
-
-        icon = under_test.get_icon()
-
-        self.assertIsInstance(icon, QIcon, 'This is a test for QIcon')
+        self.assertIsNotNone(under_test.dashboard)
+        self.assertTrue(under_test.notifier_timer.isActive())

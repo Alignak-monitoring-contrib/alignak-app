@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2016:
+# Copyright (c) 2015-2017:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -24,6 +24,7 @@ import os
 
 try:
     from setuptools import setup, find_packages
+    from setuptools.command.install import install
 except:
     sys.exit("Error: missing python-setuptools library")
 
@@ -79,11 +80,6 @@ images = os.listdir(dir_path + '/etc/images')
 for image in images:
     data_files.append((paths['images'], ['etc/images/' + image]))
 
-# Templates
-templates = os.listdir(dir_path + '/etc/templates')
-for template in templates:
-    data_files.append((paths['templates'], ['etc/templates/' + template]))
-
 # StyleSheet
 stylesheet = os.listdir(dir_path + '/etc/css')
 for style in stylesheet:
@@ -91,10 +87,35 @@ for style in stylesheet:
 
 # Etc
 data_files.append((paths['app'], ['etc/settings.cfg']))
+data_files.append((paths['app'], ['etc/app_workdir.ini']))
 
 # Bin for Unix
 data_files.append((paths['bin'], ['bin/unix/alignak-app']))
 data_files.append((paths['bin'], ['bin/unix/alignak-app.py']))
+
+
+class PostInstallCommand(install):
+    """Post-installation for installation mode."""
+
+    END = '\x1b[0m'
+    GREEN = '\x1b[32m'
+    CYAN = '\x1b[36m'
+
+    install_info = """\n
+#########################################################################
+
+        %s Alignak-App has been installed successfully :) %s
+        
+Please RUN %s ~/.local/alignak_app/bin/alignak-app %s to check installation.
+
+    Usage: %s alignak-app {start|stop|status|restart} %s
+
+#########################################################################\n
+    """ % (GREEN, END, CYAN, END, GREEN, END)
+
+    def run(self):
+        install.run(self)
+        os.system("echo '%s'" % self.install_info)
 
 
 setup(
@@ -111,6 +132,9 @@ setup(
     description=__description__,
     long_description=open('README.rst').read(),
 
+    cmdclass={
+        'install': PostInstallCommand,
+    },
     zip_safe=False,
 
     packages=find_packages(),
@@ -121,14 +145,14 @@ setup(
     install_requires=install_requires,
 
     classifiers=[
-        'Development Status :: 4 - Beta',
-        'Environment :: X11 Applications :: GTK',
+        'Development Status :: 5 - Production/Stable',
+        'Environment :: X11 Applications :: Qt',
+        'Intended Audience :: End Users/Desktop',
         'Intended Audience :: Developers',
         'Intended Audience :: Customer Service',
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Natural Language :: English',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Topic :: System :: Monitoring',
         'Topic :: System :: Systems Administration',

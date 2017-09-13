@@ -24,10 +24,9 @@ Features
 
 Alignak-App has many features:
 
-  * Support Python 2.7 and Python 3, PyQt4 and PyQt5. (Python 3.5 is recommended)
   * Multi-platfom: Linux / Windows
   * Multi-screen: notifies you on your active screen
-  * Customizable: notifications interval, duration and position, use your own icons
+  * Many configurations
   * Links to your `Alignak WebUI`_ from the menus
   * Search Hosts and Services, acknowledge problems, schedule downtimes and more
 
@@ -38,6 +37,11 @@ Release cycle
 
 Other features will come in the next versions and you can propose new features through  `project issues <https://github.com/Alignak-monitoring-contrib/alignak-app>`_.
 Each feature is discussed in a separate issue.
+
+Thanks
+------
+
+Thanks to `ddurieux <https://github.com/ddurieux>`_, `mohierf <https://github.com/mohierf>`_ and `spea1 <https://github.com/spea1>`_ for their help and contribution.
 
 .. _Alignak: https://alignak-monitoring.github.io
 .. _GNU Affero General Public License: http://www.gnu.org/licenses/agpl.txt

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2016:
+# Copyright (c) 2015-2017:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -20,70 +20,107 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Application configuration
+    Utils manage configurations
 """
 
 import os
 import sys
-import datetime
 import time
 
 from logging import getLogger
 
-from string import Template
 import configparser
-from configparser import NoOptionError
-
+from configparser import NoOptionError, NoSectionError, DuplicateOptionError, DuplicateSectionError
+from datetime import datetime
+from alignak_app import __project_url__
 
 logger = getLogger(__name__)
 
 
 # Application Home
-def get_app_root():
+def get_app_workdir():
     """
     Return user home.
+
+    :return: application workdir
+    :rtype: str
     """
 
-    # Get HOME and USER
-    if 'linux' in sys.platform or 'sunos5' in sys.platform:
-        app_root = os.environ['HOME']
-        app_root += '/.local'
+    root_config = configparser.ConfigParser(os.environ)
+    try:
+        if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
+            root_config.read('%s/.local/alignak_app/app_workdir.ini' % os.environ['HOME'])
+        elif 'win32' in sys.platform:  # pragma: no cover - not testable:
+            root_config.read('%s\\Alignak-app\\app_workdir.ini' % os.environ['PROGRAMFILES'])
+        else:
+            sys.exit('Your system seems not compatible. Please consult: %s' % __project_url__)
+    except (IOError, NoSectionError) as e:
+        sys.exit(e)
+
+    app_workdir = root_config.get('app_workdir', 'workdir')
+
+    if not app_workdir:
+        logger.info('App Workdir is empty. Application use %s instead !', get_main_folder())
+        app_workdir = get_main_folder()
+    if app_workdir[:1] == '~':
+        logger.error('You can\'t use "tilde" in this file. Please use $HOME instead !')
+        logger.warning('App Workdir is not valid. Application use %s instead !', get_main_folder())
+        app_workdir = get_main_folder()
+
+    if app_workdir[len(app_workdir) - 1:] == '/':
+        app_workdir = app_workdir.rstrip('/')
+    if app_workdir[len(app_workdir) - 1:] == '\\':
+        app_workdir = app_workdir.rstrip('\\')
+
+    return app_workdir
+
+
+def get_main_folder():
+    """
+    Return the main folder of Application
+
+    :return: main path
+    :rtype: str
+    """
+
+    if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
+        main_folder = '%s/.local/alignak_app' % os.environ['HOME']
     elif 'win32' in sys.platform:  # pragma: no cover - not testable
-        app_root = os.environ['USERPROFILE']
-        app_root += '\\AppData\\Roaming\\Python\\'
-    else:  # pragma: no cover - not testable
-        sys.exit('Application can\'t find the user HOME.')
+        main_folder = '%s\\Alignak-app' % os.environ['PROGRAMFILES']
+    else:
+        sys.exit('Your system seems not compatible. Please consult: %s' % __project_url__)
 
-    # Prevent from root user
-    if 'root' in app_root or not app_root:
-        logger.error('Application can\'t find the user HOME or maybe you are connected as ROOT.')
-        sys.exit('Application can\'t find the user HOME or maybe you are connected as ROOT.')
+    return main_folder
 
-    return app_root
 
 # Application Configuration
-
 default_parameters = {
-    'check_interval': 30,
+    'synthesis_interval': 30,
+    'daemon_interval': 60,
+    'item_interval': 30,
     'duration': 8,
-    'notifications': True,
     'position': 'top:right',
-    'debug': False,
+    'animation': 1000,
+    'filename': 'alignakapp',
+    'location': False,
+    'debug': True,
     'username': '',
     'password': '',
-    'alignak_url': 'http://127.0.0.1',
-    'webui_url': 'http://127.0.0.1:5001',
+    'url': 'http://127.0.0.1',
+    'backend': 'http://127.0.0.1:5000',
+    'webui': 'http://127.0.0.1:5001',
+    'processes': '1',
+    'bi_less': 0,
     'path': '/alignak_app',
     'img': '/images',
-    'tpl': '/templates',
     'icon': 'alignak.svg',
     'about': 'about.svg',
     'exit': 'exit.svg',
     'checked': 'checked.svg',
-    'unvalid': 'unvalid.svg',
+    'error': 'error.svg',
     'hosts_up': 'host_up.svg',
     'hosts_down': 'host_down.svg',
-    'hosts_unreach': 'host_unreach.svg',
+    'hosts_unreachable': 'host_unreachable.svg',
     'services_ok': 'service_ok.svg',
     'services_critical': 'service_critical.svg',
     'services_unknown': 'service_unknown.svg',
@@ -94,29 +131,27 @@ default_parameters = {
 app_config = None
 
 
-def get_filenames():  # pylint: disable=redefined-variable-type
+def get_filenames():
+    """
+    Return filenames depending platform
+
+    :return: filenames str or list
+    :rtype: str|list
     """
 
-    :return:
-    """
-
-    if 'linux' in sys.platform or 'sunos5' in sys.platform:
-        config_filenames = get_app_root() + '/alignak_app/settings.cfg'
+    if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
+        config_filenames = '%s/settings.cfg' % get_app_workdir()
     elif 'win32' in sys.platform:  # pragma: no cover - not testable
-        config_filenames = [  # pylint: disable=redefined-variable-type
-            get_app_root() + '\\alignak_app\\settings.cfg',
-            'C:\\Program Files (x86)\\Alignak-app\\settings.cfg',
-            'C:\\Program Files\\Alignak-app\\settings.cfg'
-        ]
+        config_filenames = '%s\\settings.cfg' % get_app_workdir()
     else:
-        config_filenames = get_app_root() + '/alignak_app/settings.cfg'
+        sys.exit('Your system seems not compatible. Please consult: %s' % __project_url__)
 
     return config_filenames
 
 
 def init_config():
     """
-    Create app_config
+    Initialize configuration
 
     """
 
@@ -129,10 +164,14 @@ def init_config():
     try:
         app_config.read(get_filenames())
         logger.info('Configuration file is OK.')
-    except Exception as e:
-        logger.error('Configuration file is missing in [' + str(get_filenames()) + '] !')
+    except (DuplicateOptionError, DuplicateSectionError) as e:  # pragma: no cover - not testable
+        logger.error('Duplicate Option/Section in file [%s] !', str(get_filenames()))
         logger.error(str(e))
-        sys.exit('Configuration file is missing in [' + str(get_filenames()) + '] !')
+        sys.exit('Duplicate Option/Section in file [%s] !' % str(get_filenames()))
+    except Exception as f:
+        logger.error('Configuration file is missing in [%s] !', str(get_filenames()))
+        logger.error(str(f))
+        sys.exit('Configuration file is missing in [%s] !' % str(get_filenames()))
 
 
 def get_app_config(section, option, boolean=False):
@@ -144,16 +183,16 @@ def get_app_config(section, option, boolean=False):
     if boolean:
         try:
             return app_config.getboolean(section, option)
-        except NoOptionError as e:
-            logger.error('Missing Option in configuration file : ' + str(e))
-            logger.error('Replace by : ' + option + ': ' + str(default_parameters[option]))
+        except (NoOptionError, NoSectionError) as e:
+            logger.error('Missing Option in configuration file : %s', str(e))
+            logger.error('Replace by > %s: %s', option, str(default_parameters[option]))
             return default_parameters[option]
     else:
         try:
             return app_config.get(section, option)
-        except NoOptionError as e:
-            logger.error('Missing Option in configuration file : ' + str(e))
-            logger.error('Replace by : ' + option + ': ' + str(default_parameters[option]))
+        except (NoOptionError, NoSectionError) as e:
+            logger.error('Missing Option in configuration file : %s', str(e))
+            logger.error('Replace by > %s: %s', option, str(default_parameters[option]))
             return default_parameters[option]
 
 
@@ -168,19 +207,9 @@ def set_app_config(section, option, new_value):
 
     try:
         # Read configuration file and store in list
-        file_to_write = ''
-        if 'linux' in sys.platform or 'sunos5' in sys.platform:
-            with open(get_filenames(), 'r') as config_file:
-                data = config_file.readlines()
-                file_to_write = get_filenames()  # pylint: disable=redefined-variable-type
-        elif 'win32' in sys.platform:  # pragma: no cover - not testable
-            for cfg_files in get_filenames():
-                try:
-                    with open(cfg_files, 'r') as config_file:
-                        data = config_file.readlines()
-                    file_to_write = cfg_files
-                except IOError as e:
-                    logger.warning(e)
+        with open(get_filenames(), 'r') as config_file:
+            data = config_file.readlines()
+            file_to_write = get_filenames()
         # Update values
         for d in data:
             if option in d[0:len(option)]:
@@ -193,37 +222,7 @@ def set_app_config(section, option, new_value):
         logger.error('Can\'t set Option in configuration file : ' + str(e))
 
 
-# Application Templates
-def get_template(name, values):
-    """
-        Return content of the choosen template with its values.
-
-    :param name: name of the template.
-    :type name: str
-    :param values: dict of values to substitute.
-    :type values: dict
-    :return: content of a template
-    :rtype: str
-    """
-
-    tpl_content = ''
-
-    tpl_path = get_app_root() \
-        + app_config.get('Config', 'path') \
-        + app_config.get('Config', 'tpl') \
-        + '/'
-
-    try:
-        tpl_file = open(tpl_path + name)
-    except IOError as e:  # pragma: no cover - not testable
-        logger.error('Failed open template : ' + str(e))
-        sys.exit('Failed open template : ' + str(e))
-
-    if tpl_file:
-        tpl = Template(tpl_file.read())
-        tpl_content = tpl.safe_substitute(values)
-
-    return tpl_content
+error_config = 0
 
 
 def get_image_path(name):
@@ -236,56 +235,29 @@ def get_image_path(name):
     :rtype: str
     """
 
-    img_path = get_app_root() \
-        + app_config.get('Config', 'path') \
-        + app_config.get('Config', 'img') \
-        + '/'
+    global error_config  # pylint: disable=global-statement
+
+    img_path = get_main_folder()
 
     try:
-        img = img_path + app_config.get('Images', name)
+        img = '%s/images/%s' % (img_path, app_config.get('Images', name))
+
         return img
-    except NoOptionError as e:
+    except (NoOptionError, NoSectionError) as e:
         logger.error('Bad Option : ' + str(e))
-        return img_path + app_config.get('Images', 'unvalid')
 
-
-def get_diff_since_last_check(last_check):
-    """
-    Return the diff between the last time stamp
-
-    :param last_check: timestamp of the last check
-    :type last_check: float
-    :return: time difference formatted
-    :rtype: str
-    """
-
-    # Get current time
-    cur_time = time.time()
-
-    format_time = '%H:%M:%S'
-    ft_check = datetime.datetime.fromtimestamp(last_check).strftime(format_time)
-    ft_time = datetime.datetime.fromtimestamp(cur_time).strftime(format_time)
-
-    logger.debug('Check: ' + str(ft_check))
-    logger.debug('CurTime: ' + str(ft_time))
-
-    time_delta = \
-        datetime.datetime.strptime(ft_time, format_time) - \
-        datetime.datetime.strptime(ft_check, format_time)
-
-    # Calculate hours, minutes and seconds
-    hours = time_delta.seconds // 3600
-    # remaining seconds
-    s = time_delta.seconds - (hours * 3600)
-    minutes = s // 60
-    seconds = s - (minutes * 60)
-
-    if hours == 0:
-        delta = str(minutes) + 'm ' + str(seconds) + 's ago'
-    else:
-        delta = str(hours) + 'h ' + str(minutes) + 'm ' + str(seconds) + 's ago'
-
-    return delta
+        error_config += 1
+        if error_config < 7:
+            return img_path + '/images/error.svg'
+        else:  # pragma: no cover - not testable
+            if img_path:
+                error_msg = 'Alignak has stop because too many error. We can\'t load files.\n' \
+                            ' Make sure that the settings file is present in the directory %s !' \
+                            % get_app_workdir()
+            else:
+                error_msg = 'Your system seems not compatible. Please consult: %s' % __project_url__
+            logger.error(error_msg)
+            sys.exit(error_msg)
 
 
 def get_css():
@@ -297,8 +269,77 @@ def get_css():
     """
 
     try:
-        with open(get_app_root() + app_config.get('Config', 'path') + '/css/style.css') as css:
-            return css.read()
-    except IOError as e:
-        logger.error('CSS File is missing : ' + str(e))
+        if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
+            with open('%s/css/style.css' % (get_main_folder())) as css:
+                return css.read()
+        else:
+            with open('%s/css/style.css' % get_main_folder()) as css:
+                return css.read()
+    except (IOError, NoSectionError) as e:
+        logger.error('CSS File is missing : %s', str(e))
         return ""
+
+
+def get_diff_since_last_check(last_check):  # pragma: no cover - not testable
+    """
+    Return the diff between the last time stamp
+
+    :param last_check: timestamp of the last check
+    :type last_check: float
+    :return: time difference formatted
+    :rtype: str
+    """
+
+    if not last_check:
+        return 'n/a'
+
+    time_delta = int(time.time()) - int(last_check)
+
+    # If it's now, say it :)
+    if time_delta < 3:
+        if 0 > time_delta > -4:
+            return 'Very soon'
+        if time_delta >= 0:
+            return 'Just now'
+
+    seconds = int(round(time_delta))
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    days, hours = divmod(hours, 24)
+    weeks, days = divmod(days, 7)
+    months, weeks = divmod(weeks, 4)
+    years, months = divmod(months, 12)
+
+    duration = []
+    if years > 0:
+        duration.append('%dy' % years)
+    else:
+        if months > 0:
+            duration.append('%dM' % months)
+        if weeks > 0:
+            duration.append('%dw' % weeks)
+        if days > 0:
+            duration.append('%dd' % days)
+        if hours > 0:
+            duration.append('%dh' % hours)
+        if minutes > 0:
+            duration.append('%dm' % minutes)
+        if seconds > 0:
+            duration.append('%ds' % seconds)
+
+    return ' ' + ' '.join(duration) + ' ago'
+
+
+def get_date_from_timestamp(timestamp):
+    """
+    Return date from timestamp
+    :param timestamp: timestamp to convert to date
+    :type timestamp: int
+    :return: corresponding date
+    :rtype: str
+    """
+
+    if timestamp:
+        return datetime.fromtimestamp(timestamp)
+
+    return 'n/a'

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2016:
+# Copyright (c) 2015-2017:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -42,40 +42,26 @@ BIN_DIR="$ROOT_DIR/bin"
 USER_BIN=$HOME/bin
 
 # Verify import of alignak_app and PyQt
-PYBIN=""
-PYQT=0
-PY=0
+PYBIN=python3
 
-python -c "import alignak_app" >/dev/null  2>&1
+"$PYBIN" -c "import alignak_app" >/dev/null  2>&1
 
 if [ $? -eq 0 ]; then
-    PY=2
-fi
-
-python -c "__import__('PyQt4')" >/dev/null  2>&1
-
-if [ $? -eq 0 ]; then
-    PYQT=2
-fi
-
-if [[ "$PY" -eq 2 && "$PYQT" -eq 2 ]]; then
-    PYBIN=python
+    echo -e "Alignak-app installation: $GREEN OK $END"
 else
-    python3 -c "import alignak_app"
-    if [ $? -eq 0 ]; then
-        PY=3
-    fi
-    python3 -c "__import__('PyQt5')"
-    if [ $? -eq 0 ]; then
-        PYQT=3
-    fi
-    if [[ "$PY" -eq 3 && "$PYQT" -eq 3 ]]; then
-        PYBIN=python3
-    else
-        echo "$RED It seems that your version of Python and PyQt are not compatible or not installed ! $END"
-        exit 1
-    fi
+    echo -e "$RED It seems that Alignak-app is broken... Please check your installation and make sure you've install with Python 3 ! $END"
+    exit 1
 fi
+
+"$PYBIN" -c "import PyQt5" >/dev/null  2>&1
+
+if [ $? -eq 0 ]; then
+    echo -e "PyQt5 installed: $GREEN OK $END"
+else
+    echo -e "$RED It seems that your version of PyQt is not compatible ! $END"
+    exit 1
+fi
+
 
 # Make command alignak-app available
 if [ ! -L "$USER_BIN/$DAEMON" ]; then

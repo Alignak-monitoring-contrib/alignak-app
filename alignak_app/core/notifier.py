@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2016:
+# Copyright (c) 2015-2017:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -27,153 +27,154 @@ import copy
 from logging import getLogger
 
 from alignak_app.core.utils import get_app_config
-from alignak_app.popup.notification import AppNotification
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
-    from PyQt5.QtCore import QTimer  # pylint: disable=no-name-in-module
-except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QSystemTrayIcon  # pylint: disable=import-error
-    from PyQt4.QtCore import QTimer  # pylint: disable=import-error
 
 logger = getLogger(__name__)
 
 
-class AppNotifier(QSystemTrayIcon):
+class AppNotifier(object):
     """
-    Class who manage notifications and states of hosts and services.
+        Class who manage notifications and states of hosts and services.
     """
 
-    def __init__(self, icon, backend, parent=None):
-        QSystemTrayIcon.__init__(self, icon, parent)
-        self.backend = backend
+    first_start = True
+
+    def __init__(self):
+        self.app_backend = None
         self.tray_icon = None
-        self.popup = None
-        self.notify = True
+        self.dashboard = None
+        self.changes = False
+        self.interval = 0
+        self.old_synthesis = None
 
-    def start(self, tray_icon):
+    def initialize(self, app_backend, tray_icon, dashboard):
         """
-        Start process loop of application with a QTimer.
+       AppNotifier manage notifications and changes
 
-        :param tray_icon: QSystemTrayIcon menu.
-        :type tray_icon: :class:`~alignak_app.tray_icon.TrayIcon`
-        """
+       :param app_backend: AppBackend object
+       :type app_backend: alignak_app.core.backend.AppBackend
+       :param tray_icon: TrayIcon object
+       :type tray_icon: alignak_app.systray.tray_icon.TrayIcon
+       :param dashboard: Dashboard object
+       :type dashboard: alignak_app.dashboard.app_dashboard.Dashboard
+       """
 
+        self.app_backend = app_backend
         self.tray_icon = tray_icon
-        self.popup = AppNotification()
-        self.popup.initialize_notification()
+        self.dashboard = dashboard
 
-        check_interval = int(get_app_config('Alignak-App', 'check_interval'))
+        # Define interval
+        self.set_interval()
+
         logger.info('Start notifier...')
-        logger.debug('Will be notify in ' + str(check_interval) + 's')
 
-        check_interval *= 1000
+    def set_interval(self):
+        """
+        Set interval from config
 
-        timer = QTimer(self)
-        timer.start(check_interval)
-        timer.timeout.connect(self.check_data)
+        """
+
+        interval = int(get_app_config('Alignak-App', 'synthesis_interval'))
+
+        if bool(interval) and interval > 0:
+            logger.debug('Dashboard will be updated in %ss', str(interval))
+            interval *= 1000
+        else:  # pragma: no cover - not testable
+            logger.error(
+                '"synthesis_interval" option must be greater than 0. Replace by default: 30s'
+            )
+            interval = 30000
+
+        self.interval = interval
 
     @staticmethod
-    def basic_diff_model():
+    def none_synthesis_model():
         """
-        Define a basic model of dict for diff
+        Return a synthesis data model
 
-        :return: model dict for diff
+        :return: synthesis model dict
         :rtype: dict
         """
+
         changes = {
             'hosts': {
-                'up': 'no changes',
-                'down': 'no changes',
-                'unreachable': 'no changes',
-                'acknowledge': 'no changes',
-                'downtime': 'no changes'
+                'up': 0,
+                'down': 0,
+                'unreachable': 0,
+                'acknowledge': 0,
+                'downtime': 0
             },
             'services': {
-                'ok': 'no changes',
-                'warning': 'no changes',
-                'critical': 'no changes',
-                'unknown': 'no changes',
-                'unreachable': 'no changes',
-                'acknowledge': 'no changes',
-                'downtime': 'no changes'
+                'ok': 0,
+                'warning': 0,
+                'critical': 0,
+                'unknown': 0,
+                'unreachable': 0,
+                'acknowledge': 0,
+                'downtime': 0
             }
         }
+
         return changes
 
     def check_data(self):
         """
-        Collect data from Backend-Client.
+        Check data from Backend API, emit pyqtSignal if there is change to update QWidgets
 
         """
 
-        # Init dict
-        old_states = {}
-        diff = self.basic_diff_model()
+        synthesis = self.app_backend.synthesis_count()
 
-        if self.backend.states:
-            logger.info('Store old states...')
-            old_states = copy.deepcopy(self.backend.states)
+        if self.first_start:
+            # Simulate old state
+            self.old_synthesis = copy.deepcopy(synthesis)
+            diff_synthesis = self.none_synthesis_model()
 
-        current_states = self.backend.synthesis_count()
+            # Changes to true to apply changes
+            self.first_start = False
+            self.changes = True
+        else:  # pragma: no cover - not testable
+            if self.old_synthesis == synthesis:
+                # No changes
+                self.old_synthesis = copy.deepcopy(synthesis)
+                diff_synthesis = self.none_synthesis_model()
+                self.changes = False
+            else:
+                # Changes: Get differences
+                diff_synthesis = self.diff_last_states(synthesis)
+                self.old_synthesis = copy.deepcopy(synthesis)
+                self.changes = True
 
-        if old_states:
-            diff = self.diff_last_check(old_states)
-
-        # Define notification level
-        if current_states['services']['critical'] > 0 or current_states['hosts']['down'] > 0:
-            level_notif = 'CRITICAL'
-        elif current_states['services']['unknown'] > 0 or \
-                current_states['services']['warning'] > 0 or \
-                current_states['hosts']['unreachable'] > 0:
-            level_notif = 'WARNING'
+        if self.changes:
+            # Emit pyqtSignals to update TrayIcon and Dashboard
+            logger.info('Changes since last check...')
+            self.tray_icon.update_tray.emit(synthesis)
+            self.dashboard.dashboard_updated.emit(synthesis, diff_synthesis)
         else:
-            level_notif = 'OK'
+            logger.info('No Changes.')
 
-        if self.notify:
-            logger.info('Send notification..')
-            # Trigger changes and send notification
-            self.tray_icon.update_menu_actions(
-                current_states['hosts'],
-                current_states['services']
-            )
-            self.popup.send_notification(
-                level_notif, current_states['hosts'],
-                current_states['services'],
-                diff
-            )
-        else:
-            logger.info('No Notify.')
-
-        logger.debug('Notification Level : ' + str(level_notif))
-
-    def diff_last_check(self, old_states):
+    def diff_last_states(self, synthesis):
         """
-        Check if there have been any change since the last check
+        Return the synthesis differences since the last check
 
+        :param synthesis: new synthesis states in dict
+        :type synthesis: dict
+        :return: diff of twice synthesis in a dict
+        :rtype: dict
         """
 
-        logger.debug('Old_states : ' + str(old_states))
-        logger.debug('New states : ' + str(self.backend.states))
+        logger.debug('Old_states : ' + str(self.old_synthesis))
+        logger.debug('New states : ' + str(synthesis))
 
-        diff = self.basic_diff_model()
+        diff_synthesis = self.none_synthesis_model()
 
-        if old_states == self.backend.states:
-            logger.info('[No changes] since the last check...')
-            self.notify = False
-        else:
-            logger.info('[Changes] since the last check !')
-            self.notify = True
-            for key, _ in self.backend.states['hosts'].items():
-                if old_states['hosts'][key] != self.backend.states['hosts'][key]:
-                    cur_diff = self.backend.states['hosts'][key] - old_states['hosts'][key]
-                    diff['hosts'][key] = cur_diff
-            for key, _ in self.backend.states['services'].items():
-                if old_states['services'][key] != self.backend.states['services'][key]:
-                    cur_diff = \
-                        self.backend.states['services'][key] \
-                        - old_states['services'][key]
-                    diff['services'][key] = cur_diff
+        for key, _ in self.old_synthesis['hosts'].items():
+            if synthesis['hosts'][key] != self.old_synthesis['hosts'][key]:
+                cur_diff = synthesis['hosts'][key] - self.old_synthesis['hosts'][key]
+                diff_synthesis['hosts'][key] = cur_diff
+        for key, _ in self.old_synthesis['services'].items():
+            if synthesis['services'][key] != self.old_synthesis['services'][key]:
+                cur_diff = synthesis['services'][key] - self.old_synthesis['services'][key]
+                diff_synthesis['services'][key] = cur_diff
 
-        return diff
+        return diff_synthesis

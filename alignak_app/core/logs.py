@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2016:
+# Copyright (c) 2015-2017:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -30,7 +30,7 @@ from logging import Formatter
 from logging import DEBUG
 from logging.handlers import TimedRotatingFileHandler
 
-from alignak_app.core.utils import get_app_root
+from alignak_app.core.utils import get_app_workdir, get_app_config
 
 
 # Application Logger
@@ -48,17 +48,19 @@ def create_logger():  # pragma: no cover
         stdout_handler = root_logger.handlers[0]
 
     # Define path and file for "file_handler"
-    path = get_app_root() + '/alignak_app'
-    filename = 'alignakapp.log'
+    path = get_app_workdir()
+    filename = '%s.log' % get_app_config('Log', 'filename')
 
     if not os.path.isdir(path):
         # noinspection PyBroadException
         try:  # pragma: no cover - not testable
             os.makedirs(path)
         except Exception:
+            print('Can\'t create log file in [%s], App will log in current directory !' % path)
             path = '.'
 
     if not os.access(path, os.W_OK):
+        print('Access denied for [%s], App will log in current directory !' % path)
         path = '.'
 
     formatter = Formatter('[%(asctime)s]> %(name)-12s : [%(levelname)s] %(message)s')

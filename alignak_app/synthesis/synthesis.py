@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2016:
+# Copyright (c) 2015-2017:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -27,27 +27,16 @@ import json
 
 from logging import getLogger
 
-from alignak_app.core.backend import AppBackend
-from alignak_app.core.utils import get_image_path, get_css
-from alignak_app.synthesis.host_view import HostView
-from alignak_app.synthesis.services_view import ServicesView
-from alignak_app.widgets.title import get_widget_title
+from alignak_app.core.utils import get_css, get_app_config
+from alignak_app.core.action_manager import ActionManager
+from alignak_app.synthesis.host_synthesis import HostSynthesis
+from alignak_app.widgets.app_widget import AppQWidget
 
-try:
-    __import__('PyQt5')
-    from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
-    from PyQt5.QtWidgets import QGridLayout  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QStringListModel, QIcon  # pylint: disable=no-name-in-module
-    from PyQt5.Qt import QCompleter, QLineEdit, QTimer  # pylint: disable=no-name-in-module
-    from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
-except ImportError:  # pragma: no cover
-    from PyQt4.Qt import QApplication  # pylint: disable=import-error
-    from PyQt4.Qt import QWidget, QPushButton  # pylint: disable=import-error
-    from PyQt4.Qt import QGridLayout  # pylint: disable=import-error
-    from PyQt4.Qt import QStringListModel, QIcon  # pylint: disable=import-error
-    from PyQt4.Qt import QCompleter, QLineEdit, QTimer  # pylint: disable=import-error
-    from PyQt4.QtCore import Qt  # pylint: disable=import-error
+from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QGridLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QStringListModel  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QCompleter, QLineEdit, QTimer  # pylint: disable=no-name-in-module
+from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
 
 
 logger = getLogger(__name__)
@@ -58,104 +47,68 @@ class Synthesis(QWidget):
         Class who create the Synthesis QWidget.
     """
 
+    first_display = True
+
     def __init__(self, parent=None):
         super(Synthesis, self).__init__(parent)
-        self.setMinimumSize(1000, 700)
-        self.setWindowTitle('Hosts Synthesis View')
-        self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setStyleSheet(get_css())
         # Fields
         self.line_search = QLineEdit()
-        self.host_view = None
-        self.services_view = None
         self.app_backend = None
-        self.setStyleSheet(get_css())
+        self.action_manager = None
+        self.host_synthesis = None
+        self.app_widget = AppQWidget()
+        self.old_checkbox_states = {}
 
-    def create_widget(self, app_backend):
+    def initialize(self, app_backend):
         """
         Create the QWidget with its items and layout.
 
         :param app_backend: app_backend of alignak.
-        :type app_backend: AppBackend
+        :type app_backend: alignak_app.core.backend.AppBackend
         """
 
         logger.info('Create Synthesis View...')
-        # Get app_backend
+
+        # App_backend
         self.app_backend = app_backend
+        self.action_manager = ActionManager(app_backend)
 
-        # Title
-        popup_title = get_widget_title('host synthesis view', self)
-
-        # Search Line
-        self.create_line_search()
-
-        # button
-        button = QPushButton('Search / Refresh', self)
-        button.setToolTip('Type name of a host to display his data')
-        button.clicked.connect(self.refresh_all_views)
-        self.line_search.returnPressed.connect(button.click)
-
-        # Create views
-        self.host_view = HostView(self)
-        self.host_view.init_view(self.app_backend)
-        self.services_view = ServicesView(self)
-
-        # Layout
-        # row, column, rowSpan, colSPan
         layout = QGridLayout()
-        layout.addWidget(popup_title, 0, 0, 1, 4)
-        layout.addWidget(self.line_search, 1, 0, 1, 3)
-        layout.addWidget(button, 1, 3, 1, 1)
-        layout.addWidget(self.host_view, 2, 0, 1, 4)
-        layout.setAlignment(self.host_view, Qt.AlignLeft)
-        layout.addWidget(self.services_view, 3, 0, 8, 4)
-
         self.setLayout(layout)
 
-        timer = QTimer(self)
-        timer.start(10000)
-        timer.timeout.connect(self.refresh_all_views)
+        # button
+        button = QPushButton('Search / Refresh Host', self)
+        button.setObjectName('search')
+        button.setFixedHeight(22)
+        button.setToolTip('Search Host')
+        button.clicked.connect(self.display_host_synthesis)
+        layout.addWidget(button, 0, 4, 1, 1)
+        layout.setAlignment(button, Qt.AlignTop)
 
-    def show_synthesis(self):
-        """
-        Show synthesis view for TrayIcon
+        self.line_search.setFixedHeight(button.height())
+        self.line_search.returnPressed.connect(button.click)
+        self.line_search.cursorPositionChanged.connect(button.click)
+        layout.addWidget(self.line_search, 0, 0, 1, 4)
+        layout.setAlignment(self.line_search, Qt.AlignTop)
 
-        """
+        self.app_widget.initialize('Host Synthesis View')
+        self.app_widget.add_widget(self)
+        self.app_widget.setMinimumSize(1300, 750)
 
-        self.show()
-
-    def refresh_all_views(self):
-        """
-        Handle Event when "line_search" is clicked.
-
-        """
-
-        # Get item that is searched
-        host_name = str(self.line_search.text()).rstrip()
-
-        logger.debug('Desired host: ' + host_name)
-
-        # Collect host data and associated services
-        data = self.app_backend.get_all_host_data(host_name)
-
-        # Write result ot "result_label"
-        if data:
-            self.host_view.update_view(data)
-            self.services_view.display_services(data['services'], data['host']['name'])
+        refresh_interval = int(get_app_config('Alignak-App', 'item_interval'))
+        if bool(refresh_interval) and refresh_interval > 0:
+            logger.debug('Hosts synthesis will be refresh in %ss', str(refresh_interval))
+            refresh_interval *= 1000
         else:
-            data = {
-                'host': {
-                    'name': host_name,
-                    'alias': '...',
-                    'ls_state': '...D',
-                    'ls_last_check': 0.0,
-                    'ls_output': '...',
-                    'ls_acknowledged': False,
-                    'ls_downtimed': False
-                },
-                'services': None
-            }
-            self.host_view.update_view(data)
-            self.services_view.display_services(None, 'NOT KNOWN')
+            logger.error(
+                '"item_interval" option must be greater than 0. Replace by default: 30s'
+            )
+            refresh_interval = 30000
+
+        refresh_timer = QTimer(self)
+        refresh_timer.start(refresh_interval)
+        refresh_timer.timeout.connect(self.display_host_synthesis)
 
     def create_line_search(self):
         """
@@ -167,7 +120,7 @@ class Synthesis(QWidget):
         hosts_list = []
         params = {'where': json.dumps({'_is_template': False})}
 
-        all_hosts = self.app_backend.get('host', params)
+        all_hosts = self.app_backend.get('host', params, ['name'])
 
         if all_hosts:
             for host in all_hosts['_items']:
@@ -178,9 +131,61 @@ class Synthesis(QWidget):
 
         # Create completer from model
         completer = QCompleter()
+        completer.setFilterMode(Qt.MatchContains)
+        completer.setCaseSensitivity(Qt.CaseInsensitive)
         completer.setModel(model)
 
         # Add completer to "line edit"
         self.line_search.setCompleter(completer)
         self.line_search.setPlaceholderText('Type a host name to display its data')
         self.line_search.setToolTip('Type a host name to display its data')
+
+    def display_host_synthesis(self):
+        """
+        Display Synthesis QWidget. Remove and delete HostSynthesis if exists
+
+        """
+
+        if self.isVisible() or self.first_display:
+            # If first display, create line search from hosts list
+            if self.first_display:
+                self.create_line_search()
+                self.first_display = False
+
+            host_name = str(self.line_search.text()).rstrip()
+            backend_data = None
+            old_row = -1
+
+            if host_name:
+                backend_data = self.app_backend.get_host_with_services(host_name)
+
+            # Store old data, remove and delete host_synthesis
+            if self.host_synthesis:
+                # Store old data
+                if self.host_synthesis.services_list:
+                    old_row = self.host_synthesis.services_list.currentRow()
+                if self.host_synthesis.check_boxes:
+                    for key in self.host_synthesis.check_boxes:
+                        self.old_checkbox_states[key] = \
+                            self.host_synthesis.check_boxes[key].isChecked()
+
+                # Remove and delete QWidget
+                self.layout().removeWidget(self.host_synthesis)
+                self.host_synthesis.deleteLater()
+                self.host_synthesis = None
+
+            # Create the new host_synthesis
+            self.host_synthesis = HostSynthesis(self.action_manager)
+            self.host_synthesis.initialize(backend_data)
+
+            # Restore old data
+            if old_row >= 0 and self.host_synthesis.services_list:
+                self.host_synthesis.services_list.setCurrentRow(old_row)
+            if self.old_checkbox_states and self.host_synthesis.check_boxes:
+                for key, checked in self.old_checkbox_states.items():
+                    try:
+                        self.host_synthesis.check_boxes[key].setChecked(checked)
+                    except KeyError as e:
+                        logger.warning('Can\'t reapply filter [%s]: %s', e, checked)
+
+            self.layout().addWidget(self.host_synthesis, 1, 0, 1, 5)

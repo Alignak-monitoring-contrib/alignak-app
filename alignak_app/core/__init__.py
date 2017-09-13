@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2016:
+# Copyright (c) 2015-2017:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -21,5 +21,5 @@
 
 """
     The Core package contains classes to manage alignak_app.
-    They are isolated from pyqt.
+    They are as far as possible isolated from the PyQt package.
 """

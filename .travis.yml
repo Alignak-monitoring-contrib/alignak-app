@@ -2,6 +2,7 @@ language: python
 sudo: true
 python:
   - "3.5"
+  - "3.6"
 
 before_script:
   - "export DISPLAY=:99.0"
@@ -9,7 +10,7 @@ before_script:
   - sleep 3
 
 install:
-  - bash test/setup_test.sh
+  - ./test/setup_test.sh
 
 script:
   # so to help eventual debug: knowing what exact versions are in use can be rather useful.

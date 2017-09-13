@@ -1,9 +1,9 @@
 .. _config:
 
-Alignak-app Folders
-===================
+Alignak-app Main Folder
+=======================
 
-During installation, Alignak-app creates a root folder that contains all the files you need: images, logs, and configuration files.
+During installation, Alignak-app creates a root folder that contains all the files application need to run.
 
 On Linux
 --------
@@ -24,20 +24,25 @@ The ROOT folder of the application should be under::
 
 2. If you use **Installer** (see :ref:`install`):
 
-The configuration file will be located under::
+The ROOT folder will be located under::
 
     C:\Program Files\Alignak-app\
 
 This is to facilitate access to the configuration and respect Windows conventions.
 
-The rest of the files is in::
+Alignak-app Workdir
+===================
 
-    C:\Users\user\AppData\Roaming\Python\alignak_app\
+This folder is defined by the ``app_workdir.ini`` file located in the main application folder cited above.
 
-To Know
-~~~~~~~
+The goal of this file is to define a directory where Alignak-app can write/read without problems to get settings and create log files.
+So make sure that you have the right to write and read.
 
-You will soon find the logs and other files in this folders.
+You must set an **absolute path** for this settings.
+
+Then only put/copy the ``settings.cfg``, located in application main folder, inside the one you have defined.
+
+**Note:** If you have not set this option, application use the same directory than cited above. If you have no rights, application will crash.
 
 Configuration Parameters
 ========================
@@ -45,6 +50,7 @@ Configuration Parameters
 Before running application, **you must configure it**.
 
 You will find a file named ``settings.cfg`` located in the "ROOT" folder cited above.
+Otherwise, Alignak-app proposes to define your server Alignak and its port via the window login.
 
 This file contains Sections who are introduced by a ``[section_name]`` header. Then, it contains ``name = value`` entries.
 All parameters are also explained in file. For the boolean parameters, you can use the following values: on/off, true/false or 1/0.
@@ -58,15 +64,34 @@ The most significant Section is **[Backend]**. You need set your backend url, po
 
 This section contains main configuration for *alignak-app*.
 
-  * **check_interval:** defines (in seconds) the frequency of checks to the backend API.
-  * **duration:** defines (in seconds) the duration of the notification popup.
-  * **position:** choose where the notifications will be displayed.
-  * **debug:** set application to debug or not.
+  * **synthesis_interval:** defines (in seconds) the frequency of checks to the backend API *livesynthesis*.
+  * **daemon_interval:** defines (in seconds) the frequency of checks to the backend API *alignakdaemon*.
+  * **item_interval:** defines (in seconds) the frequency of checks to the backend API for other checks.
 
-[Backend] section
+[Dashboard] section
+-------------------
+
+This section contains configuration of Dashboard application.
+
+  * **position:** define default position of dashboard.
+  * **pop:** define if you want the dashboard "pop" at each backend changes or not.
+  * **duration:** define how long the dashboard is displayed if *pop* mode is set to *yes*
+  * **sticky:** define if the dashboard can be move or not.
+
+[Banners] section
 -----------------
 
-This section contains parameters to connect to *backend*.
+This section contains configuration of banners.
+
+  * **title:** choose to display banner title or not, if the colors are not enough.
+  * **changes:** display banners at each backend changes or not.
+  * **duration:** set the time (in seconds) before a banner that indicates changes will close.
+  * **animation:** define speed of animation. Must be equal or greater than 0 !
+
+[Alignak] section
+-----------------
+
+This section contains parameters to interact with Alignak.
 
 For "username" and "password", choose from the following 3 ways to connect:
 
@@ -87,30 +112,21 @@ To obtain a token, open a python terminal and type the following commands::
     )
     print(r.text)
 
-Then fill your "alignak_url":
+Then:
 
-  * **alignak_url:** url of your Backend, without port. (IP or FQDN if you have it)
+  * **url:** url of Alignak, without port. (IP or FQDN if you have it). You can call this option after with ``%(alignak_url)s`` syntax, but **only in this section !**
+  * **backend:** your backend url. Default is: ``%(alignak_url)s:5000`` but you can also put the IP or FQDN.
+  * **webui:** url of your WebUI. Default is: ``%(alignak_url)s:80`` but you can also put the IP or FQDN.
+  * **processes:** number of processes used for backend connection
 
-You can call this option after with ``%(alignak_url)s`` syntax, but **only in this section !**
+[Log] section
+-------------
 
-Your "alignak_backend" url:
+This section contains log system of application.
 
-  * **alignak_backend:** your backend url. Default is: ``%(alignak_url)s:5000`` but you can also put the IP or FQDN.
-
-And the "alignak_webui" url.
-
-  * **alignak_webui:** url of your WebUI. Default is: ``%(alignak_url)s`` but you can also put the IP or else.
-
-If you have a port other than port 80 for your WebUI, do not forget to add it (e.g.: ``%(alignak_url)s:5001``).
-
-If you have installed `Web Service <https://github.com/Alignak-monitoring-contrib/alignak-module-ws>`_ module,
-Alignak-app can display daemons status of Alignak.
-
-  * **web_service:** active or not the web-service in Alignak-app. Set to `yes` or `no` to display it.
-
-Application then need url of your alignak Web Service. If "web_service_status" is set to "no", this settings has no effect.
-
-  * **alignak_ws:** = url of your web service. Default is: ``%(alignak_url)s:8888`` but you can also put the IP or FQDN.
+  * **filename:** define name of file where logs will be stored
+  * **location:** set this setting if you want to store your logs somewhere else
+  * **debug:** activate the debug mode of application
 
 [Config] section
 ----------------
@@ -119,10 +135,9 @@ This section contains application paths. Be **careful** if you modify something 
 
   * **path:** this is the main path of application.
   * **img:** this the images path. This path is relative of the [path] value.
-  * **tpl:** this the templates path. This path is relative of the [path] value.
 
 [Images] section
 ----------------
 
-This section contains images names. You can add your own images if you want, but they had to be in [path] + [img] folder.
-They are also all in ``.svg`` format and can therefore be easily modified.
+This section contains images names. You can add your own images if you want, but they had to be in *images* application folder.
+They are also all in ``.svg`` format (except alignak logo) and can therefore be easily modified.
