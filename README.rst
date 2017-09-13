@@ -68,7 +68,7 @@ To install Alignak-app::
     # If you want development version, run:
     git clone https://github.com/Alignak-monitoring-contrib/alignak-app
     cd alignak-app
-    pip install . --user -v
+    pip3 install . --user -v
 
     # Follow instructions displayed during pip install and run the app (1st run will finalize the installation)
     alignak-app start
