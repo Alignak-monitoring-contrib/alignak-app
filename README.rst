@@ -63,17 +63,14 @@ To install Alignak-app::
     # For Windows users, we recommend using python3, else install PyQt from the download page
 
     # Alignak App
-    pip install alignak_app --user
+    pip3 install alignak_app --user -v
 
-    # As of now, the last version is not yet pip installable, so we:
+    # If you want development version, run:
     git clone https://github.com/Alignak-monitoring-contrib/alignak-app
     cd alignak-app
-    pip install . --user
+    pip install . --user -v
 
-    # Run the app (1st run will finalize the installation)
-    $HOME/.local/alignak_app/alignak-app start
-
-    # Then you will be able for next runs to
+    # Follow instructions displayed during pip install and run the app (1st run will finalize the installation)
     alignak-app start
 
     # An installer for Windows is also available on this repository.

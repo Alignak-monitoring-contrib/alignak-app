@@ -34,7 +34,6 @@ from configparser import NoOptionError, NoSectionError, DuplicateOptionError, Du
 from datetime import datetime
 from alignak_app import __project_url__
 
-
 logger = getLogger(__name__)
 
 
@@ -61,7 +60,7 @@ def get_app_workdir():
     app_workdir = root_config.get('app_workdir', 'workdir')
 
     if not app_workdir:
-        logger.warning('App Workdir is empty. Application use %s instead !', get_main_folder())
+        logger.info('App Workdir is empty. Application use %s instead !', get_main_folder())
         app_workdir = get_main_folder()
     if app_workdir[:1] == '~':
         logger.error('You can\'t use "tilde" in this file. Please use $HOME instead !')
@@ -92,6 +91,7 @@ def get_main_folder():
         sys.exit('Your system seems not compatible. Please consult: %s' % __project_url__)
 
     return main_folder
+
 
 # Application Configuration
 default_parameters = {
@@ -221,6 +221,7 @@ def set_app_config(section, option, new_value):
     except NoOptionError as e:
         logger.error('Can\'t set Option in configuration file : ' + str(e))
 
+
 error_config = 0
 
 
@@ -251,7 +252,7 @@ def get_image_path(name):
         else:  # pragma: no cover - not testable
             if img_path:
                 error_msg = 'Alignak has stop because too many error. We can\'t load files.\n' \
-                    ' Make sure that the settings file is present in the directory %s !' \
+                            ' Make sure that the settings file is present in the directory %s !' \
                             % get_app_workdir()
             else:
                 error_msg = 'Your system seems not compatible. Please consult: %s' % __project_url__
@@ -270,9 +271,9 @@ def get_css():
     try:
         if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
             with open(
-                '%s/css/style.css' % (
-                    get_main_folder()
-                )
+                            '%s/css/style.css' % (
+                            get_main_folder()
+                    )
             ) as css:
                 return css.read()
         else:

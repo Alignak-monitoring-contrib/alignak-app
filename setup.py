@@ -24,6 +24,7 @@ import os
 
 try:
     from setuptools import setup, find_packages
+    from setuptools.command.install import install
 except:
     sys.exit("Error: missing python-setuptools library")
 
@@ -93,6 +94,30 @@ data_files.append((paths['bin'], ['bin/unix/alignak-app']))
 data_files.append((paths['bin'], ['bin/unix/alignak-app.py']))
 
 
+class PostInstallCommand(install):
+    """Post-installation for installation mode."""
+
+    END = '\x1b[0m'
+    GREEN = '\x1b[32m'
+    CYAN = '\x1b[36m'
+
+    install_info = """\n
+#########################################################################
+
+        %s Alignak-App has been installed successfully :) %s
+        
+Please RUN %s ~/.local/alignak_app/bin/alignak-app %s to check installation.
+
+    Usage: %s alignak-app {start|stop|status|restart} %s
+
+#########################################################################\n
+    """ % (GREEN, END, CYAN, END, GREEN, END)
+
+    def run(self):
+        install.run(self)
+        os.system("echo '%s'" % self.install_info)
+
+
 setup(
     name=__pkg_name__,
     version=__version__,
@@ -107,6 +132,9 @@ setup(
     description=__description__,
     long_description=open('README.rst').read(),
 
+    cmdclass={
+        'install': PostInstallCommand,
+    },
     zip_safe=False,
 
     packages=find_packages(),
