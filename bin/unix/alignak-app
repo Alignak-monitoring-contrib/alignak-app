@@ -49,7 +49,7 @@ PYBIN=python3
 if [ $? -eq 0 ]; then
     echo -e "Alignak-app installation: $GREEN OK $END"
 else
-    echo -e "$RED It seems that Alignak-app is broken... Please check your installation ! $END"
+    echo -e "$RED It seems that Alignak-app is broken... Please check your installation and make sure you've install with Python 3 ! $END"
     exit 1
 fi
 
