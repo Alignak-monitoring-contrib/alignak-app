@@ -46,8 +46,8 @@ class ServiceListWidgetItem(QListWidgetItem):
 
     def initialize(self, service):
         """
-        TODO
-        :return:
+        Inititalize QListWidgetItem
+
         """
 
         self.aggregation = service['aggregation']
@@ -74,9 +74,10 @@ class ServiceListWidgetItem(QListWidgetItem):
 
     def define_state_name(self, service):
         """
-        TODO
-        :param service:
-        :return:
+        Define the state name to display for service
+
+        :param service: service dict data
+        :type service: dict
         """
 
         if service['ls_acknowledged'] and not service['ls_downtimed']:
@@ -88,9 +89,12 @@ class ServiceListWidgetItem(QListWidgetItem):
 
     def get_service_tooltip(self, service):
         """
-        TODO
-        :param service:
-        :return:
+        Define and return service tooltip
+
+        :param service: service dict data
+        :type service: dict
+        :return: tooltip string
+        :rtype: str
         """
 
         if service['ls_acknowledged'] and not service['ls_downtimed']:
@@ -119,9 +123,12 @@ class ServiceListWidgetItem(QListWidgetItem):
     @staticmethod
     def get_service_name(service):
         """
+        Return the service name
 
-        :param service:
-        :return:
+        :param service: service dict data
+        :type service: dict
+        :return: service name
+        :rtype: str
         """
 
         if service['display_name'] != '':
