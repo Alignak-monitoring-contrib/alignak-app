@@ -229,7 +229,7 @@ class HostSynthesis(QWidget):
 
         host_layout.addWidget(downtime_btn, 1, 1, 1, 1)
 
-    def filter_services(self):
+    def filter_services(self):  # pragma: no cover, not testable
         """
         Filter services State / Aggregation
 
@@ -771,7 +771,7 @@ class HostSynthesis(QWidget):
             text_result = self.get_result_overall_state_id(icon_names, services)
 
             icon = QPixmap(get_image_path(text_result))
-        else:
+        else:  # pragma: no cover
             logger.warning(
                 'Services not found. Can\'t get real state icon for %s', self.host['name']
             )
