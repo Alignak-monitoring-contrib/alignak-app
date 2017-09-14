@@ -370,3 +370,18 @@ class AppBackend(object):
         logger.info('Store current states...')
 
         return states
+
+    def user_can_submit_commands(self):
+        """
+        TODO
+        :return:
+        """
+
+        params = {
+            'where': json.dumps({'name': self.user['username']}),
+            'projection': json.dumps({'can_submit_commands': 1})
+        }
+
+        user = self.get('user', params)
+
+        return user['_items'][0]['can_submit_commands']

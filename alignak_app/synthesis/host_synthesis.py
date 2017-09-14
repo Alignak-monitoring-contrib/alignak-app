@@ -203,9 +203,10 @@ class HostSynthesis(QWidget):
         acknowledge_btn.setFixedSize(32, 32)
         acknowledge_btn.setToolTip('Acknowledge this host')
         acknowledge_btn.clicked.connect(self.add_acknowledge)
-        if 'UP' in backend_data['host']['ls_state'] \
-                or backend_data['host']['ls_acknowledged'] \
-                or backend_data['host']['_id'] in self.action_manager.acknowledged:
+        if 'UP' in backend_data['host']['ls_state'] or \
+                backend_data['host']['ls_acknowledged'] or \
+                backend_data['host']['_id'] in self.action_manager.acknowledged or \
+                not self.app_backend.user_can_submit_commands():
             acknowledge_btn.setEnabled(False)
         host_layout.addWidget(acknowledge_btn, 0, 1, 1, 1)
 
@@ -218,9 +219,14 @@ class HostSynthesis(QWidget):
         downtime_btn.setFixedSize(32, 32)
         downtime_btn.setToolTip('Schedule a downtime for this host')
         downtime_btn.clicked.connect(self.add_downtime)
+
+        # If host is already downtimed or action is in progress or user can't submit command,
+        # => disable button
         if backend_data['host']['ls_downtimed'] or \
-                backend_data['host']['_id'] in self.action_manager.downtimed:
+                backend_data['host']['_id'] in self.action_manager.downtimed or \
+                not self.app_backend.user_can_submit_commands():
             downtime_btn.setEnabled(False)
+
         host_layout.addWidget(downtime_btn, 1, 1, 1, 1)
 
     def filter_services(self):
@@ -387,7 +393,8 @@ class HostSynthesis(QWidget):
             )
             if 'OK' in service['ls_state'] \
                     or service['ls_acknowledged'] \
-                    or service['_id'] in self.action_manager.acknowledged:
+                    or service['_id'] in self.action_manager.acknowledged or \
+                    not self.app_backend.user_can_submit_commands():
                 service_widget.acknowledge_btn.setEnabled(False)
 
             # Connect DOWN button
@@ -397,7 +404,9 @@ class HostSynthesis(QWidget):
                     service['_id'],
                     ServiceListWidgetItem.get_service_name(service))
             )
-            if service['ls_downtimed'] or service['_id'] in self.action_manager.downtimed:
+            if service['ls_downtimed'] or \
+                    service['_id'] in self.action_manager.downtimed or \
+                    not self.app_backend.user_can_submit_commands():
                 service_widget.downtime_btn.setEnabled(False)
 
             # Add widget to QStackedWidget
