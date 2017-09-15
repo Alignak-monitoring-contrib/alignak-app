@@ -23,11 +23,12 @@
     Dashboard Factory manage the creation of Dashboard Qwidget
 """
 
+import webbrowser
 from logging import getLogger
-from alignak_app.core.utils import get_image_path, get_css
+from alignak_app.core.utils import get_image_path, get_css, get_app_config
 
-from PyQt5.Qt import QWidget, QLabel, QGridLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPixmap, QProgressBar, QFrame, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QWidget, QLabel, QGridLayout, QPushButton  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPixmap, QProgressBar, QFrame, Qt, QIcon  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -75,6 +76,14 @@ class DashboardFactory(QWidget):
         progress_bar.setFixedHeight(20)
         progress_bar.setObjectName(state_name)
 
+        # WebUI Button
+        button = QPushButton()
+        button.setIcon(QIcon(get_image_path('eye')))
+        button.setToolTip("See in WebUI ?")
+        button.setObjectName(self.define_label(state_name))
+        button.setMaximumSize(20, 20)
+        button.released.connect(self.open_url)
+
         # Layout
         self.main_layout.addWidget(state_icon, self.row, 0)
         self.main_layout.addWidget(state_text, self.row, 1)
@@ -82,6 +91,7 @@ class DashboardFactory(QWidget):
         self.main_layout.setAlignment(state_number, Qt.AlignCenter)
         self.main_layout.addWidget(state_diff, self.row, 3)
         self.main_layout.addWidget(progress_bar, self.row, 4)
+        self.main_layout.addWidget(button, self.row, 5)
 
         # Store state
         self.state_data[state_name] = {
@@ -93,6 +103,48 @@ class DashboardFactory(QWidget):
 
         # Increment vertically position for next widget
         self.row += 1
+
+    def open_url(self):  # pragma: no cover
+        """
+        Add a link to Alignak-WebUI on every menu
+
+        """
+
+        webui_url = get_app_config('Alignak', 'webui')
+        # Define each filter for items
+        if "UP" in self.sender().objectName():
+            endurl = '/hosts/table?search=ls_state:UP'
+        elif "DOWN" in self.sender().objectName():
+            endurl = '/hosts/table?search=ls_state:DOWN'
+        elif "UNREACHABLE" in self.sender().objectName():
+            if 'Hosts' in self.sender().objectName():
+                endurl = '/hosts/table?search=ls_state:UNREACHABLE'
+            else:
+                endurl = '/services/table?search=ls_state:UNREACHABLE'
+        elif 'OK' in self.sender().objectName():
+            endurl = '/services/table?search=ls_state:OK'
+        elif 'CRITICAL' in self.sender().objectName():
+            endurl = '/services/table?search=ls_state:CRITICAL'
+        elif 'WARNING' in self.sender().objectName():
+            endurl = '/services/table?search=ls_state:WARNING'
+        elif 'UNKNOWN' in self.sender().objectName():
+            endurl = '/services/table?search=ls_state:UNKNOWN'
+        elif "ACKNOWLEDGE" in self.sender().objectName():
+            if 'Hosts' in self.sender().objectName():
+                endurl = '/hosts/table?search=ls_acknowledged:yes'
+            else:
+                endurl = '/services/table?search=ls_acknowledged:yes'
+        else:
+            endurl = '/dashboard'
+
+        if "DOWNTIME" in self.sender().objectName():
+            if 'Hosts' in self.sender().objectName():
+                endurl = '/hosts/table?search=ls_downtime:yes'
+            else:
+                endurl = '/services/table?search=ls_downtime:yes'
+
+        logger.debug('Open url : ' + webui_url + endurl)
+        webbrowser.open(webui_url + endurl)
 
     def add_separator(self):
         """
@@ -206,6 +258,39 @@ class DashboardFactory(QWidget):
                 percentages['services'][service_state] = 0.0
 
         return percentages
+
+    # @staticmethod
+    # def get_url_keyword(name):
+    #     """
+    #     Return state keyword for url.
+    #
+    #     :param name: name of state
+    #     :type name: str
+    #     :return: keyword for URL filtering
+    #     :rtype: str
+    #     """
+    #
+    #     key_model = {
+    #         "hosts_up": "UP",
+    #         "hosts_down": "DOWN",
+    #         "hosts_unreachable": "UNREACHABLE",
+    #         "hosts_acknowledge": "ACKNOWLEDGED",
+    #         "hosts_downtime": "DOWNTIMED",
+    #         "services_ok": "OK",
+    #         "services_warning": "WARNING",
+    #         "services_critical": "CRITICAL",
+    #         "services_unknown": "UNKNOWN",
+    #         "services_unreachable": "UNREACHABLE",
+    #         "services_acknowledge": "ACKNOWLEDGED",
+    #         "services_downtime": "DOWNTIMED",
+    #     }
+    #
+    #     try:
+    #         return key_model[name]
+    #     except KeyError as e:
+    #         logger.error('Bad label state name for url keyword: %s', name)
+    #         logger.error(str(e))
+    #         return 'Unknow field'
 
     @staticmethod
     def define_label(name):
