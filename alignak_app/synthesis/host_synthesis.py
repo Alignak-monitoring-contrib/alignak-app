@@ -33,6 +33,7 @@ from alignak_app.widgets.banner import send_banner
 from alignak_app.synthesis.service import Service
 from alignak_app.synthesis.actions import Acknowledge, Downtime
 from alignak_app.synthesis.service_widget_item import ServiceListWidgetItem
+from alignak_app.synthesis.history import History
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QLabel  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
@@ -63,6 +64,8 @@ class HostSynthesis(QWidget):
         self.stack = None
         self.services_list = None
         self.check_boxes = {}
+        self.can_submit_command = False
+        self.history_widget = None
 
     def initialize(self, backend_data):
         """
@@ -72,6 +75,7 @@ class HostSynthesis(QWidget):
 
         if backend_data:
             self.host = backend_data['host']
+            self.can_submit_command = self.app_backend.user_can_submit_commands()
 
             main_layout = QVBoxLayout(self)
             main_layout.addWidget(self.get_host_widget(backend_data))
@@ -148,8 +152,8 @@ class HostSynthesis(QWidget):
 
         return host_widget
 
-    @staticmethod
-    def create_host_details(host_layout, backend_data):
+    # @staticmethod
+    def create_host_details(self, host_layout, backend_data):
         """
         Create QLabels for host details
 
@@ -165,6 +169,14 @@ class HostSynthesis(QWidget):
             '<b>Since:</b> %s <b>Last check:</b> %s' % (since_last_check, diff_last_check)
         )
         host_layout.addWidget(host_last_check, 0, 2, 1, 2)
+
+        history_btn = QPushButton()
+        history_btn.setFixedSize(32, 32)
+        history_btn.setIcon(QIcon(get_image_path('time')))
+        history_btn.setObjectName(backend_data['host']['_id'])
+        history_btn.clicked.connect(self.display_history)
+        host_layout.addWidget(history_btn, 0, 3, 1, 1)
+        host_layout.setAlignment(history_btn, Qt.AlignRight)
 
         date_output = get_date_from_timestamp(backend_data['host']['ls_last_check'])
         output = QTextEdit(
@@ -183,6 +195,33 @@ class HostSynthesis(QWidget):
         )
         host_layout.addWidget(stars_widget, 2, 3, 1, 1)
         host_layout.setAlignment(stars_widget, Qt.AlignLeft)
+
+    def display_history(self):
+        """
+        Display history of the selected host
+
+        """
+
+        host_id = self.sender().objectName()
+
+        history = self.app_backend.get_host_history(host_id)
+
+        if history:
+            # If widget already initialize, destroy it
+            if self.history_widget:
+                self.history_widget.deleteLater()
+                self.history_widget = None
+
+            # Initialize history QWidget and display it
+            self.history_widget = History(history)
+            self.history_widget.initialize(self.host['name'])
+            self.history_widget.app_widget.show()
+        else:
+            # If there is no history, send a message
+            send_banner(
+                'WARN',
+                'History for %s is not available ! Please retry later.' % self.host['name']
+            )
 
     def create_buttons(self, host_layout, backend_data):
         """
@@ -206,7 +245,7 @@ class HostSynthesis(QWidget):
         if 'UP' in backend_data['host']['ls_state'] or \
                 backend_data['host']['ls_acknowledged'] or \
                 backend_data['host']['_id'] in self.action_manager.acknowledged or \
-                not self.app_backend.user_can_submit_commands():
+                not self.can_submit_command:
             acknowledge_btn.setEnabled(False)
         host_layout.addWidget(acknowledge_btn, 0, 1, 1, 1)
 
@@ -224,7 +263,7 @@ class HostSynthesis(QWidget):
         # => disable button
         if backend_data['host']['ls_downtimed'] or \
                 backend_data['host']['_id'] in self.action_manager.downtimed or \
-                not self.app_backend.user_can_submit_commands():
+                not self.can_submit_command:
             downtime_btn.setEnabled(False)
 
         host_layout.addWidget(downtime_btn, 1, 1, 1, 1)
@@ -394,7 +433,7 @@ class HostSynthesis(QWidget):
             if 'OK' in service['ls_state'] \
                     or service['ls_acknowledged'] \
                     or service['_id'] in self.action_manager.acknowledged or \
-                    not self.app_backend.user_can_submit_commands():
+                    not self.can_submit_command:
                 service_widget.acknowledge_btn.setEnabled(False)
 
             # Connect DOWN button
@@ -406,7 +445,7 @@ class HostSynthesis(QWidget):
             )
             if service['ls_downtimed'] or \
                     service['_id'] in self.action_manager.downtimed or \
-                    not self.app_backend.user_can_submit_commands():
+                    not self.can_submit_command:
                 service_widget.downtime_btn.setEnabled(False)
 
             # Add widget to QStackedWidget

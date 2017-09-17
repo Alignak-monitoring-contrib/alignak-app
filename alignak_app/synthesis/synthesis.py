@@ -155,6 +155,7 @@ class Synthesis(QWidget):
             host_name = str(self.line_search.text()).rstrip()
             backend_data = None
             old_row = -1
+            old_history_widget = None
 
             if host_name:
                 backend_data = self.app_backend.get_host_with_services(host_name)
@@ -162,6 +163,8 @@ class Synthesis(QWidget):
             # Store old data, remove and delete host_synthesis
             if self.host_synthesis:
                 # Store old data
+                if self.host_synthesis.history_widget:
+                    old_history_widget = self.host_synthesis.history_widget
                 if self.host_synthesis.services_list:
                     old_row = self.host_synthesis.services_list.currentRow()
                 if self.host_synthesis.check_boxes:
@@ -187,5 +190,7 @@ class Synthesis(QWidget):
                         self.host_synthesis.check_boxes[key].setChecked(checked)
                     except KeyError as e:
                         logger.warning('Can\'t reapply filter [%s]: %s', e, checked)
+            if old_history_widget:
+                self.host_synthesis.history_widget = old_history_widget
 
             self.layout().addWidget(self.host_synthesis, 1, 0, 1, 5)

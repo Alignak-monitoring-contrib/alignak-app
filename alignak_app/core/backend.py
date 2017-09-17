@@ -373,8 +373,10 @@ class AppBackend(object):
 
     def user_can_submit_commands(self):
         """
-        TODO
-        :return:
+        Return if user can submit command or not
+
+        :return: if user can submit command
+        :rtype: bool
         """
 
         params = {
@@ -384,4 +386,29 @@ class AppBackend(object):
 
         user = self.get('user', params)
 
-        return user['_items'][0]['can_submit_commands']
+        if user:
+            return user['_items'][0]['can_submit_commands']
+
+        return False
+
+    def get_host_history(self, host_id):
+        """
+        Return history of an host
+
+        :param host_id: id of host
+        :type host_id: str
+        :return: dict of history
+        :rtype: dict
+        """
+
+        params = {
+            'where': json.dumps({'host': host_id}),
+            'projection': json.dumps({'service_name': 1, 'message': 1})
+        }
+
+        history = self.backend.get('history', params)
+
+        if history:
+            return history['_items']
+
+        return {}
