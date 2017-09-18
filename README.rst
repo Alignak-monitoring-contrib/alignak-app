@@ -57,25 +57,27 @@ Installation
 
 To install Alignak-app::
 
+    ##### WINDOWS USERS #####
     # An installer for Windows is available on this repository.
-    # But you can install App with pip without problem too.
+    # To keep it free, installer is not signed, so Windows Defender SmartScreen will warn you about that.
+    # Just click on "More Informations" and on "Execute anyway" to run installer.
 
-    # Install PyQt5. For windows user, use "pip" instead of "pip3"
-    pip3 install PyQt5 --user
-
-    # For Windows users, we recommend using python3, else install PyQt from the download page
-
+    ##### LINUX USERS #####
     # Alignak App
     pip3 install alignak_app --user -v
 
+    # First run
+    ~/.local/alignak_app/bin/alignak-app
+
+    # If you've already run App, just do
+    alignak-app start
+
+    ##### Development #####
     # If you want development version, run:
     git clone https://github.com/Alignak-monitoring-contrib/alignak-app
     cd alignak-app
+    pip3 install -r requirements.txt
     pip3 install . --user -v
-
-    # Follow instructions displayed during pip install and run the app (1st run will finalize the installation)
-    alignak-app start
-
 
 You can find more help in the documentation below.
 
