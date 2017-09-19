@@ -29,7 +29,7 @@ from alignak_app.dashboard.app_dashboard import Dashboard
 from PyQt5.QtWidgets import QApplication
 
 
-class TestNotification(unittest2.TestCase):
+class TestDashboard(unittest2.TestCase):
     """
         This file test the Dashboard class and by same time the DashboardFactory
     """

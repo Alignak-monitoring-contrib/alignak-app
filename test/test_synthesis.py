@@ -30,7 +30,7 @@ from alignak_app.synthesis.synthesis import Synthesis
 from PyQt5.QtWidgets import QApplication, QWidget
 
 
-class TestServicesView(unittest2.TestCase):
+class TestSynthesis(unittest2.TestCase):
     """
         This file test the Synthesis class.
     """

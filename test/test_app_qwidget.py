@@ -29,7 +29,7 @@ from alignak_app.widgets.app_widget import AppQWidget
 from PyQt5.QtWidgets import QApplication
 
 
-class TestAppLogin(unittest2.TestCase):
+class TestAppQWidget(unittest2.TestCase):
     """
         This file test the AppQWidget class.
     """

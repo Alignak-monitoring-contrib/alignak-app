@@ -28,7 +28,7 @@ from alignak_app.widgets.banner import BannerManager
 from PyQt5.QtWidgets import QApplication
 
 
-class TestBanner(unittest2.TestCase):
+class TestBannerManager(unittest2.TestCase):
     """
         This file test methods of BannerManager class.
     """

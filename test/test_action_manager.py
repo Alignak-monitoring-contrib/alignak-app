@@ -28,7 +28,7 @@ from alignak_app.core.backend import AppBackend
 from PyQt5.QtWidgets import QApplication
 
 
-class TestBanner(unittest2.TestCase):
+class TestActionManager(unittest2.TestCase):
     """
         This file test methods of ActionManager class.
     """
