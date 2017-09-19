@@ -216,7 +216,7 @@ class Banner(QWidget):
         )
         self.animation.setEndValue(end_value)
 
-    def start_timer(self):
+    def start_timer(self):  # pragma: no cover - not testable
         """
         Start timer to close banner
 
@@ -299,7 +299,7 @@ def get_services_level_banner(msg):
     return level
 
 
-def send_diff_banners(diff):
+def send_diff_banners(diff):  # pragma: no cover - not testable
     """
     Send banners for hosts and services diff since the last check
 

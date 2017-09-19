@@ -168,7 +168,7 @@ def init_config():
         logger.error('Duplicate Option/Section in file [%s] !', str(get_filenames()))
         logger.error(str(e))
         sys.exit('Duplicate Option/Section in file [%s] !' % str(get_filenames()))
-    except Exception as f:
+    except Exception as f:  # pragma: no cover - not testable
         logger.error('Configuration file is missing in [%s] !', str(get_filenames()))
         logger.error(str(f))
         sys.exit('Configuration file is missing in [%s] !' % str(get_filenames()))
@@ -183,14 +183,14 @@ def get_app_config(section, option, boolean=False):
     if boolean:
         try:
             return app_config.getboolean(section, option)
-        except (NoOptionError, NoSectionError) as e:
+        except (NoOptionError, NoSectionError) as e:  # pragma: no cover - not testable
             logger.error('Missing Option in configuration file : %s', str(e))
             logger.error('Replace by > %s: %s', option, str(default_parameters[option]))
             return default_parameters[option]
     else:
         try:
             return app_config.get(section, option)
-        except (NoOptionError, NoSectionError) as e:
+        except (NoOptionError, NoSectionError) as e:  # pragma: no cover - not testable
             logger.error('Missing Option in configuration file : %s', str(e))
             logger.error('Replace by > %s: %s', option, str(default_parameters[option]))
             return default_parameters[option]
@@ -275,7 +275,7 @@ def get_css():
         else:
             with open('%s/css/style.css' % get_main_folder()) as css:
                 return css.read()
-    except (IOError, NoSectionError) as e:
+    except (IOError, NoSectionError) as e:  # pragma: no cover - not testable
         logger.error('CSS File is missing : %s', str(e))
         return ""
 

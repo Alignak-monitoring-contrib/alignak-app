@@ -222,7 +222,7 @@ class AppLogin(QDialog):
             send_banner('WARN', 'Backend connection refused...', duration=10000)
             logger.warning('Connection informations are not accepted !')
 
-    def handle_server(self):
+    def handle_server(self):  # pragma: no cover - not testable
         """
         Handle for server button
 
@@ -293,12 +293,12 @@ class AppLogin(QDialog):
             set_app_config('Alignak', 'url', str(server_url.text()).rstrip())
             set_app_config('Alignak', 'processes', str(server_proc.text()).rstrip())
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event):  # pragma: no cover - not testable
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         self.offset = event.pos()
 
-    def mouseMoveEvent(self, event):
+    def mouseMoveEvent(self, event):  # pragma: no cover - not testable
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         try:
