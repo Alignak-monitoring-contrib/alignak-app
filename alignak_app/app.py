@@ -138,7 +138,7 @@ class AlignakApp(QObject):
             except AssertionError:
                 send_banner(
                     'ERROR',
-                    'Backend is still unreachable... Alignak-app try to reconnect',
+                    'Backend is still unreachable... Alignak-app is trying to connect',
                     duration=5000
                 )
                 logger.error('Backend is still unreachable...')
