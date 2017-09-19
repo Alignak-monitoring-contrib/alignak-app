@@ -236,6 +236,7 @@ class Banner(QWidget):
 
         self.banner_closed.emit(self)
 
+
 # Main instance of BannerManager()
 bannerManager = BannerManager()
 
