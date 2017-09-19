@@ -45,7 +45,7 @@ class TestAppBackend(unittest2.TestCase):
 
         under_test = AppBackend()
 
-        under_test.login()
+        connect = under_test.login()
 
         # Compare config url and app_backend
         self.assertEquals(
@@ -53,6 +53,12 @@ class TestAppBackend(unittest2.TestCase):
             get_app_config('Alignak', 'backend')
         )
         self.assertTrue(under_test.backend.authenticated)
+        self.assertTrue(connect)
+
+        under_test = AppBackend()
+
+        connect = under_test.login('admin', 'admin')
+        self.assertTrue(connect)
 
     def test_hosts_endpoint_without_params(self):
         """Collect Hosts States"""
@@ -153,3 +159,22 @@ class TestAppBackend(unittest2.TestCase):
         for wanted_field in projection_service_test:
             for service in under_test['services']:
                 self.assertTrue(wanted_field in service)
+
+    def test_get_host_history(self):
+        """GET Host History"""
+
+        backend_test = AppBackend()
+        backend_test.login()
+
+        under_test = backend_test.get_host_history('BAD_ID')
+
+        self.assertFalse(under_test)
+
+        under_test = backend_test.get_host_history(self.host_id)
+
+        self.assertTrue(under_test)
+
+        for event in under_test:
+            self.assertTrue('service_name' in event)
+            self.assertTrue('message' in event)
+            self.assertTrue('type' in event)

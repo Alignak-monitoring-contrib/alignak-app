@@ -49,6 +49,10 @@ class AppBackend(object):
         """
         Connect to app_backend with credentials in settings.cfg.
 
+        :param username: name or token of user
+        :type username: str
+        :param password: password of user. If token given, this parmeter is useless
+        :type password: str
         :return: True if connected or False if not
         :rtype: bool
         """
