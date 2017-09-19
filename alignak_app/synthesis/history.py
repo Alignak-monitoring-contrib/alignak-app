@@ -30,11 +30,8 @@ from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.widgets.app_widget import AppQWidget
 
 from PyQt5.QtWidgets import QWidget, QScrollArea, QLabel  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QStackedWidget  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QIcon, QPixmap, QListWidget, QDialog  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QTimer, Qt, QCheckBox, QTextEdit  # pylint: disable=no-name-in-module
-from PyQt5.QtGui import QFont  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QGridLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPixmap  # pylint: disable=no-name-in-module
 
 
 logger = getLogger(__name__)
@@ -54,9 +51,10 @@ class History(QWidget):
 
     def initialize(self, hostname):
         """
-        TODO
-        :param hostname:
-        :return:
+        Initialize QWidget
+
+        :param hostname: name of the host
+        :type hostname: str
         """
 
         self.app_widget.initialize('History of %s' % hostname)
@@ -81,9 +79,12 @@ class History(QWidget):
 
     def get_event_widget(self, event):
         """
-        TODO
-        :param event:
-        :return:
+        Create and return event QWidgets
+
+        :param event: event of history given by backend
+        :type event: dict
+        :return: event Qwidget
+        :rtype: QWidget
         """
 
         event_widget = QWidget()
@@ -108,9 +109,12 @@ class History(QWidget):
     @staticmethod
     def get_event_icon(message):
         """
-        TODO
-        :param message:
-        :return:
+        Return icon QPixmap depending of message or event type
+
+        :param message: message of the history event
+        :type message: str
+        :return: QPixmap with the appropriate icon
+        :rtype: QPixmap
         """
 
         if 'OK' in message or 'UP' in message:
