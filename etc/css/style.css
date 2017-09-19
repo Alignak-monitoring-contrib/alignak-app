@@ -351,6 +351,11 @@ QLabel#DOWNTIME {
     border-color: #f1c40f;
 }
 
+/****** HISTORY ******/
+QLabel#eventname {
+    color: #337ab7;
+}
+
 /****** TITLE ******/
 QWidget#popup_title {
     background-color: #002b36;
