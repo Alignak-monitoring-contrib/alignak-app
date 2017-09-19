@@ -403,7 +403,8 @@ class AppBackend(object):
 
         params = {
             'where': json.dumps({'host': host_id}),
-            'projection': json.dumps({'service_name': 1, 'message': 1})
+            'sort': '-_id',
+            'projection': json.dumps({'service_name': 1, 'message': 1, 'type': 1})
         }
 
         history = self.backend.get('history', params)

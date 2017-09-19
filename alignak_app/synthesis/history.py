@@ -88,47 +88,57 @@ class History(QWidget):
         """
 
         event_widget = QWidget()
+        event_widget.setToolTip(event['type'])
 
         event_layout = QGridLayout()
         event_widget.setLayout(event_layout)
 
-        event_label = QLabel('%s: %s' % (event['service_name'], event['message']))
-        event_label.setMinimumHeight(32)
+        event_label = QLabel('%s' % event['service_name'])
+        event_label.setObjectName('eventname')
+        event_layout.addWidget(event_label, 0, 0, 1, 1)
 
-        icon = self.get_event_icon(event['message'])
+        message_label = QLabel('%s' % event['message'])
+        message_label.setWordWrap(True)
+        event_layout.addWidget(message_label, 1, 0, 1, 1)
+
+        icon = self.get_event_icon(event['message'], event['type'])
         icon_label = QLabel()
+        icon_label.setObjectName('message')
+        icon_label.setToolTip(event['type'])
         icon_label.setFixedSize(32, 32)
         icon_label.setPixmap(icon)
         icon_label.setScaledContents(True)
 
-        event_layout.addWidget(event_label, 0, 0, 1, 2)
-        event_layout.addWidget(icon_label, 0, 2, 1, 1)
+        event_layout.addWidget(icon_label, 0, 1, 1, 1)
 
         return event_widget
 
     @staticmethod
-    def get_event_icon(message):
+    def get_event_icon(message, event_type):
         """
         Return icon QPixmap depending of message or event type
 
         :param message: message of the history event
         :type message: str
+        :param event_type: type of event: ack.processed, check.result,...
+        :type event_type: str
         :return: QPixmap with the appropriate icon
         :rtype: QPixmap
         """
 
-        if 'OK' in message or 'UP' in message:
-            icon_name = 'valid'
-        elif 'UNKNOWN' in message:
-            icon_name = 'services_unknown'
-        elif 'UNREACHABLE' in message:
-            icon_name = 'services_unknown'
-        elif 'DOWNTIME' in message or 'downtime' in message:
-            icon_name = 'downtime'
-        elif 'ACKNOWLEDGE' in message or 'acknowledge' in message:
-            icon_name = 'acknowledged'
+        if 'ack' in event_type:
+            icon_name = 'services_acknowledge'
+        elif 'downtime' in event_type:
+            icon_name = 'services_downtime'
         else:
-            icon_name = 'error'
+            if 'OK' in message or 'UP' in message:
+                icon_name = 'valid'
+            elif 'UNKNOWN' in message:
+                icon_name = 'services_unknown'
+            elif 'UNREACHABLE' in message:
+                icon_name = 'services_unknown'
+            else:
+                icon_name = 'error'
 
         icon = QPixmap(get_image_path(icon_name))
 
