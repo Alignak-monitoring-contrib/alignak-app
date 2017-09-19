@@ -26,7 +26,7 @@ import unittest2
 from alignak_app.synthesis.history import History, AppQWidget
 from alignak_app.core.utils import init_config
 
-from PyQt5.QtWidgets import QApplication, QWidget, QTimeEdit, QDateTimeEdit
+from PyQt5.QtWidgets import QApplication, QWidget
 
 
 class TestHistory(unittest2.TestCase):
