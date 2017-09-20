@@ -78,11 +78,14 @@ class TestHistory(unittest2.TestCase):
         self.assertTrue(under_test.history)
         self.assertIsNone(under_test.layout())
         self.assertIsInstance(under_test.app_widget, AppQWidget)
+        self.assertIsNone(under_test.refresh_btn)
 
-        under_test.initialize('charnay')
+        under_test.initialize('charnay', 'id')
 
         self.assertIsNotNone(under_test.layout())
-        self.assertTrue("charnay" in under_test.app_widget.windowTitle())
+        self.assertIsNotNone(under_test.refresh_btn)
+        self.assertEqual(under_test.refresh_btn.objectName(), 'id')
+        self.assertEqual(under_test.app_widget.windowTitle(), "History of Charnay")
 
     def test_get_event_widget(self):
         """Get Event QWidget"""

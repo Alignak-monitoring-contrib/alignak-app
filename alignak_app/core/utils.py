@@ -54,7 +54,7 @@ def get_app_workdir():
             root_config.read('%s\\Alignak-app\\app_workdir.ini' % os.environ['PROGRAMFILES'])
         else:
             sys.exit('Your system seems not compatible. Please consult: %s' % __project_url__)
-    except (IOError, NoSectionError) as e:
+    except (IOError, NoSectionError) as e:  # pragma: no cover
         sys.exit(e)
 
     app_workdir = root_config.get('app_workdir', 'workdir')
@@ -218,7 +218,7 @@ def set_app_config(section, option, new_value):
         with open(file_to_write, 'w') as new_config_file:
             new_config_file.writelines(data)
 
-    except NoOptionError as e:
+    except NoOptionError as e:  # pragma: no cover
         logger.error('Can\'t set Option in configuration file : ' + str(e))
 
 
@@ -269,12 +269,8 @@ def get_css():
     """
 
     try:
-        if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-            with open('%s/css/style.css' % (get_main_folder())) as css:
-                return css.read()
-        else:
-            with open('%s/css/style.css' % get_main_folder()) as css:
-                return css.read()
+        with open('%s/css/style.css' % (get_main_folder())) as css:
+            return css.read()
     except (IOError, NoSectionError) as e:  # pragma: no cover - not testable
         logger.error('CSS File is missing : %s', str(e))
         return ""

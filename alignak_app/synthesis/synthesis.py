@@ -100,7 +100,7 @@ class Synthesis(QWidget):
         if bool(refresh_interval) and refresh_interval > 0:
             logger.debug('Hosts synthesis will be refresh in %ss', str(refresh_interval))
             refresh_interval *= 1000
-        else:
+        else:  # pragma: no cover
             logger.error(
                 '"item_interval" option must be greater than 0. Replace by default: 30s'
             )
@@ -161,7 +161,7 @@ class Synthesis(QWidget):
                 backend_data = self.app_backend.get_host_with_services(host_name)
 
             # Store old data, remove and delete host_synthesis
-            if self.host_synthesis:
+            if self.host_synthesis:  # pragma: no cover
                 # Store old data
                 if self.host_synthesis.history_widget:
                     old_history_widget = self.host_synthesis.history_widget
@@ -184,7 +184,7 @@ class Synthesis(QWidget):
             # Restore old data
             if old_row >= 0 and self.host_synthesis.services_list:
                 self.host_synthesis.services_list.setCurrentRow(old_row)
-            if self.old_checkbox_states and self.host_synthesis.check_boxes:
+            if self.old_checkbox_states and self.host_synthesis.check_boxes:  # pragma: no cover
                 for key, checked in self.old_checkbox_states.items():
                     try:
                         self.host_synthesis.check_boxes[key].setChecked(checked)
