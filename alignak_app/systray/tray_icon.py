@@ -33,6 +33,7 @@ from alignak_app.systray.qactions_factory import QActionFactory
 from alignak_app.widgets.about import AppAbout
 from alignak_app.widgets.status import AlignakStatus
 from alignak_app.widgets.banner import send_banner
+from alignak_app.widgets.user import UserProfile
 
 from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
@@ -82,6 +83,7 @@ class TrayIcon(QSystemTrayIcon):
         self.create_services_actions()
         self.menu.addSeparator()
 
+        self.create_user_action(app_backend)
         self.create_reload_configuration()
         self.create_about_action()
         self.menu.addSeparator()
@@ -286,6 +288,44 @@ class TrayIcon(QSystemTrayIcon):
         self.menu.addAction(self.qaction_factory.get('icon'))
 
         logger.info('Create Status Action')
+
+    def create_user_action(self, app_backend):
+        """
+        TODO
+        :param app_backend: AppBackend data
+        :type app_backend: AppBackend
+        """
+
+        self.qaction_factory.create(
+            'user',
+            'View my profile',
+            self
+        )
+
+        projection = [
+            '_realm',
+            'is_admin',
+            'alias',
+            'name',
+            'notes',
+            'email',
+            'can_submit_commands',
+            'token',
+            'host_notifications_enabled',
+            'service_notifications_enabled',
+            'host_notification_period',
+            'service_notification_period',
+            'host_notification_options',
+            'service_notification_options',
+        ]
+
+        user = app_backend.get_user(projection)
+        user_widget = UserProfile(user)
+        user_widget.initialize()
+
+        self.qaction_factory.get('user').triggered.connect(user_widget.app_widget.show)
+
+        self.menu.addAction(self.qaction_factory.get('user'))
 
     def create_reload_configuration(self):
         """
