@@ -12,7 +12,7 @@ Alignak App
    :target: https://landscape.io/github/Alignak-monitoring-contrib/alignak-app/develop
    :alt: Development code static analysis
 
-.. image:: https://coveralls.io/repos/github/Alignak-monitoring-contrib/alignak-app/badge.svg?branch=develop&service=github
+.. image:: https://coveralls.io/repos/github/Alignak-monitoring-contrib/alignak-app/badge.svg?branch=develop
     :target: https://coveralls.io/github/Alignak-monitoring-contrib/alignak-app?branch=develop
     :alt: Development code coverage
 
