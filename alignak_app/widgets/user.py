@@ -50,8 +50,8 @@ class UserProfile(QWidget):
 
     def initialize(self):
         """
-        TODO
-        :return:
+        Initialize User QWidget
+
         """
 
         self.app_widget.initialize('User view: %s' % self.user['alias'])
@@ -67,7 +67,10 @@ class UserProfile(QWidget):
 
     def get_main_user_widget(self):
         """
-        TODO
+        Create and return QWidget with main informations
+
+        :return: main QWidget
+        :rtype: QWidget
         """
 
         main_user_widget = QWidget()
@@ -96,8 +99,10 @@ class UserProfile(QWidget):
 
     def get_info_user_widget(self):
         """
-        TODO
-        :return:
+        Create and return inf of user in a QWidget
+
+        :return: information QWidet
+        :rtype: QWidget
         """
 
         info_widget = QWidget()
@@ -111,8 +116,10 @@ class UserProfile(QWidget):
 
     def get_rights_widget(self):
         """
-        TODO
-        :return:
+        Create and return Rights QWidget
+
+        :return: rights QWidget
+        :rtype: QWidget
         """
 
         rights_widget = QWidget()
@@ -143,8 +150,10 @@ class UserProfile(QWidget):
 
     def get_notes_widget(self):
         """
-        TODO
-        :return:
+        Create and return Notes QWidget
+
+        :return: notes QWidget
+        :rtype: QWidget
         """
 
         notes_widget = QWidget()
@@ -173,8 +182,10 @@ class UserProfile(QWidget):
 
     def get_notifications_widget(self):
         """
-        TODO
-        :return:
+        Create and return notification QWidget for hosts and services
+
+        :return: notifications QWidget
+        :rtype: QWidget
         """
 
         notification_widget = QWidget()
@@ -188,8 +199,10 @@ class UserProfile(QWidget):
 
     def get_hosts_notif_widget(self):
         """
-        TODO
-        :return:
+        Create and return notification QWidget for hosts
+
+        :return: hosts notification QWidget
+        :rtype: QWidget
         """
 
         host_notif_widget = QWidget()
@@ -227,8 +240,10 @@ class UserProfile(QWidget):
 
     def get_services_notif_widget(self):
         """
-        TODO
-        :return:
+        Create and return notification QWidget for services
+
+        :return: services notification QWidget
+        :rtype: QWidget
         """
 
         service_notif_widget = QWidget()
@@ -267,8 +282,8 @@ class UserProfile(QWidget):
 
     def enable_notifications(self):
         """
-        TODO
-        :return:
+        Enable notification for the wanted type: hosts or services
+
         """
 
         print(self.sender().objectName())
