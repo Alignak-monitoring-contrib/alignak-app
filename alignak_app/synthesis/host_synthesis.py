@@ -208,13 +208,17 @@ class HostSynthesis(QWidget):
 
         if history:
             # If widget already initialize, destroy it
+            old_pos = None
             if self.history_widget:
+                old_pos = self.history_widget.app_widget.pos()
                 self.history_widget.deleteLater()
                 self.history_widget = None
 
             # Initialize history QWidget and display it
             self.history_widget = History(history)
             self.history_widget.initialize(self.host['name'])
+            if old_pos:
+                self.history_widget.app_widget.move(old_pos)
             self.history_widget.app_widget.show()
         else:
             # If there is no history, send a message
