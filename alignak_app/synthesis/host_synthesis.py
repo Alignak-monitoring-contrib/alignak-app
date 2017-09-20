@@ -185,7 +185,7 @@ class HostSynthesis(QWidget):
         output.setObjectName('output')
         output.setTextInteractionFlags(Qt.TextSelectableByMouse)
         output.setFont(QFont('Times', 13))
-        host_layout.addWidget(output, 1, 2, 1, 2)
+        host_layout.addWidget(output, 1, 2, 1, 1)
 
         address = QLabel('<b>Address:</b> %s' % backend_data['host']['address'])
         host_layout.addWidget(address, 2, 2, 1, 1)
