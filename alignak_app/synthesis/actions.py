@@ -144,8 +144,8 @@ class Acknowledge(QDialog):
         ack_layout.addWidget(sticky_checkbox, 2, 1, 1, 1)
 
         sticky_info = QLabel(
-            '<i>If checked, '
-            'the acknowledge will remain until the element returns to an "OK" state.</i>'
+            'If checked, '
+            'the acknowledge will remain until the element returns to an "OK" state.'
         )
         sticky_info.setWordWrap(True)
         ack_layout.addWidget(sticky_info, 3, 0, 1, 2)
@@ -161,7 +161,7 @@ class Acknowledge(QDialog):
         ack_layout.addWidget(notify_checkbox, 4, 1, 1, 1)
 
         notify_info = QLabel(
-            '<i>If checked, a notification will be sent out to the concerned contacts.'
+            'If checked, a notification will be sent out to the concerned contacts.'
         )
         notify_info.setWordWrap(True)
         ack_layout.addWidget(notify_info, 5, 0, 1, 2)
@@ -264,8 +264,8 @@ class Downtime(QDialog):
         downtime_layout.addWidget(fixed_label, 2, 2, 1, 1)
 
         fixed_info = QLabel(
-            '<i>If checked, downtime will start and end at the times specified'
-            ' by the “start time” and “end time” fields.</i>'
+            'If checked, downtime will start and end at the times specified'
+            ' by the “start time” and “end time” fields.'
         )
         fixed_info.setWordWrap(True)
         downtime_layout.addWidget(fixed_info, 3, 0, 1, 3)
@@ -285,7 +285,7 @@ class Downtime(QDialog):
         downtime_layout.addWidget(self.duration, 4, 2, 1, 1)
 
         duration_info = QLabel(
-            '<i>Sets the duration if it is a non-fixed downtime.</i>'
+            'Sets the duration if it is a non-fixed downtime.'
         )
         downtime_layout.addWidget(duration_info, 5, 0, 1, 3)
 
