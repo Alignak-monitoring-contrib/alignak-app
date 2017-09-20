@@ -352,8 +352,34 @@ QLabel#DOWNTIME {
 }
 
 /****** HISTORY ******/
+QScrollArea#eventscroll {
+    border: none;
+}
+
+QWidget#history {
+    background-color: white;
+    border: none;
+}
+
+QWidget#event {
+    background-color: white;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #ccc;
+    border-radius: 5px;
+}
+
 QLabel#eventname {
     color: #337ab7;
+}
+
+QLabel#eventdesc {
+    color: #337ab7;
+    font-weight: bold;
+    text-decoration: none;
+    border-style: solid;
+    border-width: 0px 0px 2px 0px;
+    border-color: #607d8b;
 }
 
 /****** TITLE ******/

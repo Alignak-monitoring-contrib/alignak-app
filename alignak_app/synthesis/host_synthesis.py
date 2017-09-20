@@ -216,9 +216,10 @@ class HostSynthesis(QWidget):
 
             # Initialize history QWidget and display it
             self.history_widget = History(history)
-            self.history_widget.initialize(self.host['name'])
+            self.history_widget.initialize(self.host['name'], host_id)
             if old_pos:
                 self.history_widget.app_widget.move(old_pos)
+            self.history_widget.refresh_btn.clicked.connect(self.display_history)
             self.history_widget.app_widget.show()
         else:
             # If there is no history, send a message

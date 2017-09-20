@@ -30,8 +30,8 @@ from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.widgets.app_widget import AppQWidget
 
 from PyQt5.QtWidgets import QWidget, QScrollArea, QLabel  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QGridLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPixmap  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QGridLayout, QPushButton  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPixmap, QIcon, Qt  # pylint: disable=no-name-in-module
 
 
 logger = getLogger(__name__)
@@ -45,30 +45,51 @@ class History(QWidget):
     def __init__(self, history, parent=None):
         super(History, self).__init__(parent)
         self.setStyleSheet(get_css())
+        self.setObjectName("history")
         # Fields
         self.history = history
         self.app_widget = AppQWidget()
+        self.refresh_btn = None
 
-    def initialize(self, hostname):
+    def initialize(self, hostname, host_id):
         """
         Initialize QWidget
 
         :param hostname: name of the host
         :type hostname: str
+        :param host_id: Id of Host
+        :type host_id: str
         """
 
-        self.app_widget.initialize('History of %s' % hostname)
+        self.app_widget.initialize('History of %s' % hostname.capitalize())
 
         scroll = QScrollArea()
         scroll.setWidget(self)
         scroll.setWidgetResizable(True)
         scroll.setMinimumSize(1000, 800)
+        scroll.setObjectName("eventscroll")
+        scroll.setStyleSheet("QScrollArea {background-color:white;}")
+        # Adjust spacing for scrollbar
+        self.app_widget.layout().setSpacing(0)
         self.app_widget.add_widget(scroll)
 
         layout = QGridLayout()
         self.setLayout(layout)
 
-        line = 0
+        event_desc = QLabel("The last 25 events for %s" % hostname.capitalize())
+        event_desc.setObjectName("eventdesc")
+        layout.addWidget(event_desc, 0, 0, 1, 1)
+        layout.setAlignment(event_desc, Qt.AlignCenter)
+
+        self.refresh_btn = QPushButton()
+        self.refresh_btn.setIcon(QIcon(get_image_path('refresh')))
+        self.refresh_btn.setFixedSize(32, 32)
+        self.refresh_btn.setObjectName(host_id)
+        self.refresh_btn.setToolTip("Refresh history of %s ?" % hostname.capitalize())
+        layout.addWidget(self.refresh_btn, 0, 1, 1, 1)
+        layout.setAlignment(self.refresh_btn, Qt.AlignRight)
+
+        line = 1
 
         for event in self.history:
             event_widget = self.get_event_widget(event)
@@ -89,6 +110,7 @@ class History(QWidget):
 
         event_widget = QWidget()
         event_widget.setToolTip(event['type'])
+        event_widget.setObjectName("event")
 
         event_layout = QGridLayout()
         event_widget.setLayout(event_layout)
@@ -109,7 +131,8 @@ class History(QWidget):
         icon_label.setPixmap(icon)
         icon_label.setScaledContents(True)
 
-        event_layout.addWidget(icon_label, 0, 1, 1, 1)
+        event_layout.addWidget(icon_label, 0, 1, 2, 1)
+        event_layout.setAlignment(icon_label, Qt.AlignVCenter)
 
         return event_widget
 
