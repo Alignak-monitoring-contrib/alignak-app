@@ -32,7 +32,7 @@ from alignak_app.widgets.banner import send_banner
 from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QIcon  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QIcon, QPixmap  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -45,6 +45,7 @@ class UserProfile(QWidget):
     def __init__(self, app_backend, parent=None):
         super(UserProfile, self).__init__(parent)
         self.setStyleSheet(get_css())
+        self.setMinimumSize(800, 600)
         # Fields
         self.user = None
         self.app_backend = app_backend
@@ -68,7 +69,8 @@ class UserProfile(QWidget):
         self.setLayout(layout)
 
         layout.addWidget(self.get_main_user_widget())
-        layout.addWidget(self.get_info_user_widget())
+        layout.addWidget(self.get_rights_widget())
+        layout.addWidget(self.get_notes_widget())
 
         layout.addWidget(self.get_notifications_widget())
 
@@ -81,6 +83,7 @@ class UserProfile(QWidget):
         projection = [
             '_realm',
             'is_admin',
+            'back_role_super_admin',
             'alias',
             'name',
             'notes',
@@ -110,41 +113,45 @@ class UserProfile(QWidget):
         main_user_widget.setLayout(main_layout)
 
         main_title = QLabel('Main informations:')
+        main_title.setObjectName("usertitle")
         main_layout.addWidget(main_title, 0, 0, 1, 2)
 
         realm_title = QLabel('Realm:')
+        realm_title.setObjectName("usersubtitle")
         main_layout.addWidget(realm_title, 1, 0, 1, 1)
         realm_data = QLabel(self.user['_realm'])
         main_layout.addWidget(realm_data)
 
         role_title = QLabel('Role:')
+        role_title.setObjectName("usersubtitle")
         main_layout.addWidget(role_title, 2, 0, 1, 1)
-        role_data = QLabel(str(self.user['is_admin']))
+        role_data = QLabel(self.get_role().capitalize())
         main_layout.addWidget(role_data, 2, 1, 1, 1)
 
         mail_title = QLabel('Email:')
+        mail_title.setObjectName("usersubtitle")
         main_layout.addWidget(mail_title, 3, 0, 1, 1)
         mail_data = QLabel(self.user['email'])
         main_layout.addWidget(mail_data, 3, 1, 1, 1)
 
         return main_user_widget
 
-    def get_info_user_widget(self):
+    def get_role(self):
         """
-        Create and return inf of user in a QWidget
+        Get user role
 
-        :return: information QWidet
-        :rtype: QWidget
+        :return: role of user
+        :rtype: str
         """
 
-        info_widget = QWidget()
-        info_layout = QGridLayout()
-        info_widget.setLayout(info_layout)
+        role = 'user'
 
-        info_layout.addWidget(self.get_rights_widget(), 0, 0, 1, 1)
-        info_layout.addWidget(self.get_notes_widget(), 0, 1, 1, 1)
+        if self.user['is_admin'] or self.user['back_role_super_admin']:
+            role = 'administrator'
+        if self.user['can_submit_commands'] and not self.user['is_admin']:
+            role = 'power'
 
-        return info_widget
+        return role
 
     def get_rights_widget(self):
         """
@@ -159,19 +166,29 @@ class UserProfile(QWidget):
         rights_widget.setLayout(rights_layout)
 
         rights_title = QLabel('Rights:')
+        rights_title.setObjectName("usertitle")
         rights_layout.addWidget(rights_title, 0, 0, 1, 2)
 
         admin_title = QLabel('Administrator:')
+        admin_title.setObjectName("usersubtitle")
+        admin_title.setMinimumHeight(32)
         rights_layout.addWidget(admin_title, 1, 0, 1, 1)
-        admin_data = QLabel(str(self.user['is_admin']))
+        admin_data = self.get_enable_label_icon(
+            self.user['is_admin']
+        )
         rights_layout.addWidget(admin_data, 1, 1, 1, 1)
 
         command_title = QLabel('Commands:')
+        command_title.setObjectName("usersubtitle")
+        command_title.setMinimumHeight(32)
         rights_layout.addWidget(command_title, 2, 0, 1, 1)
-        command_data = QLabel(str(self.user['can_submit_commands']))
+        command_data = self.get_enable_label_icon(
+            self.user['can_submit_commands']
+        )
         rights_layout.addWidget(command_data, 2, 1, 1, 1)
 
         password_title = QLabel('Password:')
+        password_title.setObjectName("usersubtitle")
         rights_layout.addWidget(password_title, 3, 0, 1, 1)
         password_btn = QPushButton()
         password_btn.setIcon(QIcon(get_image_path('user')))
@@ -192,20 +209,24 @@ class UserProfile(QWidget):
         notes_layout = QGridLayout()
         notes_widget.setLayout(notes_layout)
 
-        notes_title = QLabel('Notes:')
-        notes_layout.addWidget(notes_title, 0, 0, 1, 2)
+        main_notes_title = QLabel('Notes:')
+        main_notes_title.setObjectName("usertitle")
+        notes_layout.addWidget(main_notes_title, 0, 0, 1, 2)
 
-        alias_title = QLabel('Alias')
+        alias_title = QLabel('Alias:')
+        alias_title.setObjectName("usersubtitle")
         notes_layout.addWidget(alias_title, 1, 0, 1, 1)
         alias_data = QLabel(self.user['alias'])
         notes_layout.addWidget(alias_data, 1, 1, 1, 1)
 
-        note_title = QLabel('Notes')
-        notes_layout.addWidget(note_title, 2, 0, 1, 1)
+        notes_title = QLabel('Notes:')
+        notes_title.setObjectName("usersubtitle")
+        notes_layout.addWidget(notes_title, 2, 0, 1, 1)
         note_data = QLabel(self.user['notes'])
         notes_layout.addWidget(note_data, 2, 1, 1, 1)
 
-        token_title = QLabel('Token')
+        token_title = QLabel('Token:')
+        token_title.setObjectName("usersubtitle")
         notes_layout.addWidget(token_title, 3, 0, 1, 1)
         token_data = QLabel(self.user['token'])
         notes_layout.addWidget(token_data, 3, 1, 1, 1)
@@ -242,9 +263,11 @@ class UserProfile(QWidget):
         host_notif_widget.setLayout(host_notif_layout)
 
         notif_title = QLabel("Hosts notifications configurations")
+        notif_title.setObjectName("usertitle")
         host_notif_layout.addWidget(notif_title, 0, 0, 1, 2)
 
         state_title = QLabel("State:")
+        state_title.setObjectName("usersubtitle")
         host_notif_layout.addWidget(state_title, 1, 0, 1, 1)
         notif_state = QCheckBox()
         notif_state.setChecked(self.user['host_notifications_enabled'])
@@ -253,17 +276,24 @@ class UserProfile(QWidget):
         notif_state.setFixedSize(18, 18)
         host_notif_layout.addWidget(notif_state, 1, 1, 1, 1)
 
-        period_title = QLabel("Notification period:")
-        host_notif_layout.addWidget(period_title, 2, 0, 1, 1)
-        period_data = QLabel(self.user['host_notification_period'])
-        host_notif_layout.addWidget(period_data, 2, 1, 1, 1)
-
         enable_title = QLabel("Notification enabled:")
-        host_notif_layout.addWidget(enable_title, 3, 0, 1, 1)
-        enable_data = QLabel(str(self.user['host_notifications_enabled']))
-        host_notif_layout.addWidget(enable_data, 3, 1, 1, 1)
+        enable_title.setMinimumHeight(32)
+        enable_title.setObjectName("usersubtitle")
+        host_notif_layout.addWidget(enable_title, 2, 0, 1, 1)
+        enable_icon = self.get_enable_label_icon(
+            self.user['host_notifications_enabled']
+        )
+        host_notif_layout.addWidget(enable_icon, 2, 1, 1, 1)
+
+        period_title = QLabel("Notification period:")
+        period_title.setObjectName("usersubtitle")
+        host_notif_layout.addWidget(period_title, 3, 0, 1, 1)
+        period = self.get_period_name(self.user['host_notification_period'])
+        period_data = QLabel(period.capitalize())
+        host_notif_layout.addWidget(period_data, 3, 1, 1, 1)
 
         option_title = QLabel("Options:")
+        option_title.setObjectName("usersubtitle")
         host_notif_layout.addWidget(option_title, 4, 0, 1, 1)
         options_data = QLabel(str(self.user['host_notification_options']))
         host_notif_layout.addWidget(options_data, 4, 1, 1, 1)
@@ -283,9 +313,11 @@ class UserProfile(QWidget):
         service_notif_widget.setLayout(service_notif_layout)
 
         notif_title = QLabel("Services notifications configurations")
+        notif_title.setObjectName("usertitle")
         service_notif_layout.addWidget(notif_title, 0, 0, 1, 2)
 
         state_title = QLabel("State:")
+        state_title.setObjectName("usersubtitle")
         service_notif_layout.addWidget(state_title, 1, 0, 1, 1)
         notif_state = QCheckBox()
         notif_state.setObjectName('serviceactions')
@@ -295,22 +327,55 @@ class UserProfile(QWidget):
         notif_state.setFixedSize(18, 18)
         service_notif_layout.addWidget(notif_state, 1, 1, 1, 1)
 
-        period_title = QLabel("Notification period:")
-        service_notif_layout.addWidget(period_title, 2, 0, 1, 1)
-        period_data = QLabel(self.user['service_notification_period'])
-        service_notif_layout.addWidget(period_data, 2, 1, 1, 1)
-
         enable_title = QLabel("Notification enabled:")
-        service_notif_layout.addWidget(enable_title, 3, 0, 1, 1)
-        enable_data = QLabel(str(self.user['service_notifications_enabled']))
-        service_notif_layout.addWidget(enable_data, 3, 1, 1, 1)
+        enable_title.setObjectName("usersubtitle")
+        enable_title.setMinimumHeight(32)
+        service_notif_layout.addWidget(enable_title, 2, 0, 1, 1)
+        enable_data = self.get_enable_label_icon(
+            self.user['service_notifications_enabled']
+        )
+        service_notif_layout.addWidget(enable_data, 2, 1, 1, 1)
+
+        period_title = QLabel("Notification period:")
+        period_title.setObjectName("usersubtitle")
+        service_notif_layout.addWidget(period_title, 3, 0, 1, 1)
+        period = self.get_period_name(self.user['service_notification_period'])
+        period_data = QLabel(period.capitalize())
+        service_notif_layout.addWidget(period_data, 3, 1, 1, 1)
 
         option_title = QLabel("Options:")
+        option_title.setObjectName("usersubtitle")
         service_notif_layout.addWidget(option_title, 4, 0, 1, 1)
         options_data = QLabel(str(self.user['service_notification_options']))
         service_notif_layout.addWidget(options_data, 4, 1, 1, 1)
 
         return service_notif_widget
+
+    def get_period_name(self, uuid):
+        """
+        Get the period name or alias
+
+        :param uuid: the Id of the timeperiod
+        :type uuid: str
+        :return: name or alias of timeperiod
+        :rtype: str
+        """
+
+        projection = [
+            'name',
+            'alias'
+        ]
+
+        endpoint = '/'.join(['timeperiod', uuid])
+
+        period = self.app_backend.get(endpoint, projection=projection)
+
+        if period:
+            if period['alias']:
+                return period['alias']
+            else:
+                return period['name']
+        return ''
 
     def enable_notifications(self):
         """
@@ -326,7 +391,7 @@ class UserProfile(QWidget):
         elif 'serviceactions' in check_btn.objectName():
             notification_type = 'service_notifications_enabled'
         else:
-            logger.error('Wrong caller %s' % self.sender().objectName())
+            logger.error('Wrong caller %s', self.sender().objectName())
 
         if notification_type:
             # check_btn.checkState() is equal to 0 or 2
@@ -346,6 +411,31 @@ class UserProfile(QWidget):
                 send_banner('OK', message, duration=10000)
             else:
                 send_banner('ERROR', "Backend PATCH failed, please check your logs !")
+
+    @staticmethod
+    def get_enable_label_icon(state):
+        """
+        Return red crosse or green check QPixmap in QLabel, depending state is True of False
+
+        :param state: state True of False
+        :type state: bool
+        :return: corresponding QLabel with QPixmap
+        :rtype: QLabel
+        """
+
+        states = {
+            True: 'checked',
+            False: 'error'
+        }
+
+        icon = QPixmap(get_image_path(states[state]))
+
+        enable_icon = QLabel()
+        enable_icon.setFixedSize(18, 18)
+        enable_icon.setPixmap(icon)
+        enable_icon.setScaledContents(True)
+
+        return enable_icon
 
 
 class User(object):
