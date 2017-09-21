@@ -32,7 +32,7 @@ from alignak_app.widgets.banner import send_banner
 from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QIcon, QPixmap  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QIcon, QPixmap, Qt  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -45,7 +45,6 @@ class UserProfile(QWidget):
     def __init__(self, app_backend, parent=None):
         super(UserProfile, self).__init__(parent)
         self.setStyleSheet(get_css())
-        self.setMinimumSize(800, 600)
         # Fields
         self.user = None
         self.app_backend = app_backend
@@ -245,8 +244,13 @@ class UserProfile(QWidget):
         notification_layout = QGridLayout()
         notification_widget.setLayout(notification_layout)
 
-        notification_layout.addWidget(self.get_hosts_notif_widget(), 0, 0, 1, 1)
-        notification_layout.addWidget(self.get_services_notif_widget(), 0, 1, 1, 1)
+        host_notif_widget = self.get_hosts_notif_widget()
+        notification_layout.addWidget(host_notif_widget, 0, 0, 1, 1)
+        notification_layout.setAlignment(host_notif_widget, Qt.AlignTop)
+
+        services_notif_widget = self.get_services_notif_widget()
+        notification_layout.addWidget(services_notif_widget, 0, 1, 1, 1)
+        notification_layout.setAlignment(services_notif_widget, Qt.AlignTop)
 
         return notification_widget
 
@@ -294,9 +298,14 @@ class UserProfile(QWidget):
 
         option_title = QLabel("Options:")
         option_title.setObjectName("usersubtitle")
-        host_notif_layout.addWidget(option_title, 4, 0, 1, 1)
-        options_data = QLabel(str(self.user['host_notification_options']))
-        host_notif_layout.addWidget(options_data, 4, 1, 1, 1)
+        host_notif_layout.addWidget(option_title, 4, 0, 1, 2)
+        host_notif_layout.setAlignment(option_title, Qt.AlignCenter)
+
+        option_widget = self.get_options_widget(
+            'hosts',
+            self.user['host_notification_options']
+        )
+        host_notif_layout.addWidget(option_widget, 5, 0, 1, 2)
 
         return host_notif_widget
 
@@ -345,11 +354,82 @@ class UserProfile(QWidget):
 
         option_title = QLabel("Options:")
         option_title.setObjectName("usersubtitle")
-        service_notif_layout.addWidget(option_title, 4, 0, 1, 1)
-        options_data = QLabel(str(self.user['service_notification_options']))
-        service_notif_layout.addWidget(options_data, 4, 1, 1, 1)
+        service_notif_layout.addWidget(option_title, 4, 0, 1, 2)
+        service_notif_layout.setAlignment(option_title, Qt.AlignCenter)
+
+        option_widget = self.get_options_widget(
+            'services',
+            self.user['service_notification_options']
+        )
+        service_notif_layout.addWidget(option_widget, 5, 0, 1, 2)
 
         return service_notif_widget
+
+    def get_options_widget(self, item_type, options):
+        """
+        Create and return QWidget with options and their icons
+
+        :param item_type: hosts or services
+        :type item_type: str
+        :param options: list of notification options
+        :type options: list
+        :return: QWidget with options and icons
+        :rtype: QWidget
+        """
+
+        items_options = {
+            'hosts': ['d', 'u', 'r', 'f', 's', 'n'],
+            'services': ['w', 'u', 'c', 'r', 'f', 's', 'n']
+        }
+
+        available_options = items_options[item_type]
+
+        selected_options = {}
+        for opt in available_options:
+            if opt in options:
+                selected_options[opt] = True
+            else:
+                selected_options[opt] = False
+
+        option_names = {
+            'hosts': {
+                'd': 'DOWN',
+                'u': 'UNREACHABLE',
+                'r': 'RECOVERY',
+                'f': 'FLAPPING',
+                's': 'DOWNTIME',
+                'n': 'NONE'
+            },
+            'services': {
+                'w': 'WARNING',
+                'u': 'UNKNOWN',
+                'c': 'CRITICAL',
+                'r': 'RECOVERY',
+                'f': 'FLAPPING',
+                's': 'DOWNTIME',
+                'n': 'NONE'
+            }
+        }
+
+        line = 0
+        options_widget = QWidget()
+        options_layout = QGridLayout()
+        options_widget.setLayout(options_layout)
+        for opt in selected_options:
+            # Name of Option
+            option_label = QLabel(option_names[item_type][opt])
+            object_name = 'user' + str(selected_options[opt])
+            option_label.setObjectName(object_name)
+            options_layout.addWidget(option_label, line, 0, 1, 1)
+            # Corresponding icon
+            option_icon = self.get_enable_label_icon(
+                selected_options[opt]
+            )
+            option_icon.setFixedSize(14, 14)
+            options_layout.addWidget(option_icon, line, 1, 1, 1)
+            line += 1
+
+        return options_widget
 
     def get_period_name(self, uuid):
         """
