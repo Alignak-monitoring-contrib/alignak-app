@@ -371,10 +371,11 @@ class UserProfile(QWidget):
         period = self.app_backend.get(endpoint, projection=projection)
 
         if period:
-            if period['alias']:
+            if 'alias' in period:
                 return period['alias']
-            else:
-                return period['name']
+
+            return period['name']
+
         return ''
 
     def enable_notifications(self):
