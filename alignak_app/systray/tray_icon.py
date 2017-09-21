@@ -78,13 +78,13 @@ class TrayIcon(QSystemTrayIcon):
         self.create_synthesis_action(app_backend)
         self.create_dashboard_action(dashboard)
         self.create_status_action(app_backend)
+        self.create_user_action(app_backend)
         self.menu.addSeparator()
 
         self.create_hosts_actions()
         self.create_services_actions()
         self.menu.addSeparator()
 
-        self.create_user_action(app_backend)
         self.create_reload_configuration()
         self.create_about_action()
         self.menu.addSeparator()
