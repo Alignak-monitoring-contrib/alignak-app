@@ -415,3 +415,12 @@ QLabel#usertitle {
 QLabel#usersubtitle {
     font-weight: bold;
 }
+
+QLabel#userTrue {
+    color: #4caf50;
+}
+
+QLabel#userFalse {
+    color: #f44336;
+}
+
