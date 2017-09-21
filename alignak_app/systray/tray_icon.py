@@ -33,7 +33,7 @@ from alignak_app.systray.qactions_factory import QActionFactory
 from alignak_app.widgets.about import AppAbout
 from alignak_app.widgets.status import AlignakStatus
 from alignak_app.widgets.banner import send_banner
-from alignak_app.widgets.user import UserProfile
+from alignak_app.widgets.user import User
 
 from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
@@ -62,6 +62,7 @@ class TrayIcon(QSystemTrayIcon):
         self.alignak_status = None
         self.app_about = None
         self.synthesis = None
+        self.user = None
 
     def build_menu(self, app_backend, dashboard):
         """
@@ -301,29 +302,9 @@ class TrayIcon(QSystemTrayIcon):
             'View my profile',
             self
         )
+        self.user = User(app_backend)
 
-        projection = [
-            '_realm',
-            'is_admin',
-            'alias',
-            'name',
-            'notes',
-            'email',
-            'can_submit_commands',
-            'token',
-            'host_notifications_enabled',
-            'service_notifications_enabled',
-            'host_notification_period',
-            'service_notification_period',
-            'host_notification_options',
-            'service_notification_options',
-        ]
-
-        user = app_backend.get_user(projection)
-        user_widget = UserProfile(user)
-        user_widget.initialize()
-
-        self.qaction_factory.get('user').triggered.connect(user_widget.app_widget.show)
+        self.qaction_factory.get('user').triggered.connect(self.user.show_user_widget)
 
         self.menu.addAction(self.qaction_factory.get('user'))
 

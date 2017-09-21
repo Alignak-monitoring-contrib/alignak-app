@@ -27,6 +27,7 @@ from logging import getLogger
 
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.widgets.app_widget import AppQWidget
+from alignak_app.widgets.banner import send_banner
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
@@ -41,12 +42,13 @@ class UserProfile(QWidget):
         Class who create QWidget for User Profile.
     """
 
-    def __init__(self, user, parent=None):
+    def __init__(self, app_backend, parent=None):
         super(UserProfile, self).__init__(parent)
         self.setStyleSheet(get_css())
         # Fields
-        self.user = user
-        self.app_widget = AppQWidget()
+        self.user = None
+        self.app_backend = app_backend
+        self.app_widget = None
 
     def initialize(self):
         """
@@ -54,6 +56,11 @@ class UserProfile(QWidget):
 
         """
 
+        # Get the user data first
+        self.get_user_data()
+
+        # Then initialize AppQWidget
+        self.app_widget = AppQWidget()
         self.app_widget.initialize('User view: %s' % self.user['alias'])
         self.app_widget.add_widget(self)
 
@@ -64,6 +71,31 @@ class UserProfile(QWidget):
         layout.addWidget(self.get_info_user_widget())
 
         layout.addWidget(self.get_notifications_widget())
+
+    def get_user_data(self):
+        """
+        Get and set the user data
+
+        """
+
+        projection = [
+            '_realm',
+            'is_admin',
+            'alias',
+            'name',
+            'notes',
+            'email',
+            'can_submit_commands',
+            'token',
+            'host_notifications_enabled',
+            'service_notifications_enabled',
+            'host_notification_period',
+            'service_notification_period',
+            'host_notification_options',
+            'service_notification_options',
+        ]
+
+        self.user = self.app_backend.get_user(projection)
 
     def get_main_user_widget(self):
         """
@@ -257,7 +289,7 @@ class UserProfile(QWidget):
         service_notif_layout.addWidget(state_title, 1, 0, 1, 1)
         notif_state = QCheckBox()
         notif_state.setObjectName('serviceactions')
-        notif_state.setChecked(self.user['host_notifications_enabled'])
+        notif_state.setChecked(self.user['service_notifications_enabled'])
         notif_state.stateChanged.connect(self.enable_notifications)
         notif_state.checkState()
         notif_state.setFixedSize(18, 18)
@@ -286,5 +318,68 @@ class UserProfile(QWidget):
 
         """
 
-        print(self.sender().objectName())
-        print(self.sender().checkState())
+        check_btn = self.sender()
+
+        notification_type = ''
+        if 'hostactions' in check_btn.objectName():
+            notification_type = 'host_notifications_enabled'
+        elif 'serviceactions' in check_btn.objectName():
+            notification_type = 'service_notifications_enabled'
+        else:
+            logger.error('Wrong caller %s' % self.sender().objectName())
+
+        if notification_type:
+            # check_btn.checkState() is equal to 0 or 2
+            notification_enabled = True if check_btn.checkState() else False
+            data = {notification_type: notification_enabled}
+            headers = {'If-Match': self.user['_etag']}
+            endpoint = '/'.join(['user', self.user['_id']])
+
+            patched = self.app_backend.patch(endpoint, data, headers)
+
+            if patched:
+                enabled = 'enabled' if notification_enabled else 'disabled'
+                message = "Notifications for %ss are %s" % (
+                    check_btn.objectName().replace('actions', ''),
+                    enabled
+                )
+                send_banner('OK', message, duration=10000)
+            else:
+                send_banner('ERROR', "Backend PATCH failed, please check your logs !")
+
+
+class User(object):
+    """
+        User manage the UserProfile QWidget creation
+    """
+
+    def __init__(self, app_backend):
+        self.app_backend = app_backend
+        self.user_widget = None
+
+    def create_user_profile(self):
+        """
+        Create the USerProfile QWidget. Store old informations if needed.
+
+        """
+
+        old_pos = None
+        if self.user_widget:
+            old_pos = self.user_widget.app_widget.pos()
+            self.user_widget.deleteLater()
+            self.user_widget = None
+
+        self.user_widget = UserProfile(self.app_backend)
+        self.user_widget.initialize()
+
+        if old_pos:
+            self.user_widget.app_widget.move(old_pos)
+
+    def show_user_widget(self):
+        """
+        Destroy and create the UserProfile, then show it
+
+        """
+
+        self.create_user_profile()
+        self.user_widget.app_widget.show()

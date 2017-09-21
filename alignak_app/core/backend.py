@@ -145,7 +145,7 @@ class AppBackend(object):
                 logger.debug('...Response > %s', str(request['_status']))
             except BackendException as e:
                 logger.error('GET failed: %s', str(e))
-                logger.warning('Application will check the connection with Backend...')
+                logger.warning('Application checks the connection with the Backend...')
                 self.connected = False
                 if not self.app.reconnect_mode:
                     self.app.reconnecting.emit(self, str(e))
@@ -167,23 +167,52 @@ class AppBackend(object):
         :rtype: dict
         """
 
-        resp = None
+        request = None
 
         if self.connected:
             try:
-                resp = self.backend.post(endpoint, data, headers=headers)
+                request = self.backend.post(endpoint, data, headers=headers)
                 logger.debug('POST on %s', endpoint)
                 logger.debug('..with data: %s', str(data))
-                logger.debug('...Response > %s', str(resp))
+                logger.debug('...Response > %s', str(request['_status']))
             except BackendException as e:
                 logger.error('POST failed: %s', str(e))
-                logger.warning('Application will check the connection with Backend...')
+                logger.warning('Application checks the connection with the Backend...')
                 self.connected = False
                 if not self.app.reconnect_mode:
                     self.app.reconnecting.emit(self, str(e))
-                return resp
+                return request
 
-        return resp
+        return request
+
+    def patch(self, endpoint, data, headers):
+        """
+        TODO
+        :param endpoint:
+        :param data:
+        :param headers:
+        :return:
+        """
+
+        request = None
+
+        if self.connected:
+            try:
+                request = self.backend.patch(endpoint, data, headers=headers, inception=True)
+                logger.debug('PATCH on %s', endpoint)
+                logger.debug('..with data: %s', str(data))
+                logger.debug('...with headers: %s', str(headers))
+                logger.debug('....Response > %s', str(request['_status']))
+            except BackendException as e:
+                logger.error('PATCH failed: %s', str(e))
+                logger.warning('Application checks the connection with the Backend...')
+                self.connected = False
+                if not self.app.reconnect_mode:
+                    self.app.reconnecting.emit(self, str(e))
+                return False
+
+        if request['_status'] == 'OK':
+            return True
 
     def get_host(self, key, value, projection=None):
         """
