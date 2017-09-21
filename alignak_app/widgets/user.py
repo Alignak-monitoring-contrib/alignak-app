@@ -386,10 +386,7 @@ class UserProfile(QWidget):
 
         selected_options = {}
         for opt in available_options:
-            if opt in options:
-                selected_options[opt] = True
-            else:
-                selected_options[opt] = False
+            selected_options[opt] = bool(opt in options)
 
         option_names = {
             'hosts': {
