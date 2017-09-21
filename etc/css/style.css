@@ -401,3 +401,17 @@ QLabel#logo {
 QLabel#help {
     font-size: 11px;
 }
+
+/****** USER ******/
+QLabel#usertitle {
+    color: #337ab7;
+    font-weight: bold;
+    text-decoration: none;
+    border-style: solid;
+    border-width: 0px 0px 2px 0px;
+    border-color: #607d8b;
+}
+
+QLabel#usersubtitle {
+    font-weight: bold;
+}
