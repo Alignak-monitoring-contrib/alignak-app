@@ -203,12 +203,14 @@ class AlignakApp(QObject):
         """
 
         logger.error('Something seems wrong in your configuration.'
-                     'Please configure Alignak-app before starting it.')
+                     'Please configure Alignak-app before starting it. '
+                     'And make sure the backend is available')
 
         QMessageBox.critical(
             None,
             'Configuration / Connection ERROR',
-            'Something seems wrong in your configuration.'
-            'Please configure Alignak-app before starting it.'
+            'Something seems wrong in your configuration. '
+            'Please configure Alignak-app before starting it. '
+            'And make sure the backend is available'
         )
         sys.exit()
