@@ -136,7 +136,7 @@ class AppBackend(object):
         if self.connected:
             # Request
             try:
-                request = self.backend.get_all(
+                request = self.backend.get(
                     endpoint,
                     params
                 )
@@ -187,7 +187,8 @@ class AppBackend(object):
 
     def patch(self, endpoint, data, headers):
         """
-        TODO
+        PATCH on alignak Backend REST API
+
         :param endpoint:
         :param data:
         :param headers:
@@ -441,7 +442,7 @@ class AppBackend(object):
             'projection': json.dumps({'service_name': 1, 'message': 1, 'type': 1})
         }
 
-        history = self.backend.get('history', params)
+        history = self.get('history', params)
 
         if history:
             return history['_items']
