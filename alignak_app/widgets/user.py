@@ -224,11 +224,14 @@ class UserProfile(QWidget):
         note_data = QLabel(self.user['notes'])
         notes_layout.addWidget(note_data, 2, 1, 1, 1)
 
-        token_title = QLabel('Token:')
-        token_title.setObjectName("usersubtitle")
-        notes_layout.addWidget(token_title, 3, 0, 1, 1)
-        token_data = QLabel(self.user['token'])
-        notes_layout.addWidget(token_data, 3, 1, 1, 1)
+        if self.user['is_admin']:
+            token_title = QLabel('Token:')
+            token_title.setObjectName("usersubtitle")
+            notes_layout.addWidget(token_title, 3, 0, 1, 1)
+            token_data = QLabel(self.user['token'])
+            token_data.setTextInteractionFlags(Qt.TextSelectableByMouse)
+            token_data.setCursor(Qt.IBeamCursor)
+            notes_layout.addWidget(token_data, 3, 1, 1, 1)
 
         return notes_widget
 
