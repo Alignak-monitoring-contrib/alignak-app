@@ -214,7 +214,6 @@ class AppLogin(QDialog):
         resp = self.app_backend.login(str(username), str(password))
 
         if resp:
-            send_banner('OK', 'Welcome %s, you are connected to Alignak Backend' % username)
             self.app_backend.user['username'] = str(username)
             self.app_backend.user['token'] = str(self.app_backend.backend.token)
             self.accept()

@@ -68,12 +68,13 @@ class UserProfile(QWidget):
         self.app_widget.initialize('User view: %s' % self.user['alias'])
         self.app_widget.add_widget(self)
 
+        # first creation of QWidget
         self.create_widget()
 
     def create_widget(self):
         """
-        TODO
-        :return:
+        Create or update the user QWidget. Separate function from initialize() for pyqtSignal
+
         """
 
         # Get the user data first
@@ -429,7 +430,7 @@ class UserProfile(QWidget):
         """
         Create and return QWidget with options and their icons
 
-        :param item_type: hosts or services
+        :param item_type: hosts or services, define type of options
         :type item_type: str
         :param options: list of notification options
         :type options: list

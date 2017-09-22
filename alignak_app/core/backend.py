@@ -147,8 +147,9 @@ class AppBackend(object):
                 logger.error('GET failed: %s', str(e))
                 logger.warning('Application checks the connection with the Backend...')
                 self.connected = False
-                if not self.app.reconnect_mode:
-                    self.app.reconnecting.emit(self, str(e))
+                if self.app:
+                    if not self.app.reconnect_mode:
+                        self.app.reconnecting.emit(self, str(e))
                 return request
 
         return request

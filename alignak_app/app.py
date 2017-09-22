@@ -157,15 +157,19 @@ class AlignakApp(QObject):
         :type app_backend: alignak_app.core.backend.AppBackend | None
         """
 
-        # If not login form, app try anyway to connect by token
+        # If not login form, app try anyway to connect by token or with username/password
         if not app_backend:
             app_backend = AppBackend()
             connect = app_backend.login()
-            if connect:
-                username = app_backend.get_user(projection=['name'])['name']
-                send_banner('OK', 'Welcome %s, you are connected to Alignak Backend' % username)
-            else:
+            if not connect:
                 self.display_error_msg()
+
+        username = app_backend.get_user(projection=['name'])['name']
+
+        if username:
+            send_banner('OK', 'Welcome %s, you are connected to Alignak Backend' % username)
+        else:
+            self.display_error_msg()
 
         if 'token' not in app_backend.user:
             app_backend.user['token'] = app_backend.backend.token
@@ -179,17 +183,19 @@ class AlignakApp(QObject):
         self.tray_icon.build_menu(app_backend, self.dashboard)
         self.tray_icon.show()
 
+        # Give ALignakApp for AppBackend reconnecting mode
         app_backend.app = self
-        start = bool(app_backend.get_user(projection=['name']))
 
-        if start:
-            # Notifier
+        # Check if username is here to ensure backend is alive
+        if bool(username):
+            # Start Notifier which will interrogate the backend periodically
             self.notifier = AppNotifier()
             self.notifier.initialize(app_backend, self.tray_icon, self.dashboard)
 
             self.notifier_timer.start(self.notifier.interval)
             self.notifier_timer.timeout.connect(self.notifier.check_data)
 
+            # Connect reconnectingmode for AppBackend
             self.reconnecting.connect(self.reconnect_to_backend)
         else:
             # In case of...
