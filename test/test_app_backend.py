@@ -37,8 +37,8 @@ class TestAppBackend(unittest2.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.host_id = '59aed40d35d17bc3dbd2cf38'
-        cls.service_id = '59aed41e35d17bc3dbd2cfdb'
+        cls.host_id = '59c4e40635d17b8e096acc70'
+        cls.service_id = '59c4e41535d17b8e0c6acd50'
 
     def test_log_to_backend(self):
         """Connection to Alignak-Backend"""
