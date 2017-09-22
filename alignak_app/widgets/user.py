@@ -32,7 +32,7 @@ from alignak_app.widgets.banner import send_banner
 from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QIcon, QPixmap, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QIcon, QPixmap, Qt, pyqtSignal  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -42,6 +42,8 @@ class UserProfile(QWidget):
         Class who create QWidget for User Profile.
     """
 
+    update_profile = pyqtSignal(name='userprofile')
+
     def __init__(self, app_backend, parent=None):
         super(UserProfile, self).__init__(parent)
         self.setStyleSheet(get_css())
@@ -49,6 +51,8 @@ class UserProfile(QWidget):
         self.user = None
         self.app_backend = app_backend
         self.app_widget = None
+        self.host_notif_state = None
+        self.service_notif_state = None
 
     def initialize(self):
         """
@@ -64,8 +68,24 @@ class UserProfile(QWidget):
         self.app_widget.initialize('User view: %s' % self.user['alias'])
         self.app_widget.add_widget(self)
 
-        layout = QVBoxLayout()
-        self.setLayout(layout)
+        self.create_widget()
+
+    def create_widget(self):
+        """
+        TODO
+        :return:
+        """
+
+        # Get the user data first
+        self.get_user_data()
+
+        if self.layout():
+            for i in reversed(range(self.layout().count())):
+                self.layout().itemAt(i).widget().setParent(None)
+            layout = self.layout()
+        else:
+            layout = QVBoxLayout()
+            self.setLayout(layout)
 
         layout.addWidget(self.get_main_user_widget())
         layout.addWidget(self.get_rights_widget())
@@ -276,12 +296,12 @@ class UserProfile(QWidget):
         state_title = QLabel("State:")
         state_title.setObjectName("usersubtitle")
         host_notif_layout.addWidget(state_title, 1, 0, 1, 1)
-        notif_state = QCheckBox()
-        notif_state.setChecked(self.user['host_notifications_enabled'])
-        notif_state.stateChanged.connect(self.enable_notifications)
-        notif_state.setObjectName('hostactions')
-        notif_state.setFixedSize(18, 18)
-        host_notif_layout.addWidget(notif_state, 1, 1, 1, 1)
+        self.host_notif_state = QCheckBox()
+        self.host_notif_state.setChecked(self.user['host_notifications_enabled'])
+        self.host_notif_state.stateChanged.connect(self.enable_notifications)
+        self.host_notif_state.setObjectName('hostactions')
+        self.host_notif_state.setFixedSize(18, 18)
+        host_notif_layout.addWidget(self.host_notif_state, 1, 1, 1, 1)
 
         enable_title = QLabel("Notification enabled:")
         enable_title.setMinimumHeight(32)
@@ -331,13 +351,13 @@ class UserProfile(QWidget):
         state_title = QLabel("State:")
         state_title.setObjectName("usersubtitle")
         service_notif_layout.addWidget(state_title, 1, 0, 1, 1)
-        notif_state = QCheckBox()
-        notif_state.setObjectName('serviceactions')
-        notif_state.setChecked(self.user['service_notifications_enabled'])
-        notif_state.stateChanged.connect(self.enable_notifications)
-        notif_state.checkState()
-        notif_state.setFixedSize(18, 18)
-        service_notif_layout.addWidget(notif_state, 1, 1, 1, 1)
+        self.service_notif_state = QCheckBox()
+        self.service_notif_state.setObjectName('serviceactions')
+        self.service_notif_state.setChecked(self.user['service_notifications_enabled'])
+        self.service_notif_state.stateChanged.connect(self.enable_notifications)
+        self.service_notif_state.checkState()
+        self.service_notif_state.setFixedSize(18, 18)
+        service_notif_layout.addWidget(self.service_notif_state, 1, 1, 1, 1)
 
         enable_title = QLabel("Notification enabled:")
         enable_title.setObjectName("usersubtitle")
@@ -367,6 +387,43 @@ class UserProfile(QWidget):
         service_notif_layout.addWidget(option_widget, 5, 0, 1, 2)
 
         return service_notif_widget
+
+    def enable_notifications(self):
+        """
+        Enable notification for the wanted type: hosts or services
+
+        """
+
+        check_btn = self.sender()
+
+        notification_type = ''
+        if 'hostactions' in check_btn.objectName():
+            notification_type = 'host_notifications_enabled'
+        elif 'serviceactions' in check_btn.objectName():
+            notification_type = 'service_notifications_enabled'
+        else:
+            logger.error('Wrong caller %s', self.sender().objectName())
+
+        if notification_type:
+            # check_btn.checkState() is equal to 0 or 2
+            notification_enabled = True if check_btn.checkState() else False
+            data = {notification_type: notification_enabled}
+            headers = {'If-Match': self.user['_etag']}
+            endpoint = '/'.join(['user', self.user['_id']])
+
+            patched = self.app_backend.patch(endpoint, data, headers)
+
+            if patched:
+                enabled = 'enabled' if notification_enabled else 'disabled'
+                message = "Notifications for %ss are %s" % (
+                    check_btn.objectName().replace('actions', ''),
+                    enabled
+                )
+                send_banner('OK', message, duration=10000)
+            else:
+                send_banner('ERROR', "Backend PATCH failed, please check your logs !")
+
+        self.update_profile.emit()
 
     def get_options_widget(self, item_type, options):
         """
@@ -458,41 +515,6 @@ class UserProfile(QWidget):
 
         return ''
 
-    def enable_notifications(self):
-        """
-        Enable notification for the wanted type: hosts or services
-
-        """
-
-        check_btn = self.sender()
-
-        notification_type = ''
-        if 'hostactions' in check_btn.objectName():
-            notification_type = 'host_notifications_enabled'
-        elif 'serviceactions' in check_btn.objectName():
-            notification_type = 'service_notifications_enabled'
-        else:
-            logger.error('Wrong caller %s', self.sender().objectName())
-
-        if notification_type:
-            # check_btn.checkState() is equal to 0 or 2
-            notification_enabled = True if check_btn.checkState() else False
-            data = {notification_type: notification_enabled}
-            headers = {'If-Match': self.user['_etag']}
-            endpoint = '/'.join(['user', self.user['_id']])
-
-            patched = self.app_backend.patch(endpoint, data, headers)
-
-            if patched:
-                enabled = 'enabled' if notification_enabled else 'disabled'
-                message = "Notifications for %ss are %s" % (
-                    check_btn.objectName().replace('actions', ''),
-                    enabled
-                )
-                send_banner('OK', message, duration=10000)
-            else:
-                send_banner('ERROR', "Backend PATCH failed, please check your logs !")
-
     @staticmethod
     def get_enable_label_icon(state):
         """
@@ -545,6 +567,8 @@ class User(object):
 
         if old_pos:
             self.user_widget.app_widget.move(old_pos)
+
+        self.user_widget.update_profile.connect(self.user_widget.create_widget)
 
     def show_user_widget(self):
         """
