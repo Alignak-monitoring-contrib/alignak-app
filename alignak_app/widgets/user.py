@@ -29,11 +29,12 @@ from time import sleep
 
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.widgets.app_widget import AppQWidget
+from alignak_app.widgets.password import PasswordDialog
 from alignak_app.widgets.banner import send_banner
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QLabel, QLineEdit  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QLabel, QLineEdit, QDialog  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QIcon, QPixmap, Qt, pyqtSignal  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
@@ -50,11 +51,14 @@ class UserProfile(QWidget):
         super(UserProfile, self).__init__(parent)
         self.setStyleSheet(get_css())
         # Fields
-        self.user = None
         self.app_backend = app_backend
+        self.user = None
+        # Get user data first to prevent user is None
+        self.get_user_data()
         self.app_widget = None
         self.host_notif_state = None
         self.service_notif_state = None
+        self.password_btn = None
         self.notes_btn = None
         self.notes_data = None
         self.notes_edit = None
@@ -65,29 +69,23 @@ class UserProfile(QWidget):
 
         """
 
-        # Get the user data first
-        self.get_user_data()
-
-        # In case the backend is not yet fully connected
-        if self.user:
-            if 'alias' not in self.user:
-                sleep(2)
-        # Then initialize AppQWidget
+        # Initialize AppQWidget
         self.app_widget = AppQWidget()
         self.app_widget.initialize('User view: %s' % self.user['alias'])
         self.app_widget.add_widget(self)
 
         # first creation of QWidget
-        self.create_widget()
+        self.create_widget(True)
 
-    def create_widget(self):
+    def create_widget(self, first=False):
         """
         Create or update the user QWidget. Separate function from initialize() for pyqtSignal
 
         """
 
-        # Get the user data first
-        self.get_user_data()
+        # Refresh the user data if not first start
+        if not first:
+            self.get_user_data()
 
         if self.layout():
             # Clean layout
@@ -244,10 +242,12 @@ class UserProfile(QWidget):
         password_title = QLabel('Password:')
         password_title.setObjectName("usersubtitle")
         rights_layout.addWidget(password_title, 3, 0, 1, 1)
-        password_btn = QPushButton()
-        password_btn.setIcon(QIcon(get_image_path('password')))
-        password_btn.setFixedSize(32, 32)
-        rights_layout.addWidget(password_btn, 3, 1, 1, 1)
+        self.password_btn = QPushButton()
+        self.password_btn.setObjectName("password")
+        self.password_btn.clicked.connect(self.button_clicked)
+        self.password_btn.setIcon(QIcon(get_image_path('password')))
+        self.password_btn.setFixedSize(32, 32)
+        rights_layout.addWidget(self.password_btn, 3, 1, 1, 1)
 
         return rights_widget
 
@@ -287,6 +287,7 @@ class UserProfile(QWidget):
         self.notes_btn = QPushButton()
         self.notes_btn.setIcon(QIcon(get_image_path('edit')))
         self.notes_btn.setToolTip("Click to edit your notes.")
+        self.notes_btn.setObjectName("notes")
         self.notes_btn.setFixedSize(32, 32)
         self.notes_btn.clicked.connect(self.button_clicked)
 
@@ -307,18 +308,42 @@ class UserProfile(QWidget):
 
     def button_clicked(self):
         """
-        Hide and show QLabel for edition
+        Hide and show QLabel for notes or PATCH password
 
         """
 
-        self.notes_data.hide()
-        self.notes_edit.setText(self.notes_data.text())
-        self.notes_edit.show()
-        self.notes_edit.setFocus()
+        btn = self.sender()
+
+        if "notes" in btn.objectName():
+            self.notes_data.hide()
+            self.notes_edit.setText(self.notes_data.text())
+            self.notes_edit.show()
+            self.notes_edit.setFocus()
+        elif "password" in btn.objectName():
+            pass_dialog = PasswordDialog(self.app_backend)
+            pass_dialog.initialize()
+
+            if pass_dialog.exec_() == QDialog.Accepted:
+                new_password = pass_dialog.pass_edit.text()
+                print('password edition %s' % new_password)
+
+                data = {'password': str(new_password)}
+                headers = {'If-Match': self.user['_etag']}
+                endpoint = '/'.join(['user', self.user['_id']])
+
+                patched = self.app_backend.patch(endpoint, data, headers)
+
+                if patched:
+                    message = "Your password has been updated !"
+                    send_banner('OK', message, duration=10000)
+                else:
+                    send_banner('ERROR', "Backend PATCH failed, please check your logs !")
+        else:
+            logger.error("Wrong sender in UserProfile.")
 
     def patch_notes(self):
         """
-        Patch notes user when editiion is finished
+        Patch notes user when edition is finished
 
         """
 
