@@ -307,6 +307,7 @@ class AppBackend(object):
                                   'ls_last_state_changed']
             services = self.get('service', params=params, projection=service_projection)
 
+            services_host = None
             if services:
                 services_host = services['_items']
 
