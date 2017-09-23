@@ -50,7 +50,7 @@ class UserProfile(QWidget):
         self.setStyleSheet(get_css())
         # Fields
         self.app_backend = app_backend
-        self.user = None
+        self.user = {}
         self.app_widget = None
         self.host_notif_state = None
         self.service_notif_state = None
@@ -70,7 +70,7 @@ class UserProfile(QWidget):
 
         # Initialize AppQWidget
         self.app_widget = AppQWidget()
-        self.app_widget.initialize('User view: %s' % self.user['alias'])
+        self.app_widget.initialize('User View')
         self.app_widget.add_widget(self)
 
         # first creation of QWidget
@@ -233,21 +233,22 @@ class UserProfile(QWidget):
         :rtype: str
         """
 
-        endpoint = '/'.join(['realm', self.user['_realm']])
-        projection = [
-            'name',
-            'alias'
-        ]
+        if '_realm' in self.user:
+            endpoint = '/'.join(['realm', self.user['_realm']])
+            projection = [
+                'name',
+                'alias'
+            ]
 
-        realm = self.app_backend.get(endpoint, projection=projection)
+            realm = self.app_backend.get(endpoint, projection=projection)
 
-        if realm:
-            if realm['alias']:
-                return realm['alias']
+            if realm:
+                if realm['alias']:
+                    return realm['alias']
 
-            return realm['name']
+                return realm['name']
 
-        return ''
+        return 'n/a'
 
     def get_role(self):
         """
