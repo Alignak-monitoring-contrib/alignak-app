@@ -126,6 +126,10 @@ class UserProfile(QWidget):
 
         self.user = self.app_backend.get_user(projection)
 
+        if not self.user:
+            for key in projection:
+                self.user[key] = 'n/a'
+
     def get_main_user_widget(self):
         """
         Create and return QWidget with main informations
@@ -283,23 +287,39 @@ class UserProfile(QWidget):
         main_notes_title.setObjectName("usertitle")
         notes_layout.addWidget(main_notes_title, 0, 0, 1, 3)
 
+        # Alias
         alias_title = QLabel('Alias:')
         alias_title.setObjectName("usersubtitle")
         notes_layout.addWidget(alias_title, 1, 0, 1, 1)
         alias_data = QLabel(self.user['alias'])
         notes_layout.addWidget(alias_data, 1, 1, 1, 2)
 
+        # Token only for administrators
+        if self.user['is_admin']:
+            token_title = QLabel('Token:')
+            token_title.setObjectName("usersubtitle")
+            notes_layout.addWidget(token_title, 2, 0, 1, 2)
+            token_data = QLabel(self.user['token'])
+            token_data.setTextInteractionFlags(Qt.TextSelectableByMouse)
+            token_data.setCursor(Qt.IBeamCursor)
+            notes_layout.addWidget(token_data, 2, 1, 1, 1)
+
+        # Notes
         notes_title = QLabel('Notes:')
         notes_title.setObjectName("usersubtitle")
-        notes_layout.addWidget(notes_title, 2, 0, 1, 1)
+        notes_layout.addWidget(notes_title, 3, 0, 1, 1)
 
-        # Hide line edit and show only when edited
+        # Add and hide QLineEdit; Shown only when edited
         self.notes_edit = QLineEdit()
         self.notes_edit.hide()
         self.notes_edit.editingFinished.connect(self.patch_notes)
-        self.notes_data = QLabel()
-        self.notes_data.setText(self.user['notes'])
+        notes_layout.addWidget(self.notes_edit, 4, 1, 1, 1)
 
+        # Create QLabel for notes
+        self.notes_data = QLabel(self.user['notes'])
+        notes_layout.addWidget(self.notes_data, 4, 1, 1, 1)
+
+        # Edit button for notes
         self.notes_btn = QPushButton()
         self.notes_btn.setIcon(QIcon(get_image_path('edit')))
         self.notes_btn.setToolTip("Click to edit your notes.")
@@ -307,18 +327,7 @@ class UserProfile(QWidget):
         self.notes_btn.setFixedSize(32, 32)
         self.notes_btn.clicked.connect(self.button_clicked)
 
-        notes_layout.addWidget(self.notes_edit, 2, 1, 1, 1)
-        notes_layout.addWidget(self.notes_data, 2, 1, 1, 1)
-        notes_layout.addWidget(self.notes_btn, 2, 2, 1, 1)
-
-        if self.user['is_admin']:
-            token_title = QLabel('Token:')
-            token_title.setObjectName("usersubtitle")
-            notes_layout.addWidget(token_title, 4, 0, 1, 2)
-            token_data = QLabel(self.user['token'])
-            token_data.setTextInteractionFlags(Qt.TextSelectableByMouse)
-            token_data.setCursor(Qt.IBeamCursor)
-            notes_layout.addWidget(token_data, 4, 1, 1, 1)
+        notes_layout.addWidget(self.notes_btn, 4, 2, 1, 1)
 
         return notes_widget
 
