@@ -197,8 +197,6 @@ class UserProfile(QWidget):
         rights_layout = QGridLayout()
         rights_widget.setLayout(rights_layout)
 
-
-
         admin_title = QLabel('Administrator:')
         admin_title.setObjectName("usersubtitle")
         admin_title.setMinimumHeight(32)
@@ -269,8 +267,6 @@ class UserProfile(QWidget):
             role = 'power'
 
         return role
-
-
 
     def get_notes_widget(self):
         """
