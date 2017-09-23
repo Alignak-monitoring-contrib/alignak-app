@@ -139,7 +139,7 @@ class UserProfile(QWidget):
         realm_title = QLabel('Realm:')
         realm_title.setObjectName("usersubtitle")
         main_layout.addWidget(realm_title, 1, 0, 1, 1)
-        realm_data = QLabel(self.user['_realm'])
+        realm_data = QLabel(self.get_realm_name())
         main_layout.addWidget(realm_data)
 
         role_title = QLabel('Role:')
@@ -155,6 +155,30 @@ class UserProfile(QWidget):
         main_layout.addWidget(mail_data, 3, 1, 1, 1)
 
         return main_user_widget
+
+    def get_realm_name(self):
+        """
+        Return realm name or alias
+
+        :return: realm name or alias
+        :rtype: str
+        """
+
+        endpoint = '/'.join(['realm', self.user['_realm']])
+        projection = [
+            'name',
+            'alias'
+        ]
+
+        realm = self.app_backend.get(endpoint, projection=projection)
+
+        if realm:
+            if realm['alias']:
+                return realm['alias']
+            else:
+                return realm['name']
+
+        return ''
 
     def get_role(self):
         """
