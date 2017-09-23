@@ -292,7 +292,8 @@ class TrayIcon(QSystemTrayIcon):
 
     def create_user_action(self, app_backend):
         """
-        TODO
+        Create User object who manage UserProfile QWidget
+
         :param app_backend: AppBackend data
         :type app_backend: AppBackend
         """
