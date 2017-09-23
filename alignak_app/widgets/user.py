@@ -24,6 +24,8 @@
 """
 
 from logging import getLogger
+from time import sleep
+
 
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.widgets.app_widget import AppQWidget
@@ -31,7 +33,7 @@ from alignak_app.widgets.banner import send_banner
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QLabel, QLineEdit  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QIcon, QPixmap, Qt, pyqtSignal  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
@@ -63,6 +65,10 @@ class UserProfile(QWidget):
         # Get the user data first
         self.get_user_data()
 
+        # In case the backend is not yet fully connected
+        if self.user:
+            if 'alias' not in self.user:
+                sleep(2)
         # Then initialize AppQWidget
         self.app_widget = AppQWidget()
         self.app_widget.initialize('User view: %s' % self.user['alias'])
@@ -81,8 +87,9 @@ class UserProfile(QWidget):
         self.get_user_data()
 
         if self.layout():
+            # Clean layout
             for i in reversed(range(self.layout().count())):
-                self.layout().itemAt(i).widget().setParent(None)
+                self.layout().itemAt(i).widget().deleteLater()
             layout = self.layout()
         else:
             layout = QVBoxLayout()
@@ -235,7 +242,7 @@ class UserProfile(QWidget):
         password_title.setObjectName("usersubtitle")
         rights_layout.addWidget(password_title, 3, 0, 1, 1)
         password_btn = QPushButton()
-        password_btn.setIcon(QIcon(get_image_path('user')))
+        password_btn.setIcon(QIcon(get_image_path('password')))
         password_btn.setFixedSize(32, 32)
         rights_layout.addWidget(password_btn, 3, 1, 1, 1)
 
@@ -255,30 +262,82 @@ class UserProfile(QWidget):
 
         main_notes_title = QLabel('Notes:')
         main_notes_title.setObjectName("usertitle")
-        notes_layout.addWidget(main_notes_title, 0, 0, 1, 2)
+        notes_layout.addWidget(main_notes_title, 0, 0, 1, 3)
 
         alias_title = QLabel('Alias:')
         alias_title.setObjectName("usersubtitle")
         notes_layout.addWidget(alias_title, 1, 0, 1, 1)
         alias_data = QLabel(self.user['alias'])
-        notes_layout.addWidget(alias_data, 1, 1, 1, 1)
+        notes_layout.addWidget(alias_data, 1, 1, 1, 2)
 
         notes_title = QLabel('Notes:')
         notes_title.setObjectName("usersubtitle")
         notes_layout.addWidget(notes_title, 2, 0, 1, 1)
-        note_data = QLabel(self.user['notes'])
-        notes_layout.addWidget(note_data, 2, 1, 1, 1)
+
+        # Hide line edit and show only when edited
+        self.notes_edit = QLineEdit()
+        self.notes_edit.hide()
+        self.notes_edit.editingFinished.connect(self.patch_notes)
+        self.notes_data = QLabel()
+        self.notes_data.setText(self.user['notes'])
+
+        self.notes_btn = QPushButton()
+        self.notes_btn.setIcon(QIcon(get_image_path('edit')))
+        self.notes_btn.setToolTip("Click to edit your notes.")
+        self.notes_btn.setFixedSize(32, 32)
+        self.notes_btn.clicked.connect(self.button_clicked)
+
+        notes_layout.addWidget(self.notes_edit, 2, 1, 1, 1)
+        notes_layout.addWidget(self.notes_data, 2, 1, 1, 1)
+        notes_layout.addWidget(self.notes_btn, 2, 2, 1, 1)
 
         if self.user['is_admin']:
             token_title = QLabel('Token:')
             token_title.setObjectName("usersubtitle")
-            notes_layout.addWidget(token_title, 3, 0, 1, 1)
+            notes_layout.addWidget(token_title, 4, 0, 1, 2)
             token_data = QLabel(self.user['token'])
             token_data.setTextInteractionFlags(Qt.TextSelectableByMouse)
             token_data.setCursor(Qt.IBeamCursor)
-            notes_layout.addWidget(token_data, 3, 1, 1, 1)
+            notes_layout.addWidget(token_data, 4, 1, 1, 1)
 
         return notes_widget
+
+    def button_clicked(self):
+        """
+        Hide and show QLabel for edition
+
+        """
+
+        self.notes_data.hide()
+        self.notes_edit.setText(self.notes_data.text())
+        self.notes_edit.show()
+        self.notes_edit.setFocus()
+
+    def patch_notes(self):
+        """
+        Patch notes user when editiion is finished
+
+        """
+
+        # Patch only if text have really changed
+        if bool(self.notes_edit.text() != self.user['notes']):
+            data = {'notes': str(self.notes_edit.text())}
+            headers = {'If-Match': self.user['_etag']}
+            endpoint = '/'.join(['user', self.user['_id']])
+
+            patched = self.app_backend.patch(endpoint, data, headers)
+
+            if patched:
+                name = self.user['alias'] if self.user['alias'] else self.user['name']
+                message = "The notes for the %s have been edited." % name
+                send_banner('OK', message, duration=10000)
+            else:
+                send_banner('ERROR', "Backend PATCH failed, please check your logs !")
+
+            self.update_profile.emit()
+        else:
+            self.notes_data.show()
+            self.notes_edit.hide()
 
     def get_notifications_widget(self):
         """
@@ -583,7 +642,8 @@ class User(object):
 
         old_pos = None
         if self.user_widget:
-            old_pos = self.user_widget.app_widget.pos()
+            if self.user_widget.app_widget:
+                old_pos = self.user_widget.app_widget.pos()
             self.user_widget.deleteLater()
             self.user_widget = None
 
