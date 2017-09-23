@@ -194,3 +194,8 @@ class Synthesis(QWidget):
                 self.host_synthesis.history_widget = old_history_widget
 
             self.layout().addWidget(self.host_synthesis, 1, 0, 1, 5)
+
+    def showEvent(self, _):
+        """ QDialog.showEvent(QShowEvent) """
+
+        self.line_search.setFocus()
