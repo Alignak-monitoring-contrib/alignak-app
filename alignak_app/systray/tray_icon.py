@@ -27,19 +27,18 @@ import sys
 import webbrowser
 from logging import getLogger
 
+from PyQt5.Qt import pyqtSignal  # pylint: disable=no-name-in-module
+from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
+
 from alignak_app.core.utils import get_app_config, get_image_path, init_config
 from alignak_app.synthesis.synthesis import Synthesis
 from alignak_app.systray.qactions_factory import QActionFactory
+from alignak_app.user.user import User
 from alignak_app.widgets.about import AppAbout
-from alignak_app.widgets.status import AlignakStatus
 from alignak_app.widgets.banner import send_banner
-from alignak_app.widgets.user import User
-
-from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
-from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
-from PyQt5.Qt import pyqtSignal  # pylint: disable=no-name-in-module
-
+from alignak_app.widgets.status import AlignakStatus
 
 logger = getLogger(__name__)
 

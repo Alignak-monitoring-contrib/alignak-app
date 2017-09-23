@@ -23,8 +23,6 @@
     Password manage password form
 """
 
-import sys
-
 from logging import getLogger
 
 from alignak_app.core.utils import get_css, get_image_path
