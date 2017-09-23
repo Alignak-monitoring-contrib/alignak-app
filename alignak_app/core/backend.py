@@ -57,7 +57,6 @@ class AppBackend(object):
         :rtype: bool
         """
 
-        connect = False
         # Credentials
         if not username and not password:
             if self.user:
@@ -78,11 +77,11 @@ class AppBackend(object):
         if username and password:
             # Username & password : not recommended, without "widgets.login.py" form.
             try:
-                connect = self.backend.login(username, password)
-                if connect:
+                self.connected = self.backend.login(username, password)
+                if self.connected:
                     self.user['username'] = username
                     self.user['token'] = self.backend.token
-                logger.info('Connection by password: %s', str(connect))
+                logger.info('Connection by password: %s', str(self.connected))
             except BackendException as e:  # pragma: no cover
                 logger.error('Connection to Backend has failed: %s', str(e))
         elif username and not password:
@@ -94,20 +93,24 @@ class AppBackend(object):
                 self.backend.token = username
                 self.user['token'] = username
 
-            # Test to check token
+            # Make backend connected to test token
             self.connected = True
-            connect = bool(self.get('livesynthesis'))
-            logger.info('Connection by token: %s', str(connect))
+            user = self.get_user(projection=['name'])
+
+            self.connected = bool(user)
+            if not self.connected:
+                return False
+
+            self.user['username'] = user['name']
+            logger.info('Connection by token: %s', str(self.connected))
         else:
             # Else exit
             logger.error(
                 'Connection to Backend has failed.\nCheck [Backend] section in configuration file.'
             )
-            connect = False
+            return False
 
-        self.connected = connect
-
-        return connect
+        return self.connected
 
     def get(self, endpoint, params=None, projection=None):
         """

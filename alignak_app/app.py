@@ -160,34 +160,35 @@ class AlignakApp(QObject):
         # If not login form, app try anyway to connect by token or with username/password
         if not app_backend:
             app_backend = AppBackend()
-            connect = app_backend.login()
-            if not connect:
-                self.display_error_msg()
 
-        username = app_backend.get_user(projection=['name'])['name']
-
-        if username:
-            send_banner('OK', 'Welcome %s, you are connected to Alignak Backend' % username)
-        else:
+        try:
+            app_backend.login()
+        except TypeError:
             self.display_error_msg()
 
-        if 'token' not in app_backend.user:
-            app_backend.user['token'] = app_backend.backend.token
+        # Check if connected
+        if app_backend.connected:
+            # Send Welcome Banner
+            send_banner(
+                'OK',
+                'Welcome %s, you are connected to Alignak Backend' % app_backend.user['username']
+            )
 
-        # Dashboard
-        self.dashboard = Dashboard()
-        self.dashboard.initialize()
+            if 'token' not in app_backend.user:
+                app_backend.user['token'] = app_backend.backend.token
 
-        # TrayIcon
-        self.tray_icon = TrayIcon(QIcon(get_image_path('icon')))
-        self.tray_icon.build_menu(app_backend, self.dashboard)
-        self.tray_icon.show()
+            # Dashboard
+            self.dashboard = Dashboard()
+            self.dashboard.initialize()
 
-        # Give ALignakApp for AppBackend reconnecting mode
-        app_backend.app = self
+            # TrayIcon
+            self.tray_icon = TrayIcon(QIcon(get_image_path('icon')))
+            self.tray_icon.build_menu(app_backend, self.dashboard)
+            self.tray_icon.show()
 
-        # Check if username is here to ensure backend is alive
-        if bool(username):
+            # Give ALignakApp for AppBackend reconnecting mode
+            app_backend.app = self
+
             # Start Notifier which will interrogate the backend periodically
             self.notifier = AppNotifier()
             self.notifier.initialize(app_backend, self.tray_icon, self.dashboard)
