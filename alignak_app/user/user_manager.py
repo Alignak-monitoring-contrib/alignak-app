@@ -25,7 +25,7 @@
 
 from logging import getLogger
 
-from alignak_app.user.user import UserProfile
+from alignak_app.user.user_profile import UserProfile
 
 logger = getLogger(__name__)
 
