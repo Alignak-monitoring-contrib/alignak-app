@@ -47,13 +47,14 @@ class Synthesis(QWidget):
         Class who create the Synthesis QWidget.
     """
 
-    first_display = True
+    update_line_edit = True
 
     def __init__(self, parent=None):
         super(Synthesis, self).__init__(parent)
         self.setStyleSheet(get_css())
         # Fields
         self.line_search = QLineEdit()
+        self.completer = QCompleter()
         self.app_backend = None
         self.action_manager = None
         self.host_synthesis = None
@@ -107,6 +108,7 @@ class Synthesis(QWidget):
             refresh_interval = 30000
 
         refresh_timer = QTimer(self)
+        refresh_timer.setObjectName("update")
         refresh_timer.start(refresh_interval)
         refresh_timer.timeout.connect(self.display_host_synthesis)
 
@@ -126,17 +128,20 @@ class Synthesis(QWidget):
             for host in all_hosts['_items']:
                 hosts_list.append(host['name'])
 
-        model = QStringListModel()
+        model = self.completer.model()
+        if not model:
+            model = QStringListModel()
+
         model.setStringList(hosts_list)
 
         # Create completer from model
-        completer = QCompleter()
-        completer.setFilterMode(Qt.MatchContains)
-        completer.setCaseSensitivity(Qt.CaseInsensitive)
-        completer.setModel(model)
+        # self.completer = QCompleter()
+        self.completer.setFilterMode(Qt.MatchContains)
+        self.completer.setCaseSensitivity(Qt.CaseInsensitive)
+        self.completer.setModel(model)
 
         # Add completer to "line edit"
-        self.line_search.setCompleter(completer)
+        self.line_search.setCompleter(self.completer)
         self.line_search.setPlaceholderText('Type a host name to display its data')
         self.line_search.setToolTip('Type a host name to display its data')
 
@@ -146,11 +151,15 @@ class Synthesis(QWidget):
 
         """
 
-        if self.isVisible() or self.first_display:
-            # If first display, create line search from hosts list
-            if self.first_display:
+        if self.isVisible() or self.update_line_edit:
+            if self.sender():
+                if "update" in self.sender().objectName():
+                    self.update_line_edit = True
+
+            # If update, update model of QLineEdit
+            if self.update_line_edit:
                 self.create_line_search()
-                self.first_display = False
+                self.update_line_edit = False
 
             host_name = str(self.line_search.text()).rstrip()
             backend_data = None

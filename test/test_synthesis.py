@@ -74,9 +74,9 @@ class TestSynthesis(unittest2.TestCase):
         under_test.initialize(self.app_backend)
 
         self.assertIsNone(under_test.host_synthesis)
-        self.assertTrue(under_test.first_display)
+        self.assertTrue(under_test.update_line_edit)
 
         under_test.display_host_synthesis()
 
         self.assertIsNotNone(under_test.host_synthesis)
-        self.assertFalse(under_test.first_display)
+        self.assertFalse(under_test.update_line_edit)
