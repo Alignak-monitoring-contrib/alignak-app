@@ -53,8 +53,6 @@ class UserProfile(QWidget):
         # Fields
         self.app_backend = app_backend
         self.user = None
-        # Get user data first to prevent user is None
-        self.get_user_data()
         self.app_widget = None
         self.host_notif_state = None
         self.service_notif_state = None
@@ -68,6 +66,9 @@ class UserProfile(QWidget):
         Initialize User QWidget
 
         """
+
+        # Get user data first to prevent user is None
+        self.get_user_data()
 
         # Initialize AppQWidget
         self.app_widget = AppQWidget()
@@ -97,7 +98,6 @@ class UserProfile(QWidget):
             self.setLayout(layout)
 
         layout.addWidget(self.get_main_user_widget())
-        layout.addWidget(self.get_rights_widget())
         layout.addWidget(self.get_notes_widget())
 
         layout.addWidget(self.get_notifications_widget())
@@ -144,25 +144,90 @@ class UserProfile(QWidget):
         main_title.setObjectName("usertitle")
         main_layout.addWidget(main_title, 0, 0, 1, 2)
 
+        rights_title = QLabel('Rights:')
+        rights_title.setObjectName("usertitle")
+        main_layout.addWidget(rights_title, 0, 2, 1, 2)
+
+        main_layout.addWidget(self.get_information_widget(), 1, 0, 1, 2)
+        main_layout.addWidget(self.get_rights_widget(), 1, 2, 1, 2)
+
+        return main_user_widget
+
+    def get_information_widget(self):
+        """
+        Return informations QWidget
+
+        :return: information QWidget
+        :rtype: QWidget
+        """
+
+        information_widget = QWidget()
+        info_layout = QGridLayout()
+        information_widget.setLayout(info_layout)
+
         realm_title = QLabel('Realm:')
         realm_title.setObjectName("usersubtitle")
-        main_layout.addWidget(realm_title, 1, 0, 1, 1)
+        info_layout.addWidget(realm_title, 0, 0, 1, 1)
         realm_data = QLabel(self.get_realm_name())
-        main_layout.addWidget(realm_data)
+        info_layout.addWidget(realm_data, 0, 1, 1, 1)
 
         role_title = QLabel('Role:')
         role_title.setObjectName("usersubtitle")
-        main_layout.addWidget(role_title, 2, 0, 1, 1)
+        info_layout.addWidget(role_title, 1, 0, 1, 1)
         role_data = QLabel(self.get_role().capitalize())
-        main_layout.addWidget(role_data, 2, 1, 1, 1)
+        info_layout.addWidget(role_data, 1, 1, 1, 1)
 
         mail_title = QLabel('Email:')
         mail_title.setObjectName("usersubtitle")
-        main_layout.addWidget(mail_title, 3, 0, 1, 1)
+        info_layout.addWidget(mail_title, 2, 0, 1, 1)
         mail_data = QLabel(self.user['email'])
-        main_layout.addWidget(mail_data, 3, 1, 1, 1)
+        info_layout.addWidget(mail_data, 2, 1, 1, 1)
 
-        return main_user_widget
+        return information_widget
+
+    def get_rights_widget(self):
+        """
+        Create and return Rights QWidget
+
+        :return: rights QWidget
+        :rtype: QWidget
+        """
+
+        rights_widget = QWidget()
+        rights_layout = QGridLayout()
+        rights_widget.setLayout(rights_layout)
+
+
+
+        admin_title = QLabel('Administrator:')
+        admin_title.setObjectName("usersubtitle")
+        admin_title.setMinimumHeight(32)
+        rights_layout.addWidget(admin_title, 1, 0, 1, 1)
+        admin_data = self.get_enable_label_icon(
+            self.user['is_admin']
+        )
+        rights_layout.addWidget(admin_data, 1, 1, 1, 1)
+
+        command_title = QLabel('Commands:')
+        command_title.setObjectName("usersubtitle")
+        command_title.setMinimumHeight(32)
+        rights_layout.addWidget(command_title, 2, 0, 1, 1)
+        command_data = self.get_enable_label_icon(
+            self.user['can_submit_commands']
+        )
+        rights_layout.addWidget(command_data, 2, 1, 1, 1)
+
+        password_title = QLabel('Password:')
+        password_title.setObjectName("usersubtitle")
+        rights_layout.addWidget(password_title, 3, 0, 1, 1)
+        self.password_btn = QPushButton()
+        self.password_btn.setObjectName("password")
+        self.password_btn.clicked.connect(self.button_clicked)
+        self.password_btn.setIcon(QIcon(get_image_path('password')))
+        self.password_btn.setFixedSize(32, 32)
+        rights_layout.addWidget(self.password_btn, 3, 1, 1, 1)
+
+        return rights_widget
 
     def get_realm_name(self):
         """
@@ -205,51 +270,7 @@ class UserProfile(QWidget):
 
         return role
 
-    def get_rights_widget(self):
-        """
-        Create and return Rights QWidget
 
-        :return: rights QWidget
-        :rtype: QWidget
-        """
-
-        rights_widget = QWidget()
-        rights_layout = QGridLayout()
-        rights_widget.setLayout(rights_layout)
-
-        rights_title = QLabel('Rights:')
-        rights_title.setObjectName("usertitle")
-        rights_layout.addWidget(rights_title, 0, 0, 1, 2)
-
-        admin_title = QLabel('Administrator:')
-        admin_title.setObjectName("usersubtitle")
-        admin_title.setMinimumHeight(32)
-        rights_layout.addWidget(admin_title, 1, 0, 1, 1)
-        admin_data = self.get_enable_label_icon(
-            self.user['is_admin']
-        )
-        rights_layout.addWidget(admin_data, 1, 1, 1, 1)
-
-        command_title = QLabel('Commands:')
-        command_title.setObjectName("usersubtitle")
-        command_title.setMinimumHeight(32)
-        rights_layout.addWidget(command_title, 2, 0, 1, 1)
-        command_data = self.get_enable_label_icon(
-            self.user['can_submit_commands']
-        )
-        rights_layout.addWidget(command_data, 2, 1, 1, 1)
-
-        password_title = QLabel('Password:')
-        password_title.setObjectName("usersubtitle")
-        rights_layout.addWidget(password_title, 3, 0, 1, 1)
-        self.password_btn = QPushButton()
-        self.password_btn.setObjectName("password")
-        self.password_btn.clicked.connect(self.button_clicked)
-        self.password_btn.setIcon(QIcon(get_image_path('password')))
-        self.password_btn.setFixedSize(32, 32)
-        rights_layout.addWidget(self.password_btn, 3, 1, 1, 1)
-
-        return rights_widget
 
     def get_notes_widget(self):
         """
