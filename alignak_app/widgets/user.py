@@ -55,6 +55,9 @@ class UserProfile(QWidget):
         self.app_widget = None
         self.host_notif_state = None
         self.service_notif_state = None
+        self.notes_btn = None
+        self.notes_data = None
+        self.notes_edit = None
 
     def initialize(self):
         """
@@ -182,8 +185,8 @@ class UserProfile(QWidget):
         if realm:
             if realm['alias']:
                 return realm['alias']
-            else:
-                return realm['name']
+
+            return realm['name']
 
         return ''
 
