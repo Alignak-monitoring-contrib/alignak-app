@@ -200,14 +200,14 @@ class AppNotifier(object):
             logger.warning("App set locale to %s ", locale.getlocale(locale.LC_TIME))
 
         # Define time for the last 30 minutes
-        time_interval = datetime.datetime.utcnow() - datetime.timedelta(minutes=30)
-        time_formated = time_interval.strftime("%a, %d %b %Y %H:%M:%S GMT")
+        time_interval = (datetime.datetime.utcnow() - datetime.timedelta(minutes=30)) \
+            .strftime("%a, %d %b %Y %H:%M:%S GMT")
 
         # Make request on history to find notifications
         params = {
             'where': json.dumps({
                 'type': 'monitoring.notification',
-                '_updated': {"$gte": time_formated}
+                '_updated': {"$gte": time_interval}
             }),
             'sort': '-_updated'
         }
@@ -240,16 +240,18 @@ class AppNotifier(object):
                     gmt_time = datetime.datetime.strptime(
                         notif['_updated'], "%a, %d %b %Y %H:%M:%S GMT"
                     )
-                    local_time = gmt_time.replace(tzinfo=datetime.timezone.utc).astimezone(tz=None)
-                    local_time_formated = local_time.strftime("%a, %d %b %Y %H:%M:%S %Z")
+                    local_time = gmt_time.replace(
+                        tzinfo=datetime.timezone.utc) \
+                        .astimezone(tz=None) \
+                        .strftime("%a, %d %b %Y %H:%M:%S %Z")
 
                     # Define message
                     if service:
                         message = "%s(%s) [%s]: %s - %s" % (
-                            service, host, state, output, local_time_formated
+                            service, host, state, output, local_time
                         )
                     else:
-                        message = "%s [%s]: %s - %s" % (host, state, output, local_time_formated)
+                        message = "%s [%s]: %s - %s" % (host, state, output, local_time)
 
                     send_banner(state, message)
                     logger.info("Send history notification: [%s] - %s", state, message)
