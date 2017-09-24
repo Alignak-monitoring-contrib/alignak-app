@@ -24,9 +24,13 @@
 """
 
 import copy
+import locale
+import datetime
+import json
 from logging import getLogger
 
 from alignak_app.core.utils import get_app_config
+from alignak_app.widgets.banner import send_banner
 
 
 logger = getLogger(__name__)
@@ -46,6 +50,7 @@ class AppNotifier(object):
         self.changes = False
         self.interval = 0
         self.old_synthesis = None
+        self.old_notifications = []
 
     def initialize(self, app_backend, tray_icon, dashboard):
         """
@@ -123,6 +128,10 @@ class AppNotifier(object):
 
         """
 
+        # Send notifications
+        self.send_notifications()
+
+        # Update Synthesis
         synthesis = self.app_backend.synthesis_count()
 
         if self.first_start:
@@ -178,3 +187,64 @@ class AppNotifier(object):
                 diff_synthesis['services'][key] = cur_diff
 
         return diff_synthesis
+
+    def send_notifications(self):
+        """
+        Get the last notifications
+
+        """
+
+        # Backend use time format in "en_US", so switch if needed
+        if "en_US" not in locale.getlocale(locale.LC_TIME):
+            locale.setlocale(locale.LC_TIME, "en_US.utf-8")
+            logger.warning("App set locale to %s ", locale.getlocale(locale.LC_TIME))
+
+        # Define time for the last 30 minutes
+        time_interval = datetime.datetime.utcnow() - datetime.timedelta(minutes=30)
+        time_formated = time_interval.strftime("%a, %d %b %Y %H:%M:%S GMT")
+
+        # Make request on history to find notifications
+        params = {
+            'where': json.dumps({
+                'type': 'monitoring.notification',
+                '_updated': {"$gte": time_formated}
+            }),
+            'sort': ['-_id', '-_created']
+        }
+
+        notifications = self.app_backend.get('history', params=params)
+        logger.debug('%s founded: ', str(notifications))
+
+        for notif in notifications['_items']:
+            # If the notification has not already been sent to the last check
+            if notif not in self.old_notifications:
+                message_split = notif['message'].split(';')
+                user = message_split[0].split(':')[1]
+                if 'imported_admin' in user:
+                    user = 'admin'
+                # If notification is for the current user
+                if user in self.app_backend.user['username']:
+                    print(notif)
+                    item_type = 'HOST' if 'HOST' in message_split[0] else 'SERVICE'
+                    host = message_split[1]
+                    if 'SERVICE' in item_type:
+                        service = message_split[2]
+                        state = message_split[3]
+                        output = message_split[5]
+                    else:
+                        service = ''
+                        state = message_split[2]
+                        output = message_split[4]
+
+                    if service:
+                        message = "%s(%s) [%s]: %s - %s" % (
+                            service, host, state, output, notif['_updated']
+                        )
+                    else:
+                        message = "%s [%s]: %s - %s" % (host, state, output, notif['_updated'])
+
+                    send_banner(state, message)
+                    logger.info("Send history notification: [%s] - %s", state, message)
+
+        if notifications:
+            self.old_notifications = notifications['_items']

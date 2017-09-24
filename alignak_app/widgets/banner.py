@@ -148,7 +148,6 @@ class Banner(QWidget):
         self.setWindowFlags(Qt.SplashScreen)
         # Animation
         self.animation = QPropertyAnimation(self, b'pos')
-        self.banner_type = ['OK', 'INFO', 'WARN', 'ALERT']
         self.timer = 0
 
     def create_banner(self, banner_type, message):
@@ -169,17 +168,18 @@ class Banner(QWidget):
         event_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         self.setToolTip(event_date)
 
-        if banner_type not in self.banner_type:
-            banner_type = 'ERROR'
+        banner_wanted = self.get_banner_type(banner_type)
+        if not banner_wanted:
+            banner_wanted = 'ERROR'
 
         self.setStyleSheet(get_css())
-        self.setObjectName('banner%s' % banner_type)
+        self.setObjectName('banner%s' % banner_wanted)
 
         valid_btn = QPushButton()
         valid_btn.setMaximumSize(self.banner_height, self.banner_height)
         valid_btn.setObjectName('banner')
         valid_btn.clicked.connect(self.close_banner)
-        valid_btn.setIcon(QIcon(get_image_path(banner_type.lower())))
+        valid_btn.setIcon(QIcon(get_image_path(banner_wanted.lower())))
 
         layout.addWidget(valid_btn)
 
@@ -187,7 +187,7 @@ class Banner(QWidget):
             message = message[:170] + '...'
 
         if get_app_config('Banners', 'title', boolean=True):
-            banner_qlabel = QLabel('<b>%s</b>: %s' % (banner_type, message))
+            banner_qlabel = QLabel('<b>%s</b>: %s' % (banner_wanted, message))
         else:
             banner_qlabel = QLabel('%s' % message)
 
@@ -215,6 +215,27 @@ class Banner(QWidget):
             end_position.y()
         )
         self.animation.setEndValue(end_value)
+
+    @staticmethod
+    def get_banner_type(banner_type):
+        """
+        TODO
+        :param banner_type:
+        :return:
+        """
+
+        banner_types = {
+            'OK': ['OK', 'UP'],
+            'INFO': ['UNKNOWN', 'INFO'],
+            'WARN': ['WARNING', 'UNREACHABLE', 'WARN'],
+            'ALERT': ['DOWN', 'CRITICAL', 'ALERT']
+        }
+
+        for key, _ in banner_types.items():
+            if banner_type in banner_types[key]:
+                return key
+
+        return None
 
     def start_timer(self):  # pragma: no cover - not testable
         """
