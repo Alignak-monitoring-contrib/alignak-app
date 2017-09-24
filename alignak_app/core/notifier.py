@@ -209,7 +209,7 @@ class AppNotifier(object):
                 'type': 'monitoring.notification',
                 '_updated': {"$gte": time_formated}
             }),
-            'sort': ['-_id', '-_created']
+            'sort': '-_updated'
         }
 
         notifications = self.app_backend.get('history', params=params)
@@ -224,7 +224,7 @@ class AppNotifier(object):
                     user = 'admin'
                 # If notification is for the current user
                 if user in self.app_backend.user['username']:
-                    print(notif)
+                    # Define all var for message
                     item_type = 'HOST' if 'HOST' in message_split[0] else 'SERVICE'
                     host = message_split[1]
                     if 'SERVICE' in item_type:
@@ -236,12 +236,20 @@ class AppNotifier(object):
                         state = message_split[2]
                         output = message_split[4]
 
+                    # Convert updated date to user local time
+                    gmt_time = datetime.datetime.strptime(
+                        notif['_updated'], "%a, %d %b %Y %H:%M:%S GMT"
+                    )
+                    local_time = gmt_time.replace(tzinfo=datetime.timezone.utc).astimezone(tz=None)
+                    local_time_formated = local_time.strftime("%a, %d %b %Y %H:%M:%S %Z")
+
+                    # Define message
                     if service:
                         message = "%s(%s) [%s]: %s - %s" % (
-                            service, host, state, output, notif['_updated']
+                            service, host, state, output, local_time_formated
                         )
                     else:
-                        message = "%s [%s]: %s - %s" % (host, state, output, notif['_updated'])
+                        message = "%s [%s]: %s - %s" % (host, state, output, local_time_formated)
 
                     send_banner(state, message)
                     logger.info("Send history notification: [%s] - %s", state, message)
