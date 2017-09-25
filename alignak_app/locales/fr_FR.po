@@ -7,17 +7,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: ttamalfor@gmail.com\n"
-"POT-Creation-Date: 2017-09-25 14:57+0200\n"
-"PO-Revision-Date: 2017-09-25 16:16+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-09-25 17:08+0200\n"
+"PO-Revision-Date: 2017-09-25 17:09+0200\n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.8.7.1\n"
-"Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"Language: fr_FR\n"
 
 #: ../core/utils.py:298
 msgid "Very soon"
@@ -48,8 +48,12 @@ msgid "Acknowledge is sticky:"
 msgstr "La reconnaissance est \"collée\":"
 
 #: ../synthesis/actions.py:149
-msgid "If checked, the acknowledge will remain until the element returns to an \"OK\" state."
-msgstr "Si cette case est cochée, cet élément sera reconnu jusqu'à ce qu'il soit de nouveau disponible."
+msgid ""
+"If checked, the acknowledge will remain until the element returns to an \"OK"
+"\" state."
+msgstr ""
+"Si cette case est cochée, cet élément sera reconnu jusqu'à ce qu'il soit de "
+"nouveau disponible."
 
 #: ../synthesis/actions.py:156
 msgid "Acknowledge notifies:"
@@ -57,7 +61,9 @@ msgstr "Reconnaître notifie:"
 
 #: ../synthesis/actions.py:167
 msgid "If checked, a notification will be sent out to the concerned contacts."
-msgstr "Si cette case est cochée, une notification sera envoyée aux contacts concernés."
+msgstr ""
+"Si cette case est cochée, une notification sera envoyée aux contacts "
+"concernés."
 
 #: ../synthesis/actions.py:172
 msgid "Acknowledge comment:"
@@ -84,8 +90,12 @@ msgid "Fixed"
 msgstr "Fixe"
 
 #: ../synthesis/actions.py:272
-msgid "If checked, downtime will start and end at the times specified by the “start time” and “end time” fields."
-msgstr "Si cette case est cochée, la programmation commencera et finira aux heures spécifiées par les champs \"heure de début\" et \"heure de fin\"."
+msgid ""
+"If checked, downtime will start and end at the times specified by the “start "
+"time” and “end time” fields."
+msgstr ""
+"Si cette case est cochée, la programmation commencera et finira aux heures "
+"spécifiées par les champs \"heure de début\" et \"heure de fin\"."
 
 #: ../synthesis/actions.py:279
 msgid "Duration"
@@ -156,7 +166,9 @@ msgstr "<b>Addresse:</b> %s"
 #: ../synthesis/host_synthesis.py:227
 #, python-format
 msgid "History for %s is not available ! Please retry later."
-msgstr "L'historique pour %s n'est pas disponible ! Veuillez réessayer ultérieurement."
+msgstr ""
+"L'historique pour %s n'est pas disponible ! Veuillez réessayer "
+"ultérieurement."
 
 #: ../synthesis/host_synthesis.py:247
 msgid "Acknowledge this host"
@@ -280,6 +292,12 @@ msgstr "Le service est %s"
 msgid "<b>Importance:</b>"
 msgstr "<b>Importance:</b>"
 
+#: ../synthesis/service_widget_item.py:60
+#: ../synthesis/service_widget_item.py:116
+#, python-format
+msgid "%s is %s"
+msgstr "%s est %s"
+
 #: ../synthesis/service_widget_item.py:101
 #, python-format
 msgid "%s is %s and acknowledged !"
@@ -294,11 +312,6 @@ msgstr "%s est %s et programmé !"
 #, python-format
 msgid "%s is %s acknowledged. A downtimed is scheduled !"
 msgstr "%s est %s et reconnu ! Un temps d'arrêt a été programmé !"
-
-#: ../synthesis/service_widget_item.py:116
-#, python-format
-msgid "%s is %s"
-msgstr "%s est %s"
 
 #: ../synthesis/synthesis.py:82
 msgid "Search / Refresh Host"
@@ -454,6 +467,117 @@ msgstr "Services en ARRÊT (%s)"
 msgid "Configuration reloaded"
 msgstr "Configuration rechargée"
 
+#: ../user/user_profile.py:73
+msgid "User View"
+msgstr "Vue Utilisateur"
+
+#: ../user/user_profile.py:145
+msgid "Main informations:"
+msgstr "Informations principales:"
+
+#: ../user/user_profile.py:149
+msgid "Rights:"
+msgstr "Droits:"
+
+#: ../user/user_profile.py:170
+msgid "Realm:"
+msgstr "Domaine:"
+
+#: ../user/user_profile.py:176
+msgid "Role:"
+msgstr "Rôle:"
+
+#: ../user/user_profile.py:182
+msgid "Email:"
+msgstr "Mail:"
+
+#: ../user/user_profile.py:202
+msgid "Administrator:"
+msgstr "Administrateur:"
+
+#: ../user/user_profile.py:211
+msgid "Commands:"
+msgstr "Commandes:"
+
+#: ../user/user_profile.py:220
+msgid "Password:"
+msgstr "Mot de Passe:"
+
+#: ../user/user_profile.py:265
+msgid "user"
+msgstr "utilisateur"
+
+#: ../user/user_profile.py:268
+msgid "administrator"
+msgstr "administrateur"
+
+#: ../user/user_profile.py:270
+msgid "power"
+msgstr "pouvoir"
+
+#: ../user/user_profile.py:286 ../user/user_profile.py:308
+msgid "Notes:"
+msgstr "Notes:"
+
+#: ../user/user_profile.py:291
+msgid "Alias:"
+msgstr "Alias:"
+
+#: ../user/user_profile.py:299
+msgid "Token:"
+msgstr "Jeton:"
+
+#: ../user/user_profile.py:316
+msgid "Type enter to validate your notes."
+msgstr "Tapez entrée pour valider vos notes."
+
+#: ../user/user_profile.py:326
+msgid "Edit your notes."
+msgstr "Éditez vos notes."
+
+#: ../user/user_profile.py:362
+msgid "Your password has been updated !"
+msgstr "Votre mot de passe a été mis à jour !"
+
+#: ../user/user_profile.py:365 ../user/user_profile.py:388
+#: ../user/user_profile.py:561
+msgid "Backend PATCH failed, please check your logs !"
+msgstr "Le PATCH sur le Backend a échoué, vérifiez vos journeaux de logs"
+
+#: ../user/user_profile.py:385
+#, python-format
+msgid "The notes for the %s have been edited."
+msgstr "Les notes pour %s ont été éditées."
+
+#: ../user/user_profile.py:429
+msgid "Hosts notifications configurations"
+msgstr "Configurations des notifications pour les hôtes"
+
+#: ../user/user_profile.py:433 ../user/user_profile.py:488
+msgid "State:"
+msgstr "État:"
+
+#: ../user/user_profile.py:443 ../user/user_profile.py:499
+msgid "Notification enabled:"
+msgstr "Notification activée:"
+
+#: ../user/user_profile.py:452 ../user/user_profile.py:508
+msgid "Notification period:"
+msgstr "Période de notification:"
+
+#: ../user/user_profile.py:459 ../user/user_profile.py:515
+msgid "Options:"
+msgstr "Options:"
+
+#: ../user/user_profile.py:484
+msgid "Services notifications configurations"
+msgstr "Configurations des notifications pour les services"
+
+#: ../user/user_profile.py:555
+#, python-format
+msgid "Notifications for %ss are %s"
+msgstr "Les notifications pour %s sont %s"
+
 #: ../widgets/about.py:67
 #, python-format
 msgid "About %s"
@@ -534,8 +658,12 @@ msgid "Server Configuration"
 msgstr "Configuration du Serveur"
 
 #: ../widgets/login.py:249
-msgid "<h3>Alignak Backend</h3><p>Here you can define alignak settings.</p><b>Be sure to enter a valid address</b>"
-msgstr "<h3>Backend d'Alignak</h3><p>ici vous pouvez définir les paramètres d'alignak.</p><b>Assurez-vous d'entrer une adresse valide</b>"
+msgid ""
+"<h3>Alignak Backend</h3><p>Here you can define alignak settings.</p><b>Be "
+"sure to enter a valid address</b>"
+msgstr ""
+"<h3>Backend d'Alignak</h3><p>ici vous pouvez définir les paramètres "
+"d'alignak.</p><b>Assurez-vous d'entrer une adresse valide</b>"
 
 #: ../widgets/login.py:257
 msgid "Server"
@@ -603,7 +731,8 @@ msgstr "Tous les démons sont disponibles à nouveau."
 #: ../widgets/status.py:226
 #, python-format
 msgid "Arbiter daemons are DOWN ! %d on %d daemons are down."
-msgstr "Les démons Arbiter sont INDISPONIBLE ! %d sur %d démons sont indisponibles !"
+msgstr ""
+"Les démons Arbiter sont INDISPONIBLE ! %d sur %d démons sont indisponibles !"
 
 #: ../widgets/status.py:231
 msgid "Arbiter daemons are down !"
@@ -616,11 +745,13 @@ msgstr "Le Backend d'Alignak semble injoignable ! %s"
 
 #: ../app.py:136
 msgid "Connection with the Backend has been restored ! You are logged in again"
-msgstr "La connexion avec le Backend a été restaurée ! Vous êtes connecté à nouveau"
+msgstr ""
+"La connexion avec le Backend a été restaurée ! Vous êtes connecté à nouveau"
 
 #: ../app.py:143
 msgid "Backend is still unreachable... Alignak-app is trying to connect"
-msgstr "Le Backend est toujours inaccessible ... Alignak-app tente de se connecter"
+msgstr ""
+"Le Backend est toujours inaccessible ... Alignak-app tente de se connecter"
 
 #: ../app.py:176
 #, python-format
@@ -632,5 +763,10 @@ msgid "Configuration / Connection ERROR"
 msgstr "Configuration / Connexion ERREUR"
 
 #: ../app.py:222
-msgid "Something seems wrong in your configuration. Please configure Alignak-app before starting it. And make sure the backend is available"
-msgstr "Quelque chose semble incorrect dans votre configuration. Configurez l'application Alignak-app avant de la démarrer. Et assurez-vous que le backend soit joignable."
+msgid ""
+"Something seems wrong in your configuration. Please configure Alignak-app "
+"before starting it. And make sure the backend is available"
+msgstr ""
+"Quelque chose semble incorrect dans votre configuration. Configurez "
+"l'application Alignak-app avant de la démarrer. Et assurez-vous que le "
+"backend soit joignable."

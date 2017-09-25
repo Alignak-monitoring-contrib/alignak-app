@@ -70,7 +70,7 @@ class UserProfile(QWidget):
 
         # Initialize AppQWidget
         self.app_widget = AppQWidget()
-        self.app_widget.initialize('User View')
+        self.app_widget.initialize(_('User View'))
         self.app_widget.add_widget(self)
 
         # first creation of QWidget
@@ -142,11 +142,11 @@ class UserProfile(QWidget):
         main_layout = QGridLayout()
         main_user_widget.setLayout(main_layout)
 
-        main_title = QLabel('Main informations:')
+        main_title = QLabel(_('Main informations:'))
         main_title.setObjectName("usertitle")
         main_layout.addWidget(main_title, 0, 0, 1, 2)
 
-        rights_title = QLabel('Rights:')
+        rights_title = QLabel(_('Rights:'))
         rights_title.setObjectName("usertitle")
         main_layout.addWidget(rights_title, 0, 2, 1, 2)
 
@@ -167,19 +167,19 @@ class UserProfile(QWidget):
         info_layout = QGridLayout()
         information_widget.setLayout(info_layout)
 
-        realm_title = QLabel('Realm:')
+        realm_title = QLabel(_('Realm:'))
         realm_title.setObjectName("usersubtitle")
         info_layout.addWidget(realm_title, 0, 0, 1, 1)
         realm_data = QLabel(self.get_realm_name())
         info_layout.addWidget(realm_data, 0, 1, 1, 1)
 
-        role_title = QLabel('Role:')
+        role_title = QLabel(_('Role:'))
         role_title.setObjectName("usersubtitle")
         info_layout.addWidget(role_title, 1, 0, 1, 1)
         role_data = QLabel(self.get_role().capitalize())
         info_layout.addWidget(role_data, 1, 1, 1, 1)
 
-        mail_title = QLabel('Email:')
+        mail_title = QLabel(_('Email:'))
         mail_title.setObjectName("usersubtitle")
         info_layout.addWidget(mail_title, 2, 0, 1, 1)
         mail_data = QLabel(self.user['email'])
@@ -199,7 +199,7 @@ class UserProfile(QWidget):
         rights_layout = QGridLayout()
         rights_widget.setLayout(rights_layout)
 
-        admin_title = QLabel('Administrator:')
+        admin_title = QLabel(_('Administrator:'))
         admin_title.setObjectName("usersubtitle")
         admin_title.setMinimumHeight(32)
         rights_layout.addWidget(admin_title, 1, 0, 1, 1)
@@ -208,7 +208,7 @@ class UserProfile(QWidget):
         )
         rights_layout.addWidget(admin_data, 1, 1, 1, 1)
 
-        command_title = QLabel('Commands:')
+        command_title = QLabel(_('Commands:'))
         command_title.setObjectName("usersubtitle")
         command_title.setMinimumHeight(32)
         rights_layout.addWidget(command_title, 2, 0, 1, 1)
@@ -217,7 +217,7 @@ class UserProfile(QWidget):
         )
         rights_layout.addWidget(command_data, 2, 1, 1, 1)
 
-        password_title = QLabel('Password:')
+        password_title = QLabel(_('Password:'))
         password_title.setObjectName("usersubtitle")
         rights_layout.addWidget(password_title, 3, 0, 1, 1)
         self.password_btn = QPushButton()
@@ -262,12 +262,12 @@ class UserProfile(QWidget):
         :rtype: str
         """
 
-        role = 'user'
+        role = _('user')
 
         if self.user['is_admin'] or self.user['back_role_super_admin']:
-            role = 'administrator'
+            role = _('administrator')
         if self.user['can_submit_commands'] and not self.user['is_admin']:
-            role = 'power'
+            role = _('power')
 
         return role
 
@@ -283,12 +283,12 @@ class UserProfile(QWidget):
         notes_layout = QGridLayout()
         notes_widget.setLayout(notes_layout)
 
-        main_notes_title = QLabel('Notes:')
+        main_notes_title = QLabel(_('Notes:'))
         main_notes_title.setObjectName("usertitle")
         notes_layout.addWidget(main_notes_title, 0, 0, 1, 3)
 
         # Alias
-        alias_title = QLabel('Alias:')
+        alias_title = QLabel(_('Alias:'))
         alias_title.setObjectName("usersubtitle")
         notes_layout.addWidget(alias_title, 1, 0, 1, 1)
         alias_data = QLabel(self.user['alias'])
@@ -296,7 +296,7 @@ class UserProfile(QWidget):
 
         # Token only for administrators
         if self.user['is_admin']:
-            token_title = QLabel('Token:')
+            token_title = QLabel(_('Token:'))
             token_title.setObjectName("usersubtitle")
             notes_layout.addWidget(token_title, 2, 0, 1, 2)
             token_data = QLabel(self.user['token'])
@@ -305,7 +305,7 @@ class UserProfile(QWidget):
             notes_layout.addWidget(token_data, 2, 1, 1, 1)
 
         # Notes
-        notes_title = QLabel('Notes:')
+        notes_title = QLabel(_('Notes:'))
         notes_title.setObjectName("usersubtitle")
         notes_layout.addWidget(notes_title, 3, 0, 1, 1)
 
@@ -313,6 +313,7 @@ class UserProfile(QWidget):
         self.notes_edit = QLineEdit()
         self.notes_edit.hide()
         self.notes_edit.editingFinished.connect(self.patch_notes)
+        self.notes_edit.setToolTip(_('Type enter to validate your notes.'))
         notes_layout.addWidget(self.notes_edit, 4, 1, 1, 1)
 
         # Create QLabel for notes
@@ -322,7 +323,7 @@ class UserProfile(QWidget):
         # Edit button for notes
         self.notes_btn = QPushButton()
         self.notes_btn.setIcon(QIcon(get_image_path('edit')))
-        self.notes_btn.setToolTip("Click to edit your notes.")
+        self.notes_btn.setToolTip(_("Edit your notes."))
         self.notes_btn.setObjectName("notes")
         self.notes_btn.setFixedSize(32, 32)
         self.notes_btn.clicked.connect(self.button_clicked)
@@ -350,7 +351,6 @@ class UserProfile(QWidget):
 
             if pass_dialog.exec_() == QDialog.Accepted:
                 new_password = pass_dialog.pass_edit.text()
-                print('password edition %s' % new_password)
 
                 data = {'password': str(new_password)}
                 headers = {'If-Match': self.user['_etag']}
@@ -359,10 +359,10 @@ class UserProfile(QWidget):
                 patched = self.app_backend.patch(endpoint, data, headers)
 
                 if patched:
-                    message = "Your password has been updated !"
+                    message = _("Your password has been updated !")
                     send_banner('OK', message, duration=10000)
                 else:
-                    send_banner('ERROR', "Backend PATCH failed, please check your logs !")
+                    send_banner('ERROR', _("Backend PATCH failed, please check your logs !"))
         else:
             logger.error("Wrong sender in UserProfile.")
 
@@ -382,10 +382,10 @@ class UserProfile(QWidget):
 
             if patched:
                 name = self.user['alias'] if self.user['alias'] else self.user['name']
-                message = "The notes for the %s have been edited." % name
+                message = _("The notes for the %s have been edited.") % name
                 send_banner('OK', message, duration=10000)
             else:
-                send_banner('ERROR', "Backend PATCH failed, please check your logs !")
+                send_banner('ERROR', _("Backend PATCH failed, please check your logs !"))
 
             self.update_profile.emit()
         else:
@@ -426,11 +426,11 @@ class UserProfile(QWidget):
         host_notif_layout = QGridLayout()
         host_notif_widget.setLayout(host_notif_layout)
 
-        notif_title = QLabel("Hosts notifications configurations")
+        notif_title = QLabel(_("Hosts notifications configurations"))
         notif_title.setObjectName("usertitle")
         host_notif_layout.addWidget(notif_title, 0, 0, 1, 2)
 
-        state_title = QLabel("State:")
+        state_title = QLabel(_("State:"))
         state_title.setObjectName("usersubtitle")
         host_notif_layout.addWidget(state_title, 1, 0, 1, 1)
         self.host_notif_state = QCheckBox()
@@ -440,7 +440,7 @@ class UserProfile(QWidget):
         self.host_notif_state.setFixedSize(18, 18)
         host_notif_layout.addWidget(self.host_notif_state, 1, 1, 1, 1)
 
-        enable_title = QLabel("Notification enabled:")
+        enable_title = QLabel(_("Notification enabled:"))
         enable_title.setMinimumHeight(32)
         enable_title.setObjectName("usersubtitle")
         host_notif_layout.addWidget(enable_title, 2, 0, 1, 1)
@@ -449,14 +449,14 @@ class UserProfile(QWidget):
         )
         host_notif_layout.addWidget(enable_icon, 2, 1, 1, 1)
 
-        period_title = QLabel("Notification period:")
+        period_title = QLabel(_("Notification period:"))
         period_title.setObjectName("usersubtitle")
         host_notif_layout.addWidget(period_title, 3, 0, 1, 1)
         period = self.get_period_name(self.user['host_notification_period'])
         period_data = QLabel(period.capitalize())
         host_notif_layout.addWidget(period_data, 3, 1, 1, 1)
 
-        option_title = QLabel("Options:")
+        option_title = QLabel(_("Options:"))
         option_title.setObjectName("usersubtitle")
         host_notif_layout.addWidget(option_title, 4, 0, 1, 2)
         host_notif_layout.setAlignment(option_title, Qt.AlignCenter)
@@ -481,11 +481,11 @@ class UserProfile(QWidget):
         service_notif_layout = QGridLayout()
         service_notif_widget.setLayout(service_notif_layout)
 
-        notif_title = QLabel("Services notifications configurations")
+        notif_title = QLabel(_("Services notifications configurations"))
         notif_title.setObjectName("usertitle")
         service_notif_layout.addWidget(notif_title, 0, 0, 1, 2)
 
-        state_title = QLabel("State:")
+        state_title = QLabel(_("State:"))
         state_title.setObjectName("usersubtitle")
         service_notif_layout.addWidget(state_title, 1, 0, 1, 1)
         self.service_notif_state = QCheckBox()
@@ -496,7 +496,7 @@ class UserProfile(QWidget):
         self.service_notif_state.setFixedSize(18, 18)
         service_notif_layout.addWidget(self.service_notif_state, 1, 1, 1, 1)
 
-        enable_title = QLabel("Notification enabled:")
+        enable_title = QLabel(_("Notification enabled:"))
         enable_title.setObjectName("usersubtitle")
         enable_title.setMinimumHeight(32)
         service_notif_layout.addWidget(enable_title, 2, 0, 1, 1)
@@ -505,14 +505,14 @@ class UserProfile(QWidget):
         )
         service_notif_layout.addWidget(enable_data, 2, 1, 1, 1)
 
-        period_title = QLabel("Notification period:")
+        period_title = QLabel(_("Notification period:"))
         period_title.setObjectName("usersubtitle")
         service_notif_layout.addWidget(period_title, 3, 0, 1, 1)
         period = self.get_period_name(self.user['service_notification_period'])
         period_data = QLabel(period.capitalize())
         service_notif_layout.addWidget(period_data, 3, 1, 1, 1)
 
-        option_title = QLabel("Options:")
+        option_title = QLabel(_("Options:"))
         option_title.setObjectName("usersubtitle")
         service_notif_layout.addWidget(option_title, 4, 0, 1, 2)
         service_notif_layout.setAlignment(option_title, Qt.AlignCenter)
@@ -552,13 +552,13 @@ class UserProfile(QWidget):
 
             if patched:
                 enabled = 'enabled' if notification_enabled else 'disabled'
-                message = "Notifications for %ss are %s" % (
+                message = _("Notifications for %ss are %s") % (
                     check_btn.objectName().replace('actions', ''),
                     enabled
                 )
                 send_banner('OK', message, duration=10000)
             else:
-                send_banner('ERROR', "Backend PATCH failed, please check your logs !")
+                send_banner('ERROR', _("Backend PATCH failed, please check your logs !"))
 
         self.update_profile.emit()
 

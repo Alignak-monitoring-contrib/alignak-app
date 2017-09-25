@@ -57,7 +57,7 @@ class ServiceListWidgetItem(QListWidgetItem):
             service['aggregation'] = 'Global'
 
         self.setText(
-            '%s is %s' % (
+            _('%s is %s') % (
                 self.get_service_name(service).capitalize(),
                 service['ls_state'],
             )

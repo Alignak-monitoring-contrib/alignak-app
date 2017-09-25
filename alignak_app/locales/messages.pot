@@ -1,17 +1,16 @@
-# Translations template for alignak_app.
-# Copyright (c) 2017: Matthieu Estrada
-# This file is distributed under the same license as the alignak_app
-# project.
-# FIRST AUTHOR <ttamalfor@gmail.com>, 2017.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: alignak_app\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-25 14:57+0200\n"
-"PO-Revision-Date: 2017-09-25 15:57+0200\n"
-"Last-Translator: Matthieu Estrada <ttamalfor@gmail.com>\n"
+"POT-Creation-Date: 2017-09-25 17:08+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -283,6 +282,12 @@ msgstr ""
 msgid "<b>Importance:</b>"
 msgstr ""
 
+#: ../synthesis/service_widget_item.py:60
+#: ../synthesis/service_widget_item.py:116
+#, python-format
+msgid "%s is %s"
+msgstr ""
+
 #: ../synthesis/service_widget_item.py:101
 #, python-format
 msgid "%s is %s and acknowledged !"
@@ -296,11 +301,6 @@ msgstr ""
 #: ../synthesis/service_widget_item.py:111
 #, python-format
 msgid "%s is %s acknowledged. A downtimed is scheduled !"
-msgstr ""
-
-#: ../synthesis/service_widget_item.py:116
-#, python-format
-msgid "%s is %s"
 msgstr ""
 
 #: ../synthesis/synthesis.py:82
@@ -455,6 +455,117 @@ msgstr ""
 
 #: ../systray/tray_icon.py:492
 msgid "Configuration reloaded"
+msgstr ""
+
+#: ../user/user_profile.py:73
+msgid "User View"
+msgstr ""
+
+#: ../user/user_profile.py:145
+msgid "Main informations:"
+msgstr ""
+
+#: ../user/user_profile.py:149
+msgid "Rights:"
+msgstr ""
+
+#: ../user/user_profile.py:170
+msgid "Realm:"
+msgstr ""
+
+#: ../user/user_profile.py:176
+msgid "Role:"
+msgstr ""
+
+#: ../user/user_profile.py:182
+msgid "Email:"
+msgstr ""
+
+#: ../user/user_profile.py:202
+msgid "Administrator:"
+msgstr ""
+
+#: ../user/user_profile.py:211
+msgid "Commands:"
+msgstr ""
+
+#: ../user/user_profile.py:220
+msgid "Password:"
+msgstr ""
+
+#: ../user/user_profile.py:265
+msgid "user"
+msgstr ""
+
+#: ../user/user_profile.py:268
+msgid "administrator"
+msgstr ""
+
+#: ../user/user_profile.py:270
+msgid "power"
+msgstr ""
+
+#: ../user/user_profile.py:286 ../user/user_profile.py:308
+msgid "Notes:"
+msgstr ""
+
+#: ../user/user_profile.py:291
+msgid "Alias:"
+msgstr ""
+
+#: ../user/user_profile.py:299
+msgid "Token:"
+msgstr ""
+
+#: ../user/user_profile.py:316
+msgid "Type enter to validate your notes."
+msgstr ""
+
+#: ../user/user_profile.py:326
+msgid "Edit your notes."
+msgstr ""
+
+#: ../user/user_profile.py:362
+msgid "Your password has been updated !"
+msgstr ""
+
+#: ../user/user_profile.py:365 ../user/user_profile.py:388
+#: ../user/user_profile.py:561
+msgid "Backend PATCH failed, please check your logs !"
+msgstr ""
+
+#: ../user/user_profile.py:385
+#, python-format
+msgid "The notes for the %s have been edited."
+msgstr ""
+
+#: ../user/user_profile.py:429
+msgid "Hosts notifications configurations"
+msgstr ""
+
+#: ../user/user_profile.py:433 ../user/user_profile.py:488
+msgid "State:"
+msgstr ""
+
+#: ../user/user_profile.py:443 ../user/user_profile.py:499
+msgid "Notification enabled:"
+msgstr ""
+
+#: ../user/user_profile.py:452 ../user/user_profile.py:508
+msgid "Notification period:"
+msgstr ""
+
+#: ../user/user_profile.py:459 ../user/user_profile.py:515
+msgid "Options:"
+msgstr ""
+
+#: ../user/user_profile.py:484
+msgid "Services notifications configurations"
+msgstr ""
+
+#: ../user/user_profile.py:555
+#, python-format
+msgid "Notifications for %ss are %s"
 msgstr ""
 
 #: ../widgets/about.py:67
