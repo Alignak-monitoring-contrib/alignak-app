@@ -95,7 +95,6 @@ class Synthesis(QWidget):
 
         self.app_widget.initialize(_('Host Synthesis View'))
         self.app_widget.add_widget(self)
-        self.app_widget.setMinimumSize(1300, 750)
 
         refresh_interval = int(get_app_config('Alignak-App', 'item_interval'))
         if bool(refresh_interval) and refresh_interval > 0:
