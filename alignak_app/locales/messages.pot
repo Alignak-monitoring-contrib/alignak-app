@@ -1,0 +1,629 @@
+# Translations template for alignak_app.
+# Copyright (c) 2017: Matthieu Estrada
+# This file is distributed under the same license as the alignak_app
+# project.
+# FIRST AUTHOR <ttamalfor@gmail.com>, 2017.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: alignak_app\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-09-25 14:57+0200\n"
+"PO-Revision-Date: 2017-09-25 15:57+0200\n"
+"Last-Translator: Matthieu Estrada <ttamalfor@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../core/utils.py:298
+msgid "Very soon"
+msgstr ""
+
+#: ../core/utils.py:300
+msgid "Just now"
+msgstr ""
+
+#: ../dashboard/app_dashboard.py:86 ../systray/tray_icon.py:109
+msgid "Dashboard"
+msgstr ""
+
+#: ../dashboard/dashboard_factory.py:82
+msgid "See in WebUI ?"
+msgstr ""
+
+#: ../synthesis/actions.py:98
+msgid "Request an Acknowledge"
+msgstr ""
+
+#: ../synthesis/actions.py:131
+msgid "<h2>Request an acknowledge</h2>"
+msgstr ""
+
+#: ../synthesis/actions.py:137
+msgid "Acknowledge is sticky:"
+msgstr ""
+
+#: ../synthesis/actions.py:149
+msgid ""
+"If checked, the acknowledge will remain until the element returns to an \"OK"
+"\" state."
+msgstr ""
+
+#: ../synthesis/actions.py:156
+msgid "Acknowledge notifies:"
+msgstr ""
+
+#: ../synthesis/actions.py:167
+msgid "If checked, a notification will be sent out to the concerned contacts."
+msgstr ""
+
+#: ../synthesis/actions.py:172
+msgid "Acknowledge comment:"
+msgstr ""
+
+#: ../synthesis/actions.py:181
+msgid "REQUEST ACKNOWLEDGE"
+msgstr ""
+
+#: ../synthesis/actions.py:215
+msgid "Request a Downtime"
+msgstr ""
+
+#: ../synthesis/actions.py:250
+msgid "<h2>Request a downtime</h2>"
+msgstr ""
+
+#: ../synthesis/actions.py:256
+msgid "Downtime options:"
+msgstr ""
+
+#: ../synthesis/actions.py:266
+msgid "Fixed"
+msgstr ""
+
+#: ../synthesis/actions.py:272
+msgid ""
+"If checked, downtime will start and end at the times specified by the “start "
+"time” and “end time” fields."
+msgstr ""
+
+#: ../synthesis/actions.py:279
+msgid "Duration"
+msgstr ""
+
+#: ../synthesis/actions.py:294
+msgid "Sets the duration if it is a non-fixed downtime."
+msgstr ""
+
+#: ../synthesis/actions.py:298
+msgid "Downtime date range"
+msgstr ""
+
+#: ../synthesis/actions.py:308
+msgid "Start time:"
+msgstr ""
+
+#: ../synthesis/actions.py:316
+msgid "End time:"
+msgstr ""
+
+#: ../synthesis/actions.py:328
+msgid "REQUEST DOWNTIME"
+msgstr ""
+
+#: ../synthesis/history.py:64
+#, python-format
+msgid "History of %s"
+msgstr ""
+
+#: ../synthesis/history.py:79
+#, python-format
+msgid "The last 25 events for %s"
+msgstr ""
+
+#: ../synthesis/history.py:88
+msgid "Refresh history"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:85
+msgid "<b>No services defined for this host.</b>"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:132
+#, python-format
+msgid "Host is %s. See in WebUI ?"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:145
+msgid "Host real state, excluding services"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:168
+#, python-format
+msgid "<b>Since:</b> %s <b>Last check:</b> %s"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:182 ../synthesis/service.py:127
+#, python-format
+msgid "<b>Output:</b> [%s] %s"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:189
+#, python-format
+msgid "<b>Address:</b> %s"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:227
+#, python-format
+msgid "History for %s is not available ! Please retry later."
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:247
+msgid "Acknowledge this host"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:263
+msgid "Schedule a downtime for this host"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:381
+msgid "States / Filters"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:552
+#, python-format
+msgid "%s %s acknowledged by %s, from Alignak-app"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:621
+#, python-format
+msgid "Schedule downtime by %s, from Alignak-app"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:687
+#, python-format
+msgid "%s for %s is processed..."
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:698 ../synthesis/host_synthesis.py:708
+#, python-format
+msgid "%s for %s is done !"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:744
+#, python-format
+msgid "Host is %s and acknowledged !"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:746
+#, python-format
+msgid "Host is %s and downtimed !"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:749
+#, python-format
+msgid "Host is %s and acknowledged ! A downtime is scheduled !"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:752
+#, python-format
+msgid "Host is %s"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:787
+msgid "Host and its services are ok"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:788
+msgid "Host and its services are ok or acknowledged"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:789
+msgid "Host and its services are ok or downtimed"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:790
+msgid "Host or some of its services are warning or unknown"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:791
+msgid "Host or some of its services are critical !"
+msgstr ""
+
+#: ../synthesis/host_synthesis.py:796
+msgid "No services found for this host."
+msgstr ""
+
+#: ../synthesis/service.py:96
+#, python-format
+msgid "Service is %s. See in WebUI ?"
+msgstr ""
+
+#: ../synthesis/service.py:107
+msgid "Acknowledge this service"
+msgstr ""
+
+#: ../synthesis/service.py:113
+msgid "Schedule a downtime for this service"
+msgstr ""
+
+#: ../synthesis/service.py:121
+#, python-format
+msgid "<b>Since:</b> %s, <b>Last check:</b> %s"
+msgstr ""
+
+#: ../synthesis/service.py:158
+#, python-format
+msgid "<b>Description:</b> %s"
+msgstr ""
+
+#: ../synthesis/service.py:165
+#, python-format
+msgid "<b>Impact:</b> %s"
+msgstr ""
+
+#: ../synthesis/service.py:173
+#, python-format
+msgid "<b>Fix actions:</b> %s"
+msgstr ""
+
+#: ../synthesis/service.py:182
+msgid "<i>No customs actions defined for this service</i>"
+msgstr ""
+
+#: ../synthesis/service.py:207
+#, python-format
+msgid "Service is %s"
+msgstr ""
+
+#: ../synthesis/service.py:227
+msgid "<b>Importance:</b>"
+msgstr ""
+
+#: ../synthesis/service_widget_item.py:101
+#, python-format
+msgid "%s is %s and acknowledged !"
+msgstr ""
+
+#: ../synthesis/service_widget_item.py:106
+#, python-format
+msgid "%s is %s and downtimed !"
+msgstr ""
+
+#: ../synthesis/service_widget_item.py:111
+#, python-format
+msgid "%s is %s acknowledged. A downtimed is scheduled !"
+msgstr ""
+
+#: ../synthesis/service_widget_item.py:116
+#, python-format
+msgid "%s is %s"
+msgstr ""
+
+#: ../synthesis/synthesis.py:82
+msgid "Search / Refresh Host"
+msgstr ""
+
+#: ../synthesis/synthesis.py:85
+msgid "Search Host"
+msgstr ""
+
+#: ../synthesis/synthesis.py:96 ../systray/tray_icon.py:255
+msgid "Host Synthesis View"
+msgstr ""
+
+#: ../synthesis/synthesis.py:144 ../synthesis/synthesis.py:145
+msgid "Type a host name to display its data"
+msgstr ""
+
+#: ../systray/tray_icon.py:129
+msgid "Hosts UP, Wait..."
+msgstr ""
+
+#: ../systray/tray_icon.py:135
+msgid "Hosts UNREACHABLE, Wait..."
+msgstr ""
+
+#: ../systray/tray_icon.py:141
+msgid "Hosts DOWN, Wait..."
+msgstr ""
+
+#: ../systray/tray_icon.py:149
+msgid "Hosts ACKNOWLEDGE, Wait..."
+msgstr ""
+
+#: ../systray/tray_icon.py:155
+msgid "Hosts DOWNTIME, Wait..."
+msgstr ""
+
+#: ../systray/tray_icon.py:185
+msgid "Services OK, Wait..."
+msgstr ""
+
+#: ../systray/tray_icon.py:191
+msgid "Services WARNING, Wait..."
+msgstr ""
+
+#: ../systray/tray_icon.py:197
+msgid "Services CRITICAL, Wait..."
+msgstr ""
+
+#: ../systray/tray_icon.py:203
+msgid "Services UNKNOWN, Wait..."
+msgstr ""
+
+#: ../systray/tray_icon.py:209
+msgid "Services UNREACHABLE, Wait..."
+msgstr ""
+
+#: ../systray/tray_icon.py:217
+msgid "Services ACKNOWLEDGE, Wait..."
+msgstr ""
+
+#: ../systray/tray_icon.py:223
+msgid "Services DOWNTIME, Wait..."
+msgstr ""
+
+#: ../systray/tray_icon.py:280 ../widgets/status.py:60 ../widgets/status.py:106
+msgid "Alignak Status"
+msgstr ""
+
+#: ../systray/tray_icon.py:302
+msgid "View my profile"
+msgstr ""
+
+#: ../systray/tray_icon.py:319
+msgid "Reload Configuration"
+msgstr ""
+
+#: ../systray/tray_icon.py:340 ../widgets/about.py:45
+msgid "About"
+msgstr ""
+
+#: ../systray/tray_icon.py:404
+#, python-format
+msgid "Hosts (%s)"
+msgstr ""
+
+#: ../systray/tray_icon.py:414
+#, python-format
+msgid "Services (%s)"
+msgstr ""
+
+#: ../systray/tray_icon.py:417
+#, python-format
+msgid "Hosts UP (%s)"
+msgstr ""
+
+#: ../systray/tray_icon.py:419
+#, python-format
+msgid "Hosts DOWN (%s)"
+msgstr ""
+
+#: ../systray/tray_icon.py:421
+#, python-format
+msgid "Hosts UNREACHABLE (%s)"
+msgstr ""
+
+#: ../systray/tray_icon.py:423
+#, python-format
+msgid "Hosts ACKNOWLEDGE (%s)"
+msgstr ""
+
+#: ../systray/tray_icon.py:425
+#, python-format
+msgid "Hosts DOWNTIME (%s)"
+msgstr ""
+
+#: ../systray/tray_icon.py:428
+#, python-format
+msgid "Services OK (%s)"
+msgstr ""
+
+#: ../systray/tray_icon.py:430
+#, python-format
+msgid "Services CRITICAL (%s)"
+msgstr ""
+
+#: ../systray/tray_icon.py:432
+#, python-format
+msgid "Services WARNING (%s)"
+msgstr ""
+
+#: ../systray/tray_icon.py:434
+#, python-format
+msgid "Services UNKNOWN (%s)"
+msgstr ""
+
+#: ../systray/tray_icon.py:436
+#, python-format
+msgid "Services UNREACHABLE (%s)"
+msgstr ""
+
+#: ../systray/tray_icon.py:438
+#, python-format
+msgid "Services ACKNOWLEDGE (%s)"
+msgstr ""
+
+#: ../systray/tray_icon.py:440
+#, python-format
+msgid "Services DOWNTIME (%s)"
+msgstr ""
+
+#: ../systray/tray_icon.py:492
+msgid "Configuration reloaded"
+msgstr ""
+
+#: ../widgets/about.py:67
+#, python-format
+msgid "About %s"
+msgstr ""
+
+#: ../widgets/about.py:94
+#, python-format
+msgid ""
+"\n"
+"            <h4>Application version</h4>\n"
+"            %s, version: %s\n"
+"            <h4>Copyright</h4>\n"
+"            %s\n"
+"            <h4>Home page</h4>\n"
+"            <p><a href=\"%s\">%s</a></p>\n"
+"            <h4>User documentation</h4>\n"
+"            <p><a href=\"%s\">%s</a></p>\n"
+"            <h4>Release notes</h4>\n"
+"            %s\n"
+"            <h4>About Alignak Solution</h4>\n"
+"            <p><a href=\"%s\">%s</a></p>\n"
+"            "
+msgstr ""
+
+#: ../widgets/login.py:84
+msgid "Welcome to <b>Alignak-app</b>"
+msgstr ""
+
+#: ../widgets/login.py:91
+#, python-format
+msgid "Version %s"
+msgstr ""
+
+#: ../widgets/login.py:106
+msgid "Reload configuration"
+msgstr ""
+
+#: ../widgets/login.py:114
+msgid "Modify Alignak Server"
+msgstr ""
+
+#: ../widgets/login.py:118
+msgid "<b>Log-in</b> to use the application"
+msgstr ""
+
+#: ../widgets/login.py:124
+msgid "Username"
+msgstr ""
+
+#: ../widgets/login.py:129
+msgid "Password"
+msgstr ""
+
+#: ../widgets/login.py:134
+msgid "LOGIN"
+msgstr ""
+
+#: ../widgets/login.py:223
+msgid "Backend connection refused..."
+msgstr ""
+
+#: ../widgets/login.py:233
+msgid "Server Configuration"
+msgstr ""
+
+#: ../widgets/login.py:249
+msgid ""
+"<h3>Alignak Backend</h3><p>Here you can define alignak settings.</p><b>Be "
+"sure to enter a valid address</b>"
+msgstr ""
+
+#: ../widgets/login.py:257
+msgid "Server"
+msgstr ""
+
+#: ../widgets/login.py:260
+msgid "alignak backend url"
+msgstr ""
+
+#: ../widgets/login.py:265
+msgid "Port"
+msgstr ""
+
+#: ../widgets/login.py:268
+msgid "alignak backend port"
+msgstr ""
+
+#: ../widgets/login.py:274
+msgid "Processes"
+msgstr ""
+
+#: ../widgets/login.py:279
+msgid "alignak backend processes"
+msgstr ""
+
+#: ../widgets/login.py:285
+msgid "Valid"
+msgstr ""
+
+#: ../widgets/status.py:85 ../widgets/status.py:203 ../widgets/status.py:207
+msgid "All daemons are alive."
+msgstr ""
+
+#: ../widgets/status.py:116
+msgid "(Hover your mouse over each daemon to learn more)"
+msgstr ""
+
+#: ../widgets/status.py:121
+msgid "<b>Daemons Types</b> "
+msgstr ""
+
+#: ../widgets/status.py:122
+msgid "<b>Status</b>"
+msgstr ""
+
+#: ../widgets/status.py:172
+#, python-format
+msgid "<p>%s is not alive</p>"
+msgstr ""
+
+#: ../widgets/status.py:181 ../widgets/status.py:184
+#, python-format
+msgid "All %ss are alive "
+msgstr ""
+
+#: ../widgets/status.py:210 ../widgets/status.py:221
+#, python-format
+msgid "%d on %d daemons are down !"
+msgstr ""
+
+#: ../widgets/status.py:217
+msgid "All daemons are alive again."
+msgstr ""
+
+#: ../widgets/status.py:226
+#, python-format
+msgid "Arbiter daemons are DOWN ! %d on %d daemons are down."
+msgstr ""
+
+#: ../widgets/status.py:231
+msgid "Arbiter daemons are down !"
+msgstr ""
+
+#: ../app.py:123
+#, python-format
+msgid "Alignak Backend seems unreachable ! %s"
+msgstr ""
+
+#: ../app.py:136
+msgid "Connection with the Backend has been restored ! You are logged in again"
+msgstr ""
+
+#: ../app.py:143
+msgid "Backend is still unreachable... Alignak-app is trying to connect"
+msgstr ""
+
+#: ../app.py:176
+#, python-format
+msgid "Welcome %s, you are connected to Alignak Backend"
+msgstr ""
+
+#: ../app.py:220
+msgid "Configuration / Connection ERROR"
+msgstr ""
+
+#: ../app.py:222
+msgid ""
+"Something seems wrong in your configuration. Please configure Alignak-app "
+"before starting it. And make sure the backend is available"
+msgstr ""
