@@ -2,3 +2,4 @@ pyqt5
 configparser
 future
 alignak_backend_client
+python-gettext
