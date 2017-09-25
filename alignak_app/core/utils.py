@@ -32,6 +32,7 @@ from logging import getLogger
 import configparser
 from configparser import NoOptionError, NoSectionError, DuplicateOptionError, DuplicateSectionError
 from datetime import datetime
+
 from alignak_app import __project_url__
 
 logger = getLogger(__name__)

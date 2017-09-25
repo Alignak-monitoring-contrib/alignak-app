@@ -30,6 +30,7 @@ from alignak_app.core.logs import create_logger
 from alignak_app.core.notifier import AppNotifier
 from alignak_app.core.utils import get_image_path, get_main_folder, get_app_workdir
 from alignak_app.core.utils import init_config, get_app_config
+from alignak_app.core.locales import init_localization
 from alignak_app.systray.tray_icon import TrayIcon
 from alignak_app.widgets.login import AppLogin
 from alignak_app.widgets.banner import bannerManager, send_banner
@@ -40,9 +41,10 @@ from PyQt5.QtWidgets import QDialog, QMessageBox  # pylint: disable=no-name-in-m
 from PyQt5.Qt import QIcon, QTimer  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QObject, pyqtSignal  # pylint: disable=no-name-in-module
 
-# Initialize logger and config
+# Initialize app config, logger and localization
 init_config()
 logger = create_logger()
+init_localization()
 
 
 class AlignakApp(QObject):
