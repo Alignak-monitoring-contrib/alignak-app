@@ -82,7 +82,7 @@ class HostSynthesis(QWidget):
             if backend_data['services']:
                 main_layout.addWidget(self.get_services_widget(backend_data))
             else:
-                nothing = QLabel('<b>No services defined for this host.</b>')
+                nothing = QLabel(_('<b>No services defined for this host.</b>'))
                 nothing.setFixedHeight(400)
                 main_layout.addWidget(nothing)
                 main_layout.setAlignment(nothing, Qt.AlignHCenter)
@@ -129,7 +129,7 @@ class HostSynthesis(QWidget):
         host_name.setTextInteractionFlags(Qt.TextBrowserInteraction)
         host_name.setOpenExternalLinks(True)
         host_name.setObjectName('hostname')
-        host_name.setToolTip('Host is %s. See in WebUI ?' % backend_data['host']['ls_state'])
+        host_name.setToolTip(_('Host is %s. See in WebUI ?') % backend_data['host']['ls_state'])
         host_layout.addWidget(host_name, 2, 0, 1, 1)
         host_layout.setAlignment(host_name, Qt.AlignCenter)
 
@@ -142,7 +142,7 @@ class HostSynthesis(QWidget):
         host_layout.addWidget(host_real_state, 3, 0, 1, 1)
         host_layout.setAlignment(host_real_state, Qt.AlignCenter)
 
-        real_state = QLabel('Host real state, excluding services')
+        real_state = QLabel(_('Host real state, excluding services'))
         host_layout.addWidget(real_state, 4, 0, 1, 1)
         host_layout.setAlignment(real_state, Qt.AlignCenter)
 
@@ -152,7 +152,6 @@ class HostSynthesis(QWidget):
 
         return host_widget
 
-    # @staticmethod
     def create_host_details(self, host_layout, backend_data):
         """
         Create QLabels for host details
@@ -166,7 +165,7 @@ class HostSynthesis(QWidget):
         since_last_check = get_diff_since_last_check(backend_data['host']['ls_last_state_changed'])
         diff_last_check = get_diff_since_last_check(backend_data['host']['ls_last_check'])
         host_last_check = QLabel(
-            '<b>Since:</b> %s <b>Last check:</b> %s' % (since_last_check, diff_last_check)
+            _('<b>Since:</b> %s <b>Last check:</b> %s') % (since_last_check, diff_last_check)
         )
         host_layout.addWidget(host_last_check, 0, 2, 1, 2)
 
@@ -180,14 +179,14 @@ class HostSynthesis(QWidget):
 
         date_output = get_date_from_timestamp(backend_data['host']['ls_last_check'])
         output = QTextEdit(
-            '<b>Output:</b> [%s] %s' % (date_output, backend_data['host']['ls_output'])
+            _('<b>Output:</b> [%s] %s') % (date_output, backend_data['host']['ls_output'])
         )
         output.setObjectName('output')
         output.setTextInteractionFlags(Qt.TextSelectableByMouse)
         output.setFont(QFont('Times', 13))
         host_layout.addWidget(output, 1, 2, 1, 1)
 
-        address = QLabel('<b>Address:</b> %s' % backend_data['host']['address'])
+        address = QLabel(_('<b>Address:</b> %s') % backend_data['host']['address'])
         host_layout.addWidget(address, 2, 2, 1, 1)
 
         stars_widget = Service.get_stars_widget(
@@ -225,7 +224,7 @@ class HostSynthesis(QWidget):
             # If there is no history, send a message
             send_banner(
                 'WARN',
-                'History for %s is not available ! Please retry later.' % self.host['name']
+                _('History for %s is not available ! Please retry later.') % self.host['name']
             )
 
     def create_buttons(self, host_layout, backend_data):
@@ -245,7 +244,7 @@ class HostSynthesis(QWidget):
         )
         acknowledge_btn.setIcon(QIcon(get_image_path('hosts_acknowledge')))
         acknowledge_btn.setFixedSize(32, 32)
-        acknowledge_btn.setToolTip('Acknowledge this host')
+        acknowledge_btn.setToolTip(_('Acknowledge this host'))
         acknowledge_btn.clicked.connect(self.add_acknowledge)
         if 'UP' in backend_data['host']['ls_state'] or \
                 backend_data['host']['ls_acknowledged'] or \
@@ -261,7 +260,7 @@ class HostSynthesis(QWidget):
         )
         downtime_btn.setIcon(QIcon(get_image_path('hosts_downtime')))
         downtime_btn.setFixedSize(32, 32)
-        downtime_btn.setToolTip('Schedule a downtime for this host')
+        downtime_btn.setToolTip(_('Schedule a downtime for this host'))
         downtime_btn.clicked.connect(self.add_downtime)
 
         # If host is already downtimed or action is in progress or user can't submit command,
@@ -379,7 +378,7 @@ class HostSynthesis(QWidget):
         # Filters title
         if row == 0:
             row = 1
-        filter_title = QLabel('States / Filters')
+        filter_title = QLabel(_('States / Filters'))
         services_layout.addWidget(filter_title, 0, 0, row, 1)
         services_layout.setAlignment(filter_title, Qt.AlignCenter | Qt.AlignBottom)
 
@@ -550,7 +549,7 @@ class HostSynthesis(QWidget):
 
             user = self.app_backend.get_user(projection=['_id', 'name'])
 
-            comment = '%s %s acknowledged by %s, from Alignak-app' % (
+            comment = _('%s %s acknowledged by %s, from Alignak-app') % (
                 item_type.capitalize(),
                 item_name,
                 user['name']
@@ -619,7 +618,7 @@ class HostSynthesis(QWidget):
 
             user = self.app_backend.get_user(projection=['_id', 'name'])
 
-            comment = 'Schedule downtime by %s, from Alignak-app' % user['name']
+            comment = _('Schedule downtime by %s, from Alignak-app') % user['name']
 
             downtime_dialog = Downtime()
             downtime_dialog.initialize(item_type, item_name, comment)
@@ -683,7 +682,10 @@ class HostSynthesis(QWidget):
                     requested_action = item['post']['_links']['self']['title'].replace(
                         'Action', '')
                     action_title = requested_action.capitalize()
-                    send_banner('INFO', '%s for %s is processed...' % (action_title, item['name']))
+                    send_banner(
+                        'INFO',
+                        _('%s for %s is processed...') % (action_title, item['name'])
+                    )
 
             # Send ACKs and DOWNTIMEs
             for action in actions:
@@ -693,7 +695,7 @@ class HostSynthesis(QWidget):
                     logger.debug('%s to send: %s', action, items_to_send[action]['hosts'])
                     for item in items_to_send[action]['hosts']:
                         host = self.app_backend.get_host('_id', item['host_id'], ['name'])
-                        send_banner('OK', '%s for %s is done !' % (title, host['name']))
+                        send_banner('OK', _('%s for %s is done !') % (title, host['name']))
                 # For Services
                 if items_to_send[action]['services']:
                     logger.debug('%s to send: %s', action, items_to_send[action]['services'])
@@ -703,7 +705,7 @@ class HostSynthesis(QWidget):
                             item['service_id'],
                             ['name']
                         )
-                        send_banner('OK', '%s for %s is done !' % (title, service['name']))
+                        send_banner('OK', _('%s for %s is done !') % (title, service['name']))
 
     @staticmethod
     def get_host_icon(host):
@@ -739,13 +741,15 @@ class HostSynthesis(QWidget):
         """
 
         if host['ls_acknowledged'] and not host['ls_downtimed']:
-            tooltip = 'Host is %s and acknowledged !' % host['ls_state']
+            tooltip = _('Host is %s and acknowledged !') % host['ls_state']
         elif host['ls_downtimed'] and not host['ls_acknowledged']:
-            tooltip = 'Host is %s and downtimed !' % host['ls_state']
+            tooltip = _('Host is %s and downtimed !') % host['ls_state']
         elif host['ls_acknowledged'] and host['ls_downtimed']:
-            tooltip = 'Host is %s and acknowledged ! A downtime is scheduled !' % host['ls_state']
+            tooltip = _(
+                'Host is %s and acknowledged ! A downtime is scheduled !'
+            ) % host['ls_state']
         else:
-            tooltip = 'Host is %s' % host['ls_state']
+            tooltip = _('Host is %s') % host['ls_state']
 
         return tooltip
 
@@ -780,16 +784,16 @@ class HostSynthesis(QWidget):
 
         if services:
             overall_texts = [
-                'Host and its services are ok',
-                'Host and its services are ok or acknowledged',
-                'Host and its services are ok or downtimed',
-                'Host or some of its services are warning or unknown',
-                'Host or some of its services are critical !',
+                _('Host and its services are ok'),
+                _('Host and its services are ok or acknowledged'),
+                _('Host and its services are ok or downtimed'),
+                _('Host or some of its services are warning or unknown'),
+                _('Host or some of its services are critical !'),
             ]
 
             text_result = self.get_result_overall_state_id(overall_texts, services)
         else:
-            text_result = 'No services found for this host.'
+            text_result = _('No services found for this host.')
 
         return text_result
 

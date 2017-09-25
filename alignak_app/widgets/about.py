@@ -42,7 +42,7 @@ class AppAbout(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
         # General settings
-        self.setToolTip('About')
+        self.setToolTip(_('About'))
         # Fields
         self.setStyleSheet(get_css())
         self.app_widget = AppQWidget()
@@ -64,7 +64,7 @@ class AppAbout(QWidget):
         self.setLayout(layout)
 
         # Add to AppQWidget
-        self.app_widget.initialize('About %s' % __application__)
+        self.app_widget.initialize(_('About %s') % __application__)
         self.app_widget.add_widget(self)
         self.app_widget.setMinimumSize(400, 400)
 
@@ -91,7 +91,7 @@ class AppAbout(QWidget):
         )
 
         about_text = \
-            """
+            _("""
             <h4>Application version</h4>
             %s, version: %s
             <h4>Copyright</h4>
@@ -104,7 +104,7 @@ class AppAbout(QWidget):
             %s
             <h4>About Alignak Solution</h4>
             <p><a href="%s">%s</a></p>
-            """ % text_replacement
+            """) % text_replacement
 
         return about_text
 

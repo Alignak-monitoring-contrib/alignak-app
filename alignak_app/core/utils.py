@@ -295,9 +295,9 @@ def get_diff_since_last_check(last_check):  # pragma: no cover - not testable
     # If it's now, say it :)
     if time_delta < 3:
         if 0 > time_delta > -4:
-            return 'Very soon'
+            return _('Very soon')
         if time_delta >= 0:
-            return 'Just now'
+            return _('Just now')
 
     seconds = int(round(time_delta))
     minutes, seconds = divmod(seconds, 60)

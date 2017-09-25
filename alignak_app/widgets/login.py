@@ -79,14 +79,16 @@ class AppLogin(QDialog):
 
         main_layout.addWidget(self.get_logo_widget(self))
 
+        # _ = init_localization()
         title = QLabel(
-            'Welcome to <b>Alignak-app</b>'
+            _('Welcome to <b>Alignak-app</b>')
         )
+        title.setWordWrap(True)
         title.setObjectName('title_login')
         main_layout.addWidget(title)
         main_layout.setAlignment(title, Qt.AlignCenter)
 
-        version = QLabel('Version %s' % __version__)
+        version = QLabel(_('Version %s') % __version__)
         version.setObjectName('version_login')
         main_layout.addWidget(version)
         main_layout.setAlignment(version, Qt.AlignCenter | Qt.AlignTop)
@@ -101,7 +103,7 @@ class AppLogin(QDialog):
         refresh_conf_btn.clicked.connect(init_config)
         refresh_conf_btn.setFixedSize(25, 25)
         refresh_conf_btn.setIcon(QIcon(get_image_path('refresh')))
-        refresh_conf_btn.setToolTip('Reload configuration')
+        refresh_conf_btn.setToolTip(_('Reload configuration'))
         login_layout.addWidget(refresh_conf_btn, 2, 1, 1, 1)
 
         # Server button
@@ -109,27 +111,27 @@ class AppLogin(QDialog):
         server_btn.clicked.connect(self.handle_server)
         server_btn.setFixedSize(25, 25)
         server_btn.setIcon(QIcon(get_image_path('host')))
-        server_btn.setToolTip('Modify Alignak Server')
+        server_btn.setToolTip(_('Modify Alignak Server'))
         login_layout.addWidget(server_btn, 2, 2, 1, 1)
 
         # Welcome text
-        login_label = QLabel('<b>Log-in</b> to use the application')
+        login_label = QLabel(_('<b>Log-in</b> to use the application'))
         login_layout.addWidget(login_label, 2, 0, 1, 1)
         login_layout.setAlignment(login_label, Qt.AlignCenter)
 
         # Username field
         self.username_line = QLineEdit(self)
-        self.username_line.setPlaceholderText('Username')
+        self.username_line.setPlaceholderText(_('Username'))
         login_layout.addWidget(self.username_line, 3, 0, 1, 3)
 
         # Password field
         self.password_line = QLineEdit(self)
-        self.password_line.setPlaceholderText('Password')
+        self.password_line.setPlaceholderText(_('Password'))
         self.password_line.setEchoMode(QLineEdit.Password)
         login_layout.addWidget(self.password_line, 4, 0, 1, 3)
 
         # Login button
-        login_button = QPushButton('LOGIN', self)
+        login_button = QPushButton(_('LOGIN'), self)
         login_button.clicked.connect(self.handle_login)
         login_button.setObjectName('valid')
         login_button.setMinimumHeight(30)
@@ -218,7 +220,7 @@ class AppLogin(QDialog):
             self.app_backend.user['token'] = str(self.app_backend.backend.token)
             self.accept()
         else:
-            send_banner('WARN', 'Backend connection refused...', duration=10000)
+            send_banner('WARN', _('Backend connection refused...'), duration=10000)
             logger.warning('Connection informations are not accepted !')
 
     def handle_server(self):  # pragma: no cover - not testable
@@ -228,7 +230,7 @@ class AppLogin(QDialog):
         """
 
         server_dialog = QDialog()
-        server_dialog.setWindowTitle('Server Configuration')
+        server_dialog.setWindowTitle(_('Server Configuration'))
         server_dialog.setWindowFlags(Qt.FramelessWindowHint)
         server_dialog.setStyleSheet(get_css())
         server_dialog.setFixedSize(300, 300)
@@ -243,42 +245,44 @@ class AppLogin(QDialog):
 
         # Description
         desc_label = QLabel(
-            '<h3>Alignak Backend</h3><p>Here you can define alignak settings.</p>'
-            '<b>Be sure to enter a valid address</b>'
+            _(
+                '<h3>Alignak Backend</h3><p>Here you can define alignak settings.</p>'
+                '<b>Be sure to enter a valid address</b>'
+            )
         )
         desc_label.setWordWrap(True)
         server_layout.addWidget(desc_label, 0, 0, 1, 3)
 
         # Server URL
-        server_layout.addWidget(QLabel('Server'), 1, 0, 1, 1)
+        server_layout.addWidget(QLabel(_('Server')), 1, 0, 1, 1)
 
         server_url = QLineEdit()
-        server_url.setPlaceholderText('alignak backend url')
+        server_url.setPlaceholderText(_('alignak backend url'))
         server_url.setText(get_app_config('Alignak', 'url'))
         server_layout.addWidget(server_url, 1, 1, 1, 2)
 
         # Server Port
-        server_layout.addWidget(QLabel('Port'), 2, 0, 1, 1)
+        server_layout.addWidget(QLabel(_('Port')), 2, 0, 1, 1)
 
         server_port = QLineEdit()
-        server_port.setPlaceholderText('alignak backend port')
+        server_port.setPlaceholderText(_('alignak backend port'))
         cur_port = get_app_config('Alignak', 'backend').split(':')[2]
         server_port.setText(cur_port)
         server_layout.addWidget(server_port, 2, 1, 1, 2)
 
         # Server Processes
-        server_layout.addWidget(QLabel('Processes'), 3, 0, 1, 1)
+        server_layout.addWidget(QLabel(_('Processes')), 3, 0, 1, 1)
 
         server_proc = QLineEdit()
         if 'win32' in sys.platform:
             server_proc.setEnabled(False)
-        server_proc.setPlaceholderText('alignak backend processes')
+        server_proc.setPlaceholderText(_('alignak backend processes'))
         cur_proc = get_app_config('Alignak', 'processes')
         server_proc.setText(cur_proc)
         server_layout.addWidget(server_proc, 3, 1, 1, 2)
 
         # Valid Button
-        valid_btn = QPushButton('Valid')
+        valid_btn = QPushButton(_('Valid'))
         valid_btn.clicked.connect(server_dialog.accept)
         server_layout.addWidget(valid_btn, 4, 0, 1, 3)
 

@@ -79,7 +79,7 @@ class DashboardFactory(QWidget):
         # WebUI Button
         button = QPushButton()
         button.setIcon(QIcon(get_image_path('eye')))
-        button.setToolTip("See in WebUI ?")
+        button.setToolTip(_("See in WebUI ?"))
         button.setObjectName(self.define_label(state_name))
         button.setMaximumSize(20, 20)
         button.released.connect(self.open_url)
@@ -259,39 +259,6 @@ class DashboardFactory(QWidget):
 
         return percentages
 
-    # @staticmethod
-    # def get_url_keyword(name):
-    #     """
-    #     Return state keyword for url.
-    #
-    #     :param name: name of state
-    #     :type name: str
-    #     :return: keyword for URL filtering
-    #     :rtype: str
-    #     """
-    #
-    #     key_model = {
-    #         "hosts_up": "UP",
-    #         "hosts_down": "DOWN",
-    #         "hosts_unreachable": "UNREACHABLE",
-    #         "hosts_acknowledge": "ACKNOWLEDGED",
-    #         "hosts_downtime": "DOWNTIMED",
-    #         "services_ok": "OK",
-    #         "services_warning": "WARNING",
-    #         "services_critical": "CRITICAL",
-    #         "services_unknown": "UNKNOWN",
-    #         "services_unreachable": "UNREACHABLE",
-    #         "services_acknowledge": "ACKNOWLEDGED",
-    #         "services_downtime": "DOWNTIMED",
-    #     }
-    #
-    #     try:
-    #         return key_model[name]
-    #     except KeyError as e:
-    #         logger.error('Bad label state name for url keyword: %s', name)
-    #         logger.error(str(e))
-    #         return 'Unknow field'
-
     @staticmethod
     def define_label(name):
         """
@@ -323,4 +290,4 @@ class DashboardFactory(QWidget):
         except KeyError as e:
             logger.error('Bad label state name: %s', name)
             logger.error(str(e))
-            return 'Unknow field'
+            return 'Unknown field'

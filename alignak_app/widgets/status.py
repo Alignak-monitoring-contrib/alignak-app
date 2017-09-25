@@ -57,7 +57,7 @@ class AlignakStatus(QWidget):
         super(AlignakStatus, self).__init__(parent)
         # General settings
         self.setWindowTitle(__application__)
-        self.setToolTip('Alignak Status')
+        self.setToolTip(_('Alignak Status'))
         self.setStyleSheet(get_css())
         # Fields
         self.app_backend = None
@@ -82,7 +82,7 @@ class AlignakStatus(QWidget):
         self.create_daemons_labels(layout)
 
         # Default text and color
-        self.info.setText('All daemons are alive.')
+        self.info.setText(_('All daemons are alive.'))
         self.info.setStyleSheet('color: #27ae60;')
 
         # Update status for first start
@@ -103,7 +103,7 @@ class AlignakStatus(QWidget):
         timer.timeout.connect(self.check_status)
 
         # Use AppQWidget
-        self.app_widget.initialize('Alignak Status')
+        self.app_widget.initialize(_('Alignak Status'))
         self.app_widget.add_widget(self)
         self.app_widget.setMinimumSize(400, 400)
 
@@ -113,13 +113,13 @@ class AlignakStatus(QWidget):
 
         """
 
-        help_txt = QLabel('(Hover your mouse over each daemon to learn more)')
+        help_txt = QLabel(_('(Hover your mouse over each daemon to learn more)'))
         help_txt.setObjectName('help')
         layout.addWidget(help_txt, 0, 0, 1, 2)
         layout.setAlignment(help_txt, Qt.AlignCenter)
 
-        layout.addWidget(QLabel('<b>Daemons Types</b> '), 1, 0, 1, 1)
-        status_title = QLabel('<b>Status</b>')
+        layout.addWidget(QLabel(_('<b>Daemons Types</b> ')), 1, 0, 1, 1)
+        status_title = QLabel(_('<b>Status</b>'))
         status_title.setAlignment(Qt.AlignCenter)
         layout.addWidget(status_title, 1, 1, 1, 1)
 
@@ -169,7 +169,7 @@ class AlignakStatus(QWidget):
                     bad_daemons[daemon['type']] += 1
                     total_bad_daemons += 1
                     daemon_msg[daemon['type']] += \
-                        '<p>%s is not alive</p>' % daemon['name'].capitalize()
+                        _('<p>%s is not alive</p>') % daemon['name'].capitalize()
                     if daemon == self.daemons[3]:
                         arbiter_down = True
 
@@ -178,10 +178,10 @@ class AlignakStatus(QWidget):
                         QPixmap(get_image_path('valid'))
                     )
                     self.daemons_labels[daemon['type']]['icon'].setToolTip(
-                        'All %ss are alive ' % daemon['type']
+                        _('All %ss are alive ') % daemon['type']
                     )
                     self.daemons_labels[daemon['type']]['label'].setToolTip(
-                        'All %ss are alive ' % daemon['type']
+                        _('All %ss are alive ') % daemon['type']
                     )
                 else:
                     self.daemons_labels[daemon['type']]['icon'].setPixmap(
@@ -200,35 +200,35 @@ class AlignakStatus(QWidget):
 
         # Update text
         if not total_bad_daemons:
-            self.info.setText('All daemons are alive.')
+            self.info.setText(_('All daemons are alive.'))
             self.info.setStyleSheet('color: #27ae60;')
             if self.first_start:
                 self.first_start = False
-                send_banner('INFO', 'All daemons are alive.')
+                send_banner('INFO', _('All daemons are alive.'))
             logger.info('All daemons are alive.')
         else:
-            self.info.setText('%d on %d daemons are down !' % (total_bad_daemons, total_daemons))
+            self.info.setText(_('%d on %d daemons are down !') % (total_bad_daemons, total_daemons))
             self.info.setStyleSheet('color: #e74c3c;')
             logger.warning('%d on %d daemons are down !', total_bad_daemons, total_daemons)
 
         # Send Banners if sender is QTimer
         if not isinstance(self.sender(), QAction):
             if not total_bad_daemons and (self.old_bad_daemons != 0):
-                send_banner('OK', 'All daemons are alive again.', duration=60000)
+                send_banner('OK', _('All daemons are alive again.'), duration=60000)
             if total_bad_daemons:
                 send_banner(
                     'WARN',
-                    '%d on %d daemons are down !' % (total_bad_daemons, total_daemons),
+                    _('%d on %d daemons are down !') % (total_bad_daemons, total_daemons),
                     duration=60000
                 )
                 if arbiter_down:
                     self.info.setText(
-                        'Arbiter daemons are DOWN ! %d on %d daemons are down.' % (
+                        _('Arbiter daemons are DOWN ! %d on %d daemons are down.') % (
                             total_bad_daemons, total_daemons
                         )
                     )
                     self.info.setStyleSheet('color: #e74c3c;')
-                    send_banner('ALERT', 'Arbiter daemons are down !', duration=60000)
+                    send_banner('ALERT', _('Arbiter daemons are down !'), duration=60000)
                     logger.critical('Arbiter daemons are down !')
 
         self.old_bad_daemons = total_bad_daemons

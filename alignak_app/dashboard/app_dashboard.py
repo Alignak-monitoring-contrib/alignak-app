@@ -83,7 +83,7 @@ class Dashboard(QWidget):
         self.fill_state_factory()
         self.main_layout.addWidget(self.dashboard_factory, 1)
 
-        self.app_widget.initialize('Dashboard')
+        self.app_widget.initialize(_('Dashboard'))
         self.app_widget.add_widget(self)
 
         self.dashboard_updated.connect(self.update_dashboard)

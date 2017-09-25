@@ -79,10 +79,10 @@ class Synthesis(QWidget):
         self.setLayout(layout)
 
         # button
-        button = QPushButton('Search / Refresh Host', self)
+        button = QPushButton(_('Search / Refresh Host'), self)
         button.setObjectName('search')
         button.setFixedHeight(22)
-        button.setToolTip('Search Host')
+        button.setToolTip(_('Search Host'))
         button.clicked.connect(self.display_host_synthesis)
         layout.addWidget(button, 0, 4, 1, 1)
         layout.setAlignment(button, Qt.AlignTop)
@@ -93,7 +93,7 @@ class Synthesis(QWidget):
         layout.addWidget(self.line_search, 0, 0, 1, 4)
         layout.setAlignment(self.line_search, Qt.AlignTop)
 
-        self.app_widget.initialize('Host Synthesis View')
+        self.app_widget.initialize(_('Host Synthesis View'))
         self.app_widget.add_widget(self)
         self.app_widget.setMinimumSize(1300, 750)
 
@@ -135,15 +135,14 @@ class Synthesis(QWidget):
         model.setStringList(hosts_list)
 
         # Create completer from model
-        # self.completer = QCompleter()
         self.completer.setFilterMode(Qt.MatchContains)
         self.completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.completer.setModel(model)
 
         # Add completer to "line edit"
         self.line_search.setCompleter(self.completer)
-        self.line_search.setPlaceholderText('Type a host name to display its data')
-        self.line_search.setToolTip('Type a host name to display its data')
+        self.line_search.setPlaceholderText(_('Type a host name to display its data'))
+        self.line_search.setToolTip(_('Type a host name to display its data'))
 
     def display_host_synthesis(self):
         """

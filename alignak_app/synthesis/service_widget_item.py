@@ -98,22 +98,22 @@ class ServiceListWidgetItem(QListWidgetItem):
         """
 
         if service['ls_acknowledged'] and not service['ls_downtimed']:
-            tooltip = '%s is %s and acknowledged !' % (
+            tooltip = _('%s is %s and acknowledged !') % (
                 self.get_service_name(service).capitalize(),
                 service['ls_state']
             )
         elif service['ls_downtimed'] and not service['ls_acknowledged']:
-            tooltip = '%s is %s and downtimed !' % (
+            tooltip = _('%s is %s and downtimed !') % (
                 self.get_service_name(service).capitalize(),
                 service['ls_state']
             )
         elif service['ls_acknowledged'] and service['ls_downtimed']:
-            tooltip = '%s is %s acknowledged. A downtimed is scheduled !' % (
+            tooltip = _('%s is %s acknowledged. A downtimed is scheduled !') % (
                 self.get_service_name(service).capitalize(),
                 service['ls_state']
             )
         else:
-            tooltip = '%s is %s' % (
+            tooltip = _('%s is %s') % (
                 self.get_service_name(service).capitalize(),
                 service['ls_state']
             )

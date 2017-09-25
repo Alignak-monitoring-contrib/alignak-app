@@ -47,9 +47,8 @@ def init_localization():
             "../locales/%s.mo" % get_app_config('Config', 'locale')
         )
         logger.info(
-            "Opening message file %s for locale %s" % (
-                lang_filename, get_app_config('Config', 'locale')
-            )
+            "Opening message file %s for locale %s",
+            lang_filename, get_app_config('Config', 'locale')
         )
         translation = GNUTranslations(open(lang_filename, "rb"))
         translation.install()
@@ -60,7 +59,7 @@ def init_localization():
         null_translation.install()
         _ = null_translation.gettext
     except Exception as e:  # pragma: no cover - should not happen
-        logger.error("Locale not found. Exception: %s" % str(e))
+        logger.error("Locale not found. Exception: %s", str(e))
         null_translation = NullTranslations()
         null_translation.install()
         _ = null_translation.gettext

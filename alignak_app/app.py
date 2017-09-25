@@ -120,7 +120,7 @@ class AlignakApp(QObject):
 
         self.reconnect_mode = True
         logger.warning('Application reconnecting MODE: %s', self.reconnecting)
-        send_banner('ERROR', 'Alignak Backend seems unreachable ! %s' % error, duration=5000)
+        send_banner('ERROR', _('Alignak Backend seems unreachable ! %s') % error, duration=5000)
         timer = QTimer(self)
 
         def connect_to_backend():
@@ -133,14 +133,14 @@ class AlignakApp(QObject):
                 logger.info('Connection restored : %s', connect)
                 send_banner(
                     'OK',
-                    'Connection with the Backend has been restored ! You are logged in again',
+                    _('Connection with the Backend has been restored ! You are logged in again'),
                     duration=5000
                 )
                 self.reconnect_mode = False
             except AssertionError:
                 send_banner(
                     'ERROR',
-                    'Backend is still unreachable... Alignak-app is trying to connect',
+                    _('Backend is still unreachable... Alignak-app is trying to connect'),
                     duration=5000
                 )
                 logger.error('Backend is still unreachable...')
@@ -173,7 +173,7 @@ class AlignakApp(QObject):
             # Send Welcome Banner
             send_banner(
                 'OK',
-                'Welcome %s, you are connected to Alignak Backend' % app_backend.user['username']
+                _('Welcome %s, you are connected to Alignak Backend') % app_backend.user['username']
             )
 
             if 'token' not in app_backend.user:
@@ -217,9 +217,11 @@ class AlignakApp(QObject):
 
         QMessageBox.critical(
             None,
-            'Configuration / Connection ERROR',
-            'Something seems wrong in your configuration. '
-            'Please configure Alignak-app before starting it. '
-            'And make sure the backend is available'
+            _('Configuration / Connection ERROR'),
+            _(
+                'Something seems wrong in your configuration. '
+                'Please configure Alignak-app before starting it. '
+                'And make sure the backend is available'
+            )
         )
         sys.exit()

@@ -61,7 +61,7 @@ class History(QWidget):
         :type host_id: str
         """
 
-        self.app_widget.initialize('History of %s' % hostname.capitalize())
+        self.app_widget.initialize(_('History of %s') % hostname.capitalize())
 
         scroll = QScrollArea()
         scroll.setWidget(self)
@@ -76,7 +76,7 @@ class History(QWidget):
         layout = QGridLayout()
         self.setLayout(layout)
 
-        event_desc = QLabel("The last 25 events for %s" % hostname.capitalize())
+        event_desc = QLabel(_("The last 25 events for %s") % hostname.capitalize())
         event_desc.setObjectName("eventdesc")
         layout.addWidget(event_desc, 0, 0, 1, 1)
         layout.setAlignment(event_desc, Qt.AlignCenter)
@@ -85,7 +85,7 @@ class History(QWidget):
         self.refresh_btn.setIcon(QIcon(get_image_path('refresh')))
         self.refresh_btn.setFixedSize(32, 32)
         self.refresh_btn.setObjectName(host_id)
-        self.refresh_btn.setToolTip("Refresh history of %s ?" % hostname.capitalize())
+        self.refresh_btn.setToolTip(_("Refresh history"))
         layout.addWidget(self.refresh_btn, 0, 1, 1, 1)
         layout.setAlignment(self.refresh_btn, Qt.AlignRight)
 

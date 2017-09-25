@@ -95,7 +95,7 @@ class Acknowledge(QDialog):
 
     def __init__(self, parent=None):
         super(Acknowledge, self).__init__(parent)
-        self.setWindowTitle('Request an Acknowledge')
+        self.setWindowTitle(_('Request an Acknowledge'))
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(get_css())
         self.setWindowIcon(QIcon(get_image_path('icon')))
@@ -104,8 +104,9 @@ class Acknowledge(QDialog):
         self.sticky = True
         self.notify = False
         self.ack_comment_edit = None
+        self.offset = None
 
-    def initialize(self, item_type, item_name, comment):
+    def initialize(self, item_type, item_name, comment):  # pylint: disable=too-many-locals
         """
         Initialize Acknowledge QDialog
 
@@ -127,13 +128,13 @@ class Acknowledge(QDialog):
         ack_widget.setObjectName('login')
         ack_layout = QGridLayout(ack_widget)
 
-        ack_title = QLabel('<h2>Request an acknowledge</h2>')
+        ack_title = QLabel(_('<h2>Request an acknowledge</h2>'))
         ack_layout.addWidget(ack_title, 0, 0, 1, 2)
 
         host_label = QLabel('<h2>%s: %s</h2>' % (item_type.capitalize(), item_name))
         ack_layout.addWidget(host_label, 1, 0, 1, 1)
 
-        sticky_label = QLabel('Acknowledge is sticky:')
+        sticky_label = QLabel(_('Acknowledge is sticky:'))
         sticky_label.setObjectName('actions')
         ack_layout.addWidget(sticky_label, 2, 0, 1, 1)
 
@@ -144,13 +145,15 @@ class Acknowledge(QDialog):
         ack_layout.addWidget(sticky_checkbox, 2, 1, 1, 1)
 
         sticky_info = QLabel(
-            'If checked, '
-            'the acknowledge will remain until the element returns to an "OK" state.'
+            _(
+                'If checked, '
+                'the acknowledge will remain until the element returns to an "OK" state.'
+            )
         )
         sticky_info.setWordWrap(True)
         ack_layout.addWidget(sticky_info, 3, 0, 1, 2)
 
-        notify_label = QLabel('Acknowledge notifies:')
+        notify_label = QLabel(_('Acknowledge notifies:'))
         notify_label.setObjectName('actions')
         ack_layout.addWidget(notify_label, 4, 0, 1, 1)
 
@@ -161,12 +164,12 @@ class Acknowledge(QDialog):
         ack_layout.addWidget(notify_checkbox, 4, 1, 1, 1)
 
         notify_info = QLabel(
-            'If checked, a notification will be sent out to the concerned contacts.'
+            _('If checked, a notification will be sent out to the concerned contacts.')
         )
         notify_info.setWordWrap(True)
         ack_layout.addWidget(notify_info, 5, 0, 1, 2)
 
-        ack_comment = QLabel('Acknowledge comment:')
+        ack_comment = QLabel(_('Acknowledge comment:'))
         ack_comment.setObjectName('actions')
         ack_layout.addWidget(ack_comment, 6, 0, 1, 1)
 
@@ -175,7 +178,7 @@ class Acknowledge(QDialog):
         self.ack_comment_edit.setMaximumHeight(60)
         ack_layout.addWidget(self.ack_comment_edit, 7, 0, 1, 2)
 
-        request_btn = QPushButton('REQUEST ACKNOWLEDGE', self)
+        request_btn = QPushButton(_('REQUEST ACKNOWLEDGE'), self)
         request_btn.clicked.connect(self.accept)
         request_btn.setObjectName('valid')
         request_btn.setMinimumHeight(30)
@@ -209,7 +212,7 @@ class Downtime(QDialog):
 
     def __init__(self, parent=None):
         super(Downtime, self).__init__(parent)
-        self.setWindowTitle('Request a Downtime')
+        self.setWindowTitle(_('Request a Downtime'))
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(get_css())
         self.setWindowIcon(QIcon(get_image_path('icon')))
@@ -220,8 +223,9 @@ class Downtime(QDialog):
         self.start_time = QDateTimeEdit()
         self.end_time = QDateTimeEdit()
         self.comment_edit = QTextEdit()
+        self.offset = None
 
-    def initialize(self, item_type, item_name, comment):
+    def initialize(self, item_type, item_name, comment):  # pylint: disable=too-many-locals
         """
         Initialize Downtime QDialog
 
@@ -243,13 +247,13 @@ class Downtime(QDialog):
         downtime_widget.setObjectName('login')
         downtime_layout = QGridLayout(downtime_widget)
 
-        ack_title = QLabel('<h2>Request a downtime</h2>')
+        ack_title = QLabel(_('<h2>Request a downtime</h2>'))
         downtime_layout.addWidget(ack_title, 0, 0, 1, 3)
 
         host_label = QLabel('<h2>%s: %s</h2>' % (item_type.capitalize(), item_name))
         downtime_layout.addWidget(host_label, 1, 0, 1, 1)
 
-        options_label = QLabel('Downtime options:')
+        options_label = QLabel(_('Downtime options:'))
         options_label.setObjectName('actions')
         downtime_layout.addWidget(options_label, 2, 0, 1, 1)
 
@@ -259,18 +263,20 @@ class Downtime(QDialog):
         fixed_checkbox.setFixedSize(18, 18)
         downtime_layout.addWidget(fixed_checkbox, 2, 1, 1, 1)
 
-        fixed_label = QLabel('Fixed')
+        fixed_label = QLabel(_('Fixed'))
         fixed_label.setObjectName('actions')
         downtime_layout.addWidget(fixed_label, 2, 2, 1, 1)
 
         fixed_info = QLabel(
-            'If checked, downtime will start and end at the times specified'
-            ' by the “start time” and “end time” fields.'
+            _(
+                'If checked, downtime will start and end at the times specified'
+                ' by the “start time” and “end time” fields.'
+            )
         )
         fixed_info.setWordWrap(True)
         downtime_layout.addWidget(fixed_info, 3, 0, 1, 3)
 
-        duration_label = QLabel('Duration')
+        duration_label = QLabel(_('Duration'))
         duration_label.setObjectName('actions')
         downtime_layout.addWidget(duration_label, 4, 0, 1, 1)
 
@@ -285,11 +291,11 @@ class Downtime(QDialog):
         downtime_layout.addWidget(self.duration, 4, 2, 1, 1)
 
         duration_info = QLabel(
-            'Sets the duration if it is a non-fixed downtime.'
+            _('Sets the duration if it is a non-fixed downtime.')
         )
         downtime_layout.addWidget(duration_info, 5, 0, 1, 3)
 
-        date_range_label = QLabel('Downtime date range')
+        date_range_label = QLabel(_('Downtime date range'))
         date_range_label.setObjectName('actions')
         downtime_layout.addWidget(date_range_label, 6, 0, 1, 1)
 
@@ -299,7 +305,7 @@ class Downtime(QDialog):
         calendar_label.setScaledContents(True)
         downtime_layout.addWidget(calendar_label, 6, 1, 1, 1)
 
-        start_time_label = QLabel('Start time:')
+        start_time_label = QLabel(_('Start time:'))
         downtime_layout.addWidget(start_time_label, 7, 0, 1, 1)
 
         self.start_time.setCalendarPopup(True)
@@ -307,7 +313,7 @@ class Downtime(QDialog):
         self.start_time.setDisplayFormat("dd/MM/yyyy HH'h'mm")
         downtime_layout.addWidget(self.start_time, 7, 1, 1, 2)
 
-        end_time_label = QLabel('End time:')
+        end_time_label = QLabel(_('End time:'))
         downtime_layout.addWidget(end_time_label, 8, 0, 1, 1)
 
         self.end_time.setCalendarPopup(True)
@@ -319,7 +325,7 @@ class Downtime(QDialog):
         self.comment_edit.setMaximumHeight(60)
         downtime_layout.addWidget(self.comment_edit, 9, 0, 1, 3)
 
-        request_btn = QPushButton('REQUEST DOWNTIME', self)
+        request_btn = QPushButton(_('REQUEST DOWNTIME'), self)
         request_btn.clicked.connect(self.handle_accept)
         request_btn.setObjectName('valid')
         request_btn.setMinimumHeight(30)
@@ -365,37 +371,3 @@ class Downtime(QDialog):
             self.move(x - x_w, y - y_w)
         except AttributeError as e:
             logger.warning('Move Event %s: %s', self.objectName(), str(e))
-
-
-if __name__ == '__main__':  # pylint: disable-all
-    from PyQt5.QtWidgets import QApplication
-    from alignak_app.core.utils import init_config
-    import sys
-
-    app = QApplication(sys.argv)
-    app.setQuitOnLastWindowClosed(False)
-
-    init_config()
-
-    if 0:
-        ack_dialog = Acknowledge()
-        ack_dialog.initialize('host', 'pi2', 'Acknowledge requested by App')
-
-        if ack_dialog.exec_() == ack_dialog.Accepted:
-            print('Ok')
-        else:
-            print('Out')
-    else:
-        downtime_dialog = Downtime()
-        downtime_dialog.initialize('host', 'pi2', 'Downtime requested by App')
-
-        if downtime_dialog.exec_() == downtime_dialog.Accepted:
-            print('Fixed: ', downtime_dialog.fixed)
-            print('Duration: ', downtime_dialog.duration_to_seconds())
-            print('Start Time: ', downtime_dialog.start_time.dateTime().toTime_t())
-            print('End Time: ', downtime_dialog.end_time.dateTime().toTime_t())
-            print('Comment: ', downtime_dialog.comment_edit.toPlainText())
-        else:
-            print('Out')
-
-    sys.exit(app.exec_())
