@@ -233,7 +233,6 @@ class AppLogin(QDialog):
         server_dialog.setWindowTitle(_('Server Configuration'))
         server_dialog.setWindowFlags(Qt.FramelessWindowHint)
         server_dialog.setStyleSheet(get_css())
-        server_dialog.setFixedSize(300, 300)
 
         main_layout = QVBoxLayout(server_dialog)
         main_layout.setContentsMargins(0, 0, 0, 0)
