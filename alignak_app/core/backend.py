@@ -249,7 +249,7 @@ class AppBackend(object):
 
         hosts = self.get('host', params, projection=projection)
 
-        if hosts and len(hosts['_items']) > 0:  # pylint: disable=len-as-condition
+        if hosts and hosts['_items']:
             wanted_host = hosts['_items'][0]
         else:
             wanted_host = None
@@ -281,7 +281,7 @@ class AppBackend(object):
 
         wanted_service = None
         if services:
-            if len(services['_items']) > 0:  # pylint: disable=len-as-condition
+            if services['_items']:  # pylint: disable=len-as-condition
                 wanted_service = services['_items'][0]
             for service in services['_items']:
                 if service['_id'] == service_id:
