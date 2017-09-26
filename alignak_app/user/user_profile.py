@@ -266,7 +266,8 @@ class UserProfile(QWidget):
 
         if self.user['is_admin'] or self.user['back_role_super_admin']:
             role = _('administrator')
-        if self.user['can_submit_commands'] and not self.user['is_admin']:
+        if self.user['can_submit_commands'] and not \
+                self.user['is_admin'] and not self.user['back_role_super_admin']:
             role = _('power')
 
         return role
@@ -650,7 +651,7 @@ class UserProfile(QWidget):
 
             return period['name']
 
-        return ''
+        return 'n/a'
 
     @staticmethod
     def get_enable_label_icon(state):
@@ -667,6 +668,10 @@ class UserProfile(QWidget):
             True: 'checked',
             False: 'error'
         }
+
+        # Should never happen
+        if not isinstance(state, bool):
+            state = False
 
         icon = QPixmap(get_image_path(states[state]))
 
