@@ -28,7 +28,7 @@ from alignak_app.core.backend import AppBackend
 from alignak_app.core.locales import init_localization
 from alignak_app.synthesis.synthesis import Synthesis
 
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication
 
 
 class TestSynthesis(unittest2.TestCase):
@@ -47,7 +47,6 @@ class TestSynthesis(unittest2.TestCase):
         """Create QApplication"""
         try:
             cls.app = QApplication(sys.argv)
-            cls.widget = QWidget()
         except:
             pass
 
