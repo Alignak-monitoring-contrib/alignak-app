@@ -212,7 +212,7 @@ class AlignakStatus(QWidget):
             logger.warning('%d on %d daemons are down !', total_bad_daemons, total_daemons)
 
         # Send Banners if sender is QTimer
-        if not isinstance(self.sender(), QAction):
+        if not isinstance(self.sender(), QAction):  # pragma: no cover
             if not total_bad_daemons and (self.old_bad_daemons != 0):
                 send_banner('OK', _('All daemons are alive again.'), duration=60000)
             if total_bad_daemons:

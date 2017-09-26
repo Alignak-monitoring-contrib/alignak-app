@@ -220,7 +220,7 @@ class AppBackend(object):
                 logger.debug('..with data: %s', str(data))
                 logger.debug('...with headers: %s', str(headers))
                 logger.debug('....Response > %s', str(request['_status']))
-            except BackendException as e:
+            except BackendException as e:  # pragma: no cover
                 logger.error('PATCH failed: %s', str(e))
                 logger.warning('Application checks the connection with the Backend...')
                 self.connected = False

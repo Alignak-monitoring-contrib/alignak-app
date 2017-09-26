@@ -526,7 +526,7 @@ class UserProfile(QWidget):
 
         return service_notif_widget
 
-    def enable_notifications(self):
+    def enable_notifications(self):  # pragma: no cover
         """
         Enable notification for the wanted type: hosts or services
 

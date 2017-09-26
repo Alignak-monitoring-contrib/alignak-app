@@ -124,6 +124,11 @@ class TestDashboard(unittest2.TestCase):
         )
         assert 'Background-color: #e74c3c;' in under_test.styleSheet()
 
+        # Control Label
+        label_test = under_test.dashboard_factory.define_label('test')
+
+        self.assertEqual(label_test, 'Unknown field')
+
     def test_get_style_sheet(self):
         """Get Style Sheet according to States"""
 

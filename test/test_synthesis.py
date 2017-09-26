@@ -88,3 +88,12 @@ class TestSynthesis(unittest2.TestCase):
 
         self.assertIsNotNone(under_test.host_synthesis)
         self.assertFalse(under_test.update_line_edit)
+
+        # Assert new HostSynthesis is create each time "update_synthesis_view" is called
+        old_synthesis = under_test.host_synthesis
+
+        under_test.update_synthesis_view('denice')
+
+        new_synthesis = under_test.host_synthesis
+
+        self.assertNotEqual(new_synthesis, old_synthesis)

@@ -178,3 +178,33 @@ class TestAppBackend(unittest2.TestCase):
             self.assertTrue('service_name' in event)
             self.assertTrue('message' in event)
             self.assertTrue('type' in event)
+
+    def test_patch(self):
+        """PATCH User Notes"""
+
+        under_test = AppBackend()
+        under_test.login()
+
+        users = under_test.get('user')
+        user = users['_items'][0]
+        notes = 'Unit Test from Alignak-app'
+
+        data = {'notes': notes}
+        headers = {'If-Match': user['_etag']}
+        endpoint = '/'.join(['user', user['_id']])
+
+        patched = under_test.patch(endpoint, data, headers)
+
+        self.assertTrue(patched)
+        user_modified = under_test.get('/'.join(['user', user['_id']]))
+
+        self.assertEqual(user_modified['notes'], notes)
+
+        back_patched = under_test.patch(endpoint, data={'notes': ''}, headers=headers)
+
+        self.assertTrue(back_patched)
+        user_modified = under_test.get('/'.join(['user', user['_id']]))
+
+        self.assertNotEqual(user_modified['notes'], notes)
+        self.assertEqual(user_modified['notes'], '')
+

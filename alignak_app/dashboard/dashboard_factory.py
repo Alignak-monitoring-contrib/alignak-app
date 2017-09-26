@@ -242,7 +242,7 @@ class DashboardFactory(QWidget):
             for state in synthesis['services']:
                 percentages['services'][state] = \
                     float(synthesis['services'][state]) * 100.0 / float(services_sum)
-        except ZeroDivisionError as e:
+        except ZeroDivisionError as e:  # pragma: no cover
             logger.error(str(e))
 
         # Fill percentages if not filled before
