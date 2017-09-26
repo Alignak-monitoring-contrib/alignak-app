@@ -281,7 +281,7 @@ class AppBackend(object):
 
         wanted_service = None
         if services:
-            if services['_items']:  # pylint: disable=len-as-condition
+            if services['_items']:
                 wanted_service = services['_items'][0]
             for service in services['_items']:
                 if service['_id'] == service_id:
