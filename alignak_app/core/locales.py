@@ -49,8 +49,9 @@ def init_localization():
                 "../locales/%s.mo" % get_app_config('Config', 'locale')
             )
         else:
-            lang_filename = get_main_folder() + \
-                "\locales\%s.mo" % get_app_config('Config', 'locale')
+            lang_filename = get_main_folder() + "\\locales\\%s.mo" % get_app_config(
+                'Config', 'locale'
+            )
         logger.info(
             "Opening message file %s for locale %s",
             lang_filename, get_app_config('Config', 'locale')
