@@ -205,7 +205,7 @@ class Synthesis(QWidget):
                 try:
                     self.host_synthesis.check_boxes[key].setChecked(checked)
                 except KeyError as e:
-                    logger.warning('Can\'t reapply filter [%s]: %s', e, checked)
+                    logger.debug('Can\'t reapply filter [%s]: %s', e, checked)
         if old_history_widget:
             self.host_synthesis.history_widget = old_history_widget
 
