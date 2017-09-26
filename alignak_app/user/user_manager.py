@@ -48,7 +48,7 @@ class UserManager(object):
         logger.info("Create UserProfile")
 
         old_pos = None
-        if self.user_widget:
+        if self.user_widget:  # pragma: no cover
             logger.debug("Delete old UserProfile")
             if self.user_widget.app_widget:
                 old_pos = self.user_widget.app_widget.pos()
