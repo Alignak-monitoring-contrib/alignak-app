@@ -24,11 +24,12 @@
 """
 
 import os
+import sys
 
 from logging import getLogger
 from gettext import GNUTranslations, NullTranslations
 
-from alignak_app.core.utils import get_app_config
+from alignak_app.core.utils import get_app_config, get_main_folder
 
 logger = getLogger(__name__)
 
@@ -42,10 +43,14 @@ def init_localization():
     """
     try:
         # Language message file
-        lang_filename = os.path.join(
-            os.path.abspath(os.path.dirname(__file__)),
-            "../locales/%s.mo" % get_app_config('Config', 'locale')
-        )
+        if 'win32' not in sys.platform:
+            lang_filename = os.path.join(
+                os.path.abspath(os.path.dirname(__file__)),
+                "../locales/%s.mo" % get_app_config('Config', 'locale')
+            )
+        else:
+            lang_filename = get_main_folder() + \
+                "\locales\%s.mo" % get_app_config('Config', 'locale')
         logger.info(
             "Opening message file %s for locale %s",
             lang_filename, get_app_config('Config', 'locale')
