@@ -23,6 +23,7 @@
     Notifier manage notifications and collect data from app_backend.
 """
 
+import sys
 import copy
 import locale
 import datetime
@@ -195,7 +196,7 @@ class AppNotifier(object):
         """
 
         # Backend use time format in "en_US", so switch if needed
-        if "en_US" not in locale.getlocale(locale.LC_TIME):
+        if "en_US" not in locale.getlocale(locale.LC_TIME) and 'win32' not in sys.platform:
             locale.setlocale(locale.LC_TIME, "en_US.utf-8")
             logger.warning("App set locale to %s ", locale.getlocale(locale.LC_TIME))
 
@@ -254,7 +255,7 @@ class AppNotifier(object):
                         message = "%s [%s]: %s - %s" % (host, state, output, local_time)
 
                     send_banner(state, message)
-                    logger.info("Send history notification: [%s] - %s", state, message)
+                    logger.info("Send history notification: [%s] - %s", state, str(message))
 
         if notifications:
             self.old_notifications = notifications['_items']
