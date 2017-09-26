@@ -25,6 +25,7 @@ import unittest2
 
 from alignak_app.core.utils import init_config
 from alignak_app.core.backend import AppBackend
+from alignak_app.core.locales import init_localization
 from alignak_app.synthesis.synthesis import Synthesis
 
 from PyQt5.QtWidgets import QApplication, QWidget
@@ -36,6 +37,7 @@ class TestSynthesis(unittest2.TestCase):
     """
 
     init_config()
+    init_localization()
 
     app_backend = AppBackend()
     app_backend.login()
@@ -77,6 +79,13 @@ class TestSynthesis(unittest2.TestCase):
         self.assertTrue(under_test.update_line_edit)
 
         under_test.display_host_synthesis()
+
+        # Assert "update_line_edit" is False
+        self.assertIsNone(under_test.host_synthesis)
+        self.assertFalse(under_test.update_line_edit)
+
+        # Update Synthesis view to create HostSynthesis and make "update_line_edit" True
+        under_test.update_synthesis_view('denice')
 
         self.assertIsNotNone(under_test.host_synthesis)
         self.assertFalse(under_test.update_line_edit)

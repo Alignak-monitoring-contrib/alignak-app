@@ -160,47 +160,56 @@ class Synthesis(QWidget):
                 self.update_line_edit = False
 
             host_name = str(self.line_search.text()).rstrip()
-            backend_data = None
-            old_row = -1
-            old_history_widget = None
-
             if host_name:
-                backend_data = self.app_backend.get_host_with_services(host_name)
+                self.update_synthesis_view(host_name)
 
-            # Store old data, remove and delete host_synthesis
-            if self.host_synthesis:  # pragma: no cover
-                # Store old data
-                if self.host_synthesis.history_widget:
-                    old_history_widget = self.host_synthesis.history_widget
-                if self.host_synthesis.services_list:
-                    old_row = self.host_synthesis.services_list.currentRow()
-                if self.host_synthesis.check_boxes:
-                    for key in self.host_synthesis.check_boxes:
-                        self.old_checkbox_states[key] = \
-                            self.host_synthesis.check_boxes[key].isChecked()
+    def update_synthesis_view(self, host_name):
+        """
+        Update the HostSynthesis QWidget
 
-                # Remove and delete QWidget
-                self.layout().removeWidget(self.host_synthesis)
-                self.host_synthesis.deleteLater()
-                self.host_synthesis = None
+        :param host_name: name of host to search
+        :type host_name: str
+        """
 
-            # Create the new host_synthesis
-            self.host_synthesis = HostSynthesis(self.action_manager)
-            self.host_synthesis.initialize(backend_data)
+        old_row = -1
+        old_history_widget = None
 
-            # Restore old data
-            if old_row >= 0 and self.host_synthesis.services_list:
-                self.host_synthesis.services_list.setCurrentRow(old_row)
-            if self.old_checkbox_states and self.host_synthesis.check_boxes:  # pragma: no cover
-                for key, checked in self.old_checkbox_states.items():
-                    try:
-                        self.host_synthesis.check_boxes[key].setChecked(checked)
-                    except KeyError as e:
-                        logger.warning('Can\'t reapply filter [%s]: %s', e, checked)
-            if old_history_widget:
-                self.host_synthesis.history_widget = old_history_widget
+        backend_data = self.app_backend.get_host_with_services(host_name)
 
-            self.layout().addWidget(self.host_synthesis, 1, 0, 1, 5)
+        # Store old data, remove and delete host_synthesis
+        if self.host_synthesis:
+            # Store old data
+            if self.host_synthesis.history_widget:
+                old_history_widget = self.host_synthesis.history_widget
+            if self.host_synthesis.services_list:
+                old_row = self.host_synthesis.services_list.currentRow()
+            if self.host_synthesis.check_boxes:
+                for key in self.host_synthesis.check_boxes:
+                    self.old_checkbox_states[key] = \
+                        self.host_synthesis.check_boxes[key].isChecked()
+
+            # Remove and delete QWidget
+            self.layout().removeWidget(self.host_synthesis)
+            self.host_synthesis.deleteLater()
+            self.host_synthesis = None
+
+        # Create the new host_synthesis
+        self.host_synthesis = HostSynthesis(self.action_manager)
+        self.host_synthesis.initialize(backend_data)
+
+        # Restore old data
+        if old_row >= 0 and self.host_synthesis.services_list:
+            self.host_synthesis.services_list.setCurrentRow(old_row)
+        if self.old_checkbox_states and self.host_synthesis.check_boxes:  # pragma: no cover
+            for key, checked in self.old_checkbox_states.items():
+                try:
+                    self.host_synthesis.check_boxes[key].setChecked(checked)
+                except KeyError as e:
+                    logger.warning('Can\'t reapply filter [%s]: %s', e, checked)
+        if old_history_widget:
+            self.host_synthesis.history_widget = old_history_widget
+
+        self.layout().addWidget(self.host_synthesis, 1, 0, 1, 5)
 
     def showEvent(self, _):
         """ QDialog.showEvent(QShowEvent) """
