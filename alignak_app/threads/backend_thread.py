@@ -30,7 +30,7 @@ from PyQt5.Qt import QThread, pyqtSignal  # pylint: disable=no-name-in-module
 from alignak_app.core.data_manager import DataManager
 
 
-class BackendThread(QThread):
+class BackendQThread(QThread):
     """
         Class who create a QThread to trigger requests
     """
@@ -38,7 +38,7 @@ class BackendThread(QThread):
     trigger = pyqtSignal(DataManager)
 
     def __init__(self, app_backend, parent=None):
-        super(BackendThread, self).__init__(parent)
+        super(BackendQThread, self).__init__(parent)
         self.app_backend = app_backend
         self.data_manager = DataManager()
         self.requests_models = None

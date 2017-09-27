@@ -32,7 +32,7 @@ from alignak_app.core.backend import AppBackend
 from alignak_app.core.data_manager import DataManager
 from alignak_app.core.locales import init_localization
 from alignak_app.core.utils import init_config
-from alignak_app.threads.backend_thread import BackendThread
+from alignak_app.threads.backend_thread import BackendQThread
 
 init_config()
 init_localization()
@@ -48,7 +48,7 @@ class ThreadManager(QObject):
         super(ThreadManager, self).__init__(parent)
         self.app_backend = AppBackend()
         self.app_backend.login()
-        self.backend_thread = BackendThread(self.app_backend, parent=self)
+        self.backend_thread = BackendQThread(self.app_backend, parent=self)
 
     def start(self):
         """
