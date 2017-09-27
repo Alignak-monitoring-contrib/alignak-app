@@ -112,7 +112,7 @@ class AppBackend(object):
 
         return self.connected
 
-    def get(self, endpoint, params=None, projection=None):
+    def get(self, endpoint, params=None, projection=None, all_items=False):
         """
         GET on alignak Backend REST API.
 
@@ -122,6 +122,8 @@ class AppBackend(object):
         :type params: dict|None
         :param projection: list of field to get, if None, get all
         :type projection: list|None
+        :param all_items: make GET on all items
+        :type all_items: bool
         :return desired request of app_backend
         :rtype: dict
         """
@@ -139,10 +141,16 @@ class AppBackend(object):
         if self.connected:
             # Request
             try:
-                request = self.backend.get(
-                    endpoint,
-                    params
-                )
+                if not all_items:
+                    request = self.backend.get(
+                        endpoint,
+                        params
+                    )
+                else:
+                    request = self.backend.get_all(
+                        endpoint,
+                        params
+                    )
                 logger.debug('GET: %s', endpoint)
                 logger.debug('..with params: %s', str(params))
                 logger.debug('...Response > %s', str(request['_status']))
