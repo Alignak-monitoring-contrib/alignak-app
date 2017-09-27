@@ -44,8 +44,8 @@ class TestDataManager(unittest2.TestCase):
 
         under_test = DataManager()
 
-        self.assertTrue('hosts' in under_test.database)
-        self.assertTrue('services' in under_test.database)
+        self.assertTrue('host' in under_test.database)
+        self.assertTrue('service' in under_test.database)
 
     def test_update_database(self):
         """Update DataManager Database"""
@@ -55,10 +55,10 @@ class TestDataManager(unittest2.TestCase):
         data_test = backend_test.get('host', params=self.params, projection=self.host_projection)
 
         under_test = DataManager()
-        under_test.update_item_type('hosts', data_test['_items'])
+        under_test.update_item_type('host', data_test['_items'])
 
         for d in data_test['_items']:
-            self.assertTrue(d['_id'] in under_test.database['hosts'])
+            self.assertTrue(d['_id'] in under_test.database['host'])
 
     def test_get_item(self):
         """Get Item in DataManager"""
@@ -68,9 +68,9 @@ class TestDataManager(unittest2.TestCase):
         data_test = backend_test.get('host', params=self.params, projection=self.host_projection)
 
         under_test = DataManager()
-        under_test.update_item_type('hosts', data_test['_items'])
+        under_test.update_item_type('host', data_test['_items'])
 
         for d in data_test['_items']:
-            wanted_item = under_test.get_item('hosts', d['_id'])
+            wanted_item = under_test.get_item('host', d['_id'])
             self.assertEqual(d, wanted_item)
 

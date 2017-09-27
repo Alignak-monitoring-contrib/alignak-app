@@ -23,8 +23,10 @@
     BackendManager manage backend data and threads
 """
 
+import sys
 
-from PyQt5.Qt import QTimer, QObject
+from PyQt5.Qt import QApplication  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QTimer, QObject  # pylint: disable=no-name-in-module
 
 from alignak_app.core.backend import AppBackend
 from alignak_app.core.data_manager import DataManager
@@ -36,14 +38,14 @@ init_config()
 init_localization()
 
 
-class BackendManager(QObject):
+class ThreadManager(QObject):
     """
         Class who create QThreads to periodically request on Alignak Backend
         Store also data received by requests.
     """
 
     def __init__(self, parent=None):
-        super(BackendManager, self).__init__(parent)
+        super(ThreadManager, self).__init__(parent)
         self.app_backend = AppBackend()
         self.app_backend.login()
         self.backend_thread = BackendThread(self.app_backend, parent=self)
@@ -75,13 +77,12 @@ class BackendManager(QObject):
         print(test)
 
 
+# FOR TESTS
 if __name__ == '__main__':
-    import sys
-    from PyQt5.Qt import QApplication
 
     app = QApplication(sys.argv)
 
-    mainwindow = BackendManager()
+    mainwindow = ThreadManager()
     mainwindow.start()
 
     sys.exit(app.exec_())

@@ -25,12 +25,16 @@
 
 import json
 
-from PyQt5.Qt import QThread, pyqtSignal
+from PyQt5.Qt import QThread, pyqtSignal  # pylint: disable=no-name-in-module
 
 from alignak_app.core.data_manager import DataManager
 
 
 class BackendThread(QThread):
+    """
+        Class who create a QThread to trigger requests
+    """
+
     trigger = pyqtSignal(DataManager)
 
     def __init__(self, app_backend, parent=None):
@@ -44,8 +48,6 @@ class BackendThread(QThread):
         """
         Define the requests models for each endpoints.
 
-        :return: Requests model
-        :rtype: dict
         """
 
         hosts_projection = [
@@ -55,7 +57,7 @@ class BackendThread(QThread):
         services_projection = [
             'name', 'alias', 'display_name', 'ls_state', 'ls_acknowledged', 'ls_downtimed',
             'ls_last_check', 'ls_output', 'business_impact', 'customs', '_overall_state_id',
-            'aggregation','ls_last_state_changed'
+            'aggregation', 'ls_last_state_changed'
         ]
 
         self.requests_models = {
@@ -70,6 +72,12 @@ class BackendThread(QThread):
         }
 
     def run(self):
+        """
+        Override Method: Trigger when QThread.start() is called.
+        - Make AppBackend requests and store results in DataManager
+
+        """
+
         self.request_nb += 1
         print("--------- Request N° %d ---------------" % self.request_nb)
         self.set_requests_models()
