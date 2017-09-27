@@ -28,7 +28,7 @@ import sys
 from PyQt5.Qt import QApplication  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QTimer, QObject  # pylint: disable=no-name-in-module
 
-from alignak_app.core.backend import AppBackend
+from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import DataManager
 from alignak_app.core.locales import init_localization
 from alignak_app.core.utils import init_config
@@ -46,9 +46,7 @@ class ThreadManager(QObject):
 
     def __init__(self, parent=None):
         super(ThreadManager, self).__init__(parent)
-        self.app_backend = AppBackend()
-        self.app_backend.login()
-        self.backend_thread = BackendQThread(self.app_backend, parent=self)
+        self.backend_thread = BackendQThread(self)
 
     def start(self):
         """
@@ -70,11 +68,10 @@ class ThreadManager(QObject):
         :type data_manager: DataManager
         """
 
-        for item in data_manager.database:
-            print("Item: %s : %s" % (item, str(data_manager.database[item])))
-
-        test = data_manager.get_item('host', '59ca454035d17b9607d66c52')
-        print(test)
+        test_host = data_manager.get_item('host', '59ca454035d17b9607d66c52')
+        print(test_host)
+        test_service = data_manager.get_item('service', '59c4e41635d17b8e0a6accdf')
+        print(test_service)
 
 
 # FOR TESTS

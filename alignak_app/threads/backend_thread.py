@@ -28,6 +28,7 @@ import json
 from PyQt5.Qt import QThread, pyqtSignal  # pylint: disable=no-name-in-module
 
 from alignak_app.core.data_manager import DataManager
+from alignak_app.core.backend import app_backend
 
 
 class BackendQThread(QThread):
@@ -37,7 +38,7 @@ class BackendQThread(QThread):
 
     trigger = pyqtSignal(DataManager)
 
-    def __init__(self, app_backend, parent=None):
+    def __init__(self, parent=None):
         super(BackendQThread, self).__init__(parent)
         self.app_backend = app_backend
         self.data_manager = DataManager()
@@ -86,6 +87,8 @@ class BackendQThread(QThread):
             'host': {},
             'service': {}
         }
+
+        self.app_backend.login()
 
         for endpoint in self.requests_models:
             request = self.app_backend.get(
