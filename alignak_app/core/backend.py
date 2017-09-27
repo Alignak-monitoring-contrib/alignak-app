@@ -51,7 +51,7 @@ class AppBackend(object):
 
         :param username: name or token of user
         :type username: str
-        :param password: password of user. If token given, this parmeter is useless
+        :param password: password of user. If token given, this parameter is useless
         :type password: str
         :return: True if connected or False if not
         :rtype: bool
@@ -473,3 +473,6 @@ class AppBackend(object):
             return history['_items']
 
         return {}
+
+
+app_backend = AppBackend()
