@@ -27,7 +27,7 @@ import json
 
 from PyQt5.Qt import QThread, pyqtSignal  # pylint: disable=no-name-in-module
 
-from alignak_app.core.data_manager import DataManager
+from alignak_app.core.data_manager import data_manager, DataManager
 from alignak_app.core.backend import app_backend
 
 
@@ -36,12 +36,10 @@ class BackendQThread(QThread):
         Class who create a QThread to trigger requests
     """
 
-    trigger = pyqtSignal(DataManager)
+    update_data = pyqtSignal(DataManager)
 
     def __init__(self, parent=None):
         super(BackendQThread, self).__init__(parent)
-        self.app_backend = app_backend
-        self.data_manager = DataManager()
         self.requests_models = None
         self.request_nb = 0
 
@@ -60,6 +58,7 @@ class BackendQThread(QThread):
             'ls_last_check', 'ls_output', 'business_impact', 'customs', '_overall_state_id',
             'aggregation', 'ls_last_state_changed'
         ]
+        daemons_projection = ['alive', 'type', 'name']
 
         self.requests_models = {
             'host': {
@@ -69,7 +68,11 @@ class BackendQThread(QThread):
             'service': {
                 'params': {'where': json.dumps({'_is_template': False})},
                 'projection': services_projection
-            }
+            },
+            'alignakdaemon': {
+                'params': None,
+                'projection': daemons_projection
+            },
         }
 
     def run(self):
@@ -79,31 +82,32 @@ class BackendQThread(QThread):
 
         """
 
+        # FOR TESTS
         self.request_nb += 1
         print("--------- Request N° %d ---------------" % self.request_nb)
+
+        # Set each requests parameters
         self.set_requests_models()
 
-        backend_data = {
-            'host': {},
-            'service': {}
-        }
+        # Get the database model
+        backend_database = data_manager.get_database_model()
 
-        self.app_backend.login()
-
+        # Requests on each endpoint defined in model
         for endpoint in self.requests_models:
-            request = self.app_backend.get(
+            request = app_backend.get(
                 endpoint,
                 params=self.requests_models[endpoint]['params'],
                 projection=self.requests_models[endpoint]['projection'],
                 all_items=True
             )
 
-            backend_data[endpoint] = request['_items']
+            backend_database[endpoint] = request['_items']
 
-        for item_type in backend_data:
-            self.data_manager.update_item_type(
+        # Update DataManager
+        for item_type in backend_database:
+            data_manager.update_item_type(
                 item_type,
-                backend_data[item_type]
+                backend_database[item_type]
             )
 
-        self.trigger.emit(self.data_manager)
+        self.update_data.emit(data_manager)

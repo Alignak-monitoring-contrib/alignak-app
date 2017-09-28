@@ -28,9 +28,9 @@ import sys
 from PyQt5.Qt import QApplication  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QTimer, QObject  # pylint: disable=no-name-in-module
 
-from alignak_app.core.data_manager import DataManager
 from alignak_app.core.locales import init_localization
 from alignak_app.core.utils import init_config
+from alignak_app.core.backend import app_backend
 from alignak_app.threads.backend_thread import BackendQThread
 
 init_config()
@@ -39,7 +39,7 @@ init_localization()
 
 class ThreadManager(QObject):
     """
-        Class who create QThreads to periodically request on Alignak Backend
+        Class who create BackendQThreads to periodically request on Alignak Backend
         Store also data received by requests.
     """
 
@@ -49,28 +49,32 @@ class ThreadManager(QObject):
 
     def start(self):
         """
-        Start the manager
+        Start ThreadManager
 
         """
+
         print("Start backend Manager")
         timer = QTimer(self)
         timer.setInterval(30000)
         timer.start()
-        self.backend_thread.trigger.connect(self.update_data)
+        self.backend_thread.update_data.connect(self.update_data_manager)
         timer.timeout.connect(self.backend_thread.start)
 
-    def update_data(self, data_manager):
+    @staticmethod
+    def update_data_manager(data_manager):
         """
-        Update data stored.
+        Update data stored in DataManager. TODO see if later this function will be kept !
 
-        :param data_manager: DataManager who store all data, updated by BackendThread
-        :type data_manager: DataManager
+        :param data_manager: DataManager who store all data, updated by BackendQThread
+        :type data_manager: alignak_app.core.data_manager.DataManager
         """
 
         test_host = data_manager.get_item('host', '59ca454035d17b9607d66c52')
-        print(test_host)
+        print("Host: %s" % test_host)
         test_service = data_manager.get_item('service', '59c4e41635d17b8e0a6accdf')
-        print(test_service)
+        print("Service: %s" % test_service)
+        test_daemon = data_manager.get_item('alignakdaemon', '59c4e64335d17b8e0c6ace0f')
+        print("Daemon: %s" % test_daemon)
 
 
 # FOR TESTS
@@ -78,7 +82,9 @@ if __name__ == '__main__':
 
     app = QApplication(sys.argv)
 
-    mainwindow = ThreadManager()
-    mainwindow.start()
+    app_backend.login()
+
+    thread_manager = ThreadManager()
+    thread_manager.start()
 
     sys.exit(app.exec_())

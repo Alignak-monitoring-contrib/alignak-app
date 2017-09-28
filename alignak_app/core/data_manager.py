@@ -32,16 +32,33 @@ class DataManager(object):
     def __init__(self):
         self.database = {
             'host': {},
-            'service': {}
+            'service': {},
+            'alignakdaemon': {}
+        }
+
+    @staticmethod
+    def get_database_model():
+        """
+        Return database model
+
+        :return: database model
+        :rtype: dict
+        """
+
+        return {
+            'host': {},
+            'service': {},
+            'alignakdaemon': {}
         }
 
     def update_item_type(self, item_type, data):
         """
         Update the wanted item type with data
 
-        :param item_type:
-        :param data:
-        :return:
+        :param item_type: type of item define in database model
+        :type item_type: str
+        :param data: data to update
+        :type data: dict
         """
 
         for d in data:
@@ -51,10 +68,19 @@ class DataManager(object):
         """
         Get the wanted item by "_id"
 
-        :param item_type:
-        :param item_id:
-        :return:
+        :param item_type: type of item define in database model
+        :type item_type: str
+        :param item_id: "_id" of wanted item
+        :type item_id: str
+        :return: the wanted item data
+        :rtype: dict
         """
 
         if item_id in self.database[item_type]:
             return self.database[item_type][item_id]
+
+
+"""
+    Creating "data_manager" variable.
+"""
+data_manager = DataManager()
