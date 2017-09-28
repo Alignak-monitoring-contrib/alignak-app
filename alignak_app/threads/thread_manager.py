@@ -28,7 +28,6 @@ import sys
 from PyQt5.Qt import QApplication  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QTimer, QObject  # pylint: disable=no-name-in-module
 
-from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import DataManager
 from alignak_app.core.locales import init_localization
 from alignak_app.core.utils import init_config
