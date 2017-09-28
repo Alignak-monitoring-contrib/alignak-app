@@ -27,6 +27,7 @@ from logging import getLogger
 
 from alignak_app import __application__
 from alignak_app.core.utils import get_image_path, get_css, get_app_config
+from alignak_app.core.backend import app_backend
 from alignak_app.widgets.banner import send_banner
 from alignak_app.widgets.app_widget import AppQWidget
 
@@ -60,20 +61,17 @@ class AlignakStatus(QWidget):
         self.setToolTip(_('Alignak Status'))
         self.setStyleSheet(get_css())
         # Fields
-        self.app_backend = None
         self.daemons_labels = {}
         self.info = None
         self.old_bad_daemons = 0
         self.app_widget = AppQWidget()
         self.first_start = True
 
-    def create_status(self, app_backend):
+    def create_status(self):
         """
         Create grid layout for status QWidget
 
         """
-
-        self.app_backend = app_backend
 
         # Add Layout
         layout = QGridLayout()
@@ -162,7 +160,7 @@ class AlignakStatus(QWidget):
         daemon_msg = dict((element, '') for element in self.daemons)
         bad_daemons = dict((element, 0) for element in self.daemons)
 
-        alignak_daemon = self.app_backend.get('alignakdaemon')
+        alignak_daemon = app_backend.get('alignakdaemon')
         if alignak_daemon:
             for daemon in alignak_daemon['_items']:
                 if not daemon['alive']:
