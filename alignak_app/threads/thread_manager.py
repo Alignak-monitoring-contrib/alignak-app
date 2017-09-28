@@ -25,6 +25,8 @@
 
 import sys
 
+from logging import getLogger
+
 from PyQt5.Qt import QApplication  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QTimer, QObject  # pylint: disable=no-name-in-module
 
@@ -33,7 +35,9 @@ from alignak_app.core.utils import init_config
 from alignak_app.core.backend import app_backend
 from alignak_app.threads.backend_thread import BackendQThread
 
+
 init_config()
+logger = getLogger(__name__)
 init_localization()
 
 
@@ -53,7 +57,8 @@ class ThreadManager(QObject):
 
         """
 
-        print("Start backend Manager")
+        logger.info("Start backend Manager...")
+
         timer = QTimer(self)
         timer.setInterval(30000)
         timer.start()
@@ -75,6 +80,8 @@ class ThreadManager(QObject):
         print("Service: %s" % test_service)
         test_daemon = data_manager.get_item('alignakdaemon', '59c4e64335d17b8e0c6ace0f')
         print("Daemon: %s" % test_daemon)
+        test_synthesis = data_manager.get_synthesis_count()
+        print("Synthesis: %s" % test_synthesis)
 
 
 # FOR TESTS

@@ -23,6 +23,11 @@
     DataManager manage and store the Alignak data provided by BackendQthread
 """
 
+from logging import getLogger
+
+
+logger = getLogger(__name__)
+
 
 class DataManager(object):
     """
@@ -30,11 +35,7 @@ class DataManager(object):
     """
 
     def __init__(self):
-        self.database = {
-            'host': {},
-            'service': {},
-            'alignakdaemon': {}
-        }
+        self.database = self.get_database_model()
 
     @staticmethod
     def get_database_model():
@@ -48,7 +49,8 @@ class DataManager(object):
         return {
             'host': {},
             'service': {},
-            'alignakdaemon': {}
+            'alignakdaemon': {},
+            'livesynthesis': {}
         }
 
     def update_item_type(self, item_type, data):
@@ -60,6 +62,8 @@ class DataManager(object):
         :param data: data to update
         :type data: dict
         """
+
+        logger.info('Update [%s] database...', item_type)
 
         for d in data:
             self.database[item_type][d['_id']] = d
@@ -76,11 +80,73 @@ class DataManager(object):
         :rtype: dict
         """
 
+        logger.debug("Get item %s in %s", item_id, item_type)
+
         if item_id in self.database[item_type]:
             return self.database[item_type][item_id]
 
+    def get_synthesis_count(self):
+        """
+        Get on "synthesis" endpoint and return the states of hosts and services
 
-"""
-    Creating "data_manager" variable.
-"""
+        :return: states of hosts and services.
+        :rtype: dict
+        """
+
+        live_synthesis = {
+            'hosts': {
+                'up': 0,
+                'down': 0,
+                'unreachable': 0,
+                'acknowledge': 0,
+                'downtime': 0
+            },
+            'services': {
+                'ok': 0,
+                'critical': 0,
+                'unknown': 0,
+                'warning': 0,
+                'unreachable': 0,
+                'acknowledge': 0,
+                'downtime': 0
+            }
+        }
+
+        if self.database['livesynthesis']:
+            for realm in self.database['livesynthesis']:
+                realm_item = self.get_item('livesynthesis', realm)
+                live_synthesis['hosts']['up'] += realm_item['hosts_up_soft']
+                live_synthesis['hosts']['up'] += realm_item['hosts_up_hard']
+
+                live_synthesis['hosts']['unreachable'] += realm_item['hosts_unreachable_soft']
+                live_synthesis['hosts']['unreachable'] += realm_item['hosts_unreachable_hard']
+
+                live_synthesis['hosts']['down'] += realm_item['hosts_down_soft']
+                live_synthesis['hosts']['down'] += realm_item['hosts_down_hard']
+
+                live_synthesis['hosts']['acknowledge'] += realm_item['hosts_acknowledged']
+                live_synthesis['hosts']['downtime'] += realm_item['hosts_in_downtime']
+
+                live_synthesis['services']['ok'] += realm_item['services_ok_soft']
+                live_synthesis['services']['ok'] += realm_item['services_ok_hard']
+
+                live_synthesis['services']['warning'] += realm_item['services_warning_soft']
+                live_synthesis['services']['warning'] += realm_item['services_warning_hard']
+
+                live_synthesis['services']['critical'] += realm_item['services_critical_soft']
+                live_synthesis['services']['critical'] += realm_item['services_critical_hard']
+
+                live_synthesis['services']['unknown'] += realm_item['services_unknown_soft']
+                live_synthesis['services']['unknown'] += realm_item['services_unknown_hard']
+
+                live_synthesis['services']['unreachable'] += realm_item['services_unreachable_soft']
+                live_synthesis['services']['unreachable'] += realm_item['services_unreachable_hard']
+
+                live_synthesis['services']['acknowledge'] += realm_item['services_acknowledged']
+                live_synthesis['services']['downtime'] += realm_item['services_in_downtime']
+
+        return live_synthesis
+
+
+# Creating "data_manager" variable.
 data_manager = DataManager()

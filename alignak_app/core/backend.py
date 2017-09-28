@@ -475,7 +475,5 @@ class AppBackend(object):
         return {}
 
 
-"""
-    Creating "app_backend" variable.
-"""
+# Creating "app_backend" variable.
 app_backend = AppBackend()

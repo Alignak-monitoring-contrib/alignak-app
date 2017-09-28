@@ -25,10 +25,15 @@
 
 import json
 
+from logging import getLogger
+
 from PyQt5.Qt import QThread, pyqtSignal  # pylint: disable=no-name-in-module
 
 from alignak_app.core.data_manager import data_manager, DataManager
 from alignak_app.core.backend import app_backend
+
+
+logger = getLogger(__name__)
 
 
 class BackendQThread(QThread):
@@ -73,6 +78,10 @@ class BackendQThread(QThread):
                 'params': None,
                 'projection': daemons_projection
             },
+            'livesynthesis': {
+                'params': None,
+                'projection': None
+            }
         }
 
     def run(self):
@@ -82,6 +91,7 @@ class BackendQThread(QThread):
 
         """
 
+        logger.info("Run BackendQThread...")
         # FOR TESTS
         self.request_nb += 1
         print("--------- Request N° %d ---------------" % self.request_nb)
@@ -100,7 +110,6 @@ class BackendQThread(QThread):
                 projection=self.requests_models[endpoint]['projection'],
                 all_items=True
             )
-
             backend_database[endpoint] = request['_items']
 
         # Update DataManager
