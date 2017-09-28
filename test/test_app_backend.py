@@ -52,6 +52,7 @@ class TestAppBackend(unittest2.TestCase):
             under_test.backend.url_endpoint_root,
             get_app_config('Alignak', 'backend')
         )
+        self.assertTrue(under_test.connected)
         self.assertTrue(under_test.backend.authenticated)
         self.assertTrue(connect)
 

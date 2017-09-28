@@ -112,8 +112,6 @@ class AlignakApp(QObject):
         """
         Set AlignakApp in reconnect mode and try to login to Backend
 
-        :param app_backend: AppBackend object
-        :type app_backend: AppBackend
         :param error: string error to display in banner
         :type error: str
         """
@@ -155,21 +153,18 @@ class AlignakApp(QObject):
         """
         Start all Alignak-app processes and create AppBackend if connection by config file.
 
-        :param app_backend: AppBackend object
-        :type app_backend: alignak_app.core.backend.AppBackend | None
         """
 
-        try:
-            app_backend.login()
-        except TypeError:
-            self.display_error_msg()
+        app_backend.login()
 
         # Check if connected
         if app_backend.connected:
             # Send Welcome Banner
             send_banner(
                 'OK',
-                _('Welcome %s, you are connected to Alignak Backend') % app_backend.user['username']
+                _('Welcome %s, you are connected to Alignak Backend') %
+                app_backend.user['username'],
+                duration=10000
             )
 
             if 'token' not in app_backend.user:
@@ -197,8 +192,21 @@ class AlignakApp(QObject):
             # Connect reconnectingmode for AppBackend
             self.reconnecting.connect(self.reconnect_to_backend)
         else:
-            # In case of...
-            self.display_error_msg()
+            # In case of data provided in config file fails
+            send_banner(
+                'WARN',
+                _('The application fails to connect with the information provided'
+                  ' in the configuration file. Please enter your login details!'),
+                duration=10000
+            )
+            login = AppLogin()
+            login.create_widget()
+
+            if login.exec_() == QDialog.Accepted:
+                self.run()
+            else:
+                logger.info('Alignak-App closes...')
+                sys.exit(0)
 
     @staticmethod
     def display_error_msg():  # pragma: no cover
