@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Notifier manage notifications and collect data from app_backend.
+    Notifier manage notifications and collect data from AppBackend.
 """
 
 import sys
@@ -31,6 +31,7 @@ import json
 from logging import getLogger
 
 from alignak_app.core.utils import get_app_config
+from alignak_app.core.backend import app_backend
 from alignak_app.widgets.banner import send_banner
 
 
@@ -45,7 +46,6 @@ class AppNotifier(object):
     first_start = True
 
     def __init__(self):
-        self.app_backend = None
         self.tray_icon = None
         self.dashboard = None
         self.changes = False
@@ -53,19 +53,16 @@ class AppNotifier(object):
         self.old_synthesis = None
         self.old_notifications = []
 
-    def initialize(self, app_backend, tray_icon, dashboard):
+    def initialize(self, tray_icon, dashboard):
         """
        AppNotifier manage notifications and changes
 
-       :param app_backend: AppBackend object
-       :type app_backend: alignak_app.core.backend.AppBackend
        :param tray_icon: TrayIcon object
        :type tray_icon: alignak_app.systray.tray_icon.TrayIcon
        :param dashboard: Dashboard object
        :type dashboard: alignak_app.dashboard.app_dashboard.Dashboard
        """
 
-        self.app_backend = app_backend
         self.tray_icon = tray_icon
         self.dashboard = dashboard
 
@@ -133,7 +130,7 @@ class AppNotifier(object):
         self.send_notifications()
 
         # Update Synthesis
-        synthesis = self.app_backend.synthesis_count()
+        synthesis = app_backend.synthesis_count()
 
         if self.first_start:
             # Simulate old state
@@ -213,7 +210,7 @@ class AppNotifier(object):
             'sort': '-_updated'
         }
 
-        notifications = self.app_backend.get('history', params=params)
+        notifications = app_backend.get('history', params=params)
         logger.debug('%s founded: ', str(notifications))
 
         for notif in notifications['_items']:
@@ -224,7 +221,7 @@ class AppNotifier(object):
                 if 'imported_admin' in user:
                     user = 'admin'
                 # If notification is for the current user
-                if user in self.app_backend.user['username']:
+                if user in app_backend.user['username']:
                     # Define all var for message
                     item_type = 'HOST' if 'HOST' in message_split[0] else 'SERVICE'
                     host = message_split[1]

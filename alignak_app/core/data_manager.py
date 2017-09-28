@@ -20,13 +20,13 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    DataManager TODO
+    DataManager manage and store the Alignak data provided by BackendQthread
 """
 
 
 class DataManager(object):
     """
-        TODO
+        Class who store Alignak data
     """
 
     def __init__(self):
@@ -49,7 +49,8 @@ class DataManager(object):
 
     def get_item(self, item_type, item_id):
         """
-        TODO
+        Get the wanted item by "_id"
+
         :param item_type:
         :param item_id:
         :return:

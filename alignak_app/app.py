@@ -184,7 +184,7 @@ class AlignakApp(QObject):
 
             # Start Notifier which will interrogate the backend periodically
             self.notifier = AppNotifier()
-            self.notifier.initialize(app_backend, self.tray_icon, self.dashboard)
+            self.notifier.initialize(self.tray_icon, self.dashboard)
 
             self.notifier_timer.start(self.notifier.interval)
             self.notifier_timer.timeout.connect(self.notifier.check_data)

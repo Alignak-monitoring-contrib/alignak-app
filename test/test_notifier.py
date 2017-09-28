@@ -23,7 +23,7 @@ import sys
 
 import unittest2
 
-from alignak_app.core.backend import AppBackend
+from alignak_app.core.backend import app_backend
 from alignak_app.core.notifier import AppNotifier
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import init_config
@@ -43,8 +43,7 @@ class TestAppNotifier(unittest2.TestCase):
 
     icon = QIcon(get_image_path('icon'))
 
-    backend = AppBackend()
-    backend.login()
+    app_backend.login()
 
     @classmethod
     def setUpClass(cls):
@@ -63,17 +62,15 @@ class TestAppNotifier(unittest2.TestCase):
         dashboard.initialize()
 
         under_test = AppNotifier()
-        under_test.initialize(self.backend, tray_icon, dashboard)
+        under_test.initialize(tray_icon, dashboard)
 
         self.assertIsNotNone(under_test.tray_icon)
-        self.assertIsNotNone(under_test.app_backend)
         self.assertIsNotNone(under_test.dashboard)
         self.assertFalse(under_test.changes)
 
         tray_icon.build_menu(dashboard)
 
         self.assertIsNotNone(under_test.tray_icon)
-        self.assertIsNotNone(under_test.app_backend)
         self.assertIsNotNone(under_test.dashboard)
         self.assertFalse(under_test.changes)
 
@@ -86,7 +83,7 @@ class TestAppNotifier(unittest2.TestCase):
         dashboard.initialize()
 
         under_test = AppNotifier()
-        under_test.initialize(self.backend, tray_icon, dashboard)
+        under_test.initialize(tray_icon, dashboard)
         tray_icon.build_menu(dashboard)
 
         # Start notifier
@@ -109,8 +106,6 @@ class TestAppNotifier(unittest2.TestCase):
 
     def test_states_change(self):
         """States and Notify Changes"""
-        self.backend = AppBackend()
-        self.backend.login()
 
         # TrayIcon and Dashboard for notifier
         dashboard = Dashboard()
@@ -121,7 +116,7 @@ class TestAppNotifier(unittest2.TestCase):
 
         # Initialize Notifier
         under_test = AppNotifier()
-        under_test.initialize(self.backend, tray_icon, dashboard)
+        under_test.initialize(tray_icon, dashboard)
 
         # Changes are True, first_start is True
         self.assertFalse(under_test.changes)
@@ -131,15 +126,11 @@ class TestAppNotifier(unittest2.TestCase):
     def test_diff_last_state(self):
         """Diff Last Backend State"""
 
-        self.backend = AppBackend()
-        self.backend.login()
-
         # TrayIcon and Dashboard for notifier
         tray_icon_test = TrayIcon(self.icon)
         dashboard_test = Dashboard()
 
         notifier_test = AppNotifier()
-        notifier_test.app_backend = self.backend
         notifier_test.tray_icon = tray_icon_test
         notifier_test.dashboard = dashboard_test
 
@@ -147,7 +138,7 @@ class TestAppNotifier(unittest2.TestCase):
         notifier_test.check_data()
 
         # Get synthesis test to test diff between check
-        synthesis = self.backend.synthesis_count()
+        synthesis = app_backend.synthesis_count()
         under_test = notifier_test.diff_last_states(synthesis)
 
         fields_test = {
