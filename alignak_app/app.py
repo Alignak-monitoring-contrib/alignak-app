@@ -181,7 +181,7 @@ class AlignakApp(QObject):
 
             # TrayIcon
             self.tray_icon = TrayIcon(QIcon(get_image_path('icon')))
-            self.tray_icon.build_menu(app_backend, self.dashboard)
+            self.tray_icon.build_menu(self.dashboard)
             self.tray_icon.show()
 
             # Give ALignakApp for AppBackend reconnecting mode

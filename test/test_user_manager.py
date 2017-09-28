@@ -33,7 +33,7 @@ from PyQt5.QtWidgets import QApplication
 
 class TestUserManager(unittest2.TestCase):
     """
-        This file test the UserManager class.
+        TODO This file test the UserManager class.
     """
 
     init_config()
@@ -52,25 +52,21 @@ class TestUserManager(unittest2.TestCase):
     def test_create_user_profile(self):
         """Create UserProfile QWidget"""
 
-        under_test = UserManager(self.app_backend)
+        under_test = UserManager()
 
         self.assertFalse(under_test.user_widget)
-        self.assertTrue(under_test.app_backend)
 
         under_test.create_user_profile()
 
         self.assertTrue(under_test.user_widget)
-        self.assertTrue(under_test.app_backend)
 
     def test_show_user_widget(self):
         """Show User QWidget"""
 
-        under_test = UserManager(self.app_backend)
+        under_test = UserManager()
 
         self.assertFalse(under_test.user_widget)
-        self.assertTrue(under_test.app_backend)
 
         under_test.show_user_widget()
 
         self.assertTrue(under_test.user_widget)
-        self.assertTrue(under_test.app_backend)

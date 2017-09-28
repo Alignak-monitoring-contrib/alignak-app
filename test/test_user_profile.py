@@ -24,7 +24,7 @@ import sys
 import unittest2
 
 from alignak_app.core.utils import init_config
-from alignak_app.core.backend import AppBackend
+from alignak_app.core.backend import app_backend
 from alignak_app.user.user_profile import UserProfile
 from alignak_app.core.locales import init_localization
 
@@ -33,7 +33,7 @@ from PyQt5.QtWidgets import QApplication, QWidget
 
 class TestUserProfile(unittest2.TestCase):
     """
-        This file test the UserProfile class.
+        TODO This file test the UserProfile class.
     """
 
     init_config()
@@ -45,24 +45,20 @@ class TestUserProfile(unittest2.TestCase):
         try:
             cls.app = QApplication(sys.argv)
             cls.period_uuid = '59c4e38535d17b8dcb0bed46'
-            cls.app_backend = AppBackend()
-            cls.app_backend.login()
         except:
             pass
 
     def test_initialize(self):
         """Initialize UserProfile"""
 
-        under_test = UserProfile(self.app_backend)
+        under_test = UserProfile()
 
-        self.assertTrue(under_test.app_backend)
         self.assertFalse(under_test.user)
         self.assertIsNone(under_test.app_widget)
         self.assertIsNone(under_test.layout())
 
         under_test.initialize()
 
-        self.assertTrue(under_test.app_backend)
         self.assertTrue(under_test.user)
         self.assertIsNotNone(under_test.app_widget)
         self.assertIsNotNone(under_test.layout())
@@ -70,20 +66,18 @@ class TestUserProfile(unittest2.TestCase):
     def test_get_user_data(self):
         """Get user data"""
 
-        under_test = UserProfile(self.app_backend)
+        under_test = UserProfile()
 
-        self.assertTrue(under_test.app_backend)
         self.assertFalse(under_test.user)
 
         under_test.get_user_data()
 
-        self.assertTrue(under_test.app_backend)
         self.assertTrue(under_test.user)
 
     def test_user_qwidgets(self):
         """User QWidgets Creation"""
 
-        under_test = UserProfile(self.app_backend)
+        under_test = UserProfile()
         under_test.get_user_data()
 
         options_test = ['d', 'u', 'r', 'f', 's', 'n']
@@ -109,10 +103,9 @@ class TestUserProfile(unittest2.TestCase):
     def test_get_realm_name(self):
         """Get Realm Name"""
 
-        under_test = UserProfile(self.app_backend)
-        if not under_test.app_backend.connected:
-            under_test.app_backend.login()
-        self.assertIsNotNone(under_test.app_backend)
+        under_test = UserProfile()
+        if not app_backend.connected:
+            app_backend.login()
 
         realm_test = under_test.get_realm_name()
 
@@ -129,7 +122,7 @@ class TestUserProfile(unittest2.TestCase):
     def test_get_role(self):
         """Get User Role"""
 
-        under_test = UserProfile(self.app_backend)
+        under_test = UserProfile()
 
         # Simulate user data
         # Case "user"
@@ -168,15 +161,15 @@ class TestUserProfile(unittest2.TestCase):
     def test_get_period_name(self):
         """Get User Period Name"""
 
-        under_test = UserProfile(self.app_backend)
+        under_test = UserProfile()
         under_test.get_user_data()
 
         period_test = under_test.get_period_name('test')
 
         self.assertEqual(period_test, 'n/a')
 
-        if not under_test.app_backend.connected:
-            under_test.app_backend.login()
+        if not app_backend.connected:
+            app_backend.login()
         period_test = under_test.get_period_name(self.period_uuid)
 
         self.assertEqual(period_test, 'All time default 24x7')

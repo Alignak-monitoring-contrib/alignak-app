@@ -33,7 +33,7 @@ from PyQt5.QtWidgets import QApplication, QWidget
 
 class TestUserManager(unittest2.TestCase):
     """
-        This file test the PasswordDialog class.
+       TODO This file test the PasswordDialog class.
     """
 
     init_config()
@@ -52,16 +52,14 @@ class TestUserManager(unittest2.TestCase):
     def test_initialize(self):
         """Initialize PasswordDialog"""
 
-        under_test = PasswordDialog(self.app_backend)
+        under_test = PasswordDialog()
 
-        self.assertTrue(under_test.app_backend)
         self.assertIsNone(under_test.pass_edit)
         self.assertIsNone(under_test.confirm_edit)
         self.assertIsNone(under_test.help_label)
 
         under_test.initialize()
 
-        self.assertTrue(under_test.app_backend)
         self.assertIsNotNone(under_test.pass_edit)
         self.assertIsNotNone(under_test.confirm_edit)
         self.assertIsNotNone(under_test.help_label)
@@ -69,7 +67,7 @@ class TestUserManager(unittest2.TestCase):
     def test_center(self):
         """Center PasswordDialog"""
 
-        under_test = PasswordDialog(self.app_backend)
+        under_test = PasswordDialog()
 
         old_pos_test = under_test.pos()
 

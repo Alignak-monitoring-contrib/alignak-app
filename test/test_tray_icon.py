@@ -37,7 +37,7 @@ from PyQt5.QtWidgets import QAction
 
 class TestTrayIcon(unittest2.TestCase):
     """
-        This file test the TrayIcon class.
+        TODO This file test the TrayIcon class.
     """
 
     init_config()
@@ -124,7 +124,7 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertIsNone(under_test.alignak_status)
         self.assertIsNotNone(under_test.qaction_factory)
 
-        under_test.build_menu(self.backend, dashboard_test)
+        under_test.build_menu(dashboard_test)
 
         # Assert actions are added in Menu
         self.assertTrue(under_test.menu.actions())
@@ -138,7 +138,7 @@ class TestTrayIcon(unittest2.TestCase):
         under_test = TrayIcon(TestTrayIcon.icon)
 
         dashboard_test = Dashboard()
-        under_test.build_menu(self.backend, dashboard_test)
+        under_test.build_menu(dashboard_test)
 
         self.assertEqual('Hosts UP, Wait...',
                          under_test.qaction_factory.get('hosts_up').text())

@@ -42,7 +42,7 @@ class PasswordDialog(QDialog):
         Class who create PasswordDialog QDialog
     """
 
-    def __init__(self, app_backend, parent=None):
+    def __init__(self, parent=None):
         super(PasswordDialog, self).__init__(parent)
         self.setWindowTitle('User Password')
         self.setWindowFlags(Qt.FramelessWindowHint)
@@ -50,7 +50,6 @@ class PasswordDialog(QDialog):
         self.setWindowIcon(QIcon(get_image_path('icon')))
         self.setFixedSize(300, 300)
         # Fields
-        self.app_backend = app_backend
         self.pass_edit = None
         self.confirm_edit = None
         self.help_label = None

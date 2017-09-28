@@ -63,12 +63,10 @@ class TrayIcon(QSystemTrayIcon):
         self.synthesis = None
         self.user = None
 
-    def build_menu(self, app_backend, dashboard):
+    def build_menu(self, dashboard):
         """
         Initialize and create each action of menu.
 
-        :param app_backend: AppBackend object
-        :type app_backend: alignak_app.core.backend.AppBackend
         :param dashboard: Dashboard QWidget
         :type dashboard: alignak_app.dashboard.app_dashboard.Dashboard
         """
@@ -77,7 +75,7 @@ class TrayIcon(QSystemTrayIcon):
         self.create_synthesis_action()
         self.create_dashboard_action(dashboard)
         self.create_status_action()
-        self.create_user_action(app_backend)
+        self.create_user_action()
         self.menu.addSeparator()
 
         self.create_hosts_actions()
@@ -285,12 +283,10 @@ class TrayIcon(QSystemTrayIcon):
 
         logger.info('Create Status Action')
 
-    def create_user_action(self, app_backend):
+    def create_user_action(self):
         """
         Create User object who manage UserProfile QWidget
 
-        :param app_backend: AppBackend data
-        :type app_backend: AppBackend
         """
 
         self.qaction_factory.create(
@@ -298,7 +294,7 @@ class TrayIcon(QSystemTrayIcon):
             _('View my profile'),
             self
         )
-        self.user = UserManager(app_backend)
+        self.user = UserManager()
 
         self.qaction_factory.get('user').triggered.connect(self.user.show_user_widget)
 

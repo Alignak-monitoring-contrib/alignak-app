@@ -35,8 +35,7 @@ class UserManager(object):
         User manage the UserProfile QWidget creation
     """
 
-    def __init__(self, app_backend):
-        self.app_backend = app_backend
+    def __init__(self, ):
         self.user_widget = None
 
     def create_user_profile(self):
@@ -55,7 +54,7 @@ class UserManager(object):
             self.user_widget.deleteLater()
             self.user_widget = None
 
-        self.user_widget = UserProfile(self.app_backend)
+        self.user_widget = UserProfile()
         self.user_widget.initialize()
 
         if old_pos:

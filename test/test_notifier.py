@@ -36,7 +36,7 @@ from PyQt5.QtGui import QIcon
 
 class TestAppNotifier(unittest2.TestCase):
     """
-        This file test the AppNotifier class.
+        TODO This file test the AppNotifier class.
     """
 
     init_config()
@@ -70,7 +70,7 @@ class TestAppNotifier(unittest2.TestCase):
         self.assertIsNotNone(under_test.dashboard)
         self.assertFalse(under_test.changes)
 
-        tray_icon.build_menu(self.backend, dashboard)
+        tray_icon.build_menu(dashboard)
 
         self.assertIsNotNone(under_test.tray_icon)
         self.assertIsNotNone(under_test.app_backend)
@@ -87,7 +87,7 @@ class TestAppNotifier(unittest2.TestCase):
 
         under_test = AppNotifier()
         under_test.initialize(self.backend, tray_icon, dashboard)
-        tray_icon.build_menu(self.backend, dashboard)
+        tray_icon.build_menu(dashboard)
 
         # Start notifier
         under_test.set_interval()
@@ -117,7 +117,7 @@ class TestAppNotifier(unittest2.TestCase):
         dashboard.initialize()
 
         tray_icon = TrayIcon(self.icon)
-        tray_icon.build_menu(self.backend, dashboard)
+        tray_icon.build_menu(dashboard)
 
         # Initialize Notifier
         under_test = AppNotifier()
@@ -129,7 +129,7 @@ class TestAppNotifier(unittest2.TestCase):
         self.assertIsNone(under_test.old_synthesis)
 
     def test_diff_last_state(self):
-        """Diff Last Backend SState"""
+        """Diff Last Backend State"""
 
         self.backend = AppBackend()
         self.backend.login()

@@ -31,6 +31,7 @@ from PyQt5.QtWidgets import QLabel, QLineEdit, QDialog  # pylint: disable=no-nam
 from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=no-name-in-module
 
 from alignak_app.core.utils import get_image_path, get_css
+from alignak_app.core.backend import app_backend
 from alignak_app.user.password import PasswordDialog
 from alignak_app.widgets.app_widget import AppQWidget
 from alignak_app.widgets.banner import send_banner
@@ -45,11 +46,10 @@ class UserProfile(QWidget):
 
     update_profile = pyqtSignal(name='userprofile')
 
-    def __init__(self, app_backend, parent=None):
+    def __init__(self, parent=None):
         super(UserProfile, self).__init__(parent)
         self.setStyleSheet(get_css())
         # Fields
-        self.app_backend = app_backend
         self.user = {}
         self.app_widget = None
         self.host_notif_state = None
@@ -124,7 +124,7 @@ class UserProfile(QWidget):
             'service_notification_options',
         ]
 
-        self.user = self.app_backend.get_user(projection)
+        self.user = app_backend.get_user(projection)
 
         if not self.user:
             for key in projection:
@@ -244,7 +244,7 @@ class UserProfile(QWidget):
                 'alias'
             ]
 
-            realm = self.app_backend.get(endpoint, projection=projection)
+            realm = app_backend.get(endpoint, projection=projection)
 
             if realm:
                 if realm['alias']:
@@ -347,7 +347,7 @@ class UserProfile(QWidget):
             self.notes_edit.show()
             self.notes_edit.setFocus()
         elif "password" in btn.objectName():
-            pass_dialog = PasswordDialog(self.app_backend)
+            pass_dialog = PasswordDialog()
             pass_dialog.initialize()
 
             if pass_dialog.exec_() == QDialog.Accepted:
@@ -357,7 +357,7 @@ class UserProfile(QWidget):
                 headers = {'If-Match': self.user['_etag']}
                 endpoint = '/'.join(['user', self.user['_id']])
 
-                patched = self.app_backend.patch(endpoint, data, headers)
+                patched = app_backend.patch(endpoint, data, headers)
 
                 if patched:
                     message = _("Your password has been updated !")
@@ -379,7 +379,7 @@ class UserProfile(QWidget):
             headers = {'If-Match': self.user['_etag']}
             endpoint = '/'.join(['user', self.user['_id']])
 
-            patched = self.app_backend.patch(endpoint, data, headers)
+            patched = app_backend.patch(endpoint, data, headers)
 
             if patched:
                 name = self.user['alias'] if self.user['alias'] else self.user['name']
@@ -549,7 +549,7 @@ class UserProfile(QWidget):
             headers = {'If-Match': self.user['_etag']}
             endpoint = '/'.join(['user', self.user['_id']])
 
-            patched = self.app_backend.patch(endpoint, data, headers)
+            patched = app_backend.patch(endpoint, data, headers)
 
             if patched:
                 enabled = 'enabled' if notification_enabled else 'disabled'
@@ -643,7 +643,7 @@ class UserProfile(QWidget):
 
         endpoint = '/'.join(['timeperiod', uuid])
 
-        period = self.app_backend.get(endpoint, projection=projection)
+        period = app_backend.get(endpoint, projection=projection)
 
         if period:
             if 'alias' in period:

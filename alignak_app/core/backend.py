@@ -172,7 +172,7 @@ class AppBackend(object):
                     self.connected = False
                     if self.app:
                         if not self.app.reconnect_mode:
-                            self.app.reconnecting.emit(self, str(e))
+                            self.app.reconnecting.emit(str(e))
                     return request
 
         return request
@@ -233,7 +233,7 @@ class AppBackend(object):
                 logger.warning('Application checks the connection with the Backend...')
                 self.connected = False
                 if not self.app.reconnect_mode:
-                    self.app.reconnecting.emit(self, str(e))
+                    self.app.reconnecting.emit(str(e))
                 return False
 
         if request['_status'] == 'OK':
