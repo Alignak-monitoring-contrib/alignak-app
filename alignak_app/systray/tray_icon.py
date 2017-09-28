@@ -74,7 +74,7 @@ class TrayIcon(QSystemTrayIcon):
         """
 
         # Create actions
-        self.create_synthesis_action(app_backend)
+        self.create_synthesis_action()
         self.create_dashboard_action(dashboard)
         self.create_status_action(app_backend)
         self.create_user_action(app_backend)
@@ -242,12 +242,10 @@ class TrayIcon(QSystemTrayIcon):
 
         self.menu.addMenu(self.services_menu)
 
-    def create_synthesis_action(self, app_backend):
+    def create_synthesis_action(self):
         """
         Create Synthesis QWidget and "synthesis view" action
 
-        :param app_backend: Backend data
-        :type app_backend: AppBackend
         """
 
         self.qaction_factory.create(
