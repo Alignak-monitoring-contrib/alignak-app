@@ -28,7 +28,7 @@ import sys
 from logging import getLogger
 
 from alignak_app import __version__
-from alignak_app.core.backend import AppBackend, Backend
+from alignak_app.core.backend import app_backend
 from alignak_app.core.utils import get_app_config, set_app_config, init_config
 from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.widgets.banner import send_banner
@@ -56,7 +56,6 @@ class AppLogin(QDialog):
         self.setWindowIcon(QIcon(get_image_path('icon')))
         self.setFixedSize(300, 330)
         # Fields
-        self.app_backend = AppBackend()
         self.backend_url = None
         self.username_line = None
         self.password_line = None
@@ -211,13 +210,11 @@ class AppLogin(QDialog):
         username = self.username_line.text()
         password = self.password_line.text()
 
-        self.app_backend.backend = Backend(get_app_config('Alignak', 'backend'))
-
-        resp = self.app_backend.login(str(username), str(password))
+        resp = app_backend.login(str(username), str(password))
 
         if resp:
-            self.app_backend.user['username'] = str(username)
-            self.app_backend.user['token'] = str(self.app_backend.backend.token)
+            app_backend.user['username'] = str(username)
+            app_backend.user['token'] = str(app_backend.backend.token)
             self.accept()
         else:
             send_banner('WARN', _('Backend connection refused...'), duration=10000)

@@ -33,7 +33,7 @@ from PyQt5.QtWidgets import QApplication
 
 class TestSynthesis(unittest2.TestCase):
     """
-        This file test the Synthesis class.
+        TODO This file test the Synthesis class.
     """
 
     init_config()
@@ -60,7 +60,7 @@ class TestSynthesis(unittest2.TestCase):
         self.assertIsNone(under_test.host_synthesis)
         self.assertTrue(under_test.line_search)
 
-        under_test.initialize(self.app_backend)
+        under_test.initialize()
 
         self.assertTrue(under_test.app_backend)
         self.assertTrue(under_test.action_manager)
@@ -72,7 +72,7 @@ class TestSynthesis(unittest2.TestCase):
 
         under_test = Synthesis()
 
-        under_test.initialize(self.app_backend)
+        under_test.initialize()
 
         self.assertIsNone(under_test.host_synthesis)
         self.assertTrue(under_test.update_line_edit)

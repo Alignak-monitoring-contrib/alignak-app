@@ -34,7 +34,7 @@ from alignak_app.core.locales import init_localization
 from alignak_app.systray.tray_icon import TrayIcon
 from alignak_app.widgets.login import AppLogin
 from alignak_app.widgets.banner import bannerManager, send_banner
-from alignak_app.core.backend import AppBackend
+from alignak_app.core.backend import app_backend
 from alignak_app.dashboard.app_dashboard import Dashboard
 
 from PyQt5.QtWidgets import QDialog, QMessageBox  # pylint: disable=no-name-in-module
@@ -52,7 +52,7 @@ class AlignakApp(QObject):
         Class who build Alignak-app and initialize configuration, notifier and systray icon.
     """
 
-    reconnecting = pyqtSignal(AppBackend, str, name='reconnecting')
+    reconnecting = pyqtSignal(str, name='reconnecting')
 
     def __init__(self, parent=None):
         super(AlignakApp, self).__init__(parent)
@@ -92,7 +92,7 @@ class AlignakApp(QObject):
                 login.create_widget()
 
                 if login.exec_() == QDialog.Accepted:
-                    self.run(login.app_backend)
+                    self.run()
                 else:
                     logger.info('Alignak-App closes...')
                     sys.exit(0)
@@ -108,7 +108,7 @@ class AlignakApp(QObject):
         else:
             self.display_error_msg()
 
-    def reconnect_to_backend(self, app_backend, error):  # pragma: no cover
+    def reconnect_to_backend(self, error):  # pragma: no cover
         """
         Set AlignakApp in reconnect mode and try to login to Backend
 
@@ -151,17 +151,13 @@ class AlignakApp(QObject):
             timer.start(10000)
             timer.timeout.connect(connect_to_backend)
 
-    def run(self, app_backend=None):  # pragma: no cover
+    def run(self):  # pragma: no cover
         """
         Start all Alignak-app processes and create AppBackend if connection by config file.
 
         :param app_backend: AppBackend object
         :type app_backend: alignak_app.core.backend.AppBackend | None
         """
-
-        # If not login form, app try anyway to connect by token or with username/password
-        if not app_backend:
-            app_backend = AppBackend()
 
         try:
             app_backend.login()

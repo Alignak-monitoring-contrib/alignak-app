@@ -29,6 +29,7 @@ from logging import getLogger
 
 from alignak_app.core.utils import get_css, get_app_config
 from alignak_app.core.action_manager import ActionManager
+from alignak_app.core.backend import app_backend
 from alignak_app.synthesis.host_synthesis import HostSynthesis
 from alignak_app.widgets.app_widget import AppQWidget
 
@@ -61,7 +62,7 @@ class Synthesis(QWidget):
         self.app_widget = AppQWidget()
         self.old_checkbox_states = {}
 
-    def initialize(self, app_backend):
+    def initialize(self):
         """
         Create the QWidget with its items and layout.
 

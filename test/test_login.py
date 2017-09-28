@@ -45,22 +45,20 @@ class TestAppLogin(unittest2.TestCase):
             pass
 
     def test_create_widget(self):
-        """Inititalize AppLogin"""
+        """TODO Inititalize AppLogin"""
 
         under_test = AppLogin()
 
-        self.assertIsNotNone(under_test.app_backend)
         self.assertIsNone(under_test.username_line)
         self.assertIsNone(under_test.password_line)
 
         under_test.create_widget()
 
-        self.assertIsNotNone(under_test.app_backend)
         self.assertIsNotNone(under_test.username_line)
         self.assertIsNotNone(under_test.password_line)
 
     def test_handle_login_good_connection(self):
-        """Handle Login: good credentials"""
+        """TODO Handle Login: good credentials"""
 
         under_test = AppLogin()
         under_test.create_widget()
@@ -68,16 +66,10 @@ class TestAppLogin(unittest2.TestCase):
         under_test.username_line.setText('admin')
         under_test.password_line.setText('admin')
 
-        self.assertFalse(under_test.app_backend.user)
-
         under_test.handle_login()
 
-        self.assertTrue(under_test.app_backend.user)
-        self.assertIsNotNone(under_test.app_backend.user['username'])
-        self.assertIsNotNone(under_test.app_backend.user['token'])
-
     def test_handle_login_bad_connection(self):
-        """Handle Login: bad credentials"""
+        """TODO Handle Login: bad credentials"""
 
         under_test = AppLogin()
         under_test.create_widget()
@@ -86,5 +78,3 @@ class TestAppLogin(unittest2.TestCase):
         under_test.password_line.setText('bad')
 
         under_test.handle_login()
-
-        self.assertFalse(under_test.app_backend.user)
