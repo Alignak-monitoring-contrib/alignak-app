@@ -24,6 +24,7 @@
 """
 
 from logging import getLogger
+from alignak_app.core.backend import app_backend
 
 
 logger = getLogger(__name__)
@@ -38,8 +39,7 @@ class ActionManager(object):
         Class who check items to see if actions are done
     """
 
-    def __init__(self, app_backend):
-        self.app_backend = app_backend
+    def __init__(self):
         self.acks_to_check = {
             'hosts': [],
             'services': []
@@ -77,7 +77,7 @@ class ActionManager(object):
             logger.debug('Hosts ACK: %s', self.acks_to_check['hosts'])
             for item in self.acks_to_check['hosts']:
                 # Get host
-                host = self.app_backend.get_host('_id', item['host_id'], ['ls_acknowledged'])
+                host = app_backend.get_host('_id', item['host_id'], ['ls_acknowledged'])
                 if host['ls_acknowledged']:
                     self.acks_to_check['hosts'].remove(item)
                     done_actions[ACK]['hosts'].append(item)
@@ -86,7 +86,7 @@ class ActionManager(object):
             logger.debug('Services ACK: %s', self.acks_to_check['services'])
             for item in self.acks_to_check['services']:
                 # Get service
-                service = self.app_backend.get_service(
+                service = app_backend.get_service(
                     item['host_id'],
                     item['service_id'],
                     ['ls_acknowledged']
@@ -100,7 +100,7 @@ class ActionManager(object):
             logger.debug('Hosts DOWN: %s', self.downtimes_to_check['hosts'])
             for item in self.downtimes_to_check['hosts']:
                 # Get host
-                host = self.app_backend.get_host('_id', item['host_id'], ['ls_downtimed'])
+                host = app_backend.get_host('_id', item['host_id'], ['ls_downtimed'])
                 if host['ls_downtimed']:
                     self.downtimes_to_check['hosts'].remove(item)
                     done_actions[DOWNTIME]['hosts'].append(item)
@@ -109,7 +109,7 @@ class ActionManager(object):
             logger.debug('Services DOWN: %s', self.downtimes_to_check['services'])
             for item in self.downtimes_to_check['services']:
                 # Get service
-                service = self.app_backend.get_service(
+                service = app_backend.get_service(
                     item['host_id'],
                     item['service_id'],
                     ['ls_downtimed']
@@ -122,7 +122,7 @@ class ActionManager(object):
         if self.processed_to_check:
             logger.debug('Item PROCESS: %s', self.processed_to_check)
             for item in self.processed_to_check:
-                resp = self.app_backend.backend.get(item['post']['_links']['self']['href'])
+                resp = app_backend.backend.get(item['post']['_links']['self']['href'])
                 if resp[PROCESS]:
                     self.processed_to_check.remove(item)
                     done_actions[PROCESS].append(item)

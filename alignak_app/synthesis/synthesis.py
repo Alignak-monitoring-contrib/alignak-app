@@ -56,7 +56,6 @@ class Synthesis(QWidget):
         # Fields
         self.line_search = QLineEdit()
         self.completer = QCompleter()
-        self.app_backend = None
         self.action_manager = None
         self.host_synthesis = None
         self.app_widget = AppQWidget()
@@ -66,15 +65,12 @@ class Synthesis(QWidget):
         """
         Create the QWidget with its items and layout.
 
-        :param app_backend: app_backend of alignak.
-        :type app_backend: alignak_app.core.backend.AppBackend
         """
 
         logger.info('Create Synthesis View...')
 
-        # App_backend
-        self.app_backend = app_backend
-        self.action_manager = ActionManager(app_backend)
+        # ActionManager
+        self.action_manager = ActionManager()
 
         layout = QGridLayout()
         self.setLayout(layout)
@@ -122,7 +118,7 @@ class Synthesis(QWidget):
         hosts_list = []
         params = {'where': json.dumps({'_is_template': False})}
 
-        all_hosts = self.app_backend.get('host', params, ['name'])
+        all_hosts = app_backend.get('host', params, ['name'])
 
         if all_hosts:
             for host in all_hosts['_items']:
@@ -175,7 +171,7 @@ class Synthesis(QWidget):
         old_row = -1
         old_history_widget = None
 
-        backend_data = self.app_backend.get_host_with_services(host_name)
+        backend_data = app_backend.get_host_with_services(host_name)
 
         # Store old data, remove and delete host_synthesis
         if self.host_synthesis:

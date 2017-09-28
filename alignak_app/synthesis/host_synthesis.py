@@ -28,6 +28,7 @@ from logging import getLogger
 
 from alignak_app.core.utils import get_image_path, get_app_config
 from alignak_app.core.utils import get_diff_since_last_check, get_date_from_timestamp
+from alignak_app.core.backend import app_backend
 from alignak_app.core.action_manager import ACK, DOWNTIME, PROCESS
 from alignak_app.widgets.banner import send_banner
 from alignak_app.synthesis.service import Service
@@ -58,7 +59,6 @@ class HostSynthesis(QWidget):
 
     def __init__(self, action_manager, parent=None):
         super(HostSynthesis, self).__init__(parent)
-        self.app_backend = action_manager.app_backend
         self.action_manager = action_manager
         self.host = {}
         self.stack = None
@@ -75,7 +75,7 @@ class HostSynthesis(QWidget):
 
         if backend_data:
             self.host = backend_data['host']
-            self.can_submit_command = self.app_backend.user_can_submit_commands()
+            self.can_submit_command = app_backend.user_can_submit_commands()
 
             main_layout = QVBoxLayout(self)
             main_layout.addWidget(self.get_host_widget(backend_data))
@@ -203,7 +203,7 @@ class HostSynthesis(QWidget):
 
         host_id = self.sender().objectName()
 
-        history = self.app_backend.get_host_history(host_id)
+        history = app_backend.get_host_history(host_id)
 
         if history:
             # If widget already initialize, destroy it
@@ -547,7 +547,7 @@ class HostSynthesis(QWidget):
                 service_id = None
                 self.action_manager.acknowledged.append(host_id)
 
-            user = self.app_backend.get_user(projection=['_id', 'name'])
+            user = app_backend.get_user(projection=['_id', 'name'])
 
             comment = _('%s %s acknowledged by %s, from Alignak-app') % (
                 item_type.capitalize(),
@@ -573,7 +573,7 @@ class HostSynthesis(QWidget):
                     'sticky': sticky
                 }
 
-                post = self.app_backend.post(ACK, data)
+                post = app_backend.post(ACK, data)
                 item_process = {
                     'action': PROCESS,
                     'name': item_name,
@@ -616,7 +616,7 @@ class HostSynthesis(QWidget):
                 service_id = None
                 self.action_manager.downtimed.append(host_id)
 
-            user = self.app_backend.get_user(projection=['_id', 'name'])
+            user = app_backend.get_user(projection=['_id', 'name'])
 
             comment = _('Schedule downtime by %s, from Alignak-app') % user['name']
 
@@ -642,7 +642,7 @@ class HostSynthesis(QWidget):
                     'comment': comment,
                 }
 
-                post = self.app_backend.post(DOWNTIME, data)
+                post = app_backend.post(DOWNTIME, data)
                 item_process = {
                     'action': PROCESS,
                     'name': item_name,
@@ -694,13 +694,13 @@ class HostSynthesis(QWidget):
                 if items_to_send[action]['hosts']:
                     logger.debug('%s to send: %s', action, items_to_send[action]['hosts'])
                     for item in items_to_send[action]['hosts']:
-                        host = self.app_backend.get_host('_id', item['host_id'], ['name'])
+                        host = app_backend.get_host('_id', item['host_id'], ['name'])
                         send_banner('OK', _('%s for %s is done !') % (title, host['name']))
                 # For Services
                 if items_to_send[action]['services']:
                     logger.debug('%s to send: %s', action, items_to_send[action]['services'])
                     for item in items_to_send[action]['services']:
-                        service = self.app_backend.get_service(
+                        service = app_backend.get_service(
                             item['host_id'],
                             item['service_id'],
                             ['name']

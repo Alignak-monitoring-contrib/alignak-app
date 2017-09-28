@@ -55,14 +55,12 @@ class TestSynthesis(unittest2.TestCase):
 
         under_test = Synthesis()
 
-        self.assertFalse(under_test.app_backend)
         self.assertFalse(under_test.action_manager)
         self.assertIsNone(under_test.host_synthesis)
         self.assertTrue(under_test.line_search)
 
         under_test.initialize()
 
-        self.assertTrue(under_test.app_backend)
         self.assertTrue(under_test.action_manager)
         self.assertIsNone(under_test.host_synthesis)
         self.assertTrue(under_test.line_search)

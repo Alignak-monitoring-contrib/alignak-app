@@ -30,7 +30,7 @@ from PyQt5.QtWidgets import QApplication
 
 class TestActionManager(unittest2.TestCase):
     """
-        This file test methods of ActionManager class.
+        TODO This file test methods of ActionManager class.
     """
 
     test_backend = AppBackend()
@@ -47,13 +47,11 @@ class TestActionManager(unittest2.TestCase):
     def test_action_manager_creation(self):
         """Create ActionManager"""
 
-        under_test = ActionManager(self.test_backend)
+        under_test = ActionManager()
 
         self.assertEqual('actionacknowledge', ACK)
         self.assertEqual('actiondowntime', DOWNTIME)
         self.assertEqual('processed', PROCESS)
-
-        self.assertIsNotNone(under_test.app_backend)
 
         self.assertFalse(under_test.acks_to_check['hosts'])
         self.assertFalse(under_test.acks_to_check['services'])
@@ -64,7 +62,7 @@ class TestActionManager(unittest2.TestCase):
     def test_check_items(self):
         """ActionManager Check Items"""
 
-        under_test = ActionManager(self.test_backend)
+        under_test = ActionManager()
 
         actions_items = under_test.check_items()
 
@@ -83,7 +81,7 @@ class TestActionManager(unittest2.TestCase):
     def test_add_none_item(self):
         """ActionManager Add None Item"""
 
-        under_test = ActionManager(self.test_backend)
+        under_test = ActionManager()
 
         # test with None item
         under_test.add_item(dict())
@@ -106,7 +104,7 @@ class TestActionManager(unittest2.TestCase):
     def test_add_ack_item(self):
         """ActionManager Add ACK Item"""
 
-        under_test = ActionManager(self.test_backend)
+        under_test = ActionManager()
 
         self.assertFalse(under_test.acks_to_check['hosts'])
         self.assertFalse(under_test.acks_to_check['services'])
@@ -138,7 +136,7 @@ class TestActionManager(unittest2.TestCase):
     def test_add_downtime_item(self):
         """ActionManager Add DOWNTIME Item"""
 
-        under_test = ActionManager(self.test_backend)
+        under_test = ActionManager()
 
         self.assertFalse(under_test.downtimes_to_check['hosts'])
         self.assertFalse(under_test.downtimes_to_check['services'])
@@ -170,7 +168,7 @@ class TestActionManager(unittest2.TestCase):
     def test_add_processed_item(self):
         """ActionManager Add PROCESS Item"""
 
-        under_test = ActionManager(self.test_backend)
+        under_test = ActionManager()
 
         item_with_host = {
             'action': PROCESS,

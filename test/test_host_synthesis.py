@@ -25,7 +25,7 @@ import unittest2
 
 from alignak_app.synthesis.host_synthesis import HostSynthesis
 from alignak_app.core.action_manager import ActionManager
-from alignak_app.core.backend import AppBackend
+from alignak_app.core.backend import app_backend
 
 from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtWidgets import QStackedWidget, QListWidget
@@ -75,10 +75,9 @@ class TestHostSynthesis(unittest2.TestCase):
         ]
     }
 
-    app_backend = AppBackend()
     app_backend.login()
 
-    action_manager = ActionManager(None)
+    action_manager = ActionManager()
 
     @classmethod
     def setUpClass(cls):
@@ -93,7 +92,6 @@ class TestHostSynthesis(unittest2.TestCase):
 
         under_test = HostSynthesis(self.action_manager)
 
-        self.assertIsNone(under_test.app_backend)
         self.assertIsNotNone(under_test.action_manager)
         self.assertFalse(under_test.host)
         self.assertIsNone(under_test.stack)
@@ -101,16 +99,13 @@ class TestHostSynthesis(unittest2.TestCase):
 
         under_test.initialize(None)
 
-        self.assertIsNone(under_test.app_backend)
         self.assertIsNotNone(under_test.action_manager)
         self.assertFalse(under_test.host)
         self.assertIsNone(under_test.stack)
         self.assertIsNone(under_test.services_list)
 
-        under_test.app_backend = self.app_backend
         under_test.initialize(self.backend_data)
 
-        self.assertIsNotNone(under_test.app_backend)
         self.assertIsNotNone(under_test.action_manager)
         self.assertTrue(under_test.host)
         self.assertIsNotNone(under_test.stack)
@@ -122,7 +117,6 @@ class TestHostSynthesis(unittest2.TestCase):
         """Get Host QWidget"""
 
         under_test = HostSynthesis(self.action_manager)
-        under_test.app_backend = self.app_backend
         widget_test = under_test.get_host_widget(self.backend_data)
 
         self.assertIsNotNone(widget_test)
@@ -132,7 +126,6 @@ class TestHostSynthesis(unittest2.TestCase):
         """Get Services QWidget"""
 
         under_test = HostSynthesis(self.action_manager)
-        under_test.app_backend = self.app_backend
 
         self.assertIsNone(under_test.stack)
         self.assertIsNone(under_test.services_list)
@@ -151,7 +144,6 @@ class TestHostSynthesis(unittest2.TestCase):
         """Display Current Service"""
 
         under_test = HostSynthesis(self.action_manager)
-        under_test.app_backend = self.app_backend
         under_test.initialize(self.backend_data)
 
         under_test.display_current_service(1)
