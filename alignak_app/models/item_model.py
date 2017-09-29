@@ -54,7 +54,7 @@ class ItemModel(object):
         self.data = data
 
         if name:
-            self.name = data['name']
+            self.name = name
 
     def get_data(self, key):
         """

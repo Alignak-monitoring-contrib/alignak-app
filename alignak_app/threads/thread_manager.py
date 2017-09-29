@@ -62,6 +62,7 @@ class ThreadManager(QObject):
         """
 
         logger.info("Start backend Manager...")
+        self.create_task()
 
         timer = QTimer(self)
         timer.setInterval(10000)
@@ -76,7 +77,7 @@ class ThreadManager(QObject):
         """
 
         return [
-            'history', 'notifications', 'livesynthesis', 'alignakdaemon', 'service', 'host', 'user',
+            'notifications', 'livesynthesis', 'alignakdaemon', 'history', 'service', 'host', 'user',
         ]
 
     def create_task(self):
@@ -88,11 +89,12 @@ class ThreadManager(QObject):
         if not self.tasks:
             self.tasks = self.get_tasks()
 
-        cur_task = self.tasks.pop()
+        # cur_task = self.tasks.pop()
+        for cur_task in self.tasks:
 
-        backend_thread = BackendQRunnable(cur_task)
+            backend_thread = BackendQRunnable(cur_task)
 
-        self.pool.start(backend_thread)
+            self.pool.start(backend_thread)
 
         self.see_database()
 
@@ -126,6 +128,18 @@ class ThreadManager(QObject):
             "Livesynthesis (%d) %s " % (
                 len(data_manager.database['livesynthesis']),
                 data_manager.database['livesynthesis']
+            )
+        )
+        print(
+            "History (%d) %s " % (
+                len(data_manager.database['history']),
+                data_manager.database['history']
+            )
+        )
+        print(
+            "Notifications (%d) %s " % (
+                len(data_manager.database['notifications']),
+                data_manager.database['notifications']
             )
         )
 

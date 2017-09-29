@@ -47,7 +47,7 @@ class DataManager(object):
 
     def update_item_database(self, item_type, items_list):
         """
-
+        TODO
         :param item_type:
         :param items_list:
         :return:
@@ -57,7 +57,7 @@ class DataManager(object):
 
     def get_item(self, item_type, key, value):
         """
-
+        TODO
         :param item_type:
         :param key:
         :param value:

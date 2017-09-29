@@ -24,22 +24,28 @@
 """
 
 
+import sys
+import locale
+import datetime
+import json
+
 from logging import getLogger
 
 from alignak_app.models.item_model import ItemModel
+from alignak_app.core.data_manager import data_manager
 
 
 logger = getLogger(__name__)
 
 
-class History(ItemModel):
+class Notification(ItemModel):
     """
         TODO
     """
 
     def __init__(self):
-        super(History, self).__init__()
-        self.item_type = 'history'
+        super(Notification, self).__init__()
+        self.item_type = 'notification'
 
     @staticmethod
     def get_request_model():
@@ -48,12 +54,29 @@ class History(ItemModel):
         :return:
         """
 
+        notification_projection = {
+            'message', '_updated'
+        }
+
+        # Backend use time format in "en_US", so switch if needed
+        if "en_US" not in locale.getlocale(locale.LC_TIME) and 'win32' not in sys.platform:
+            locale.setlocale(locale.LC_TIME, "en_US.utf-8")
+            logger.warning("App set locale to %s ", locale.getlocale(locale.LC_TIME))
+
+        # Define time for the last 30 minutes for notifications
+        time_interval = (datetime.datetime.utcnow() - datetime.timedelta(minutes=30)) \
+            .strftime("%a, %d %b %Y %H:%M:%S GMT")
+
         request_model = {
             'endpoint': 'history',
             'params': {
-                'sort': '-_id',
+                'where': json.dumps({
+                    'type': 'monitoring.notification',
+                    '_updated': {"$gte": time_interval},
+                }),
+                'sort': '-_updated'
             },
-            'projection': ['service_name', 'message', 'type']
+            'projection': notification_projection
         }
 
         return request_model

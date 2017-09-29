@@ -31,12 +31,14 @@ from PyQt5.Qt import QRunnable  # pylint: disable=no-name-in-module
 
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
+
 from alignak_app.models.item_user import User
 from alignak_app.models.item_host import Host
 from alignak_app.models.item_service import Service
 from alignak_app.models.item_daemon import Daemon
 from alignak_app.models.item_livesynthesis import LiveSynthesis
 from alignak_app.models.item_history import History
+from alignak_app.models.item_notification import Notification
 
 logger = getLogger(__name__)
 
@@ -204,15 +206,14 @@ class BackendQRunnable(QRunnable):
 
         livesynthesis = []
         for item in request['_items']:
-            livesynth = LiveSynthesis()
+            synthesis = LiveSynthesis()
 
-            livesynth.create(
+            synthesis.create(
                 item['_id'],
                 item,
-                item['name'],
             )
 
-            livesynthesis.append(livesynth)
+            livesynthesis.append(synthesis)
 
         data_manager.update_item_database('livesynthesis', livesynthesis)
 
@@ -225,11 +226,10 @@ class BackendQRunnable(QRunnable):
 
         request_data = History.get_request_model()
 
-        history = {}
-
+        history_list = []
         for host in data_manager.database['host']:
             request_data['params']['where'] = json.dumps({
-                'host': host['_id']})
+                'host': host.item_id})
 
             request = app_backend.get(
                 request_data['endpoint'],
@@ -238,18 +238,17 @@ class BackendQRunnable(QRunnable):
                 all_items=False
             )
 
-            for item in request['_items']:
-                history = History()
+            history = History()
 
-                history.create(
-                    item['_id'],
-                    item,
-                    item['name'],
-                )
+            history.create(
+                host.item_id,
+                request['_items'],
+                host.name,
+            )
 
-                history.append(history)
+            history_list.append(history)
 
-        data_manager.update_item_database('history', history)
+        data_manager.update_item_database('history', history_list)
 
     @staticmethod
     def get_notifications_data():
@@ -258,4 +257,29 @@ class BackendQRunnable(QRunnable):
         :return:
         """
 
-        pass
+        request_data = Notification.get_request_model()
+
+        request = app_backend.get(
+            request_data['endpoint'],
+            request_data['params'],
+            request_data['projection'],
+            all_items=False
+        )
+
+        notifications = []
+        for item in request['_items']:
+            message_split = item['message'].split(';')
+            user = message_split[0].split(':')[1]
+            if 'imported_admin' in user:
+                user = 'admin'
+            if user == data_manager.database['user'].name:
+                notification = Notification()
+
+                notification.create(
+                    item['_id'],
+                    item,
+                )
+
+                notifications.append(notification)
+
+        data_manager.update_item_database('notifications', notifications)
