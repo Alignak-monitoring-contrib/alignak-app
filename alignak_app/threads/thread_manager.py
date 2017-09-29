@@ -82,6 +82,9 @@ class ThreadManager(QObject):
         print("Daemon: %s" % test_daemon)
         test_synthesis = data_manager.get_synthesis_count()
         print("Synthesis: %s" % test_synthesis)
+        test_user = data_manager.get_item('user', '59c4e3c135d17b8dff6acc5d')
+        print("User: %s" % test_user)
+        print("History: %s" % data_manager.history_database['history'])
 
 
 # FOR TESTS

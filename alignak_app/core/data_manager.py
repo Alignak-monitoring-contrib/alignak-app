@@ -36,6 +36,7 @@ class DataManager(object):
 
     def __init__(self):
         self.database = self.get_database_model()
+        self.history_database = self.get_history_database_model()
 
     @staticmethod
     def get_database_model():
@@ -50,7 +51,23 @@ class DataManager(object):
             'host': {},
             'service': {},
             'alignakdaemon': {},
-            'livesynthesis': {}
+            'livesynthesis': {},
+            'user': {},
+            'history': {}
+        }
+
+    @staticmethod
+    def get_history_database_model():
+        """
+        Return history database model
+
+        :return: history database model
+        :rtype: dict
+        """
+
+        return {
+            'history': [],
+            'notification': []
         }
 
     def update_item_type(self, item_type, data):
@@ -84,6 +101,17 @@ class DataManager(object):
 
         if item_id in self.database[item_type]:
             return self.database[item_type][item_id]
+
+    def update_history_item(self, history_type, data):
+        """
+        TODO
+        :param history_type:
+        :param data:
+        :return:
+        """
+
+        if data != self.history_database[history_type]:
+            self.history_database[history_type] = data
 
     def get_synthesis_count(self):
         """

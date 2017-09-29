@@ -47,6 +47,7 @@ class BackendQThread(QThread):
         super(BackendQThread, self).__init__(parent)
         self.requests_models = None
         self.request_nb = 0
+        self.cur_host_id = None
 
     def set_requests_models(self):
         """
@@ -64,6 +65,13 @@ class BackendQThread(QThread):
             'aggregation', 'ls_last_state_changed'
         ]
         daemons_projection = ['alive', 'type', 'name']
+        user_projection = {
+            '_realm', 'is_admin', 'back_role_super_admin', 'alias', 'name', 'notes', 'email',
+            'can_submit_commands', 'token', 'host_notifications_enabled',
+            'service_notifications_enabled', 'host_notification_period',
+            'service_notification_period', 'host_notification_options',
+            'service_notification_options',
+        }
 
         self.requests_models = {
             'host': {
@@ -81,6 +89,17 @@ class BackendQThread(QThread):
             'livesynthesis': {
                 'params': None,
                 'projection': None
+            },
+            'user': {
+                'params': {'where': json.dumps({'token': app_backend.backend.token})},
+                'projection': user_projection
+            },
+            'history': {
+                'params': {
+                    # 'where': json.dumps({'host': self.cur_host_id}),
+                    'sort': '-_id',
+                },
+                'projection': {'service_name': 1, 'message': 1, 'type': 1}
             }
         }
 
@@ -104,19 +123,38 @@ class BackendQThread(QThread):
 
         # Requests on each endpoint defined in model
         for endpoint in self.requests_models:
-            request = app_backend.get(
-                endpoint,
-                params=self.requests_models[endpoint]['params'],
-                projection=self.requests_models[endpoint]['projection'],
-                all_items=True
-            )
-            backend_database[endpoint] = request['_items']
+            all_items = True
+            if 'user' in endpoint:
+                all_items = False
+            if 'history' not in endpoint:
+                request = app_backend.get(
+                    endpoint,
+                    params=self.requests_models[endpoint]['params'],
+                    projection=self.requests_models[endpoint]['projection'],
+                    all_items=all_items
+                )
+                backend_database[endpoint] = request['_items']
 
         # Update DataManager
         for item_type in backend_database:
+            print(item_type)
+            print(backend_database[item_type])
             data_manager.update_item_type(
                 item_type,
                 backend_database[item_type]
             )
+
+        for host in backend_database['host']:
+            self.requests_models['history']['params']['where'] = json.dumps({
+                'host': host['_id']}),
+            request = app_backend.get(
+                'history',
+                params=self.requests_models['history']['params'],
+                projection=self.requests_models['history']['projection'],
+                all_items=False
+            )
+            backend_database['history'][host['_id']] = request['_items']
+
+        data_manager.update_history_item('history', backend_database['history'])
 
         self.update_data.emit(data_manager)
