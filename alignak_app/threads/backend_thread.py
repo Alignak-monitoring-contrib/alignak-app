@@ -24,6 +24,9 @@
 """
 
 import json
+import sys
+import locale
+import datetime
 
 from logging import getLogger
 
@@ -45,13 +48,14 @@ class BackendQThread(QThread):
 
     def __init__(self, parent=None):
         super(BackendQThread, self).__init__(parent)
-        self.requests_models = None
+        self.requests_id_models = None
+        self.requests_data_models = None
         self.request_nb = 0
         self.cur_host_id = None
 
-    def set_requests_models(self):
+    def set_id_requests_models(self):
         """
-        Define the requests models for each endpoints.
+        Define the requests models for endpoints items with "_id".
 
         """
 
@@ -65,15 +69,8 @@ class BackendQThread(QThread):
             'aggregation', 'ls_last_state_changed'
         ]
         daemons_projection = ['alive', 'type', 'name']
-        user_projection = {
-            '_realm', 'is_admin', 'back_role_super_admin', 'alias', 'name', 'notes', 'email',
-            'can_submit_commands', 'token', 'host_notifications_enabled',
-            'service_notifications_enabled', 'host_notification_period',
-            'service_notification_period', 'host_notification_options',
-            'service_notification_options',
-        }
 
-        self.requests_models = {
+        self.requests_id_models = {
             'host': {
                 'params': {'where': json.dumps({'_is_template': False})},
                 'projection': hosts_projection
@@ -90,16 +87,54 @@ class BackendQThread(QThread):
                 'params': None,
                 'projection': None
             },
+        }
+
+    def set_data_requests_models(self):
+        """
+        Define the requests models for endpoints items with simple data.
+
+        """
+
+        user_projection = {
+            '_realm', 'is_admin', 'back_role_super_admin', 'alias', 'name', 'notes', 'email',
+            'can_submit_commands', 'token', 'host_notifications_enabled',
+            'service_notifications_enabled', 'host_notification_period',
+            'service_notification_period', 'host_notification_options',
+            'service_notification_options',
+        }
+        notification_projection = {
+            'message', '_updated'
+        }
+
+        # Backend use time format in "en_US", so switch if needed
+        if "en_US" not in locale.getlocale(locale.LC_TIME) and 'win32' not in sys.platform:
+            locale.setlocale(locale.LC_TIME, "en_US.utf-8")
+            logger.warning("App set locale to %s ", locale.getlocale(locale.LC_TIME))
+
+        # Define time for the last 30 minutes for notifications
+        time_interval = (datetime.datetime.utcnow() - datetime.timedelta(minutes=30)) \
+            .strftime("%a, %d %b %Y %H:%M:%S GMT")
+
+        self.requests_data_models = {
             'user': {
                 'params': {'where': json.dumps({'token': app_backend.backend.token})},
                 'projection': user_projection
             },
             'history': {
                 'params': {
-                    # 'where': json.dumps({'host': self.cur_host_id}),
                     'sort': '-_id',
                 },
                 'projection': {'service_name': 1, 'message': 1, 'type': 1}
+            },
+            'notifications': {
+                'params': {
+                    'where': json.dumps({
+                        'type': 'monitoring.notification',
+                        '_updated': {"$gte": time_interval}
+                    }),
+                    'sort': '-_updated'
+                },
+                'projection': notification_projection
             }
         }
 
@@ -111,50 +146,97 @@ class BackendQThread(QThread):
         """
 
         logger.info("Run BackendQThread...")
-        # FOR TESTS
-        self.request_nb += 1
-        print("--------- Request N° %d ---------------" % self.request_nb)
-
         # Set each requests parameters
-        self.set_requests_models()
+        self.set_id_requests_models()
+        self.set_data_requests_models()
 
-        # Get the database model
-        backend_database = data_manager.get_database_model()
+        # Update
+        self.update_items_id_database()
+        self.update_database()
+
+        # Display results
+        self.update_data.emit(data_manager)
+
+    def update_items_id_database(self):
+        """
+        Update items with "_id" fields:
+        - "host", "service", "alignakdaemon" and "livesynthesis"
+
+        """
+
+        # host, service, alignakdaemon and livesynthesis
+        backend_id_database = data_manager.get_item_id_model()
 
         # Requests on each endpoint defined in model
-        for endpoint in self.requests_models:
-            all_items = True
-            if 'user' in endpoint:
-                all_items = False
-            if 'history' not in endpoint:
-                request = app_backend.get(
-                    endpoint,
-                    params=self.requests_models[endpoint]['params'],
-                    projection=self.requests_models[endpoint]['projection'],
-                    all_items=all_items
-                )
-                backend_database[endpoint] = request['_items']
+        for endpoint in self.requests_id_models:
+            request = app_backend.get(
+                endpoint,
+                params=self.requests_id_models[endpoint]['params'],
+                projection=self.requests_id_models[endpoint]['projection'],
+                all_items=True
+            )
+            backend_id_database[endpoint] = request['_items']
+
+        # Update DataManager
+        for item_type in backend_id_database:
+            data_manager.update_id_item(
+                item_type,
+                backend_id_database[item_type]
+            )
+
+    def update_database(self):
+        """
+        Update items with simple data:
+        - "user", "history" and "notification"
+
+        """
+
+        backend_database = data_manager.get_item_data_model()
+
+        # Request user
+        request = app_backend.get(
+            'user',
+            params=self.requests_data_models['user']['params'],
+            projection=self.requests_data_models['user']['projection'],
+            all_items=False
+        )
+        backend_database['user'] = request['_items'][0]
+
+        # Request for history
+        for host_id in data_manager.item_id_database['host']:
+            self.requests_data_models['history']['params']['where'] = json.dumps({
+                'host': host_id}),
+            request = app_backend.get(
+                'history',
+                params=self.requests_data_models['history']['params'],
+                projection=self.requests_data_models['history']['projection'],
+                all_items=False
+            )
+            backend_database['history'][host_id] = request['_items']
+
+        # Request for notification
+        request = app_backend.get(
+            'history',
+            params=self.requests_data_models['notifications']['params'],
+            projection=self.requests_data_models['notifications']['projection'],
+            all_items=False
+        )
+
+        notifications = []
+        for notif in request['_items']:
+            message_split = notif['message'].split(';')
+            user = message_split[0].split(':')[1]
+            if 'imported_admin' in user:
+                user = 'admin'
+            # If notification is for the current user
+            if user == data_manager.get_user()['name']:
+                notifications.append(notif)
+
+        backend_database['notifications'] = notifications
 
         # Update DataManager
         for item_type in backend_database:
-            print(item_type)
-            print(backend_database[item_type])
-            data_manager.update_item_type(
+            data_manager.update_data_item(
                 item_type,
                 backend_database[item_type]
             )
-
-        for host in backend_database['host']:
-            self.requests_models['history']['params']['where'] = json.dumps({
-                'host': host['_id']}),
-            request = app_backend.get(
-                'history',
-                params=self.requests_models['history']['params'],
-                projection=self.requests_models['history']['projection'],
-                all_items=False
-            )
-            backend_database['history'][host['_id']] = request['_items']
-
-        data_manager.update_history_item('history', backend_database['history'])
-
-        self.update_data.emit(data_manager)

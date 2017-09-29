@@ -35,13 +35,13 @@ class DataManager(object):
     """
 
     def __init__(self):
-        self.database = self.get_database_model()
-        self.history_database = self.get_history_database_model()
+        self.item_id_database = self.get_item_id_model()
+        self.item_database = self.get_item_data_model()
 
     @staticmethod
-    def get_database_model():
+    def get_item_id_model():
         """
-        Return database model
+        Return database model for items with "_id"
 
         :return: database model
         :rtype: dict
@@ -52,25 +52,25 @@ class DataManager(object):
             'service': {},
             'alignakdaemon': {},
             'livesynthesis': {},
-            'user': {},
-            'history': {}
+
         }
 
     @staticmethod
-    def get_history_database_model():
+    def get_item_data_model():
         """
-        Return history database model
+        Return database model for items simple data
 
         :return: history database model
         :rtype: dict
         """
 
         return {
-            'history': [],
-            'notification': []
+            'history': {},
+            'notifications': {},
+            'user': {},
         }
 
-    def update_item_type(self, item_type, data):
+    def update_id_item(self, item_type, data):
         """
         Update the wanted item type with data
 
@@ -83,7 +83,18 @@ class DataManager(object):
         logger.info('Update [%s] database...', item_type)
 
         for d in data:
-            self.database[item_type][d['_id']] = d
+            self.item_id_database[item_type][d['_id']] = d
+
+    def update_data_item(self, data_type, data):
+        """
+        TODO
+        :param data_type:
+        :param data:
+        :return:
+        """
+
+        if data != self.item_database[data_type]:
+            self.item_database[data_type] = data
 
     def get_item(self, item_type, item_id):
         """
@@ -99,19 +110,16 @@ class DataManager(object):
 
         logger.debug("Get item %s in %s", item_id, item_type)
 
-        if item_id in self.database[item_type]:
-            return self.database[item_type][item_id]
+        if item_id in self.item_id_database[item_type]:
+            return self.item_id_database[item_type][item_id]
 
-    def update_history_item(self, history_type, data):
+    def get_user(self):
         """
         TODO
-        :param history_type:
-        :param data:
         :return:
         """
 
-        if data != self.history_database[history_type]:
-            self.history_database[history_type] = data
+        return self.item_database['user']
 
     def get_synthesis_count(self):
         """
@@ -140,8 +148,8 @@ class DataManager(object):
             }
         }
 
-        if self.database['livesynthesis']:
-            for realm in self.database['livesynthesis']:
+        if self.item_id_database['livesynthesis']:
+            for realm in self.item_id_database['livesynthesis']:
                 realm_item = self.get_item('livesynthesis', realm)
                 live_synthesis['hosts']['up'] += realm_item['hosts_up_soft']
                 live_synthesis['hosts']['up'] += realm_item['hosts_up_hard']

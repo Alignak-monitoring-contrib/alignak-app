@@ -60,7 +60,7 @@ class ThreadManager(QObject):
         logger.info("Start backend Manager...")
 
         timer = QTimer(self)
-        timer.setInterval(30000)
+        timer.setInterval(20000)
         timer.start()
         self.backend_thread.update_data.connect(self.update_data_manager)
         timer.timeout.connect(self.backend_thread.start)
@@ -82,9 +82,10 @@ class ThreadManager(QObject):
         print("Daemon: %s" % test_daemon)
         test_synthesis = data_manager.get_synthesis_count()
         print("Synthesis: %s" % test_synthesis)
-        test_user = data_manager.get_item('user', '59c4e3c135d17b8dff6acc5d')
+        test_user = data_manager.get_user()
         print("User: %s" % test_user)
-        print("History: %s" % data_manager.history_database['history'])
+        print("History: %s" % data_manager.item_database['history'])
+        print("Notifications: %s" % data_manager.item_database['notifications'])
 
 
 # FOR TESTS
