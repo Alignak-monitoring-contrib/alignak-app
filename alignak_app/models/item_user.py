@@ -20,56 +20,49 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    DataManager manage and store the Alignak data provided by BackendQthread
+    TODO
 """
 
+import json
+
 from logging import getLogger
+
+
+from alignak_app.models.item_model import ItemModel
+from alignak_app.core.backend import app_backend
 
 
 logger = getLogger(__name__)
 
 
-class DataManager(object):
+class User(ItemModel):
     """
-        Class who store Alignak data
+        TODO
     """
 
     def __init__(self):
-        self.database = {
-            'history': [],
-            'notifications': [],
-            'livesynthesis': [],
-            'alignakdaemon': [],
-            'host': [],
-            'service': [],
-            'user': [],
+        super(User, self).__init__()
+        self.item_type = 'user'
+
+    @staticmethod
+    def get_request_model():
+        """
+        TODO
+        :return:
+        """
+
+        user_projection = {
+            '_realm', 'is_admin', 'back_role_super_admin', 'alias', 'name', 'notes', 'email',
+            'can_submit_commands', 'token', 'host_notifications_enabled',
+            'service_notifications_enabled', 'host_notification_period',
+            'service_notification_period', 'host_notification_options',
+            'service_notification_options',
         }
 
-    def update_item_database(self, item_type, items_list):
-        """
+        request = {
+            'endpoint': 'user',
+            'params': {'where': json.dumps({'token': app_backend.backend.token})},
+            'projection': user_projection
+        }
 
-        :param item_type:
-        :param items_list:
-        :return:
-        """
-
-        self.database[item_type] = items_list
-
-    def get_item(self, item_type, key, value):
-        """
-
-        :param item_type:
-        :param key:
-        :param value:
-        :return:
-        """
-
-        items = self.database[item_type]
-
-        for item in items:
-            if item.data[key] == value:
-                return item
-
-
-# Creating "data_manager" variable.
-data_manager = DataManager()
+        return request

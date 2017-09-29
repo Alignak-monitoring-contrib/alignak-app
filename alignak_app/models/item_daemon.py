@@ -20,56 +20,40 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    DataManager manage and store the Alignak data provided by BackendQthread
+    TODO
 """
 
+
 from logging import getLogger
+
+from alignak_app.models.item_model import ItemModel
 
 
 logger = getLogger(__name__)
 
 
-class DataManager(object):
+class Daemon(ItemModel):
     """
-        Class who store Alignak data
+        TODO
     """
 
     def __init__(self):
-        self.database = {
-            'history': [],
-            'notifications': [],
-            'livesynthesis': [],
-            'alignakdaemon': [],
-            'host': [],
-            'service': [],
-            'user': [],
+        super(Daemon, self).__init__()
+        self.item_type = 'alignakdaemon'
+
+    @staticmethod
+    def get_request_model():
+        """
+        TODO
+        :return:
+        """
+
+        daemons_projection = ['alive', 'type', 'name']
+
+        request = {
+            'endpoint': 'alignakdaemon',
+            'params': None,
+            'projection': daemons_projection
         }
 
-    def update_item_database(self, item_type, items_list):
-        """
-
-        :param item_type:
-        :param items_list:
-        :return:
-        """
-
-        self.database[item_type] = items_list
-
-    def get_item(self, item_type, key, value):
-        """
-
-        :param item_type:
-        :param key:
-        :param value:
-        :return:
-        """
-
-        items = self.database[item_type]
-
-        for item in items:
-            if item.data[key] == value:
-                return item
-
-
-# Creating "data_manager" variable.
-data_manager = DataManager()
+        return request

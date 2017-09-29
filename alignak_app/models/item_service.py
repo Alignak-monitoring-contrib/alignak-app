@@ -20,56 +20,46 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    DataManager manage and store the Alignak data provided by BackendQthread
+    TODO
 """
 
+import json
+
 from logging import getLogger
+
+
+from alignak_app.models.item_model import ItemModel
 
 
 logger = getLogger(__name__)
 
 
-class DataManager(object):
+class Service(ItemModel):
     """
-        Class who store Alignak data
+        TODO
     """
 
     def __init__(self):
-        self.database = {
-            'history': [],
-            'notifications': [],
-            'livesynthesis': [],
-            'alignakdaemon': [],
-            'host': [],
-            'service': [],
-            'user': [],
+        super(Service, self).__init__()
+        self.item_type = 'service'
+
+    @staticmethod
+    def get_request_model():
+        """
+        TODO
+        :return:
+        """
+
+        services_projection = [
+            'name', 'alias', 'display_name', 'ls_state', 'ls_acknowledged', 'ls_downtimed',
+            'ls_last_check', 'ls_output', 'business_impact', 'customs', '_overall_state_id',
+            'aggregation', 'ls_last_state_changed'
+        ]
+
+        request = {
+            'endpoint': 'service',
+            'params': {'where': json.dumps({'_is_template': False})},
+            'projection': services_projection
         }
 
-    def update_item_database(self, item_type, items_list):
-        """
-
-        :param item_type:
-        :param items_list:
-        :return:
-        """
-
-        self.database[item_type] = items_list
-
-    def get_item(self, item_type, key, value):
-        """
-
-        :param item_type:
-        :param key:
-        :param value:
-        :return:
-        """
-
-        items = self.database[item_type]
-
-        for item in items:
-            if item.data[key] == value:
-                return item
-
-
-# Creating "data_manager" variable.
-data_manager = DataManager()
+        return request

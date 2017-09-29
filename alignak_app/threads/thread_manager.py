@@ -27,13 +27,15 @@ import sys
 
 from logging import getLogger
 
-from PyQt5.Qt import QApplication  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QApplication, QThreadPool  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QTimer, QObject  # pylint: disable=no-name-in-module
 
 from alignak_app.core.locales import init_localization
 from alignak_app.core.utils import init_config
 from alignak_app.core.backend import app_backend
+from alignak_app.core.data_manager import data_manager
 from alignak_app.threads.backend_thread import BackendQThread
+from alignak_app.threads.backend_runnable import BackendQRunnable
 
 
 init_config()
@@ -49,7 +51,9 @@ class ThreadManager(QObject):
 
     def __init__(self, parent=None):
         super(ThreadManager, self).__init__(parent)
-        self.backend_thread = BackendQThread(self)
+        self.backend_thread = BackendQRunnable(self)
+        self.pool = QThreadPool.globalInstance()
+        self.tasks = []
 
     def start(self):
         """
@@ -60,32 +64,70 @@ class ThreadManager(QObject):
         logger.info("Start backend Manager...")
 
         timer = QTimer(self)
-        timer.setInterval(20000)
+        timer.setInterval(10000)
         timer.start()
-        self.backend_thread.update_data.connect(self.update_data_manager)
-        timer.timeout.connect(self.backend_thread.start)
+        timer.timeout.connect(self.create_task)
 
     @staticmethod
-    def update_data_manager(data_manager):
+    def get_tasks():
+        """
+        TODO
+        :return
+        """
+
+        return [
+            'history', 'notifications', 'livesynthesis', 'alignakdaemon', 'service', 'host', 'user',
+        ]
+
+    def create_task(self):
+        """
+        TODO
+        :return:
+        """
+
+        if not self.tasks:
+            self.tasks = self.get_tasks()
+
+        cur_task = self.tasks.pop()
+
+        backend_thread = BackendQRunnable(cur_task)
+
+        self.pool.start(backend_thread)
+
+        self.see_database()
+
+    @staticmethod
+    def see_database():
         """
         Update data stored in DataManager. TODO see if later this function will be kept !
 
-        :param data_manager: DataManager who store all data, updated by BackendQThread
-        :type data_manager: alignak_app.core.data_manager.DataManager
         """
 
-        test_host = data_manager.get_item('host', '59ca454035d17b9607d66c52')
-        print("Host: %s" % test_host)
-        test_service = data_manager.get_item('service', '59c4e41635d17b8e0a6accdf')
-        print("Service: %s" % test_service)
-        test_daemon = data_manager.get_item('alignakdaemon', '59c4e64335d17b8e0c6ace0f')
-        print("Daemon: %s" % test_daemon)
-        test_synthesis = data_manager.get_synthesis_count()
-        print("Synthesis: %s" % test_synthesis)
-        test_user = data_manager.get_user()
-        print("User: %s" % test_user)
-        print("History: %s" % data_manager.item_database['history'])
-        print("Notifications: %s" % data_manager.item_database['notifications'])
+        print("User: %s" % data_manager.database['user'])
+        print(
+            "Hosts (%d) %s" % (
+                len(data_manager.database['host']),
+                data_manager.database['host']
+                )
+            )
+        print(
+            "Services (%d) %s " % (
+                len(data_manager.database['service']),
+                data_manager.database['service']
+                )
+        )
+        print(
+            "Daemons (%d) %s " % (
+                len(data_manager.database['alignakdaemon']),
+                data_manager.database['alignakdaemon']
+            )
+        )
+        print(
+            "Livesynthesis (%d) %s " % (
+                len(data_manager.database['livesynthesis']),
+                data_manager.database['livesynthesis']
+            )
+        )
 
 
 # FOR TESTS

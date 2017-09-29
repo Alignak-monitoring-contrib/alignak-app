@@ -44,33 +44,5 @@ class TestDataManager(unittest2.TestCase):
 
         under_test = DataManager()
 
-        self.assertTrue('host' in under_test.item_id_database)
-        self.assertTrue('service' in under_test.item_id_database)
-
-    def test_update_database(self):
-        """Update DataManager Database"""
-
-        backend_test = AppBackend()
-        backend_test.login()
-        data_test = backend_test.get('host', params=self.params, projection=self.host_projection)
-
-        under_test = DataManager()
-        under_test.update_id_item('host', data_test['_items'])
-
-        for d in data_test['_items']:
-            self.assertTrue(d['_id'] in under_test.item_id_database['host'])
-
-    def test_get_item(self):
-        """Get Item in DataManager"""
-
-        backend_test = AppBackend()
-        backend_test.login()
-        data_test = backend_test.get('host', params=self.params, projection=self.host_projection)
-
-        under_test = DataManager()
-        under_test.update_id_item('host', data_test['_items'])
-
-        for d in data_test['_items']:
-            wanted_item = under_test.get_item('host', d['_id'])
-            self.assertEqual(d, wanted_item)
-
+        self.assertTrue('host' in under_test.database)
+        self.assertTrue('service' in under_test.database)
