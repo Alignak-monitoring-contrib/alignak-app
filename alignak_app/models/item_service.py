@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    ItemService manage creation of service item
 """
 
 import json
@@ -36,7 +36,7 @@ logger = getLogger(__name__)
 
 class Service(ItemModel):
     """
-        TODO
+        Class who create a service item
     """
 
     def __init__(self):
@@ -46,8 +46,10 @@ class Service(ItemModel):
     @staticmethod
     def get_request_model():
         """
-        TODO
-        :return:
+        Return the request model for service requests
+
+        :return: request model for service endpoint
+        :rtype: dict
         """
 
         services_projection = [

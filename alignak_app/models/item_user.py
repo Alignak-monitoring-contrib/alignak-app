@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    ItemUser manage creation of user item
 """
 
 import json
@@ -37,7 +37,7 @@ logger = getLogger(__name__)
 
 class User(ItemModel):
     """
-        TODO
+        Class who create user item
     """
 
     def __init__(self):
@@ -47,8 +47,10 @@ class User(ItemModel):
     @staticmethod
     def get_request_model():
         """
-        TODO
-        :return:
+        Return the request model for user requests
+
+        :return: request model for user endpoint
+        :rtype: dict
         """
 
         user_projection = {

@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    BackendManager manage backend data and threads
+    ThreadManager manage QRunnables for each data
 """
 
 import sys
@@ -34,7 +34,6 @@ from alignak_app.core.locales import init_localization
 from alignak_app.core.utils import init_config
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
-from alignak_app.threads.backend_thread import BackendQThread
 from alignak_app.threads.backend_runnable import BackendQRunnable
 
 
@@ -45,15 +44,14 @@ init_localization()
 
 class ThreadManager(QObject):
     """
-        Class who create BackendQThreads to periodically request on Alignak Backend
-        Store also data received by requests.
+        Class who create BackendQRunnable to periodically request on Alignak Backend
     """
 
     def __init__(self, parent=None):
         super(ThreadManager, self).__init__(parent)
         self.backend_thread = BackendQRunnable(self)
         self.pool = QThreadPool.globalInstance()
-        self.tasks = []
+        self.tasks = self.get_tasks()
 
     def start(self):
         """
@@ -62,46 +60,48 @@ class ThreadManager(QObject):
         """
 
         logger.info("Start backend Manager...")
-        self.create_task()
 
+        # Make a first request
+        self.create_tasks()
+
+        # Then request periodically
         timer = QTimer(self)
         timer.setInterval(10000)
         timer.start()
-        timer.timeout.connect(self.create_task)
+        timer.timeout.connect(self.create_tasks)
 
     @staticmethod
     def get_tasks():
         """
-        TODO
-        :return
+        Return the tasks to run in BackendQRunnable
+
+        :return: tasks to run
+        :rtype: list
         """
 
         return [
             'notifications', 'livesynthesis', 'alignakdaemon', 'history', 'service', 'host', 'user',
         ]
 
-    def create_task(self):
+    def create_tasks(self):
         """
-        TODO
-        :return:
+        Create tasks to run
+
         """
 
-        if not self.tasks:
-            self.tasks = self.get_tasks()
-
-        # cur_task = self.tasks.pop()
         for cur_task in self.tasks:
-
             backend_thread = BackendQRunnable(cur_task)
 
+            # Add task to QThreadPool
             self.pool.start(backend_thread)
 
+        # For tests
         self.see_database()
 
     @staticmethod
     def see_database():
         """
-        Update data stored in DataManager. TODO see if later this function will be kept !
+        Display database for tests
 
         """
 

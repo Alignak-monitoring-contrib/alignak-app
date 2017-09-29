@@ -219,9 +219,12 @@ class Banner(QWidget):
     @staticmethod
     def get_banner_type(banner_type):
         """
-        TODO
-        :param banner_type:
-        :return:
+        Define and return the banner type
+
+        :param banner_type: the type of banner
+        :type banner_type: str
+        :return: banner type
+        :rtype: str
         """
 
         banner_types = {
@@ -235,7 +238,7 @@ class Banner(QWidget):
             if banner_type in banner_types[key]:
                 return key
 
-        return None
+        return ''
 
     def start_timer(self):  # pragma: no cover - not testable
         """

@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    ItemHost manage creation of host item
 """
 
 import json
@@ -36,7 +36,7 @@ logger = getLogger(__name__)
 
 class Host(ItemModel):
     """
-        TODO
+        Class who create a host item
     """
 
     def __init__(self):
@@ -46,8 +46,10 @@ class Host(ItemModel):
     @staticmethod
     def get_request_model():
         """
-        TODO
-        :return:
+        Return the request model for host requests
+
+        :return: request model for host endpoint
+        :rtype: dict
         """
 
         hosts_projection = [

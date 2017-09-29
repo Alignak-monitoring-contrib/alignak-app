@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    ItemLivesynthesis manage creation of livesynthesis item
 """
 
 
@@ -34,7 +34,7 @@ logger = getLogger(__name__)
 
 class LiveSynthesis(ItemModel):
     """
-        TODO
+        Class who create livesynthesis item
     """
 
     def __init__(self):
@@ -44,8 +44,10 @@ class LiveSynthesis(ItemModel):
     @staticmethod
     def get_request_model():
         """
-        TODO
-        :return:
+        Return the request model for livesynthesis requests
+
+        :return: request model for livesynthesis endpoint
+        :rtype: dict
         """
 
         request = {

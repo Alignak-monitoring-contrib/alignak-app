@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    DataManager manage and store the Alignak data provided by BackendQthread
+    DataManager manage alignak data provided by BackendQRunnable
 """
 
 from logging import getLogger
@@ -31,7 +31,7 @@ logger = getLogger(__name__)
 
 class DataManager(object):
     """
-        Class who store Alignak data
+        Class who store alignak data
     """
 
     def __init__(self):
@@ -47,21 +47,25 @@ class DataManager(object):
 
     def update_item_database(self, item_type, items_list):
         """
-        TODO
-        :param item_type:
-        :param items_list:
-        :return:
+        Update an item type in database
+
+        :param item_type: type of item to update
+        :type item_type: str
+        :param items_list: list of items for the wanted type
+        :type items_list: list | dict
         """
 
         self.database[item_type] = items_list
 
     def get_item(self, item_type, key, value):
         """
-        TODO
+        Return the wanted item for item type who contain the value
+
         :param item_type:
         :param key:
         :param value:
-        :return:
+        :return: wanted item
+        :rtype: alignak_app.models.item_model.ItemModel
         """
 
         items = self.database[item_type]

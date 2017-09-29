@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    ItemNotification manage creation of notification item
 """
 
 
@@ -32,7 +32,6 @@ import json
 from logging import getLogger
 
 from alignak_app.models.item_model import ItemModel
-from alignak_app.core.data_manager import data_manager
 
 
 logger = getLogger(__name__)
@@ -40,7 +39,7 @@ logger = getLogger(__name__)
 
 class Notification(ItemModel):
     """
-        TODO
+        Class who create a notification item
     """
 
     def __init__(self):
@@ -50,8 +49,10 @@ class Notification(ItemModel):
     @staticmethod
     def get_request_model():
         """
-        TODO
-        :return:
+        Return the request model for notification requests
+
+        :return: request model for history endpoint (only for notifications)
+        :rtype: dict
         """
 
         notification_projection = {

@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    ItemDaemon manage creation of daemon item
 """
 
 
@@ -34,7 +34,7 @@ logger = getLogger(__name__)
 
 class Daemon(ItemModel):
     """
-        TODO
+        Class who create a daemon item
     """
 
     def __init__(self):
@@ -44,16 +44,18 @@ class Daemon(ItemModel):
     @staticmethod
     def get_request_model():
         """
-        TODO
-        :return:
+        Return the request model for alignakdaemon requests
+
+        :return: request model for alignakdaemon endpoint
+        :rtype: dict
         """
 
         daemons_projection = ['alive', 'type', 'name']
 
-        request = {
+        request_model = {
             'endpoint': 'alignakdaemon',
             'params': None,
             'projection': daemons_projection
         }
 
-        return request
+        return request_model

@@ -54,32 +54,32 @@ class BackendQRunnable(QRunnable):
 
     def run(self):
         """
-        TODO
+        Run the QRunnable. Trigger actions depending on the selected task
         :return:
         """
 
         if 'user' in self.task:
-            self.get_user_data()
+            self.query_user_data()
         elif 'host' in self.task:
-            self.get_hosts_data()
+            self.query_hosts_data()
         elif 'service' in self.task:
-            self.get_services_data()
+            self.query_services_data()
         elif 'alignakdaemon' in self.task:
-            self.get_daemons_data()
+            self.query_daemons_data()
         elif 'livesynthesis' in self.task:
-            self.get_livesynthesis_data()
+            self.query_livesynthesis_data()
         elif 'history' in self.task:
-            self.get_history_data()
+            self.query_history_data()
         elif 'notifications' in self.task:
-            self.get_notifications_data()
+            self.query_notifications_data()
         else:
             print("ERROR")
 
     @staticmethod
-    def get_user_data():
+    def query_user_data():
         """
-        TODO
-        :return:
+        Launch request for "user" endpoint
+
         """
 
         user = User()
@@ -100,10 +100,10 @@ class BackendQRunnable(QRunnable):
         data_manager.update_item_database('user', user)
 
     @staticmethod
-    def get_hosts_data():
+    def query_hosts_data():
         """
-        TODO
-        :return:
+        Launch request for "host" endpoint
+
         """
 
         request_data = Host.get_request_model()
@@ -129,10 +129,10 @@ class BackendQRunnable(QRunnable):
         data_manager.update_item_database('host', hosts_list)
 
     @staticmethod
-    def get_services_data():
+    def query_services_data():
         """
-        TODO
-        :return:
+        Launch request for "service" endpoint
+
         """
 
         request_data = Service.get_request_model()
@@ -159,10 +159,10 @@ class BackendQRunnable(QRunnable):
         data_manager.update_item_database('service', services_list)
 
     @staticmethod
-    def get_daemons_data():
+    def query_daemons_data():
         """
-        TODO
-        :return:
+        Launch request for "alignakdaemon" endpoint
+
         """
 
         request_data = Daemon.get_request_model()
@@ -189,10 +189,10 @@ class BackendQRunnable(QRunnable):
         data_manager.update_item_database('alignakdaemon', daemons_list)
 
     @staticmethod
-    def get_livesynthesis_data():
+    def query_livesynthesis_data():
         """
-        TODO
-        :return:
+        Launch request for "livesynthesis" endpoint
+
         """
 
         request_data = LiveSynthesis.get_request_model()
@@ -218,10 +218,10 @@ class BackendQRunnable(QRunnable):
         data_manager.update_item_database('livesynthesis', livesynthesis)
 
     @staticmethod
-    def get_history_data():
+    def query_history_data():
         """
-        TODO
-        :return:
+        Launch request for "history" endpoint but only for hosts in "data_manager"
+
         """
 
         request_data = History.get_request_model()
@@ -251,10 +251,10 @@ class BackendQRunnable(QRunnable):
         data_manager.update_item_database('history', history_list)
 
     @staticmethod
-    def get_notifications_data():
+    def query_notifications_data():
         """
-        TODO
-        :return:
+        Launch request for "history" endpoint but only for notifications of current user
+
         """
 
         request_data = Notification.get_request_model()

@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    ItemHistory manage creation of history item
 """
 
 
@@ -34,7 +34,7 @@ logger = getLogger(__name__)
 
 class History(ItemModel):
     """
-        TODO
+        Class who create a history item
     """
 
     def __init__(self):
@@ -44,8 +44,10 @@ class History(ItemModel):
     @staticmethod
     def get_request_model():
         """
-        TODO
-        :return:
+        Return the request model for history requests
+
+        :return: request model for history endpoint
+        :rtype: dict
         """
 
         request_model = {

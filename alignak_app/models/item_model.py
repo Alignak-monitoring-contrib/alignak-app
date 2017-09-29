@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    ItemModel manage creation of items
 """
 
 
@@ -32,7 +32,7 @@ logger = getLogger(__name__)
 
 class ItemModel(object):
     """
-        TODO
+        Class who create ite
     """
 
     def __init__(self):
@@ -43,11 +43,14 @@ class ItemModel(object):
 
     def create(self, _id, data, name=None):
         """
-        TODO
-        :param _id:
-        :param data:
-        :param name:
+        Create wanted item
 
+        :param _id: id of the item. Often equal to id in alignak backend
+        :type _id: str
+        :param data: data of the item
+        :type data: dict
+        :param name: name of the item if available
+        :type name: str
         """
 
         self.item_id = _id
@@ -58,19 +61,22 @@ class ItemModel(object):
 
     def get_data(self, key):
         """
-        TODO
-        :param key:
-        :return:
+        Return key data of item
+
+        :param key: the key who contain the wanted data
+        :type key: str
+        :return: the wanted data
         """
 
         return self.data[key]
 
     def update_data(self, key, new_value):
         """
-        TODO
-        :param key:
-        :param new_value:
-        :return:
+        Update data of the wanted key
+
+        :param key: key to update
+        :type key: str
+        :param new_value: new value of the key
         """
 
         self.data[key] = new_value
