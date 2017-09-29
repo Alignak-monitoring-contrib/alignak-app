@@ -108,13 +108,13 @@ class ThreadManager(QObject):
             "Hosts (%d) %s" % (
                 len(data_manager.database['host']),
                 data_manager.database['host']
-                )
             )
+        )
         print(
             "Services (%d) %s " % (
                 len(data_manager.database['service']),
                 data_manager.database['service']
-                )
+            )
         )
         print(
             "Daemons (%d) %s " % (

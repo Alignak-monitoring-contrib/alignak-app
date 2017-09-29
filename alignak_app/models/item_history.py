@@ -54,6 +54,6 @@ class History(ItemModel):
                 'sort': '-_id',
             },
             'projection': ['service_name', 'message', 'type']
-       }
+        }
 
         return request
