@@ -25,6 +25,8 @@
 
 from logging import getLogger
 
+from alignak_app.models.item_livesynthesis import LiveSynthesis
+
 
 logger = getLogger(__name__)
 
@@ -79,9 +81,12 @@ class DataManager(object):
         """
         Return the wanted item for item type who contain the value
 
-        :param item_type:
-        :param key:
-        :param value:
+        :param item_type: type of wanted item
+        :type item_type: str
+        :param key: key contained in item
+        :type key: str
+        :param value: value of the key if needed
+        :type value: str
         :return: wanted item
         :rtype: alignak_app.models.item_model.ItemModel
         """
@@ -95,6 +100,59 @@ class DataManager(object):
             else:
                 if item.name == key:
                     return item
+                if item.item_id == key:
+                    return item
+
+        return None
+
+    def get_synthesis_count(self):
+        """
+        Get on "synthesis" endpoint and return the states of hosts and services
+
+        :return: states of hosts and services.
+        :rtype: dict
+        """
+
+        synthesis_count = LiveSynthesis.get_synthesis_count_model()
+
+        live_synthesis = self.database['livesynthesis']
+
+        if live_synthesis:
+            for item in live_synthesis:
+                realm = item.data
+                synthesis_count['hosts']['up'] += realm['hosts_up_soft']
+                synthesis_count['hosts']['up'] += realm['hosts_up_hard']
+
+                synthesis_count['hosts']['unreachable'] += realm['hosts_unreachable_soft']
+                synthesis_count['hosts']['unreachable'] += realm['hosts_unreachable_hard']
+
+                synthesis_count['hosts']['down'] += realm['hosts_down_soft']
+                synthesis_count['hosts']['down'] += realm['hosts_down_hard']
+
+                synthesis_count['hosts']['acknowledge'] += realm['hosts_acknowledged']
+                synthesis_count['hosts']['downtime'] += realm['hosts_in_downtime']
+
+                synthesis_count['services']['ok'] += realm['services_ok_soft']
+                synthesis_count['services']['ok'] += realm['services_ok_hard']
+
+                synthesis_count['services']['warning'] += realm['services_warning_soft']
+                synthesis_count['services']['warning'] += realm['services_warning_hard']
+
+                synthesis_count['services']['critical'] += realm['services_critical_soft']
+                synthesis_count['services']['critical'] += realm['services_critical_hard']
+
+                synthesis_count['services']['unknown'] += realm['services_unknown_soft']
+                synthesis_count['services']['unknown'] += realm['services_unknown_hard']
+
+                synthesis_count['services']['unreachable'] += realm['services_unreachable_soft']
+                synthesis_count['services']['unreachable'] += realm['services_unreachable_hard']
+
+                synthesis_count['services']['acknowledge'] += realm['services_acknowledged']
+                synthesis_count['services']['downtime'] += realm['services_in_downtime']
+
+        logger.info('Store current states...')
+
+        return synthesis_count
 
 
 # Creating "data_manager" variable.

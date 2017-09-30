@@ -57,3 +57,33 @@ class LiveSynthesis(ItemModel):
         }
 
         return request
+
+    @staticmethod
+    def get_synthesis_count_model():
+        """
+        Return the synthesis count model
+
+        :return: synthesis count model
+        :rtype: dict
+        """
+
+        synthesis_count_model = {
+            'hosts': {
+                'up': 0,
+                'down': 0,
+                'unreachable': 0,
+                'acknowledge': 0,
+                'downtime': 0
+            },
+            'services': {
+                'ok': 0,
+                'critical': 0,
+                'unknown': 0,
+                'warning': 0,
+                'unreachable': 0,
+                'acknowledge': 0,
+                'downtime': 0
+            }
+        }
+
+        return synthesis_count_model

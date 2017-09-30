@@ -23,15 +23,13 @@
     Notifier manage notifications and collect data from AppBackend.
 """
 
-import sys
 import copy
-import locale
 import datetime
-import json
 from logging import getLogger
 
 from alignak_app.core.utils import get_app_config
-from alignak_app.core.backend import app_backend
+from alignak_app.core.data_manager import data_manager
+from alignak_app.models.item_livesynthesis import LiveSynthesis
 from alignak_app.widgets.banner import send_banner
 
 
@@ -90,36 +88,6 @@ class AppNotifier(object):
 
         self.interval = interval
 
-    @staticmethod
-    def none_synthesis_model():
-        """
-        Return a synthesis data model
-
-        :return: synthesis model dict
-        :rtype: dict
-        """
-
-        changes = {
-            'hosts': {
-                'up': 0,
-                'down': 0,
-                'unreachable': 0,
-                'acknowledge': 0,
-                'downtime': 0
-            },
-            'services': {
-                'ok': 0,
-                'warning': 0,
-                'critical': 0,
-                'unknown': 0,
-                'unreachable': 0,
-                'acknowledge': 0,
-                'downtime': 0
-            }
-        }
-
-        return changes
-
     def check_data(self):
         """
         Check data from Backend API, emit pyqtSignal if there is change to update QWidgets
@@ -130,12 +98,12 @@ class AppNotifier(object):
         self.send_notifications()
 
         # Update Synthesis
-        synthesis = app_backend.synthesis_count()
+        synthesis = data_manager.get_synthesis_count()
 
         if self.first_start:
             # Simulate old state
             self.old_synthesis = copy.deepcopy(synthesis)
-            diff_synthesis = self.none_synthesis_model()
+            diff_synthesis = LiveSynthesis.get_synthesis_count_model()
 
             # Changes to true to apply changes
             self.first_start = False
@@ -144,7 +112,7 @@ class AppNotifier(object):
             if self.old_synthesis == synthesis:
                 # No changes
                 self.old_synthesis = copy.deepcopy(synthesis)
-                diff_synthesis = self.none_synthesis_model()
+                diff_synthesis = LiveSynthesis.get_synthesis_count_model()
                 self.changes = False
             else:
                 # Changes: Get differences
@@ -173,7 +141,7 @@ class AppNotifier(object):
         logger.debug('Old_states : ' + str(self.old_synthesis))
         logger.debug('New states : ' + str(synthesis))
 
-        diff_synthesis = self.none_synthesis_model()
+        diff_synthesis = LiveSynthesis.get_synthesis_count_model()
 
         for key, _ in self.old_synthesis['hosts'].items():
             if synthesis['hosts'][key] != self.old_synthesis['hosts'][key]:
@@ -192,67 +160,42 @@ class AppNotifier(object):
 
         """
 
-        # Backend use time format in "en_US", so switch if needed
-        if "en_US" not in locale.getlocale(locale.LC_TIME) and 'win32' not in sys.platform:
-            locale.setlocale(locale.LC_TIME, "en_US.utf-8")
-            logger.warning("App set locale to %s ", locale.getlocale(locale.LC_TIME))
-
-        # Define time for the last 30 minutes
-        time_interval = (datetime.datetime.utcnow() - datetime.timedelta(minutes=30)) \
-            .strftime("%a, %d %b %Y %H:%M:%S GMT")
-
-        # Make request on history to find notifications
-        params = {
-            'where': json.dumps({
-                'type': 'monitoring.notification',
-                '_updated': {"$gte": time_interval}
-            }),
-            'sort': '-_updated'
-        }
-
-        notifications = app_backend.get('history', params=params)
+        notifications = data_manager.database['notifications']
         logger.debug('%s founded: ', str(notifications))
 
-        for notif in notifications['_items']:
+        for notif in notifications:
             # If the notification has not already been sent to the last check
-            if notif not in self.old_notifications:
-                message_split = notif['message'].split(';')
-                user = message_split[0].split(':')[1]
-                if 'imported_admin' in user:
-                    user = 'admin'
-                # If notification is for the current user
-                if user in app_backend.user['username']:
-                    # Define all var for message
-                    item_type = 'HOST' if 'HOST' in message_split[0] else 'SERVICE'
-                    host = message_split[1]
-                    if 'SERVICE' in item_type:
-                        service = message_split[2]
-                        state = message_split[3]
-                        output = message_split[5]
-                    else:
-                        service = ''
-                        state = message_split[2]
-                        output = message_split[4]
+            if notif.item_id not in self.old_notifications:
+                message_split = notif.data['message'].split(';')
+                item_type = 'HOST' if 'HOST' in message_split[0] else 'SERVICE'
+                host = message_split[1]
+                if 'SERVICE' in item_type:
+                    service = message_split[2]
+                    state = message_split[3]
+                    output = message_split[5]
+                else:
+                    service = ''
+                    state = message_split[2]
+                    output = message_split[4]
 
-                    # Convert updated date to user local time
-                    gmt_time = datetime.datetime.strptime(
-                        notif['_updated'], "%a, %d %b %Y %H:%M:%S GMT"
+                # Convert updated date to user local time
+                gmt_time = datetime.datetime.strptime(
+                    notif.data['_updated'], "%a, %d %b %Y %H:%M:%S GMT"
+                )
+                local_time = gmt_time.replace(
+                    tzinfo=datetime.timezone.utc) \
+                    .astimezone(tz=None) \
+                    .strftime("%a, %d %b %Y %H:%M:%S %Z")
+
+                # Define message
+                if service:
+                    message = "%s(%s) [%s]: %s - %s" % (
+                        service, host, state, output, local_time
                     )
-                    local_time = gmt_time.replace(
-                        tzinfo=datetime.timezone.utc) \
-                        .astimezone(tz=None) \
-                        .strftime("%a, %d %b %Y %H:%M:%S %Z")
+                else:
+                    message = "%s [%s]: %s - %s" % (host, state, output, local_time)
 
-                    # Define message
-                    if service:
-                        message = "%s(%s) [%s]: %s - %s" % (
-                            service, host, state, output, local_time
-                        )
-                    else:
-                        message = "%s [%s]: %s - %s" % (host, state, output, local_time)
+                send_banner(state, message)
+                logger.info("Send history notification: [%s] - %s", state, str(message))
 
-                    send_banner(state, message)
-                    logger.info("Send history notification: [%s] - %s", state, str(message))
-
-        if notifications:
-            self.old_notifications = notifications['_items']
+                self.old_notifications.append(notif.item_id)
