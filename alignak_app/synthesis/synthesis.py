@@ -30,6 +30,7 @@ from logging import getLogger
 from alignak_app.core.utils import get_css, get_app_config
 from alignak_app.core.action_manager import ActionManager
 from alignak_app.core.backend import app_backend
+from alignak_app.core.data_manager import data_manager
 from alignak_app.synthesis.host_synthesis import HostSynthesis
 from alignak_app.widgets.app_widget import AppQWidget
 
@@ -114,28 +115,20 @@ class Synthesis(QWidget):
 
         """
 
-        # Create list for QStringModel
-        hosts_list = []
-        params = {'where': json.dumps({'_is_template': False})}
-
-        all_hosts = app_backend.get('host', params, ['name'])
-
-        if all_hosts:
-            for host in all_hosts['_items']:
-                hosts_list.append(host['name'])
-
+        # Get QStringListModel
         model = self.completer.model()
         if not model:
             model = QStringListModel()
 
+        hosts_list = data_manager.get_all_host_name()
         model.setStringList(hosts_list)
 
-        # Create completer from model
+        # Configure QCompleter from model
         self.completer.setFilterMode(Qt.MatchContains)
         self.completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.completer.setModel(model)
 
-        # Add completer to "line edit"
+        # Add completer to QLineEdit
         self.line_search.setCompleter(self.completer)
         self.line_search.setPlaceholderText(_('Type a host name to display its data'))
         self.line_search.setToolTip(_('Type a host name to display its data'))
@@ -157,7 +150,8 @@ class Synthesis(QWidget):
                 self.update_line_edit = False
 
             host_name = str(self.line_search.text()).rstrip()
-            if host_name:
+            host_name_list = data_manager.get_all_host_name()
+            if host_name and (host_name in host_name_list):
                 self.update_synthesis_view(host_name)
 
     def update_synthesis_view(self, host_name):
@@ -171,7 +165,7 @@ class Synthesis(QWidget):
         old_row = -1
         old_history_widget = None
 
-        backend_data = app_backend.get_host_with_services(host_name)
+        backend_data = data_manager.get_host_with_services(host_name)
 
         # Store old data, remove and delete host_synthesis
         if self.host_synthesis:

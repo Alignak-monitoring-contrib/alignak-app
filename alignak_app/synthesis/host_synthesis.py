@@ -29,9 +29,11 @@ from logging import getLogger
 from alignak_app.core.utils import get_image_path, get_app_config
 from alignak_app.core.utils import get_diff_since_last_check, get_date_from_timestamp
 from alignak_app.core.backend import app_backend
+from alignak_app.core.data_manager import data_manager
 from alignak_app.core.action_manager import ACK, DOWNTIME, PROCESS
+from alignak_app.models.item_service import Service
 from alignak_app.widgets.banner import send_banner
-from alignak_app.synthesis.service import Service
+from alignak_app.synthesis.serviceframe import ServiceFrame
 from alignak_app.synthesis.actions import Acknowledge, Downtime
 from alignak_app.synthesis.service_widget_item import ServiceListWidgetItem
 from alignak_app.synthesis.history import History
@@ -71,11 +73,15 @@ class HostSynthesis(QWidget):
         """
         Inititalize the QWidget
 
+        :param backend_data: Dict with
+         - "host": containing Host model
+         - "services": containing many Service models
+        :type backend_data: dict
         """
 
         if backend_data:
-            self.host = backend_data['host']
-            self.can_submit_command = app_backend.user_can_submit_commands()
+            self.host = backend_data['host'].data
+            self.can_submit_command = data_manager.database['user'].data['can_submit_commands']
 
             main_layout = QVBoxLayout(self)
             main_layout.addWidget(self.get_host_widget(backend_data))
@@ -119,17 +125,17 @@ class HostSynthesis(QWidget):
                 '<h2><a href="%s" style="color: black;text-decoration: none;">%s</a></h2>' % (
                     get_app_config('Alignak', 'webui') +
                     '/host/' +
-                    backend_data['host']['name'],
-                    backend_data['host']['alias'],
+                    backend_data['host'].name,
+                    backend_data['host'].data['alias'],
                 )
             )
         else:
-            host_name.setText('<h2>%s</h2>' % backend_data['host']['alias'])
+            host_name.setText('<h2>%s</h2>' % backend_data['host'].data['alias'])
 
         host_name.setTextInteractionFlags(Qt.TextBrowserInteraction)
         host_name.setOpenExternalLinks(True)
         host_name.setObjectName('hostname')
-        host_name.setToolTip(_('Host is %s. See in WebUI ?') % backend_data['host']['ls_state'])
+        host_name.setToolTip(_('Host is %s. See in WebUI ?') % backend_data['host'].data['ls_state'])
         host_layout.addWidget(host_name, 2, 0, 1, 1)
         host_layout.setAlignment(host_name, Qt.AlignCenter)
 
@@ -162,8 +168,8 @@ class HostSynthesis(QWidget):
         :type backend_data: dict
         """
 
-        since_last_check = get_diff_since_last_check(backend_data['host']['ls_last_state_changed'])
-        diff_last_check = get_diff_since_last_check(backend_data['host']['ls_last_check'])
+        since_last_check = get_diff_since_last_check(backend_data['host'].data['ls_last_state_changed'])
+        diff_last_check = get_diff_since_last_check(backend_data['host'].data['ls_last_check'])
         host_last_check = QLabel(
             _('<b>Since:</b> %s <b>Last check:</b> %s') % (since_last_check, diff_last_check)
         )
@@ -172,25 +178,25 @@ class HostSynthesis(QWidget):
         history_btn = QPushButton()
         history_btn.setFixedSize(32, 32)
         history_btn.setIcon(QIcon(get_image_path('time')))
-        history_btn.setObjectName(backend_data['host']['_id'])
+        history_btn.setObjectName(backend_data['host'].item_id)
         history_btn.clicked.connect(self.display_history)
         host_layout.addWidget(history_btn, 0, 3, 1, 1)
         host_layout.setAlignment(history_btn, Qt.AlignRight)
 
-        date_output = get_date_from_timestamp(backend_data['host']['ls_last_check'])
+        date_output = get_date_from_timestamp(backend_data['host'].data['ls_last_check'])
         output = QTextEdit(
-            _('<b>Output:</b> [%s] %s') % (date_output, backend_data['host']['ls_output'])
+            _('<b>Output:</b> [%s] %s') % (date_output, backend_data['host'].data['ls_output'])
         )
         output.setObjectName('output')
         output.setTextInteractionFlags(Qt.TextSelectableByMouse)
         output.setFont(QFont('Times', 13))
         host_layout.addWidget(output, 1, 2, 1, 1)
 
-        address = QLabel(_('<b>Address:</b> %s') % backend_data['host']['address'])
+        address = QLabel(_('<b>Address:</b> %s') % backend_data['host'].data['address'])
         host_layout.addWidget(address, 2, 2, 1, 1)
 
-        stars_widget = Service.get_stars_widget(
-            int(backend_data['host']['business_impact'])
+        stars_widget = ServiceFrame.get_stars_widget(
+            int(backend_data['host'].data['business_impact'])
         )
         host_layout.addWidget(stars_widget, 2, 3, 1, 1)
         host_layout.setAlignment(stars_widget, Qt.AlignLeft)
@@ -203,7 +209,7 @@ class HostSynthesis(QWidget):
 
         host_id = self.sender().objectName()
 
-        history = app_backend.get_host_history(host_id)
+        history = data_manager.get_item('history', host_id)
 
         if history:
             # If widget already initialize, destroy it
@@ -214,7 +220,7 @@ class HostSynthesis(QWidget):
                 self.history_widget = None
 
             # Initialize history QWidget and display it
-            self.history_widget = History(history)
+            self.history_widget = History(history.data)
             self.history_widget.initialize(self.host['name'], host_id)
             if old_pos:
                 self.history_widget.app_widget.move(old_pos)
@@ -240,15 +246,15 @@ class HostSynthesis(QWidget):
         # ACK
         acknowledge_btn = QPushButton()
         acknowledge_btn.setObjectName(
-            'host:%s:%s' % (backend_data['host']['_id'], backend_data['host']['name'])
+            'host:%s:%s' % (backend_data['host'].data['_id'], backend_data['host'].name)
         )
         acknowledge_btn.setIcon(QIcon(get_image_path('hosts_acknowledge')))
         acknowledge_btn.setFixedSize(32, 32)
         acknowledge_btn.setToolTip(_('Acknowledge this host'))
         acknowledge_btn.clicked.connect(self.add_acknowledge)
-        if 'UP' in backend_data['host']['ls_state'] or \
-                backend_data['host']['ls_acknowledged'] or \
-                backend_data['host']['_id'] in self.action_manager.acknowledged or \
+        if 'UP' in backend_data['host'].data['ls_state'] or \
+                backend_data['host'].data['ls_acknowledged'] or \
+                backend_data['host'].item_id in self.action_manager.acknowledged or \
                 not self.can_submit_command:
             acknowledge_btn.setEnabled(False)
         host_layout.addWidget(acknowledge_btn, 0, 1, 1, 1)
@@ -256,7 +262,7 @@ class HostSynthesis(QWidget):
         # DOWN
         downtime_btn = QPushButton()
         downtime_btn.setObjectName(
-            'host:%s:%s' % (backend_data['host']['_id'], backend_data['host']['name'])
+            'host:%s:%s' % (backend_data['host'].item_id, backend_data['host'].name)
         )
         downtime_btn.setIcon(QIcon(get_image_path('hosts_downtime')))
         downtime_btn.setFixedSize(32, 32)
@@ -265,8 +271,8 @@ class HostSynthesis(QWidget):
 
         # If host is already downtimed or action is in progress or user can't submit command,
         # => disable button
-        if backend_data['host']['ls_downtimed'] or \
-                backend_data['host']['_id'] in self.action_manager.downtimed or \
+        if backend_data['host'].data['ls_downtimed'] or \
+                backend_data['host'].item_id in self.action_manager.downtimed or \
                 not self.can_submit_command:
             downtime_btn.setEnabled(False)
 
@@ -358,9 +364,9 @@ class HostSynthesis(QWidget):
         aggregations = ['Global']
 
         for service in services_list:
-            if service['aggregation']:
-                if service['aggregation'] not in aggregations:
-                    aggregations.append(service['aggregation'])
+            if service.data['aggregation']:
+                if service.data['aggregation'] not in aggregations:
+                    aggregations.append(service.data['aggregation'])
 
         for aggregation in aggregations:
             self.check_boxes[aggregation] = QCheckBox(aggregation)
@@ -411,32 +417,32 @@ class HostSynthesis(QWidget):
             Get keys function to sort services
 
             :param item: item to sort
-            :type item dict
+            :type item: alignak_app.models.item_model.ItemModel
             :return: item name in lowerCase to get InsensitiveCase
             :rtype: str
             """
 
-            return item['name'].lower()
+            return item.name.lower()
 
         sorted_services = sorted(services_list, key=get_key)
 
         # Fill QStackedWidget and QListWidget
         for service in sorted_services:
             # Service QWidget
-            service_widget = Service()
+            service_widget = ServiceFrame()
             service_widget.initialize(service)
 
             # Connect ACK button
             service_widget.acknowledge_btn.clicked.connect(self.add_acknowledge)
             service_widget.acknowledge_btn.setObjectName(
                 'service:%s:%s' % (
-                    service['_id'],
+                    service.item_id,
                     ServiceListWidgetItem.get_service_name(service),
                 )
             )
-            if 'OK' in service['ls_state'] \
-                    or service['ls_acknowledged'] \
-                    or service['_id'] in self.action_manager.acknowledged or \
+            if 'OK' in service.data['ls_state'] \
+                    or service.data['ls_acknowledged'] \
+                    or service.item_id in self.action_manager.acknowledged or \
                     not self.can_submit_command:
                 service_widget.acknowledge_btn.setEnabled(False)
 
@@ -444,11 +450,11 @@ class HostSynthesis(QWidget):
             service_widget.downtime_btn.clicked.connect(self.add_downtime)
             service_widget.downtime_btn.setObjectName(
                 'service:%s:%s' % (
-                    service['_id'],
+                    service.item_type,
                     ServiceListWidgetItem.get_service_name(service))
             )
-            if service['ls_downtimed'] or \
-                    service['_id'] in self.action_manager.downtimed or \
+            if service.data['ls_downtimed'] or \
+                    service.item_id in self.action_manager.downtimed or \
                     not self.can_submit_command:
                 service_widget.downtime_btn.setEnabled(False)
 
@@ -468,39 +474,23 @@ class HostSynthesis(QWidget):
         """
         Return the number / percentage of each state for host services
 
-        :param services: list of host services dict
+        :param services: list of Service items of a host
         :type: list
         :return: dict of services number / percentage
         :rtype: dict
         """
 
-        nb_state = {
-            'OK': 0,
-            'UNKNOWN': 0,
-            'WARNING': 0,
-            'UNREACHABLE': 0,
-            'CRITICAL': 0,
-            'ACKNOWLEDGE': 0,
-            'DOWNTIME': 0
-        }
-        percent_nb = {
-            'OK': 0,
-            'UNKNOWN': 0,
-            'WARNING': 0,
-            'UNREACHABLE': 0,
-            'CRITICAL': 0,
-            'ACKNOWLEDGE': 0,
-            'DOWNTIME': 0
-        }
+        nb_state = Service.get_service_states_nb()
+        percent_nb = Service.get_service_states_nb()
 
         services_sum = 0
         for service in services:
-            if service['ls_acknowledged']:
+            if service.data['ls_acknowledged']:
                 nb_state['ACKNOWLEDGE'] += 1
-            elif service['ls_downtimed']:
+            elif service.data['ls_downtimed']:
                 nb_state['DOWNTIME'] += 1
             else:
-                nb_state[service['ls_state']] += 1
+                nb_state[service.data['ls_state']] += 1
             services_sum += 1
 
         for state in nb_state:
@@ -547,12 +537,12 @@ class HostSynthesis(QWidget):
                 service_id = None
                 self.action_manager.acknowledged.append(host_id)
 
-            user = app_backend.get_user(projection=['_id', 'name'])
+            user = data_manager.database['user']
 
             comment = _('%s %s acknowledged by %s, from Alignak-app') % (
                 item_type.capitalize(),
                 item_name,
-                user['name']
+                user.name
             )
 
             ack_dialog = Acknowledge()
@@ -567,7 +557,7 @@ class HostSynthesis(QWidget):
                     'action': 'add',
                     'host': host_id,
                     'service': service_id,
-                    'user': user['_id'],
+                    'user': user.item_id,
                     'comment': comment,
                     'notify': notify,
                     'sticky': sticky
@@ -616,9 +606,9 @@ class HostSynthesis(QWidget):
                 service_id = None
                 self.action_manager.downtimed.append(host_id)
 
-            user = app_backend.get_user(projection=['_id', 'name'])
+            user = data_manager.database['user']
 
-            comment = _('Schedule downtime by %s, from Alignak-app') % user['name']
+            comment = _('Schedule downtime by %s, from Alignak-app') % user.name
 
             downtime_dialog = Downtime()
             downtime_dialog.initialize(item_type, item_name, comment)
@@ -634,7 +624,7 @@ class HostSynthesis(QWidget):
                     'action': 'add',
                     'host': host_id,
                     'service': service_id,
-                    'user': user['_id'],
+                    'user': user.item_id,
                     'fixed': fixed,
                     'duration': duration,
                     'start_time': start_stamp,
@@ -687,25 +677,21 @@ class HostSynthesis(QWidget):
                         _('%s for %s is processed...') % (action_title, item['name'])
                     )
 
-            # Send ACKs and DOWNTIMEs
+            # Send ACKs and DOWNTIMEs banners
             for action in actions:
                 title = action.replace('action', '').capitalize()
                 # For Hosts
                 if items_to_send[action]['hosts']:
                     logger.debug('%s to send: %s', action, items_to_send[action]['hosts'])
                     for item in items_to_send[action]['hosts']:
-                        host = app_backend.get_host('_id', item['host_id'], ['name'])
-                        send_banner('OK', _('%s for %s is done !') % (title, host['name']))
+                        host = data_manager.get_item('host', item['host_id'])
+                        send_banner('OK', _('%s for %s is done !') % (title, host.name))
                 # For Services
                 if items_to_send[action]['services']:
                     logger.debug('%s to send: %s', action, items_to_send[action]['services'])
                     for item in items_to_send[action]['services']:
-                        service = app_backend.get_service(
-                            item['host_id'],
-                            item['service_id'],
-                            ['name']
-                        )
-                        send_banner('OK', _('%s for %s is done !') % (title, service['name']))
+                        service = data_manager.get_item('service', item['service_id'])
+                        send_banner('OK', _('%s for %s is done !') % (title, service.name))
 
     @staticmethod
     def get_host_icon(host):
@@ -713,17 +699,17 @@ class HostSynthesis(QWidget):
         Return QPixmap with the icon corresponding to the status.
 
         :param host: host data from AppBackend
-        :type host: dict
+        :type host: alignak_app.models.item_model.ItemModel
         :return: QPixmap with image
         :rtype: QPixmap
         """
 
-        if host['ls_acknowledged']:
+        if host.data['ls_acknowledged']:
             icon_name = 'hosts_acknowledge'
-        elif host['ls_downtimed']:
+        elif host.data['ls_downtimed']:
             icon_name = 'hosts_downtimed'
         else:
-            icon_name = 'hosts_%s' % host['ls_state'].lower()
+            icon_name = 'hosts_%s' % host.data['ls_state'].lower()
 
         icon = QPixmap(get_image_path(icon_name))
 
@@ -735,21 +721,21 @@ class HostSynthesis(QWidget):
         Return tooltip text for Host real state
 
         :param host: host data from Backend
-        :type host: dict
+        :type host: alignak_app.models.item_model.ItemModel
         :return: tooltip of host real state
         :rtype: str
         """
 
-        if host['ls_acknowledged'] and not host['ls_downtimed']:
+        if host.data['ls_acknowledged'] and not host.data['ls_downtimed']:
             tooltip = _('Host is %s and acknowledged !') % host['ls_state']
-        elif host['ls_downtimed'] and not host['ls_acknowledged']:
-            tooltip = _('Host is %s and downtimed !') % host['ls_state']
-        elif host['ls_acknowledged'] and host['ls_downtimed']:
+        elif host.data['ls_downtimed'] and not host.data['ls_acknowledged']:
+            tooltip = _('Host is %s and downtimed !') % host.data['ls_state']
+        elif host.data['ls_acknowledged'] and host.data['ls_downtimed']:
             tooltip = _(
                 'Host is %s and acknowledged ! A downtime is scheduled !'
-            ) % host['ls_state']
+            ) % host.data['ls_state']
         else:
-            tooltip = _('Host is %s') % host['ls_state']
+            tooltip = _('Host is %s') % host.data['ls_state']
 
         return tooltip
 
@@ -768,7 +754,7 @@ class HostSynthesis(QWidget):
 
         state_lvl = []
         for service in services:
-            state_lvl.append(service['_overall_state_id'])
+            state_lvl.append(service.data['_overall_state_id'])
 
         result = max(state_lvl)
 

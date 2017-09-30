@@ -154,6 +154,55 @@ class DataManager(object):
 
         return synthesis_count
 
+    def get_all_host_name(self):
+        """
+        Collect and return all names of all hosts
+
+        :return: all names of all hosts
+        :rtype: list
+        """
+
+        host_names = []
+        for host in self.database['host']:
+            host_names.append(host.name)
+
+        return host_names
+
+    def get_host_services(self, host_id):
+        """
+
+        :param host_id:
+        :return:
+        """
+
+        services_of_host = []
+        for service in self.database['service']:
+            if service.data['host'] == host_id:
+                services_of_host.append(service)
+
+        return services_of_host
+
+    def get_host_with_services(self, host_name):
+        """
+        Returns the desired host and all its services
+
+        :param host_name: desired host
+        :type host_name: str
+        :return dict with host data and its associated services
+        :rtype: dict
+        """
+
+        host = self.get_item('host', host_name)
+
+        services_host = self.get_host_services(host.item_id)
+
+        host_data = {
+            'host': host,
+            'services': services_host
+            }
+
+        return host_data
+
 
 # Creating "data_manager" variable.
 data_manager = DataManager()

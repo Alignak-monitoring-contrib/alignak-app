@@ -23,17 +23,13 @@
     ThreadManager manage QRunnables for each data
 """
 
-import sys
-
 from logging import getLogger
 
-from PyQt5.Qt import QApplication, QThreadPool  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QThreadPool  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QTimer, QObject  # pylint: disable=no-name-in-module
 
 from alignak_app.core.locales import init_localization
 from alignak_app.core.utils import init_config
-from alignak_app.core.backend import app_backend
-from alignak_app.core.data_manager import data_manager
 from alignak_app.threads.backend_runnable import BackendQRunnable
 
 
@@ -95,9 +91,6 @@ class ThreadManager(QObject):
             # Add task to QThreadPool
             self.pool.start(backend_thread)
 
-        # For tests
-        self.see_database()
-
     def exit_pool(self):
         """
         Exit all BackendQRunnables and delete QThreadPool
@@ -107,62 +100,5 @@ class ThreadManager(QObject):
         self.pool.globalInstance().waitForDone()
         self.pool.deleteLater()
 
-    @staticmethod
-    def see_database():
-        """
-        Display database for tests
-
-        """
-
-        print("User: %s" % data_manager.database['user'])
-        print(
-            "Hosts (%d) %s" % (
-                len(data_manager.database['host']),
-                data_manager.database['host']
-            )
-        )
-        print(
-            "Services (%d) %s " % (
-                len(data_manager.database['service']),
-                data_manager.database['service']
-            )
-        )
-        print(
-            "Daemons (%d) %s " % (
-                len(data_manager.database['alignakdaemon']),
-                data_manager.database['alignakdaemon']
-            )
-        )
-        print(
-            "Livesynthesis (%d) %s " % (
-                len(data_manager.database['livesynthesis']),
-                data_manager.database['livesynthesis']
-            )
-        )
-        print(
-            "History (%d) %s " % (
-                len(data_manager.database['history']),
-                data_manager.database['history']
-            )
-        )
-        print(
-            "Notifications (%d) %s " % (
-                len(data_manager.database['notifications']),
-                data_manager.database['notifications']
-            )
-        )
-
 
 thread_manager = ThreadManager()
-
-# FOR TESTS
-if __name__ == '__main__':
-
-    app = QApplication(sys.argv)
-
-    app_backend.login()
-
-    thread_manager = ThreadManager()
-    thread_manager.start()
-
-    sys.exit(app.exec_())

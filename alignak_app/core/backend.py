@@ -29,6 +29,7 @@ from logging import getLogger
 from alignak_backend_client.client import Backend, BackendException
 
 from alignak_app.core.utils import get_app_config
+from alignak_app.core.data_manager import data_manager
 
 logger = getLogger(__name__)
 
@@ -59,8 +60,8 @@ class AppBackend(object):
 
         # Credentials
         if not username and not password:
-            if self.user:
-                username = self.user['token']
+            if data_manager.is_ready():
+                username = data_manager.database['user'].name
             else:
                 username = get_app_config('Alignak', 'username')
                 password = get_app_config('Alignak', 'password')
@@ -95,13 +96,12 @@ class AppBackend(object):
 
             # Make backend connected to test token
             self.connected = True
-            user = self.get_user(projection=['name'])
+            user = self.get('livesynthesis')
 
             self.connected = bool(user)
             if not self.connected:
                 return False
 
-            self.user['username'] = user['name']
             logger.info('Connection by token: %s', str(self.connected))
         else:
             # Else exit
@@ -297,47 +297,6 @@ class AppBackend(object):
 
         return wanted_service
 
-    def get_host_with_services(self, host_name):
-        """
-        Returns the desired host and all its services
-
-        :param host_name: desired host
-        :type host_name: str
-        :return dict with host data and its associated services
-        :rtype: dict
-        """
-
-        host_data = None
-
-        host_projection = ['name', 'alias', 'ls_state', '_id', 'ls_acknowledged', 'ls_downtimed',
-                           'ls_last_check', 'ls_output', 'address', 'business_impact', 'parents',
-                           'ls_last_state_changed']
-        host = self.get_host('name', host_name, projection=host_projection)
-
-        if host:
-            params = {
-                'where': json.dumps({
-                    '_is_template': False,
-                    'host': host['_id']
-                })
-            }
-            service_projection = ['name', 'alias', 'display_name', 'ls_state', 'ls_acknowledged',
-                                  'ls_downtimed', 'ls_last_check', 'ls_output', 'business_impact',
-                                  'customs', '_overall_state_id', 'aggregation',
-                                  'ls_last_state_changed']
-            services = self.get('service', params=params, projection=service_projection)
-
-            services_host = None
-            if services:
-                services_host = services['_items']
-
-            host_data = {
-                'host': host,
-                'services': services_host
-            }
-
-        return host_data
-
     def get_user(self, projection=None):
         """
         Get current user. The token must already be acquired
@@ -366,49 +325,6 @@ class AppBackend(object):
             return user['_items'][0]
 
         return None
-
-    def user_can_submit_commands(self):
-        """
-        Return if user can submit command or not
-
-        :return: if user can submit command
-        :rtype: bool
-        """
-
-        params = {
-            'where': json.dumps({'name': self.user['username']}),
-            'projection': json.dumps({'can_submit_commands': 1})
-        }
-
-        user = self.get('user', params)
-
-        if user:
-            return user['_items'][0]['can_submit_commands']
-
-        return False
-
-    def get_host_history(self, host_id):
-        """
-        Return history of an host
-
-        :param host_id: id of host
-        :type host_id: str
-        :return: dict of history
-        :rtype: dict
-        """
-
-        params = {
-            'where': json.dumps({'host': host_id}),
-            'sort': '-_id',
-            'projection': json.dumps({'service_name': 1, 'message': 1, 'type': 1})
-        }
-
-        history = self.get('history', params)
-
-        if history:
-            return history['_items']
-
-        return {}
 
 
 # Creating "app_backend" variable.

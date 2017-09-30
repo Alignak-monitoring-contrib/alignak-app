@@ -29,7 +29,6 @@ from logging import getLogger
 
 from alignak_app.core.utils import get_image_path, get_css
 
-
 from PyQt5.QtWidgets import QDialog, QWidget  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QTimeEdit, QDateTimeEdit  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QPushButton, QLabel  # pylint: disable=no-name-in-module

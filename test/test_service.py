@@ -23,7 +23,7 @@ import sys
 
 import unittest2
 
-from alignak_app.synthesis.service import Service
+from alignak_app.synthesis.serviceframe import ServiceFrame
 
 from PyQt5.QtWidgets import QApplication, QLabel
 
@@ -57,7 +57,7 @@ class TestService(unittest2.TestCase):
     def test_init_view(self):
         """Initialize Service"""
 
-        under_test = Service()
+        under_test = ServiceFrame()
 
         self.assertIsNone(under_test.acknowledge_btn)
         self.assertIsNone(under_test.downtime_btn)
@@ -70,7 +70,7 @@ class TestService(unittest2.TestCase):
     def test_get_service_icon(self):
         """Get Service Icon"""
 
-        under_test = Service()
+        under_test = ServiceFrame()
 
         icon_ok = under_test.get_service_icon('OK')
 

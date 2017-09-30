@@ -48,28 +48,30 @@ class ServiceListWidgetItem(QListWidgetItem):
         """
         Inititalize QListWidgetItem
 
+        :param service: Service item with its data
+        :type service: alignak_app.models.item_model.ItemModel
         """
 
-        self.aggregation = service['aggregation']
+        self.aggregation = service.data['aggregation']
         self.define_state_name(service)
 
-        if not service['aggregation']:
-            service['aggregation'] = 'Global'
+        if not service.data['aggregation']:
+            service.data['aggregation'] = 'Global'
 
         self.setText(
             _('%s is %s') % (
                 self.get_service_name(service).capitalize(),
-                service['ls_state'],
+                service.data['ls_state'],
             )
         )
         self.setToolTip(self.get_service_tooltip(service))
 
-        if service['ls_acknowledged']:
+        if service.data['ls_acknowledged']:
             img = get_image_path('services_acknowledge')
-        elif service['ls_downtimed']:
+        elif service.data['ls_downtimed']:
             img = get_image_path('services_downtime')
         else:
-            img = get_image_path('services_%s' % service['ls_state'])
+            img = get_image_path('services_%s' % service.data['ls_state'])
         self.setIcon(QIcon(img))
 
     def define_state_name(self, service):
@@ -77,45 +79,45 @@ class ServiceListWidgetItem(QListWidgetItem):
         Define the state name to display for service
 
         :param service: service dict data
-        :type service: dict
+        :type service: alignak_app.models.item_model.ItemModel
         """
 
-        if service['ls_acknowledged'] and not service['ls_downtimed']:
+        if service.data['ls_acknowledged'] and not service.data['ls_downtimed']:
             self.state = 'ACKNOWLEDGE'
-        elif service['ls_downtimed']:
+        elif service.data['ls_downtimed']:
             self.state = 'DOWNTIME'
         else:
-            self.state = service['ls_state']
+            self.state = service.data['ls_state']
 
     def get_service_tooltip(self, service):
         """
         Define and return service tooltip
 
         :param service: service dict data
-        :type service: dict
+        :type service: alignak_app.models.item_model.ItemModel
         :return: tooltip string
         :rtype: str
         """
 
-        if service['ls_acknowledged'] and not service['ls_downtimed']:
+        if service.data['ls_acknowledged'] and not service.data['ls_downtimed']:
             tooltip = _('%s is %s and acknowledged !') % (
                 self.get_service_name(service).capitalize(),
-                service['ls_state']
+                service.data['ls_state']
             )
-        elif service['ls_downtimed'] and not service['ls_acknowledged']:
+        elif service.data['ls_downtimed'] and not service.data['ls_acknowledged']:
             tooltip = _('%s is %s and downtimed !') % (
                 self.get_service_name(service).capitalize(),
-                service['ls_state']
+                service.data['ls_state']
             )
-        elif service['ls_acknowledged'] and service['ls_downtimed']:
+        elif service.data['ls_acknowledged'] and service.data['ls_downtimed']:
             tooltip = _('%s is %s acknowledged. A downtimed is scheduled !') % (
                 self.get_service_name(service).capitalize(),
-                service['ls_state']
+                service.data['ls_state']
             )
         else:
             tooltip = _('%s is %s') % (
                 self.get_service_name(service).capitalize(),
-                service['ls_state']
+                service.data['ls_state']
             )
 
         return tooltip
@@ -126,16 +128,16 @@ class ServiceListWidgetItem(QListWidgetItem):
         Return the service name
 
         :param service: service dict data
-        :type service: dict
+        :type service: alignak_app.models.item_model.ItemModel
         :return: service name
         :rtype: str
         """
 
-        if service['display_name'] != '':
-            service_name = service['display_name']
-        elif service['alias'] != '':
-            service_name = service['alias']
+        if service.data['display_name'] != '':
+            service_name = service.data['display_name']
+        elif service.data['alias'] != '':
+            service_name = service.data['alias']
         else:
-            service_name = service['name']
+            service_name = service.name
 
         return service_name

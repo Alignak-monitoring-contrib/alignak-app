@@ -38,7 +38,7 @@ from PyQt5.QtGui import QFont  # pylint: disable=no-name-in-module
 logger = getLogger(__name__)
 
 
-class Service(QFrame):
+class ServiceFrame(QFrame):
     """
         Class who create the Service QWidget for SynthesisView.
     """
@@ -53,7 +53,7 @@ class Service(QFrame):
     }
 
     def __init__(self, parent=None):
-        super(Service, self).__init__(parent)
+        super(ServiceFrame, self).__init__(parent)
         self.setObjectName('service_widget')
         self.setStyleSheet(get_css())
         # Fields
@@ -65,27 +65,27 @@ class Service(QFrame):
         Inititialize Service QWidget
 
         :param service: service data
-        :type service: dict
+        :type service: alignak_app.models.item_model.ItemModel
         """
 
         layout = QGridLayout()
         self.setLayout(layout)
 
-        layout.addWidget(self.get_service_icon(service['ls_state']), 0, 0, 2, 1)
+        layout.addWidget(self.get_service_icon(service.data['ls_state']), 0, 0, 2, 1)
 
-        if service['display_name'] != '':
+        if service.data['display_name'] != '':
             service_name = service['display_name']
-        elif service['alias'] != '':
-            service_name = service['alias']
+        elif service.data['alias'] != '':
+            service_name = service.data['alias']
         else:
-            service_name = service['name']
+            service_name = service.name
 
         # Service name
         service_label = QLabel()
         if get_app_config('Alignak', 'webui'):
             service_label.setText(
                 '<h3><a href="%s" style="color: black; text-decoration: none">%s</a></h3>' % (
-                    get_app_config('Alignak', 'webui') + '/service/' + service['_id'],
+                    get_app_config('Alignak', 'webui') + '/service/' + service.item_id,
                     service_name
                 )
             )
@@ -93,8 +93,8 @@ class Service(QFrame):
             service_label.setText('<h3>%s</h3>' % service_name)
         service_label.setTextInteractionFlags(Qt.TextBrowserInteraction)
         service_label.setOpenExternalLinks(True)
-        service_label.setToolTip(_('Service is %s. See in WebUI ?') % service['ls_state'])
-        service_label.setObjectName(service['ls_state'])
+        service_label.setToolTip(_('Service is %s. See in WebUI ?') % service.data['ls_state'])
+        service_label.setObjectName(service.data['ls_state'])
         service_label.setMinimumWidth(200)
         service_label.setWordWrap(True)
         layout.addWidget(service_label, 0, 1, 2, 1)
@@ -114,8 +114,8 @@ class Service(QFrame):
         layout.addWidget(self.downtime_btn, 1, 2, 1, 1)
 
         # Last check
-        since_last_check = get_diff_since_last_check(service['ls_last_state_changed'])
-        diff_last_check = get_diff_since_last_check(service['ls_last_check'])
+        since_last_check = get_diff_since_last_check(service.data['ls_last_state_changed'])
+        diff_last_check = get_diff_since_last_check(service.data['ls_last_check'])
 
         last_check = QLabel(
             _('<b>Since:</b> %s, <b>Last check:</b> %s') % (since_last_check, diff_last_check)
@@ -123,16 +123,16 @@ class Service(QFrame):
         layout.addWidget(last_check, 0, 3, 1, 2)
 
         # Output
-        date_output = get_date_from_timestamp(service['ls_last_check'])
-        output = QTextEdit(_('<b>Output:</b> [%s] %s') % (date_output, service['ls_output']))
+        date_output = get_date_from_timestamp(service.data['ls_last_check'])
+        output = QTextEdit(_('<b>Output:</b> [%s] %s') % (date_output, service.data['ls_output']))
         output.setObjectName('output')
-        output.setToolTip(service['ls_output'])
+        output.setToolTip(service.data['ls_output'])
         output.setTextInteractionFlags(Qt.TextSelectableByMouse)
         output.setFont(QFont('Times', 13))
         layout.addWidget(output, 1, 3, 2, 4)
 
         # Service details
-        business_impact = self.get_stars_widget(int(service['business_impact']))
+        business_impact = self.get_stars_widget(int(service.data['business_impact']))
         layout.addWidget(business_impact, 2, 0, 1, 2)
         layout.setAlignment(business_impact, Qt.AlignLeft)
 
@@ -144,7 +144,7 @@ class Service(QFrame):
         Add the service customs actions only if needed
 
         :param service: service dict data from AppBackend
-        :type service: dict
+        :type service: alignak_app.models.item_model.ItemModel
         :param layout: layout of Service
         :type layout: QGridLayout
         """
@@ -154,23 +154,23 @@ class Service(QFrame):
         fixactions = False
 
         row = 3
-        if '_DETAILLEDESC' in service['customs']:
-            desc_label = QLabel(_('<b>Description:</b> %s') % service['customs']['_DETAILLEDESC'])
+        if '_DETAILLEDESC' in service.data['customs']:
+            desc_label = QLabel(_('<b>Description:</b> %s') % service.data['customs']['_DETAILLEDESC'])
             desc_label.setWordWrap(True)
             layout.addWidget(desc_label, row, 0, 1, 4)
             detailledesc = True
             row += 1
 
-        if '_IMPACT' in service['customs']:
-            impact_label = QLabel(_('<b>Impact:</b> %s') % service['customs']['_IMPACT'])
+        if '_IMPACT' in service.data['customs']:
+            impact_label = QLabel(_('<b>Impact:</b> %s') % service.data['customs']['_IMPACT'])
             impact_label.setWordWrap(True)
             layout.addWidget(impact_label, row, 0, 1, 4)
             impact = True
             row += 1
 
-        if '_FIXACTIONS' in service['customs']:
+        if '_FIXACTIONS' in service.data['customs']:
             fixactions_label = QLabel(
-                _('<b>Fix actions:</b> %s') % service['customs']['_FIXACTIONS']
+                _('<b>Fix actions:</b> %s') % service.data['customs']['_FIXACTIONS']
             )
             fixactions_label.setWordWrap(True)
             layout.addWidget(fixactions_label, row, 0, 1, 4)

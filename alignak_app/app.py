@@ -173,7 +173,7 @@ class AlignakApp(QObject):
             send_banner(
                 'OK',
                 _('Welcome %s, you are connected to Alignak Backend') %
-                app_backend.user['username'],
+                data_manager.database['user'].name,
                 duration=10000
             )
 
@@ -203,11 +203,8 @@ class AlignakApp(QObject):
             self.reconnecting.connect(self.reconnect_to_backend)
         else:
             # In case of data provided in config file fails
-            send_banner(
-                'WARN',
-                _('The application fails to connect with the information provided'
-                  ' in the configuration file. Please enter your login details!'),
-                duration=10000
+            logger.error(
+                'Fails to connect with the information provided in the configuration file !'
             )
             login = AppLogin()
             login.create_widget()

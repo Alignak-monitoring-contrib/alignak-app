@@ -55,7 +55,7 @@ class Service(ItemModel):
         services_projection = [
             'name', 'alias', 'display_name', 'ls_state', 'ls_acknowledged', 'ls_downtimed',
             'ls_last_check', 'ls_output', 'business_impact', 'customs', '_overall_state_id',
-            'aggregation', 'ls_last_state_changed'
+            'aggregation', 'ls_last_state_changed', 'host'
         ]
 
         request = {
@@ -65,3 +65,22 @@ class Service(ItemModel):
         }
 
         return request
+
+    @staticmethod
+    def get_service_states_nb():
+        """
+        Return all service state in a dict with int() as zero
+
+        :return: all service state with int() as zero
+        :rtype: dict
+        """
+
+        return {
+            'OK': 0,
+            'UNKNOWN': 0,
+            'WARNING': 0,
+            'UNREACHABLE': 0,
+            'CRITICAL': 0,
+            'ACKNOWLEDGE': 0,
+            'DOWNTIME': 0
+        }
