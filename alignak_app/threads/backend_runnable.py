@@ -274,8 +274,6 @@ class BackendQRunnable(QRunnable):
             if 'imported_admin' in user:
                 user = 'admin'
             if user == data_manager.database['user'].name:
-                print(data_manager.database['user'].name)
-                print(user)
                 notification = Notification()
 
                 notification.create(
