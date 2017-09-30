@@ -142,7 +142,7 @@ class ThreadManager(QObject):
                 data_manager.database['notifications']
             )
         )
-        print("DataManager is ready: %s" % str(data_manager.is_filled()))
+        print("DataManager is ready: %s" % str(data_manager.is_ready()))
 
 
 # FOR TESTS

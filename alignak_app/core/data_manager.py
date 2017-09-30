@@ -45,10 +45,12 @@ class DataManager(object):
             'user': [],
         }
 
-    def is_filled(self):
+    def is_ready(self):
         """
-        Check if dtata manager is filled (ready)
-        :return:
+        Check if DataManager is filled and ready
+
+        :return: if ready or not
+        :rtype: bool
         """
 
         filled = False
