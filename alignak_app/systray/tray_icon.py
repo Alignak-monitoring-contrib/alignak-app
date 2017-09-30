@@ -36,7 +36,7 @@ from alignak_app.threads.thread_manager import thread_manager
 from alignak_app.core.utils import get_app_config, get_image_path, init_config
 from alignak_app.synthesis.synthesis import Synthesis
 from alignak_app.systray.qactions_factory import QActionFactory
-from alignak_app.user.user_manager import UserManager
+from alignak_app.user.user_profile import UserProfile
 from alignak_app.widgets.about import AppAbout
 from alignak_app.widgets.banner import send_banner
 from alignak_app.widgets.status import AlignakStatus
@@ -295,9 +295,10 @@ class TrayIcon(QSystemTrayIcon):
             _('View my profile'),
             self
         )
-        self.user = UserManager()
+        self.user = UserProfile()
+        self.user.initialize()
 
-        self.qaction_factory.get('user').triggered.connect(self.user.show_user_widget)
+        self.qaction_factory.get('user').triggered.connect(self.user.app_widget.show)
 
         self.menu.addAction(self.qaction_factory.get('user'))
 

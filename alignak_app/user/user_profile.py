@@ -32,6 +32,8 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=n
 
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.backend import app_backend
+from alignak_app.core.data_manager import data_manager
+from alignak_app.threads.thread_manager import thread_manager
 from alignak_app.user.password import PasswordDialog
 from alignak_app.widgets.app_widget import AppQWidget
 from alignak_app.widgets.banner import send_banner
@@ -50,7 +52,6 @@ class UserProfile(QWidget):
         super(UserProfile, self).__init__(parent)
         self.setStyleSheet(get_css())
         # Fields
-        self.user = {}
         self.app_widget = None
         self.host_notif_state = None
         self.service_notif_state = None
@@ -65,27 +66,29 @@ class UserProfile(QWidget):
 
         """
 
-        # Get user data first to prevent user is None
-        self.get_user_data()
-
         # Initialize AppQWidget
         self.app_widget = AppQWidget()
         self.app_widget.initialize(_('User View'))
         self.app_widget.add_widget(self)
 
         # first creation of QWidget
-        self.create_widget(True)
+        self.create_widget()
 
-    def create_widget(self, first=False):
+    def create_widget(self):
         """
         Create or update the user QWidget. Separate function from initialize() for pyqtSignal
 
         """
 
-        # Refresh the user data if not first start
-        if not first:
-            self.get_user_data()
+        old_pos = None
+        logger.debug("Delete old UserProfile")
+        if self.app_widget:
+            old_pos = self.app_widget.pos()
 
+        if old_pos:
+            self.app_widget.move(old_pos)
+
+        thread_manager.add_task('user')
         if self.layout():
             # Clean layout
             for i in reversed(range(self.layout().count())):
@@ -99,36 +102,6 @@ class UserProfile(QWidget):
         layout.addWidget(self.get_notes_widget())
 
         layout.addWidget(self.get_notifications_widget())
-
-    def get_user_data(self):
-        """
-        Get and set the user data
-
-        """
-
-        projection = [
-            '_realm',
-            'is_admin',
-            'back_role_super_admin',
-            'alias',
-            'name',
-            'notes',
-            'email',
-            'can_submit_commands',
-            'token',
-            'host_notifications_enabled',
-            'service_notifications_enabled',
-            'host_notification_period',
-            'service_notification_period',
-            'host_notification_options',
-            'service_notification_options',
-        ]
-
-        self.user = app_backend.get_user(projection)
-
-        if not self.user:
-            for key in projection:
-                self.user[key] = 'n/a'
 
     def get_main_user_widget(self):
         """
@@ -182,7 +155,7 @@ class UserProfile(QWidget):
         mail_title = QLabel(_('Email:'))
         mail_title.setObjectName("usersubtitle")
         info_layout.addWidget(mail_title, 2, 0, 1, 1)
-        mail_data = QLabel(self.user['email'])
+        mail_data = QLabel(data_manager.database['user'].data['email'])
         info_layout.addWidget(mail_data, 2, 1, 1, 1)
 
         return information_widget
@@ -204,7 +177,7 @@ class UserProfile(QWidget):
         admin_title.setMinimumHeight(32)
         rights_layout.addWidget(admin_title, 1, 0, 1, 1)
         admin_data = self.get_enable_label_icon(
-            self.user['is_admin']
+            data_manager.database['user'].data['is_admin']
         )
         rights_layout.addWidget(admin_data, 1, 1, 1, 1)
 
@@ -213,7 +186,7 @@ class UserProfile(QWidget):
         command_title.setMinimumHeight(32)
         rights_layout.addWidget(command_title, 2, 0, 1, 1)
         command_data = self.get_enable_label_icon(
-            self.user['can_submit_commands']
+            data_manager.database['user'].data['can_submit_commands']
         )
         rights_layout.addWidget(command_data, 2, 1, 1, 1)
 
@@ -237,8 +210,10 @@ class UserProfile(QWidget):
         :rtype: str
         """
 
-        if '_realm' in self.user:
-            endpoint = '/'.join(['realm', self.user['_realm']])
+        if '_realm' in data_manager.database['user'].data:
+            endpoint = '/'.join(
+                ['realm', data_manager.database['user'].data['_realm']]
+            )
             projection = [
                 'name',
                 'alias'
@@ -264,10 +239,12 @@ class UserProfile(QWidget):
 
         role = _('user')
 
-        if self.user['is_admin'] or self.user['back_role_super_admin']:
+        if data_manager.database['user'].data['is_admin'] or \
+                data_manager.database['user'].data['back_role_super_admin']:
             role = _('administrator')
-        if self.user['can_submit_commands'] and not \
-                self.user['is_admin'] and not self.user['back_role_super_admin']:
+        if data_manager.database['user'].data['can_submit_commands'] and not \
+                data_manager.database['user'].data['is_admin'] and not \
+                data_manager.database['user'].data['back_role_super_admin']:
             role = _('power')
 
         return role
@@ -292,15 +269,15 @@ class UserProfile(QWidget):
         alias_title = QLabel(_('Alias:'))
         alias_title.setObjectName("usersubtitle")
         notes_layout.addWidget(alias_title, 1, 0, 1, 1)
-        alias_data = QLabel(self.user['alias'])
+        alias_data = QLabel(data_manager.database['user'].data['alias'])
         notes_layout.addWidget(alias_data, 1, 1, 1, 2)
 
         # Token only for administrators
-        if self.user['is_admin']:
+        if data_manager.database['user'].data['is_admin']:
             token_title = QLabel(_('Token:'))
             token_title.setObjectName("usersubtitle")
             notes_layout.addWidget(token_title, 2, 0, 1, 2)
-            token_data = QLabel(self.user['token'])
+            token_data = QLabel(data_manager.database['user'].data['token'])
             token_data.setTextInteractionFlags(Qt.TextSelectableByMouse)
             token_data.setCursor(Qt.IBeamCursor)
             notes_layout.addWidget(token_data, 2, 1, 1, 1)
@@ -318,7 +295,7 @@ class UserProfile(QWidget):
         notes_layout.addWidget(self.notes_edit, 4, 1, 1, 1)
 
         # Create QLabel for notes
-        self.notes_data = QLabel(self.user['notes'])
+        self.notes_data = QLabel(data_manager.database['user'].data['notes'])
         notes_layout.addWidget(self.notes_data, 4, 1, 1, 1)
 
         # Edit button for notes
@@ -354,8 +331,8 @@ class UserProfile(QWidget):
                 new_password = pass_dialog.pass_edit.text()
 
                 data = {'password': str(new_password)}
-                headers = {'If-Match': self.user['_etag']}
-                endpoint = '/'.join(['user', self.user['_id']])
+                headers = {'If-Match': data_manager.database['user'].data['_etag']}
+                endpoint = '/'.join(['user', data_manager.database['user'].item_id])
 
                 patched = app_backend.patch(endpoint, data, headers)
 
@@ -374,21 +351,22 @@ class UserProfile(QWidget):
         """
 
         # Patch only if text have really changed
-        if bool(self.notes_edit.text() != self.user['notes']):
+        if bool(self.notes_edit.text() != data_manager.database['user'].data['notes']):
             data = {'notes': str(self.notes_edit.text())}
-            headers = {'If-Match': self.user['_etag']}
-            endpoint = '/'.join(['user', self.user['_id']])
+            headers = {'If-Match': data_manager.database['user'].data['_etag']}
+            endpoint = '/'.join(['user', data_manager.database['user'].item_id])
 
             patched = app_backend.patch(endpoint, data, headers)
 
             if patched:
-                name = self.user['alias'] if self.user['alias'] else self.user['name']
-                message = _("The notes for the %s have been edited.") % name
+                message = _("The notes for the %s have been edited.") % \
+                      data_manager.database['user'].name
                 send_banner('OK', message, duration=10000)
             else:
                 send_banner('ERROR', _("Backend PATCH failed, please check your logs !"))
 
-            self.update_profile.emit()
+            # thread_manager.add_task('user')
+            self.create_widget()
         else:
             self.notes_data.show()
             self.notes_edit.hide()
@@ -435,7 +413,9 @@ class UserProfile(QWidget):
         state_title.setObjectName("usersubtitle")
         host_notif_layout.addWidget(state_title, 1, 0, 1, 1)
         self.host_notif_state = QCheckBox()
-        self.host_notif_state.setChecked(self.user['host_notifications_enabled'])
+        self.host_notif_state.setChecked(
+            data_manager.database['user'].data['host_notifications_enabled']
+        )
         self.host_notif_state.stateChanged.connect(self.enable_notifications)
         self.host_notif_state.setObjectName('hostactions')
         self.host_notif_state.setFixedSize(18, 18)
@@ -446,14 +426,16 @@ class UserProfile(QWidget):
         enable_title.setObjectName("usersubtitle")
         host_notif_layout.addWidget(enable_title, 2, 0, 1, 1)
         enable_icon = self.get_enable_label_icon(
-            self.user['host_notifications_enabled']
+            data_manager.database['user'].data['host_notifications_enabled']
         )
         host_notif_layout.addWidget(enable_icon, 2, 1, 1, 1)
 
         period_title = QLabel(_("Notification period:"))
         period_title.setObjectName("usersubtitle")
         host_notif_layout.addWidget(period_title, 3, 0, 1, 1)
-        period = self.get_period_name(self.user['host_notification_period'])
+        period = self.get_period_name(
+            data_manager.database['user'].data['host_notification_period']
+        )
         period_data = QLabel(period.capitalize())
         host_notif_layout.addWidget(period_data, 3, 1, 1, 1)
 
@@ -464,7 +446,7 @@ class UserProfile(QWidget):
 
         option_widget = self.get_options_widget(
             'hosts',
-            self.user['host_notification_options']
+            data_manager.database['user'].data['host_notification_options']
         )
         host_notif_layout.addWidget(option_widget, 5, 0, 1, 2)
 
@@ -491,7 +473,9 @@ class UserProfile(QWidget):
         service_notif_layout.addWidget(state_title, 1, 0, 1, 1)
         self.service_notif_state = QCheckBox()
         self.service_notif_state.setObjectName('serviceactions')
-        self.service_notif_state.setChecked(self.user['service_notifications_enabled'])
+        self.service_notif_state.setChecked(
+            data_manager.database['user'].data['service_notifications_enabled']
+        )
         self.service_notif_state.stateChanged.connect(self.enable_notifications)
         self.service_notif_state.checkState()
         self.service_notif_state.setFixedSize(18, 18)
@@ -502,14 +486,16 @@ class UserProfile(QWidget):
         enable_title.setMinimumHeight(32)
         service_notif_layout.addWidget(enable_title, 2, 0, 1, 1)
         enable_data = self.get_enable_label_icon(
-            self.user['service_notifications_enabled']
+            data_manager.database['user'].data['service_notifications_enabled']
         )
         service_notif_layout.addWidget(enable_data, 2, 1, 1, 1)
 
         period_title = QLabel(_("Notification period:"))
         period_title.setObjectName("usersubtitle")
         service_notif_layout.addWidget(period_title, 3, 0, 1, 1)
-        period = self.get_period_name(self.user['service_notification_period'])
+        period = self.get_period_name(
+            data_manager.database['user'].data['service_notification_period']
+        )
         period_data = QLabel(period.capitalize())
         service_notif_layout.addWidget(period_data, 3, 1, 1, 1)
 
@@ -520,7 +506,7 @@ class UserProfile(QWidget):
 
         option_widget = self.get_options_widget(
             'services',
-            self.user['service_notification_options']
+            data_manager.database['user'].data['service_notification_options']
         )
         service_notif_layout.addWidget(option_widget, 5, 0, 1, 2)
 
@@ -546,8 +532,8 @@ class UserProfile(QWidget):
             # check_btn.checkState() is equal to 0 or 2
             notification_enabled = True if check_btn.checkState() else False
             data = {notification_type: notification_enabled}
-            headers = {'If-Match': self.user['_etag']}
-            endpoint = '/'.join(['user', self.user['_id']])
+            headers = {'If-Match': data_manager.database['user'].data['_etag']}
+            endpoint = '/'.join(['user', data_manager.database['user'].item_id])
 
             patched = app_backend.patch(endpoint, data, headers)
 
@@ -561,7 +547,7 @@ class UserProfile(QWidget):
             else:
                 send_banner('ERROR', _("Backend PATCH failed, please check your logs !"))
 
-        self.update_profile.emit()
+        self.create_widget()
 
     def get_options_widget(self, item_type, options):
         """

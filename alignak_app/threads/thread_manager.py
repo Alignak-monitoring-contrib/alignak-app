@@ -91,10 +91,23 @@ class ThreadManager(QObject):
             # Add task to QThreadPool
             self.pool.start(backend_thread)
 
+    def add_task(self, task):
+        """
+        Add a task to QThreadPool
+
+        :param task: one of the following:
+        - 'notifications', 'livesynthesis', 'alignakdaemon', 'history', 'service', 'host', 'user'
+        :type task: str
+
+        """
+
+        backend_thread = BackendQRunnable(task)
+        self.pool.start(backend_thread)
+
     def exit_pool(self):
         """
         Exit all BackendQRunnables and delete QThreadPool
-        :return:
+
         """
 
         self.pool.globalInstance().waitForDone()
