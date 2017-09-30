@@ -71,6 +71,8 @@ class DataManager(object):
         :type items_list: list | dict
         """
 
+        logger.info("Update database: %s", item_type)
+
         self.database[item_type] = items_list
 
     def get_item(self, item_type, key, value=None):

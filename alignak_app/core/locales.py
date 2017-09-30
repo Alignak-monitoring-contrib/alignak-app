@@ -60,7 +60,7 @@ def init_localization():
         translation.install()
         _ = translation.gettext
     except IOError:
-        logger.error("Locale not found. Using default language messages (English)")
+        logger.warning("Locale not found. Using default language messages (English)")
         null_translation = NullTranslations()
         null_translation.install()
         _ = null_translation.gettext

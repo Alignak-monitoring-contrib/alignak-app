@@ -32,6 +32,7 @@ from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
 
+from alignak_app.threads.thread_manager import thread_manager
 from alignak_app.core.utils import get_app_config, get_image_path, init_config
 from alignak_app.synthesis.synthesis import Synthesis
 from alignak_app.systray.qactions_factory import QActionFactory
@@ -438,6 +439,7 @@ class TrayIcon(QSystemTrayIcon):
 
         """
 
+        thread_manager.exit_pool()
         sys.exit(0)
 
     def open_url(self):  # pragma: no cover

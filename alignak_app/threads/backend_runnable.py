@@ -94,7 +94,8 @@ class BackendQRunnable(QRunnable):
 
         user.create(
             request['_items'][0]['_id'],
-            request['_items'][0]
+            request['_items'][0],
+            request['_items'][0]['name']
         )
 
         data_manager.update_item_database('user', user)
@@ -269,10 +270,12 @@ class BackendQRunnable(QRunnable):
         notifications = []
         for item in request['_items']:
             message_split = item['message'].split(';')
-            user = message_split[0].split(':')[1]
+            user = message_split[0].split(':')[1].strip()
             if 'imported_admin' in user:
                 user = 'admin'
             if user == data_manager.database['user'].name:
+                print(data_manager.database['user'].name)
+                print(user)
                 notification = Notification()
 
                 notification.create(

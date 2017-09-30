@@ -27,6 +27,8 @@ import sys
 from logging import DEBUG, INFO
 
 from alignak_app.core.logs import create_logger
+from alignak_app.threads.thread_manager import thread_manager, ThreadManager
+from alignak_app.core.data_manager import data_manager
 from alignak_app.core.notifier import AppNotifier
 from alignak_app.core.utils import get_image_path, get_main_folder, get_app_workdir
 from alignak_app.core.utils import init_config, get_app_config
@@ -61,6 +63,7 @@ class AlignakApp(QObject):
         self.notifier_timer = QTimer()
         self.reconnect_mode = False
         self.dashboard = None
+        self.thread_manager = None
 
     def start(self):
         """
@@ -159,6 +162,13 @@ class AlignakApp(QObject):
 
         # Check if connected
         if app_backend.connected:
+            self.thread_manager = thread_manager
+            self.thread_manager.start()
+
+            logger.info("Preparing DataManager...")
+            while not data_manager.is_ready():
+                continue
+
             # Send Welcome Banner
             send_banner(
                 'OK',

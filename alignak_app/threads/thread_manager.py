@@ -98,6 +98,15 @@ class ThreadManager(QObject):
         # For tests
         self.see_database()
 
+    def exit_pool(self):
+        """
+        Exit all BackendQRunnables and delete QThreadPool
+        :return:
+        """
+
+        self.pool.globalInstance().waitForDone()
+        self.pool.deleteLater()
+
     @staticmethod
     def see_database():
         """
@@ -142,8 +151,9 @@ class ThreadManager(QObject):
                 data_manager.database['notifications']
             )
         )
-        print("DataManager is ready: %s" % str(data_manager.is_ready()))
 
+
+thread_manager = ThreadManager()
 
 # FOR TESTS
 if __name__ == '__main__':
