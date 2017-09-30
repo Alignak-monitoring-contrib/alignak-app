@@ -27,7 +27,7 @@
 from logging import getLogger
 
 from alignak_app.core.utils import get_image_path, get_app_config
-from alignak_app.core.utils import get_diff_since_last_check, get_date_from_timestamp
+from alignak_app.core.utils import get_time_diff_since_last_timestamp, get_date_from_timestamp
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.action_manager import ACK, DOWNTIME, PROCESS
@@ -135,7 +135,9 @@ class HostSynthesis(QWidget):
         host_name.setTextInteractionFlags(Qt.TextBrowserInteraction)
         host_name.setOpenExternalLinks(True)
         host_name.setObjectName('hostname')
-        host_name.setToolTip(_('Host is %s. See in WebUI ?') % backend_data['host'].data['ls_state'])
+        host_name.setToolTip(
+            _('Host is %s. See in WebUI ?') % backend_data['host'].data['ls_state']
+        )
         host_layout.addWidget(host_name, 2, 0, 1, 1)
         host_layout.setAlignment(host_name, Qt.AlignCenter)
 
@@ -168,8 +170,15 @@ class HostSynthesis(QWidget):
         :type backend_data: dict
         """
 
-        since_last_check = get_diff_since_last_check(backend_data['host'].data['ls_last_state_changed'])
-        diff_last_check = get_diff_since_last_check(backend_data['host'].data['ls_last_check'])
+        # Get time last state changed
+        since_last_check = get_time_diff_since_last_timestamp(
+            backend_data['host'].data['ls_last_state_changed']
+        )
+
+        # Get time last check was
+        diff_last_check = get_time_diff_since_last_timestamp(
+            backend_data['host'].data['ls_last_check']
+        )
         host_last_check = QLabel(
             _('<b>Since:</b> %s <b>Last check:</b> %s') % (since_last_check, diff_last_check)
         )

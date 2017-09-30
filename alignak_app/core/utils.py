@@ -277,20 +277,20 @@ def get_css():
         return ""
 
 
-def get_diff_since_last_check(last_check):  # pragma: no cover - not testable
+def get_time_diff_since_last_timestamp(timestamp):  # pragma: no cover - not testable
     """
     Return the diff between the last time stamp
 
-    :param last_check: timestamp of the last check
-    :type last_check: float
+    :param timestamp: timestamp of the last check
+    :type timestamp: float
     :return: time difference formatted
     :rtype: str
     """
 
-    if not last_check:
+    if not timestamp:
         return 'n/a'
 
-    time_delta = int(time.time()) - int(last_check)
+    time_delta = int(time.time()) - int(timestamp)
 
     # If it's now, say it :)
     if time_delta < 3:

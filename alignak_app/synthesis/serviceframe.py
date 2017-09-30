@@ -25,7 +25,7 @@
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_diff_since_last_check, get_css, get_date_from_timestamp
+from alignak_app.core.utils import get_time_diff_since_last_timestamp, get_css, get_date_from_timestamp
 from alignak_app.core.utils import get_image_path, get_app_config
 
 from PyQt5.QtWidgets import QHBoxLayout  # pylint: disable=no-name-in-module
@@ -114,8 +114,8 @@ class ServiceFrame(QFrame):
         layout.addWidget(self.downtime_btn, 1, 2, 1, 1)
 
         # Last check
-        since_last_check = get_diff_since_last_check(service.data['ls_last_state_changed'])
-        diff_last_check = get_diff_since_last_check(service.data['ls_last_check'])
+        since_last_check = get_time_diff_since_last_timestamp(service.data['ls_last_state_changed'])
+        diff_last_check = get_time_diff_since_last_timestamp(service.data['ls_last_check'])
 
         last_check = QLabel(
             _('<b>Since:</b> %s, <b>Last check:</b> %s') % (since_last_check, diff_last_check)
