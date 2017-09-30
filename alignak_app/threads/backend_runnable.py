@@ -73,7 +73,7 @@ class BackendQRunnable(QRunnable):
         elif 'notifications' in self.task:
             self.query_notifications_data()
         else:
-            print("ERROR")
+            logger.error("Tasks is unknown: %s", self.task)
 
     @staticmethod
     def query_user_data():

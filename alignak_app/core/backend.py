@@ -155,8 +155,8 @@ class AppBackend(object):
                 logger.debug('..with params: %s', str(params))
                 logger.debug('...Response > %s', str(request['_status']))
             except BackendException as e:
-                logger.error('GET failed: %s', str(e))
-                logger.error('...Request: %s', str(request))
+                logger.warning('First GET failed: %s', str(e))
+                logger.warning('...Request: %s', str(request))
                 try:
                     request = self.backend.get(
                         endpoint,

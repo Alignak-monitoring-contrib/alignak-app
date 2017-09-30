@@ -45,6 +45,20 @@ class DataManager(object):
             'user': [],
         }
 
+    def is_filled(self):
+        """
+        Check if dtata manager is filled (ready)
+        :return:
+        """
+
+        filled = False
+        if self.database['user'] and self.database['host'] and \
+                self.database['service'] and self.database['alignakdaemon'] and \
+                self.database['livesynthesis']:
+            filled = True
+
+        return filled
+
     def update_item_database(self, item_type, items_list):
         """
         Update an item type in database
@@ -57,7 +71,7 @@ class DataManager(object):
 
         self.database[item_type] = items_list
 
-    def get_item(self, item_type, key, value):
+    def get_item(self, item_type, key, value=None):
         """
         Return the wanted item for item type who contain the value
 
@@ -71,8 +85,12 @@ class DataManager(object):
         items = self.database[item_type]
 
         for item in items:
-            if item.data[key] == value:
-                return item
+            if value:
+                if item.data[key] == value:
+                    return item
+            else:
+                if item.name == key:
+                    return item
 
 
 # Creating "data_manager" variable.
