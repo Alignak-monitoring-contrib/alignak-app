@@ -23,17 +23,14 @@
     BackendThread manage backend threads and requests
 """
 
-import sys
 import json
 
 from logging import getLogger
 
-from PyQt5.Qt import QRunnable, QDialog  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QRunnable  # pylint: disable=no-name-in-module
 
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
-from alignak_app.widgets.login import AppLogin
-from alignak_app.widgets.banner import send_banner
 
 from alignak_app.models.item_user import User
 from alignak_app.models.item_host import Host

@@ -213,8 +213,6 @@ class AppLogin(QDialog):
         resp = app_backend.login(str(username), str(password))
 
         if resp:
-            # app_backend.user['username'] = str(username)
-            # app_backend.user['token'] = str(app_backend.backend.token)
             self.accept()
         else:
             send_banner('WARN', _('Backend connection refused...'), duration=10000)
