@@ -104,14 +104,5 @@ class ThreadManager(QObject):
         backend_thread = BackendQRunnable(task)
         self.pool.start(backend_thread)
 
-    def exit_pool(self):
-        """
-        Exit all BackendQRunnables and delete QThreadPool
-
-        """
-
-        self.pool.globalInstance().waitForDone()
-        self.pool.deleteLater()
-
 
 thread_manager = ThreadManager()

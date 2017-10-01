@@ -38,7 +38,7 @@ from alignak_app.synthesis.synthesis import Synthesis
 from alignak_app.systray.qactions_factory import QActionFactory
 from alignak_app.user.user_profile import UserProfile
 from alignak_app.widgets.about import AppAbout
-from alignak_app.widgets.banner import send_banner
+from alignak_app.widgets.banner import send_banner, bannerManager
 from alignak_app.widgets.status import AlignakStatus
 
 logger = getLogger(__name__)
@@ -63,6 +63,7 @@ class TrayIcon(QSystemTrayIcon):
         self.app_about = None
         self.synthesis = None
         self.user = None
+        self.dashboard = None
 
     def build_menu(self, dashboard):
         """
@@ -71,6 +72,9 @@ class TrayIcon(QSystemTrayIcon):
         :param dashboard: Dashboard QWidget
         :type dashboard: alignak_app.dashboard.app_dashboard.Dashboard
         """
+
+        # Store dashboard to quit if needed
+        self.dashboard = dashboard
 
         # Create actions
         self.create_synthesis_action()
@@ -433,14 +437,25 @@ class TrayIcon(QSystemTrayIcon):
         self.qaction_factory.get('services_downtime').setText(
             _('Services DOWNTIME (%s)') % str(synthesis['services']['downtime']))
 
-    @staticmethod
-    def quit_app():  # pragma: no cover
+    def quit_app(self):  # pragma: no cover
         """
-        Quit application.
+        Quit application and close all widgets handle by application
 
         """
 
-        thread_manager.exit_pool()
+        self.alignak_status.app_widget.close()
+        self.app_about.app_widget.close()
+        self.synthesis.host_synthesis.history_widget.app_widget.close()
+        self.synthesis.app_widget.close()
+        self.user.app_widget.close()
+        self.dashboard.app_widget.close()
+
+        for banner in bannerManager.banners:
+            banner.close()
+
+        thread_manager.tasks = []
+        thread_manager.pool.globalInstance().waitForDone()
+
         sys.exit(0)
 
     def open_url(self):  # pragma: no cover
