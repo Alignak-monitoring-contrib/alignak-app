@@ -23,13 +23,10 @@
     App Synthesis manage widget for Host Synthesis QWidget.
 """
 
-import json
-
 from logging import getLogger
 
 from alignak_app.core.utils import get_css, get_app_config
 from alignak_app.core.action_manager import ActionManager
-from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.synthesis.host_synthesis import HostSynthesis
 from alignak_app.widgets.app_widget import AppQWidget

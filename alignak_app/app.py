@@ -27,7 +27,7 @@ import sys
 from logging import DEBUG, INFO
 
 from alignak_app.core.logs import create_logger
-from alignak_app.threads.thread_manager import thread_manager, ThreadManager
+from alignak_app.threads.thread_manager import thread_manager
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.notifier import AppNotifier
 from alignak_app.core.utils import get_image_path, get_main_folder, get_app_workdir
