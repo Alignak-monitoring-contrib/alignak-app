@@ -56,25 +56,3 @@ class TestAppLogin(unittest2.TestCase):
 
         self.assertIsNotNone(under_test.username_line)
         self.assertIsNotNone(under_test.password_line)
-
-    def test_handle_login_good_connection(self):
-        """TODO Handle Login: good credentials"""
-
-        under_test = AppLogin()
-        under_test.create_widget()
-
-        under_test.username_line.setText('admin')
-        under_test.password_line.setText('admin')
-
-        under_test.handle_login()
-
-    def test_handle_login_bad_connection(self):
-        """TODO Handle Login: bad credentials"""
-
-        under_test = AppLogin()
-        under_test.create_widget()
-
-        under_test.username_line.setText('bad')
-        under_test.password_line.setText('bad')
-
-        under_test.handle_login()

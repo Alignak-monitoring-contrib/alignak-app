@@ -28,11 +28,8 @@ import sys
 from logging import getLogger
 
 from alignak_app import __version__
-from alignak_app.core.backend import app_backend
 from alignak_app.core.utils import get_app_config, set_app_config, init_config
 from alignak_app.core.utils import get_css, get_image_path
-from alignak_app.widgets.banner import send_banner
-
 
 from PyQt5.QtWidgets import QWidget, QDialog, QApplication  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QPushButton, QGridLayout  # pylint: disable=no-name-in-module
@@ -131,7 +128,7 @@ class AppLogin(QDialog):
 
         # Login button
         login_button = QPushButton(_('LOGIN'), self)
-        login_button.clicked.connect(self.handle_login)
+        login_button.clicked.connect(self.accept)
         login_button.setObjectName('valid')
         login_button.setMinimumHeight(30)
         login_button.setDefault(True)
@@ -200,23 +197,6 @@ class AppLogin(QDialog):
         logo_layout.addWidget(close_btn, 3)
 
         return logo_widget
-
-    def handle_login(self):
-        """
-        Handle for login button
-
-        """
-
-        username = self.username_line.text()
-        password = self.password_line.text()
-
-        resp = app_backend.login(str(username), str(password))
-
-        if resp:
-            self.accept()
-        else:
-            send_banner('WARN', _('Backend connection refused...'), duration=10000)
-            logger.warning('Connection informations are not accepted !')
 
     def handle_server(self):  # pragma: no cover - not testable
         """

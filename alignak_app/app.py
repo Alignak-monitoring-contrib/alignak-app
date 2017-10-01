@@ -95,7 +95,9 @@ class AlignakApp(QObject):
                 login.create_widget()
 
                 if login.exec_() == QDialog.Accepted:
-                    self.run()
+                    username = str(login.username_line.text())
+                    password = str(login.password_line.text())
+                    self.run(username, password)
                 else:
                     logger.info('Alignak-App closes...')
                     sys.exit(0)
@@ -152,13 +154,16 @@ class AlignakApp(QObject):
             timer.start(10000)
             timer.timeout.connect(connect_to_backend)
 
-    def run(self):  # pragma: no cover
+    def run(self, username=None, password=None):  # pragma: no cover
         """
         Start all Alignak-app processes and create AppBackend if connection by config file.
 
         """
 
-        app_backend.login()
+        if username and password:
+            app_backend.login(username, password)
+        else:
+            app_backend.login()
 
         # Check if connected
         if app_backend.connected:
@@ -210,7 +215,9 @@ class AlignakApp(QObject):
             login.create_widget()
 
             if login.exec_() == QDialog.Accepted:
-                self.run()
+                username = str(login.username_line.text())
+                password = str(login.password_line.text())
+                self.run(username, password)
             else:
                 logger.info('Alignak-App closes...')
                 sys.exit(0)
