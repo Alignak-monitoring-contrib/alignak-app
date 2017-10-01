@@ -92,13 +92,14 @@ class BackendQRunnable(QRunnable):
             request_data['projection']
         )
 
-        user.create(
-            request['_items'][0]['_id'],
-            request['_items'][0],
-            request['_items'][0]['name']
-        )
+        if request:
+            user.create(
+                request['_items'][0]['_id'],
+                request['_items'][0],
+                request['_items'][0]['name']
+            )
 
-        data_manager.update_item_database('user', user)
+            data_manager.update_item_database('user', user)
 
     @staticmethod
     def query_hosts_data():
@@ -116,18 +117,20 @@ class BackendQRunnable(QRunnable):
             all_items=True
         )
 
-        hosts_list = []
-        for item in request['_items']:
-            host = Host()
+        if request:
+            hosts_list = []
+            for item in request['_items']:
+                host = Host()
 
-            host.create(
-                item['_id'],
-                item,
-                item['name'],
-            )
-            hosts_list.append(host)
+                host.create(
+                    item['_id'],
+                    item,
+                    item['name'],
+                )
+                hosts_list.append(host)
 
-        data_manager.update_item_database('host', hosts_list)
+        if hosts_list:
+            data_manager.update_item_database('host', hosts_list)
 
     @staticmethod
     def query_services_data():
@@ -145,19 +148,21 @@ class BackendQRunnable(QRunnable):
             all_items=True
         )
 
-        services_list = []
-        for item in request['_items']:
-            service = Service()
+        if request:
+            services_list = []
+            for item in request['_items']:
+                service = Service()
 
-            service.create(
-                item['_id'],
-                item,
-                item['name'],
-            )
+                service.create(
+                    item['_id'],
+                    item,
+                    item['name'],
+                )
 
-            services_list.append(service)
+                services_list.append(service)
 
-        data_manager.update_item_database('service', services_list)
+            if services_list:
+                data_manager.update_item_database('service', services_list)
 
     @staticmethod
     def query_daemons_data():
@@ -175,19 +180,21 @@ class BackendQRunnable(QRunnable):
             all_items=True
         )
 
-        daemons_list = []
-        for item in request['_items']:
-            daemon = Daemon()
+        if request:
+            daemons_list = []
+            for item in request['_items']:
+                daemon = Daemon()
 
-            daemon.create(
-                item['_id'],
-                item,
-                item['name'],
-            )
+                daemon.create(
+                    item['_id'],
+                    item,
+                    item['name'],
+                )
 
-            daemons_list.append(daemon)
+                daemons_list.append(daemon)
 
-        data_manager.update_item_database('alignakdaemon', daemons_list)
+            if daemons_list:
+                data_manager.update_item_database('alignakdaemon', daemons_list)
 
     @staticmethod
     def query_livesynthesis_data():
@@ -205,18 +212,20 @@ class BackendQRunnable(QRunnable):
             all_items=True
         )
 
-        livesynthesis = []
-        for item in request['_items']:
-            synthesis = LiveSynthesis()
+        if request:
+            livesynthesis = []
+            for item in request['_items']:
+                synthesis = LiveSynthesis()
 
-            synthesis.create(
-                item['_id'],
-                item,
-            )
+                synthesis.create(
+                    item['_id'],
+                    item,
+                )
 
-            livesynthesis.append(synthesis)
+                livesynthesis.append(synthesis)
 
-        data_manager.update_item_database('livesynthesis', livesynthesis)
+            if livesynthesis:
+                data_manager.update_item_database('livesynthesis', livesynthesis)
 
     @staticmethod
     def query_history_data():
@@ -238,18 +247,19 @@ class BackendQRunnable(QRunnable):
                 request_data['projection'],
                 all_items=False
             )
+            if request:
+                history = History()
 
-            history = History()
+                history.create(
+                    host.item_id,
+                    request['_items'],
+                    host.name,
+                )
 
-            history.create(
-                host.item_id,
-                request['_items'],
-                host.name,
-            )
+                history_list.append(history)
 
-            history_list.append(history)
-
-        data_manager.update_item_database('history', history_list)
+        if history_list:
+            data_manager.update_item_database('history', history_list)
 
     @staticmethod
     def query_notifications_data():
@@ -267,20 +277,21 @@ class BackendQRunnable(QRunnable):
             all_items=False
         )
 
-        notifications = []
-        for item in request['_items']:
-            message_split = item['message'].split(';')
-            user = message_split[0].split(':')[1].strip()
-            if 'imported_admin' in user:
-                user = 'admin'
-            if user == data_manager.database['user'].name:
-                notification = Notification()
+        if request:
+            notifications = []
+            for item in request['_items']:
+                message_split = item['message'].split(';')
+                user = message_split[0].split(':')[1].strip()
+                if 'imported_admin' in user:
+                    user = 'admin'
+                if user == data_manager.database['user'].name:
+                    notification = Notification()
 
-                notification.create(
-                    item['_id'],
-                    item,
-                )
+                    notification.create(
+                        item['_id'],
+                        item,
+                    )
 
-                notifications.append(notification)
+                    notifications.append(notification)
 
-        data_manager.update_item_database('notifications', notifications)
+            data_manager.update_item_database('notifications', notifications)
