@@ -59,3 +59,21 @@ class Daemon(ItemModel):
         }
 
         return request_model
+
+    @staticmethod
+    def get_daemons_names():
+        """
+        Returns all the names of daemons
+
+        :return: all the names of daemons
+        :rtype: list
+        """
+
+        return [
+            'poller',
+            'receiver',
+            'reactionner',
+            'arbiter',
+            'scheduler',
+            'broker'
+        ]

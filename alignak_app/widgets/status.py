@@ -27,7 +27,8 @@ from logging import getLogger
 
 from alignak_app import __application__
 from alignak_app.core.utils import get_image_path, get_css, get_app_config
-from alignak_app.core.backend import app_backend
+from alignak_app.core.data_manager import data_manager
+from alignak_app.models.item_daemon import Daemon
 from alignak_app.widgets.banner import send_banner
 from alignak_app.widgets.app_widget import AppQWidget
 
@@ -44,15 +45,6 @@ class AlignakStatus(QWidget):
     """
         Class who create QWidget for Daemons status.
     """
-
-    daemons = [
-        'poller',
-        'receiver',
-        'reactionner',
-        'arbiter',
-        'scheduler',
-        'broker'
-    ]
 
     def __init__(self, parent=None):
         super(AlignakStatus, self).__init__(parent)
@@ -123,7 +115,7 @@ class AlignakStatus(QWidget):
 
         line = 2
 
-        for daemon in self.daemons:
+        for daemon in Daemon.get_daemons_names():
             # Initialize dict for each daemon type
             self.daemons_labels[daemon] = {
                 'label': QLabel(daemon.capitalize() + 's'),
@@ -157,39 +149,39 @@ class AlignakStatus(QWidget):
         total_daemons = 0
         arbiter_down = False
 
-        daemon_msg = dict((element, '') for element in self.daemons)
-        bad_daemons = dict((element, 0) for element in self.daemons)
+        daemon_msg = dict((element, '') for element in Daemon.get_daemons_names())
+        bad_daemons = dict((element, 0) for element in Daemon.get_daemons_names())
 
-        alignak_daemon = app_backend.get('alignakdaemon')
-        if alignak_daemon:
-            for daemon in alignak_daemon['_items']:
-                if not daemon['alive']:
-                    bad_daemons[daemon['type']] += 1
+        alignak_daemons = data_manager.database['alignakdaemon']
+        if alignak_daemons:
+            for daemon in alignak_daemons:
+                if not daemon.data['alive']:
+                    bad_daemons[daemon.data['type']] += 1
                     total_bad_daemons += 1
-                    daemon_msg[daemon['type']] += \
-                        _('<p>%s is not alive</p>') % daemon['name'].capitalize()
-                    if daemon == self.daemons[3]:
+                    daemon_msg[daemon.data['type']] += \
+                        _('<p>%s is not alive</p>') % daemon.name.capitalize()
+                    if daemon == 'arbiter':
                         arbiter_down = True
 
-                if not bad_daemons[daemon['type']]:
-                    self.daemons_labels[daemon['type']]['icon'].setPixmap(
+                if not bad_daemons[daemon.data['type']]:
+                    self.daemons_labels[daemon.data['type']]['icon'].setPixmap(
                         QPixmap(get_image_path('valid'))
                     )
-                    self.daemons_labels[daemon['type']]['icon'].setToolTip(
-                        _('All %ss are alive ') % daemon['type']
+                    self.daemons_labels[daemon.data['type']]['icon'].setToolTip(
+                        _('All %ss are alive ') % daemon.data['type']
                     )
-                    self.daemons_labels[daemon['type']]['label'].setToolTip(
-                        _('All %ss are alive ') % daemon['type']
+                    self.daemons_labels[daemon.data['type']]['label'].setToolTip(
+                        _('All %ss are alive ') % daemon.data['type']
                     )
                 else:
-                    self.daemons_labels[daemon['type']]['icon'].setPixmap(
+                    self.daemons_labels[daemon.data['type']]['icon'].setPixmap(
                         QPixmap(get_image_path('error'))
                     )
-                    self.daemons_labels[daemon['type']]['icon'].setToolTip(
-                        daemon_msg[daemon['type']]
+                    self.daemons_labels[daemon.data['type']]['icon'].setToolTip(
+                        daemon_msg[daemon.data['type']]
                     )
-                    self.daemons_labels[daemon['type']]['label'].setToolTip(
-                        daemon_msg[daemon['type']]
+                    self.daemons_labels[daemon.data['type']]['label'].setToolTip(
+                        daemon_msg[daemon.data['type']]
                     )
 
                 total_daemons += 1
