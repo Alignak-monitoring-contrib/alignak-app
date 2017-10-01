@@ -25,6 +25,7 @@ import unittest2
 
 from alignak_app.core.utils import init_config
 from alignak_app.core.backend import app_backend
+from alignak_app.core.data_manager import data_manager
 from alignak_app.user.user_profile import UserProfile
 from alignak_app.core.locales import init_localization
 
@@ -53,32 +54,18 @@ class TestUserProfile(unittest2.TestCase):
 
         under_test = UserProfile()
 
-        self.assertFalse(under_test.user)
         self.assertIsNone(under_test.app_widget)
         self.assertIsNone(under_test.layout())
 
         under_test.initialize()
 
-        self.assertTrue(under_test.user)
         self.assertIsNotNone(under_test.app_widget)
         self.assertIsNotNone(under_test.layout())
-
-    def test_get_user_data(self):
-        """Get user data"""
-
-        under_test = UserProfile()
-
-        self.assertFalse(under_test.user)
-
-        under_test.get_user_data()
-
-        self.assertTrue(under_test.user)
 
     def test_user_qwidgets(self):
         """User QWidgets Creation"""
 
         under_test = UserProfile()
-        under_test.get_user_data()
 
         options_test = ['d', 'u', 'r', 'f', 's', 'n']
 
@@ -107,17 +94,18 @@ class TestUserProfile(unittest2.TestCase):
         if not app_backend.connected:
             app_backend.login()
 
+        # Realm is right
         realm_test = under_test.get_realm_name()
 
-        # If "user" is False, return "n/a"
-        self.assertEqual(realm_test, 'n/a')
-
-        under_test.get_user_data()
-        self.assertTrue(under_test.user)
-        realm_test = under_test.get_realm_name()
-
-        # If "user" is True, Realm is return
+        # If "user" has a right realm, return is 'All'
         self.assertEqual(realm_test, 'All')
+
+        # Change realm to a false one
+        data_manager.database['user'].data['_realm'] = 'no_realm'
+        realm_test = under_test.get_realm_name()
+
+        # If "user" has a false realm, return is 'n/a'
+        self.assertEqual(realm_test, 'n/a')
 
     def test_get_role(self):
         """Get User Role"""
@@ -126,33 +114,31 @@ class TestUserProfile(unittest2.TestCase):
 
         # Simulate user data
         # Case "user"
-        under_test.user = {
-            'is_admin': False,
-            'back_role_super_admin': False,
-            'can_submit_commands': False
-        }
+        data_manager.database['user'].data['is_admin'] = False
+        data_manager.database['user'].data['back_role_super_admin'] = False
+        data_manager.database['user'].data['can_submit_commands'] = False
 
         role_test = under_test.get_role()
 
         self.assertEqual(role_test, 'user')
 
         # Case "power"
-        under_test.user['can_submit_commands'] = True
+        data_manager.database['user'].data['can_submit_commands'] = True
 
         role_test = under_test.get_role()
 
         self.assertEqual(role_test, 'power')
 
         # Case "admin"
-        under_test.user['can_submit_commands'] = True
-        under_test.user['back_role_super_admin'] = True
+        data_manager.database['user'].data['can_submit_commands'] = True
+        data_manager.database['user'].data['back_role_super_admin'] = True
 
         role_test = under_test.get_role()
 
         self.assertEqual(role_test, 'administrator')
 
-        under_test.user['back_role_super_admin'] = False
-        under_test.user['is_admin'] = True
+        data_manager.database['user'].data['back_role_super_admin'] = False
+        data_manager.database['user'].data['is_admin'] = True
 
         role_test = under_test.get_role()
 
@@ -162,7 +148,7 @@ class TestUserProfile(unittest2.TestCase):
         """Get User Period Name"""
 
         under_test = UserProfile()
-        under_test.get_user_data()
+        # under_test.get_user_data()
 
         period_test = under_test.get_period_name('test')
 

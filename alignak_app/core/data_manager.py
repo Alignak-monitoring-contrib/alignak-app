@@ -199,7 +199,7 @@ class DataManager(object):
         host_data = {
             'host': host,
             'services': services_host
-            }
+        }
 
         return host_data
 

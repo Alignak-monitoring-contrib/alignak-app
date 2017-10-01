@@ -202,7 +202,8 @@ class UserProfile(QWidget):
 
         return rights_widget
 
-    def get_realm_name(self):
+    @staticmethod
+    def get_realm_name():
         """
         Return realm name or alias
 
@@ -229,7 +230,8 @@ class UserProfile(QWidget):
 
         return 'n/a'
 
-    def get_role(self):
+    @staticmethod
+    def get_role():
         """
         Get user role
 
@@ -359,8 +361,9 @@ class UserProfile(QWidget):
             patched = app_backend.patch(endpoint, data, headers)
 
             if patched:
-                message = _("The notes for the %s have been edited.") % \
-                      data_manager.database['user'].name
+                message = _(
+                    "The notes for the %s have been edited."
+                ) % data_manager.database['user'].name
                 send_banner('OK', message, duration=10000)
             else:
                 send_banner('ERROR', _("Backend PATCH failed, please check your logs !"))
@@ -612,7 +615,8 @@ class UserProfile(QWidget):
 
         return options_widget
 
-    def get_period_name(self, uuid):
+    @staticmethod
+    def get_period_name(uuid):
         """
         Get the period name or alias
 

@@ -27,6 +27,7 @@ from alignak_app.core.backend import app_backend
 from alignak_app.core.notifier import AppNotifier
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import init_config
+from alignak_app.models.item_livesynthesis import LiveSynthesis
 from alignak_app.systray.tray_icon import TrayIcon
 from alignak_app.dashboard.app_dashboard import Dashboard
 
@@ -138,7 +139,7 @@ class TestAppNotifier(unittest2.TestCase):
         notifier_test.check_data()
 
         # Get synthesis test to test diff between check
-        synthesis = app_backend.synthesis_count()
+        synthesis = LiveSynthesis.get_synthesis_count_model()
         under_test = notifier_test.diff_last_states(synthesis)
 
         fields_test = {

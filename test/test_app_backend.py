@@ -127,59 +127,6 @@ class TestAppBackend(unittest2.TestCase):
         self.assertTrue('name' not in under_test)
         self.assertIsNotNone(under_test['ls_acknowledged'])
 
-    def test_get_host_with_services(self):
-        """GET Host with Services"""
-
-        backend_test = AppBackend()
-        backend_test.login()
-
-        projection_host_test = [
-            'name', 'alias', 'ls_state', '_id', 'ls_acknowledged', 'ls_downtimed',
-            'ls_last_check', 'ls_output', 'address', 'business_impact', 'parents',
-            'ls_last_state_changed'
-        ]
-
-        projection_service_test = [
-            'name', 'alias', 'display_name', 'ls_state', 'ls_acknowledged',
-            'ls_downtimed', 'ls_last_check', 'ls_output', 'business_impact',
-            'customs', '_overall_state_id', 'aggregation',
-            'ls_last_state_changed'
-        ]
-
-        under_test = backend_test.get_host_with_services('localhost')
-
-        self.assertTrue(under_test)
-        self.assertTrue('host' in under_test)
-        self.assertTrue('services' in under_test)
-
-        # Test if all fields for host are here
-        for wanted_field in projection_host_test:
-            self.assertTrue(wanted_field in under_test['host'])
-
-        # Test if all fields for services are in each service
-        for wanted_field in projection_service_test:
-            for service in under_test['services']:
-                self.assertTrue(wanted_field in service)
-
-    def test_get_host_history(self):
-        """GET Host History"""
-
-        backend_test = AppBackend()
-        backend_test.login()
-
-        under_test = backend_test.get_host_history('BAD_ID')
-
-        self.assertFalse(under_test)
-
-        under_test = backend_test.get_host_history(self.host_id)
-
-        self.assertTrue(under_test)
-
-        for event in under_test:
-            self.assertTrue('service_name' in event)
-            self.assertTrue('message' in event)
-            self.assertTrue('type' in event)
-
     def test_patch(self):
         """PATCH User Notes"""
 

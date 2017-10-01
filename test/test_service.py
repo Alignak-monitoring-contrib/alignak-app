@@ -24,6 +24,7 @@ import sys
 import unittest2
 
 from alignak_app.synthesis.serviceframe import ServiceFrame
+from alignak_app.models.item_service import Service
 
 from PyQt5.QtWidgets import QApplication, QLabel
 
@@ -33,7 +34,8 @@ class TestService(unittest2.TestCase):
         This file test the Service class.
     """
 
-    service = {
+    service = Service()
+    service_data = {
         'display_name': 'My Service',
         'ls_state': 'OK',
         'ls_last_check': 0.0,
@@ -44,7 +46,9 @@ class TestService(unittest2.TestCase):
         'ls_last_state_changed': 0,
         'ls_acknowledged': True,
         'ls_downtimed': False,
+        'name': 'my_service'
     }
+    service.create(service_data['_id'], service_data, service_data['name'])
 
     @classmethod
     def setUpClass(cls):

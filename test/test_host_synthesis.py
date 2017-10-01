@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # Copyright (c) 2015-2017:
@@ -26,6 +27,8 @@ import unittest2
 from alignak_app.synthesis.host_synthesis import HostSynthesis
 from alignak_app.core.action_manager import ActionManager
 from alignak_app.core.backend import app_backend
+from alignak_app.models.item_host import Host
+from alignak_app.models.item_service import Service
 
 from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtWidgets import QStackedWidget, QListWidget
@@ -37,7 +40,8 @@ class TestHostSynthesis(unittest2.TestCase):
         This file test the HostSynthesis class.
     """
 
-    service = {
+    service = Service()
+    service_data = {
         'name': 'my_service',
         'display_name': 'My Service',
         '_id': '11111',
@@ -52,23 +56,27 @@ class TestHostSynthesis(unittest2.TestCase):
         'aggregation': 'IO',
         'ls_last_state_changed': 0
     }
+    service.create(service_data['_id'], service_data, service_data['name'])
 
+    host = Host()
+    host_data = {
+        'display_name': 'My Service',
+        'alias': 'my service',
+        'name': 'my_service',
+        '_id': '00000',
+        'ls_state': 'OK',
+        'ls_last_check': 0.0,
+        'ls_output': 'Output of the service',
+        'ls_acknowledged': False,
+        'ls_downtimed': False,
+        'address': '127.0.0.1',
+        'business_impact': '2',
+        'parents': [],
+        'ls_last_state_changed': 0
+    }
+    host.create(host_data['_id'], host_data, host_data['name'])
     backend_data = {
-        'host': {
-            'display_name': 'My Service',
-            'alias': 'my service',
-            'name': 'my_service',
-            '_id': '00000',
-            'ls_state': 'OK',
-            'ls_last_check': 0.0,
-            'ls_output': 'Output of the service',
-            'ls_acknowledged': False,
-            'ls_downtimed': False,
-            'address': '127.0.0.1',
-            'business_impact': '2',
-            'parents': [],
-            'ls_last_state_changed': 0
-        },
+        'host': host,
         'services': [
             service,
             service
@@ -159,7 +167,7 @@ class TestHostSynthesis(unittest2.TestCase):
 
         under_test = HostSynthesis(self.action_manager)
 
-        host_icon_test = under_test.get_host_icon(self.backend_data['host'])
+        host_icon_test = under_test.get_host_icon(self.host)
 
         self.assertIsInstance(host_icon_test, QPixmap)
 

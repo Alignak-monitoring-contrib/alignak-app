@@ -25,8 +25,8 @@
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_time_diff_since_last_timestamp, get_css, get_date_from_timestamp
-from alignak_app.core.utils import get_image_path, get_app_config
+from alignak_app.core.utils import get_time_diff_since_last_timestamp, get_css
+from alignak_app.core.utils import get_image_path, get_app_config, get_date_from_timestamp
 
 from PyQt5.QtWidgets import QHBoxLayout  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QWidget, QPushButton, QFrame  # pylint: disable=no-name-in-module
@@ -74,7 +74,7 @@ class ServiceFrame(QFrame):
         layout.addWidget(self.get_service_icon(service.data['ls_state']), 0, 0, 2, 1)
 
         if service.data['display_name'] != '':
-            service_name = service['display_name']
+            service_name = service.data['display_name']
         elif service.data['alias'] != '':
             service_name = service.data['alias']
         else:
@@ -155,7 +155,9 @@ class ServiceFrame(QFrame):
 
         row = 3
         if '_DETAILLEDESC' in service.data['customs']:
-            desc_label = QLabel(_('<b>Description:</b> %s') % service.data['customs']['_DETAILLEDESC'])
+            desc_label = QLabel(
+                _('<b>Description:</b> %s') % service.data['customs']['_DETAILLEDESC']
+            )
             desc_label.setWordWrap(True)
             layout.addWidget(desc_label, row, 0, 1, 4)
             detailledesc = True

@@ -24,6 +24,7 @@ import sys
 import unittest2
 
 from alignak_app.synthesis.service_widget_item import ServiceListWidgetItem
+from alignak_app.models.item_service import Service
 
 from PyQt5.QtWidgets import QApplication
 
@@ -33,29 +34,35 @@ class TestServiceListWidgetItem(unittest2.TestCase):
         This file test the ServiceListWidgetItem class.
     """
 
-    service_aggregation = {
+    service_aggregation = Service()
+    service_aggregation_data = {
         'display_name': 'My Service',
         'ls_state': 'OK',
         'ls_acknowledged': True,
         'ls_downtimed': False,
         'aggregation': 'Health',
     }
+    service_aggregation.create('', service_aggregation_data, '')
 
-    service_no_aggregation = {
+    service_no_aggregation = Service()
+    service_no_aggregation_data = {
         'display_name': 'My Second Service',
         'ls_state': 'UNKNOWN',
         'ls_acknowledged': False,
         'ls_downtimed': True,
         'aggregation': '',
     }
+    service_no_aggregation.create('', service_no_aggregation_data, '')
 
-    service_ack_down_false = {
+    service_ack_down_false = Service()
+    service_ack_down_false_data = {
         'display_name': 'My Second Service',
         'ls_state': 'CRITICAL',
         'ls_acknowledged': False,
         'ls_downtimed': False,
         'aggregation': '',
     }
+    service_ack_down_false.create('', service_ack_down_false_data, '')
 
     @classmethod
     def setUpClass(cls):
