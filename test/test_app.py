@@ -23,6 +23,8 @@ import unittest2
 import sys
 
 from alignak_app.app import AlignakApp
+from alignak_app.core.data_manager import data_manager
+from alignak_app.models.item_user import User
 
 from PyQt5.QtWidgets import QApplication
 
@@ -31,6 +33,8 @@ class TestApp(unittest2.TestCase):
     """
         This file test methods of AlignakApp class.
     """
+
+    data_manager.database['user'] = User()
 
     @classmethod
     def setUpClass(cls):
