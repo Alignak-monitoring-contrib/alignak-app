@@ -64,6 +64,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "{#RootApp}\alignak-app\dist\alignak-app.exe"; DestDir: "{app}"; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
 Source: "{#RootApp}\alignak-app\etc\css\*"; DestDir: "{app}\css"; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
 Source: "{#RootApp}\alignak-app\etc\images\*"; DestDir: "{app}\images"; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
+Source: "{app}\settings.cfg"; DestDir: "{app}"; DestName: "settings.cfg.save"; Flags: external skipifsourcedoesntexist uninsneveruninstall
 Source: "{#RootApp}\alignak-app\etc\settings.cfg"; DestDir: "{app}"; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
 Source: "{#RootApp}\alignak-app\etc\app_workdir.ini"; DestDir: "{app}"; Flags: ignoreversion isreadme; Permissions: users-full admins-full everyone-modify;
 Source: "{#RootApp}\alignak-app\bin\win\vc_redist.x64.exe"; DestDir: {tmp}; Flags: deleteafterinstall;
