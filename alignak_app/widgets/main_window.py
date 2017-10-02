@@ -24,14 +24,16 @@
 """
 
 import sys
-import datetime
 
 from alignak_app.core.utils import init_config, get_image_path
 from alignak_app.widgets.app_widget import AppQWidget
+from alignak_app.widgets.host_widget import HostQWidget
 
 from PyQt5.Qt import QApplication, QWidget, QGridLayout  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QLabel, QPushButton, QAbstractItemView  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QListWidget, QIcon, QListWidgetItem, QMenu  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QListWidget, QIcon, QListWidgetItem  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPixmap, QVBoxLayout, QHBoxLayout, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QFrame, QSize  # pylint: disable=no-name-in-module
 
 
 init_config()
@@ -50,6 +52,8 @@ class NotificationItem(QListWidgetItem):
 
         self.setText("Host is %s: %s" % (state, msg))
         self.setIcon(QIcon(get_image_path(self.get_icon(state))))
+
+        self.setSizeHint(QSize(self.sizeHint().width(), 35))
 
     @staticmethod
     def get_icon(state):
@@ -76,9 +80,9 @@ class AppQMain(QWidget):
     def __init__(self, parent=None):
         super(AppQMain, self).__init__(parent)
         self.app_widget = AppQWidget()
+        self.events_widget_list = QListWidget()
+        self.spy_widgetlist = QListWidget()
         self.host_widget = None
-        self.notif_widget_list = None
-        self.listMenu = QMenu()
 
     def initialize(self):
         """
@@ -89,22 +93,21 @@ class AppQMain(QWidget):
         layout = QGridLayout()
         self.setLayout(layout)
 
-        buttons_widget = self.get_buttons_widget()
-        layout.addWidget(buttons_widget)
+        layout.addWidget(self.get_status_resume())
 
-        notif_button = QPushButton("Show messages")
-        notif_button.clicked.connect(self.add_message)
-        layout.addWidget(notif_button)
+        layout.addWidget(self.get_frame_separator())
 
-        self.notif_widget_list = QListWidget()
-        self.notif_widget_list.setDragDropMode(QAbstractItemView.InternalMove)
-        self.notif_widget_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        # self.notif_widget_list.setDragEnabled(True)
-        self.notif_widget_list.setAcceptDrops(True)
-        # self.notif_widget_list.setSortingEnabled(True)
+        layout.addWidget(self.get_buttons_widget())
 
-        self.notif_widget_list.clicked.connect(self.item_menu)
-        layout.addWidget(self.notif_widget_list)
+        layout.addWidget(self.get_frame_separator())
+
+        layout.addWidget(self.get_backend_resume_widget())
+
+        layout.addWidget(self.get_frame_separator())
+
+        layout.addWidget(self.get_events_list_widget())
+
+        layout.addWidget(self.get_spy_list_widget())
 
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
         desktop = QApplication.desktop().screenGeometry(screen)
@@ -116,13 +119,75 @@ class AppQMain(QWidget):
         self.app_widget.resize(pos_size['size'][0], pos_size['size'][1])
         self.app_widget.move(pos_size['pos'][0], pos_size['pos'][1])
 
+    def get_events_list_widget(self):
+        """
+        TODO
+        :return:
+        """
+
+        widget = QWidget()
+        layout = QVBoxLayout()
+        widget.setLayout(layout)
+
+        event_title = QLabel("Last events...")
+        layout.addWidget(event_title)
+        layout.setAlignment(event_title, Qt.AlignCenter)
+
+        self.events_widget_list.setDragDropMode(QAbstractItemView.InternalMove)
+        self.events_widget_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.events_widget_list.setAcceptDrops(True)
+        self.events_widget_list.setSortingEnabled(True)
+        self.events_widget_list.doubleClicked.connect(self.item_menu)
+        self.events_widget_list.setWordWrap(True)
+        layout.addWidget(self.events_widget_list)
+
+        return widget
+
+    def get_spy_list_widget(self):
+        """
+        TODO
+        :return:
+        """
+
+        widget = QWidget()
+        layout = QVBoxLayout()
+        widget.setLayout(layout)
+
+        event_title = QLabel("Spied hosts... Coming soon !")
+        layout.addWidget(event_title)
+        layout.setAlignment(event_title, Qt.AlignCenter)
+
+        self.spy_widgetlist.setDragDropMode(QAbstractItemView.InternalMove)
+        self.spy_widgetlist.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.spy_widgetlist.setAcceptDrops(True)
+        self.spy_widgetlist.setSortingEnabled(True)
+        self.spy_widgetlist.doubleClicked.connect(self.item_menu)
+        self.spy_widgetlist.setWordWrap(True)
+        layout.addWidget(self.spy_widgetlist)
+
+        return widget
+
     def item_menu(self):
         """
         TODO
         :param pos:
         :return:
         """
-        print('Item moved')
+
+        self.events_widget_list.takeItem(self.events_widget_list.currentRow())
+
+    @staticmethod
+    def get_frame_separator():
+        """
+        TODO
+        :return:
+        """
+
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setStyleSheet("background-color: #607d8b; color: #607d8b;")
+
+        return line
 
     def get_buttons_widget(self):
         """
@@ -131,63 +196,133 @@ class AppQMain(QWidget):
         """
 
         buttons_widget = QWidget()
-        layout = QGridLayout()
+        layout = QHBoxLayout()
         buttons_widget.setLayout(layout)
-
-        status_label = QLabel('Alignak status')
-        layout.addWidget(status_label, 0, 0, 1, 3)
-
-        status = QLabel('<span style="color:#27ae60;">online</span>')
-        layout.addWidget(status, 0, 3, 1, 2)
 
         dashboard_btn = QPushButton()
         dashboard_btn.setIcon(QIcon(get_image_path('dashboard')))
-        layout.addWidget(dashboard_btn, 1, 0, 1, 1)
+        dashboard_btn.setFixedSize(40, 40)
+        layout.addWidget(dashboard_btn)
 
         host_btn = QPushButton()
         host_btn.setIcon(QIcon(get_image_path('host')))
-        layout.addWidget(host_btn, 1, 1, 1, 1)
+        host_btn.setFixedSize(40, 40)
+        host_btn.clicked.connect(self.show_host_view)
+        layout.addWidget(host_btn)
 
         services_btn = QPushButton()
         services_btn.setIcon(QIcon(get_image_path('service')))
-        layout.addWidget(services_btn, 1, 2, 1, 1)
-
-        status_btn = QPushButton()
-        status_btn.setIcon(QIcon(get_image_path('icon')))
-        layout.addWidget(status_btn, 1, 3, 1, 1)
+        services_btn.setFixedSize(40, 40)
+        layout.addWidget(services_btn)
 
         profile_btn = QPushButton()
         profile_btn.setIcon(QIcon(get_image_path('user')))
-        layout.addWidget(profile_btn, 1, 4, 1, 1)
+        profile_btn.setFixedSize(40, 40)
+        layout.addWidget(profile_btn)
+
+        webui_btn = QPushButton()
+        webui_btn.setIcon(QIcon(get_image_path('web')))
+        webui_btn.setFixedSize(40, 40)
+        layout.addWidget(webui_btn)
 
         return buttons_widget
 
-    def add_message(self):
+    @staticmethod
+    def get_status_resume():
         """
         TODO
         :return:
         """
 
-        self.notif_widget_list.appendPlainText("Message at %s " % datetime.datetime.now())
+        widget = QWidget()
+        layout = QHBoxLayout()
+        widget.setLayout(layout)
+
+        status_label = QLabel('Alignak status:')
+        layout.addWidget(status_label)
+
+        status = QLabel('<span style="color:#27ae60;">online</span>')
+        layout.addWidget(status)
+
+        status_btn = QPushButton()
+        status_btn.setIcon(QIcon(get_image_path('icon')))
+        status_btn.setFixedSize(32, 32)
+        layout.addWidget(status_btn)
+
+        status_label = QLabel('Backend:')
+        layout.addWidget(status_label)
+
+        status = QLabel('<span style="color:#27ae60;">connected</span>')
+        layout.addWidget(status)
+
+        return widget
+
+    def get_backend_resume_widget(self):
+        """
+        TODO
+        :return:
+        """
+
+        resume_widget = QWidget()
+        layout = QHBoxLayout()
+        resume_widget.setLayout(layout)
+
+        host_widget = self.get_resume_item_widget(3, 'host', 37)
+        layout.addWidget(host_widget)
+
+        service_widget = self.get_resume_item_widget(36, 'service', 416)
+        layout.addWidget(service_widget)
+
+        problem_widget = self.get_resume_item_widget(39, 'problem', 453)
+        layout.addWidget(problem_widget)
+
+        return resume_widget
+
+    @staticmethod
+    def get_resume_item_widget(problem_nb, item_type, item_nb):
+        """
+        TODO
+        :param problem_nb:
+        :param item_type:
+        :param item_nb:
+        :return:
+        """
+
+        layout = QVBoxLayout()
+        widget = QWidget()
+        widget.setLayout(layout)
+
+        problem_label = QLabel('<span style="color: red;">%d</span>' % problem_nb)
+        layout.addWidget(problem_label)
+        layout.setAlignment(problem_label, Qt.AlignCenter)
+
+        item_label = QLabel()
+        item_label.setPixmap(QPixmap(get_image_path(item_type)))
+        layout.addWidget(item_label)
+        layout.setAlignment(item_label, Qt.AlignCenter)
+
+        item_nb_label = QLabel(
+            '<span style="background: #ccc; color: #607d8b;">%d</span>' % item_nb
+        )
+        layout.addWidget(item_nb_label)
+        layout.setAlignment(item_nb_label, Qt.AlignCenter)
+
+        return widget
 
     def show_host_view(self):
         """
-
+        TODO
         :return:
         """
 
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
         desktop = QApplication.desktop().availableGeometry(screen)
 
-        self.host_widget = QWidget()
-        layout = QGridLayout()
-        self.host_widget.setLayout(layout)
-
-        label = QLabel("Host View")
-        layout.addWidget(label)
+        self.host_widget = HostQWidget()
+        self.host_widget.initialize()
 
         x_size = desktop.width() - self.width()
-        y_size = desktop.height()
+        y_size = 64
 
         pos_x = 0
         pos_y = 0
@@ -221,15 +356,15 @@ if __name__ == '__main__':
     m.initialize()
 
     notifications = {
-        "UP": "everything is fine",
-        "DOWN": "nothing goes",
+        "UP": "Host is UP since 2017-09-22 17:58:36",
+        "DOWN": "Host is DOWN since 2017-09-22 17:58:36, please fix the problem",
         "UNREACHABLE": "never seen",
     }
 
     for key, value in notifications.items():
         notif = NotificationItem()
         notif.initialize(key, value)
-        m.notif_widget_list.addItem(notif)
+        m.events_widget_list.addItem(notif)
 
     m.app_widget.show()
     sys.exit(app.exec_())
