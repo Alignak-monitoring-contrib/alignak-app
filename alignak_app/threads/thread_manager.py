@@ -25,12 +25,11 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QThreadPool  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QTimer, QObject  # pylint: disable=no-name-in-module
 
 from alignak_app.core.locales import init_localization
 from alignak_app.core.utils import init_config
-from alignak_app.threads.backend_runnable import BackendQRunnable
+from alignak_app.threads.backend_thread import BackendQThread
 
 
 init_config()
@@ -45,9 +44,10 @@ class ThreadManager(QObject):
 
     def __init__(self, parent=None):
         super(ThreadManager, self).__init__(parent)
-        self.backend_thread = BackendQRunnable(self)
-        self.pool = QThreadPool.globalInstance()
+        self.backend_thread = BackendQThread(self)
         self.tasks = self.get_tasks()
+        self.timer = QTimer()
+        self.threads = []
 
     def start(self):
         """
@@ -61,10 +61,9 @@ class ThreadManager(QObject):
         self.create_tasks()
 
         # Then request periodically
-        timer = QTimer(self)
-        timer.setInterval(10000)
-        timer.start()
-        timer.timeout.connect(self.create_tasks)
+        self.timer.setInterval(15000)
+        self.timer.start()
+        self.timer.timeout.connect(self.create_tasks)
 
     @staticmethod
     def get_tasks():
@@ -85,24 +84,39 @@ class ThreadManager(QObject):
 
         """
 
+        self.threads = []
         for cur_task in self.tasks:
-            backend_thread = BackendQRunnable(cur_task)
+            backend_thread = BackendQThread(cur_task)
+            backend_thread.start()
 
-            # Add task to QThreadPool
-            self.pool.start(backend_thread)
+            # Add task to thread to keep a reference
+            self.threads.append(backend_thread)
 
     def add_task(self, task):
         """
-        Add a task to QThreadPool
+        Add a specific QThreads in list
 
         :param task: one of the following:
         - 'notifications', 'livesynthesis', 'alignakdaemon', 'history', 'service', 'host', 'user'
         :type task: str
+        """
+
+        backend_thread = BackendQThread(task)
+        backend_thread.start()
+        self.threads.append(backend_thread)
+
+    def stop(self):
+        """
+        Stop the manager and close all running QThreads
 
         """
 
-        backend_thread = BackendQRunnable(task)
-        self.pool.start(backend_thread)
+        logger.info("Stop backend threads...")
+        self.timer.stop()
+        for task in self.threads:
+            task.quit_thread.emit()
+
+        logger.info("Backend threads are finished.")
 
 
 thread_manager = ThreadManager()

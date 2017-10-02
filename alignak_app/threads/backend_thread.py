@@ -20,14 +20,14 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    BackendThread manage backend threads and requests
+    BackendQThread manage backend threads and requests
 """
 
 import json
 
 from logging import getLogger
 
-from PyQt5.Qt import QRunnable  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QThread, pyqtSignal  # pylint: disable=no-name-in-module
 
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
@@ -43,13 +43,15 @@ from alignak_app.models.item_notification import Notification
 logger = getLogger(__name__)
 
 
-class BackendQRunnable(QRunnable):
+class BackendQThread(QThread):
     """
         Class who create a QThread to trigger requests
     """
 
+    quit_thread = pyqtSignal(name='close_thread')
+
     def __init__(self, task):
-        super(BackendQRunnable, self).__init__()
+        super(BackendQThread, self).__init__()
         self.task = task
 
     def run(self):
@@ -57,6 +59,8 @@ class BackendQRunnable(QRunnable):
         Run the QRunnable. Trigger actions depending on the selected task
         :return:
         """
+
+        self.quit_thread.connect(self.quit)
 
         if 'user' in self.task:
             self.query_user_data()
@@ -117,8 +121,8 @@ class BackendQRunnable(QRunnable):
             all_items=True
         )
 
+        hosts_list = []
         if request:
-            hosts_list = []
             for item in request['_items']:
                 host = Host()
 
