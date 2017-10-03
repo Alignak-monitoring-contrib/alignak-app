@@ -55,13 +55,12 @@ class DataManager(object):
         :rtype: bool
         """
 
-        filled = False
         if self.database['user'] and self.database['host'] and \
                 self.database['service'] and self.database['alignakdaemon'] and \
                 self.database['livesynthesis']:
-            filled = True
+            return True
 
-        return filled
+        return False
 
     def update_item_database(self, item_type, items_list):
         """
