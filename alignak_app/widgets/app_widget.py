@@ -90,7 +90,7 @@ class AppQWidget(QFrame):
         logo_layout.addWidget(logo_label, 0)
 
         title_label = QLabel('<h3>%s</h3>' % title)
-        title_label.setObjectName('title')
+        title_label.setObjectName('widget_title')
         title_label.setAttribute(Qt.WA_TransparentForMouseEvents)
 
         logo_layout.addWidget(title_label, 1)
