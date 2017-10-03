@@ -26,11 +26,8 @@
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.data_manager import data_manager
 
-from PyQt5.Qt import QApplication, QWidget, QGridLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QFrame, QSize  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QLabel, QPushButton, QAbstractItemView  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QListWidget, QIcon, QListWidgetItem  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPixmap, QVBoxLayout, QHBoxLayout, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QWidget, QVBoxLayout, QHBoxLayout, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QLabel, QPixmap  # pylint: disable=no-name-in-module
 
 
 class BackendQWidget(QWidget):

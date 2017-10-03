@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    Dock manage creation of Alignak-app Dock
 """
 
 import sys
@@ -41,13 +41,13 @@ from PyQt5.Qt import QApplication, QWidget, QGridLayout, QFrame  # pylint: disab
 from PyQt5.Qt import QListWidget  # pylint: disable=no-name-in-module
 
 
-class AppQMain(QWidget):
+class DockQWidget(QWidget):
     """
-        TODO
+        Class who create QWidgets for dock
     """
 
     def __init__(self, parent=None):
-        super(AppQMain, self).__init__(parent)
+        super(DockQWidget, self).__init__(parent)
         self.setStyleSheet(get_css())
         # Fields
         self.app_widget = AppQWidget()
@@ -62,8 +62,8 @@ class AppQMain(QWidget):
 
     def initialize(self):
         """
-        TODO
-        :return:
+        Iniitalize dock QWidget
+
         """
 
         layout = QGridLayout()
@@ -102,8 +102,10 @@ class AppQMain(QWidget):
     @staticmethod
     def get_frame_separator():
         """
-        TODO
-        :return:
+        Return a frame separator
+
+        :return: frame separator
+        :rtype: QFrame
         """
 
         line = QFrame()
@@ -114,8 +116,8 @@ class AppQMain(QWidget):
 
     def show_host_view(self):
         """
-        TODO
-        :return:
+        TODO: Show the host view, should be temp here
+
         """
 
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
@@ -136,8 +138,10 @@ class AppQMain(QWidget):
 
     def get_position_and_size(self, desktop):
         """
-        TODO
-        :return:
+        Return position and size of dock to "stick" on right side
+
+        :return: size and postion
+        :rtype: dict
         """
 
         x_size = desktop.width() * 0.2
@@ -161,8 +165,8 @@ if __name__ == '__main__':
     while not data_manager.is_ready():
         continue
 
-    m = AppQMain()
-    m.initialize()
+    dock = DockQWidget()
+    dock.initialize()
 
     notifications = {
         "UP": "Host is UP since 2017-09-22 17:58:36",
@@ -171,7 +175,7 @@ if __name__ == '__main__':
     }
 
     for key, value in notifications.items():
-        m.events_widget.add_event(key, value)
+        dock.events_widget.add_event(key, value)
 
-    m.app_widget.show()
+    dock.app_widget.show()
     sys.exit(app.exec_())
