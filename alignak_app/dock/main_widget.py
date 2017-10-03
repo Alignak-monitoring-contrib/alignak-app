@@ -25,52 +25,20 @@
 
 import sys
 
-from alignak_app.core.utils import init_config, get_image_path
+from alignak_app.core.utils import init_config, get_css
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.backend import app_backend
 from alignak_app.threads.thread_manager import thread_manager
 from alignak_app.dock.buttons_widget import ButtonsQWidget
 from alignak_app.dock.status_widget import DockStatusQWidget
+from alignak_app.dock.backend_widget import BackendQWidget
+from alignak_app.dock.events_widget import EventsQListWidget
+from alignak_app.dock.spy_widget import SpyQListWidget
 from alignak_app.widgets.app_widget import AppQWidget
 from alignak_app.widgets.host_widget import HostQWidget
-from alignak_app.dock.backend_widget import BackendQWidget
 
-from PyQt5.Qt import QApplication, QWidget, QGridLayout, QLabel  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QFrame, QVBoxLayout, Qt, QAbstractItemView  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QSize, QListWidget, QIcon, QListWidgetItem  # pylint: disable=no-name-in-module
-
-
-class NotificationItem(QListWidgetItem):
-    """
-        TODO
-    """
-
-    def initialize(self, state, msg):
-        """
-        TODO
-        :return:
-        """
-
-        self.setText("Host is %s: %s" % (state, msg))
-        self.setIcon(QIcon(get_image_path(self.get_icon(state))))
-
-        self.setSizeHint(QSize(self.sizeHint().width(), 35))
-
-    @staticmethod
-    def get_icon(state):
-        """
-
-        :param state:
-        :return:
-        """
-
-        states = {
-            'UP': 'hosts_up',
-            'DOWN': 'hosts_down',
-            'UNREACHABLE': 'hosts_unreachable',
-        }
-
-        return states[state]
+from PyQt5.Qt import QApplication, QWidget, QGridLayout, QFrame  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QListWidget  # pylint: disable=no-name-in-module
 
 
 class AppQMain(QWidget):
@@ -80,6 +48,8 @@ class AppQMain(QWidget):
 
     def __init__(self, parent=None):
         super(AppQMain, self).__init__(parent)
+        self.setStyleSheet(get_css())
+        # Fields
         self.app_widget = AppQWidget()
         self.events_widget_list = QListWidget()
         self.spy_widgetlist = QListWidget()
@@ -87,6 +57,8 @@ class AppQMain(QWidget):
         self.resume_status_widget = DockStatusQWidget()
         self.buttons_widget = ButtonsQWidget()
         self.backend_widget = BackendQWidget()
+        self.events_widget = EventsQListWidget()
+        self.spy_widget = SpyQListWidget()
 
     def initialize(self):
         """
@@ -97,6 +69,7 @@ class AppQMain(QWidget):
         layout = QGridLayout()
         self.setLayout(layout)
 
+        # Add dock widgets
         self.resume_status_widget.initialize()
         layout.addWidget(self.resume_status_widget)
         layout.addWidget(self.get_frame_separator())
@@ -109,10 +82,13 @@ class AppQMain(QWidget):
         layout.addWidget(self.backend_widget)
         layout.addWidget(self.get_frame_separator())
 
-        layout.addWidget(self.get_events_list_widget())
+        self.events_widget.initialize()
+        layout.addWidget(self.events_widget)
 
-        layout.addWidget(self.get_spy_list_widget())
+        self.spy_widget.initialize()
+        layout.addWidget(self.spy_widget)
 
+        # Define size and position of dock
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
         desktop = QApplication.desktop().screenGeometry(screen)
 
@@ -123,63 +99,6 @@ class AppQMain(QWidget):
         self.app_widget.resize(pos_size['size'][0], pos_size['size'][1])
         self.app_widget.move(pos_size['pos'][0], pos_size['pos'][1])
 
-    def get_events_list_widget(self):
-        """
-        TODO
-        :return:
-        """
-
-        widget = QWidget()
-        layout = QVBoxLayout()
-        widget.setLayout(layout)
-
-        event_title = QLabel("Last events...")
-        layout.addWidget(event_title)
-        layout.setAlignment(event_title, Qt.AlignCenter)
-
-        self.events_widget_list.setDragDropMode(QAbstractItemView.InternalMove)
-        self.events_widget_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.events_widget_list.setAcceptDrops(True)
-        self.events_widget_list.setSortingEnabled(True)
-        self.events_widget_list.doubleClicked.connect(self.item_menu)
-        self.events_widget_list.setWordWrap(True)
-        layout.addWidget(self.events_widget_list)
-
-        return widget
-
-    def get_spy_list_widget(self):
-        """
-        TODO
-        :return:
-        """
-
-        widget = QWidget()
-        layout = QVBoxLayout()
-        widget.setLayout(layout)
-
-        event_title = QLabel("Spied hosts... Coming soon !")
-        layout.addWidget(event_title)
-        layout.setAlignment(event_title, Qt.AlignCenter)
-
-        self.spy_widgetlist.setDragDropMode(QAbstractItemView.InternalMove)
-        self.spy_widgetlist.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.spy_widgetlist.setAcceptDrops(True)
-        self.spy_widgetlist.setSortingEnabled(True)
-        self.spy_widgetlist.doubleClicked.connect(self.item_menu)
-        self.spy_widgetlist.setWordWrap(True)
-        layout.addWidget(self.spy_widgetlist)
-
-        return widget
-
-    def item_menu(self):
-        """
-        TODO
-        :param pos:
-        :return:
-        """
-
-        self.events_widget_list.takeItem(self.events_widget_list.currentRow())
-
     @staticmethod
     def get_frame_separator():
         """
@@ -188,8 +107,8 @@ class AppQMain(QWidget):
         """
 
         line = QFrame()
+        line.setObjectName('separator')
         line.setFrameShape(QFrame.HLine)
-        line.setStyleSheet("background-color: #607d8b; color: #607d8b;")
 
         return line
 
@@ -252,9 +171,7 @@ if __name__ == '__main__':
     }
 
     for key, value in notifications.items():
-        notif = NotificationItem()
-        notif.initialize(key, value)
-        m.events_widget_list.addItem(notif)
+        m.events_widget.add_event(key, value)
 
     m.app_widget.show()
     sys.exit(app.exec_())
