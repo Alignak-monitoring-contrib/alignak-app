@@ -25,16 +25,17 @@
 
 import sys
 
-from alignak_app.core.utils import init_config, get_image_path
-from alignak_app.widgets.app_widget import AppQWidget
-from alignak_app.widgets.host_widget import HostQWidget
-
 from PyQt5.Qt import QApplication, QWidget, QGridLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QFrame, QSize  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QLabel, QPushButton, QAbstractItemView  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QListWidget, QIcon, QListWidgetItem  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QPixmap, QVBoxLayout, QHBoxLayout, Qt  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QFrame, QSize  # pylint: disable=no-name-in-module
 
+from alignak_app.core.utils import init_config, get_image_path
+from alignak_app.dock.buttons_widget import ButtonsQWidget
+from alignak_app.dock.dock_status_widget import DockStatusQWidget
+from alignak_app.widgets.app_widget import AppQWidget
+from alignak_app.widgets.host_widget import HostQWidget
 
 init_config()
 
@@ -83,6 +84,8 @@ class AppQMain(QWidget):
         self.events_widget_list = QListWidget()
         self.spy_widgetlist = QListWidget()
         self.host_widget = None
+        self.resume_status_widget = DockStatusQWidget()
+        self.buttons_widget = ButtonsQWidget()
 
     def initialize(self):
         """
@@ -93,12 +96,12 @@ class AppQMain(QWidget):
         layout = QGridLayout()
         self.setLayout(layout)
 
-        layout.addWidget(self.get_status_resume())
-
+        self.resume_status_widget.initialize()
+        layout.addWidget(self.resume_status_widget)
         layout.addWidget(self.get_frame_separator())
 
-        layout.addWidget(self.get_buttons_widget())
-
+        self.buttons_widget.initialize()
+        layout.addWidget(self.buttons_widget)
         layout.addWidget(self.get_frame_separator())
 
         layout.addWidget(self.get_backend_resume_widget())
@@ -114,10 +117,40 @@ class AppQMain(QWidget):
 
         pos_size = self.get_position_and_size(desktop)
 
-        self.app_widget.initialize('Alignak-App')
+        self.app_widget.initialize('')
         self.app_widget.add_widget(self)
         self.app_widget.resize(pos_size['size'][0], pos_size['size'][1])
         self.app_widget.move(pos_size['pos'][0], pos_size['pos'][1])
+
+    @staticmethod
+    def get_status_resume():
+        """
+        TODO
+        :return:
+        """
+
+        widget = QWidget()
+        layout = QHBoxLayout()
+        widget.setLayout(layout)
+
+        status_label = QLabel('Alignak status:')
+        layout.addWidget(status_label)
+
+        status = QLabel('<span style="color:#27ae60;">online</span>')
+        layout.addWidget(status)
+
+        status_btn = QPushButton()
+        status_btn.setIcon(QIcon(get_image_path('icon')))
+        status_btn.setFixedSize(32, 32)
+        layout.addWidget(status_btn)
+
+        status_label = QLabel('Backend:')
+        layout.addWidget(status_label)
+
+        status = QLabel('<span style="color:#27ae60;">connected</span>')
+        layout.addWidget(status)
+
+        return widget
 
     def get_events_list_widget(self):
         """
@@ -188,74 +221,6 @@ class AppQMain(QWidget):
         line.setStyleSheet("background-color: #607d8b; color: #607d8b;")
 
         return line
-
-    def get_buttons_widget(self):
-        """
-        TODO
-        :return:
-        """
-
-        buttons_widget = QWidget()
-        layout = QHBoxLayout()
-        buttons_widget.setLayout(layout)
-
-        dashboard_btn = QPushButton()
-        dashboard_btn.setIcon(QIcon(get_image_path('dashboard')))
-        dashboard_btn.setFixedSize(40, 40)
-        layout.addWidget(dashboard_btn)
-
-        host_btn = QPushButton()
-        host_btn.setIcon(QIcon(get_image_path('host')))
-        host_btn.setFixedSize(40, 40)
-        host_btn.clicked.connect(self.show_host_view)
-        layout.addWidget(host_btn)
-
-        services_btn = QPushButton()
-        services_btn.setIcon(QIcon(get_image_path('service')))
-        services_btn.setFixedSize(40, 40)
-        layout.addWidget(services_btn)
-
-        profile_btn = QPushButton()
-        profile_btn.setIcon(QIcon(get_image_path('user')))
-        profile_btn.setFixedSize(40, 40)
-        layout.addWidget(profile_btn)
-
-        webui_btn = QPushButton()
-        webui_btn.setIcon(QIcon(get_image_path('web')))
-        webui_btn.setFixedSize(40, 40)
-        layout.addWidget(webui_btn)
-
-        return buttons_widget
-
-    @staticmethod
-    def get_status_resume():
-        """
-        TODO
-        :return:
-        """
-
-        widget = QWidget()
-        layout = QHBoxLayout()
-        widget.setLayout(layout)
-
-        status_label = QLabel('Alignak status:')
-        layout.addWidget(status_label)
-
-        status = QLabel('<span style="color:#27ae60;">online</span>')
-        layout.addWidget(status)
-
-        status_btn = QPushButton()
-        status_btn.setIcon(QIcon(get_image_path('icon')))
-        status_btn.setFixedSize(32, 32)
-        layout.addWidget(status_btn)
-
-        status_label = QLabel('Backend:')
-        layout.addWidget(status_label)
-
-        status = QLabel('<span style="color:#27ae60;">connected</span>')
-        layout.addWidget(status)
-
-        return widget
 
     def get_backend_resume_widget(self):
         """
@@ -330,7 +295,6 @@ class AppQMain(QWidget):
         self.host_widget.resize(x_size, y_size)
         self.host_widget.move(pos_x, pos_y)
         self.host_widget.show()
-        print(self.size())
 
     def get_position_and_size(self, desktop):
         """
