@@ -297,35 +297,6 @@ class AppBackend(object):
 
         return wanted_service
 
-    def get_user(self, projection=None):
-        """
-        Get current user. The token must already be acquired
-
-        :param projection: list of field to get, if None, get all
-        :type projection: list|None
-        :return user items
-        :rtype dict|None
-        """
-
-        params = {
-            'where': json.dumps({
-                'token': self.user['token']
-            })
-        }
-
-        if projection is not None:
-            generate_proj = {}
-            for field in projection:
-                generate_proj[field] = 1
-            params['projection'] = json.dumps(generate_proj)
-
-        user = self.get('user', params, projection=projection)
-
-        if user:
-            return user['_items'][0]
-
-        return None
-
 
 # Creating "app_backend" variable.
 app_backend = AppBackend()
