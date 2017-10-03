@@ -148,6 +148,6 @@ class DockStatusQWidget(QWidget):
         if app_backend.connected:
             self.backend_connected.setObjectName('ok')
             return self.get_states('backend', 'ok')
-        else:
-            self.backend_connected.setObjectName('ko')
-            return self.get_states('backend', 'ko')
+
+        self.backend_connected.setObjectName('ko')
+        return self.get_states('backend', 'ko')

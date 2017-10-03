@@ -29,7 +29,7 @@ from alignak_app.core.utils import get_image_path, get_css
 from PyQt5.Qt import QPushButton, QWidget, QIcon, QHBoxLayout  # pylint: disable=no-name-in-module
 
 
-class ButtonsQWidget(QWidget):
+class ButtonsQWidget(QWidget):  # pylint: disable=too-few-public-methods
     """
         Class who create buttons for Dock QWidget
     """
