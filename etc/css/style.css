@@ -48,7 +48,7 @@ QLabel#widget_title {
     color: white;
 }
 
-/****** STATUS ******/
+/****** DOCK ******/
 QLabel#ok {
     color: #27ae60;
 }
@@ -61,3 +61,21 @@ QLabel#ko {
     color: #f44437;
 }
 
+QLabel#total {
+    background-color: #ccc;
+    color: #607d8b;
+}
+
+QFrame#separator {
+    background-color: #607d8b;
+    color: #607d8b;
+}
+QListWidget {
+    outline: none;
+}
+
+QListWidget::item:selected {
+    border: none;
+    color: black;
+    background-color: #e2dede;
+}

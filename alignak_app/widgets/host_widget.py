@@ -66,6 +66,27 @@ class HostQWidget(QWidget):
 
         layout.addWidget(self.get_host_resume_widget())
 
+    def get_host_icon_widget(self, state, name):
+        """
+        TODO
+        :param state:
+        :param name:
+        :return:
+        """
+
+        widget = QWidget()
+        layout = QVBoxLayout()
+        widget.setLayout(layout)
+
+        icon_label = QLabel()
+        icon_label.setPixmap(QPixmap(get_image_path(state)))
+        layout.addWidget(icon_label)
+
+        name_label = QLabel('<span style="font-size: 14px;">%s</span>' % name)
+        layout.addWidget(name_label)
+
+        return widget
+
     def get_host_resume_widget(self):
         """
         TODO
@@ -109,23 +130,31 @@ class HostQWidget(QWidget):
 
         return widget
 
-    def get_host_icon_widget(self, state, name):
+    def get_variables_widget(self):
         """
         TODO
-        :param state:
-        :param name:
         :return:
         """
 
         widget = QWidget()
-        layout = QVBoxLayout()
+        layout = QGridLayout()
         widget.setLayout(layout)
 
-        icon_label = QLabel()
-        icon_label.setPixmap(QPixmap(get_image_path(state)))
-        layout.addWidget(icon_label)
+        check_title = QLabel('My variables')
+        check_title.setStyleSheet('background-color: #607d8b; color: white;')
+        layout.addWidget(check_title, 0, 0, 1, 2)
 
-        name_label = QLabel('<span style="font-size: 14px;">%s</span>' % name)
-        layout.addWidget(name_label)
+        state_title = QLabel("<b>State:</b>")
+        layout.addWidget(state_title, 1, 0, 1, 1)
+
+        state_icon = QLabel()
+        state_icon.setPixmap(QPixmap(get_image_path('hosts_%s' % host_data['ls_state'].lower())))
+        layout.addWidget(state_icon, 1, 1, 1, 1)
+
+        when_title = QLabel("<b>When</b>")
+        layout.addWidget(when_title, 2, 0, 1, 1)
+
+        when_data = QLabel(host_data['ls_last_state_changed'])
+        layout.addWidget(when_data, 2, 1, 1, 1)
 
         return widget
