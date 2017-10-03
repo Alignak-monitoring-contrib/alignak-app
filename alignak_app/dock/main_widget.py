@@ -25,19 +25,19 @@
 
 import sys
 
-from PyQt5.Qt import QApplication, QWidget, QGridLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QFrame, QSize  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QLabel, QPushButton, QAbstractItemView  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QListWidget, QIcon, QListWidgetItem  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPixmap, QVBoxLayout, QHBoxLayout, Qt  # pylint: disable=no-name-in-module
-
 from alignak_app.core.utils import init_config, get_image_path
+from alignak_app.core.data_manager import data_manager
+from alignak_app.core.backend import app_backend
+from alignak_app.threads.thread_manager import thread_manager
 from alignak_app.dock.buttons_widget import ButtonsQWidget
-from alignak_app.dock.dock_status_widget import DockStatusQWidget
+from alignak_app.dock.status_widget import DockStatusQWidget
 from alignak_app.widgets.app_widget import AppQWidget
 from alignak_app.widgets.host_widget import HostQWidget
+from alignak_app.dock.backend_widget import BackendQWidget
 
-init_config()
+from PyQt5.Qt import QApplication, QWidget, QGridLayout, QLabel  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QFrame, QVBoxLayout, Qt, QAbstractItemView  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QSize, QListWidget, QIcon, QListWidgetItem  # pylint: disable=no-name-in-module
 
 
 class NotificationItem(QListWidgetItem):
@@ -86,6 +86,7 @@ class AppQMain(QWidget):
         self.host_widget = None
         self.resume_status_widget = DockStatusQWidget()
         self.buttons_widget = ButtonsQWidget()
+        self.backend_widget = BackendQWidget()
 
     def initialize(self):
         """
@@ -104,8 +105,8 @@ class AppQMain(QWidget):
         layout.addWidget(self.buttons_widget)
         layout.addWidget(self.get_frame_separator())
 
-        layout.addWidget(self.get_backend_resume_widget())
-
+        self.backend_widget.initialize()
+        layout.addWidget(self.backend_widget)
         layout.addWidget(self.get_frame_separator())
 
         layout.addWidget(self.get_events_list_widget())
@@ -121,36 +122,6 @@ class AppQMain(QWidget):
         self.app_widget.add_widget(self)
         self.app_widget.resize(pos_size['size'][0], pos_size['size'][1])
         self.app_widget.move(pos_size['pos'][0], pos_size['pos'][1])
-
-    @staticmethod
-    def get_status_resume():
-        """
-        TODO
-        :return:
-        """
-
-        widget = QWidget()
-        layout = QHBoxLayout()
-        widget.setLayout(layout)
-
-        status_label = QLabel('Alignak status:')
-        layout.addWidget(status_label)
-
-        status = QLabel('<span style="color:#27ae60;">online</span>')
-        layout.addWidget(status)
-
-        status_btn = QPushButton()
-        status_btn.setIcon(QIcon(get_image_path('icon')))
-        status_btn.setFixedSize(32, 32)
-        layout.addWidget(status_btn)
-
-        status_label = QLabel('Backend:')
-        layout.addWidget(status_label)
-
-        status = QLabel('<span style="color:#27ae60;">connected</span>')
-        layout.addWidget(status)
-
-        return widget
 
     def get_events_list_widget(self):
         """
@@ -222,58 +193,6 @@ class AppQMain(QWidget):
 
         return line
 
-    def get_backend_resume_widget(self):
-        """
-        TODO
-        :return:
-        """
-
-        resume_widget = QWidget()
-        layout = QHBoxLayout()
-        resume_widget.setLayout(layout)
-
-        host_widget = self.get_resume_item_widget(3, 'host', 37)
-        layout.addWidget(host_widget)
-
-        service_widget = self.get_resume_item_widget(36, 'service', 416)
-        layout.addWidget(service_widget)
-
-        problem_widget = self.get_resume_item_widget(39, 'problem', 453)
-        layout.addWidget(problem_widget)
-
-        return resume_widget
-
-    @staticmethod
-    def get_resume_item_widget(problem_nb, item_type, item_nb):
-        """
-        TODO
-        :param problem_nb:
-        :param item_type:
-        :param item_nb:
-        :return:
-        """
-
-        layout = QVBoxLayout()
-        widget = QWidget()
-        widget.setLayout(layout)
-
-        problem_label = QLabel('<span style="color: red;">%d</span>' % problem_nb)
-        layout.addWidget(problem_label)
-        layout.setAlignment(problem_label, Qt.AlignCenter)
-
-        item_label = QLabel()
-        item_label.setPixmap(QPixmap(get_image_path(item_type)))
-        layout.addWidget(item_label)
-        layout.setAlignment(item_label, Qt.AlignCenter)
-
-        item_nb_label = QLabel(
-            '<span style="background: #ccc; color: #607d8b;">%d</span>' % item_nb
-        )
-        layout.addWidget(item_nb_label)
-        layout.setAlignment(item_nb_label, Qt.AlignCenter)
-
-        return widget
-
     def show_host_view(self):
         """
         TODO
@@ -316,6 +235,13 @@ class AppQMain(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+
+    init_config()
+    app_backend.login()
+    thread_manager.start()
+    while not data_manager.is_ready():
+        continue
+
     m = AppQMain()
     m.initialize()
 
