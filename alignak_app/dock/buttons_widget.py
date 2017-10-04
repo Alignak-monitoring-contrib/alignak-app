@@ -24,12 +24,19 @@
      dashboard, host, problems, user and webui
 """
 
-from alignak_app.core.utils import get_image_path, get_css
+import webbrowser
+
+from logging import getLogger
+
+from alignak_app.core.utils import get_image_path, get_css, get_app_config
 
 from PyQt5.Qt import QPushButton, QWidget, QIcon, QHBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QTimer  # pylint: disable=no-name-in-module
+
+logger = getLogger(__name__)
 
 
-class ButtonsQWidget(QWidget):  # pylint: disable=too-few-public-methods
+class ButtonsQWidget(QWidget):
     """
         Class who create buttons for Dock QWidget
     """
@@ -38,6 +45,7 @@ class ButtonsQWidget(QWidget):  # pylint: disable=too-few-public-methods
         super(ButtonsQWidget, self).__init__()
         self.setStyleSheet(get_css())
         # Fields
+        self.update_timer = QTimer()
         self.webui_btn = QPushButton()
         self.profile_btn = QPushButton()
         self.problems_btn = QPushButton()
@@ -71,4 +79,38 @@ class ButtonsQWidget(QWidget):  # pylint: disable=too-few-public-methods
 
         self.webui_btn.setIcon(QIcon(get_image_path('web')))
         self.webui_btn.setFixedSize(40, 40)
+        self.webui_btn.clicked.connect(self.open_url)
         layout.addWidget(self.webui_btn)
+
+        self.update_widget()
+
+        self.update_timer.setInterval(15000)
+        self.update_timer.start()
+        self.update_timer.timeout.connect(self.update_widget)
+
+    def update_widget(self):
+        """
+        Update the QWidget buttons
+
+        """
+
+        webui_url = get_app_config('Alignak', 'webui')
+
+        if webui_url:
+            self.webui_btn.setEnabled(True)
+            self.webui_btn.setToolTip(_("Open WebUI in browser"))
+        else:
+            self.webui_btn.setEnabled(False)
+            self.webui_btn.setToolTip(_("WebUI is not set in configuration file."))
+
+    @staticmethod
+    def open_url():  # pragma: no cover
+        """
+        Add a link to Alignak-WebUI on every menu
+
+        """
+
+        webui_url = get_app_config('Alignak', 'webui')
+        if webui_url:
+            logger.debug('Open url : ' + webui_url + '/login')
+            webbrowser.open(webui_url + '/login')
