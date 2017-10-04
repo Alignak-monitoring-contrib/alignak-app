@@ -54,7 +54,7 @@ class Host(ItemModel):
 
         hosts_projection = [
             'name', 'alias', 'ls_state', '_id', 'ls_acknowledged', 'ls_downtimed', 'ls_last_check',
-            'ls_output', 'address', 'business_impact', 'parents', 'ls_last_state_changed'
+            'ls_output', 'address', 'business_impact', 'parents', 'ls_last_state_changed', '_realm'
         ]
 
         request = {

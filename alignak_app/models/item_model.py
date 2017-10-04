@@ -80,3 +80,65 @@ class ItemModel(object):
         """
 
         self.data[key] = new_value
+
+
+def get_icon_item(item_type, state, acknowledge, downtime):
+    """
+    TODO
+    :param item_type:
+    :param state:
+    :param acknowledge:
+    :param downtime:
+    :return:
+    """
+
+    if acknowledge:
+        return 'hosts_acknowledge'
+    if downtime:
+        return 'hosts_downtime'
+
+    available_icons = {
+        'host': {
+            'UP': 'hosts_up',
+            'UNREACHABLE': 'hosts_unreachable',
+            'DOWN': 'hosts_down',
+        },
+        'service': {
+            'OK': 'services_ok',
+            'WARNING': 'services_warning',
+            'CRITICAL': 'services_critical',
+            'UNKNOWN': 'services_unknown',
+            'UNREACHABLE': 'services_unreachable'
+        }
+    }
+    return available_icons[item_type][state]
+
+
+def get_real_host_state_icon(services):
+    """
+    Return corresponging
+
+    :param services: list of Service items
+    :type services: list
+    :return: icon corresponding to state
+    :rtype: str
+    """
+
+    if services:
+        icon_names = [
+            'all_services_ok',
+            'all_services_ok',
+            'all_services_ok',
+            'all_services_warning',
+            'all_services_critical'
+        ]
+        state_lvl = []
+
+        for service in services:
+            state_lvl.append(service.data['_overall_state_id'])
+
+        max_state_lvl = max(state_lvl)
+
+        return icon_names[max_state_lvl]
+
+    return ''
