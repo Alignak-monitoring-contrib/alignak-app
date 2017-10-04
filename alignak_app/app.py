@@ -36,7 +36,6 @@ from alignak_app.core.utils import init_config, get_app_config
 from alignak_app.core.locales import init_localization
 from alignak_app.widgets.login import AppLogin
 from alignak_app.core.backend import app_backend
-from alignak_app.dock.dock_widget import DockQWidget
 from alignak_app.systray.tray_icon import TrayIcon
 
 from PyQt5.QtWidgets import QDialog, QMessageBox, QSplashScreen  # pylint: disable=no-name-in-module
@@ -58,7 +57,6 @@ class AlignakApp(QObject):
 
     def __init__(self, parent=None):
         super(AlignakApp, self).__init__(parent)
-        self.dock = None
         self.tray_icon = None
         self.reconnect_mode = False
 
@@ -189,23 +187,26 @@ class AlignakApp(QObject):
                         self.parent().processEvents()
 
             logger.info("Starting Dock...")
-            self.dock = DockQWidget()
-            splash.finish(self.dock)
-            self.dock.initialize()
+
+            # Prevent from: QWidget: Must construct a QApplication before a QWidget
+            from alignak_app.dock.dock_widget import dock
+
+            splash.finish(dock)
+            dock.initialize()
 
             logger.info("Start TrayIcon...")
             self.tray_icon = TrayIcon(QIcon(get_image_path('icon')))
-            self.tray_icon.build_menu(self.dock)
+            self.tray_icon.build_menu(dock)
             self.tray_icon.show()
 
             # Send Welcome Banner
-            self.dock.events_widget.add_event(
+            dock.events_widget.add_event(
                 'OK',
                 _('Welcome %s, you are connected to Alignak Backend') %
                 data_manager.database['user'].name,
             )
 
-            self.dock.app_widget.show()
+            dock.app_widget.show()
         else:
             # In case of data provided in config file fails
             logger.error(

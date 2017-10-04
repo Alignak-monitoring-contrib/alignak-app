@@ -65,7 +65,7 @@ class BackendQWidget(QWidget):
 
         self.timer.setInterval(15000)
         self.timer.start()
-        self.timer.timeout.connect(self.send_events)
+        self.timer.timeout.connect(self.update_labels)
 
     def get_item_type_widget(self, item_type, problem_nb, total_nb):
         """

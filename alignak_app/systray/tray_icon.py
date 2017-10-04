@@ -34,7 +34,6 @@ from alignak_app.threads.thread_manager import thread_manager
 from alignak_app.core.utils import init_config
 from alignak_app.systray.qactions_factory import QActionFactory
 from alignak_app.widgets.about import AppAbout
-from alignak_app.widgets.banner import send_banner
 
 logger = getLogger(__name__)
 
@@ -64,7 +63,7 @@ class TrayIcon(QSystemTrayIcon):
 
         # Create actions
         self.dock = dock
-        self.create_dock_action(dock)
+        self.create_dock_action()
 
         self.menu.addSeparator()
 
@@ -77,7 +76,7 @@ class TrayIcon(QSystemTrayIcon):
 
         self.setContextMenu(self.menu)
 
-    def create_dock_action(self, dock):
+    def create_dock_action(self):
         """
         Create dashboard action
 
@@ -93,7 +92,7 @@ class TrayIcon(QSystemTrayIcon):
             self
         )
 
-        self.qaction_factory.get('icon').triggered.connect(dock.app_widget.show)
+        self.qaction_factory.get('icon').triggered.connect(self.dock.app_widget.show)
 
         self.menu.addAction(self.qaction_factory.get('icon'))
 

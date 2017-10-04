@@ -29,17 +29,21 @@ import time
 from alignak_app.core.utils import init_config, get_css, get_image_path
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.backend import app_backend
+
 from alignak_app.threads.thread_manager import thread_manager
+
 from alignak_app.dock.buttons_widget import ButtonsQWidget
 from alignak_app.dock.status_widget import DockStatusQWidget
 from alignak_app.dock.backend_widget import BackendQWidget
 from alignak_app.dock.events_widget import EventsQListWidget
 from alignak_app.dock.spy_widget import SpyQListWidget
+
 from alignak_app.widgets.app_widget import AppQWidget
 from alignak_app.widgets.host_widget import HostQWidget
 
-from PyQt5.Qt import QApplication, QWidget, QGridLayout, QFrame, Qt  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QListWidget, QSplashScreen, QPixmap, QProgressBar  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QApplication, QWidget, QGridLayout, QFrame  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QListWidget, QSplashScreen, QPixmap  # pylint: disable=no-name-in-module
+from PyQt5.Qt import Qt, QProgressBar  # pylint: disable=no-name-in-module
 
 
 class DockQWidget(QWidget):
@@ -157,35 +161,5 @@ class DockQWidget(QWidget):
         }
 
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-
-    init_config()
-    app_backend.login()
-    thread_manager.start()
-
-    splash_icon = QPixmap(get_image_path('alignak'))
-    splash = QSplashScreen(splash_icon)
-
-    progressBar = QProgressBar(splash)
-    progressBar.setTextVisible(False)
-    progressBar.setStyleSheet('border-top: none; color: none;')
-    progressBar.setFixedSize(splash_icon.width(), splash_icon.height())
-    progressBar.setAlignment(Qt.AlignCenter)
-
-    splash.setMask(splash_icon.mask())
-    splash.show()
-
-    while not data_manager.is_ready():
-        for i in range(0, 100):
-            progressBar.setValue(i)
-            t = time.time()
-            while time.time() < t + 0.02:
-                app.processEvents()
-
-    dock = DockQWidget()
-    splash.finish(dock)
-    dock.initialize()
-
-    dock.app_widget.show()
-    sys.exit(app.exec_())
+# Initialize dock var to None
+dock = DockQWidget()
