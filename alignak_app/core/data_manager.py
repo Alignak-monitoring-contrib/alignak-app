@@ -23,6 +23,8 @@
     DataManager manage alignak data provided by BackendQRunnable
 """
 
+import datetime
+
 from logging import getLogger
 
 from alignak_app.models.item_livesynthesis import LiveSynthesis
@@ -46,6 +48,7 @@ class DataManager(object):
             'service': [],
             'user': [],
         }
+        self.old_notifications = []
 
     def is_ready(self):
         """
@@ -201,6 +204,60 @@ class DataManager(object):
         }
 
         return host_data
+
+    def get_events(self):
+        """
+        Get the last events
+
+        :return: list of events
+        :rtype: list
+        """
+
+        events = data_manager.database['notifications']
+        logger.debug('%s founded: ', str(events))
+
+        notifications_to_send = []
+        for event in events:
+            # If the notification has not already been sent to the last check
+            if event.item_id not in self.old_notifications:
+                message_split = event.data['message'].split(';')
+                item_type = 'HOST' if 'HOST' in message_split[0] else 'SERVICE'
+                host = message_split[1]
+                if 'SERVICE' in item_type:
+                    service = message_split[2]
+                    state = message_split[3]
+                    output = message_split[5]
+                else:
+                    service = ''
+                    state = message_split[2]
+                    output = message_split[4]
+
+                # Convert updated date to user local time
+                gmt_time = datetime.datetime.strptime(
+                    event.data['_updated'], "%a, %d %b %Y %H:%M:%S GMT"
+                )
+                local_time = gmt_time.replace(
+                    tzinfo=datetime.timezone.utc) \
+                    .astimezone(tz=None) \
+                    .strftime("%a, %d %b %Y %H:%M:%S %Z")
+
+                # Define message
+                if service:
+                    message = "%s(%s) [%s]: %s - %s" % (
+                        service, host, state, output, local_time
+                    )
+                else:
+                    message = "%s [%s]: %s - %s" % (host, state, output, local_time)
+
+                notifications_to_send.append(
+                    {'event_type': state, 'message': message}
+                )
+
+                self.old_notifications.append(event.item_id)
+
+                return notifications_to_send
+
+        return []
 
 
 # Creating "data_manager" variable.

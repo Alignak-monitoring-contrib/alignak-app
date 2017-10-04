@@ -24,9 +24,10 @@
 """
 
 from alignak_app.core.utils import get_image_path, get_css
+from alignak_app.core.data_manager import data_manager
 
 from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QListWidgetItem, QSize, QIcon  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QListWidgetItem, QSize, QIcon, QTimer  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QLabel, QVBoxLayout, Qt  # pylint: disable=no-name-in-module
 
 
@@ -81,12 +82,17 @@ class EventsQListWidget(QWidget):
         self.setStyleSheet(get_css())
         # Fields
         self.events_list = QListWidget()
+        self.timer = QTimer()
 
     def initialize(self):
         """
         Intialize QWidget
 
         """
+
+        self.timer.setInterval(15000)
+        self.timer.start()
+        self.timer.timeout.connect(self.send_events)
 
         layout = QVBoxLayout()
         self.setLayout(layout)
@@ -103,6 +109,18 @@ class EventsQListWidget(QWidget):
         self.events_list.setWordWrap(True)
 
         layout.addWidget(self.events_list)
+
+    def send_events(self):
+        """
+        Add events stored in DataManager
+
+        """
+
+        events = data_manager.get_events()
+
+        if events:
+            for event in events:
+                self.add_event(event['event_type'], event['message'])
 
     def add_event(self, event_type, msg):
         """

@@ -168,14 +168,5 @@ if __name__ == '__main__':
     dock = DockQWidget()
     dock.initialize()
 
-    notifications = {
-        "UP": "Host is UP since 2017-09-22 17:58:36",
-        "DOWN": "Host is DOWN since 2017-09-22 17:58:36, please fix the problem",
-        "UNREACHABLE": "never seen",
-    }
-
-    for key, value in notifications.items():
-        dock.events_widget.add_event(key, value)
-
     dock.app_widget.show()
     sys.exit(app.exec_())
