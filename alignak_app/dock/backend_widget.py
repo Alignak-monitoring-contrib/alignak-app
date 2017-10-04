@@ -27,7 +27,7 @@ from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.data_manager import data_manager
 
 from PyQt5.Qt import QWidget, QVBoxLayout, QHBoxLayout, Qt  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QLabel, QPixmap  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QLabel, QPixmap, QTimer  # pylint: disable=no-name-in-module
 
 
 class BackendQWidget(QWidget):
@@ -44,6 +44,7 @@ class BackendQWidget(QWidget):
             'service': None,
             'problem': None
         }
+        self.timer = QTimer()
 
     def initialize(self):
         """
@@ -61,6 +62,10 @@ class BackendQWidget(QWidget):
             layout.addWidget(item_widget)
 
         self.update_labels()
+
+        self.timer.setInterval(15000)
+        self.timer.start()
+        self.timer.timeout.connect(self.send_events)
 
     def get_item_type_widget(self, item_type, problem_nb, total_nb):
         """
@@ -85,7 +90,6 @@ class BackendQWidget(QWidget):
         layout.setAlignment(problem_label, Qt.AlignCenter)
 
         icon_label = QLabel()
-        icon_label.setPixmap(QPixmap(get_image_path(item_type)))
         layout.addWidget(icon_label)
         layout.setAlignment(icon_label, Qt.AlignCenter)
 
@@ -95,6 +99,7 @@ class BackendQWidget(QWidget):
 
         self.labels_to_update[item_type] = {
             'problem': problem_label,
+            'icon': icon_label,
             'total': total_label
         }
 
@@ -112,15 +117,51 @@ class BackendQWidget(QWidget):
             self.labels_to_update[item_type]['problem'].setText(
                 '%s' % str(items_and_problems[item_type]['problem'])
             )
+            self.labels_to_update[item_type]['icon'].setPixmap(
+                self.get_icon_item(item_type, items_and_problems[item_type]['problem'])
+            )
             self.labels_to_update[item_type]['total'].setText(
                 '%s' % str(items_and_problems[item_type]['total'])
             )
+
+    @staticmethod
+    def get_icon_item(item_type, problem_nb):
+        """
+        Return QPixmap with the corresponding image
+
+        :param item_type: type of item: host, service or problem
+        :type item_type: str
+        :param problem_nb: problem number
+        :type problem_nb: int
+        :return: QPixmap with corresponding image
+        :rtype: QPixmap
+        """
+
+        if problem_nb > 0:
+            if item_type == 'host':
+                icon_type = 'hosts_down'
+            elif item_type == 'service':
+                icon_type = 'services_critical'
+            else:
+                icon_type = 'problem'
+        else:
+            if item_type == 'host':
+                icon_type = 'hosts_up'
+            elif item_type == 'service':
+                icon_type = 'services_ok'
+            else:
+                icon_type = 'problem_ok'
+        icon = QPixmap(get_image_path(icon_type))
+
+        return icon
 
     @staticmethod
     def get_items_and_problems():
         """
         Return total of items and problems
 
+        :return: dict of problem and total number for each item
+        :rtype: dict
         """
 
         livesynthesis = data_manager.database['livesynthesis']
