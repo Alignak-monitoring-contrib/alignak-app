@@ -23,14 +23,7 @@
     Dock manage creation of Alignak-app Dock
 """
 
-import sys
-import time
-
-from alignak_app.core.utils import init_config, get_css, get_image_path
-from alignak_app.core.data_manager import data_manager
-from alignak_app.core.backend import app_backend
-
-from alignak_app.threads.thread_manager import thread_manager
+from alignak_app.core.utils import get_css
 
 from alignak_app.dock.buttons_widget import ButtonsQWidget
 from alignak_app.dock.status_widget import DockStatusQWidget
@@ -39,11 +32,9 @@ from alignak_app.dock.events_widget import EventsQListWidget
 from alignak_app.dock.spy_widget import SpyQListWidget
 
 from alignak_app.widgets.app_widget import AppQWidget
-from alignak_app.widgets.host_widget import HostQWidget
 
-from PyQt5.Qt import QApplication, QWidget, QGridLayout, QFrame  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QListWidget, QSplashScreen, QPixmap  # pylint: disable=no-name-in-module
-from PyQt5.Qt import Qt, QProgressBar  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QApplication, QWidget, QGridLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QListWidget, QFrame  # pylint: disable=no-name-in-module
 
 
 class DockQWidget(QWidget):
@@ -56,27 +47,37 @@ class DockQWidget(QWidget):
         self.setStyleSheet(get_css())
         # Fields
         self.app_widget = AppQWidget()
-        self.events_widget_list = QListWidget()
-        self.spy_widgetlist = QListWidget()
-        self.host_widget = None
-        self.resume_status_widget = DockStatusQWidget()
+        self.status_widget = DockStatusQWidget()
         self.buttons_widget = ButtonsQWidget()
         self.backend_widget = BackendQWidget()
+        self.events_widget_list = QListWidget()
         self.events_widget = EventsQListWidget()
+        self.spy_widgetlist = QListWidget()
         self.spy_widget = SpyQListWidget()
 
     def initialize(self):
         """
-        Iniitalize dock QWidget
+        Initialize dock QWidget
 
         """
 
         layout = QGridLayout()
         self.setLayout(layout)
 
+        # Define size and position of dock
+        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+        desktop = QApplication.desktop().availableGeometry(screen)
+
+        pos_size = self.get_position_and_size(desktop)
+
+        self.app_widget.initialize('')
+        self.app_widget.add_widget(self)
+        self.app_widget.resize(pos_size['size'][0], pos_size['size'][1])
+        self.app_widget.move(pos_size['pos'][0], pos_size['pos'][1])
+
         # Add dock widgets
-        self.resume_status_widget.initialize()
-        layout.addWidget(self.resume_status_widget)
+        self.status_widget.initialize()
+        layout.addWidget(self.status_widget)
         layout.addWidget(self.get_frame_separator())
 
         self.buttons_widget.initialize()
@@ -93,17 +94,6 @@ class DockQWidget(QWidget):
         self.spy_widget.initialize()
         layout.addWidget(self.spy_widget)
 
-        # Define size and position of dock
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        desktop = QApplication.desktop().screenGeometry(screen)
-
-        pos_size = self.get_position_and_size(desktop)
-
-        self.app_widget.initialize('')
-        self.app_widget.add_widget(self)
-        self.app_widget.resize(pos_size['size'][0], pos_size['size'][1])
-        self.app_widget.move(pos_size['pos'][0], pos_size['pos'][1])
-
     @staticmethod
     def get_frame_separator():
         """
@@ -118,28 +108,6 @@ class DockQWidget(QWidget):
         line.setFrameShape(QFrame.HLine)
 
         return line
-
-    def show_host_view(self):
-        """
-        TODO: Show the host view, should be temp here
-
-        """
-
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        desktop = QApplication.desktop().availableGeometry(screen)
-
-        self.host_widget = HostQWidget()
-        self.host_widget.initialize()
-
-        x_size = desktop.width() - self.width()
-        y_size = 64
-
-        pos_x = 0
-        pos_y = 0
-
-        self.host_widget.resize(x_size, y_size)
-        self.host_widget.move(pos_x, pos_y)
-        self.host_widget.show()
 
     def get_position_and_size(self, desktop):
         """

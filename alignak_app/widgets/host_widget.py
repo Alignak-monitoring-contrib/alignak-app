@@ -32,7 +32,7 @@ from alignak_app.core.backend import app_backend
 from alignak_app.threads.thread_manager import thread_manager
 from alignak_app.models.item_model import get_icon_item, get_real_host_state_icon
 
-from PyQt5.Qt import QLabel, QWidget, QGridLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QLabel, QWidget, QGridLayout, Qt  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QPixmap, QVBoxLayout, QHBoxLayout  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QApplication  # pylint: disable=no-name-in-module
 
@@ -42,12 +42,12 @@ class HostQWidget(QWidget):
         TODO
     """
 
-    def __init__(self, host_and_services, parent=None):
+    def __init__(self, parent=None):
         super(HostQWidget, self).__init__(parent)
         self.setStyleSheet(get_css())
         # Fields
-        self.host_item = host_and_services['host']
-        self.service_items = host_and_services['services']
+        self.host_item = None
+        self.service_items = None
         self.labels = {
             'host_icon': QLabel(),
             'host_name': QLabel(),
@@ -56,18 +56,46 @@ class HostQWidget(QWidget):
             'ls_output': QLabel(),
             'realm': QLabel(),
             'address': QLabel(),
-            'business_impact': QLabel()
+            'business_impact': QLabel(),
+            'notes': QLabel()
         }
+
+    def set_data(self, hostname):
+        """
+        Set data of host and service
+
+        :param hostname:
+        """
+
+        host_and_services = data_manager.get_host_with_services(hostname)
+        self.host_item = host_and_services['host']
+        self.service_items = host_and_services['services']
 
     def initialize(self):
         """
         Initialize QWidget
 
+        :param dock_width: dock width to set size of QWidget
+        :type dock_width: int
         """
 
         layout = QHBoxLayout()
         self.setLayout(layout)
 
+        # Define size and position of HostQWidget
+        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+        desktop = QApplication.desktop().availableGeometry(screen)
+
+        x_size = desktop.width() * 0.76
+        y_size = 35
+
+        pos_x = 0
+        pos_y = 0
+
+        self.resize(x_size, y_size)
+        self.move(pos_x, pos_y)
+
+        # Add Qwidgets
         layout.addWidget(self.get_host_icon_widget())
 
         layout.addWidget(self.get_last_check_widget())
@@ -87,14 +115,16 @@ class HostQWidget(QWidget):
         widget.setLayout(layout)
 
         icon_name = get_real_host_state_icon(self.service_items)
+        icon_pixmap = QPixmap(get_image_path(icon_name))
 
-        self.labels['host_icon'].setPixmap(QPixmap(
-            get_image_path(icon_name)
-        ))
+        self.labels['host_icon'].setPixmap(QPixmap(icon_pixmap))
         layout.addWidget(self.labels['host_icon'])
+        layout.setAlignment(self.labels['host_icon'], Qt.AlignCenter)
 
         self.labels['host_name'].setText('%s' % self.host_item.name)
+        self.labels['host_name'].setObjectName('hostname')
         layout.addWidget(self.labels['host_name'])
+        layout.setAlignment(self.labels['host_name'], Qt.AlignCenter)
 
         return widget
 
@@ -112,11 +142,13 @@ class HostQWidget(QWidget):
 
         # Title
         check_title = QLabel('My last check')
-        check_title.setStyleSheet('background-color: #607d8b; color: white;')
+        check_title.setObjectName('hosttitle')
+        check_title.setFixedHeight(30)
         layout.addWidget(check_title, 0, 0, 1, 2)
 
         # State
-        state_title = QLabel("<b>State:</b>")
+        state_title = QLabel("State:")
+        state_title.setObjectName('title')
         layout.addWidget(state_title, 1, 0, 1, 1)
 
         icon_name = get_icon_item(
@@ -129,7 +161,8 @@ class HostQWidget(QWidget):
         layout.addWidget(self.labels['state_icon'], 1, 1, 1, 1)
 
         # When last check
-        when_title = QLabel("<b>When</b>")
+        when_title = QLabel("When:")
+        when_title.setObjectName('title')
         layout.addWidget(when_title, 2, 0, 1, 1)
 
         since_last_check = get_time_diff_since_last_timestamp(
@@ -140,17 +173,19 @@ class HostQWidget(QWidget):
 
         # Output
         output_title = QLabel("Output")
+        output_title.setObjectName('title')
         layout.addWidget(output_title, 3, 0, 1, 1)
 
         self.labels['ls_output'].setText(self.host_item.data['ls_output'])
+        self.labels['ls_output'].setObjectName('output')
         layout.addWidget(self.labels['ls_output'], 3, 1, 1, 1)
 
         return widget
 
     def get_variables_widget(self):
         """
-        TODO
-        :return:
+        Return QWidget with host variables
+
         """
 
         widget = QWidget()
@@ -159,48 +194,43 @@ class HostQWidget(QWidget):
 
         # Title
         check_title = QLabel('My variables')
-        check_title.setStyleSheet('background-color: #607d8b; color: white;')
+        check_title.setObjectName('hosttitle')
+        check_title.setFixedHeight(30)
         layout.addWidget(check_title, 0, 0, 1, 2)
 
         # Realm
-        realm_title = QLabel("<b>Realm:</b>")
+        realm_title = QLabel("Realm:")
+        realm_title.setObjectName('title')
         layout.addWidget(realm_title, 1, 0, 1, 1)
 
         self.labels['realm'].setText(self.host_item.data['_realm'])
         layout.addWidget(self.labels['realm'], 1, 1, 1, 1)
 
         # Address
-        address_title = QLabel("<b>Host address:</b>")
+        address_title = QLabel("Host address:")
+        address_title.setObjectName('title')
         layout.addWidget(address_title, 2, 0, 1, 1)
 
         self.labels['address'].setText(self.host_item.data['address'])
         layout.addWidget(self.labels['address'], 2, 1, 1, 1)
 
         # Business impact
-        address_title = QLabel("<b>Business impact:</b>")
+        address_title = QLabel("Business impact:")
+        address_title.setObjectName('title')
         layout.addWidget(address_title, 3, 0, 1, 1)
 
         self.labels['business_impact'].setText(str(self.host_item.data['business_impact']))
         layout.addWidget(self.labels['business_impact'], 3, 1, 1, 1)
 
+        # Notes
+        notes_title = QLabel("Notes:")
+        notes_title.setObjectName('title')
+        layout.addWidget(notes_title, 4, 0, 1, 1)
+
+        self.labels['notes'].setText(self.host_item.data['notes'])
+        layout.addWidget(self.labels['notes'], 4, 1, 1, 1)
+
         return widget
 
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-
-    init_config()
-    app_backend.login()
-    thread_manager.start()
-
-    while not data_manager.is_ready():
-        continue
-
-    host_services = data_manager.get_host_with_services('denice')
-
-    host = HostQWidget(host_services)
-
-    host.initialize()
-    host.show()
-
-    sys.exit(app.exec_())
+host_widget = HostQWidget()
