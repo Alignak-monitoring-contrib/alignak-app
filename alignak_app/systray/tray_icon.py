@@ -24,22 +24,17 @@
 """
 
 import sys
-import webbrowser
 from logging import getLogger
 
 from PyQt5.Qt import pyqtSignal  # pylint: disable=no-name-in-module
-from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
 
 from alignak_app.threads.thread_manager import thread_manager
-from alignak_app.core.utils import get_app_config, get_image_path, init_config
-from alignak_app.synthesis.synthesis import Synthesis
+from alignak_app.core.utils import init_config
 from alignak_app.systray.qactions_factory import QActionFactory
-from alignak_app.user.user_profile import UserProfile
 from alignak_app.widgets.about import AppAbout
 from alignak_app.widgets.banner import send_banner
-from alignak_app.widgets.status import AlignakStatus
 
 logger = getLogger(__name__)
 
@@ -53,254 +48,54 @@ class TrayIcon(QSystemTrayIcon):
 
     def __init__(self, icon, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
+        # Fields
         self.menu = QMenu(parent)
-        self.hosts_menu = QMenu(self.menu)
-        self.hosts_menu.setIcon(QIcon(get_image_path('host')))
-        self.services_menu = QMenu(self.menu)
-        self.services_menu.setIcon(QIcon(get_image_path('service')))
         self.qaction_factory = QActionFactory()
-        self.alignak_status = None
         self.app_about = None
-        self.synthesis = None
-        self.user = None
+        self.dock = None
 
-    def build_menu(self, dashboard):
+    def build_menu(self, dock):
         """
         Initialize and create each action of menu.
 
-        :param dashboard: Dashboard QWidget
-        :type dashboard: alignak_app.dashboard.app_dashboard.Dashboard
+        :param dock: Dashboard QWidget
+        :type dock: alignak_app.dock.dock_widget.DockQWidget
         """
 
         # Create actions
-        self.create_synthesis_action()
-        self.create_dashboard_action(dashboard)
-        self.create_status_action()
-        self.create_user_action()
-        self.menu.addSeparator()
+        self.dock = dock
+        self.create_dock_action(dock)
 
-        self.create_hosts_actions()
-        self.create_services_actions()
         self.menu.addSeparator()
 
         self.create_reload_configuration()
         self.create_about_action()
+
         self.menu.addSeparator()
 
         self.create_quit_action()
 
         self.setContextMenu(self.menu)
 
-        self.update_tray.connect(self.update_menu_actions)
-
-    def create_dashboard_action(self, dashboard):
+    def create_dock_action(self, dock):
         """
         Create dashboard action
 
-        :param dashboard: Dashboard QWidget
-        :type dashboard: alignak_app.dashboard.app_dashboard.Dashboard
+        :param dock: Dashboard QWidget
+        :type dock: alignak_app.dock.dock_widget.DockQWidget
         """
 
         logger.info('Create Dashboard action')
 
         self.qaction_factory.create(
-            'dashboard',
-            _('Dashboard'),
-            self
-        )
-
-        self.qaction_factory.get('dashboard').triggered.connect(dashboard.app_widget.show)
-
-        self.menu.addAction(self.qaction_factory.get('dashboard'))
-
-    def create_hosts_actions(self):
-        """
-        Create hosts actions.
-
-        """
-
-        logger.info('Create Host Actions')
-
-        self.hosts_menu.setTitle('Hosts (N/A)')
-
-        self.qaction_factory.create(
-            'hosts_up',
-            _('Hosts UP, Wait...'),
-            self.hosts_menu
-        )
-
-        self.qaction_factory.create(
-            'hosts_unreachable',
-            _('Hosts UNREACHABLE, Wait...'),
-            self.hosts_menu
-        )
-
-        self.qaction_factory.create(
-            'hosts_down',
-            _('Hosts DOWN, Wait...'),
-            self.hosts_menu
-        )
-
-        self.hosts_menu.addSeparator()
-
-        self.qaction_factory.create(
-            'hosts_acknowledge',
-            _('Hosts ACKNOWLEDGE, Wait...'),
-            self.hosts_menu
-        )
-
-        self.qaction_factory.create(
-            'hosts_downtime',
-            _('Hosts DOWNTIME, Wait...'),
-            self.hosts_menu
-        )
-
-        if get_app_config('Alignak', 'webui'):
-            self.qaction_factory.get('hosts_up').triggered.connect(self.open_url)
-            self.qaction_factory.get('hosts_unreachable').triggered.connect(self.open_url)
-            self.qaction_factory.get('hosts_down').triggered.connect(self.open_url)
-
-        # Add hosts actions to menu
-        self.hosts_menu.addAction(self.qaction_factory.get('hosts_up'))
-        self.hosts_menu.addAction(self.qaction_factory.get('hosts_unreachable'))
-        self.hosts_menu.addAction(self.qaction_factory.get('hosts_down'))
-        self.hosts_menu.addAction(self.qaction_factory.get('hosts_acknowledge'))
-        self.hosts_menu.addAction(self.qaction_factory.get('hosts_downtime'))
-
-        self.menu.addMenu(self.hosts_menu)
-
-    def create_services_actions(self):
-        """
-        Create services actions.
-
-        """
-
-        logger.info('Create Service Actions')
-
-        self.services_menu.setTitle('Services (N/A)')
-
-        self.qaction_factory.create(
-            'services_ok',
-            _('Services OK, Wait...'),
-            self
-        )
-
-        self.qaction_factory.create(
-            'services_warning',
-            _('Services WARNING, Wait...'),
-            self.services_menu
-        )
-
-        self.qaction_factory.create(
-            'services_critical',
-            _('Services CRITICAL, Wait...'),
-            self.services_menu
-        )
-
-        self.qaction_factory.create(
-            'services_unknown',
-            _('Services UNKNOWN, Wait...'),
-            self.services_menu
-        )
-
-        self.qaction_factory.create(
-            'services_unreachable',
-            _('Services UNREACHABLE, Wait...'),
-            self.services_menu
-        )
-
-        self.services_menu.addSeparator()
-
-        self.qaction_factory.create(
-            'services_acknowledge',
-            _('Services ACKNOWLEDGE, Wait...'),
-            self.services_menu
-        )
-
-        self.qaction_factory.create(
-            'services_downtime',
-            _('Services DOWNTIME, Wait...'),
-            self.services_menu
-        )
-
-        if get_app_config('Alignak', 'webui'):
-            self.qaction_factory.get('services_ok').triggered.connect(self.open_url)
-            self.qaction_factory.get('services_warning').triggered.connect(self.open_url)
-            self.qaction_factory.get('services_critical').triggered.connect(self.open_url)
-            self.qaction_factory.get('services_unknown').triggered.connect(self.open_url)
-            self.qaction_factory.get('services_unreachable').triggered.connect(self.open_url)
-
-        # Add services actions to menu
-        self.services_menu.addAction(self.qaction_factory.get('services_ok'))
-        self.services_menu.addAction(self.qaction_factory.get('services_warning'))
-        self.services_menu.addAction(self.qaction_factory.get('services_critical'))
-        self.services_menu.addAction(self.qaction_factory.get('services_unknown'))
-        self.services_menu.addAction(self.qaction_factory.get('services_unreachable'))
-        self.services_menu.addAction(self.qaction_factory.get('services_acknowledge'))
-        self.services_menu.addAction(self.qaction_factory.get('services_downtime'))
-
-        self.menu.addMenu(self.services_menu)
-
-    def create_synthesis_action(self):
-        """
-        Create Synthesis QWidget and "synthesis view" action
-
-        """
-
-        self.qaction_factory.create(
-            'database',
-            _('Host Synthesis View'),
-            self
-        )
-
-        self.synthesis = Synthesis()
-        self.synthesis.initialize()
-
-        self.qaction_factory.get('database').triggered.connect(
-            self.synthesis.app_widget.show_widget
-        )
-
-        self.menu.addAction(self.qaction_factory.get('database'))
-
-        logger.info('Create Synthesis Action')
-
-    def create_status_action(self):
-        """
-        Create AlignakStatus QWidget and "status" action
-
-        """
-
-        self.qaction_factory.create(
             'icon',
-            _('Alignak Status'),
+            _('Dock'),
             self
         )
 
-        self.alignak_status = AlignakStatus()
-        self.alignak_status.create_status()
-        self.qaction_factory.get('icon').triggered.connect(self.alignak_status.show_states)
+        self.qaction_factory.get('icon').triggered.connect(dock.app_widget.show)
 
         self.menu.addAction(self.qaction_factory.get('icon'))
-
-        logger.info('Create Status Action')
-
-    def create_user_action(self):
-        """
-        Create User object who manage UserProfile QWidget
-
-        """
-
-        self.qaction_factory.create(
-            'user',
-            _('View my profile'),
-            self
-        )
-        self.user = UserProfile()
-        self.user.initialize()
-
-        self.qaction_factory.get('user').triggered.connect(self.user.app_widget.show)
-
-        self.menu.addAction(self.qaction_factory.get('user'))
 
     def create_reload_configuration(self):
         """
@@ -359,80 +154,6 @@ class TrayIcon(QSystemTrayIcon):
 
         self.menu.addAction(self.qaction_factory.get('exit'))
 
-    def update_menu_actions(self, synthesis):
-        """
-        Update items Menu, triggered by pyqtSignal
-
-        :param synthesis: hosts and services synthesis
-        :type synthesis: dict
-        """
-
-        try:
-            assert isinstance(synthesis, dict)
-        except TypeError as e:
-            logger.error('Bad object received: %s', e)
-
-        logger.info('Update menus...')
-
-        host_nb = synthesis['hosts']['up'] + \
-            synthesis['hosts']['down'] + \
-            synthesis['hosts']['unreachable'] + \
-            synthesis['hosts']['downtime'] + \
-            synthesis['hosts']['acknowledge']
-        services_nb = synthesis['services']['ok'] + \
-            synthesis['services']['warning'] + \
-            synthesis['services']['critical'] + \
-            synthesis['services']['unknown'] + \
-            synthesis['services']['unreachable'] + \
-            synthesis['services']['downtime'] + \
-            synthesis['services']['acknowledge']
-
-        if synthesis['hosts']['down'] != 0:
-            self.hosts_menu.setIcon(QIcon(get_image_path('hosts_down')))
-        elif synthesis['hosts']['down'] == 0 and \
-                synthesis['hosts']['unreachable'] > synthesis['hosts']['up']:
-            self.hosts_menu.setIcon(QIcon(get_image_path('hosts_unreachable')))
-        else:
-            self.hosts_menu.setIcon(QIcon(get_image_path('hosts_up')))
-
-        self.hosts_menu.setTitle(_('Hosts (%s)') % str(host_nb))
-
-        if synthesis['services']['critical'] != 0 or synthesis['services']['unreachable'] != 0:
-            self.services_menu.setIcon(QIcon(get_image_path('services_critical')))
-        else:
-            if synthesis['services']['unknown'] != 0 or synthesis['services']['warning'] != 0:
-                self.services_menu.setIcon(QIcon(get_image_path('services_warning')))
-            else:
-                self.services_menu.setIcon(QIcon(get_image_path('services_ok')))
-
-        self.services_menu.setTitle(_('Services (%s)') % str(services_nb))
-
-        self.qaction_factory.get('hosts_up').setText(
-            _('Hosts UP (%s)') % str(synthesis['hosts']['up']))
-        self.qaction_factory.get('hosts_down').setText(
-            _('Hosts DOWN (%s)') % str(synthesis['hosts']['down']))
-        self.qaction_factory.get('hosts_unreachable').setText(
-            _('Hosts UNREACHABLE (%s)') % str(synthesis['hosts']['unreachable']))
-        self.qaction_factory.get('hosts_acknowledge').setText(
-            _('Hosts ACKNOWLEDGE (%s)') % str(synthesis['hosts']['acknowledge']))
-        self.qaction_factory.get('hosts_downtime').setText(
-            _('Hosts DOWNTIME (%s)') % str(synthesis['hosts']['downtime']))
-
-        self.qaction_factory.get('services_ok').setText(
-            _('Services OK (%s)') % str(synthesis['services']['ok']))
-        self.qaction_factory.get('services_critical').setText(
-            _('Services CRITICAL (%s)') % str(synthesis['services']['critical']))
-        self.qaction_factory.get('services_warning').setText(
-            _('Services WARNING (%s)') % str(synthesis['services']['warning']))
-        self.qaction_factory.get('services_unknown').setText(
-            _('Services UNKNOWN (%s)') % str(synthesis['services']['unknown']))
-        self.qaction_factory.get('services_unreachable').setText(
-            _('Services UNREACHABLE (%s)') % str(synthesis['services']['unreachable']))
-        self.qaction_factory.get('services_acknowledge').setText(
-            _('Services ACKNOWLEDGE (%s)') % str(synthesis['services']['acknowledge']))
-        self.qaction_factory.get('services_downtime').setText(
-            _('Services DOWNTIME (%s)') % str(synthesis['services']['downtime']))
-
     @staticmethod
     def quit_app():  # pragma: no cover
         """
@@ -444,40 +165,7 @@ class TrayIcon(QSystemTrayIcon):
 
         sys.exit(0)
 
-    def open_url(self):  # pragma: no cover
-        """
-        Add a link to Alignak-WebUI on every menu
-
-        """
-
-        webui_url = get_app_config('Alignak', 'webui')
-
-        # Define each filter for items
-        if "UP" in self.sender().text():
-            endurl = '/hosts/table?search=ls_state:UP'
-        elif "DOWN" in self.sender().text():
-            endurl = '/hosts/table?search=ls_state:DOWN'
-        elif "UNREACHABLE" in self.sender().text():
-            if 'Hosts' in self.sender().text():
-                endurl = '/hosts/table?search=ls_state:UNREACHABLE'
-            else:
-                endurl = '/services/table?search=ls_state:UNREACHABLE'
-        elif 'OK' in self.sender().text():
-            endurl = '/services/table?search=ls_state:OK'
-        elif 'CRITICAL' in self.sender().text():
-            endurl = '/services/table?search=ls_state:CRITICAL'
-        elif 'WARNING' in self.sender().text():
-            endurl = '/services/table?search=ls_state:WARNING'
-        elif 'UNKNOWN' in self.sender().text():
-            endurl = '/services/table?search=ls_state:UNKNOWN'
-        else:
-            endurl = '/dashboard'
-
-        logger.debug('Open url : ' + webui_url + endurl)
-        webbrowser.open(webui_url + endurl)
-
-    @staticmethod
-    def reload_configuration():
+    def reload_configuration(self):
         """
         Reload configuration
 
@@ -485,4 +173,4 @@ class TrayIcon(QSystemTrayIcon):
 
         logger.info('Reload configuration...')
         init_config()
-        send_banner('INFO', _('Configuration reloaded'))
+        self.dock.events_widget.add_event('INFO', _('Configuration reloaded'))

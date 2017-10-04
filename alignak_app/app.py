@@ -24,24 +24,24 @@
 """
 
 import sys
+import time
+
 from logging import DEBUG, INFO
 
 from alignak_app.core.logs import create_logger
 from alignak_app.threads.thread_manager import thread_manager
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.notifier import AppNotifier
 from alignak_app.core.utils import get_image_path, get_main_folder, get_app_workdir
 from alignak_app.core.utils import init_config, get_app_config
 from alignak_app.core.locales import init_localization
-from alignak_app.systray.tray_icon import TrayIcon
 from alignak_app.widgets.login import AppLogin
-from alignak_app.widgets.banner import bannerManager, send_banner
 from alignak_app.core.backend import app_backend
-from alignak_app.dashboard.app_dashboard import Dashboard
+from alignak_app.dock.dock_widget import DockQWidget
+from alignak_app.systray.tray_icon import TrayIcon
 
-from PyQt5.QtWidgets import QDialog, QMessageBox  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QIcon, QTimer  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QObject, pyqtSignal  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QDialog, QMessageBox, QSplashScreen  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPixmap, QTimer, QProgressBar, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import pyqtSignal, QObject, QIcon  # pylint: disable=no-name-in-module
 
 # Initialize app config, logger and localization
 init_config()
@@ -58,21 +58,15 @@ class AlignakApp(QObject):
 
     def __init__(self, parent=None):
         super(AlignakApp, self).__init__(parent)
+        self.dock = None
         self.tray_icon = None
-        self.notifier = None
-        self.notifier_timer = QTimer()
         self.reconnect_mode = False
-        self.dashboard = None
-        self.thread_manager = None
 
     def start(self):
         """
         The main function of Alignak-App
 
         """
-
-        # Start BannerManager
-        bannerManager.start()
 
         # Define level of logger
         logger.name = 'alignak_app.app'
@@ -123,7 +117,7 @@ class AlignakApp(QObject):
 
         self.reconnect_mode = True
         logger.warning('Application reconnecting MODE: %s', self.reconnecting)
-        send_banner('ERROR', _('Alignak Backend seems unreachable ! %s') % error, duration=5000)
+        self.events_widget.add_event('ERROR', _('Alignak Backend seems unreachable ! %s') % error)
         timer = QTimer(self)
 
         def connect_to_backend():
@@ -134,17 +128,15 @@ class AlignakApp(QObject):
                 # If connect, reconnecting is disable
                 timer.stop()
                 logger.info('Connection restored : %s', connect)
-                send_banner(
+                self.events_widget.add_event(
                     'OK',
                     _('Connection with the Backend has been restored ! You are logged in again'),
-                    duration=5000
                 )
                 self.reconnect_mode = False
             except AssertionError:
-                send_banner(
+                self.events_widget.add_event(
                     'ERROR',
                     _('Backend is still unreachable... Alignak-app is trying to connect'),
-                    duration=5000
                 )
                 logger.error('Backend is still unreachable...')
 
@@ -167,45 +159,53 @@ class AlignakApp(QObject):
 
         # Check if connected
         if app_backend.connected:
-            self.thread_manager = thread_manager
-            self.thread_manager.start()
+            # Start ThreadManager
+            thread_manager.start()
 
-            logger.info("Preparing DataManager...")
-            while not data_manager.is_ready():
-                continue
-
-            # Send Welcome Banner
-            send_banner(
-                'OK',
-                _('Welcome %s, you are connected to Alignak Backend') %
-                data_manager.database['user'].name,
-                duration=10000
-            )
+            # Give AlignakApp for AppBackend reconnecting mode
+            app_backend.app = self
 
             if 'token' not in app_backend.user:
                 app_backend.user['token'] = app_backend.backend.token
 
-            # Dashboard
-            self.dashboard = Dashboard()
-            self.dashboard.initialize()
+            splash_icon = QPixmap(get_image_path('alignak'))
+            splash = QSplashScreen(splash_icon)
 
-            # TrayIcon
+            progressbar = QProgressBar(splash)
+            progressbar.setTextVisible(False)
+            progressbar.setStyleSheet('border-top: none; color: none;')
+            progressbar.setFixedSize(splash_icon.width(), splash_icon.height())
+            progressbar.setAlignment(Qt.AlignCenter)
+
+            splash.setMask(splash_icon.mask())
+            splash.show()
+
+            logger.info("Preparing DataManager...")
+            while not data_manager.is_ready():
+                for i in range(0, 100):
+                    progressbar.setValue(i)
+                    t = time.time()
+                    while time.time() < t + 0.01:
+                        self.parent().processEvents()
+
+            logger.info("Starting Dock...")
+            self.dock = DockQWidget()
+            splash.finish(self.dock)
+            self.dock.initialize()
+
+            logger.info("Start TrayIcon...")
             self.tray_icon = TrayIcon(QIcon(get_image_path('icon')))
-            self.tray_icon.build_menu(self.dashboard)
+            self.tray_icon.build_menu(self.dock)
             self.tray_icon.show()
 
-            # Give ALignakApp for AppBackend reconnecting mode
-            app_backend.app = self
+            # Send Welcome Banner
+            self.dock.events_widget.add_event(
+                'OK',
+                _('Welcome %s, you are connected to Alignak Backend') %
+                data_manager.database['user'].name,
+            )
 
-            # Start Notifier which will interrogate the backend periodically
-            self.notifier = AppNotifier()
-            self.notifier.initialize(self.tray_icon, self.dashboard)
-
-            self.notifier_timer.start(self.notifier.interval)
-            self.notifier_timer.timeout.connect(self.notifier.check_data)
-
-            # Connect reconnectingmode for AppBackend
-            self.reconnecting.connect(self.reconnect_to_backend)
+            self.dock.app_widget.show()
         else:
             # In case of data provided in config file fails
             logger.error(
