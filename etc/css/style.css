@@ -79,3 +79,19 @@ QListWidget::item:selected {
     color: black;
     background-color: #e2dede;
 }
+
+/****** HOST ******/
+QLabel#hosttitle {
+    background-color: #607d8b; 
+    color: white;
+    margin-left: 0.5em;
+}
+
+QLabel#output {
+    color: #c7254e;
+    background-color: #f9f2f4;
+}
+QLabel#hostname {
+    font-weight: bold;
+    font: 20pt Comic Sans MS;
+}
