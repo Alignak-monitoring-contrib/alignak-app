@@ -13,11 +13,15 @@ QToolTip {
     color: #1fb3e3;
 }
 
-.QWidget {
+QWidget {
     background-color: white;
 }
 
 /****** APP QWIDGET ******/
+QWidget#app_widget {
+    background-color: #607d8b;
+}
+
 QFrame#app_widget {
     border-width: 2px;
     border-color: #607d8b;
@@ -78,6 +82,18 @@ QListWidget::item:selected {
     border: none;
     color: black;
     background-color: #e2dede;
+}
+
+/****** PANEL ******/
+QPushButton#search {
+	background-color: #3884c3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+QPushButton#search:hover {
+    background-color: #03a9f4;
 }
 
 /****** HOST ******/

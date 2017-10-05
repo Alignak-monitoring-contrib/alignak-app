@@ -85,6 +85,7 @@ class AppQWidget(QFrame):
         logo_label = QLabel()
         logo_label.setPixmap(QPixmap(get_image_path('alignak')))
         logo_label.setFixedSize(121, 35)
+        logo_label.setObjectName('widget_title')
         logo_label.setScaledContents(True)
 
         logo_layout.addWidget(logo_label, 0)
