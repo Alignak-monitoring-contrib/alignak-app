@@ -30,6 +30,7 @@ from logging import getLogger
 
 from alignak_app.core.utils import get_image_path, get_css, get_app_config
 from alignak_app.widgets.host_widget import host_widget
+from alignak_app.mainpanel.panel_widget import panel_widget
 
 from PyQt5.Qt import QPushButton, QWidget, QIcon, QHBoxLayout  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QTimer  # pylint: disable=no-name-in-module
@@ -66,8 +67,6 @@ class ButtonsQWidget(QWidget):
         self.dashboard_btn.setFixedSize(40, 40)
         layout.addWidget(self.dashboard_btn)
 
-        host_widget.set_data('denice')
-        host_widget.initialize()
         self.host_btn.setIcon(QIcon(get_image_path('host')))
         self.host_btn.setFixedSize(40, 40)
         self.host_btn.clicked.connect(self.open_host_widget)
@@ -107,14 +106,14 @@ class ButtonsQWidget(QWidget):
             self.webui_btn.setEnabled(False)
             self.webui_btn.setToolTip(_("WebUI is not set in configuration file."))
 
-    def open_host_widget(self):
+    @staticmethod
+    def open_host_widget():
         """
         Create and manage HostQWidget
 
         """
 
-        host_widget.show()
-
+        panel_widget.app_widget.show()
 
     @staticmethod
     def open_url():  # pragma: no cover
