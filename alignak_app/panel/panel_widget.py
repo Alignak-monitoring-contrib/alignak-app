@@ -25,16 +25,15 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QCompleter, QLineEdit  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QStringListModel, QHBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QVBoxLayout, QApplication  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
-
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.utils import get_css
+from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.panel.host_widget import host_widget
 from alignak_app.widgets.app_widget import AppQWidget
+
+from PyQt5.Qt import QCompleter, QLineEdit, QIcon, QHBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QApplication, QPushButton  # pylint: disable=no-name-in-module
+
 
 logger = getLogger(__name__)
 
@@ -47,6 +46,7 @@ class PanelQWidget(QWidget):
     def __init__(self, parent=None):
         super(PanelQWidget, self).__init__(parent)
         self.setStyleSheet(get_css())
+        self.setWindowIcon(QIcon(get_image_path('icon')))
         # Fields
         self.layout = QVBoxLayout()
         self.line_search = QLineEdit()
@@ -120,10 +120,12 @@ class PanelQWidget(QWidget):
 
         return widget
 
-    def create_line_search(self):
+    def create_line_search(self, hostnames_list=None):
         """
         Add all hosts to QLineEdit and set QCompleter
 
+        :param hostnames_list: list of host names
+        :type hostnames_list: list
         """
 
         # Get QStringListModel
@@ -131,7 +133,11 @@ class PanelQWidget(QWidget):
         if not model:
             model = QStringListModel()
 
-        self.hostnames_list = data_manager.get_all_host_name()
+        if not hostnames_list:
+            self.hostnames_list = data_manager.get_all_host_name()
+        else:
+            self.hostnames_list = hostnames_list
+
         model.setStringList(self.hostnames_list)
 
         # Configure QCompleter from model
@@ -151,6 +157,9 @@ class PanelQWidget(QWidget):
         """
 
         if self.line_search.text() in self.hostnames_list:
+            hostnames_list = data_manager.get_all_host_name()
+            if hostnames_list != self.hostnames_list:
+                self.create_line_search(hostnames_list)
             host_widget.update_widget(self.line_search.text())
             host_widget.show()
         else:
