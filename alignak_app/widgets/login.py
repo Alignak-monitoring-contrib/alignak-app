@@ -163,12 +163,13 @@ class AppLogin(QDialog):
 
         logo_widget = QWidget()
         logo_widget.setFixedHeight(45)
-        logo_widget.setObjectName('title')
+        logo_widget.setObjectName('app_widget')
         logo_layout = QHBoxLayout()
         logo_widget.setLayout(logo_layout)
 
         logo_label = QLabel()
         logo_label.setPixmap(QPixmap(get_image_path('alignak')))
+        logo_label.setObjectName('widget_title')
         logo_label.setFixedSize(121, 35)
         logo_label.setScaledContents(True)
 

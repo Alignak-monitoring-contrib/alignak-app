@@ -17,6 +17,25 @@ QWidget {
     background-color: white;
 }
 
+/****** LOGIN ******/
+QPushButton#valid {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+
+QPushButton#valid:pressed {
+    background-color: #59b75c;
+    color: white;
+}
+
+QPushButton#valid:hover {
+    background-color: #59b75c;
+    color: white;
+}
+
 /****** APP QWIDGET ******/
 QWidget#app_widget {
     background-color: #607d8b;
