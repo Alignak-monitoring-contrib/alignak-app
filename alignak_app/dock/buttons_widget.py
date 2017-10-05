@@ -25,15 +25,13 @@
 """
 
 import webbrowser
-
 from logging import getLogger
-
-from alignak_app.core.utils import get_image_path, get_css, get_app_config
-from alignak_app.widgets.host_widget import host_widget
-from alignak_app.mainpanel.panel_widget import panel_widget
 
 from PyQt5.Qt import QPushButton, QWidget, QIcon, QHBoxLayout  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QTimer  # pylint: disable=no-name-in-module
+
+from alignak_app.core.utils import get_image_path, get_css, get_app_config
+from alignak_app.panel.panel_widget import panel_widget
 
 logger = getLogger(__name__)
 
