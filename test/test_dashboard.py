@@ -24,6 +24,7 @@ import sys
 import unittest2
 
 from alignak_app.core.utils import init_config, set_app_config
+from alignak_app.core.locales import init_localization
 from alignak_app.dashboard.app_dashboard import Dashboard
 
 from PyQt5.QtWidgets import QApplication
@@ -35,6 +36,7 @@ class TestDashboard(unittest2.TestCase):
     """
 
     init_config()
+    init_localization()
 
     @classmethod
     def setUpClass(cls):
@@ -57,77 +59,6 @@ class TestDashboard(unittest2.TestCase):
 
         self.assertEqual('state', under_test.dashboard_type.objectName())
         self.assertIsNotNone(under_test.dashboard_factory)
-
-    def test_display_dashboard(self):
-        """Display Dashboard"""
-
-        under_test = Dashboard()
-
-        under_test.initialize()
-
-        self.assertEqual('', under_test.dashboard_type.text())
-
-        # Simulate dicts of states
-        synthesis = {
-            'hosts': {
-                'up': 1,
-                'down': 2,
-                'unreachable': 3,
-                'acknowledge': 4,
-                'downtime': 5,
-            },
-            'services': {
-                'ok': 4,
-                'warning': 5,
-                'critical': 6,
-                'unknown': 7,
-                'unreachable': 8,
-                'acknowledge': 9,
-                'downtime': 10,
-
-            }
-        }
-
-        # Send a CRITICAL dashboard
-        changes = {
-            'hosts': {
-                'up': 0,
-                'down': 0,
-                'unreachable': 0,
-                'acknowledge': 0,
-                'downtime': 0
-            },
-            'services': {
-                'ok': 0,
-                'warning': 0,
-                'critical': 0,
-                'unknown': 0,
-                'unreachable': 0,
-                'acknowledge': 0,
-                'downtime': 0
-            }
-        }
-        under_test.update_dashboard(synthesis, changes)
-
-        self.assertEqual('CRITICAL', under_test.dashboard_type.text())
-        self.assertEqual(
-            under_test.dashboard_factory.state_data['hosts_up']['state_number'].text(),
-            '1'
-        )
-        self.assertEqual(
-            under_test.dashboard_factory.state_data['hosts_up']['progress_bar'].value(),
-            6
-        )
-        self.assertEqual(
-            under_test.dashboard_factory.state_data['hosts_up']['diff'].text(),
-            ''
-        )
-        assert 'Background-color: #e74c3c;' in under_test.styleSheet()
-
-        # Control Label
-        label_test = under_test.dashboard_factory.define_label('test')
-
-        self.assertEqual(label_test, 'Unknown field')
 
     def test_get_style_sheet(self):
         """Get Style Sheet according to States"""

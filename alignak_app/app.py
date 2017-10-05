@@ -115,7 +115,6 @@ class AlignakApp(QObject):
 
         self.reconnect_mode = True
         logger.warning('Application reconnecting MODE: %s', self.reconnecting)
-        self.events_widget.add_event('ERROR', _('Alignak Backend seems unreachable ! %s') % error)
         timer = QTimer(self)
 
         def connect_to_backend():
@@ -126,16 +125,8 @@ class AlignakApp(QObject):
                 # If connect, reconnecting is disable
                 timer.stop()
                 logger.info('Connection restored : %s', connect)
-                self.events_widget.add_event(
-                    'OK',
-                    _('Connection with the Backend has been restored ! You are logged in again'),
-                )
                 self.reconnect_mode = False
             except AssertionError:
-                self.events_widget.add_event(
-                    'ERROR',
-                    _('Backend is still unreachable... Alignak-app is trying to connect'),
-                )
                 logger.error('Backend is still unreachable...')
 
         if timer.isActive():

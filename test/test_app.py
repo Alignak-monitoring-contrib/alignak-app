@@ -31,10 +31,10 @@ from PyQt5.QtWidgets import QApplication
 
 class TestApp(unittest2.TestCase):
     """
-        This file test methods of AlignakApp class.
+        TODO This file test methods of AlignakApp class.
     """
 
-    data_manager.database['user'] = User()
+    # data_manager.database['user'] = User()
 
     @classmethod
     def setUpClass(cls):
@@ -51,14 +51,10 @@ class TestApp(unittest2.TestCase):
         under_test = AlignakApp()
 
         self.assertIsNone(under_test.tray_icon)
-        self.assertIsNone(under_test.notifier)
-        self.assertIsNone(under_test.dashboard)
-        self.assertFalse(under_test.notifier_timer.isActive())
+        self.assertFalse(under_test.reconnect_mode)
 
         # Build alignak_app
-        under_test.start()
+        under_test.reconnect_to_backend('ERROR')
 
-        self.assertIsNotNone(under_test.tray_icon)
-        self.assertIsNotNone(under_test.notifier)
-        self.assertIsNotNone(under_test.dashboard)
-        self.assertTrue(under_test.notifier_timer.isActive())
+        self.assertIsNone(under_test.tray_icon)
+        self.assertTrue(under_test.reconnect_mode)

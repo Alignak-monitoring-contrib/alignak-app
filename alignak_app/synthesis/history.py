@@ -150,9 +150,9 @@ class History(QWidget):
         """
 
         if 'ack' in event_type:
-            icon_name = 'services_acknowledge'
+            icon_name = 'acknowledge'
         elif 'downtime' in event_type:
-            icon_name = 'services_downtime'
+            icon_name = 'downtime'
         else:
             if 'OK' in message or 'UP' in message:
                 icon_name = 'valid'

@@ -26,6 +26,7 @@ import unittest2
 from alignak_app.core.utils import init_config
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
+from alignak_app.models.item_user import User
 from alignak_app.user.user_profile import UserProfile
 from alignak_app.core.locales import init_localization
 
@@ -39,6 +40,8 @@ class TestUserProfile(unittest2.TestCase):
 
     init_config()
     init_localization()
+    data_manager.database['user'] = User()
+    data_manager.database['user'].data = {}
 
     @classmethod
     def setUpClass(cls):
@@ -53,6 +56,19 @@ class TestUserProfile(unittest2.TestCase):
         """Initialize UserProfile"""
 
         under_test = UserProfile()
+
+        data_manager.database['user'].data['email'] = 'mail@test'
+        data_manager.database['user'].data['alias'] = 'alias'
+        data_manager.database['user'].data['token'] = 'token'
+        data_manager.database['user'].data['notes'] = 'notes'
+        data_manager.database['user'].data['host_notifications_enabled'] = True
+        data_manager.database['user'].data['service_notifications_enabled'] = True
+        data_manager.database['user'].data['host_notification_period'] = 'period'
+        data_manager.database['user'].data['service_notification_period'] = 'period'
+        data_manager.database['user'].data['host_notification_options'] = []
+        data_manager.database['user'].data['service_notification_options'] = []
+        data_manager.database['user'].data['is_admin'] = True
+        data_manager.database['user'].data['can_submit_commands'] = True
 
         self.assertIsNone(under_test.app_widget)
         self.assertIsNone(under_test.layout())
@@ -94,6 +110,7 @@ class TestUserProfile(unittest2.TestCase):
         if not app_backend.connected:
             app_backend.login()
 
+        data_manager.database['user'].data['_realm'] = '59c4e38535d17b8dcb0bed42'
         # Realm is right
         realm_test = under_test.get_realm_name()
 

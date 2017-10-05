@@ -23,7 +23,7 @@ import sys
 
 import unittest2
 
-from alignak_app.synthesis.actions import Acknowledge, Downtime, get_logo_widget
+from alignak_app.panel.actions import AckQDialog, DownQDialog, get_logo_widget
 
 from PyQt5.QtWidgets import QApplication, QWidget, QTimeEdit, QDateTimeEdit
 
@@ -44,7 +44,7 @@ class TestActions(unittest2.TestCase):
     def test_get_logo_widget(self):
         """Get logo widget"""
 
-        ack_test = Acknowledge()
+        ack_test = AckQDialog()
         under_test = get_logo_widget(ack_test)
 
         self.assertIsInstance(under_test, QWidget)
@@ -53,7 +53,7 @@ class TestActions(unittest2.TestCase):
     def test_initialize_acknowledge(self):
         """Initialize Acknowledge"""
 
-        under_test = Acknowledge()
+        under_test = AckQDialog()
         under_test.initialize('host', 'my_host', 'Acknowledge requested by App')
 
         self.assertTrue(under_test.sticky)
@@ -64,7 +64,7 @@ class TestActions(unittest2.TestCase):
     def test_initialize_downtime(self):
         """Initialize Downtime"""
 
-        under_test = Downtime()
+        under_test = DownQDialog()
         under_test.initialize('host', 'my_host', 'Downtime requested by App')
 
         self.assertTrue(under_test.fixed)
