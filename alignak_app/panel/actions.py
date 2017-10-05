@@ -51,7 +51,7 @@ def get_logo_widget(widget):
 
     logo_widget = QWidget()
     logo_widget.setFixedHeight(45)
-    logo_widget.setObjectName('title')
+    logo_widget.setObjectName('app_widget')
     logo_layout = QHBoxLayout()
     logo_widget.setLayout(logo_layout)
 
@@ -87,13 +87,13 @@ def get_logo_widget(widget):
     return logo_widget
 
 
-class Acknowledge(QDialog):
+class AckQDialog(QDialog):
     """
         Class who create Acknowledge QDialog for hosts/services
     """
 
     def __init__(self, parent=None):
-        super(Acknowledge, self).__init__(parent)
+        super(AckQDialog, self).__init__(parent)
         self.setWindowTitle(_('Request an Acknowledge'))
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(get_css())
@@ -127,10 +127,10 @@ class Acknowledge(QDialog):
         ack_widget.setObjectName('login')
         ack_layout = QGridLayout(ack_widget)
 
-        ack_title = QLabel(_('<h2>Request an acknowledge</h2>'))
+        ack_title = QLabel(_('Request an acknowledge'))
         ack_layout.addWidget(ack_title, 0, 0, 1, 2)
 
-        host_label = QLabel('<h2>%s: %s</h2>' % (item_type.capitalize(), item_name))
+        host_label = QLabel('%s: %s' % (item_type.capitalize(), item_name))
         ack_layout.addWidget(host_label, 1, 0, 1, 1)
 
         sticky_label = QLabel(_('Acknowledge is sticky:'))
@@ -204,13 +204,13 @@ class Acknowledge(QDialog):
             logger.warning('Move Event %s: %s', self.objectName(), str(e))
 
 
-class Downtime(QDialog):
+class DownQDialog(QDialog):
     """
         Class who create Downtime QDialog for hosts/services
     """
 
     def __init__(self, parent=None):
-        super(Downtime, self).__init__(parent)
+        super(DownQDialog, self).__init__(parent)
         self.setWindowTitle(_('Request a Downtime'))
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(get_css())
@@ -246,10 +246,10 @@ class Downtime(QDialog):
         downtime_widget.setObjectName('login')
         downtime_layout = QGridLayout(downtime_widget)
 
-        ack_title = QLabel(_('<h2>Request a downtime</h2>'))
+        ack_title = QLabel(_('Request a downtime'))
         downtime_layout.addWidget(ack_title, 0, 0, 1, 3)
 
-        host_label = QLabel('<h2>%s: %s</h2>' % (item_type.capitalize(), item_name))
+        host_label = QLabel('%s: %s' % (item_type.capitalize(), item_name))
         downtime_layout.addWidget(host_label, 1, 0, 1, 1)
 
         options_label = QLabel(_('Downtime options:'))

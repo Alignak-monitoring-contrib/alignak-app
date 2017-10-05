@@ -23,17 +23,17 @@
     Dock manage creation of Alignak-app Dock
 """
 
-from alignak_app.core.utils import get_css
+from alignak_app.core.utils import get_css, get_image_path
 
 from alignak_app.dock.buttons_widget import ButtonsQWidget
 from alignak_app.dock.status_widget import DockStatusQWidget
 from alignak_app.dock.backend_widget import BackendQWidget
-from alignak_app.dock.events_widget import EventsQListWidget
+from alignak_app.dock.events_widget import events_widget
 from alignak_app.dock.spy_widget import SpyQListWidget
 
 from alignak_app.widgets.app_widget import AppQWidget
 
-from PyQt5.Qt import QApplication, QWidget, QGridLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QApplication, QWidget, QGridLayout, QIcon  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QListWidget, QFrame  # pylint: disable=no-name-in-module
 
 
@@ -45,13 +45,12 @@ class DockQWidget(QWidget):
     def __init__(self, parent=None):
         super(DockQWidget, self).__init__(parent)
         self.setStyleSheet(get_css())
+        self.setWindowIcon(QIcon(get_image_path('icon')))
         # Fields
         self.app_widget = AppQWidget()
         self.status_widget = DockStatusQWidget()
         self.buttons_widget = ButtonsQWidget()
         self.backend_widget = BackendQWidget()
-        self.events_widget_list = QListWidget()
-        self.events_widget = EventsQListWidget()
         self.spy_widgetlist = QListWidget()
         self.spy_widget = SpyQListWidget()
 
@@ -88,8 +87,8 @@ class DockQWidget(QWidget):
         layout.addWidget(self.backend_widget)
         layout.addWidget(self.get_frame_separator())
 
-        self.events_widget.initialize()
-        layout.addWidget(self.events_widget)
+        # self.events_widget.initialize()
+        layout.addWidget(events_widget)
 
         self.spy_widget.initialize()
         layout.addWidget(self.spy_widget)

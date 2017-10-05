@@ -190,6 +190,7 @@ class AlignakApp(QObject):
 
             # Prevent from: QWidget: Must construct a QApplication before a QWidget
             from alignak_app.dock.dock_widget import dock
+            from alignak_app.dock.events_widget import events_widget
 
             splash.finish(dock)
             dock.initialize()
@@ -200,7 +201,7 @@ class AlignakApp(QObject):
             self.tray_icon.show()
 
             # Send Welcome Banner
-            dock.events_widget.add_event(
+            events_widget.add_event(
                 'OK',
                 _('Welcome %s, you are connected to Alignak Backend') %
                 data_manager.database['user'].name,

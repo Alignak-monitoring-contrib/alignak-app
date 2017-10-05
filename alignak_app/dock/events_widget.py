@@ -92,7 +92,7 @@ class EventsQListWidget(QWidget):
 
         self.timer.setInterval(15000)
         self.timer.start()
-        self.timer.timeout.connect(self.send_events)
+        self.timer.timeout.connect(self.send_datamanager_events)
 
         layout = QVBoxLayout()
         self.setLayout(layout)
@@ -110,7 +110,7 @@ class EventsQListWidget(QWidget):
 
         layout.addWidget(self.events_list)
 
-    def send_events(self):
+    def send_datamanager_events(self):
         """
         Add events stored in DataManager
 
@@ -143,3 +143,7 @@ class EventsQListWidget(QWidget):
         """
 
         self.events_list.takeItem(self.events_list.currentRow())
+
+
+events_widget = EventsQListWidget()
+events_widget.initialize()

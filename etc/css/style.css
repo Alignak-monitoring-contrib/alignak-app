@@ -130,3 +130,31 @@ QLabel#hostname {
     font-weight: bold;
     font: 20pt Comic Sans MS;
 }
+
+/****** ACTIONS ******/
+QLabel#actions {
+    font-size: 14px;
+}
+
+QCheckBox#actions, QCheckBox#hostactions, QCheckBox#serviceactions {
+    background-color: #607d8b;
+    color: white;
+    border: 0.5px solid #607d8b;
+    border-radius: 8px;
+}
+
+QCheckBox#actions::indicator, QCheckBox#hostactions::indicator, QCheckBox#serviceactions::indicator {
+    width: 14px;
+    height: 14px;
+    border: none;
+    border: 0.5px solid #607d8b;
+    border-radius: 8px;
+}
+
+QCheckBox#actions::indicator::checked, QCheckBox#hostactions::checked, QCheckBox#serviceactions::checked {
+    background-color: #58c75c;
+}
+
+QCheckBox#actions::indicator::unchecked, QCheckBox#hostactions::indicator::unchecked, QCheckBox#serviceactions::indicator::unchecked {
+    background-color: white;
+}

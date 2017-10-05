@@ -93,9 +93,9 @@ def get_icon_item(item_type, state, acknowledge, downtime):
     """
 
     if acknowledge:
-        return 'hosts_acknowledge'
+        return 'acknowledge'
     if downtime:
-        return 'hosts_downtime'
+        return 'downtime'
 
     available_icons = {
         'host': {
