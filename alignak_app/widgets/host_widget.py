@@ -23,18 +23,13 @@
     TODO
 """
 
-import sys
-
-from alignak_app.core.utils import get_image_path, init_config, get_css
+from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.utils import get_time_diff_since_last_timestamp
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.backend import app_backend
-from alignak_app.threads.thread_manager import thread_manager
 from alignak_app.models.item_model import get_icon_item, get_real_host_state_icon
 
 from PyQt5.Qt import QLabel, QWidget, QGridLayout, Qt  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QPixmap, QVBoxLayout, QHBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QApplication  # pylint: disable=no-name-in-module
 
 
 class HostQWidget(QWidget):
@@ -64,7 +59,8 @@ class HostQWidget(QWidget):
         """
         Set data of host and service
 
-        :param hostname:
+        :param hostname: name of host to display
+        :type hostname: str
         """
 
         host_and_services = data_manager.get_host_with_services(hostname)
@@ -75,25 +71,10 @@ class HostQWidget(QWidget):
         """
         Initialize QWidget
 
-        :param dock_width: dock width to set size of QWidget
-        :type dock_width: int
         """
 
         layout = QHBoxLayout()
         self.setLayout(layout)
-
-        # Define size and position of HostQWidget
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        desktop = QApplication.desktop().availableGeometry(screen)
-
-        x_size = desktop.width() * 0.76
-        y_size = 35
-
-        pos_x = 0
-        pos_y = 0
-
-        self.resize(x_size, y_size)
-        self.move(pos_x, pos_y)
 
         # Add Qwidgets
         layout.addWidget(self.get_host_icon_widget())
@@ -114,14 +95,11 @@ class HostQWidget(QWidget):
         layout = QVBoxLayout()
         widget.setLayout(layout)
 
-        icon_name = get_real_host_state_icon(self.service_items)
-        icon_pixmap = QPixmap(get_image_path(icon_name))
-
-        self.labels['host_icon'].setPixmap(QPixmap(icon_pixmap))
+        # Host Icon
         layout.addWidget(self.labels['host_icon'])
         layout.setAlignment(self.labels['host_icon'], Qt.AlignCenter)
 
-        self.labels['host_name'].setText('%s' % self.host_item.name)
+        # Host Name
         self.labels['host_name'].setObjectName('hostname')
         layout.addWidget(self.labels['host_name'])
         layout.setAlignment(self.labels['host_name'], Qt.AlignCenter)
@@ -151,13 +129,6 @@ class HostQWidget(QWidget):
         state_title.setObjectName('title')
         layout.addWidget(state_title, 1, 0, 1, 1)
 
-        icon_name = get_icon_item(
-            'host',
-            self.host_item.data['ls_state'],
-            self.host_item.data['ls_acknowledged'],
-            self.host_item.data['ls_downtimed']
-        )
-        self.labels['state_icon'].setPixmap(QPixmap(get_image_path(icon_name)))
         layout.addWidget(self.labels['state_icon'], 1, 1, 1, 1)
 
         # When last check
@@ -165,10 +136,6 @@ class HostQWidget(QWidget):
         when_title.setObjectName('title')
         layout.addWidget(when_title, 2, 0, 1, 1)
 
-        since_last_check = get_time_diff_since_last_timestamp(
-            self.host_item.data['ls_last_check']
-        )
-        self.labels['ls_last_check'].setText(since_last_check)
         layout.addWidget(self.labels['ls_last_check'], 2, 1, 1, 1)
 
         # Output
@@ -176,7 +143,6 @@ class HostQWidget(QWidget):
         output_title.setObjectName('title')
         layout.addWidget(output_title, 3, 0, 1, 1)
 
-        self.labels['ls_output'].setText(self.host_item.data['ls_output'])
         self.labels['ls_output'].setObjectName('output')
         layout.addWidget(self.labels['ls_output'], 3, 1, 1, 1)
 
@@ -186,6 +152,8 @@ class HostQWidget(QWidget):
         """
         Return QWidget with host variables
 
+        :return: widget with host variables
+        :rtype: QWidget
         """
 
         widget = QWidget()
@@ -203,7 +171,7 @@ class HostQWidget(QWidget):
         realm_title.setObjectName('title')
         layout.addWidget(realm_title, 1, 0, 1, 1)
 
-        self.labels['realm'].setText(self.host_item.data['_realm'])
+        # self.labels['realm'].setText(self.host_item.data['_realm'])
         layout.addWidget(self.labels['realm'], 1, 1, 1, 1)
 
         # Address
@@ -211,7 +179,7 @@ class HostQWidget(QWidget):
         address_title.setObjectName('title')
         layout.addWidget(address_title, 2, 0, 1, 1)
 
-        self.labels['address'].setText(self.host_item.data['address'])
+        # self.labels['address'].setText(self.host_item.data['address'])
         layout.addWidget(self.labels['address'], 2, 1, 1, 1)
 
         # Business impact
@@ -219,7 +187,7 @@ class HostQWidget(QWidget):
         address_title.setObjectName('title')
         layout.addWidget(address_title, 3, 0, 1, 1)
 
-        self.labels['business_impact'].setText(str(self.host_item.data['business_impact']))
+        # self.labels['business_impact'].setText(str(self.host_item.data['business_impact']))
         layout.addWidget(self.labels['business_impact'], 3, 1, 1, 1)
 
         # Notes
@@ -227,10 +195,47 @@ class HostQWidget(QWidget):
         notes_title.setObjectName('title')
         layout.addWidget(notes_title, 4, 0, 1, 1)
 
-        self.labels['notes'].setText(self.host_item.data['notes'])
+        # self.labels['notes'].setText(self.host_item.data['notes'])
         layout.addWidget(self.labels['notes'], 4, 1, 1, 1)
 
         return widget
 
+    def update_widget(self, hostname):
+        """
+        Update HostQWidget data and QLabels
 
+        """
+
+        self.set_data(hostname)
+
+        icon_name = get_real_host_state_icon(self.service_items)
+        icon_pixmap = QPixmap(get_image_path(icon_name))
+
+        self.labels['host_icon'].setPixmap(QPixmap(icon_pixmap))
+        self.labels['host_name'].setText('%s' % self.host_item.name)
+
+        icon_name = get_icon_item(
+            'host',
+            self.host_item.data['ls_state'],
+            self.host_item.data['ls_acknowledged'],
+            self.host_item.data['ls_downtimed']
+        )
+        pixmap_icon = QPixmap(get_image_path(icon_name))
+        final_icon = pixmap_icon.scaled(32, 32, Qt.KeepAspectRatio)
+        self.labels['state_icon'].setPixmap(final_icon)
+
+        since_last_check = get_time_diff_since_last_timestamp(
+            self.host_item.data['ls_last_check']
+        )
+        self.labels['ls_last_check'].setText(since_last_check)
+        self.labels['ls_output'].setText(self.host_item.data['ls_output'])
+
+        self.labels['realm'].setText(self.host_item.data['_realm'])
+        self.labels['address'].setText(self.host_item.data['address'])
+        self.labels['business_impact'].setText(str(self.host_item.data['business_impact']))
+        self.labels['notes'].setText(self.host_item.data['notes'])
+
+
+# Create HostQWidget object
 host_widget = HostQWidget()
+host_widget.initialize()

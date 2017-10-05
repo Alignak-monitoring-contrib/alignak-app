@@ -20,13 +20,12 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    Panel QWidget manage the creation of Hosts and Services QWidgets
 """
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_css, get_app_config
-from alignak_app.core.action_manager import ActionManager
+from alignak_app.core.utils import get_css
 from alignak_app.core.data_manager import data_manager
 from alignak_app.widgets.host_widget import host_widget
 from alignak_app.widgets.app_widget import AppQWidget
@@ -34,7 +33,7 @@ from alignak_app.widgets.app_widget import AppQWidget
 from PyQt5.QtWidgets import QWidget, QPushButton  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QVBoxLayout, QApplication  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QStringListModel, QHBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QCompleter, QLineEdit, QTimer  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QCompleter, QLineEdit  # pylint: disable=no-name-in-module
 from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
 
 
@@ -43,7 +42,7 @@ logger = getLogger(__name__)
 
 class PanelQWidget(QWidget):
     """
-        TODO
+        Class who manage Panel with Host and Services QWidgets
     """
 
     def __init__(self, parent=None):
@@ -54,6 +53,7 @@ class PanelQWidget(QWidget):
         self.line_search = QLineEdit()
         self.completer = QCompleter()
         self.app_widget = AppQWidget()
+        self.hostnames_list = []
 
     def initialize(self):
         """
@@ -86,11 +86,18 @@ class PanelQWidget(QWidget):
         self.layout.setAlignment(search_widget, Qt.AlignTop)
 
         self.layout.addWidget(host_widget)
+        self.layout.setAlignment(host_widget, Qt.AlignTop)
+
+        self.layout.setAlignment(Qt.AlignTop)
+
+        host_widget.hide()
 
     def get_search_widget(self):
         """
-        TODO
-        :return:
+        Create and return the search QWidget
+
+        :return: search QWidget
+        :rtype: QWidget
         """
 
         widget = QWidget()
@@ -107,6 +114,7 @@ class PanelQWidget(QWidget):
 
         self.line_search.setFixedHeight(button.height())
         self.line_search.returnPressed.connect(button.click)
+        self.line_search.cursorPositionChanged.connect(button.click)
         layout.addWidget(self.line_search)
 
         self.create_line_search()
@@ -124,8 +132,8 @@ class PanelQWidget(QWidget):
         if not model:
             model = QStringListModel()
 
-        hosts_list = data_manager.get_all_host_name()
-        model.setStringList(hosts_list)
+        self.hostnames_list = data_manager.get_all_host_name()
+        model.setStringList(self.hostnames_list)
 
         # Configure QCompleter from model
         self.completer.setFilterMode(Qt.MatchContains)
@@ -139,12 +147,15 @@ class PanelQWidget(QWidget):
 
     def display_host(self):
         """
-        TODO
-        :return:
+        Display and update HostQWidget
+
         """
 
-        host_widget.set_data(self.line_search.text())
-        host_widget.initialize()
+        if self.line_search.text() in self.hostnames_list:
+            host_widget.update_widget(self.line_search.text())
+            host_widget.show()
+        else:
+            host_widget.hide()
 
 
 # Initialize PanelQWidget
