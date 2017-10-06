@@ -57,6 +57,7 @@ def get_logo_widget(widget):
 
     logo_label = QLabel()
     logo_label.setPixmap(QPixmap(get_image_path('alignak')))
+    logo_label.setObjectName('widget_title')
     logo_label.setFixedSize(121, 35)
     logo_label.setScaledContents(True)
 
