@@ -28,6 +28,7 @@ from logging import getLogger
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.panel.host_widget import host_widget
+from alignak_app.panel.services_widget import services_widget
 from alignak_app.widgets.app_widget import AppQWidget
 
 from PyQt5.Qt import QCompleter, QLineEdit, QIcon, QHBoxLayout  # pylint: disable=no-name-in-module
@@ -87,9 +88,12 @@ class PanelQWidget(QWidget):
         self.layout.addWidget(host_widget)
         self.layout.setAlignment(host_widget, Qt.AlignTop)
 
+        self.layout.addWidget(services_widget)
+
         self.layout.setAlignment(Qt.AlignTop)
 
         host_widget.hide()
+        services_widget.hide()
 
     def get_search_widget(self):
         """
@@ -162,8 +166,12 @@ class PanelQWidget(QWidget):
                 self.create_line_search(hostnames_list)
             host_widget.update_widget(self.line_search.text())
             host_widget.show()
+            services_widget.set_data(self.line_search.text())
+            services_widget.update_widget()
+            services_widget.show()
         else:
             host_widget.hide()
+            services_widget.hide()
 
 
 # Initialize PanelQWidget

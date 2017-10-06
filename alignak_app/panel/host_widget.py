@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    Host QWidget manage display of host data
 """
 
 from logging import getLogger
@@ -42,7 +42,7 @@ logger = getLogger(__name__)
 
 class HostQWidget(QWidget):
     """
-        TODO
+        Class who create QWidget to display host data
     """
 
     def __init__(self, parent=None):
