@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Service QTreeWidgetItem subclass to store Service item
+    Service QTreeWidgetItem subclass to store Service item data
 """
 
 from logging import getLogger
@@ -33,7 +33,7 @@ from PyQt5.Qt import QIcon, QTreeWidgetItem  # pylint: disable=no-name-in-module
 logger = getLogger(__name__)
 
 
-class ServicesTreeItem(QTreeWidgetItem):
+class ServicesTreeItem(QTreeWidgetItem):  # pylint: disable=too-few-public-methods
     """
         Class who create QTreeWidgetItem with service data
     """
