@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    Service QWidget manage display of service data
 """
 
 from logging import getLogger
@@ -40,7 +40,7 @@ logger = getLogger(__name__)
 
 class ServiceDataQWidget(QWidget):
     """
-        TODO
+        Class who create QWidget with service data
     """
 
     def __init__(self, parent=None):
@@ -204,7 +204,7 @@ class ServiceDataQWidget(QWidget):
 
             post = app_backend.post('actionacknowledge', data)
 
-            events_widget.add_event('OK', 'Acknowledge for %s is done' % service_item.name)
+            events_widget.add_event('ACK', 'Acknowledge for %s is done' % service_item.name)
             logger.debug('ACK answer for %s: %s', service_item.name, post)
 
             try:
@@ -252,7 +252,7 @@ class ServiceDataQWidget(QWidget):
 
             post = app_backend.post('actiondowntime', data)
 
-            events_widget.add_event('OK', 'Downtime for %s is done' % service_item.name)
+            events_widget.add_event('DOWN', 'Downtime for %s is done' % service_item.name)
             logger.debug('DOWN answer for %s: %s', service_item.name, post)
 
             try:
@@ -294,7 +294,7 @@ class ServiceDataQWidget(QWidget):
 
         self.labels['business_impact'].setText(str(self.service_item.data['business_impact']))
 
-        if self.service_item.data['ls_acknowledged'] or 'UP' in self.service_item.data['ls_state'] \
+        if self.service_item.data['ls_acknowledged'] or 'OK' in self.service_item.data['ls_state'] \
                 or not data_manager.database['user'].data['can_submit_commands']:
             self.buttons['acknowledge'].setEnabled(False)
         else:

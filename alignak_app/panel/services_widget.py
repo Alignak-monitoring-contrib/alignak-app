@@ -26,14 +26,11 @@
 from logging import getLogger
 
 from alignak_app.core.utils import get_image_path, get_css
-from alignak_app.core.utils import get_time_diff_since_last_timestamp
 from alignak_app.core.data_manager import data_manager
-from alignak_app.models.item_model import get_icon_item, get_real_host_state_icon
 from alignak_app.panel.service_data_widget import ServiceDataQWidget
-from alignak_app.dock.events_widget import events_widget
+from alignak_app.panel.service_tree_item import ServicesTreeItem
 
-from PyQt5.Qt import QLabel, QWidget, QIcon, Qt  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QGridLayout, QVBoxLayout, QHBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QLabel, QWidget, QIcon, QGridLayout  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QTreeWidget, QTreeWidgetItem  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
@@ -114,18 +111,13 @@ class ServicesQWidget(QWidget):
 
         # Add QTreeWidgetItems
         for aggregation in aggregations:
-            main_tree = QTreeWidgetItem([aggregation])
+            main_tree = QTreeWidgetItem()
+            main_tree.setText(0, aggregation)
+            main_tree.setIcon(0, QIcon(get_image_path('tree')))
             for service in self.service_items:
                 if service.data['aggregation'] == aggregation:
-                    service_tree = QTreeWidgetItem()
-                    icon_name = get_icon_item(
-                        'service',
-                        service.data['ls_state'],
-                        service.data['ls_acknowledged'],
-                        service.data['ls_downtimed']
-                    )
-                    service_tree.setText(0, service.name)
-                    service_tree.setIcon(0, QIcon(get_image_path(icon_name)))
+                    service_tree = ServicesTreeItem()
+                    service_tree.initialize(service)
                     self.services_tree_widget.doubleClicked.connect(self.update_service_data)
                     main_tree.addChild(service_tree)
 
@@ -137,11 +129,12 @@ class ServicesQWidget(QWidget):
 
         """
 
-        service_name = self.services_tree_widget.currentItem().text(0)
+        service_tree_item = self.services_tree_widget.currentItem()
+
         self.services_title.setText(_('Services of %s' % self.host_item.name))
 
-        if any(service_item.name == service_name for service_item in self.service_items):
-            service = data_manager.get_item('service', service_name)
+        if isinstance(service_tree_item, ServicesTreeItem):
+            service = data_manager.get_item('service', '_id', service_tree_item.service_id)
 
             self.services_tree_widget.setMaximumWidth(self.width() * 0.5)
             self.service_data_widget.setMaximumWidth(self.width() * 0.5)

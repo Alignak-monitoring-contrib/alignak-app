@@ -62,7 +62,9 @@ class EventItem(QListWidgetItem):
             'valid': ['OK', 'UP'],
             'info': ['UNKNOWN', 'INFO'],
             'warn': ['WARNING', 'UNREACHABLE', 'WARN'],
-            'error': ['DOWN', 'CRITICAL', 'ALERT']
+            'problem': ['DOWN', 'CRITICAL', 'ALERT'],
+            'aknowledge': ['ACK'],
+            'downtime': ['DOWN']
         }
 
         for key, _ in icon_types.items():

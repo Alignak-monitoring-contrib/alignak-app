@@ -25,10 +25,6 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QLabel, QWidget, QGridLayout, Qt  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPixmap, QVBoxLayout, QHBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPushButton, QIcon  # pylint: disable=no-name-in-module
-
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css
@@ -36,6 +32,11 @@ from alignak_app.core.utils import get_time_diff_since_last_timestamp
 from alignak_app.dialogs.actions import AckQDialog, DownQDialog, QDialog
 from alignak_app.dock.events_widget import events_widget
 from alignak_app.models.item_model import get_icon_item, get_real_host_state_icon
+
+from PyQt5.Qt import QLabel, QWidget, QGridLayout, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPixmap, QVBoxLayout, QHBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPushButton, QIcon  # pylint: disable=no-name-in-module
+
 
 logger = getLogger(__name__)
 
@@ -183,7 +184,7 @@ class HostQWidget(QWidget):
 
             post = app_backend.post('actionacknowledge', data)
 
-            events_widget.add_event('OK', 'Acknowledge for %s is done' % item.name)
+            events_widget.add_event('ACK', 'Acknowledge for %s is done' % item.name)
             logger.debug('ACK answer for %s: %s', item.name, post)
 
             try:
@@ -229,7 +230,7 @@ class HostQWidget(QWidget):
 
             post = app_backend.post('actiondowntime', data)
 
-            events_widget.add_event('OK', 'Downtime for %s is done' % item.name)
+            events_widget.add_event('DOWN', 'Downtime for %s is done' % item.name)
             logger.debug('DOWN answer for %s: %s', item.name, post)
 
             try:

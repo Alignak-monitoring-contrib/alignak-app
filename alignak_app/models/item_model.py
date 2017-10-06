@@ -32,7 +32,7 @@ logger = getLogger(__name__)
 
 class ItemModel(object):
     """
-        Class who create ite
+        Class who create item
     """
 
     def __init__(self):
@@ -84,12 +84,14 @@ class ItemModel(object):
 
 def get_icon_item(item_type, state, acknowledge, downtime):
     """
-    TODO
+    Return icon for a host or a service item
+
     :param item_type:
     :param state:
     :param acknowledge:
     :param downtime:
-    :return:
+    :return: icon name for icon
+    :rtype: str
     """
 
     if acknowledge:

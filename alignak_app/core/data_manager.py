@@ -209,8 +209,7 @@ class DataManager(object):
         """
         Get the last events
 
-        :return: list of events
-        :rtype: list
+        :ret
         """
 
         events = data_manager.database['notifications']
