@@ -25,22 +25,21 @@
 
 import sys
 import time
-
 from logging import DEBUG, INFO
 
-from alignak_app.core.logs import create_logger
-from alignak_app.threads.thread_manager import thread_manager
-from alignak_app.core.data_manager import data_manager
-from alignak_app.core.utils import get_image_path, get_main_folder, get_app_workdir
-from alignak_app.core.utils import init_config, get_app_config
-from alignak_app.core.locales import init_localization
-from alignak_app.widgets.login import AppLogin
-from alignak_app.core.backend import app_backend
-from alignak_app.systray.tray_icon import TrayIcon
-
-from PyQt5.QtWidgets import QDialog, QMessageBox, QSplashScreen  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QPixmap, QTimer, QProgressBar, Qt  # pylint: disable=no-name-in-module
 from PyQt5.Qt import pyqtSignal, QObject, QIcon  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QDialog, QMessageBox, QSplashScreen  # pylint: disable=no-name-in-module
+
+from alignak_app.core.backend import app_backend
+from alignak_app.core.data_manager import data_manager
+from alignak_app.core.locales import init_localization
+from alignak_app.core.logs import create_logger
+from alignak_app.core.utils import get_image_path, get_main_folder, get_app_workdir
+from alignak_app.core.utils import init_config, get_app_config
+from alignak_app.dialogs.login import AppLogin
+from alignak_app.systray.tray_icon import TrayIcon
+from alignak_app.threads.thread_manager import thread_manager
 
 # Initialize app config, logger and localization
 init_config()

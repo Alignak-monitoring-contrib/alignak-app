@@ -22,10 +22,9 @@
 import sys
 
 import unittest2
-
-from alignak_app.panel.actions import AckQDialog, DownQDialog, get_logo_widget
-
 from PyQt5.QtWidgets import QApplication, QWidget, QTimeEdit, QDateTimeEdit
+
+from alignak_app.dialogs.actions import AckQDialog, DownQDialog, get_logo_widget
 
 
 class TestActions(unittest2.TestCase):

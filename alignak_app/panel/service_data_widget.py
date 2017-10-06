@@ -25,16 +25,15 @@
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_image_path, get_css, get_time_diff_since_last_timestamp
-from alignak_app.core.backend import app_backend
-from alignak_app.core.data_manager import data_manager
-from alignak_app.models.item_model import get_icon_item
-from alignak_app.panel.actions import AckQDialog, DownQDialog, QDialog
-from alignak_app.dock.events_widget import events_widget
-
 from PyQt5.Qt import QLabel, QWidget, QIcon, Qt, QPushButton  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QPixmap, QVBoxLayout, QGridLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QTreeWidget, QTreeWidgetItem  # pylint: disable=no-name-in-module
+
+from alignak_app.core.backend import app_backend
+from alignak_app.core.data_manager import data_manager
+from alignak_app.core.utils import get_image_path, get_css, get_time_diff_since_last_timestamp
+from alignak_app.dialogs.actions import AckQDialog, DownQDialog, QDialog
+from alignak_app.dock.events_widget import events_widget
+from alignak_app.models.item_model import get_icon_item
 
 logger = getLogger(__name__)
 
