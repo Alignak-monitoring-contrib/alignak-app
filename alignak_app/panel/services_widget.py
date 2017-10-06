@@ -33,7 +33,7 @@ from alignak_app.panel.service_data_widget import ServiceDataQWidget
 from alignak_app.dock.events_widget import events_widget
 
 from PyQt5.Qt import QLabel, QWidget, QIcon, Qt  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPixmap, QVBoxLayout, QHBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QGridLayout, QVBoxLayout, QHBoxLayout  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QTreeWidget, QTreeWidgetItem  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
@@ -48,6 +48,7 @@ class ServicesQWidget(QWidget):
         super(ServicesQWidget, self).__init__(parent)
         self.setStyleSheet(get_css())
         # Fields
+        self.services_title = QLabel(_('Choose a host...'))
         self.host_item = None
         self.service_items = None
         self.services_tree_widget = QTreeWidget()
@@ -59,17 +60,15 @@ class ServicesQWidget(QWidget):
         :return:
         """
 
-        layout = QHBoxLayout()
+        layout = QGridLayout()
         self.setLayout(layout)
 
-        services_title = QLabel(_('Services of '))
-        layout.addWidget(services_title)
+        layout.addWidget(self.services_title, 0, 0, 1, 2)
 
-        layout.addWidget(self.services_tree_widget)
+        layout.addWidget(self.services_tree_widget, 1, 0, 1, 1)
 
         self.service_data_widget.initialize()
-        self.service_data_widget.show()
-        layout.addWidget(self.service_data_widget)
+        layout.addWidget(self.service_data_widget, 1, 1, 1, 1)
 
     def set_data(self, hostname):
         """
@@ -85,8 +84,8 @@ class ServicesQWidget(QWidget):
 
     def update_widget(self):
         """
-        TODO
-        :return:
+        Update the service QWidget
+
         """
 
         if self.services_tree_widget:
@@ -127,21 +126,36 @@ class ServicesQWidget(QWidget):
                     )
                     service_tree.setText(0, service.name)
                     service_tree.setIcon(0, QIcon(get_image_path(icon_name)))
-                    self.services_tree_widget.doubleClicked.connect(self.handle)
+                    self.services_tree_widget.doubleClicked.connect(self.update_service_data)
                     main_tree.addChild(service_tree)
 
             self.services_tree_widget.addTopLevelItem(main_tree)
 
-    def handle(self):
+    def update_service_data(self):
         """
-        Test handle
-        :return:
+        Update ServiceDataqWidget
+
         """
 
         service_name = self.services_tree_widget.currentItem().text(0)
-        service = data_manager.get_item('service', service_name)
-        print(service)
-        self.service_data_widget.update_widget(service_name)
+        self.services_title.setText(_('Services of %s' % self.host_item.name))
+
+        if any(service_item.name == service_name for service_item in self.service_items):
+            service = data_manager.get_item('service', service_name)
+
+            self.services_tree_widget.setMaximumWidth(self.width() * 0.5)
+            self.service_data_widget.setMaximumWidth(self.width() * 0.5)
+
+            if service:
+                self.service_data_widget.update_widget(
+                    service,
+                    self.host_item.item_id
+                )
+            else:
+                self.service_data_widget.update_widget(
+                    self.service_data_widget.service_item,
+                    self.service_data_widget.host_id
+                )
 
 
 # Create services_widget object
