@@ -93,6 +93,10 @@ class ServicesQWidget(QWidget):
             self.services_tree_widget.setParent(None)
             self.services_tree_widget = QTreeWidget()
             self.layout().addWidget(self.services_tree_widget)
+            self.service_data_widget.setParent(None)
+            self.service_data_widget = ServiceDataQWidget()
+            self.service_data_widget.initialize()
+            self.layout().addWidget(self.service_data_widget)
 
         # Make Global aggregation who are empty
         for service in self.service_items:
@@ -135,6 +139,8 @@ class ServicesQWidget(QWidget):
         """
 
         service_name = self.services_tree_widget.currentItem().text(0)
+        service = data_manager.get_item('service', service_name)
+        print(service)
         self.service_data_widget.update_widget(service_name)
 
 
