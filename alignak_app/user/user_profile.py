@@ -29,7 +29,6 @@ from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.user.password import PasswordDialog
-from alignak_app.models.item_user import User
 from alignak_app.widgets.app_widget import AppQWidget
 from alignak_app.dock.events_widget import events_widget
 
@@ -74,6 +73,7 @@ class UserQWidget(QWidget):
         self.password_btn = None
         self.notes_btn = None
         self.notes_edit = None
+        self.user = data_manager.database['user']
 
     def initialize(self):
         """
@@ -154,22 +154,22 @@ class UserQWidget(QWidget):
         info_layout = QGridLayout()
         information_widget.setLayout(info_layout)
 
+        # Realm
         realm_title = QLabel(_('Realm:'))
         realm_title.setObjectName("usersubtitle")
         info_layout.addWidget(realm_title, 0, 0, 1, 1)
-        self.labels['realm'].setText(User.get_realm_name())
         info_layout.addWidget(self.labels['realm'], 0, 1, 1, 1)
 
+        # Role
         role_title = QLabel(_('Role:'))
         role_title.setObjectName("usersubtitle")
         info_layout.addWidget(role_title, 1, 0, 1, 1)
-        self.labels['role'].setText(User.get_role().capitalize())
         info_layout.addWidget(self.labels['role'], 1, 1, 1, 1)
 
+        # Mail
         mail_title = QLabel(_('Email:'))
         mail_title.setObjectName("usersubtitle")
         info_layout.addWidget(mail_title, 2, 0, 1, 1)
-        self.labels['email'].setText(data_manager.database['user'].data['email'])
         info_layout.addWidget(self.labels['email'], 2, 1, 1, 1)
 
         return information_widget
@@ -186,28 +186,25 @@ class UserQWidget(QWidget):
         rights_layout = QGridLayout()
         rights_widget.setLayout(rights_layout)
 
+        # Is Admin
         admin_title = QLabel(_('Administrator:'))
         admin_title.setObjectName("usersubtitle")
         admin_title.setMinimumHeight(32)
         rights_layout.addWidget(admin_title, 1, 0, 1, 1)
-        self.labels['is_admin'].setPixmap(
-            self.get_enable_label_icon(data_manager.database['user'].data['is_admin'])
-        )
         self.labels['is_admin'].setFixedSize(18, 18)
         self.labels['is_admin'].setScaledContents(True)
         rights_layout.addWidget(self.labels['is_admin'], 1, 1, 1, 1)
 
+        # Can submit commands
         command_title = QLabel(_('Commands:'))
         command_title.setObjectName("usersubtitle")
         command_title.setMinimumHeight(32)
         rights_layout.addWidget(command_title, 2, 0, 1, 1)
-        self.labels['can_submit_commands'].setPixmap(
-            self.get_enable_label_icon(data_manager.database['user'].data['can_submit_commands'])
-        )
         self.labels['can_submit_commands'].setFixedSize(18, 18)
         self.labels['can_submit_commands'].setScaledContents(True)
         rights_layout.addWidget(self.labels['can_submit_commands'], 2, 1, 1, 1)
 
+        # Password
         password_title = QLabel(_('Password:'))
         password_title.setObjectName("usersubtitle")
         rights_layout.addWidget(password_title, 3, 0, 1, 1)
@@ -240,16 +237,14 @@ class UserQWidget(QWidget):
         alias_title = QLabel(_('Alias:'))
         alias_title.setObjectName("usersubtitle")
         notes_layout.addWidget(alias_title, 1, 0, 1, 1)
-        self.labels['alias'].setText(data_manager.database['user'].data['alias'])
         notes_layout.addWidget(self.labels['alias'], 1, 1, 1, 2)
 
         # Token only for administrators
-        if data_manager.database['user'].data['is_admin']:
+        if self.user.data['is_admin']:
             token_title = QLabel(_('Token:'))
             token_title.setObjectName("usersubtitle")
             notes_layout.addWidget(token_title, 2, 0, 1, 2)
 
-            self.labels['token'].setText(data_manager.database['user'].data['token'])
             self.labels['token'].setTextInteractionFlags(Qt.TextSelectableByMouse)
             self.labels['token'].setCursor(Qt.IBeamCursor)
             notes_layout.addWidget(self.labels['token'], 2, 1, 1, 1)
@@ -267,7 +262,6 @@ class UserQWidget(QWidget):
         notes_layout.addWidget(self.notes_edit, 4, 1, 1, 1)
 
         # Create QLabel for notes
-        self.labels['notes'].setText(data_manager.database['user'].data['notes'])
         notes_layout.addWidget(self.labels['notes'], 4, 1, 1, 1)
 
         # Edit button for notes
@@ -303,8 +297,8 @@ class UserQWidget(QWidget):
                 new_password = pass_dialog.pass_edit.text()
 
                 data = {'password': str(new_password)}
-                headers = {'If-Match': data_manager.database['user'].data['_etag']}
-                endpoint = '/'.join(['user', data_manager.database['user'].item_id])
+                headers = {'If-Match': self.user.data['_etag']}
+                endpoint = '/'.join(['user', self.user.item_id])
 
                 patched = app_backend.patch(endpoint, data, headers)
 
@@ -325,10 +319,10 @@ class UserQWidget(QWidget):
         """
 
         # Patch only if text have really changed
-        if bool(self.notes_edit.text() != data_manager.database['user'].data['notes']):
+        if bool(self.notes_edit.text() != self.user.data['notes']):
             data = {'notes': str(self.notes_edit.text())}
-            headers = {'If-Match': data_manager.database['user'].data['_etag']}
-            endpoint = '/'.join(['user', data_manager.database['user'].item_id])
+            headers = {'If-Match': self.user.data['_etag']}
+            endpoint = '/'.join(['user', self.user.item_id])
 
             patched = app_backend.patch(endpoint, data, headers)
 
@@ -336,10 +330,13 @@ class UserQWidget(QWidget):
                 data_manager.database['user'].update_data('notes', self.notes_edit.text())
                 message = _(
                     _("The notes for the %s have been edited.")
-                ) % data_manager.database['user'].name
+                ) % self.user.name
                 events_widget.add_event('OK', message)
             else:
-                events_widget.add_event('ERROR', _("Backend PATCH failed, please check your logs !"))
+                events_widget.add_event(
+                    'ERROR',
+                    _("Backend PATCH failed, please check your logs !")
+                )
 
             # thread_manager.add_task('user')
             self.update_widget()
@@ -389,9 +386,6 @@ class UserQWidget(QWidget):
         state_title.setObjectName("usersubtitle")
         host_notif_layout.addWidget(state_title, 1, 0, 1, 1)
         self.host_notif_state = QCheckBox()
-        self.host_notif_state.setChecked(
-            data_manager.database['user'].data['host_notifications_enabled']
-        )
         self.host_notif_state.stateChanged.connect(self.enable_notifications)
         self.host_notif_state.setObjectName('hostactions')
         self.host_notif_state.setFixedSize(18, 18)
@@ -403,7 +397,7 @@ class UserQWidget(QWidget):
         host_notif_layout.addWidget(enable_title, 2, 0, 1, 1)
         self.labels['host_notifications_enabled'].setPixmap(
             self.get_enable_label_icon(
-                data_manager.database['user'].data['host_notifications_enabled']
+                self.user.data['host_notifications_enabled']
             )
         )
         self.labels['host_notifications_enabled'].setFixedSize(18, 18)
@@ -413,10 +407,6 @@ class UserQWidget(QWidget):
         period_title = QLabel(_("Notification period:"))
         period_title.setObjectName("usersubtitle")
         host_notif_layout.addWidget(period_title, 3, 0, 1, 1)
-        period = User.get_period_name(
-            data_manager.database['user'].data['host_notification_period']
-        )
-        self.labels['host_notification_period'].setText(period.capitalize())
         host_notif_layout.addWidget(self.labels['host_notification_period'], 3, 1, 1, 1)
 
         option_title = QLabel(_("Options:"))
@@ -424,10 +414,7 @@ class UserQWidget(QWidget):
         host_notif_layout.addWidget(option_title, 4, 0, 1, 2)
         host_notif_layout.setAlignment(option_title, Qt.AlignCenter)
 
-        option_widget = self.get_options_widget(
-            'host',
-            data_manager.database['user'].data['host_notification_options']
-        )
+        option_widget = self.get_options_widget('host', self.user.data['host_notification_options'])
         host_notif_layout.addWidget(option_widget, 5, 0, 1, 2)
 
         return host_notif_widget
@@ -453,9 +440,7 @@ class UserQWidget(QWidget):
         service_notif_layout.addWidget(state_title, 1, 0, 1, 1)
         self.service_notif_state = QCheckBox()
         self.service_notif_state.setObjectName('serviceactions')
-        self.service_notif_state.setChecked(
-            data_manager.database['user'].data['service_notifications_enabled']
-        )
+
         self.service_notif_state.stateChanged.connect(self.enable_notifications)
         self.service_notif_state.checkState()
         self.service_notif_state.setFixedSize(18, 18)
@@ -465,11 +450,6 @@ class UserQWidget(QWidget):
         enable_title.setObjectName("usersubtitle")
         enable_title.setMinimumHeight(32)
         service_notif_layout.addWidget(enable_title, 2, 0, 1, 1)
-        self.labels['service_notification_enabled'].setPixmap(
-            self.get_enable_label_icon(
-                data_manager.database['user'].data['service_notifications_enabled']
-            )
-        )
         self.labels['service_notification_enabled'].setFixedSize(18, 18)
         self.labels['service_notification_enabled'].setScaledContents(True)
         service_notif_layout.addWidget(self.labels['service_notification_enabled'], 2, 1, 1, 1)
@@ -477,12 +457,7 @@ class UserQWidget(QWidget):
         period_title = QLabel(_("Notification period:"))
         period_title.setObjectName("usersubtitle")
         service_notif_layout.addWidget(period_title, 3, 0, 1, 1)
-        period = User.get_period_name(
-            data_manager.database['user'].data['service_notification_period']
-        )
-        self.labels['service_notification_period'].setText(period.capitalize())
-        service_notif_layout.addWidget(self.labels['service_notification_period'], 3, 1, 1, 1
-        )
+        service_notif_layout.addWidget(self.labels['service_notification_period'], 3, 1, 1, 1)
 
         option_title = QLabel(_("Options:"))
         option_title.setObjectName("usersubtitle")
@@ -490,8 +465,7 @@ class UserQWidget(QWidget):
         service_notif_layout.setAlignment(option_title, Qt.AlignCenter)
 
         option_widget = self.get_options_widget(
-            'service',
-            data_manager.database['user'].data['service_notification_options']
+            'service', self.user.data['service_notification_options']
         )
         service_notif_layout.addWidget(option_widget, 5, 0, 1, 2)
 
@@ -517,8 +491,8 @@ class UserQWidget(QWidget):
             # check_btn.checkState() is equal to 0 or 2
             notification_enabled = True if check_btn.checkState() else False
             data = {notification_type: notification_enabled}
-            headers = {'If-Match': data_manager.database['user'].data['_etag']}
-            endpoint = '/'.join(['user', data_manager.database['user'].item_id])
+            headers = {'If-Match': self.user.data['_etag']}
+            endpoint = '/'.join(['user', self.user.item_id])
 
             patched = app_backend.patch(endpoint, data, headers)
 
@@ -531,7 +505,10 @@ class UserQWidget(QWidget):
                 )
                 events_widget.add_event('OK', message)
             else:
-                events_widget.add_event('ERROR', _("Backend PATCH failed, please check your logs !"))
+                events_widget.add_event(
+                    'ERROR',
+                    _("Backend PATCH failed, please check your logs !")
+                )
 
         self.update_widget()
 
@@ -606,46 +583,44 @@ class UserQWidget(QWidget):
 
         """
 
+        # Update user data
+        self.user = data_manager.database['user']
+
         # Realm, Role, Email
-        self.labels['realm'].setText(User.get_realm_name())
-        self.labels['role'].setText(User.get_role().capitalize())
-        self.labels['email'].setText(data_manager.database['user'].data['email'])
+        self.labels['realm'].setText(self.user.get_realm_name())
+        self.labels['role'].setText(self.user.get_role().capitalize())
+        self.labels['email'].setText(self.user.data['email'])
 
         # Admin, Commands
         self.labels['is_admin'].setPixmap(
-            self.get_enable_label_icon(data_manager.database['user'].data['is_admin'])
+            self.get_enable_label_icon(self.user.data['is_admin'])
         )
         self.labels['can_submit_commands'].setPixmap(
-            self.get_enable_label_icon(data_manager.database['user'].data['can_submit_commands'])
+            self.get_enable_label_icon(self.user.data['can_submit_commands'])
         )
 
         # Alias, Notes, Token
-        self.labels['alias'].setText(data_manager.database['user'].data['alias'])
-        self.labels['notes'].setText(data_manager.database['user'].data['notes'])
-        if data_manager.database['user'].data['is_admin']:
-            self.labels['token'].setText(data_manager.database['user'].data['token'])
+        self.labels['alias'].setText(self.user.data['alias'])
+        self.labels['notes'].setText(self.user.data['notes'])
+        if self.user.data['is_admin']:
+            self.labels['token'].setText(self.user.data['token'])
 
         # Notifications
         self.labels['host_notifications_enabled'].setPixmap(
-            self.get_enable_label_icon(
-                data_manager.database['user'].data['host_notifications_enabled']
-            )
+            self.get_enable_label_icon(self.user.data['host_notifications_enabled'])
         )
-        period = User.get_period_name(
-            data_manager.database['user'].data['host_notification_period']
-        )
+        period = self.user.get_period_name()
         self.labels['host_notification_period'].setText(period.capitalize())
+        self.host_notif_state.setChecked(self.user.data['host_notifications_enabled'])
 
         self.labels['service_notification_enabled'].setPixmap(
-            self.get_enable_label_icon(
-                data_manager.database['user'].data['service_notifications_enabled']
-            )
+            self.get_enable_label_icon(self.user.data['service_notifications_enabled'])
         )
-        period = User.get_period_name(
-            data_manager.database['user'].data['service_notification_period']
-        )
+        period = self.user.get_period_name()
         self.labels['service_notification_period'].setText(period.capitalize())
+        self.service_notif_state.setChecked(self.user.data['service_notifications_enabled'])
 
+        # Notifications Options
         items_options = {
             'host': ['d', 'u', 'r', 'f', 's', 'n'],
             'service': ['w', 'u', 'c', 'r', 'f', 's', 'n']
@@ -653,9 +628,9 @@ class UserQWidget(QWidget):
 
         for item_type in self.opt_labels:
             if item_type == 'host':
-                options = data_manager.database['user'].data['host_notification_options']
+                options = self.user.data['host_notification_options']
             else:
-                options = data_manager.database['user'].data['service_notification_options']
+                options = self.user.data['service_notification_options']
 
             available_options = items_options[item_type]
 
@@ -693,4 +668,3 @@ class UserQWidget(QWidget):
 
 # Initialize user_widget object
 user_widget = UserQWidget()
-user_widget.initialize()

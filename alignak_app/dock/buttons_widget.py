@@ -75,6 +75,7 @@ class ButtonsQWidget(QWidget):
         self.problems_btn.setFixedSize(40, 40)
         layout.addWidget(self.problems_btn)
 
+        user_widget.initialize()
         self.profile_btn.setIcon(QIcon(get_image_path('user')))
         self.profile_btn.setFixedSize(40, 40)
         self.profile_btn.clicked.connect(self.open_user_widget)

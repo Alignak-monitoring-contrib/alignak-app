@@ -29,7 +29,7 @@ from logging import getLogger
 
 
 from alignak_app.models.item_model import ItemModel
-from alignak_app.core.backend import app_backend, data_manager
+from alignak_app.core.backend import app_backend
 
 
 logger = getLogger(__name__)
@@ -69,8 +69,7 @@ class User(ItemModel):
 
         return request
 
-    @staticmethod
-    def get_role():
+    def get_role(self):
         """
         Get user role
 
@@ -80,18 +79,17 @@ class User(ItemModel):
 
         role = _('user')
 
-        if data_manager.database['user'].data['is_admin'] or \
-                data_manager.database['user'].data['back_role_super_admin']:
+        if self.data['is_admin'] or \
+                self.data['back_role_super_admin']:
             role = _('administrator')
-        if data_manager.database['user'].data['can_submit_commands'] and not \
-                data_manager.database['user'].data['is_admin'] and not \
-                data_manager.database['user'].data['back_role_super_admin']:
+        if self.data['can_submit_commands'] and not \
+                self.data['is_admin'] and not \
+                self.data['back_role_super_admin']:
             role = _('power')
 
         return role
 
-    @staticmethod
-    def get_realm_name():
+    def get_realm_name(self):
         """
         Return realm name or alias
 
@@ -99,9 +97,9 @@ class User(ItemModel):
         :rtype: str
         """
 
-        if '_realm' in data_manager.database['user'].data:
+        if '_realm' in self.data:
             endpoint = '/'.join(
-                ['realm', data_manager.database['user'].data['_realm']]
+                ['realm', self.data['_realm']]
             )
             projection = [
                 'name',
@@ -118,13 +116,10 @@ class User(ItemModel):
 
         return 'n/a'
 
-    @staticmethod
-    def get_period_name(uuid):
+    def get_period_name(self):
         """
         Get the period name or alias
 
-        :param uuid: the Id of the timeperiod
-        :type uuid: str
         :return: name or alias of timeperiod
         :rtype: str
         """
@@ -134,7 +129,7 @@ class User(ItemModel):
             'alias'
         ]
 
-        endpoint = '/'.join(['timeperiod', uuid])
+        endpoint = '/'.join(['timeperiod', self.data['host_notification_period']])
 
         period = app_backend.get(endpoint, projection=projection)
 

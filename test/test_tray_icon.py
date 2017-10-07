@@ -26,6 +26,8 @@ import unittest2
 from alignak_app.core.backend import AppBackend
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import init_config
+from alignak_app.core.data_manager import data_manager
+from alignak_app.models.item_user import User
 from alignak_app.systray.tray_icon import TrayIcon
 
 from PyQt5.QtWidgets import QApplication
@@ -45,6 +47,18 @@ class TestTrayIcon(unittest2.TestCase):
 
     backend = AppBackend()
     backend.login()
+
+    data_manager.database['user'] = User()
+    data_manager.database['user'].data = {}
+    user_key = [
+        '_realm', 'is_admin', 'back_role_super_admin', 'alias', 'name', 'notes', 'email',
+        'can_submit_commands', 'token', 'host_notifications_enabled',
+        'service_notifications_enabled', 'host_notification_period',
+        'service_notification_period', 'host_notification_options',
+        'service_notification_options',
+    ]
+    for key in user_key:
+        data_manager.database['user'].data[key] = ''
 
     @classmethod
     def setUpClass(cls):
@@ -69,7 +83,7 @@ class TestTrayIcon(unittest2.TestCase):
         under_test.create_about_action()
 
         self.assertIsNotNone(under_test.qaction_factory)
-        self.assertIsInstance(under_test.qaction_factory.get('about'), QAction)
+        self.assertIsInstance(under_test.qaction_factory.get_action('about'), QAction)
 
     def test_quit_action(self):
         """Quit QAction is created"""
@@ -79,26 +93,22 @@ class TestTrayIcon(unittest2.TestCase):
 
         under_test.create_quit_action()
 
-        self.assertIsNotNone(under_test.qaction_factory.get('exit'))
-        self.assertIsInstance(under_test.qaction_factory.get('exit'), QAction)
+        self.assertIsNotNone(under_test.qaction_factory.get_action('exit'))
+        self.assertIsInstance(under_test.qaction_factory.get_action('exit'), QAction)
 
     def test_build_menu(self):
         """Build Menu add QActions"""
-        from alignak_app.dock.dock_widget import DockQWidget
 
         under_test = TrayIcon(TestTrayIcon.icon)
-        dock_test = DockQWidget()
 
         # Assert no actions in Menu
         self.assertFalse(under_test.menu.actions())
         self.assertIsNone(under_test.app_about)
-        self.assertIsNone(under_test.dock)
         self.assertIsNotNone(under_test.qaction_factory)
 
-        under_test.build_menu(dock_test)
+        under_test.build_menu(None)
 
         # Assert actions are added in Menu
         self.assertTrue(under_test.menu.actions())
         self.assertIsNotNone(under_test.app_about)
-        self.assertIsNotNone(under_test.dock)
         self.assertIsNotNone(under_test.qaction_factory)

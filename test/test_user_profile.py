@@ -22,15 +22,18 @@
 import sys
 
 import unittest2
-
+from PyQt5.QtWidgets import QApplication, QWidget
 from alignak_app.core.utils import init_config
+from alignak_app.core.locales import init_localization
+init_config()
+init_localization()
+app = QApplication(sys.argv)
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.models.item_user import User
-from alignak_app.user.user_profile import UserQWidget
-from alignak_app.core.locales import init_localization
 
-from PyQt5.QtWidgets import QApplication, QWidget
+from alignak_app.user.user_profile import UserQWidget
+
 
 
 class TestUserProfile(unittest2.TestCase):
@@ -39,7 +42,6 @@ class TestUserProfile(unittest2.TestCase):
     """
 
     init_config()
-    init_localization()
     data_manager.database['user'] = User()
     data_manager.database['user'].data = {}
 
@@ -92,7 +94,7 @@ class TestUserProfile(unittest2.TestCase):
         notif_widget_test = under_test.get_notifications_widget()
         host_notif_widget_test = under_test.get_hosts_notif_widget()
         services_notif_widget_test = under_test.get_services_notif_widget()
-        options_widget_test = under_test.get_options_widget('hosts', options_test)
+        options_widget_test = under_test.get_options_widget('host', options_test)
 
         self.assertIsInstance(main_widget_test, QWidget)
         self.assertIsInstance(info_widget_test, QWidget)
@@ -102,79 +104,3 @@ class TestUserProfile(unittest2.TestCase):
         self.assertIsInstance(host_notif_widget_test, QWidget)
         self.assertIsInstance(services_notif_widget_test, QWidget)
         self.assertIsInstance(options_widget_test, QWidget)
-
-    def test_get_realm_name(self):
-        """Get Realm Name"""
-
-        under_test = UserQWidget()
-        if not app_backend.connected:
-            app_backend.login()
-
-        data_manager.database['user'].data['_realm'] = '59c4e38535d17b8dcb0bed42'
-        # Realm is right
-        realm_test = under_test.get_realm_name()
-
-        # If "user" has a right realm, return is 'All'
-        self.assertEqual(realm_test, 'All')
-
-        # Change realm to a false one
-        data_manager.database['user'].data['_realm'] = 'no_realm'
-        realm_test = under_test.get_realm_name()
-
-        # If "user" has a false realm, return is 'n/a'
-        self.assertEqual(realm_test, 'n/a')
-
-    def test_get_role(self):
-        """Get User Role"""
-
-        under_test = UserQWidget()
-
-        # Simulate user data
-        # Case "user"
-        data_manager.database['user'].data['is_admin'] = False
-        data_manager.database['user'].data['back_role_super_admin'] = False
-        data_manager.database['user'].data['can_submit_commands'] = False
-
-        role_test = under_test.get_role()
-
-        self.assertEqual(role_test, 'user')
-
-        # Case "power"
-        data_manager.database['user'].data['can_submit_commands'] = True
-
-        role_test = under_test.get_role()
-
-        self.assertEqual(role_test, 'power')
-
-        # Case "admin"
-        data_manager.database['user'].data['can_submit_commands'] = True
-        data_manager.database['user'].data['back_role_super_admin'] = True
-
-        role_test = under_test.get_role()
-
-        self.assertEqual(role_test, 'administrator')
-
-        data_manager.database['user'].data['back_role_super_admin'] = False
-        data_manager.database['user'].data['is_admin'] = True
-
-        role_test = under_test.get_role()
-
-        self.assertEqual(role_test, 'administrator')
-
-    def test_get_period_name(self):
-        """Get User Period Name"""
-
-        under_test = UserQWidget()
-        # under_test.get_user_data()
-
-        period_test = under_test.get_period_name('test')
-
-        self.assertEqual(period_test, 'n/a')
-
-        if not app_backend.connected:
-            app_backend.login()
-        period_test = under_test.get_period_name(self.period_uuid)
-
-        self.assertEqual(period_test, 'All time default 24x7')
-
-
