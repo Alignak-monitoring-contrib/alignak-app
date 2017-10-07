@@ -173,6 +173,11 @@ class PanelQWidget(QWidget):
             host_widget.hide()
             services_widget.hide()
 
+    def showEvent(self, _):
+        """ QDialog.showEvent(QShowEvent) """
+
+        self.line_search.setFocus()
+
 
 # Initialize PanelQWidget
 panel_widget = PanelQWidget()

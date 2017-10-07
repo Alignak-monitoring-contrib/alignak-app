@@ -121,7 +121,7 @@ class ServicesQWidget(QWidget):
                 if service.data['aggregation'] == aggregation:
                     service_tree = ServicesTreeItem()
                     service_tree.initialize(service)
-                    self.services_tree_widget.doubleClicked.connect(self.update_service_data)
+                    self.services_tree_widget.clicked.connect(self.update_service_data)
                     main_tree.addChild(service_tree)
 
             self.services_tree_widget.addTopLevelItem(main_tree)

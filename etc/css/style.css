@@ -167,10 +167,12 @@ QTreeWidget {
     selection-background-color: white;
     selection-color: black;
     show-decoration-selected: 1;
+    border: none;
 }
 
 QTreeWidget::item {
     height: 40px;
+    border-radius: 3px;
 }
 
 QTreeWidget::item::selected::active {
