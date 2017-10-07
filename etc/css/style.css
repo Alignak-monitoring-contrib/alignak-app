@@ -154,6 +154,8 @@ QLabel#itemtitle {
 QLabel#output {
     color: #c7254e;
     background-color: #f9f2f4;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 }
 
 QLabel#itemname {
@@ -176,7 +178,7 @@ QTreeWidget::item {
 }
 
 QTreeWidget::item::selected::active {
-    background-color: #363e42;
+    background-color: #6f828c;
     color: white;
 }
 
