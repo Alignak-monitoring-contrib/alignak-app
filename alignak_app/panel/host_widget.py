@@ -31,6 +31,7 @@ from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.utils import get_time_diff_since_last_timestamp
 from alignak_app.dialogs.actions import AckQDialog, DownQDialog, QDialog
 from alignak_app.dock.events_widget import events_widget
+from alignak_app.panel.history_widget import HistoryQWidget
 from alignak_app.items.item_model import get_icon_item, get_real_host_state_icon
 
 from PyQt5.Qt import QLabel, QWidget, QGridLayout, Qt  # pylint: disable=no-name-in-module
@@ -65,8 +66,10 @@ class HostQWidget(QWidget):
         }
         self.buttons = {
             'acknowledge': QPushButton(),
-            'downtime': QPushButton()
+            'downtime': QPushButton(),
+            'history': QPushButton()
         }
+        self.history_widget = None
 
     def set_data(self, hostname):
         """
@@ -144,6 +147,10 @@ class HostQWidget(QWidget):
         self.buttons['downtime'].setIcon(QIcon(get_image_path('downtime')))
         self.buttons['downtime'].clicked.connect(lambda: self.add_downtime(self.host_item))
         layout.addWidget(self.buttons['downtime'])
+
+        self.buttons['history'].setIcon(QIcon(get_image_path('time')))
+        self.buttons['history'].clicked.connect(self.show_history)
+        layout.addWidget(self.buttons['history'])
 
         layout.setAlignment(Qt.AlignCenter)
 
@@ -239,6 +246,21 @@ class HostQWidget(QWidget):
                 logger.warning('Can\'t disable Downtime btn: %s', e)
         else:
             logger.info('Downtime for %s cancelled...', item.name)
+
+    def show_history(self):
+        """
+        Create and show HistoryQWidget
+
+        """
+
+        if any(
+                history_item.item_id == self.host_item.item_id for
+                history_item in data_manager.database['history']):
+            self.history_widget = HistoryQWidget(self)
+            self.history_widget.initialize(self.host_item.name, self.host_item.item_id)
+            self.history_widget.app_widget.show()
+        else:
+            events_widget.add_event('WARN', 'History is not yet available...')
 
     def get_last_check_widget(self):
         """
@@ -378,6 +400,15 @@ class HostQWidget(QWidget):
             self.buttons['downtime'].setEnabled(False)
         else:
             self.buttons['downtime'].setEnabled(True)
+
+        if any(
+                history_item.item_id == self.host_item.item_id for
+                history_item in data_manager.database['history']):
+            self.buttons['history'].setEnabled(True)
+            self.buttons['history'].setToolTip(_('History is available'))
+        else:
+            self.buttons['history'].setToolTip(_('History is not available, please wait...'))
+            self.buttons['history'].setEnabled(False)
 
 
 # Create HostQWidget object

@@ -22,11 +22,10 @@
 import sys
 
 import unittest2
-
-from alignak_app.synthesis.history import History, AppQWidget
-from alignak_app.core.utils import init_config
-
 from PyQt5.QtWidgets import QApplication, QWidget
+
+from alignak_app.core.utils import init_config
+from alignak_app.panel.history_widget import HistoryQWidget, AppQWidget
 
 
 class TestHistory(unittest2.TestCase):
@@ -73,7 +72,7 @@ class TestHistory(unittest2.TestCase):
         """Initialize History"""
 
         init_config()
-        under_test = History(self.history_test)
+        under_test = HistoryQWidget(self.history_test)
 
         self.assertTrue(under_test.history)
         self.assertIsNone(under_test.layout())
@@ -92,7 +91,7 @@ class TestHistory(unittest2.TestCase):
 
         init_config()
 
-        hist_widget_test = History(self.history_test)
+        hist_widget_test = HistoryQWidget(self.history_test)
 
         under_test = hist_widget_test.get_event_widget(self.history_test[0])
 

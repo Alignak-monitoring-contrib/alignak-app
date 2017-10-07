@@ -130,11 +130,11 @@ class UserQWidget(QWidget):
         main_user_widget.setLayout(main_layout)
 
         main_title = QLabel(_('Main informations:'))
-        main_title.setObjectName("usertitle")
+        main_title.setObjectName("itemtitle")
         main_layout.addWidget(main_title, 0, 0, 1, 2)
 
         rights_title = QLabel(_('Rights:'))
-        rights_title.setObjectName("usertitle")
+        rights_title.setObjectName("itemtitle")
         main_layout.addWidget(rights_title, 0, 2, 1, 2)
 
         main_layout.addWidget(self.get_information_widget(), 1, 0, 1, 2)
@@ -156,19 +156,19 @@ class UserQWidget(QWidget):
 
         # Realm
         realm_title = QLabel(_('Realm:'))
-        realm_title.setObjectName("usersubtitle")
+        realm_title.setObjectName("title")
         info_layout.addWidget(realm_title, 0, 0, 1, 1)
         info_layout.addWidget(self.labels['realm'], 0, 1, 1, 1)
 
         # Role
         role_title = QLabel(_('Role:'))
-        role_title.setObjectName("usersubtitle")
+        role_title.setObjectName("title")
         info_layout.addWidget(role_title, 1, 0, 1, 1)
         info_layout.addWidget(self.labels['role'], 1, 1, 1, 1)
 
         # Mail
         mail_title = QLabel(_('Email:'))
-        mail_title.setObjectName("usersubtitle")
+        mail_title.setObjectName("title")
         info_layout.addWidget(mail_title, 2, 0, 1, 1)
         info_layout.addWidget(self.labels['email'], 2, 1, 1, 1)
 
@@ -188,7 +188,7 @@ class UserQWidget(QWidget):
 
         # Is Admin
         admin_title = QLabel(_('Administrator:'))
-        admin_title.setObjectName("usersubtitle")
+        admin_title.setObjectName("title")
         admin_title.setMinimumHeight(32)
         rights_layout.addWidget(admin_title, 1, 0, 1, 1)
         self.labels['is_admin'].setFixedSize(18, 18)
@@ -197,7 +197,7 @@ class UserQWidget(QWidget):
 
         # Can submit commands
         command_title = QLabel(_('Commands:'))
-        command_title.setObjectName("usersubtitle")
+        command_title.setObjectName("title")
         command_title.setMinimumHeight(32)
         rights_layout.addWidget(command_title, 2, 0, 1, 1)
         self.labels['can_submit_commands'].setFixedSize(18, 18)
@@ -206,7 +206,7 @@ class UserQWidget(QWidget):
 
         # Password
         password_title = QLabel(_('Password:'))
-        password_title.setObjectName("usersubtitle")
+        password_title.setObjectName("title")
         rights_layout.addWidget(password_title, 3, 0, 1, 1)
         self.password_btn = QPushButton()
         self.password_btn.setObjectName("password")
@@ -230,19 +230,19 @@ class UserQWidget(QWidget):
         notes_widget.setLayout(notes_layout)
 
         main_notes_title = QLabel(_('Notes:'))
-        main_notes_title.setObjectName("usertitle")
+        main_notes_title.setObjectName("itemtitle")
         notes_layout.addWidget(main_notes_title, 0, 0, 1, 3)
 
         # Alias
         alias_title = QLabel(_('Alias:'))
-        alias_title.setObjectName("usersubtitle")
+        alias_title.setObjectName("title")
         notes_layout.addWidget(alias_title, 1, 0, 1, 1)
         notes_layout.addWidget(self.labels['alias'], 1, 1, 1, 2)
 
         # Token only for administrators
         if self.user.data['is_admin']:
             token_title = QLabel(_('Token:'))
-            token_title.setObjectName("usersubtitle")
+            token_title.setObjectName("title")
             notes_layout.addWidget(token_title, 2, 0, 1, 2)
 
             self.labels['token'].setTextInteractionFlags(Qt.TextSelectableByMouse)
@@ -251,7 +251,7 @@ class UserQWidget(QWidget):
 
         # Notes
         notes_title = QLabel(_('Notes:'))
-        notes_title.setObjectName("usersubtitle")
+        notes_title.setObjectName("title")
         notes_layout.addWidget(notes_title, 3, 0, 1, 1)
 
         # Add and hide QLineEdit; Shown only when edited
@@ -379,13 +379,14 @@ class UserQWidget(QWidget):
         host_notif_widget.setLayout(host_notif_layout)
 
         notif_title = QLabel(_("Hosts notifications configurations"))
-        notif_title.setObjectName("usertitle")
+        notif_title.setObjectName("itemtitle")
         host_notif_layout.addWidget(notif_title, 0, 0, 1, 2)
 
         state_title = QLabel(_("State:"))
-        state_title.setObjectName("usersubtitle")
+        state_title.setObjectName("title")
         host_notif_layout.addWidget(state_title, 1, 0, 1, 1)
         self.host_notif_state = QCheckBox()
+        self.host_notif_state.setChecked(self.user.data['host_notifications_enabled'])
         self.host_notif_state.stateChanged.connect(self.enable_notifications)
         self.host_notif_state.setObjectName('hostactions')
         self.host_notif_state.setFixedSize(18, 18)
@@ -393,7 +394,7 @@ class UserQWidget(QWidget):
 
         enable_title = QLabel(_("Notification enabled:"))
         enable_title.setMinimumHeight(32)
-        enable_title.setObjectName("usersubtitle")
+        enable_title.setObjectName("title")
         host_notif_layout.addWidget(enable_title, 2, 0, 1, 1)
         self.labels['host_notifications_enabled'].setPixmap(
             self.get_enable_label_icon(
@@ -405,12 +406,12 @@ class UserQWidget(QWidget):
         host_notif_layout.addWidget(self.labels['host_notifications_enabled'], 2, 1, 1, 1)
 
         period_title = QLabel(_("Notification period:"))
-        period_title.setObjectName("usersubtitle")
+        period_title.setObjectName("title")
         host_notif_layout.addWidget(period_title, 3, 0, 1, 1)
         host_notif_layout.addWidget(self.labels['host_notification_period'], 3, 1, 1, 1)
 
         option_title = QLabel(_("Options:"))
-        option_title.setObjectName("usersubtitle")
+        option_title.setObjectName("title")
         host_notif_layout.addWidget(option_title, 4, 0, 1, 2)
         host_notif_layout.setAlignment(option_title, Qt.AlignCenter)
 
@@ -432,22 +433,21 @@ class UserQWidget(QWidget):
         service_notif_widget.setLayout(service_notif_layout)
 
         notif_title = QLabel(_("Services notifications configurations"))
-        notif_title.setObjectName("usertitle")
+        notif_title.setObjectName("itemtitle")
         service_notif_layout.addWidget(notif_title, 0, 0, 1, 2)
 
         state_title = QLabel(_("State:"))
-        state_title.setObjectName("usersubtitle")
+        state_title.setObjectName("title")
         service_notif_layout.addWidget(state_title, 1, 0, 1, 1)
         self.service_notif_state = QCheckBox()
         self.service_notif_state.setObjectName('serviceactions')
-
+        self.service_notif_state.setChecked(self.user.data['service_notifications_enabled'])
         self.service_notif_state.stateChanged.connect(self.enable_notifications)
-        self.service_notif_state.checkState()
         self.service_notif_state.setFixedSize(18, 18)
         service_notif_layout.addWidget(self.service_notif_state, 1, 1, 1, 1)
 
         enable_title = QLabel(_("Notification enabled:"))
-        enable_title.setObjectName("usersubtitle")
+        enable_title.setObjectName("title")
         enable_title.setMinimumHeight(32)
         service_notif_layout.addWidget(enable_title, 2, 0, 1, 1)
         self.labels['service_notification_enabled'].setFixedSize(18, 18)
@@ -455,12 +455,12 @@ class UserQWidget(QWidget):
         service_notif_layout.addWidget(self.labels['service_notification_enabled'], 2, 1, 1, 1)
 
         period_title = QLabel(_("Notification period:"))
-        period_title.setObjectName("usersubtitle")
+        period_title.setObjectName("title")
         service_notif_layout.addWidget(period_title, 3, 0, 1, 1)
         service_notif_layout.addWidget(self.labels['service_notification_period'], 3, 1, 1, 1)
 
         option_title = QLabel(_("Options:"))
-        option_title.setObjectName("usersubtitle")
+        option_title.setObjectName("title")
         service_notif_layout.addWidget(option_title, 4, 0, 1, 2)
         service_notif_layout.setAlignment(option_title, Qt.AlignCenter)
 
@@ -611,14 +611,12 @@ class UserQWidget(QWidget):
         )
         period = self.user.get_period_name()
         self.labels['host_notification_period'].setText(period.capitalize())
-        self.host_notif_state.setChecked(self.user.data['host_notifications_enabled'])
 
         self.labels['service_notification_enabled'].setPixmap(
             self.get_enable_label_icon(self.user.data['service_notifications_enabled'])
         )
         period = self.user.get_period_name()
         self.labels['service_notification_period'].setText(period.capitalize())
-        self.service_notif_state.setChecked(self.user.data['service_notifications_enabled'])
 
         # Notifications Options
         items_options = {

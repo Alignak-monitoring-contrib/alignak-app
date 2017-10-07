@@ -27,6 +27,7 @@
 from logging import getLogger
 
 from alignak_app.core.utils import get_css, get_image_path
+from alignak_app.core.data_manager import data_manager
 from alignak_app.widgets.app_widget import AppQWidget
 
 from PyQt5.QtWidgets import QWidget, QScrollArea, QLabel  # pylint: disable=no-name-in-module
@@ -37,17 +38,16 @@ from PyQt5.Qt import QPixmap, QIcon, Qt  # pylint: disable=no-name-in-module
 logger = getLogger(__name__)
 
 
-class History(QWidget):
+class HistoryQWidget(QWidget):
     """
         Class who create the History QWidget for host
     """
 
-    def __init__(self, history, parent=None):
-        super(History, self).__init__(parent)
+    def __init__(self, parent=None):
+        super(HistoryQWidget, self).__init__(parent)
         self.setStyleSheet(get_css())
         self.setObjectName("history")
         # Fields
-        self.history = history
         self.app_widget = AppQWidget()
         self.refresh_btn = None
 
@@ -62,6 +62,8 @@ class History(QWidget):
         """
 
         self.app_widget.initialize(_('History of %s') % hostname.capitalize())
+
+        history = data_manager.get_item('history', host_id)
 
         scroll = QScrollArea()
         scroll.setWidget(self)
@@ -91,7 +93,7 @@ class History(QWidget):
 
         line = 1
 
-        for event in self.history:
+        for event in history.data:
             event_widget = self.get_event_widget(event)
 
             layout.addWidget(event_widget, line, 0, 2, 2)
