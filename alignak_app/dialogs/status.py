@@ -30,10 +30,10 @@ from PyQt5.QtGui import QPixmap  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QAction  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QWidget  # pylint: disable=no-name-in-module
-from alignak_app.widgets.banner import send_banner
 
 from alignak_app import __application__
 from alignak_app.app_widget import AppQWidget
+from alignak_app.dock.events_widget import events_widget
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css, get_app_config
 from alignak_app.items.item_daemon import Daemon
@@ -194,7 +194,7 @@ class AlignakStatus(QWidget):
             self.info.setStyleSheet('color: #27ae60;')
             if self.first_start:
                 self.first_start = False
-                send_banner('INFO', _('All daemons are alive.'))
+                events_widget.add_event('INFO', _('All daemons are alive.'))
             logger.info('All daemons are alive.')
         else:
             self.info.setText(_('%d on %d daemons are down !') % (total_bad_daemons, total_daemons))
@@ -204,12 +204,11 @@ class AlignakStatus(QWidget):
         # Send Banners if sender is QTimer
         if not isinstance(self.sender(), QAction):  # pragma: no cover
             if not total_bad_daemons and (self.old_bad_daemons != 0):
-                send_banner('OK', _('All daemons are alive again.'), duration=60000)
+                events_widget.add_event('OK', _('All daemons are alive again.'))
             if total_bad_daemons:
-                send_banner(
+                events_widget.add_event(
                     'WARN',
-                    _('%d on %d daemons are down !') % (total_bad_daemons, total_daemons),
-                    duration=60000
+                    _('%d on %d daemons are down !') % (total_bad_daemons, total_daemons)
                 )
                 if arbiter_down:
                     self.info.setText(
@@ -218,7 +217,7 @@ class AlignakStatus(QWidget):
                         )
                     )
                     self.info.setStyleSheet('color: #e74c3c;')
-                    send_banner('ALERT', _('Arbiter daemons are down !'), duration=60000)
+                    events_widget.add_event('ALERT', _('Arbiter daemons are down !'))
                     logger.critical('Arbiter daemons are down !')
 
         self.old_bad_daemons = total_bad_daemons
