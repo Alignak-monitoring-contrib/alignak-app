@@ -22,11 +22,10 @@
 import sys
 
 import unittest2
-
-from alignak_app.core.utils import init_config
-from alignak_app.widgets.app_widget import AppQWidget
-
 from PyQt5.QtWidgets import QApplication
+
+from alignak_app.app_widget import AppQWidget
+from alignak_app.core.utils import init_config
 
 
 class TestAppQWidget(unittest2.TestCase):

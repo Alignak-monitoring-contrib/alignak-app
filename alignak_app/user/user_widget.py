@@ -25,17 +25,17 @@
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_image_path, get_css
-from alignak_app.core.backend import app_backend
-from alignak_app.core.data_manager import data_manager
-from alignak_app.user.password import PasswordDialog
-from alignak_app.widgets.app_widget import AppQWidget
-from alignak_app.dock.events_widget import events_widget
-
 from PyQt5.Qt import QIcon, QPixmap, Qt  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QLabel, QLineEdit, QDialog  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=no-name-in-module
+
+from alignak_app.app_widget import AppQWidget
+from alignak_app.core.backend import app_backend
+from alignak_app.core.data_manager import data_manager
+from alignak_app.core.utils import get_image_path, get_css
+from alignak_app.dock.events_widget import events_widget
+from alignak_app.user.password import PasswordDialog
 
 logger = getLogger(__name__)
 

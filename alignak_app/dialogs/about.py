@@ -23,15 +23,15 @@
     About manage QWidget who display About window.
 """
 
-from alignak_app import __application__
-from alignak_app import __releasenotes__, __version__, __copyright__
-from alignak_app import __doc_url__, __project_url__, __alignak_url__
-from alignak_app.core.utils import get_css
-from alignak_app.widgets.app_widget import AppQWidget
-
+from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QVBoxLayout, QLabel  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QWidget  # pylint: disable=no-name-in-module
-from PyQt5.QtCore import Qt  # pylint: disable=no-name-in-module
+
+from alignak_app import __application__
+from alignak_app import __doc_url__, __project_url__, __alignak_url__
+from alignak_app import __releasenotes__, __version__, __copyright__
+from alignak_app.app_widget import AppQWidget
+from alignak_app.core.utils import get_css
 
 
 class AppAbout(QWidget):

@@ -26,14 +26,13 @@
 import sys
 from logging import getLogger
 
-from alignak_app.threads.thread_manager import thread_manager
-from alignak_app.core.utils import init_config, get_image_path
-from alignak_app.systray.qactions_factory import QActionFactory
-from alignak_app.widgets.about import AppAbout
-
-from PyQt5.Qt import pyqtSignal, QIcon  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QMenu, QSystemTrayIcon  # pylint: disable=no-name-in-module
+from PyQt5.Qt import pyqtSignal  # pylint: disable=no-name-in-module
 
+from alignak_app.core.utils import init_config
+from alignak_app.dialogs.about import AppAbout
+from alignak_app.systray.qactions_factory import QActionFactory
+from alignak_app.threads.thread_manager import thread_manager
 
 logger = getLogger(__name__)
 

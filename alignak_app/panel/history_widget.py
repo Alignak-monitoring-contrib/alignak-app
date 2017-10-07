@@ -26,14 +26,13 @@
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_css, get_image_path
-from alignak_app.core.data_manager import data_manager
-from alignak_app.widgets.app_widget import AppQWidget
-
-from PyQt5.QtWidgets import QWidget, QScrollArea, QLabel  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QGridLayout, QPushButton  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QPixmap, QIcon, Qt  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QGridLayout, QPushButton  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QWidget, QScrollArea, QLabel  # pylint: disable=no-name-in-module
 
+from alignak_app.app_widget import AppQWidget
+from alignak_app.core.data_manager import data_manager
+from alignak_app.core.utils import get_css, get_image_path
 
 logger = getLogger(__name__)
 

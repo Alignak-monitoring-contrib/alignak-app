@@ -25,16 +25,15 @@
 
 from logging import getLogger
 
+from PyQt5.Qt import QApplication, QPushButton  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QCompleter, QLineEdit, QIcon, QHBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget  # pylint: disable=no-name-in-module
+
+from alignak_app.app_widget import AppQWidget
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.panel.host_widget import host_widget
 from alignak_app.panel.services_widget import services_widget
-from alignak_app.widgets.app_widget import AppQWidget
-
-from PyQt5.Qt import QCompleter, QLineEdit, QIcon, QHBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QApplication, QPushButton  # pylint: disable=no-name-in-module
-
 
 logger = getLogger(__name__)
 

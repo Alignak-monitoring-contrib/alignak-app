@@ -25,17 +25,17 @@
 
 from logging import getLogger
 
-from alignak_app import __application__
-from alignak_app.core.utils import get_app_config, get_css
-from alignak_app.dashboard.dashboard_factory import DashboardFactory
-from alignak_app.widgets.app_widget import AppQWidget
-from alignak_app.widgets.banner import send_diff_banners
-
+from PyQt5.Qt import pyqtSignal  # pylint: disable=no-name-in-module
+from PyQt5.QtCore import QTimer, Qt  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QApplication, QWidget  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QVBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.QtCore import QTimer, Qt  # pylint: disable=no-name-in-module
-from PyQt5.Qt import pyqtSignal  # pylint: disable=no-name-in-module
+from alignak_app.widgets.banner import send_diff_banners
+
+from alignak_app import __application__
+from alignak_app.app_widget import AppQWidget
+from alignak_app.core.utils import get_app_config, get_css
+from alignak_app.dashboard.dashboard_factory import DashboardFactory
 
 logger = getLogger(__name__)
 

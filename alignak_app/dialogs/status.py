@@ -25,18 +25,18 @@
 
 from logging import getLogger
 
-from alignak_app import __application__
-from alignak_app.core.utils import get_image_path, get_css, get_app_config
-from alignak_app.core.data_manager import data_manager
-from alignak_app.items.item_daemon import Daemon
-from alignak_app.widgets.banner import send_banner
-from alignak_app.widgets.app_widget import AppQWidget
-
-from PyQt5.QtWidgets import QWidget  # pylint: disable=no-name-in-module
+from PyQt5.QtCore import Qt, QTimer  # pylint: disable=no-name-in-module
+from PyQt5.QtGui import QPixmap  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QAction  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
-from PyQt5.QtGui import QPixmap  # pylint: disable=no-name-in-module
-from PyQt5.QtCore import Qt, QTimer  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QWidget  # pylint: disable=no-name-in-module
+from alignak_app.widgets.banner import send_banner
+
+from alignak_app import __application__
+from alignak_app.app_widget import AppQWidget
+from alignak_app.core.data_manager import data_manager
+from alignak_app.core.utils import get_image_path, get_css, get_app_config
+from alignak_app.items.item_daemon import Daemon
 
 logger = getLogger(__name__)
 

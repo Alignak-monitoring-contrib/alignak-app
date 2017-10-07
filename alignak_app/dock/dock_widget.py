@@ -23,18 +23,16 @@
     Dock manage creation of Alignak-app Dock
 """
 
-from alignak_app.core.utils import get_css, get_image_path
-
-from alignak_app.dock.buttons_widget import ButtonsQWidget
-from alignak_app.dock.status_widget import DockStatusQWidget
-from alignak_app.dock.backend_widget import BackendQWidget
-from alignak_app.dock.events_widget import events_widget
-from alignak_app.dock.spy_widget import SpyQListWidget
-
-from alignak_app.widgets.app_widget import AppQWidget
-
 from PyQt5.Qt import QApplication, QWidget, QGridLayout, QIcon  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QListWidget, QFrame  # pylint: disable=no-name-in-module
+
+from alignak_app.app_widget import AppQWidget
+from alignak_app.core.utils import get_css, get_image_path
+from alignak_app.dock.backend_widget import BackendQWidget
+from alignak_app.dock.buttons_widget import ButtonsQWidget
+from alignak_app.dock.events_widget import events_widget
+from alignak_app.dock.spy_widget import SpyQListWidget
+from alignak_app.dock.status_widget import DockStatusQWidget
 
 
 class DockQWidget(QWidget):
