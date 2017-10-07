@@ -20,47 +20,42 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    ItemHost manage creation of host item
+    ItemHistory manage creation of history item
 """
 
-import json
 
 from logging import getLogger
 
-
-from alignak_app.models.item_model import ItemModel
+from alignak_app.items.item_model import ItemModel
 
 
 logger = getLogger(__name__)
 
 
-class Host(ItemModel):
+class History(ItemModel):
     """
-        Class who create a host item
+        Class who create a history item
     """
 
     def __init__(self):
-        super(Host, self).__init__()
-        self.item_type = 'host'
+        super(History, self).__init__()
+        self.item_type = 'history'
 
     @staticmethod
     def get_request_model():
         """
-        Return the request model for host requests
+        Return the request model for history requests
 
-        :return: request model for host endpoint
+        :return: request model for history endpoint
         :rtype: dict
         """
 
-        hosts_projection = [
-            'name', 'alias', 'ls_state', '_id', 'ls_acknowledged', 'ls_downtimed', 'ls_last_check',
-            'ls_output', 'address', 'business_impact', 'parents', 'notes', '_realm'
-        ]
-
-        request = {
-            'endpoint': 'host',
-            'params': {'where': json.dumps({'_is_template': False})},
-            'projection': hosts_projection
+        request_model = {
+            'endpoint': 'history',
+            'params': {
+                'sort': '-_id',
+            },
+            'projection': ['service_name', 'message', 'type']
         }
 
-        return request
+        return request_model

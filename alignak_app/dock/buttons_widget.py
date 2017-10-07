@@ -32,7 +32,7 @@ from PyQt5.Qt import QTimer  # pylint: disable=no-name-in-module
 
 from alignak_app.core.utils import get_image_path, get_css, get_app_config
 from alignak_app.panel.panel_widget import panel_widget
-from alignak_app.user.user_profile import user_widget
+from alignak_app.user.user_widget import user_widget
 
 logger = getLogger(__name__)
 

@@ -20,42 +20,60 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    ItemHistory manage creation of history item
+    ItemDaemon manage creation of daemon item
 """
 
 
 from logging import getLogger
 
-from alignak_app.models.item_model import ItemModel
+from alignak_app.items.item_model import ItemModel
 
 
 logger = getLogger(__name__)
 
 
-class History(ItemModel):
+class Daemon(ItemModel):
     """
-        Class who create a history item
+        Class who create a daemon item
     """
 
     def __init__(self):
-        super(History, self).__init__()
-        self.item_type = 'history'
+        super(Daemon, self).__init__()
+        self.item_type = 'alignakdaemon'
 
     @staticmethod
     def get_request_model():
         """
-        Return the request model for history requests
+        Return the request model for alignakdaemon requests
 
-        :return: request model for history endpoint
+        :return: request model for alignakdaemon endpoint
         :rtype: dict
         """
 
+        daemons_projection = ['alive', 'type', 'name']
+
         request_model = {
-            'endpoint': 'history',
-            'params': {
-                'sort': '-_id',
-            },
-            'projection': ['service_name', 'message', 'type']
+            'endpoint': 'alignakdaemon',
+            'params': None,
+            'projection': daemons_projection
         }
 
         return request_model
+
+    @staticmethod
+    def get_daemons_names():
+        """
+        Returns all the names of daemons
+
+        :return: all the names of daemons
+        :rtype: list
+        """
+
+        return [
+            'poller',
+            'receiver',
+            'reactionner',
+            'arbiter',
+            'scheduler',
+            'broker'
+        ]

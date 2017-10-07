@@ -27,7 +27,7 @@ from alignak_app.core.backend import AppBackend
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import init_config
 from alignak_app.core.data_manager import data_manager
-from alignak_app.models.item_user import User
+from alignak_app.items.item_user import User
 from alignak_app.systray.tray_icon import TrayIcon
 
 from PyQt5.QtWidgets import QApplication

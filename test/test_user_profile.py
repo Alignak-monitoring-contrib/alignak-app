@@ -30,9 +30,9 @@ init_localization()
 app = QApplication(sys.argv)
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
-from alignak_app.models.item_user import User
+from alignak_app.items.item_user import User
 
-from alignak_app.user.user_profile import UserQWidget
+from alignak_app.user.user_widget import UserQWidget
 
 
 

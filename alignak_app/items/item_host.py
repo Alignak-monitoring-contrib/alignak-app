@@ -20,60 +20,47 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    ItemDaemon manage creation of daemon item
+    ItemHost manage creation of host item
 """
 
+import json
 
 from logging import getLogger
 
-from alignak_app.models.item_model import ItemModel
+
+from alignak_app.items.item_model import ItemModel
 
 
 logger = getLogger(__name__)
 
 
-class Daemon(ItemModel):
+class Host(ItemModel):
     """
-        Class who create a daemon item
+        Class who create a host item
     """
 
     def __init__(self):
-        super(Daemon, self).__init__()
-        self.item_type = 'alignakdaemon'
+        super(Host, self).__init__()
+        self.item_type = 'host'
 
     @staticmethod
     def get_request_model():
         """
-        Return the request model for alignakdaemon requests
+        Return the request model for host requests
 
-        :return: request model for alignakdaemon endpoint
+        :return: request model for host endpoint
         :rtype: dict
         """
 
-        daemons_projection = ['alive', 'type', 'name']
+        hosts_projection = [
+            'name', 'alias', 'ls_state', '_id', 'ls_acknowledged', 'ls_downtimed', 'ls_last_check',
+            'ls_output', 'address', 'business_impact', 'parents', 'notes', '_realm'
+        ]
 
-        request_model = {
-            'endpoint': 'alignakdaemon',
-            'params': None,
-            'projection': daemons_projection
+        request = {
+            'endpoint': 'host',
+            'params': {'where': json.dumps({'_is_template': False})},
+            'projection': hosts_projection
         }
 
-        return request_model
-
-    @staticmethod
-    def get_daemons_names():
-        """
-        Returns all the names of daemons
-
-        :return: all the names of daemons
-        :rtype: list
-        """
-
-        return [
-            'poller',
-            'receiver',
-            'reactionner',
-            'arbiter',
-            'scheduler',
-            'broker'
-        ]
+        return request

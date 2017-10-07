@@ -20,67 +20,70 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    ItemService manage creation of service item
+    ItemLivesynthesis manage creation of livesynthesis item
 """
 
-import json
 
 from logging import getLogger
 
-
-from alignak_app.models.item_model import ItemModel
+from alignak_app.items.item_model import ItemModel
 
 
 logger = getLogger(__name__)
 
 
-class Service(ItemModel):
+class LiveSynthesis(ItemModel):
     """
-        Class who create a service item
+        Class who create livesynthesis item
     """
 
     def __init__(self):
-        super(Service, self).__init__()
-        self.item_type = 'service'
+        super(LiveSynthesis, self).__init__()
+        self.item_type = 'livesynthesis'
 
     @staticmethod
     def get_request_model():
         """
-        Return the request model for service requests
+        Return the request model for livesynthesis requests
 
-        :return: request model for service endpoint
+        :return: request model for livesynthesis endpoint
         :rtype: dict
         """
 
-        services_projection = [
-            'name', 'alias', 'display_name', 'ls_state', 'ls_acknowledged', 'ls_downtimed',
-            'ls_last_check', 'ls_output', 'business_impact', 'customs', '_overall_state_id',
-            'aggregation', 'host'
-        ]
-
         request = {
-            'endpoint': 'service',
-            'params': {'where': json.dumps({'_is_template': False})},
-            'projection': services_projection
+            'endpoint': 'livesynthesis',
+            'params': None,
+            'projection': None
         }
 
         return request
 
     @staticmethod
-    def get_service_states_nb():
+    def get_synthesis_count_model():
         """
-        Return all service state in a dict with int() as zero
+        Return the synthesis count model
 
-        :return: all service state with int() as zero
+        :return: synthesis count model
         :rtype: dict
         """
 
-        return {
-            'OK': 0,
-            'UNKNOWN': 0,
-            'WARNING': 0,
-            'UNREACHABLE': 0,
-            'CRITICAL': 0,
-            'ACKNOWLEDGE': 0,
-            'DOWNTIME': 0
+        synthesis_count_model = {
+            'hosts': {
+                'up': 0,
+                'down': 0,
+                'unreachable': 0,
+                'acknowledge': 0,
+                'downtime': 0
+            },
+            'services': {
+                'ok': 0,
+                'critical': 0,
+                'unknown': 0,
+                'warning': 0,
+                'unreachable': 0,
+                'acknowledge': 0,
+                'downtime': 0
+            }
         }
+
+        return synthesis_count_model

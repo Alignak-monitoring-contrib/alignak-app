@@ -31,7 +31,7 @@ import json
 
 from logging import getLogger
 
-from alignak_app.models.item_model import ItemModel
+from alignak_app.items.item_model import ItemModel
 
 
 logger = getLogger(__name__)

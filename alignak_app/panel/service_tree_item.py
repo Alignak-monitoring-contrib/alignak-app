@@ -26,7 +26,7 @@
 from logging import getLogger
 
 from alignak_app.core.utils import get_image_path
-from alignak_app.models.item_model import get_icon_item
+from alignak_app.items.item_model import get_icon_item
 
 from PyQt5.Qt import QIcon, QTreeWidgetItem  # pylint: disable=no-name-in-module
 

@@ -24,7 +24,7 @@ import sys
 
 from alignak_app.app import AlignakApp
 from alignak_app.core.data_manager import data_manager
-from alignak_app.models.item_user import User
+from alignak_app.items.item_user import User
 
 from PyQt5.QtWidgets import QApplication
 

@@ -28,7 +28,7 @@ from logging import getLogger
 from alignak_app import __application__
 from alignak_app.core.utils import get_image_path, get_css, get_app_config
 from alignak_app.core.data_manager import data_manager
-from alignak_app.models.item_daemon import Daemon
+from alignak_app.items.item_daemon import Daemon
 from alignak_app.widgets.banner import send_banner
 from alignak_app.widgets.app_widget import AppQWidget
 
