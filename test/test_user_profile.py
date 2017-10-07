@@ -27,7 +27,7 @@ from alignak_app.core.utils import init_config
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.models.item_user import User
-from alignak_app.user.user_profile import UserProfile
+from alignak_app.user.user_profile import UserQWidget
 from alignak_app.core.locales import init_localization
 
 from PyQt5.QtWidgets import QApplication, QWidget
@@ -55,7 +55,7 @@ class TestUserProfile(unittest2.TestCase):
     def test_initialize(self):
         """Initialize UserProfile"""
 
-        under_test = UserProfile()
+        under_test = UserQWidget()
 
         data_manager.database['user'].data['email'] = 'mail@test'
         data_manager.database['user'].data['alias'] = 'alias'
@@ -81,7 +81,7 @@ class TestUserProfile(unittest2.TestCase):
     def test_user_qwidgets(self):
         """User QWidgets Creation"""
 
-        under_test = UserProfile()
+        under_test = UserQWidget()
 
         options_test = ['d', 'u', 'r', 'f', 's', 'n']
 
@@ -106,7 +106,7 @@ class TestUserProfile(unittest2.TestCase):
     def test_get_realm_name(self):
         """Get Realm Name"""
 
-        under_test = UserProfile()
+        under_test = UserQWidget()
         if not app_backend.connected:
             app_backend.login()
 
@@ -127,7 +127,7 @@ class TestUserProfile(unittest2.TestCase):
     def test_get_role(self):
         """Get User Role"""
 
-        under_test = UserProfile()
+        under_test = UserQWidget()
 
         # Simulate user data
         # Case "user"
@@ -164,7 +164,7 @@ class TestUserProfile(unittest2.TestCase):
     def test_get_period_name(self):
         """Get User Period Name"""
 
-        under_test = UserProfile()
+        under_test = UserQWidget()
         # under_test.get_user_data()
 
         period_test = under_test.get_period_name('test')

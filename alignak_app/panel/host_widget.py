@@ -278,6 +278,7 @@ class HostQWidget(QWidget):
         layout.addWidget(output_title, 3, 0, 1, 1)
 
         self.labels['ls_output'].setObjectName('output')
+        self.labels['ls_output'].setWordWrap(True)
         layout.addWidget(self.labels['ls_output'], 3, 1, 1, 1)
 
         return widget
@@ -305,7 +306,6 @@ class HostQWidget(QWidget):
         realm_title.setObjectName('title')
         layout.addWidget(realm_title, 1, 0, 1, 1)
 
-        # self.labels['realm'].setText(self.host_item.data['_realm'])
         layout.addWidget(self.labels['realm'], 1, 1, 1, 1)
 
         # Address
@@ -313,7 +313,6 @@ class HostQWidget(QWidget):
         address_title.setObjectName('title')
         layout.addWidget(address_title, 2, 0, 1, 1)
 
-        # self.labels['address'].setText(self.host_item.data['address'])
         layout.addWidget(self.labels['address'], 2, 1, 1, 1)
 
         # Business impact
@@ -321,7 +320,6 @@ class HostQWidget(QWidget):
         address_title.setObjectName('title')
         layout.addWidget(address_title, 3, 0, 1, 1)
 
-        # self.labels['business_impact'].setText(str(self.host_item.data['business_impact']))
         layout.addWidget(self.labels['business_impact'], 3, 1, 1, 1)
 
         # Notes
@@ -329,7 +327,7 @@ class HostQWidget(QWidget):
         notes_title.setObjectName('title')
         layout.addWidget(notes_title, 4, 0, 1, 1)
 
-        # self.labels['notes'].setText(self.host_item.data['notes'])
+        self.labels['notes'].setWordWrap(True)
         layout.addWidget(self.labels['notes'], 4, 1, 1, 1)
 
         return widget

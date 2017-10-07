@@ -32,6 +32,7 @@ from PyQt5.Qt import QTimer  # pylint: disable=no-name-in-module
 
 from alignak_app.core.utils import get_image_path, get_css, get_app_config
 from alignak_app.panel.panel_widget import panel_widget
+from alignak_app.user.user_profile import user_widget
 
 logger = getLogger(__name__)
 
@@ -76,6 +77,7 @@ class ButtonsQWidget(QWidget):
 
         self.profile_btn.setIcon(QIcon(get_image_path('user')))
         self.profile_btn.setFixedSize(40, 40)
+        self.profile_btn.clicked.connect(self.open_user_widget)
         layout.addWidget(self.profile_btn)
 
         self.webui_btn.setIcon(QIcon(get_image_path('web')))
@@ -107,11 +109,21 @@ class ButtonsQWidget(QWidget):
     @staticmethod
     def open_host_widget():
         """
-        Create and manage HostQWidget
+        Show HostQWidget
 
         """
 
         panel_widget.app_widget.show()
+
+    @staticmethod
+    def open_user_widget():
+        """
+        Show UserQWidget
+
+        """
+
+        user_widget.update_widget()
+        user_widget.app_widget.show()
 
     @staticmethod
     def open_url():  # pragma: no cover

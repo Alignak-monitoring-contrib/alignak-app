@@ -26,14 +26,14 @@
 import sys
 from logging import getLogger
 
-from PyQt5.Qt import pyqtSignal  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QMenu  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QSystemTrayIcon  # pylint: disable=no-name-in-module
-
 from alignak_app.threads.thread_manager import thread_manager
-from alignak_app.core.utils import init_config
+from alignak_app.core.utils import init_config, get_image_path
 from alignak_app.systray.qactions_factory import QActionFactory
 from alignak_app.widgets.about import AppAbout
+
+from PyQt5.Qt import pyqtSignal, QIcon  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QMenu, QSystemTrayIcon  # pylint: disable=no-name-in-module
+
 
 logger = getLogger(__name__)
 
@@ -51,20 +51,16 @@ class TrayIcon(QSystemTrayIcon):
         self.menu = QMenu(parent)
         self.qaction_factory = QActionFactory()
         self.app_about = None
-        self.dock = None
 
-    def build_menu(self, dock, events_widget):
+    def build_menu(self, events_widget):
         """
         Initialize and create each action of menu.
 
-        :param dock: Dashboard QWidget
-        :type dock: alignak_app.dock.dock_widget.DockQWidget
         :param events_widget: events QWidget
         :type events_widget: alignak_app.dock.events_widget.EventsQListWidget
         """
 
         # Create actions
-        self.dock = dock
         self.create_dock_action()
 
         self.menu.addSeparator()
@@ -92,9 +88,13 @@ class TrayIcon(QSystemTrayIcon):
             self
         )
 
-        self.qaction_factory.get('icon').triggered.connect(self.dock.app_widget.show)
+        # Import dock from TrayIcon to fix application icon problem
+        from alignak_app.dock.dock_widget import dock
+        dock.initialize()
+        dock.app_widget.show()
+        self.qaction_factory.get_action('icon').triggered.connect(dock.app_widget.show)
 
-        self.menu.addAction(self.qaction_factory.get('icon'))
+        self.menu.addAction(self.qaction_factory.get_action('icon'))
 
     def create_reload_configuration(self, events_widget):
         """
@@ -110,11 +110,11 @@ class TrayIcon(QSystemTrayIcon):
             self
         )
 
-        self.qaction_factory.get('refresh').triggered.connect(
+        self.qaction_factory.get_action('refresh').triggered.connect(
             lambda: self.reload_configuration(events_widget)
         )
 
-        self.menu.addAction(self.qaction_factory.get('refresh'))
+        self.menu.addAction(self.qaction_factory.get_action('refresh'))
 
         logger.info('Create Reload Action')
 
@@ -133,9 +133,9 @@ class TrayIcon(QSystemTrayIcon):
             self
         )
 
-        self.qaction_factory.get('about').triggered.connect(self.app_about.show_about)
+        self.qaction_factory.get_action('about').triggered.connect(self.app_about.show_about)
 
-        self.menu.addAction(self.qaction_factory.get('about'))
+        self.menu.addAction(self.qaction_factory.get_action('about'))
 
         logger.info('Create About Action')
 
@@ -153,9 +153,9 @@ class TrayIcon(QSystemTrayIcon):
             self
         )
 
-        self.qaction_factory.get('exit').triggered.connect(self.quit_app)
+        self.qaction_factory.get_action('exit').triggered.connect(self.quit_app)
 
-        self.menu.addAction(self.qaction_factory.get('exit'))
+        self.menu.addAction(self.qaction_factory.get_action('exit'))
 
     @staticmethod
     def quit_app():  # pragma: no cover

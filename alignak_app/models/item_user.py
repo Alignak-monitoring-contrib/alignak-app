@@ -29,7 +29,7 @@ from logging import getLogger
 
 
 from alignak_app.models.item_model import ItemModel
-from alignak_app.core.backend import app_backend
+from alignak_app.core.backend import app_backend, data_manager
 
 
 logger = getLogger(__name__)
@@ -68,3 +68,80 @@ class User(ItemModel):
         }
 
         return request
+
+    @staticmethod
+    def get_role():
+        """
+        Get user role
+
+        :return: role of user
+        :rtype: str
+        """
+
+        role = _('user')
+
+        if data_manager.database['user'].data['is_admin'] or \
+                data_manager.database['user'].data['back_role_super_admin']:
+            role = _('administrator')
+        if data_manager.database['user'].data['can_submit_commands'] and not \
+                data_manager.database['user'].data['is_admin'] and not \
+                data_manager.database['user'].data['back_role_super_admin']:
+            role = _('power')
+
+        return role
+
+    @staticmethod
+    def get_realm_name():
+        """
+        Return realm name or alias
+
+        :return: realm name or alias
+        :rtype: str
+        """
+
+        if '_realm' in data_manager.database['user'].data:
+            endpoint = '/'.join(
+                ['realm', data_manager.database['user'].data['_realm']]
+            )
+            projection = [
+                'name',
+                'alias'
+            ]
+
+            realm = app_backend.get(endpoint, projection=projection)
+
+            if realm:
+                if realm['alias']:
+                    return realm['alias']
+
+                return realm['name']
+
+        return 'n/a'
+
+    @staticmethod
+    def get_period_name(uuid):
+        """
+        Get the period name or alias
+
+        :param uuid: the Id of the timeperiod
+        :type uuid: str
+        :return: name or alias of timeperiod
+        :rtype: str
+        """
+
+        projection = [
+            'name',
+            'alias'
+        ]
+
+        endpoint = '/'.join(['timeperiod', uuid])
+
+        period = app_backend.get(endpoint, projection=projection)
+
+        if period:
+            if 'alias' in period:
+                return period['alias']
+
+            return period['name']
+
+        return 'n/a'

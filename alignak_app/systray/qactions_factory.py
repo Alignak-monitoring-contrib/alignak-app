@@ -54,27 +54,18 @@ class QActionFactory(object):
             parent
         )
 
-        self.add_action(name, q_action)
-
-    def add_action(self, name, q_action):
-        """
-        Add action in actions dict for acces thereafter
-
-        :param name: name of QAction
-        :type name: str
-        :param q_action: QAction associated to name
-        :type q_action: QAction
-        """
-
         self.actions[name] = q_action
 
-    def get(self, name):
+    def get_action(self, name):
         """
         Return QAction
 
         :param name: name of the QAction
         :type name: str
+        :return: wanted QAction
+        :rtype: QAction
         """
+
         try:
             return self.actions[name]
         except KeyError as e:

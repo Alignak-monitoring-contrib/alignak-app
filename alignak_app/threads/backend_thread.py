@@ -57,7 +57,7 @@ class BackendQThread(QThread):
     def run(self):
         """
         Run the QRunnable. Trigger actions depending on the selected task
-        :return:
+
         """
 
         self.quit_thread.connect(self.quit)
