@@ -115,7 +115,7 @@ class HostQWidget(QWidget):
         layout.setAlignment(self.labels['host_icon'], Qt.AlignCenter)
 
         # Host Name
-        self.labels['host_name'].setObjectName('hostname')
+        self.labels['host_name'].setObjectName('itemname')
         layout.addWidget(self.labels['host_name'])
         layout.setAlignment(self.labels['host_name'], Qt.AlignCenter)
 
@@ -254,7 +254,7 @@ class HostQWidget(QWidget):
 
         # Title
         check_title = QLabel('My last check')
-        check_title.setObjectName('hosttitle')
+        check_title.setObjectName('itemtitle')
         check_title.setFixedHeight(30)
         layout.addWidget(check_title, 0, 0, 1, 2)
 
@@ -296,7 +296,7 @@ class HostQWidget(QWidget):
 
         # Title
         check_title = QLabel('My variables')
-        check_title.setObjectName('hosttitle')
+        check_title.setObjectName('itemtitle')
         check_title.setFixedHeight(30)
         layout.addWidget(check_title, 0, 0, 1, 2)
 

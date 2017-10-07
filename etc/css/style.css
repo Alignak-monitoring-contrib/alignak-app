@@ -105,18 +105,20 @@ QListWidget::item:selected {
 
 /****** PANEL ******/
 QPushButton#search {
-	background-color: #3884c3;
+    background-color: #3884c3;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 QPushButton#search:hover {
     background-color: #03a9f4;
 }
 
-/****** HOST ******/
-QLabel#hosttitle {
+/****** ITEMS (HOSTS and SERVICES) ******/
+QLabel#itemtitle {
     background-color: #607d8b; 
     color: white;
     margin-left: 0.5em;
@@ -126,9 +128,27 @@ QLabel#output {
     color: #c7254e;
     background-color: #f9f2f4;
 }
-QLabel#hostname {
+
+QLabel#itemname {
     font-weight: bold;
     font: 20pt Comic Sans MS;
+}
+
+QTreeWidget {
+    alternate-background-color: #f0f9fd;
+    background: white;
+    selection-background-color: white;
+    selection-color: black;
+    show-decoration-selected: 1;
+}
+
+QTreeWidget::item {
+    height: 40px;
+}
+
+QTreeWidget::item::selected::active {
+    background-color: #363e42;
+    color: white;
 }
 
 /****** ACTIONS ******/

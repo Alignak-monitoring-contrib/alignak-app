@@ -93,7 +93,7 @@ class ServiceDataQWidget(QWidget):
         layout.setAlignment(self.labels['service_icon'], Qt.AlignCenter)
 
         # Host Name
-        self.labels['service_name'].setObjectName('hostname')
+        self.labels['service_name'].setObjectName('itemname')
         layout.addWidget(self.labels['service_name'])
         layout.setAlignment(self.labels['service_name'], Qt.AlignCenter)
 
@@ -113,7 +113,7 @@ class ServiceDataQWidget(QWidget):
 
         # Title
         check_title = QLabel('My last check')
-        check_title.setObjectName('hosttitle')
+        check_title.setObjectName('itemtitle')
         check_title.setFixedHeight(30)
         layout.addWidget(check_title, 0, 0, 1, 2)
 
@@ -127,10 +127,10 @@ class ServiceDataQWidget(QWidget):
         # Output
         output_title = QLabel("Output")
         output_title.setObjectName('title')
-        output_title.setWordWrap(True)
         layout.addWidget(output_title, 3, 0, 1, 1)
 
         self.labels['ls_output'].setObjectName('output')
+        self.labels['ls_output'].setWordWrap(True)
         layout.addWidget(self.labels['ls_output'], 3, 1, 1, 1)
 
         return widget
@@ -172,7 +172,7 @@ class ServiceDataQWidget(QWidget):
         Create AckQDialog and manage acknowledge
 
         :param service_item: Service item
-        :type service_item: alignak_app.models.item_host.Service
+        :type service_item: alignak_app.models.item_service.Service
         :param host_id: id of attached host
         :type host_id: str
         """
@@ -219,7 +219,7 @@ class ServiceDataQWidget(QWidget):
         Create AckQDialog and manage acknowledge
 
         :param service_item: Service item
-        :type service_item: alignak_app.models.item_host.Service
+        :type service_item: alignak_app.models.item_service.Service
         :param host_id: id of attached host
         :type host_id: str
         """

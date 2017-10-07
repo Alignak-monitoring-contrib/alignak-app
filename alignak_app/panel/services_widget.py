@@ -45,7 +45,7 @@ class ServicesQWidget(QWidget):
         super(ServicesQWidget, self).__init__(parent)
         self.setStyleSheet(get_css())
         # Fields
-        self.services_title = QLabel(_('Choose a host...'))
+        self.services_title = QLabel(_('Choose a service...'))
         self.host_item = None
         self.service_items = None
         self.services_tree_widget = QTreeWidget()
@@ -53,13 +53,14 @@ class ServicesQWidget(QWidget):
 
     def initialize(self):
         """
-        TODO
-        :return:
+        Initialize QWidget
+
         """
 
         layout = QGridLayout()
         self.setLayout(layout)
 
+        self.services_title.setObjectName('title')
         layout.addWidget(self.services_title, 0, 0, 1, 2)
 
         layout.addWidget(self.services_tree_widget, 1, 0, 1, 1)
@@ -88,6 +89,8 @@ class ServicesQWidget(QWidget):
         if self.services_tree_widget:
             self.services_tree_widget.setParent(None)
             self.services_tree_widget = QTreeWidget()
+            self.services_tree_widget.setAlternatingRowColors(True)
+            self.services_tree_widget.header().close()
             self.layout().addWidget(self.services_tree_widget)
             self.service_data_widget.setParent(None)
             self.service_data_widget = ServiceDataQWidget()

@@ -53,12 +53,14 @@ class TrayIcon(QSystemTrayIcon):
         self.app_about = None
         self.dock = None
 
-    def build_menu(self, dock):
+    def build_menu(self, dock, events_widget):
         """
         Initialize and create each action of menu.
 
         :param dock: Dashboard QWidget
         :type dock: alignak_app.dock.dock_widget.DockQWidget
+        :param events_widget: events QWidget
+        :type events_widget: alignak_app.dock.events_widget.EventsQListWidget
         """
 
         # Create actions
@@ -67,7 +69,7 @@ class TrayIcon(QSystemTrayIcon):
 
         self.menu.addSeparator()
 
-        self.create_reload_configuration()
+        self.create_reload_configuration(events_widget)
         self.create_about_action()
 
         self.menu.addSeparator()
@@ -80,8 +82,6 @@ class TrayIcon(QSystemTrayIcon):
         """
         Create dashboard action
 
-        :param dock: Dashboard QWidget
-        :type dock: alignak_app.dock.dock_widget.DockQWidget
         """
 
         logger.info('Create Dashboard action')
@@ -96,10 +96,12 @@ class TrayIcon(QSystemTrayIcon):
 
         self.menu.addAction(self.qaction_factory.get('icon'))
 
-    def create_reload_configuration(self):
+    def create_reload_configuration(self, events_widget):
         """
         Create "reload" action
 
+        :param events_widget: events QWidget
+        :type events_widget: alignak_app.dock.events_widget.EventsQListWidget
         """
 
         self.qaction_factory.create(
@@ -108,7 +110,9 @@ class TrayIcon(QSystemTrayIcon):
             self
         )
 
-        self.qaction_factory.get('refresh').triggered.connect(self.reload_configuration)
+        self.qaction_factory.get('refresh').triggered.connect(
+            lambda: self.reload_configuration(events_widget)
+        )
 
         self.menu.addAction(self.qaction_factory.get('refresh'))
 
@@ -164,12 +168,15 @@ class TrayIcon(QSystemTrayIcon):
 
         sys.exit(0)
 
-    def reload_configuration(self):
+    @staticmethod
+    def reload_configuration(events_widget):
         """
         Reload configuration
 
+        :param events_widget: events QWidget
+        :type events_widget: alignak_app.dock.events_widget.EventsQListWidget
         """
 
         logger.info('Reload configuration...')
         init_config()
-        self.dock.events_widget.add_event('INFO', _('Configuration reloaded'))
+        events_widget.add_event('INFO', _('Configuration reloaded'))

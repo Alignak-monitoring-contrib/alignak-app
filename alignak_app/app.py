@@ -188,7 +188,7 @@ class AlignakApp(QObject):
 
             logger.info("Start TrayIcon...")
             self.tray_icon = TrayIcon(QIcon(get_image_path('icon')))
-            self.tray_icon.build_menu(dock)
+            self.tray_icon.build_menu(dock, events_widget)
             self.tray_icon.show()
 
             # Send Welcome Banner
