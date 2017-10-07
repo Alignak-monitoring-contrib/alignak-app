@@ -17,6 +17,33 @@ QWidget {
     background-color: white;
 }
 
+QScrollBar {
+    width: 10px;
+    background: white;
+}
+
+QScrollBar:vertical {
+    background: white;
+}
+
+QScrollBar::handle:vertical {
+    background: #3884c3;
+    border-radius: 5px;
+}
+
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+    border: none;
+    background: none;
+    color: none;
+    height: 0px;
+    width: 0px;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    border: none;
+    background: none;
+}
+
 /****** LOGIN ******/
 QPushButton#valid {
     background-color: #4caf50;
