@@ -50,7 +50,10 @@ class Daemon(ItemModel):
         :rtype: dict
         """
 
-        daemons_projection = ['alive', 'type', 'name']
+        daemons_projection = [
+            'alive', 'type', 'name', 'reachable', 'spare', 'address', 'port', 'passive',
+            'last_check'
+        ]
 
         request_model = {
             'endpoint': 'alignakdaemon',

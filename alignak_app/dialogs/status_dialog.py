@@ -25,208 +25,259 @@
 
 from logging import getLogger
 
-from PyQt5.QtCore import Qt, QTimer  # pylint: disable=no-name-in-module
-from PyQt5.QtGui import QPixmap  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QGridLayout, QAction  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QWidget  # pylint: disable=no-name-in-module
-
-from alignak_app import __application__
 from alignak_app.app_widget import AppQWidget
-from alignak_app.dock.events_widget import events_widget
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.utils import get_image_path, get_css, get_app_config
-from alignak_app.items.item_daemon import Daemon
+from alignak_app.core.utils import get_image_path, get_css, get_time_diff_since_last_timestamp
+
+from PyQt5.Qt import Qt, QPushButton, QGridLayout, QHBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPixmap, QDialog, QLabel, QWidget  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
 
-class AlignakStatus(QWidget):
+class StatusQDialog(QDialog):
     """
         Class who create QWidget for Daemons status.
     """
 
     def __init__(self, parent=None):
-        super(AlignakStatus, self).__init__(parent)
-        # General settings
-        self.setWindowTitle(__application__)
-        self.setToolTip(_('Alignak Status'))
+        super(StatusQDialog, self).__init__(parent)
         self.setStyleSheet(get_css())
         # Fields
-        self.daemons_labels = {}
-        self.info = None
-        self.old_bad_daemons = 0
         self.app_widget = AppQWidget()
-        self.first_start = True
+        self.layout = QGridLayout()
+        self.labels = {}
 
-    def create_status(self):
+    def initialize(self):
         """
-        Create grid layout for status QWidget
+        Initialize QDialog
 
         """
 
-        # Add Layout
-        layout = QGridLayout()
-        self.setLayout(layout)
+        self.setLayout(self.layout)
 
-        self.create_daemons_labels(layout)
+        daemons = data_manager.database['alignakdaemon']
 
-        # Default text and color
-        self.info.setText(_('All daemons are alive.'))
-        self.info.setStyleSheet('color: #27ae60;')
+        self.set_daemons_labels(daemons)
 
-        # Update status for first start
-        self.check_status()
+        line = 0
+        self.add_daemon_titles_labels(line)
 
-        # Start checks
-        daemon_interval = int(get_app_config('Alignak-App', 'daemon_interval'))
-        if bool(daemon_interval) and daemon_interval > 0:
-            logger.debug('Alignak Daemons will be checked in %ss', str(daemon_interval))
-            daemon_interval *= 1000
-        else:
-            logger.error(
-                '"daemon_interval" option must be greater than 0. Replace by default: 60s'
-            )
-            daemon_interval = 60000
-        timer = QTimer(self)
-        timer.start(daemon_interval)
-        timer.timeout.connect(self.check_status)
+        for daemon_item in daemons:
+            line += 1
+            self.add_daemon_labels(daemon_item, line)
+
+        line += 1
+        buttons_widget = self.get_buttons_widget()
+        self.layout.addWidget(buttons_widget, line, 0, 1, 7)
+        self.layout.setAlignment(buttons_widget, Qt.AlignCenter)
 
         # Use AppQWidget
         self.app_widget.initialize(_('Alignak Status'))
         self.app_widget.add_widget(self)
-        self.app_widget.setMinimumSize(400, 400)
 
-    def create_daemons_labels(self, layout):
+    def get_buttons_widget(self):
         """
-        Create QLabels and Pixmaps for each daemons
+        Return QWidget with buttons
+
+        :return: widget with ok and refresh buttons
+        :rtype: QWidget
+        """
+
+        widget = QWidget()
+        layout = QHBoxLayout()
+        widget.setLayout(layout)
+
+        ok_btn = QPushButton(_('OK'))
+        ok_btn.setObjectName('valid')
+        ok_btn.setFixedSize(120, 30)
+        ok_btn.clicked.connect(self.app_widget.close)
+        layout.addWidget(ok_btn)
+
+        refresh_btn = QPushButton(_('Refresh'))
+        refresh_btn.setObjectName('search')
+        refresh_btn.setFixedSize(120, 30)
+        refresh_btn.clicked.connect(self.update_dialog)
+        layout.addWidget(refresh_btn)
+
+        return widget
+
+    def set_daemons_labels(self, daemons):
+        """
+        Initialize the daemon QLabels for each daemons
+
+        :param daemons: list of daemon items
+        :type daemons: list
+        """
+
+        daemons_attributes = [
+            'alive', 'name', 'reachable', 'spare', 'address', 'port', 'passive',
+            'last_check'
+        ]
+
+        for daemon in daemons:
+            self.labels[daemon.name] = {}
+            for attribute in daemons_attributes:
+                self.labels[daemon.name][attribute] = QLabel()
+
+    def add_daemon_titles_labels(self, line):
+        """
+        Add QLabels titles for daemons to layout
+
+        :param line: current line of layout
+        :type line: int
+        """
+
+        # Icon Name Address	Reachable	Spare	Passive daemon	Last check
+        icon_title = QLabel(_('State'))
+        icon_title.setObjectName('title')
+        self.layout.addWidget(icon_title, line, 0, 1, 1)
+        self.layout.setAlignment(icon_title, Qt.AlignCenter)
+
+        name_title = QLabel(_('Daemon name'))
+        name_title.setObjectName('title')
+        self.layout.addWidget(name_title, line, 1, 1, 1)
+
+        address_title = QLabel(_('Address'))
+        address_title.setObjectName('title')
+        self.layout.addWidget(address_title, line, 2, 1, 1)
+
+        reachable_title = QLabel(_('Reachable'))
+        reachable_title.setObjectName('title')
+        self.layout.addWidget(reachable_title, line, 3, 1, 1)
+        self.layout.setAlignment(reachable_title, Qt.AlignCenter)
+
+        spare_title = QLabel(_('Spare'))
+        spare_title.setObjectName('title')
+        self.layout.addWidget(spare_title, line, 4, 1, 1)
+        self.layout.setAlignment(spare_title, Qt.AlignCenter)
+
+        passive_title = QLabel(_('Passive daemon'))
+        passive_title.setObjectName('title')
+        self.layout.addWidget(passive_title, line, 5, 1, 1)
+        self.layout.setAlignment(passive_title, Qt.AlignCenter)
+
+        check_title = QLabel(_('Last check'))
+        check_title.setObjectName('title')
+        self.layout.addWidget(check_title, line, 6, 1, 1)
+
+    def add_daemon_labels(self, daemon_item, line):
+        """
+        Add daemon QLabels to layout
+
+        :param daemon_item: daemon item
+        :type daemon_item: alignak_app.items.item_daemon.Daemon
+        :param line: current line of layout
+        :type line: int
+        """
+
+        # Alive
+        self.labels[daemon_item.name]['alive'].setFixedSize(24, 24)
+        self.labels[daemon_item.name]['alive'].setScaledContents(True)
+        self.layout.addWidget(self.labels[daemon_item.name]['alive'], line, 0, 1, 1)
+        self.layout.setAlignment(self.labels[daemon_item.name]['alive'], Qt.AlignCenter)
+
+        # Name
+
+        self.layout.addWidget(self.labels[daemon_item.name]['name'], line, 1, 1, 1)
+
+        # Address
+        self.layout.addWidget(self.labels[daemon_item.name]['address'], line, 2, 1, 1)
+
+        # Reachable
+        self.labels[daemon_item.name]['reachable'].setFixedSize(18, 18)
+        self.labels[daemon_item.name]['reachable'].setScaledContents(True)
+        self.layout.addWidget(self.labels[daemon_item.name]['reachable'], line, 3, 1, 1)
+        self.layout.setAlignment(self.labels[daemon_item.name]['reachable'], Qt.AlignCenter)
+
+        # Spare
+        self.labels[daemon_item.name]['spare'].setFixedSize(18, 18)
+        self.labels[daemon_item.name]['spare'].setScaledContents(True)
+        self.layout.addWidget(self.labels[daemon_item.name]['spare'], line, 4, 1, 1)
+        self.layout.setAlignment(self.labels[daemon_item.name]['spare'], Qt.AlignCenter)
+
+        # Passive
+        self.labels[daemon_item.name]['passive'].setFixedSize(18, 18)
+        self.labels[daemon_item.name]['passive'].setScaledContents(True)
+        self.layout.addWidget(self.labels[daemon_item.name]['passive'], line, 5, 1, 1)
+        self.layout.setAlignment(self.labels[daemon_item.name]['passive'], Qt.AlignCenter)
+
+        # Last check
+        self.layout.addWidget(self.labels[daemon_item.name]['last_check'], line, 6, 1, 1)
+
+    def update_dialog(self):
+        """
+        Update StatusQDialog labels
 
         """
 
-        help_txt = QLabel(_('(Hover your mouse over each daemon to learn more)'))
-        help_txt.setObjectName('help')
-        layout.addWidget(help_txt, 0, 0, 1, 2)
-        layout.setAlignment(help_txt, Qt.AlignCenter)
+        daemons = data_manager.database['alignakdaemon']
 
-        layout.addWidget(QLabel(_('<b>Daemons Types</b> ')), 1, 0, 1, 1)
-        status_title = QLabel(_('<b>Status</b>'))
-        status_title.setAlignment(Qt.AlignCenter)
-        layout.addWidget(status_title, 1, 1, 1, 1)
-
-        line = 2
-
-        for daemon in Daemon.get_daemons_names():
-            # Initialize dict for each daemon type
-            self.daemons_labels[daemon] = {
-                'label': QLabel(daemon.capitalize() + 's'),
-                'icon': QLabel(),
-            }
-
-            self.daemons_labels[daemon]['icon'].setFixedSize(24, 24)
-            self.daemons_labels[daemon]['icon'].setScaledContents(True)
-
-            layout.addWidget(
-                self.daemons_labels[daemon]['label'], line, 0
+        for daemon_item in daemons:
+            self.labels[daemon_item.name]['alive'].setPixmap(
+                self.get_alive_pixmap(daemon_item.data['alive'])
             )
-            layout.addWidget(
-                self.daemons_labels[daemon]['icon'], line, 1
+            self.labels[daemon_item.name]['name'].setText(daemon_item.name)
+            self.labels[daemon_item.name]['address'].setText(
+                '%s:%s' % (daemon_item.data['address'], daemon_item.data['port'])
             )
-            layout.setAlignment(self.daemons_labels[daemon]['icon'], Qt.AlignCenter)
-            line += 1
+            self.labels[daemon_item.name]['reachable'].setPixmap(
+                self.get_enable_pixmap(daemon_item.data['reachable'])
+            )
+            self.labels[daemon_item.name]['spare'].setPixmap(
+                self.get_enable_pixmap(daemon_item.data['spare'])
+            )
+            self.labels[daemon_item.name]['passive'].setPixmap(
+                self.get_enable_pixmap(daemon_item.data['passive'])
+            )
+            last_check = get_time_diff_since_last_timestamp(daemon_item.data['last_check'])
+            self.labels[daemon_item.name]['last_check'].setText(last_check)
 
-        self.info = QLabel()
-        layout.addWidget(self.info, line, 0, 1, 2)
-        layout.setAlignment(self.info, Qt.AlignCenter)
-        line += 1
-
-    def check_status(self):
+    @staticmethod
+    def get_alive_pixmap(alive):
         """
-        Check daemons states, update icons and display banner if changes.
+        Return problem or valid QPixmap, depending alive is True of False
 
-        """
-
-        total_bad_daemons = 0
-        total_daemons = 0
-        arbiter_down = False
-
-        daemon_msg = dict((element, '') for element in Daemon.get_daemons_names())
-        bad_daemons = dict((element, 0) for element in Daemon.get_daemons_names())
-
-        alignak_daemons = data_manager.database['alignakdaemon']
-        if alignak_daemons:
-            for daemon in alignak_daemons:
-                if not daemon.data['alive']:
-                    bad_daemons[daemon.data['type']] += 1
-                    total_bad_daemons += 1
-                    daemon_msg[daemon.data['type']] += \
-                        _('<p>%s is not alive</p>') % daemon.name.capitalize()
-                    if daemon == 'arbiter':
-                        arbiter_down = True
-
-                if not bad_daemons[daemon.data['type']]:
-                    self.daemons_labels[daemon.data['type']]['icon'].setPixmap(
-                        QPixmap(get_image_path('valid'))
-                    )
-                    self.daemons_labels[daemon.data['type']]['icon'].setToolTip(
-                        _('All %ss are alive ') % daemon.data['type']
-                    )
-                    self.daemons_labels[daemon.data['type']]['label'].setToolTip(
-                        _('All %ss are alive ') % daemon.data['type']
-                    )
-                else:
-                    self.daemons_labels[daemon.data['type']]['icon'].setPixmap(
-                        QPixmap(get_image_path('error'))
-                    )
-                    self.daemons_labels[daemon.data['type']]['icon'].setToolTip(
-                        daemon_msg[daemon.data['type']]
-                    )
-                    self.daemons_labels[daemon.data['type']]['label'].setToolTip(
-                        daemon_msg[daemon.data['type']]
-                    )
-
-                total_daemons += 1
-        else:
-            arbiter_down = True
-
-        # Update text
-        if not total_bad_daemons:
-            self.info.setText(_('All daemons are alive.'))
-            self.info.setStyleSheet('color: #27ae60;')
-            if self.first_start:
-                self.first_start = False
-                events_widget.add_event('INFO', _('All daemons are alive.'))
-            logger.info('All daemons are alive.')
-        else:
-            self.info.setText(_('%d on %d daemons are down !') % (total_bad_daemons, total_daemons))
-            self.info.setStyleSheet('color: #e74c3c;')
-            logger.warning('%d on %d daemons are down !', total_bad_daemons, total_daemons)
-
-        # Send Banners if sender is QTimer
-        if not isinstance(self.sender(), QAction):  # pragma: no cover
-            if not total_bad_daemons and (self.old_bad_daemons != 0):
-                events_widget.add_event('OK', _('All daemons are alive again.'))
-            if total_bad_daemons:
-                events_widget.add_event(
-                    'WARN',
-                    _('%d on %d daemons are down !') % (total_bad_daemons, total_daemons)
-                )
-                if arbiter_down:
-                    self.info.setText(
-                        _('Arbiter daemons are DOWN ! %d on %d daemons are down.') % (
-                            total_bad_daemons, total_daemons
-                        )
-                    )
-                    self.info.setStyleSheet('color: #e74c3c;')
-                    events_widget.add_event('ALERT', _('Arbiter daemons are down !'))
-                    logger.critical('Arbiter daemons are down !')
-
-        self.old_bad_daemons = total_bad_daemons
-
-    def show_states(self):
-        """
-        Show AlignakStatus
-
+        :param alive: alive True of False
+        :type alive: bool
+        :return: corresponding QPixmap
+        :rtype: QPixmap
         """
 
-        self.check_status()
-        self.app_widget.show_widget()
+        states = {
+            True: 'valid',
+            False: 'problem'
+        }
+
+        # Should never happen
+        if not isinstance(alive, bool):
+            alive = False
+
+        enable_pixmap = QPixmap(get_image_path(states[alive]))
+
+        return enable_pixmap
+
+    @staticmethod
+    def get_enable_pixmap(enable):
+        """
+        Return red crosse or green check QPixmap, depending enable is True of False
+
+        :param enable: enable True of False
+        :type enable: bool
+        :return: corresponding QPixmap
+        :rtype: QPixmap
+        """
+
+        states = {
+            True: 'checked',
+            False: 'error'
+        }
+
+        # Should never happen
+        if not isinstance(enable, bool):
+            enable = False
+
+        enable_pixmap = QPixmap(get_image_path(states[enable]))
+
+        return enable_pixmap
+

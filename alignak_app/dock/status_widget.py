@@ -26,6 +26,7 @@
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.backend import app_backend
+from alignak_app.dialogs.status_dialog import StatusQDialog
 
 from PyQt5.Qt import QWidget, QHBoxLayout  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QLabel, QPushButton, QIcon  # pylint: disable=no-name-in-module
@@ -42,6 +43,7 @@ class DockStatusQWidget(QWidget):
         # Fields
         self.daemons_status = QLabel('pending...')
         self.backend_connected = QLabel('pending...')
+        self.status_dialog = StatusQDialog()
 
     def initialize(self):
         """
@@ -61,9 +63,11 @@ class DockStatusQWidget(QWidget):
         layout.addWidget(self.daemons_status)
 
         # Status button
+        self.status_dialog.initialize()
         status_btn = QPushButton()
         status_btn.setIcon(QIcon(get_image_path('icon')))
         status_btn.setFixedSize(32, 32)
+        status_btn.clicked.connect(self.show_status_dialog)
         layout.addWidget(status_btn)
 
         # Backend state
@@ -72,6 +76,15 @@ class DockStatusQWidget(QWidget):
         layout.addWidget(connected_title)
 
         layout.addWidget(self.backend_connected)
+
+    def show_status_dialog(self):
+        """
+        Update and show StatusQDialog
+
+        """
+
+        self.status_dialog.update_dialog()
+        self.status_dialog.app_widget.show()
 
     def update_status(self):
         """

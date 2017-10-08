@@ -642,7 +642,7 @@ class UserQWidget(QWidget):
     @staticmethod
     def get_enable_label_icon(state):
         """
-        Return red crosse or green check QPixmap in QLabel, depending state is True of False
+        Return red crosse or green check QPixmap, depending state is True of False
 
         :param state: state True of False
         :type state: bool
