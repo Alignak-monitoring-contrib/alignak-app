@@ -91,7 +91,7 @@ class TrayIcon(QSystemTrayIcon):
         from alignak_app.dock.dock_widget import dock
         dock.initialize()
         dock.app_widget.show()
-        self.qaction_factory.get_action('icon').triggered.connect(dock.app_widget.show)
+        self.qaction_factory.get_action('icon').triggered.connect(dock.show_dock)
 
         self.menu.addAction(self.qaction_factory.get_action('icon'))
 

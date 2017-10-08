@@ -125,6 +125,14 @@ class DockQWidget(QWidget):
             'pos': [pos_x, pos_y]
         }
 
+    def show_dock(self):
+        """
+        Show the dock by making AppQWidget window active
+
+        """
+
+        self.app_widget.show()
+        QWidget.activateWindow(self.app_widget)
 
 # Initialize dock var to None
 dock = DockQWidget()
