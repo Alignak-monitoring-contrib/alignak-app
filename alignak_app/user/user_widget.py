@@ -103,14 +103,8 @@ class UserQWidget(QWidget):
         if old_pos:
             self.app_widget.move(old_pos)
 
-        if self.layout():
-            # Clean layout
-            for i in reversed(range(self.layout().count())):
-                self.layout().itemAt(i).widget().deleteLater()
-            layout = self.layout()
-        else:
-            layout = QVBoxLayout()
-            self.setLayout(layout)
+        layout = QVBoxLayout()
+        self.setLayout(layout)
 
         layout.addWidget(self.get_main_user_widget())
         layout.addWidget(self.get_notes_widget())
@@ -488,7 +482,7 @@ class UserQWidget(QWidget):
             logger.error('Wrong caller %s', self.sender().objectName())
 
         if notification_type:
-            # check_btn.checkState() is equal to 0 or 2
+            # QPushButton "checkState()" is equal to 0 or 2
             notification_enabled = True if check_btn.checkState() else False
             data = {notification_type: notification_enabled}
             headers = {'If-Match': self.user.data['_etag']}
