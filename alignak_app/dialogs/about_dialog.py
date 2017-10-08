@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    About manage QWidget who display About window.
+    About QDialog manage application about data
 """
 
 
@@ -34,7 +34,7 @@ from PyQt5.Qt import Qt,  QVBoxLayout, QLabel, QDialog  # pylint: disable=no-nam
 
 class AboutQDialog(QDialog):
     """
-        Class who create QWidget for Alignak about.
+        Class who create QDialog to display about data
     """
 
     def __init__(self, parent=None):
@@ -45,9 +45,9 @@ class AboutQDialog(QDialog):
         # Fields
         self.app_widget = AppQWidget()
 
-    def create_window(self):
+    def initialize(self):
         """
-        Create About layout and content
+        Initialize QDialog
 
         """
 
@@ -101,9 +101,12 @@ class AboutQDialog(QDialog):
     @staticmethod
     def get_external_link_label(link):
         """
-        TODO
-        :param link:
-        :return:
+        Return QLabel with clickable text
+
+        :param link: link to make clickable
+        :type link: str
+        :return: QLabel with clickable link
+        :rtype: QLabel
         """
 
         link_label = QLabel('<a href="%s">%s</a>' % (link, link))

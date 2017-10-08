@@ -124,7 +124,7 @@ class TrayIcon(QSystemTrayIcon):
         """
 
         self.app_about = AboutQDialog()
-        self.app_about.create_window()
+        self.app_about.initialize()
 
         self.qaction_factory.create(
             'about',
