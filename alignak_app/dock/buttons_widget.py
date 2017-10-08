@@ -62,10 +62,6 @@ class ButtonsQWidget(QWidget):
         layout = QHBoxLayout()
         self.setLayout(layout)
 
-        self.dashboard_btn.setIcon(QIcon(get_image_path('dashboard')))
-        self.dashboard_btn.setFixedSize(40, 40)
-        layout.addWidget(self.dashboard_btn)
-
         self.host_btn.setIcon(QIcon(get_image_path('host')))
         self.host_btn.setFixedSize(40, 40)
         self.host_btn.clicked.connect(self.open_host_widget)
