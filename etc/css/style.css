@@ -146,6 +146,34 @@ QPushButton#search:hover {
     background-color: #03a9f4;
 }
 
+QLabel#services_ok, QLabel#hosts_up {
+    color: #27ae60;
+}
+
+QLabel#services_warning {
+    color: #e67e22;
+}
+
+QLabel#services_critical, QLabel#hosts_down {
+    color: #e74c3c;
+}
+
+QLabel#services_unknown {
+    color: #2980b9;
+}
+
+QLabel#services_unreachable, QLabel#hosts_unreachable {
+    color: #9b59b6;
+}
+
+QLabel#acknowledge {
+    color: #f39c12;
+}
+
+QLabel#downtime {
+    color: #f1c40f;
+}
+
 /****** ITEMS (HOSTS and SERVICES) ******/
 QLabel#itemtitle {
     background-color: #607d8b; 

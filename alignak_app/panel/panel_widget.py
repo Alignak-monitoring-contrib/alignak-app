@@ -25,15 +25,16 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QApplication, QPushButton  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QCompleter, QLineEdit, QIcon, QHBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget  # pylint: disable=no-name-in-module
-
 from alignak_app.app_widget import AppQWidget
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.panel.host_widget import host_widget
 from alignak_app.panel.services_widget import services_widget
+from alignak_app.items.item_model import get_icon_item
+
+from PyQt5.Qt import QApplication, QPushButton, QLabel, QPixmap  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QCompleter, QLineEdit, QIcon, QHBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -80,6 +81,10 @@ class PanelQWidget(QWidget):
         self.app_widget.resize(x_size, y_size)
         self.app_widget.move(pos_x, pos_y)
 
+        items_widget = self.get_dashboard_widget()
+        self.layout.addWidget(items_widget)
+        self.layout.setAlignment(items_widget, Qt.AlignTop)
+
         search_widget = self.get_search_widget()
         self.layout.addWidget(search_widget)
         self.layout.setAlignment(search_widget, Qt.AlignTop)
@@ -93,6 +98,70 @@ class PanelQWidget(QWidget):
 
         host_widget.hide()
         services_widget.hide()
+
+    def get_dashboard_widget(self):
+        """
+        TODO
+        :return:
+        """
+
+        synthesis = data_manager.get_synthesis_count()
+
+        # Hosts
+        host_resume_widget = QWidget()
+        host_layout = QHBoxLayout()
+        host_resume_widget.setLayout(host_layout)
+
+        hosts_icons = ['hosts_up', 'hosts_unreachable', 'hosts_down', 'acknowledge', 'downtime']
+        hosts = synthesis['hosts']
+
+        host_title = QLabel(_('Hosts:'))
+        host_title.setObjectName('title')
+        host_layout.addWidget(host_title)
+        for icon in hosts_icons:
+            item_icon = QLabel()
+            item_icon.setPixmap(QPixmap(get_image_path(icon)))
+            item_icon.setFixedSize(18, 18)
+            item_icon.setScaledContents(True)
+            item_icon.setToolTip(icon.replace('hosts_', '').upper())
+            host_layout.addWidget(item_icon)
+            nb_icon = QLabel(str(hosts[icon.replace('hosts_', '')]))
+            nb_icon.setObjectName(icon)
+            host_layout.addWidget(nb_icon)
+
+        # Services
+        service_resume_widget = QWidget()
+        service_layout = QHBoxLayout()
+        service_resume_widget.setLayout(service_layout)
+
+        services_icons = [
+            'services_ok', 'services_warning', 'services_critical', 'services_unknown',
+            'services_unreachable', 'acknowledge', 'downtime'
+        ]
+        services = synthesis['services']
+
+        service_title = QLabel(_('Services:'))
+        service_title.setObjectName('title')
+        service_layout.addWidget(service_title)
+        for icon in services_icons:
+            item_icon = QLabel()
+            item_icon.setPixmap(QPixmap(get_image_path(icon)))
+            item_icon.setFixedSize(18, 18)
+            item_icon.setScaledContents(True)
+            item_icon.setToolTip(icon.replace('services_', '').upper())
+            service_layout.addWidget(item_icon)
+            nb_icon = QLabel(str(services[icon.replace('services_', '')]))
+            nb_icon.setObjectName(icon)
+            service_layout.addWidget(nb_icon)
+
+        widget = QWidget()
+        layout = QHBoxLayout()
+        widget.setLayout(layout)
+
+        layout.addWidget(host_resume_widget)
+        layout.addWidget(service_resume_widget)
+
+        return widget
 
     def get_search_widget(self):
         """

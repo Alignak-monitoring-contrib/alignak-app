@@ -94,10 +94,10 @@ def get_icon_item(item_type, state, acknowledge, downtime):
     :rtype: str
     """
 
-    if acknowledge:
-        return 'acknowledge'
     if downtime:
         return 'downtime'
+    if acknowledge:
+        return 'acknowledge'
 
     available_icons = {
         'host': {
