@@ -25,7 +25,7 @@ import unittest2
 from PyQt5.QtWidgets import QApplication
 
 from alignak_app.core.utils import init_config
-from alignak_app.dialogs.login import AppLogin
+from alignak_app.dialogs.login_dialog import LoginQDialog
 
 
 class TestAppLogin(unittest2.TestCase):
@@ -46,7 +46,7 @@ class TestAppLogin(unittest2.TestCase):
     def test_create_widget(self):
         """TODO Inititalize AppLogin"""
 
-        under_test = AppLogin()
+        under_test = LoginQDialog()
 
         self.assertIsNone(under_test.username_line)
         self.assertIsNone(under_test.password_line)

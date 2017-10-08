@@ -40,13 +40,13 @@ from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel, QPixmap  # pylint: disable=no
 logger = getLogger(__name__)
 
 
-class AppLogin(QDialog):
+class LoginQDialog(QDialog):
     """
         Class who create login QDialog.
     """
 
     def __init__(self, parent=None):
-        super(AppLogin, self).__init__(parent)
+        super(LoginQDialog, self).__init__(parent)
         self.setWindowTitle('Login to Alignak')
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(get_css())

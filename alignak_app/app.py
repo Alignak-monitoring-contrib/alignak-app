@@ -37,7 +37,7 @@ from alignak_app.core.locales import init_localization
 from alignak_app.core.logs import create_logger
 from alignak_app.core.utils import get_image_path, get_main_folder, get_app_workdir
 from alignak_app.core.utils import init_config, get_app_config
-from alignak_app.dialogs.login import AppLogin
+from alignak_app.dialogs.login_dialog import LoginQDialog
 from alignak_app.systray.tray_icon import TrayIcon
 from alignak_app.threads.thread_manager import thread_manager
 
@@ -82,7 +82,7 @@ class AlignakApp(QObject):
             # If not username and password, create login form, else connect with config data.
             if not get_app_config('Alignak', 'username') and \
                     not get_app_config('Alignak', 'password'):  # pragma: no cover - Not testable
-                login = AppLogin()
+                login = LoginQDialog()
                 login.create_widget()
 
                 if login.exec_() == QDialog.Accepted:
@@ -203,7 +203,7 @@ class AlignakApp(QObject):
             logger.error(
                 'Fails to connect with the information provided in the configuration file !'
             )
-            login = AppLogin()
+            login = LoginQDialog()
             login.create_widget()
 
             if login.exec_() == QDialog.Accepted:

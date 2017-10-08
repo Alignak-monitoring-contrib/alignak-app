@@ -30,7 +30,7 @@ from PyQt5.Qt import QMenu, QSystemTrayIcon  # pylint: disable=no-name-in-module
 from PyQt5.Qt import pyqtSignal  # pylint: disable=no-name-in-module
 
 from alignak_app.core.utils import init_config
-from alignak_app.dialogs.about import AppAbout
+from alignak_app.dialogs.about_dialog import AboutQDialog
 from alignak_app.systray.qactions_factory import QActionFactory
 from alignak_app.threads.thread_manager import thread_manager
 
@@ -123,7 +123,7 @@ class TrayIcon(QSystemTrayIcon):
 
         """
 
-        self.app_about = AppAbout()
+        self.app_about = AboutQDialog()
         self.app_about.create_window()
 
         self.qaction_factory.create(
