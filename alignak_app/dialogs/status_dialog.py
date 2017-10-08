@@ -280,4 +280,3 @@ class StatusQDialog(QDialog):
         enable_pixmap = QPixmap(get_image_path(states[enable]))
 
         return enable_pixmap
-

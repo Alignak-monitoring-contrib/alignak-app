@@ -35,7 +35,6 @@ from alignak_app import __application__
 from alignak_app.app_widget import AppQWidget
 from alignak_app.core.utils import get_app_config, get_css
 from alignak_app.dashboard.dashboard_factory import DashboardFactory
-from alignak_app.dock.events_widget import events_widget
 
 logger = getLogger(__name__)
 
@@ -155,8 +154,6 @@ class Dashboard(QWidget):
             if get_app_config('Dashboard', 'pop', boolean=True):
                 self.display_dashboard()
 
-            if get_app_config('Banners', 'changes', boolean=True):
-                events_widget.add_event('WARN', diff_synthesis)
         else:
             logger.error('Backend synthesis is empty: %s', synthesis['hosts'])
 

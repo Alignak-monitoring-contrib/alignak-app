@@ -22,9 +22,14 @@
 import sys
 
 import unittest2
-from PyQt5.QtWidgets import QApplication, QWidget, QTimeEdit, QDateTimeEdit
 
 from alignak_app.dialogs.actions_dialogs import AckQDialog, DownQDialog, get_logo_widget
+from alignak_app.core.utils import init_config
+from alignak_app.core.locales import init_localization
+from PyQt5.QtWidgets import QApplication, QWidget, QTimeEdit, QDateTimeEdit
+
+init_config()
+init_localization()
 
 
 class TestActions(unittest2.TestCase):

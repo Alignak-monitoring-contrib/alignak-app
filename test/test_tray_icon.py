@@ -58,7 +58,10 @@ class TestTrayIcon(unittest2.TestCase):
         'service_notification_options',
     ]
     for key in user_key:
-        data_manager.database['user'].data[key] = ''
+        if key == 'host_notifications_enabled' or key == 'service_notifications_enabled':
+            data_manager.database['user'].data[key] = True
+        else:
+            data_manager.database['user'].data[key] = ''
 
     @classmethod
     def setUpClass(cls):

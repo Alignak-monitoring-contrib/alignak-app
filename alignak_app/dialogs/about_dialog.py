@@ -29,7 +29,7 @@ from alignak_app import __releasenotes__, __version__, __copyright__
 from alignak_app.app_widget import AppQWidget
 from alignak_app.core.utils import get_css
 
-from PyQt5.Qt import Qt,  QVBoxLayout, QLabel, QDialog  # pylint: disable=no-name-in-module
+from PyQt5.Qt import Qt, QVBoxLayout, QLabel, QDialog  # pylint: disable=no-name-in-module
 
 
 class AboutQDialog(QDialog):

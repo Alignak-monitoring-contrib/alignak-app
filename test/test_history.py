@@ -25,15 +25,20 @@ import unittest2
 from PyQt5.QtWidgets import QApplication, QWidget
 
 from alignak_app.core.utils import init_config
+from alignak_app.core.locales import init_localization
+from alignak_app.core.data_manager import data_manager
+from alignak_app.items.item_history import History
 from alignak_app.panel.history_widget import HistoryQWidget, AppQWidget
 
+init_config()
+init_localization()
 
 class TestHistory(unittest2.TestCase):
     """
         This file test the History class.
     """
 
-    history_test = [
+    history_data_test = [
         {
             '_updated': 'Tue, 19 Sep 2017 13:07:16 GMT',
             'service_name': 'Load',
@@ -59,6 +64,9 @@ class TestHistory(unittest2.TestCase):
             'message': 'UNREACHABLE[HARD] (False/False): ERROR: Description table : ...',
         }
     ]
+    history_test = History()
+    history_test.create('id', history_data_test, 'hostname')
+    data_manager.database['history'].append(history_test)
 
     @classmethod
     def setUpClass(cls):
@@ -71,10 +79,8 @@ class TestHistory(unittest2.TestCase):
     def test_initialize(self):
         """Initialize History"""
 
-        init_config()
-        under_test = HistoryQWidget(self.history_test)
+        under_test = HistoryQWidget()
 
-        self.assertTrue(under_test.history)
         self.assertIsNone(under_test.layout())
         self.assertIsInstance(under_test.app_widget, AppQWidget)
         self.assertIsNone(under_test.refresh_btn)
@@ -89,11 +95,9 @@ class TestHistory(unittest2.TestCase):
     def test_get_event_widget(self):
         """Get Event QWidget"""
 
-        init_config()
+        hist_widget_test = HistoryQWidget()
 
-        hist_widget_test = HistoryQWidget(self.history_test)
-
-        under_test = hist_widget_test.get_event_widget(self.history_test[0])
+        under_test = hist_widget_test.get_event_widget(self.history_test.data[0])
 
         self.assertTrue("ack.processed" in under_test.toolTip())
         self.assertIsNotNone(under_test.layout())
