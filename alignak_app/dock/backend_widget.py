@@ -39,7 +39,7 @@ class BackendQWidget(QWidget):
         super(BackendQWidget, self).__init__()
         self.setStyleSheet(get_css())
         # Fields
-        self.labels_to_update = {
+        self.labels = {
             'host': None,
             'service': None,
             'problem': None
@@ -86,6 +86,10 @@ class BackendQWidget(QWidget):
         widget.setLayout(layout)
 
         problem_label = QLabel('%d' % problem_nb)
+        problem_label.setObjectName('ko')
+        problem_label.setToolTip(_('Number of unhandled %s problems') % (
+            item_type if 'problem' not in item_type else '')
+         )
         layout.addWidget(problem_label)
         layout.setAlignment(problem_label, Qt.AlignCenter)
 
@@ -94,10 +98,14 @@ class BackendQWidget(QWidget):
         layout.setAlignment(icon_label, Qt.AlignCenter)
 
         total_label = QLabel('%d' % total_nb)
+        total_label.setObjectName('total')
+        total_label.setToolTip(_('Number of monitored %s') % (
+            item_type if 'problem' not in item_type else 'items')
+        )
         layout.addWidget(total_label)
         layout.setAlignment(total_label, Qt.AlignCenter)
 
-        self.labels_to_update[item_type] = {
+        self.labels[item_type] = {
             'problem': problem_label,
             'icon': icon_label,
             'total': total_label
@@ -113,14 +121,14 @@ class BackendQWidget(QWidget):
 
         items_and_problems = self.get_items_and_problems()
 
-        for item_type in self.labels_to_update:
-            self.labels_to_update[item_type]['problem'].setText(
+        for item_type in self.labels:
+            self.labels[item_type]['problem'].setText(
                 '%s' % str(items_and_problems[item_type]['problem'])
             )
-            self.labels_to_update[item_type]['icon'].setPixmap(
+            self.labels[item_type]['icon'].setPixmap(
                 self.get_icon_item(item_type, items_and_problems[item_type]['problem'])
             )
-            self.labels_to_update[item_type]['total'].setText(
+            self.labels[item_type]['total'].setText(
                 '%s' % str(items_and_problems[item_type]['total'])
             )
 

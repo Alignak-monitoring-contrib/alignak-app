@@ -114,6 +114,8 @@ QLabel#ko {
 QLabel#total {
     background-color: #ccc;
     color: #607d8b;
+    padding: 0px 10px 0px 10px;
+    border-radius: 3px;
 }
 
 QFrame#separator {
