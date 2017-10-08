@@ -149,6 +149,7 @@ QLabel#itemtitle {
     background-color: #607d8b; 
     color: white;
     margin-left: 0.5em;
+    border-radius: 3px;
 }
 
 QLabel#output {
@@ -208,4 +209,13 @@ QCheckBox#actions::indicator::checked, QCheckBox#hostactions::checked, QCheckBox
 
 QCheckBox#actions::indicator::unchecked, QCheckBox#hostactions::indicator::unchecked, QCheckBox#serviceactions::indicator::unchecked {
     background-color: white;
+}
+
+/****** USER *******/
+QLabel#userTrue {
+    color: #4caf50;
+}
+
+QLabel#userFalse {
+    color: #f44336;
 }
