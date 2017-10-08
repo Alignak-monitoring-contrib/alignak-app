@@ -99,7 +99,7 @@ class PanelQWidget(QWidget):
         host_widget.hide()
         services_widget.hide()
 
-    def get_dashboard_widget(self):
+    def get_dashboard_widget(self):  # pylint: disable=too-many-locals
         """
         TODO
         :return:

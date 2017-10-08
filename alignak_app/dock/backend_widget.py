@@ -87,9 +87,11 @@ class BackendQWidget(QWidget):
 
         problem_label = QLabel('%d' % problem_nb)
         problem_label.setObjectName('ko')
-        problem_label.setToolTip(_('Number of unhandled %s problems') % (
-            item_type if 'problem' not in item_type else '')
-         )
+        problem_label.setToolTip(
+            _('Number of unhandled %s problems') % (
+                item_type if 'problem' not in item_type else ''
+            )
+        )
         layout.addWidget(problem_label)
         layout.setAlignment(problem_label, Qt.AlignCenter)
 
@@ -99,8 +101,10 @@ class BackendQWidget(QWidget):
 
         total_label = QLabel('%d' % total_nb)
         total_label.setObjectName('total')
-        total_label.setToolTip(_('Number of monitored %s') % (
-            item_type if 'problem' not in item_type else 'items')
+        total_label.setToolTip(
+            _('Number of monitored %s') % (
+                item_type if 'problem' not in item_type else 'items'
+            )
         )
         layout.addWidget(total_label)
         layout.setAlignment(total_label, Qt.AlignCenter)
