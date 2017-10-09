@@ -24,11 +24,11 @@
 """
 
 from PyQt5.Qt import QApplication, QWidget, QGridLayout, QIcon  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QListWidget, QFrame  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QListWidget, QLabel, Qt  # pylint: disable=no-name-in-module
 
-from alignak_app.app_widget import AppQWidget
+from alignak_app.app_widget import AppQWidget, get_frame_separator
 from alignak_app.core.utils import get_css, get_image_path
-from alignak_app.dock.backend_widget import BackendQWidget
+from alignak_app.dock.backend_widget import LivestateQWidget
 from alignak_app.dock.buttons_widget import ButtonsQWidget
 from alignak_app.dock.events_widget import events_widget
 from alignak_app.dock.spy_widget import SpyQListWidget
@@ -48,7 +48,7 @@ class DockQWidget(QWidget):
         self.app_widget = AppQWidget()
         self.status_widget = DockStatusQWidget()
         self.buttons_widget = ButtonsQWidget()
-        self.backend_widget = BackendQWidget()
+        self.livestate_widget = LivestateQWidget()
         self.spy_widgetlist = QListWidget()
         self.spy_widget = SpyQListWidget()
 
@@ -72,39 +72,31 @@ class DockQWidget(QWidget):
         self.app_widget.resize(pos_size['size'][0], pos_size['size'][1])
         self.app_widget.move(pos_size['pos'][0], pos_size['pos'][1])
 
-        # Add dock widgets
+        # Add Alignak status
         self.status_widget.initialize()
         layout.addWidget(self.status_widget)
-        layout.addWidget(self.get_frame_separator())
-
         self.buttons_widget.initialize()
         layout.addWidget(self.buttons_widget)
-        layout.addWidget(self.get_frame_separator())
 
-        self.backend_widget.initialize()
-        layout.addWidget(self.backend_widget)
-        layout.addWidget(self.get_frame_separator())
+        # Livestate
+        livestate = QLabel(_('Livestate'))
+        livestate.setObjectName('title')
+        layout.addWidget(livestate)
+        layout.setAlignment(livestate, Qt.AlignCenter)
+        layout.addWidget(get_frame_separator())
+        self.livestate_widget.initialize()
+        layout.addWidget(self.livestate_widget)
 
-        # self.events_widget.initialize()
+        # Last Events
+        last_event_label = QLabel(_('Last Events'))
+        last_event_label.setObjectName('title')
+        layout.addWidget(last_event_label)
+        layout.setAlignment(last_event_label, Qt.AlignCenter)
+        layout.addWidget(get_frame_separator())
         layout.addWidget(events_widget)
 
         self.spy_widget.initialize()
         layout.addWidget(self.spy_widget)
-
-    @staticmethod
-    def get_frame_separator():
-        """
-        Return a frame separator
-
-        :return: frame separator
-        :rtype: QFrame
-        """
-
-        line = QFrame()
-        line.setObjectName('separator')
-        line.setFrameShape(QFrame.HLine)
-
-        return line
 
     def get_position_and_size(self, desktop):
         """

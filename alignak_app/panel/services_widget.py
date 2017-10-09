@@ -29,9 +29,10 @@ from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.data_manager import data_manager
 from alignak_app.panel.service_data_widget import ServiceDataQWidget
 from alignak_app.panel.service_tree_item import ServicesTreeItem
+from alignak_app.app_widget import get_frame_separator
 
-from PyQt5.Qt import QLabel, QWidget, QIcon, QGridLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QTreeWidget, QTreeWidgetItem, QSize  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QLabel, QWidget, QIcon, QGridLayout, QSize  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QTreeWidget, QTreeWidgetItem  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -62,6 +63,7 @@ class ServicesQWidget(QWidget):
 
         self.services_title.setObjectName('title')
         layout.addWidget(self.services_title, 0, 0, 1, 2)
+        layout.addWidget(get_frame_separator())
 
         self.services_tree_widget.setIconSize(QSize(32, 32))
         layout.addWidget(self.services_tree_widget, 1, 0, 1, 1)

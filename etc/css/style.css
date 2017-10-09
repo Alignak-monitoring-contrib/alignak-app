@@ -135,8 +135,10 @@ QListWidget {
 }
 
 QListWidget::item:selected {
-    color: white;
-    background-color: #55abf3;
+    color: black;
+    background-color: white;
+    border: 1px solid #1fb4e4;
+    border-radius: 3px;
 }
 
 /****** PANEL ******/
@@ -227,8 +229,10 @@ QTreeWidget::item {
 }
 
 QTreeWidget::item::selected::active {
-    background-color: #6f828c;
-    color: white;
+    background-color: white;
+    color: black;
+    border: 1px solid #1fb4e4;
+    border-radius: 3px;
 }
 
 /****** ACTIONS ******/

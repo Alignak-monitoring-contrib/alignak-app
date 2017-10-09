@@ -23,14 +23,12 @@
     Events QWidgets manage creation of events
 """
 
-import random
-
-from alignak_app.core.utils import get_image_path, get_css
+from alignak_app.core.utils import get_css
 from alignak_app.core.data_manager import data_manager
 
 from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QListWidgetItem, QSize, QIcon, QTimer  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QLabel, QVBoxLayout, Qt, QColor  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QListWidgetItem, QSize, QTimer  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QVBoxLayout, QColor  # pylint: disable=no-name-in-module
 
 
 class EventItem(QListWidgetItem):
@@ -45,10 +43,9 @@ class EventItem(QListWidgetItem):
         """
 
         self.setText("%s" % msg)
-        # self.setToolTip(msg)
-        self.setIcon(QIcon(get_image_path(self.get_icon(event_type))))
+        self.setToolTip(msg)
         self.setBackground(QColor(self.get_color_event(event_type)))
-        self.setWhatsThis(msg)
+        self.setForeground(QColor("#000"))
 
         self.setSizeHint(QSize(self.sizeHint().width(), 35))
 
@@ -64,42 +61,16 @@ class EventItem(QListWidgetItem):
         """
 
         available_colors = {
-            '#e6faf5': ['OK', 'UP'],
-            '#d0e9f9': ['UNKNOWN', 'INFO'],
-            '#fdf8f1': ['WARNING', 'UNREACHABLE', 'WARN'],
-            '#fdf5f3': ['DOWN', 'CRITICAL', 'ALERT'],
-            '#fff9f0': ['ACK'],
-            '#ffffe0': ['DOWN']
+            '#27ae60': ['OK', 'UP'],
+            '#2980b9': ['UNKNOWN', 'INFO'],
+            '#e67e22': ['WARNING', 'UNREACHABLE', 'WARN'],
+            '#e74c3c': ['DOWN', 'CRITICAL', 'ALERT'],
+            '#f39c12': ['ACK'],
+            '#f1c40f': ['DOWN']
         }
 
         for key, _ in available_colors.items():
             if event_type in available_colors[key]:
-                return key
-
-        return ''
-
-    @staticmethod
-    def get_icon(event_type):
-        """
-        Define and return icon type
-
-        :param event_type: the type of event
-        :type event_type: str
-        :return: event icon name
-        :rtype: str
-        """
-
-        icon_types = {
-            'valid': ['OK', 'UP'],
-            'info': ['UNKNOWN', 'INFO'],
-            'warn': ['WARNING', 'UNREACHABLE', 'WARN'],
-            'problem': ['DOWN', 'CRITICAL', 'ALERT'],
-            'aknowledge': ['ACK'],
-            'downtime': ['DOWN']
-        }
-
-        for key, _ in icon_types.items():
-            if event_type in icon_types[key]:
                 return key
 
         return ''
@@ -124,16 +95,13 @@ class EventsQListWidget(QWidget):
 
         """
 
-        self.timer.setInterval(15000)
+        self.timer.setInterval(30000)
         self.timer.start()
         self.timer.timeout.connect(self.send_datamanager_events)
 
         layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
-
-        event_title = QLabel("Last events...")
-        layout.addWidget(event_title)
-        layout.setAlignment(event_title, Qt.AlignCenter)
 
         self.events_list.setDragDropMode(QAbstractItemView.InternalMove)
         self.events_list.setSelectionMode(QAbstractItemView.ExtendedSelection)

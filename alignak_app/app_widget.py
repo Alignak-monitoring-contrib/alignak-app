@@ -204,3 +204,18 @@ class AppQWidget(QFrame):
                 logger.warning('Move Event %s: %s', self.objectName(), str(e))
         else:
             pass
+
+
+def get_frame_separator():
+    """
+    Return a frame separator
+
+    :return: frame separator
+    :rtype: QFrame
+    """
+
+    line = QFrame()
+    line.setObjectName('separator')
+    line.setFrameShape(QFrame.HLine)
+
+    return line

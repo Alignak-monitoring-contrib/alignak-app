@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Backend QWidget manage resume of hosts, services and problems
+    Livestate QWidget manage resume of hosts, services and problems
 """
 
 from alignak_app.core.utils import get_image_path, get_css
@@ -30,13 +30,13 @@ from PyQt5.Qt import QWidget, QVBoxLayout, QHBoxLayout, Qt  # pylint: disable=no
 from PyQt5.Qt import QLabel, QPixmap, QTimer  # pylint: disable=no-name-in-module
 
 
-class BackendQWidget(QWidget):
+class LivestateQWidget(QWidget):
     """
         Class who display hosts, services and problems number
     """
 
     def __init__(self):
-        super(BackendQWidget, self).__init__()
+        super(LivestateQWidget, self).__init__()
         self.setStyleSheet(get_css())
         # Fields
         self.labels = {

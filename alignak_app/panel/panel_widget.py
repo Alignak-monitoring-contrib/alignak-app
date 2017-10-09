@@ -25,7 +25,7 @@
 
 from logging import getLogger
 
-from alignak_app.app_widget import AppQWidget
+from alignak_app.app_widget import AppQWidget, get_frame_separator
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.panel.host_widget import host_widget
@@ -62,30 +62,29 @@ class PanelQWidget(QWidget):
         """
 
         logger.info('Create Panel View...')
-
         self.setLayout(self.layout)
 
-        self.app_widget.initialize('')
-        self.app_widget.add_widget(self)
-
+        # Dashboard
         self.layout.addWidget(dashboard_widget)
         self.layout.setAlignment(dashboard_widget, Qt.AlignTop)
+        self.layout.addWidget(get_frame_separator())
 
+        # Search bar
         search_widget = self.get_search_widget()
         self.layout.addWidget(search_widget)
         self.layout.setAlignment(search_widget, Qt.AlignTop)
 
+        # Host widgets
         self.layout.addWidget(host_widget)
         self.layout.setAlignment(host_widget, Qt.AlignTop)
 
+        # Services widgets
         self.layout.addWidget(services_widget)
 
+        # Align all widgets to Top
         self.layout.setAlignment(Qt.AlignTop)
 
-        host_widget.hide()
-        services_widget.hide()
-
-        # Define size and position of HostQWidget
+        # Apply size and position on AppQWidget
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
         desktop = QApplication.desktop().availableGeometry(screen)
 
@@ -95,9 +94,14 @@ class PanelQWidget(QWidget):
         pos_x = 0
         pos_y = 0
 
+        self.app_widget.initialize('')
+        self.app_widget.add_widget(self)
         self.app_widget.resize(x_size, y_size)
         self.app_widget.move(pos_x, pos_y)
 
+        # Hide widgets for first start
+        host_widget.hide()
+        services_widget.hide()
         dashboard_widget.initialize()
 
     def get_search_widget(self):
