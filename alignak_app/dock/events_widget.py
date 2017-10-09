@@ -129,8 +129,9 @@ class EventsQListWidget(QWidget):
         Add event to events list
 
         :param event_type: type of event
-        :param msg:
-        :return:
+        :type event_type: str
+        :param msg: event content to display
+        :type msg: str
         """
 
         event = EventItem()
@@ -149,3 +150,22 @@ class EventsQListWidget(QWidget):
 
 events_widget = EventsQListWidget()
 events_widget.initialize()
+
+
+def send_event(event_type, msg):
+    """
+    Access function to simplify code in rest of application
+
+    :param event_type: type of event. Follow the following:
+    - 'valid': ['OK', 'UP']
+    - 'info': ['UNKNOWN', 'INFO']
+    - 'warn': ['WARNING', 'UNREACHABLE', 'WARN']
+    - 'problem': ['DOWN', 'CRITICAL', 'ALERT']
+    - 'aknowledge': ['ACK']
+    - 'downtime': ['DOWN']
+    :type event_type: str
+    :param msg: event content to display
+    :type msg: str
+    """
+
+    events_widget.add_event(event_type, msg)

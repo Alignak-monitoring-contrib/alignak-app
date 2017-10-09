@@ -30,7 +30,7 @@ from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.utils import get_time_diff_since_last_timestamp
 from alignak_app.dialogs.actions_dialogs import AckQDialog, DownQDialog, QDialog
-from alignak_app.dock.events_widget import events_widget
+from alignak_app.dock.events_widget import send_event
 from alignak_app.panel.history_widget import HistoryQWidget
 from alignak_app.items.item_model import get_icon_item, get_real_host_state_icon
 
@@ -191,7 +191,7 @@ class HostQWidget(QWidget):
 
             post = app_backend.post('actionacknowledge', data)
 
-            events_widget.add_event('ACK', 'Acknowledge for %s is done' % item.name)
+            send_event('ACK', 'Acknowledge for %s is done' % item.name)
             logger.debug('ACK answer for %s: %s', item.name, post)
 
             try:
@@ -237,7 +237,7 @@ class HostQWidget(QWidget):
 
             post = app_backend.post('actiondowntime', data)
 
-            events_widget.add_event('DOWN', 'Downtime for %s is done' % item.name)
+            send_event('DOWN', 'Downtime for %s is done' % item.name)
             logger.debug('DOWN answer for %s: %s', item.name, post)
 
             try:
@@ -260,7 +260,7 @@ class HostQWidget(QWidget):
             self.history_widget.initialize(self.host_item.name, self.host_item.item_id)
             self.history_widget.app_widget.show()
         else:
-            events_widget.add_event('WARN', 'History is not yet available...')
+            send_event('WARN', 'History is not yet available...')
 
     def get_last_check_widget(self):
         """

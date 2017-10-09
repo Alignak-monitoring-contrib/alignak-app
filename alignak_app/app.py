@@ -180,19 +180,15 @@ class AlignakApp(QObject):
             logger.info("Starting Dock...")
 
             # Prevent from: QWidget: Must construct a QApplication before a QWidget
-            # from alignak_app.dock.dock_widget import dock
-            from alignak_app.dock.events_widget import events_widget
-
-            # splash.finish(dock)
-            # dock.initialize()
+            from alignak_app.dock.events_widget import send_event
 
             logger.info("Start TrayIcon...")
             self.tray_icon = TrayIcon(QIcon(get_image_path('icon')))
-            self.tray_icon.build_menu(events_widget)
+            self.tray_icon.build_menu()
             self.tray_icon.show()
 
             # Send Welcome Banner
-            events_widget.add_event(
+            send_event(
                 'OK',
                 _('Welcome %s, you are connected to Alignak Backend') %
                 data_manager.database['user'].name,

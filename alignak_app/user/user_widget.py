@@ -34,7 +34,7 @@ from alignak_app.app_widget import AppQWidget
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css
-from alignak_app.dock.events_widget import events_widget
+from alignak_app.dock.events_widget import send_event
 from alignak_app.user.password import PasswordDialog
 
 logger = getLogger(__name__)
@@ -298,9 +298,9 @@ class UserQWidget(QWidget):
 
                 if patched:
                     message = _("Your password has been updated !")
-                    events_widget.add_event('OK', message)
+                    send_event('OK', message)
                 else:
-                    events_widget.add_event(
+                    send_event(
                         'ERROR', _("Backend PATCH failed, please check your logs !")
                     )
         else:
@@ -325,9 +325,9 @@ class UserQWidget(QWidget):
                 message = _(
                     _("The notes for the %s have been edited.")
                 ) % self.user.name
-                events_widget.add_event('OK', message)
+                send_event('OK', message)
             else:
-                events_widget.add_event(
+                send_event(
                     'ERROR',
                     _("Backend PATCH failed, please check your logs !")
                 )
@@ -497,9 +497,9 @@ class UserQWidget(QWidget):
                     check_btn.objectName().replace('actions', ''),
                     enabled
                 )
-                events_widget.add_event('OK', message)
+                send_event('OK', message)
             else:
-                events_widget.add_event(
+                send_event(
                     'ERROR',
                     _("Backend PATCH failed, please check your logs !")
                 )

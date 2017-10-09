@@ -32,7 +32,7 @@ from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css, get_time_diff_since_last_timestamp
 from alignak_app.dialogs.actions_dialogs import AckQDialog, DownQDialog, QDialog
-from alignak_app.dock.events_widget import events_widget
+from alignak_app.dock.events_widget import send_event
 from alignak_app.items.item_model import get_icon_item
 
 logger = getLogger(__name__)
@@ -204,7 +204,7 @@ class ServiceDataQWidget(QWidget):
 
             post = app_backend.post('actionacknowledge', data)
 
-            events_widget.add_event('ACK', 'Acknowledge for %s is done' % service_item.name)
+            send_event('ACK', 'Acknowledge for %s is done' % service_item.name)
             logger.debug('ACK answer for %s: %s', service_item.name, post)
 
             try:
@@ -252,7 +252,7 @@ class ServiceDataQWidget(QWidget):
 
             post = app_backend.post('actiondowntime', data)
 
-            events_widget.add_event('DOWN', 'Downtime for %s is done' % service_item.name)
+            send_event('DOWN', 'Downtime for %s is done' % service_item.name)
             logger.debug('DOWN answer for %s: %s', service_item.name, post)
 
             try:
