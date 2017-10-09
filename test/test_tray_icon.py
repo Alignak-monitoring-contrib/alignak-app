@@ -109,7 +109,7 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertIsNone(under_test.app_about)
         self.assertIsNotNone(under_test.qaction_factory)
 
-        under_test.build_menu(None)
+        under_test.build_menu()
 
         # Assert actions are added in Menu
         self.assertTrue(under_test.menu.actions())
