@@ -64,3 +64,14 @@ class Host(ItemModel):
         }
 
         return request
+
+    @staticmethod
+    def get_available_icons():
+        """
+        Return list of available icons for a Host item
+
+        :return: list of available icons for Host
+        :rtype: list
+        """
+
+        return ['hosts_up', 'hosts_unreachable', 'hosts_down', 'acknowledge', 'downtime']

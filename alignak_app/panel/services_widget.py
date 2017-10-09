@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    Services QWidget manage creation of QWidget services
 """
 
 from logging import getLogger
@@ -38,7 +38,7 @@ logger = getLogger(__name__)
 
 class ServicesQWidget(QWidget):
     """
-        TODO
+        Class wo create services QWidget
     """
 
     def __init__(self, parent=None):

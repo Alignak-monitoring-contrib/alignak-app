@@ -84,3 +84,17 @@ class Service(ItemModel):
             'ACKNOWLEDGE': 0,
             'DOWNTIME': 0
         }
+
+    @staticmethod
+    def get_available_icons():
+        """
+        Return list of available icons for a Service item
+
+        :return: list of available icons for Service
+        :rtype: list
+        """
+
+        return [
+            'services_ok', 'services_warning', 'services_critical', 'services_unknown',
+            'services_unreachable', 'acknowledge', 'downtime'
+        ]

@@ -119,9 +119,11 @@ QLabel#total {
 }
 
 QFrame#separator {
-    background-color: #607d8b;
-    color: #607d8b;
+    border-width: 0px 0px 1px 0px;
+	border-color: #6c9cb3;
+	border-style: solid;
 }
+
 QListWidget {
     outline: none;
 }
@@ -146,32 +148,43 @@ QPushButton#search:hover {
     background-color: #03a9f4;
 }
 
+QLabel#dashboard {
+    font: 10pt;
+}
+
 QLabel#services_ok, QLabel#hosts_up {
     color: #27ae60;
+    font: 10pt;
 }
 
 QLabel#services_warning {
     color: #e67e22;
+    font: 10pt;
 }
 
 QLabel#services_critical, QLabel#hosts_down {
     color: #e74c3c;
+    font: 10pt;
 }
 
 QLabel#services_unknown {
     color: #2980b9;
+    font: 10pt;
 }
 
 QLabel#services_unreachable, QLabel#hosts_unreachable {
     color: #9b59b6;
+    font: 10pt;
 }
 
 QLabel#acknowledge {
     color: #f39c12;
+    font: 10pt;
 }
 
 QLabel#downtime {
     color: #f1c40f;
+    font: 10pt;
 }
 
 /****** ITEMS (HOSTS and SERVICES) ******/
