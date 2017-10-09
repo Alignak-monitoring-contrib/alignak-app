@@ -23,12 +23,14 @@
     Events QWidgets manage creation of events
 """
 
+import random
+
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.data_manager import data_manager
 
 from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QListWidgetItem, QSize, QIcon, QTimer  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QLabel, QVBoxLayout, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QLabel, QVBoxLayout, Qt, QColor  # pylint: disable=no-name-in-module
 
 
 class EventItem(QListWidgetItem):
@@ -43,9 +45,38 @@ class EventItem(QListWidgetItem):
         """
 
         self.setText("%s" % msg)
+        # self.setToolTip(msg)
         self.setIcon(QIcon(get_image_path(self.get_icon(event_type))))
+        self.setBackground(QColor(self.get_color_event(event_type)))
+        self.setWhatsThis(msg)
 
         self.setSizeHint(QSize(self.sizeHint().width(), 35))
+
+    @staticmethod
+    def get_color_event(event_type):
+        """
+        Return corresponding color of event type
+
+        :param event_type: the type of event
+        :type event_type: str
+        :return: the associated color with the event
+        :rtype: str
+        """
+
+        available_colors = {
+            '#e6faf5': ['OK', 'UP'],
+            '#d0e9f9': ['UNKNOWN', 'INFO'],
+            '#fdf8f1': ['WARNING', 'UNREACHABLE', 'WARN'],
+            '#fdf5f3': ['DOWN', 'CRITICAL', 'ALERT'],
+            '#fff9f0': ['ACK'],
+            '#ffffe0': ['DOWN']
+        }
+
+        for key, _ in available_colors.items():
+            if event_type in available_colors[key]:
+                return key
+
+        return ''
 
     @staticmethod
     def get_icon(event_type):
@@ -82,6 +113,7 @@ class EventsQListWidget(QWidget):
     def __init__(self):
         super(EventsQListWidget, self).__init__()
         self.setStyleSheet(get_css())
+        self.setObjectName('events')
         # Fields
         self.events_list = QListWidget()
         self.timer = QTimer()

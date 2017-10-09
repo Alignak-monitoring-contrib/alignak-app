@@ -124,14 +124,19 @@ QFrame#separator {
 	border-style: solid;
 }
 
+QWidget#events {
+    border-width: 0px 0px 1px 0px;
+    border-color: #6c9cb3;
+    border-style: solid; 
+}
+
 QListWidget {
-    outline: none;
+    border: none;
 }
 
 QListWidget::item:selected {
-    border: none;
-    color: black;
-    background-color: #e2dede;
+    color: white;
+    background-color: #55abf3;
 }
 
 /****** PANEL ******/
