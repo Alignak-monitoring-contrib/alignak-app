@@ -47,7 +47,7 @@ class EventItem(QListWidgetItem):
         self.setBackground(QColor(self.get_color_event(event_type)))
         self.setForeground(QColor("#000"))
 
-        self.setSizeHint(QSize(self.sizeHint().width(), 35))
+        self.setSizeHint(QSize(self.sizeHint().width(), 50))
 
     @staticmethod
     def get_color_event(event_type):
