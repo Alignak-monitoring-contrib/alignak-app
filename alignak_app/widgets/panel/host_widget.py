@@ -31,12 +31,12 @@ from PyQt5.Qt import QPushButton, QIcon  # pylint: disable=no-name-in-module
 
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.items import get_icon_item, get_real_host_state_icon
+from alignak_app.core.items.item_model import get_icon_item, get_real_host_state_icon
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.utils import get_time_diff_since_last_timestamp
 from alignak_app.dialogs.actions_dialogs import AckQDialog, DownQDialog, QDialog
-from alignak_app.widgets.dock import send_event
-from alignak_app.widgets.panel import HistoryQWidget
+from alignak_app.widgets.dock.events_widget import send_event
+from alignak_app.widgets.panel.history_widget import HistoryQWidget
 
 logger = getLogger(__name__)
 

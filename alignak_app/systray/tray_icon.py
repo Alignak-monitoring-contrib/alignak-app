@@ -84,7 +84,7 @@ class TrayIcon(QSystemTrayIcon):
         )
 
         # Import dock from TrayIcon to fix application icon problem
-        from alignak_app.widgets.dock import DockQWidget
+        from alignak_app.widgets.dock.dock_widget import DockQWidget
         self.dock = DockQWidget()
         self.dock.initialize()
         self.dock.app_widget.show()

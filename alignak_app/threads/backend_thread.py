@@ -27,16 +27,16 @@ import json
 from logging import getLogger
 
 from PyQt5.Qt import QThread, pyqtSignal  # pylint: disable=no-name-in-module
-from alignak_app.items.item_daemon import Daemon
-from alignak_app.items.item_host import Host
-from alignak_app.items.item_livesynthesis import LiveSynthesis
-from alignak_app.items.item_notification import Notification
-from alignak_app.items.item_service import Service
-from alignak_app.items.item_user import User
+from alignak_app.core.items.item_daemon import Daemon
+from alignak_app.core.items.item_host import Host
+from alignak_app.core.items.item_livesynthesis import LiveSynthesis
+from alignak_app.core.items.item_notification import Notification
+from alignak_app.core.items.item_service import Service
+from alignak_app.core.items.item_user import User
+from alignak_app.core.items.item_history import History
 
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.items.item_history import History
 
 logger = getLogger(__name__)
 

@@ -30,7 +30,7 @@ import locale
 import sys
 from logging import getLogger
 
-from alignak_app.core.items import ItemModel
+from alignak_app.core.items.item_model import ItemModel
 
 logger = getLogger(__name__)
 
