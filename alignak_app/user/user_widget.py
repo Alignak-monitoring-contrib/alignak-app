@@ -25,12 +25,12 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QIcon, QPixmap, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QIcon, QPixmap, Qt, QHBoxLayout  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QLabel, QLineEdit, QDialog  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=no-name-in-module
 
-from alignak_app.app_widget import AppQWidget
+from alignak_app.app_widget import AppQWidget, get_frame_separator
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css
@@ -106,10 +106,24 @@ class UserQWidget(QWidget):
         layout = QVBoxLayout()
         self.setLayout(layout)
 
-        layout.addWidget(self.get_main_user_widget())
-        layout.addWidget(self.get_notes_widget())
+        layout.addWidget(self.get_user_informations_widget())
 
         layout.addWidget(self.get_notifications_widget())
+
+    def get_user_informations_widget(self):
+        """
+        TODO
+        :return:
+        """
+
+        informations_widget = QWidget()
+        informations_layout = QHBoxLayout()
+        informations_widget.setLayout(informations_layout)
+
+        informations_layout.addWidget(self.get_main_user_widget())
+        informations_layout.addWidget(self.get_notes_widget())
+
+        return informations_widget
 
     def get_main_user_widget(self):
         """
@@ -124,15 +138,12 @@ class UserQWidget(QWidget):
         main_user_widget.setLayout(main_layout)
 
         main_title = QLabel(_('Main informations:'))
-        main_title.setObjectName("itemtitle")
-        main_layout.addWidget(main_title, 0, 0, 1, 2)
+        main_title.setObjectName("title")
+        main_layout.addWidget(main_title, 0, 0, 1, 4)
+        main_layout.addWidget(get_frame_separator(), 1, 0, 1, 4)
 
-        rights_title = QLabel(_('Rights:'))
-        rights_title.setObjectName("itemtitle")
-        main_layout.addWidget(rights_title, 0, 2, 1, 2)
-
-        main_layout.addWidget(self.get_information_widget(), 1, 0, 1, 2)
-        main_layout.addWidget(self.get_rights_widget(), 1, 2, 1, 2)
+        main_layout.addWidget(self.get_information_widget(), 2, 0, 1, 2)
+        main_layout.addWidget(self.get_rights_widget(), 2, 2, 1, 2)
 
         return main_user_widget
 
@@ -165,6 +176,12 @@ class UserQWidget(QWidget):
         mail_title.setObjectName("title")
         info_layout.addWidget(mail_title, 2, 0, 1, 1)
         info_layout.addWidget(self.labels['email'], 2, 1, 1, 1)
+
+        # Alias
+        alias_title = QLabel(_('Alias:'))
+        alias_title.setObjectName("title")
+        info_layout.addWidget(alias_title, 3, 0, 1, 1)
+        info_layout.addWidget(self.labels['alias'], 3, 1, 1, 1)
 
         return information_widget
 
@@ -209,6 +226,15 @@ class UserQWidget(QWidget):
         self.password_btn.setFixedSize(32, 32)
         rights_layout.addWidget(self.password_btn, 3, 1, 1, 1)
 
+        # Token visible only for administrators
+        token_title = QLabel(_('Token:'))
+        token_title.setObjectName("title")
+        rights_layout.addWidget(token_title, 4, 0, 1, 2)
+
+        self.labels['token'].setTextInteractionFlags(Qt.TextSelectableByMouse)
+        self.labels['token'].setCursor(Qt.IBeamCursor)
+        rights_layout.addWidget(self.labels['token'], 4, 1, 1, 1)
+
         return rights_widget
 
     def get_notes_widget(self):
@@ -224,39 +250,19 @@ class UserQWidget(QWidget):
         notes_widget.setLayout(notes_layout)
 
         main_notes_title = QLabel(_('Notes:'))
-        main_notes_title.setObjectName("itemtitle")
-        notes_layout.addWidget(main_notes_title, 0, 0, 1, 3)
-
-        # Alias
-        alias_title = QLabel(_('Alias:'))
-        alias_title.setObjectName("title")
-        notes_layout.addWidget(alias_title, 1, 0, 1, 1)
-        notes_layout.addWidget(self.labels['alias'], 1, 1, 1, 2)
-
-        # Token only for administrators
-        if self.user.data['is_admin']:
-            token_title = QLabel(_('Token:'))
-            token_title.setObjectName("title")
-            notes_layout.addWidget(token_title, 2, 0, 1, 2)
-
-            self.labels['token'].setTextInteractionFlags(Qt.TextSelectableByMouse)
-            self.labels['token'].setCursor(Qt.IBeamCursor)
-            notes_layout.addWidget(self.labels['token'], 2, 1, 1, 1)
-
-        # Notes
-        notes_title = QLabel(_('Notes:'))
-        notes_title.setObjectName("title")
-        notes_layout.addWidget(notes_title, 3, 0, 1, 1)
+        main_notes_title.setObjectName("title")
+        notes_layout.addWidget(main_notes_title, 0, 0, 1, 4)
+        notes_layout.addWidget(get_frame_separator(), 1, 0, 1, 4)
 
         # Add and hide QLineEdit; Shown only when edited
         self.notes_edit = QLineEdit()
         self.notes_edit.hide()
         self.notes_edit.editingFinished.connect(self.patch_notes)
         self.notes_edit.setToolTip(_('Type enter to validate your notes.'))
-        notes_layout.addWidget(self.notes_edit, 4, 1, 1, 1)
+        notes_layout.addWidget(self.notes_edit, 2, 1, 1, 1)
 
         # Create QLabel for notes
-        notes_layout.addWidget(self.labels['notes'], 4, 1, 1, 1)
+        notes_layout.addWidget(self.labels['notes'], 2, 1, 1, 1)
 
         # Edit button for notes
         self.notes_btn = QPushButton()
@@ -266,7 +272,7 @@ class UserQWidget(QWidget):
         self.notes_btn.setFixedSize(32, 32)
         self.notes_btn.clicked.connect(self.edit_notes)
 
-        notes_layout.addWidget(self.notes_btn, 4, 2, 1, 1)
+        notes_layout.addWidget(self.notes_btn, 2, 2, 1, 1)
 
         return notes_widget
 
@@ -373,23 +379,24 @@ class UserQWidget(QWidget):
         host_notif_widget.setLayout(host_notif_layout)
 
         notif_title = QLabel(_("Hosts notifications configurations"))
-        notif_title.setObjectName("itemtitle")
+        notif_title.setObjectName("title")
         host_notif_layout.addWidget(notif_title, 0, 0, 1, 2)
+        host_notif_layout.addWidget(get_frame_separator(), 1, 0, 1, 2)
 
         state_title = QLabel(_("State:"))
         state_title.setObjectName("title")
-        host_notif_layout.addWidget(state_title, 1, 0, 1, 1)
+        host_notif_layout.addWidget(state_title, 2, 0, 1, 1)
         self.host_notif_state = QCheckBox()
         self.host_notif_state.setChecked(self.user.data['host_notifications_enabled'])
         self.host_notif_state.stateChanged.connect(self.enable_notifications)
         self.host_notif_state.setObjectName('hostactions')
         self.host_notif_state.setFixedSize(18, 18)
-        host_notif_layout.addWidget(self.host_notif_state, 1, 1, 1, 1)
+        host_notif_layout.addWidget(self.host_notif_state, 2, 1, 1, 1)
 
         enable_title = QLabel(_("Notification enabled:"))
         enable_title.setMinimumHeight(32)
         enable_title.setObjectName("title")
-        host_notif_layout.addWidget(enable_title, 2, 0, 1, 1)
+        host_notif_layout.addWidget(enable_title, 3, 0, 1, 1)
         self.labels['host_notifications_enabled'].setPixmap(
             self.get_enable_label_icon(
                 self.user.data['host_notifications_enabled']
@@ -397,20 +404,20 @@ class UserQWidget(QWidget):
         )
         self.labels['host_notifications_enabled'].setFixedSize(18, 18)
         self.labels['host_notifications_enabled'].setScaledContents(True)
-        host_notif_layout.addWidget(self.labels['host_notifications_enabled'], 2, 1, 1, 1)
+        host_notif_layout.addWidget(self.labels['host_notifications_enabled'], 3, 1, 1, 1)
 
         period_title = QLabel(_("Notification period:"))
         period_title.setObjectName("title")
-        host_notif_layout.addWidget(period_title, 3, 0, 1, 1)
-        host_notif_layout.addWidget(self.labels['host_notification_period'], 3, 1, 1, 1)
+        host_notif_layout.addWidget(period_title, 4, 0, 1, 1)
+        host_notif_layout.addWidget(self.labels['host_notification_period'], 4, 1, 1, 1)
 
         option_title = QLabel(_("Options:"))
         option_title.setObjectName("title")
-        host_notif_layout.addWidget(option_title, 4, 0, 1, 2)
+        host_notif_layout.addWidget(option_title, 5, 0, 1, 2)
         host_notif_layout.setAlignment(option_title, Qt.AlignCenter)
 
         option_widget = self.get_options_widget('host', self.user.data['host_notification_options'])
-        host_notif_layout.addWidget(option_widget, 5, 0, 1, 2)
+        host_notif_layout.addWidget(option_widget, 6, 0, 1, 2)
 
         return host_notif_widget
 
@@ -427,41 +434,42 @@ class UserQWidget(QWidget):
         service_notif_widget.setLayout(service_notif_layout)
 
         notif_title = QLabel(_("Services notifications configurations"))
-        notif_title.setObjectName("itemtitle")
+        notif_title.setObjectName("title")
         service_notif_layout.addWidget(notif_title, 0, 0, 1, 2)
+        service_notif_layout.addWidget(get_frame_separator(), 1, 0, 1, 2)
 
         state_title = QLabel(_("State:"))
         state_title.setObjectName("title")
-        service_notif_layout.addWidget(state_title, 1, 0, 1, 1)
+        service_notif_layout.addWidget(state_title, 2, 0, 1, 1)
         self.service_notif_state = QCheckBox()
         self.service_notif_state.setObjectName('serviceactions')
         self.service_notif_state.setChecked(self.user.data['service_notifications_enabled'])
         self.service_notif_state.stateChanged.connect(self.enable_notifications)
         self.service_notif_state.setFixedSize(18, 18)
-        service_notif_layout.addWidget(self.service_notif_state, 1, 1, 1, 1)
+        service_notif_layout.addWidget(self.service_notif_state, 2, 1, 1, 1)
 
         enable_title = QLabel(_("Notification enabled:"))
         enable_title.setObjectName("title")
         enable_title.setMinimumHeight(32)
-        service_notif_layout.addWidget(enable_title, 2, 0, 1, 1)
+        service_notif_layout.addWidget(enable_title, 3, 0, 1, 1)
         self.labels['service_notification_enabled'].setFixedSize(18, 18)
         self.labels['service_notification_enabled'].setScaledContents(True)
-        service_notif_layout.addWidget(self.labels['service_notification_enabled'], 2, 1, 1, 1)
+        service_notif_layout.addWidget(self.labels['service_notification_enabled'], 3, 1, 1, 1)
 
         period_title = QLabel(_("Notification period:"))
         period_title.setObjectName("title")
-        service_notif_layout.addWidget(period_title, 3, 0, 1, 1)
-        service_notif_layout.addWidget(self.labels['service_notification_period'], 3, 1, 1, 1)
+        service_notif_layout.addWidget(period_title, 4, 0, 1, 1)
+        service_notif_layout.addWidget(self.labels['service_notification_period'], 4, 1, 1, 1)
 
         option_title = QLabel(_("Options:"))
         option_title.setObjectName("title")
-        service_notif_layout.addWidget(option_title, 4, 0, 1, 2)
+        service_notif_layout.addWidget(option_title, 5, 0, 1, 2)
         service_notif_layout.setAlignment(option_title, Qt.AlignCenter)
 
         option_widget = self.get_options_widget(
             'service', self.user.data['service_notification_options']
         )
-        service_notif_layout.addWidget(option_widget, 5, 0, 1, 2)
+        service_notif_layout.addWidget(option_widget, 6, 0, 1, 2)
 
         return service_notif_widget
 
@@ -598,6 +606,8 @@ class UserQWidget(QWidget):
         self.labels['notes'].setText(self.user.data['notes'])
         if self.user.data['is_admin']:
             self.labels['token'].setText(self.user.data['token'])
+        else:
+            self.labels['token'].setText(_('Only administrators can see their token.'))
 
         # Notifications
         self.labels['host_notifications_enabled'].setPixmap(
