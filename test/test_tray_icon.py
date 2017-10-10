@@ -22,18 +22,17 @@
 import sys
 
 import unittest2
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QAction
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QMenu
 
 from alignak_app.core.backend import AppBackend
+from alignak_app.core.data_manager import data_manager
+from alignak_app.core.items import User
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.utils import init_config
-from alignak_app.core.data_manager import data_manager
-from alignak_app.items.item_user import User
 from alignak_app.systray.tray_icon import TrayIcon
-
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMenu
-from PyQt5.QtWidgets import QAction
 
 
 class TestTrayIcon(unittest2.TestCase):

@@ -25,12 +25,12 @@
 
 from logging import getLogger
 
-from alignak_app.core.data_manager import data_manager
-from alignak_app.core.utils import get_css, get_image_path
-from alignak_app.items.item_host import Host
-from alignak_app.items.item_service import Service
-
 from PyQt5.Qt import QGridLayout, QLabel, QPixmap, Qt, QWidget  # pylint: disable=no-name-in-module
+from alignak_app.items.item_host import Host
+
+from alignak_app.core.data_manager import data_manager
+from alignak_app.core.items.item_service import Service
+from alignak_app.core.utils import get_css, get_image_path
 
 logger = getLogger(__name__)
 

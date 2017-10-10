@@ -20,42 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    ItemHistory manage creation of history item
+    The Frames package contains Alignak-app QFrames
 """
-
-
-from logging import getLogger
-
-from alignak_app.items.item_model import ItemModel
-
-
-logger = getLogger(__name__)
-
-
-class History(ItemModel):
-    """
-        Class who create a history item
-    """
-
-    def __init__(self):
-        super(History, self).__init__()
-        self.item_type = 'history'
-
-    @staticmethod
-    def get_request_model():
-        """
-        Return the request model for history requests
-
-        :return: request model for history endpoint
-        :rtype: dict
-        """
-
-        request_model = {
-            'endpoint': 'history',
-            'params': {
-                'sort': '-_id',
-            },
-            'projection': ['service_name', 'message', 'type']
-        }
-
-        return request_model

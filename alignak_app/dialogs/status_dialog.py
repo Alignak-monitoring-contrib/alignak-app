@@ -25,12 +25,12 @@
 
 from logging import getLogger
 
-from alignak_app.app_widget import AppQWidget
+from PyQt5.Qt import QPixmap, QDialog, QLabel, QWidget  # pylint: disable=no-name-in-module
+from PyQt5.Qt import Qt, QPushButton, QGridLayout, QHBoxLayout  # pylint: disable=no-name-in-module
+
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css, get_time_diff_since_last_timestamp
-
-from PyQt5.Qt import Qt, QPushButton, QGridLayout, QHBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPixmap, QDialog, QLabel, QWidget  # pylint: disable=no-name-in-module
+from alignak_app.frames.app_widget import AppQWidget
 
 logger = getLogger(__name__)
 

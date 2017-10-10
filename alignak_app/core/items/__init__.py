@@ -19,40 +19,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-
-import unittest2
-from PyQt5.QtWidgets import QApplication
-
-from alignak_app.app import AlignakApp
-
-
-class TestApp(unittest2.TestCase):
-    """
-        TODO This file test methods of AlignakApp class.
-    """
-
-    # data_manager.database['user'] = User()
-
-    @classmethod
-    def setUpClass(cls):
-        """Create QApplication"""
-
-        try:
-            cls.app = QApplication(sys.argv)
-        except:
-            pass
-
-    def test_app_main(self):
-        """Build Alignak-App"""
-
-        under_test = AlignakApp()
-
-        self.assertIsNone(under_test.tray_icon)
-        self.assertFalse(under_test.reconnect_mode)
-
-        # Build alignak_app
-        under_test.reconnect_to_backend('ERROR')
-
-        self.assertIsNone(under_test.tray_icon)
-        self.assertTrue(under_test.reconnect_mode)
+"""
+    The Items package contains classes who create items who are stored in DataManager()
+"""

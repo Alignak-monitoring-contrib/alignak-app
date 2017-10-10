@@ -24,15 +24,13 @@
 """
 
 
-import sys
-import locale
 import datetime
 import json
-
+import locale
+import sys
 from logging import getLogger
 
-from alignak_app.items.item_model import ItemModel
-
+from alignak_app.core.items import ItemModel
 
 logger = getLogger(__name__)
 

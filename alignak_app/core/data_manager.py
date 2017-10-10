@@ -24,11 +24,9 @@
 """
 
 import datetime
-
 from logging import getLogger
 
-from alignak_app.items.item_livesynthesis import LiveSynthesis
-
+from alignak_app.core.items import LiveSynthesis
 
 logger = getLogger(__name__)
 

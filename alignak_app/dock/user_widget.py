@@ -30,13 +30,13 @@ from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QLineEdit  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=no-name-in-module
 
-from alignak_app.app_widget import AppQWidget, get_frame_separator
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.dialogs.password_dialog import PasswordQDialog
 from alignak_app.dialogs.token_dialog import TokenQDialog
 from alignak_app.dock.events_widget import send_event
+from alignak_app.frames.app_widget import AppQWidget, get_frame_separator
 
 logger = getLogger(__name__)
 

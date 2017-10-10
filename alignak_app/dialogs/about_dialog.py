@@ -24,12 +24,12 @@
 """
 
 
+from PyQt5.Qt import Qt, QVBoxLayout, QLabel, QDialog  # pylint: disable=no-name-in-module
+
 from alignak_app import __doc_url__, __project_url__, __alignak_url__, __application__
 from alignak_app import __releasenotes__, __version__, __copyright__
-from alignak_app.app_widget import AppQWidget
 from alignak_app.core.utils import get_css
-
-from PyQt5.Qt import Qt, QVBoxLayout, QLabel, QDialog  # pylint: disable=no-name-in-module
+from alignak_app.frames.app_widget import AppQWidget
 
 
 class AboutQDialog(QDialog):
