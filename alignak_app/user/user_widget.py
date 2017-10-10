@@ -58,7 +58,6 @@ class UserQWidget(QWidget):
             'is_admin': QLabel(),
             'can_submit_commands': QLabel(),
             'alias': QLabel(),
-            'token': QLabel(),
             'notes': QLabel(),
             'host_notifications_enabled': QLabel(),
             'host_notification_period': QLabel(),
@@ -210,6 +209,7 @@ class UserQWidget(QWidget):
         self.password_btn.setObjectName("password")
         self.password_btn.clicked.connect(self.edit_notes)
         self.password_btn.setIcon(QIcon(get_image_path('password')))
+        self.password_btn.setToolTip(_('Change my password'))
         self.password_btn.setFixedSize(32, 32)
         rights_layout.addWidget(self.password_btn, 3, 1, 1, 1)
 
@@ -607,10 +607,10 @@ class UserQWidget(QWidget):
         self.labels['notes'].setText(self.user.data['notes'])
         if self.user.data['is_admin']:
             self.token_btn.setEnabled(True)
-            self.labels['token'].setText(self.user.data['token'])
+            self.token_btn.setToolTip(_('See my token'))
         else:
             self.token_btn.setEnabled(False)
-            self.labels['token'].setText(_('Only administrators can see their token.'))
+            self.token_btn.setToolTip(_('Token is only available for Administrators !'))
 
         # Notifications
         self.labels['host_notifications_enabled'].setPixmap(
