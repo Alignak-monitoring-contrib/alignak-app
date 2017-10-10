@@ -30,7 +30,7 @@ from PyQt5.Qt import Qt, QPushButton, QGridLayout, QHBoxLayout  # pylint: disabl
 
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css, get_time_diff_since_last_timestamp
-from alignak_app.frames.app_frame import AppQWidget
+from alignak_app.frames.app_frame import AppQFrame
 
 logger = getLogger(__name__)
 
@@ -44,7 +44,7 @@ class StatusQDialog(QDialog):
         super(StatusQDialog, self).__init__(parent)
         self.setStyleSheet(get_css())
         # Fields
-        self.app_widget = AppQWidget()
+        self.app_widget = AppQFrame()
         self.layout = QGridLayout()
         self.labels = {}
 

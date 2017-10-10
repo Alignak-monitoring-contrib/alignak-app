@@ -27,7 +27,7 @@ from PyQt5.Qt import QApplication, QWidget, QGridLayout, QIcon  # pylint: disabl
 from PyQt5.Qt import QListWidget, QLabel, Qt  # pylint: disable=no-name-in-module
 
 from alignak_app.core.utils import get_css, get_image_path
-from alignak_app.frames.app_frame import AppQWidget, get_frame_separator
+from alignak_app.frames.app_frame import AppQFrame, get_frame_separator
 from alignak_app.widgets.dock.buttons_widget import ButtonsQWidget
 from alignak_app.widgets.dock.status_widget import DockStatusQWidget
 from alignak_app.widgets.dock.backend_widget import LivestateQWidget
@@ -45,7 +45,7 @@ class DockQWidget(QWidget):
         self.setStyleSheet(get_css())
         self.setWindowIcon(QIcon(get_image_path('icon')))
         # Fields
-        self.app_widget = AppQWidget()
+        self.app_widget = AppQFrame()
         self.status_widget = DockStatusQWidget()
         self.buttons_widget = ButtonsQWidget()
         self.livestate_widget = LivestateQWidget()

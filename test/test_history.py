@@ -28,7 +28,7 @@ from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.item_history import History
 from alignak_app.core.locales import init_localization
 from alignak_app.core.utils import init_config
-from alignak_app.widgets.panel.history_widget import HistoryQWidget, AppQWidget
+from alignak_app.widgets.panel.history_widget import HistoryQWidget, AppQFrame
 
 init_config()
 init_localization()
@@ -83,7 +83,7 @@ class TestHistory(unittest2.TestCase):
         under_test = HistoryQWidget()
 
         self.assertIsNone(under_test.layout())
-        self.assertIsInstance(under_test.app_widget, AppQWidget)
+        self.assertIsInstance(under_test.app_widget, AppQFrame)
         self.assertIsNone(under_test.refresh_btn)
 
         under_test.initialize('charnay', 'id')

@@ -32,7 +32,7 @@ from PyQt5.QtWidgets import QWidget, QScrollArea, QLabel  # pylint: disable=no-n
 
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_css, get_image_path
-from alignak_app.frames.app_frame import AppQWidget
+from alignak_app.frames.app_frame import AppQFrame
 
 logger = getLogger(__name__)
 
@@ -47,7 +47,7 @@ class HistoryQWidget(QWidget):
         self.setStyleSheet(get_css())
         self.setObjectName("history")
         # Fields
-        self.app_widget = AppQWidget()
+        self.app_widget = AppQFrame()
         self.refresh_btn = None
 
     def initialize(self, hostname, host_id):
