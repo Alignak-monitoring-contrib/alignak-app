@@ -37,13 +37,13 @@ from PyQt5.Qt import Qt, QIcon, QPixmap, QFrame  # pylint: disable=no-name-in-mo
 logger = getLogger(__name__)
 
 
-class AppQWidget(QFrame):
+class AppQFrame(QFrame):
     """
         Class who create a QWidget template.
     """
 
     def __init__(self, parent=None):
-        super(AppQWidget, self).__init__(parent)
+        super(AppQFrame, self).__init__(parent)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setWindowIcon(QIcon(get_image_path('icon')))
         self.setStyleSheet(get_css())
