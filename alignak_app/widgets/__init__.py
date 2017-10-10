@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The Panel package contains classes who create Panel, Hosts and Services QWidgets.
+    The Widgets package contains classes contains QWidgets.
 """

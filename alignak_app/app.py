@@ -180,7 +180,7 @@ class AlignakApp(QObject):
             logger.info("Starting Dock...")
 
             # Prevent from: QWidget: Must construct a QApplication before a QWidget
-            from alignak_app.dock.events_widget import send_event
+            from alignak_app.widgets.dock import send_event
 
             logger.info("Start TrayIcon...")
             self.tray_icon = TrayIcon(QIcon(get_image_path('icon')))

@@ -22,10 +22,10 @@
 """
     Alignak App
 
-    This module is desktop application, in system tray, for Alignak solution.
+    This module is a desktop application, with a system tray icon, for Alignak solution.
 
     Application notify you when you have changes in your monitoring
-    You'll be notified on your desktop and you can trigger actions inside application
+    You can trigger actions inside application, see status of monitored items
 """
 
 

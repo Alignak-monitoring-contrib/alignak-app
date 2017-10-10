@@ -23,10 +23,10 @@
     Spy QWidgets manage creation of events
 """
 
-from alignak_app.dock.events_widget import EventItem
-
-from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QLabel, QVBoxLayout, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget  # pylint: disable=no-name-in-module
+
+from alignak_app.widgets.dock import EventItem
 
 
 class SpyQListWidget(QWidget):

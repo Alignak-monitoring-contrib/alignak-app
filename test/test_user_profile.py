@@ -33,7 +33,7 @@ app = QApplication(sys.argv)
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items import User
 
-from alignak_app.dock.user_widget import UserQWidget
+from alignak_app.widgets.dock import UserQWidget
 
 
 
