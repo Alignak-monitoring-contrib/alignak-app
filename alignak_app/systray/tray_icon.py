@@ -169,5 +169,5 @@ class TrayIcon(QSystemTrayIcon):
 
         logger.info('Reload configuration...')
         init_config()
-        from alignak_app.widgets.dock import send_event
+        from alignak_app.widgets.dock.events_widget import send_event
         send_event('INFO', _('Configuration reloaded'))

@@ -30,10 +30,11 @@ from alignak_app.core.utils import init_config
 init_config()
 init_localization()
 app = QApplication(sys.argv)
-from alignak_app.core.data_manager import data_manager
-from alignak_app.core.items import User
 
-from alignak_app.widgets.dock import UserQWidget
+from alignak_app.core.data_manager import data_manager
+from alignak_app.core.items.item_user import User
+
+from alignak_app.widgets.dock.user_widget import UserQWidget
 
 
 
@@ -42,7 +43,6 @@ class TestUserProfile(unittest2.TestCase):
         TODO This file test the UserProfile class.
     """
 
-    init_config()
     data_manager.database['user'] = User()
     data_manager.database['user'].data = {}
 
