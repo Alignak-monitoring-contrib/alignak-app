@@ -213,10 +213,14 @@ class AppBackend(object):
         """
         PATCH on alignak Backend REST API
 
-        :param endpoint:
-        :param data:
-        :param headers:
-        :return:
+        :param endpoint: endpoint (API URL)
+        :type endpoint: str
+        :param data: properties of item to update
+        :type data: dict
+        :param headers: headers (example: Content-Type). 'If-Match' required
+        :type headers: dict
+        :return: dictionary containing patch response from the backend
+        :rtype: dict
         """
 
         request = None
@@ -236,8 +240,7 @@ class AppBackend(object):
                     self.app.reconnecting.emit(str(e))
                 return False
 
-        if request['_status'] == 'OK':
-            return True
+        return request
 
     def get_host(self, key, value, projection=None):
         """
