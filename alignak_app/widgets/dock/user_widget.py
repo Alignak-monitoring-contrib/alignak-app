@@ -394,7 +394,7 @@ class UserQWidget(QWidget):
         self.host_notif_state.setChecked(self.user.data['host_notifications_enabled'])
         self.host_notif_state.stateChanged.connect(self.enable_notifications)
         self.host_notif_state.setObjectName('hostactions')
-        self.host_notif_state.setFixedSize(14, 14)
+        self.host_notif_state.setFixedSize(18, 18)
         host_notif_layout.addWidget(self.host_notif_state, 2, 1, 1, 1)
 
         enable_title = QLabel(_("<h5>Notification enabled:</h5>"))
@@ -449,7 +449,7 @@ class UserQWidget(QWidget):
         self.service_notif_state.setObjectName('serviceactions')
         self.service_notif_state.setChecked(self.user.data['service_notifications_enabled'])
         self.service_notif_state.stateChanged.connect(self.enable_notifications)
-        self.service_notif_state.setFixedSize(14, 14)
+        self.service_notif_state.setFixedSize(18, 18)
         service_notif_layout.addWidget(self.service_notif_state, 2, 1, 1, 1)
 
         enable_title = QLabel(_("<h5>Notification enabled:</h5>"))

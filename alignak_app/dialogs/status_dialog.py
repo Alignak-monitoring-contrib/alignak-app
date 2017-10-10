@@ -25,12 +25,13 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QPixmap, QDialog, QLabel, QWidget  # pylint: disable=no-name-in-module
-from PyQt5.Qt import Qt, QPushButton, QGridLayout, QHBoxLayout  # pylint: disable=no-name-in-module
-
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css, get_time_diff_since_last_timestamp
 from alignak_app.frames.app_frame import AppQFrame
+
+from PyQt5.Qt import QPixmap, QDialog, QLabel, QWidget  # pylint: disable=no-name-in-module
+from PyQt5.Qt import Qt, QPushButton, QGridLayout, QHBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QApplication  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -75,6 +76,7 @@ class StatusQDialog(QDialog):
         # Use AppQWidget
         self.app_widget.initialize(_('Alignak Status'))
         self.app_widget.add_widget(self)
+        self.center(self.app_widget)
 
     def get_buttons_widget(self):
         """
@@ -111,8 +113,7 @@ class StatusQDialog(QDialog):
         """
 
         daemons_attributes = [
-            'alive', 'name', 'reachable', 'spare', 'address', 'port', 'passive',
-            'last_check'
+            'alive', 'name', 'reachable', 'spare', 'address', 'port', 'passive', 'last_check'
         ]
 
         for daemon in daemons:
@@ -172,7 +173,7 @@ class StatusQDialog(QDialog):
         """
 
         # Alive
-        self.labels[daemon_item.name]['alive'].setFixedSize(24, 24)
+        self.labels[daemon_item.name]['alive'].setFixedSize(18, 18)
         self.labels[daemon_item.name]['alive'].setScaledContents(True)
         self.layout.addWidget(self.labels[daemon_item.name]['alive'], line, 0, 1, 1)
         self.layout.setAlignment(self.labels[daemon_item.name]['alive'], Qt.AlignCenter)
@@ -185,19 +186,19 @@ class StatusQDialog(QDialog):
         self.layout.addWidget(self.labels[daemon_item.name]['address'], line, 2, 1, 1)
 
         # Reachable
-        self.labels[daemon_item.name]['reachable'].setFixedSize(18, 18)
+        self.labels[daemon_item.name]['reachable'].setFixedSize(14, 14)
         self.labels[daemon_item.name]['reachable'].setScaledContents(True)
         self.layout.addWidget(self.labels[daemon_item.name]['reachable'], line, 3, 1, 1)
         self.layout.setAlignment(self.labels[daemon_item.name]['reachable'], Qt.AlignCenter)
 
         # Spare
-        self.labels[daemon_item.name]['spare'].setFixedSize(18, 18)
+        self.labels[daemon_item.name]['spare'].setFixedSize(14, 14)
         self.labels[daemon_item.name]['spare'].setScaledContents(True)
         self.layout.addWidget(self.labels[daemon_item.name]['spare'], line, 4, 1, 1)
         self.layout.setAlignment(self.labels[daemon_item.name]['spare'], Qt.AlignCenter)
 
         # Passive
-        self.labels[daemon_item.name]['passive'].setFixedSize(18, 18)
+        self.labels[daemon_item.name]['passive'].setFixedSize(14, 14)
         self.labels[daemon_item.name]['passive'].setScaledContents(True)
         self.layout.addWidget(self.labels[daemon_item.name]['passive'], line, 5, 1, 1)
         self.layout.setAlignment(self.labels[daemon_item.name]['passive'], Qt.AlignCenter)
@@ -245,8 +246,8 @@ class StatusQDialog(QDialog):
         """
 
         states = {
-            True: 'valid',
-            False: 'problem'
+            True: 'connected',
+            False: 'disconnected'
         }
 
         # Should never happen
@@ -280,3 +281,14 @@ class StatusQDialog(QDialog):
         enable_pixmap = QPixmap(get_image_path(states[enable]))
 
         return enable_pixmap
+
+    @staticmethod
+    def center(widget):
+        """
+        Center QWidget
+
+        """
+
+        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+        center = QApplication.desktop().screenGeometry(screen).center()
+        widget.move(center.x() - (widget.width() / 2), center.y() - (widget.height() / 2))
