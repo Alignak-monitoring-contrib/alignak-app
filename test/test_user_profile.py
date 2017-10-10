@@ -23,16 +23,17 @@ import sys
 
 import unittest2
 from PyQt5.QtWidgets import QApplication, QWidget
-from alignak_app.core.utils import init_config
+
 from alignak_app.core.locales import init_localization
+from alignak_app.core.utils import init_config
+
 init_config()
 init_localization()
 app = QApplication(sys.argv)
-from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.items.item_user import User
 
-from alignak_app.user.user_widget import UserQWidget
+from alignak_app.dock.user_widget import UserQWidget
 
 
 

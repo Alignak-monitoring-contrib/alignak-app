@@ -20,32 +20,39 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Token Dialog manage display of user token
+    Password manage password form
 """
 
 from logging import getLogger
 
 from alignak_app.core.utils import get_css, get_image_path
-from alignak_app.core.data_manager import data_manager
 
-from PyQt5.Qt import QWidget, QDialog, QApplication, QIcon, Qt  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPushButton, QLabel, QPixmap, QVBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QHBoxLayout  # pylint: disable=no-name-in-module
+
+from PyQt5.QtWidgets import QWidget, QDialog, QApplication  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QPushButton  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel, QPixmap  # pylint: disable=no-name-in-module
+
 
 logger = getLogger(__name__)
 
 
-class TokenDialog(QDialog):
+class PasswordQDialog(QDialog):
     """
-        Class who create Token QDialog
+        Class who create PasswordDialog QDialog
     """
 
     def __init__(self, parent=None):
-        super(TokenDialog, self).__init__(parent)
+        super(PasswordQDialog, self).__init__(parent)
+        self.setWindowTitle('User Password')
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(get_css())
         self.setWindowIcon(QIcon(get_image_path('icon')))
-        self.setFixedSize(500, 200)
+        self.setFixedSize(300, 300)
+        # Fields
+        self.pass_edit = None
+        self.confirm_edit = None
+        self.help_label = None
 
     def initialize(self):
         """
@@ -62,29 +69,37 @@ class TokenDialog(QDialog):
 
         main_layout.addWidget(self.get_logo_widget(self))
 
-        # Token QWidget
-        token_widget = QWidget()
-        token_layout = QVBoxLayout()
-        token_widget.setLayout(token_layout)
+        pass_title = QLabel("Please type a new PASSWORD:")
+        main_layout.addWidget(pass_title)
+        main_layout.setAlignment(pass_title, Qt.AlignCenter)
 
-        token_title = QLabel("Token: %s" % data_manager.database['user'].name.capitalize())
-        token_layout.addWidget(token_title)
-        token_layout.setAlignment(token_title, Qt.AlignCenter)
+        pass_widget = QWidget()
+        pass_widget.setObjectName('login')
+        pass_layout = QVBoxLayout()
+        pass_widget.setLayout(pass_layout)
 
-        token_label = QLabel(data_manager.database['user'].data['token'])
-        token_label.setObjectName('output')
-        token_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
-        token_label.setWordWrap(True)
-        token_layout.addWidget(token_label)
+        self.pass_edit = QLineEdit()
+        self.pass_edit.setPlaceholderText('type password')
+        self.pass_edit.setEchoMode(QLineEdit.Password)
+        pass_layout.addWidget(self.pass_edit)
+
+        self.confirm_edit = QLineEdit()
+        self.confirm_edit.setPlaceholderText('confirm password')
+        self.confirm_edit.setEchoMode(QLineEdit.Password)
+        pass_layout.addWidget(self.confirm_edit)
+
+        self.help_label = QLabel("Your password must contain at least 5 characters.")
+        self.help_label.setWordWrap(True)
+        pass_layout.addWidget(self.help_label)
 
         # Login button
-        accept_btn = QPushButton('OK', self)
-        accept_btn.clicked.connect(self.accept)
+        accept_btn = QPushButton('Confirm', self)
+        accept_btn.clicked.connect(self.handle_confirm)
         accept_btn.setObjectName('valid')
         accept_btn.setMinimumHeight(30)
-        token_layout.addWidget(accept_btn)
+        pass_layout.addWidget(accept_btn)
 
-        main_layout.addWidget(token_widget)
+        main_layout.addWidget(pass_widget)
 
     @staticmethod
     def get_logo_widget(widget):
@@ -104,8 +119,7 @@ class TokenDialog(QDialog):
         logo_widget.setLayout(logo_layout)
 
         logo_label = QLabel()
-        logo_label.setPixmap(QPixmap(get_image_path('token')))
-        logo_label.setFixedSize(32, 32)
+        logo_label.setPixmap(QPixmap(get_image_path('password')))
         logo_label.setObjectName('widget_title')
         logo_label.setScaledContents(True)
 
@@ -134,6 +148,23 @@ class TokenDialog(QDialog):
         logo_layout.addWidget(close_btn, 3)
 
         return logo_widget
+
+    def handle_confirm(self):
+        """
+        Handle accept_btn for password
+
+        """
+
+        if bool(self.pass_edit.text() == self.confirm_edit.text()) and \
+                len(self.pass_edit.text()) > 4 and len(self.confirm_edit.text()) > 4:
+            self.accept()
+        else:
+            if bool(self.pass_edit.text() != self.confirm_edit.text()):
+                self.help_label.setText("Passwords do not match !")
+                self.help_label.setStyleSheet("color: red;")
+            if len(self.pass_edit.text()) < 5 or len(self.confirm_edit.text()) < 5:
+                self.help_label.setText("Your password must contain at least 5 characters.")
+                self.help_label.setStyleSheet("color: orange;")
 
     @staticmethod
     def center(widget):

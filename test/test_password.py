@@ -22,13 +22,12 @@
 import sys
 
 import unittest2
+from PyQt5.QtWidgets import QApplication
 
-from alignak_app.core.utils import init_config
 from alignak_app.core.backend import AppBackend
-from alignak_app.user.password import PasswordDialog
 from alignak_app.core.locales import init_localization
-
-from PyQt5.QtWidgets import QApplication, QWidget
+from alignak_app.core.utils import init_config
+from alignak_app.dialogs.password_dialog import PasswordQDialog
 
 
 class TestUserManager(unittest2.TestCase):
@@ -52,7 +51,7 @@ class TestUserManager(unittest2.TestCase):
     def test_initialize(self):
         """Initialize PasswordDialog"""
 
-        under_test = PasswordDialog()
+        under_test = PasswordQDialog()
 
         self.assertIsNone(under_test.pass_edit)
         self.assertIsNone(under_test.confirm_edit)
@@ -67,7 +66,7 @@ class TestUserManager(unittest2.TestCase):
     def test_center(self):
         """Center PasswordDialog"""
 
-        under_test = PasswordDialog()
+        under_test = PasswordQDialog()
 
         old_pos_test = under_test.pos()
 

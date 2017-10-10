@@ -25,19 +25,18 @@
 
 from logging import getLogger
 
+from PyQt5.Qt import QIcon, QPixmap, Qt, QHBoxLayout, QLabel  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QLineEdit  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=no-name-in-module
 
 from alignak_app.app_widget import AppQWidget, get_frame_separator
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css
+from alignak_app.dialogs.password_dialog import PasswordQDialog
+from alignak_app.dialogs.token_dialog import TokenQDialog
 from alignak_app.dock.events_widget import send_event
-from alignak_app.user.password import PasswordDialog
-from alignak_app.user.token_dialog import TokenDialog
-
-from PyQt5.Qt import QIcon, QPixmap, Qt, QHBoxLayout, QLabel  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QLineEdit  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -231,7 +230,7 @@ class UserQWidget(QWidget):
 
         """
 
-        token_dialog = TokenDialog()
+        token_dialog = TokenQDialog()
         token_dialog.initialize()
 
         token_dialog.exec_()
@@ -290,10 +289,10 @@ class UserQWidget(QWidget):
             self.notes_edit.show()
             self.notes_edit.setFocus()
         elif "password" in btn.objectName():
-            pass_dialog = PasswordDialog()
+            pass_dialog = PasswordQDialog()
             pass_dialog.initialize()
 
-            if pass_dialog.exec_() == PasswordDialog.Accepted:
+            if pass_dialog.exec_() == PasswordQDialog.Accepted:
                 new_password = pass_dialog.pass_edit.text()
 
                 data = {'password': str(new_password)}
