@@ -25,10 +25,6 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QIcon, QPixmap, Qt, QHBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QLabel, QLineEdit, QDialog  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=no-name-in-module
 
 from alignak_app.app_widget import AppQWidget, get_frame_separator
 from alignak_app.core.backend import app_backend
@@ -36,6 +32,12 @@ from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.dock.events_widget import send_event
 from alignak_app.user.password import PasswordDialog
+from alignak_app.user.token_dialog import TokenDialog
+
+from PyQt5.Qt import QIcon, QPixmap, Qt, QHBoxLayout, QLabel  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QLineEdit  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=no-name-in-module
+from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -71,6 +73,7 @@ class UserQWidget(QWidget):
         self.host_notif_state = None
         self.service_notif_state = None
         self.password_btn = None
+        self.token_btn = QPushButton()
         self.notes_btn = None
         self.notes_edit = None
         self.user = data_manager.database['user']
@@ -84,48 +87,32 @@ class UserQWidget(QWidget):
         # Initialize AppQWidget
         self.app_widget = AppQWidget()
         self.app_widget.initialize(_('User View'))
+        self.center(self.app_widget)
         self.app_widget.add_widget(self)
-
-        # first creation of QWidget
-        self.create_widget()
-
-    def create_widget(self):
-        """
-        Create or update the user QWidget. Separate function from initialize() for pyqtSignal
-
-        """
-
-        old_pos = None
-        logger.debug("Delete old UserProfile")
-        if self.app_widget:
-            old_pos = self.app_widget.pos()
-
-        if old_pos:
-            self.app_widget.move(old_pos)
 
         layout = QVBoxLayout()
         self.setLayout(layout)
 
-        layout.addWidget(self.get_user_informations_widget())
-
+        layout.addWidget(self.get_main_informations_widget())
         layout.addWidget(self.get_notifications_widget())
 
-    def get_user_informations_widget(self):
+    def get_main_informations_widget(self):
         """
-        TODO
-        :return:
+        Create and return informations QWidget
+
+        :return: informations QWidget
         """
 
         informations_widget = QWidget()
         informations_layout = QHBoxLayout()
         informations_widget.setLayout(informations_layout)
 
-        informations_layout.addWidget(self.get_main_user_widget())
+        informations_layout.addWidget(self.get_informations_widget())
         informations_layout.addWidget(self.get_notes_widget())
 
         return informations_widget
 
-    def get_main_user_widget(self):
+    def get_informations_widget(self):
         """
         Create and return QWidget with main informations
 
@@ -142,12 +129,12 @@ class UserQWidget(QWidget):
         main_layout.addWidget(main_title, 0, 0, 1, 4)
         main_layout.addWidget(get_frame_separator(), 1, 0, 1, 4)
 
-        main_layout.addWidget(self.get_information_widget(), 2, 0, 1, 2)
+        main_layout.addWidget(self.get_identity_widget(), 2, 0, 1, 2)
         main_layout.addWidget(self.get_rights_widget(), 2, 2, 1, 2)
 
         return main_user_widget
 
-    def get_information_widget(self):
+    def get_identity_widget(self):
         """
         Return informations QWidget
 
@@ -231,11 +218,23 @@ class UserQWidget(QWidget):
         token_title.setObjectName("title")
         rights_layout.addWidget(token_title, 4, 0, 1, 2)
 
-        self.labels['token'].setTextInteractionFlags(Qt.TextSelectableByMouse)
-        self.labels['token'].setCursor(Qt.IBeamCursor)
-        rights_layout.addWidget(self.labels['token'], 4, 1, 1, 1)
+        self.token_btn.setIcon(QIcon(get_image_path('token')))
+        self.token_btn.clicked.connect(self.show_token_dialog)
+        rights_layout.addWidget(self.token_btn, 4, 1, 1, 1)
 
         return rights_widget
+
+    @staticmethod
+    def show_token_dialog():
+        """
+        Show TokenQDialog
+
+        """
+
+        token_dialog = TokenDialog()
+        token_dialog.initialize()
+
+        token_dialog.exec_()
 
     def get_notes_widget(self):
         """
@@ -251,28 +250,29 @@ class UserQWidget(QWidget):
 
         main_notes_title = QLabel(_('Notes:'))
         main_notes_title.setObjectName("title")
-        notes_layout.addWidget(main_notes_title, 0, 0, 1, 4)
+        notes_layout.addWidget(main_notes_title, 0, 0, 1, 1)
         notes_layout.addWidget(get_frame_separator(), 1, 0, 1, 4)
 
-        # Add and hide QLineEdit; Shown only when edited
-        self.notes_edit = QLineEdit()
-        self.notes_edit.hide()
-        self.notes_edit.editingFinished.connect(self.patch_notes)
-        self.notes_edit.setToolTip(_('Type enter to validate your notes.'))
-        notes_layout.addWidget(self.notes_edit, 2, 1, 1, 1)
-
-        # Create QLabel for notes
-        notes_layout.addWidget(self.labels['notes'], 2, 1, 1, 1)
-
-        # Edit button for notes
+        # Notes button
         self.notes_btn = QPushButton()
         self.notes_btn.setIcon(QIcon(get_image_path('edit')))
         self.notes_btn.setToolTip(_("Edit your notes."))
         self.notes_btn.setObjectName("notes")
         self.notes_btn.setFixedSize(32, 32)
         self.notes_btn.clicked.connect(self.edit_notes)
+        notes_layout.addWidget(self.notes_btn, 2, 3, 1, 1)
 
-        notes_layout.addWidget(self.notes_btn, 2, 2, 1, 1)
+        # Add and hide QLineEdit; Shown only when edited
+        self.notes_edit = QLineEdit()
+        self.notes_edit.hide()
+        self.notes_edit.editingFinished.connect(self.patch_notes)
+        self.notes_edit.setToolTip(_('Type enter to validate your notes.'))
+        notes_layout.addWidget(self.notes_edit, 3, 0, 1, 4)
+
+        # Create QLabel for notes
+        notes_layout.addWidget(self.labels['notes'], 3, 0, 1, 4)
+
+        notes_layout.setAlignment(Qt.AlignTop)
 
         return notes_widget
 
@@ -293,7 +293,7 @@ class UserQWidget(QWidget):
             pass_dialog = PasswordDialog()
             pass_dialog.initialize()
 
-            if pass_dialog.exec_() == QDialog.Accepted:
+            if pass_dialog.exec_() == PasswordDialog.Accepted:
                 new_password = pass_dialog.pass_edit.text()
 
                 data = {'password': str(new_password)}
@@ -338,7 +338,8 @@ class UserQWidget(QWidget):
                     _("Backend PATCH failed, please check your logs !")
                 )
 
-            # thread_manager.add_task('user')
+            self.notes_edit.hide()
+            self.labels['notes'].show()
             self.update_widget()
         else:
             self.labels['notes'].show()
@@ -605,8 +606,10 @@ class UserQWidget(QWidget):
         self.labels['alias'].setText(self.user.data['alias'])
         self.labels['notes'].setText(self.user.data['notes'])
         if self.user.data['is_admin']:
+            self.token_btn.setEnabled(True)
             self.labels['token'].setText(self.user.data['token'])
         else:
+            self.token_btn.setEnabled(False)
             self.labels['token'].setText(_('Only administrators can see their token.'))
 
         # Notifications
@@ -666,6 +669,17 @@ class UserQWidget(QWidget):
         enable_pixmap = QPixmap(get_image_path(states[state]))
 
         return enable_pixmap
+
+    @staticmethod
+    def center(widget):
+        """
+        Center QWidget
+
+        """
+
+        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+        center = QApplication.desktop().screenGeometry(screen).center()
+        widget.move(center.x() - (widget.width() / 2), center.y() - (widget.height() / 2))
 
 
 # Initialize user_widget object

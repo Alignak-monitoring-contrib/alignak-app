@@ -87,8 +87,8 @@ class TestUserProfile(unittest2.TestCase):
 
         options_test = ['d', 'u', 'r', 'f', 's', 'n']
 
-        main_widget_test = under_test.get_main_user_widget()
-        info_widget_test = under_test.get_information_widget()
+        main_widget_test = under_test.get_informations_widget()
+        info_widget_test = under_test.get_identity_widget()
         rights_widget_test = under_test.get_rights_widget()
         notes_widget_test = under_test.get_notes_widget()
         notif_widget_test = under_test.get_notifications_widget()
