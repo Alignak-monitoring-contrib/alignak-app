@@ -31,7 +31,7 @@ from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget  # pylint: disab
 
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_css, get_image_path
-from alignak_app.frames.app_widget import AppQWidget, get_frame_separator
+from alignak_app.frames.app_frame import AppQWidget, get_frame_separator
 from alignak_app.widgets.panel.services_widget import services_widget
 from alignak_app.widgets.panel.host_widget import host_widget
 from alignak_app.widgets.panel.dashboard_widget import dashboard_widget

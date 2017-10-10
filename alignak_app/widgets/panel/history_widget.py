@@ -32,7 +32,7 @@ from PyQt5.QtWidgets import QWidget, QScrollArea, QLabel  # pylint: disable=no-n
 
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_css, get_image_path
-from alignak_app.frames.app_widget import AppQWidget
+from alignak_app.frames.app_frame import AppQWidget
 
 logger = getLogger(__name__)
 

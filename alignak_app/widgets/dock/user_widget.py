@@ -36,7 +36,7 @@ from alignak_app.core.utils import get_image_path, get_css
 
 from alignak_app.dialogs.password_dialog import PasswordQDialog
 from alignak_app.dialogs.token_dialog import TokenQDialog
-from alignak_app.frames.app_widget import AppQWidget, get_frame_separator
+from alignak_app.frames.app_frame import AppQWidget, get_frame_separator
 from alignak_app.widgets.dock.events_widget import send_event
 
 logger = getLogger(__name__)
