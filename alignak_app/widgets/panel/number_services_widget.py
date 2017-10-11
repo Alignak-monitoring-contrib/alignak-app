@@ -112,4 +112,10 @@ class NumberServicesQWidget(QWidget):
             _('<b>Services of %s: </b> %d services') % (host_name, services_total)
         )
         for state in services_data:
-            self.nb_labels[state].setText(str(services_data[state]))
+            percent = 0.0
+            try:
+                percent = float(services_data[state]) * 100.0 / float(services_total)
+            except ZeroDivisionError as e:
+                logger.error(e)
+            item_text = '%d (%.01f%%)' % (services_data[state], percent)
+            self.nb_labels[state].setText(item_text)
