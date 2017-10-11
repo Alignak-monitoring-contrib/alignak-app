@@ -30,9 +30,12 @@ from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.frames.app_frame import get_frame_separator
 from alignak_app.widgets.panel.service_tree_item import ServicesTreeItem
 from alignak_app.widgets.panel.service_data_widget import ServiceDataQWidget
+from alignak_app.core.items.item_service import Service
+from alignak_app.core.items.item_model import get_icon_item
 
 from PyQt5.Qt import QLabel, QWidget, QIcon, QGridLayout, QSize  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QTreeWidget, QTreeWidgetItem  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QTreeWidget, QTreeWidgetItem, QHBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPixmap  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -51,6 +54,7 @@ class ServicesQWidget(QWidget):
         self.service_items = None
         self.services_tree_widget = QTreeWidget()
         self.service_data_widget = ServiceDataQWidget()
+        self.icons_widget = QWidget()
 
     def initialize(self):
         """
@@ -61,8 +65,7 @@ class ServicesQWidget(QWidget):
         layout = QGridLayout()
         self.setLayout(layout)
 
-        self.services_title.setObjectName('title')
-        layout.addWidget(self.services_title, 0, 0, 1, 2)
+        layout.addWidget(self.icons_widget, 0, 1, 1, 2)
         layout.addWidget(get_frame_separator())
 
         self.services_tree_widget.setIconSize(QSize(32, 32))
@@ -70,6 +73,80 @@ class ServicesQWidget(QWidget):
 
         self.service_data_widget.initialize()
         layout.addWidget(self.service_data_widget, 1, 1, 1, 1)
+
+    def set_services_resume_icons(self):
+        """
+        TODO
+        :return:
+        """
+
+        icons_layout = QHBoxLayout()
+        self.icons_widget.setLayout(icons_layout)
+
+        self.services_title.setObjectName('title')
+        icons_layout.addWidget(self.services_title)
+
+        services_data = Service.get_service_states_nb()
+
+        for service in self.service_items:
+            if service.data['ls_downtimed']:
+                services_data['DOWNTIME'] += 1
+            elif service.data['ls_acknowledged']:
+                services_data['ACKNOWLEDGE'] += 1
+            else:
+                services_data[service.data['ls_state']] += 1
+
+        for state in services_data:
+            icon = self.get_icon_resume(state)
+            icon_pixmap = QPixmap(get_image_path(icon))
+            item_icon = QLabel()
+            item_icon.setPixmap(icon_pixmap)
+            item_icon.setFixedSize(18, 18)
+            item_icon.setScaledContents(True)
+            item_icon.setToolTip(state)
+            icons_layout.addWidget(item_icon)
+            nb_label = QLabel(str(services_data[state]))
+            nb_label.setObjectName(self.get_icon_name(state))
+            icons_layout.addWidget(nb_label)
+
+        print(services_data)
+
+    @staticmethod
+    def get_icon_name(state):
+        """
+        TODO
+        :param state:
+        :type state: str
+        :return:
+        """
+
+        if state == 'DOWNTIME':
+            return 'downtime'
+        elif state == 'ACKNOWLEDGE':
+            return 'acknowledge'
+        else:
+            return 'services_%s' % state.lower()
+
+    @staticmethod
+    def get_icon_resume(state):
+        """
+        TODO
+        :param state:
+        :return:
+        """
+
+        down = False
+        ack = False
+        if state == 'DOWNTIME':
+            down = True
+        elif state == 'ACKNOWLEDGE':
+            ack = True
+        else:
+            pass
+
+        icon = get_icon_item('service', state, ack, down)
+
+        return icon
 
     def set_data(self, hostname):
         """
@@ -82,6 +159,8 @@ class ServicesQWidget(QWidget):
         host_and_services = data_manager.get_host_with_services(hostname)
         self.host_item = host_and_services['host']
         self.service_items = host_and_services['services']
+
+        self.set_services_resume_icons()
 
     def update_widget(self):
         """
