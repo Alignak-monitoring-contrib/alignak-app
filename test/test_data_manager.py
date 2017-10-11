@@ -25,7 +25,7 @@ from alignak_app.core.items.item_host import Host
 from alignak_app.core.items.item_service import Service
 from alignak_app.core.items.item_user import User
 from alignak_app.core.items.item_livesynthesis import LiveSynthesis
-from alignak_app.core.items.item_notification import Notification
+from alignak_app.core.items.item_event import Event
 from alignak_app.core.data_manager import DataManager
 
 

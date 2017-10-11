@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    ItemNotification manage creation of notification item
+    Event manage creation of notification item
 """
 
 
@@ -35,13 +35,13 @@ from alignak_app.core.items.item_model import ItemModel
 logger = getLogger(__name__)
 
 
-class Notification(ItemModel):
+class Event(ItemModel):
     """
-        Class who create a notification item
+        Class who create an event item
     """
 
     def __init__(self):
-        super(Notification, self).__init__()
+        super(Event, self).__init__()
         self.item_type = 'notification'
 
     @staticmethod
@@ -60,7 +60,9 @@ class Notification(ItemModel):
         # Backend use time format in "en_US", so switch if needed
         if "en_US" not in locale.getlocale(locale.LC_TIME) and 'win32' not in sys.platform:
             locale.setlocale(locale.LC_TIME, "en_US.utf-8")
-            logger.debug("App set locale to %s for converting date", locale.getlocale(locale.LC_TIME))
+            logger.debug(
+                "App set locale to %s for converting date", locale.getlocale(locale.LC_TIME)
+            )
 
         # Define time for the last 30 minutes for notifications
         time_interval = (datetime.datetime.utcnow() - datetime.timedelta(minutes=30)) \

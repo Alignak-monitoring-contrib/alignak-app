@@ -30,7 +30,7 @@ from PyQt5.Qt import QThread, pyqtSignal  # pylint: disable=no-name-in-module
 from alignak_app.core.items.item_daemon import Daemon
 from alignak_app.core.items.item_host import Host
 from alignak_app.core.items.item_livesynthesis import LiveSynthesis
-from alignak_app.core.items.item_notification import Notification
+from alignak_app.core.items.item_event import Event
 from alignak_app.core.items.item_service import Service
 from alignak_app.core.items.item_user import User
 from alignak_app.core.items.item_history import History
@@ -270,7 +270,7 @@ class BackendQThread(QThread):
 
         """
 
-        request_data = Notification.get_request_model()
+        request_data = Event.get_request_model()
 
         request = app_backend.get(
             request_data['endpoint'],
@@ -287,7 +287,7 @@ class BackendQThread(QThread):
                 if 'imported_admin' in user:
                     user = 'admin'
                 if user == data_manager.database['user'].name:
-                    notification = Notification()
+                    notification = Event()
 
                     notification.create(
                         item['_id'],
