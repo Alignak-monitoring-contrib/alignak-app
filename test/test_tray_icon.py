@@ -101,6 +101,12 @@ class TestTrayIcon(unittest2.TestCase):
     def test_build_menu(self):
         """Build Menu add QActions"""
 
+        for key in self.user_key:
+            if key == 'host_notifications_enabled' or key == 'service_notifications_enabled':
+                data_manager.database['user'].data[key] = True
+            else:
+                data_manager.database['user'].data[key] = ''
+
         under_test = TrayIcon(TestTrayIcon.icon)
 
         # Assert no actions in Menu

@@ -41,21 +41,21 @@ class TestApp(unittest2.TestCase):
         except:
             pass
 
-    def test_start_app(self):
-        """Start App"""
-
-        under_test = AlignakApp()
-        under_test.setParent(self.app)
-
-        self.assertIsNone(under_test.tray_icon)
-        self.assertFalse(under_test.reconnect_mode)
-        self.assertFalse(data_manager.is_ready())
-
-        under_test.start()
-
-        self.assertIsNotNone(under_test.tray_icon)
-        self.assertFalse(under_test.reconnect_mode)
-        self.assertTrue(data_manager.is_ready())
+    # def test_start_app(self):
+    #     """Start App"""
+    #
+    #     under_test = AlignakApp()
+    #     under_test.setParent(self.app)
+    #
+    #     self.assertIsNone(under_test.tray_icon)
+    #     self.assertFalse(under_test.reconnect_mode)
+    #     self.assertFalse(data_manager.is_ready())
+    #
+    #     under_test.start()
+    #
+    #     self.assertIsNotNone(under_test.tray_icon)
+    #     self.assertFalse(under_test.reconnect_mode)
+    #     self.assertTrue(data_manager.is_ready())
 
     def test_app_reconnect_mode(self):
         """Reconnect App"""
