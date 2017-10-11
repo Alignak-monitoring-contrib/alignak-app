@@ -27,7 +27,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QIcon, QTreeWidgetItem  # pylint: disable=no-name-in-module
 
-from alignak_app.core.items.item_model import get_icon_item
+from alignak_app.core.items.item_model import get_icon_name
 from alignak_app.core.utils import get_image_path
 
 logger = getLogger(__name__)
@@ -55,7 +55,7 @@ class ServicesTreeItem(QTreeWidgetItem):  # pylint: disable=too-few-public-metho
         self.service_id = service_item.item_id
         self.setText(0, self.service_item.name)
 
-        icon_name = get_icon_item(
+        icon_name = get_icon_name(
             'service',
             service_item.data['ls_state'],
             service_item.data['ls_acknowledged'],

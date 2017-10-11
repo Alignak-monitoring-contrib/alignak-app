@@ -34,7 +34,7 @@ from alignak_app.core.utils import get_app_config, get_main_folder
 logger = getLogger(__name__)
 
 
-def init_localization():
+def init_localization():  # pragma: no cover
     """
     Application localization
 

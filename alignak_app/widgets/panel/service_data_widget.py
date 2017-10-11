@@ -30,7 +30,7 @@ from PyQt5.Qt import QPixmap, QVBoxLayout, QGridLayout  # pylint: disable=no-nam
 
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.items.item_model import get_icon_item
+from alignak_app.core.items.item_model import get_icon_name
 from alignak_app.core.utils import get_image_path, get_css, get_time_diff_since_last_timestamp
 from alignak_app.dialogs.actions_dialogs import AckQDialog, DownQDialog, QDialog
 from alignak_app.widgets.dock.events_widget import send_event
@@ -275,7 +275,7 @@ class ServiceDataQWidget(QWidget):
         self.service_item = service
         self.host_id = host_id
 
-        icon_name = get_icon_item(
+        icon_name = get_icon_name(
             'service',
             self.service_item.data['ls_state'],
             self.service_item.data['ls_acknowledged'],

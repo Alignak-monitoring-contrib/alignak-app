@@ -82,14 +82,18 @@ class ItemModel(object):
         self.data[key] = new_value
 
 
-def get_icon_item(item_type, state, acknowledge, downtime):
+def get_icon_name(item_type, state, acknowledge, downtime):
     """
     Return icon for a host or a service item
 
-    :param item_type:
-    :param state:
-    :param acknowledge:
-    :param downtime:
+    :param item_type: type of item: host | service
+    :type item_type: str
+    :param state: state of item
+    :type state: str
+    :param acknowledge: if item is acknowledged or not
+    :type acknowledge: bool
+    :param downtime: if item is downtimed
+    :type downtime: bool
     :return: icon name for icon
     :rtype: str
     """
@@ -113,7 +117,11 @@ def get_icon_item(item_type, state, acknowledge, downtime):
             'UNREACHABLE': 'services_unreachable'
         }
     }
-    return available_icons[item_type][state]
+    try:
+        return available_icons[item_type][state]
+    except KeyError as e:
+        logger.error('Wrong KEY for get_icon(): %s' % e)
+        return 'error'
 
 
 def get_icon_name_from_state(item_type, state):
@@ -162,4 +170,5 @@ def get_real_host_state_icon(services):
 
         return icon_names[max_state_lvl]
 
-    return ''
+    logger.error('Empty services in get_real_host_state_icon()')
+    return 'error'

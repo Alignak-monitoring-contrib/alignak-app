@@ -1,0 +1,195 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Copyright (c) 2015-2017:
+#   Matthieu Estrada, ttamalfor@gmail.com
+#
+# This file is part of (AlignakApp).
+#
+# (AlignakApp) is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# (AlignakApp) is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
+
+import unittest2
+
+from alignak_app.core.backend import app_backend
+from alignak_app.core.utils import init_config
+from alignak_app.core.items.item_model import *
+from alignak_app.core.items.item_service import Service
+from alignak_app.core.items.item_history import History
+from alignak_app.core.items.item_user import User
+from alignak_app.core.items.item_host import Host
+from alignak_app.core.items.item_livesynthesis import LiveSynthesis
+from alignak_app.core.items.item_daemon import Daemon
+from alignak_app.core.items.item_event import Event
+
+
+class TestAllItems(unittest2.TestCase):
+    """
+        This file test methods of AppBackend class
+    """
+
+    init_config()
+    app_backend.login()
+
+    def test_item_model(self):
+        """Create ItemModel"""
+
+        under_test = ItemModel()
+
+        under_test.create('_id', {'ls_state': 'DOWN'}, 'name')
+
+        self.assertTrue('_id' == under_test.item_id)
+        self.assertTrue('ls_state' in under_test.data)
+        self.assertTrue('DOWN' == under_test.data['ls_state'])
+        self.assertTrue('name' == under_test.name)
+
+    def test_item_model_get_data(self):
+        """Get Data ItemModel"""
+
+        under_test = ItemModel()
+
+        under_test.create('_id', {'ls_state': 'DOWN', 'ls_acknowledged': True}, 'name')
+
+        data_test = under_test.get_data('ls_state')
+
+        self.assertTrue('DOWN' == data_test)
+
+    def test_item_model_update_data(self):
+        """Update Data ItemModel"""
+
+        under_test = ItemModel()
+
+        under_test.create('_id', {'ls_state': 'DOWN', 'ls_acknowledged': True}, 'name')
+
+        under_test.update_data('ls_acknowledged', False)
+
+        data_test = under_test.get_data('ls_acknowledged')
+
+        self.assertTrue(data_test is False)
+
+    def test_get_icon_name(self):
+        """Get Icon Name"""
+
+        under_test = get_icon_name('host', 'UP', acknowledge=False, downtime=False)
+        self.assertEqual('hosts_up', under_test)
+
+        under_test = get_icon_name('service', 'WARNING', acknowledge=False, downtime=False)
+        self.assertEqual('services_warning', under_test)
+
+        under_test = get_icon_name('host', 'DOWN', acknowledge=True, downtime=False)
+        self.assertEqual('acknowledge', under_test)
+
+        under_test = get_icon_name('service', 'UNREACHABLE', acknowledge=True, downtime=True)
+        self.assertEqual('downtime', under_test)
+
+        under_test = get_icon_name('host', 'OK', acknowledge=False, downtime=False)
+        self.assertEqual('error', under_test)
+
+    def test_get_icon_name_from_state(self):
+        """Get Icon Name from State"""
+
+        under_test = get_icon_name_from_state('host', 'UP')
+        self.assertEqual('hosts_up', under_test)
+
+        under_test = get_icon_name_from_state('service', 'CRITICAL')
+        self.assertEqual('services_critical', under_test)
+
+        under_test = get_icon_name_from_state('host', 'ACKNOWLEDGE')
+        self.assertEqual('acknowledge', under_test)
+
+        under_test = get_icon_name_from_state('service', 'DOWNTIME')
+        self.assertEqual('downtime', under_test)
+
+    def test_get_real_host_state_icon(self):
+        """Get Real Host State Icon"""
+
+        # Service data test
+        services_test = []
+        for i in range(0, 5):
+            service = Service()
+            service.create(
+                '_id%d' % i,
+                {'name': 'service%d' % i, '_overall_state_id': i},
+                'service%d' % i
+            )
+            services_test.append(service)
+            service = Service()
+            service.create(
+                'other_id2%d' % i,
+                {'name': 'other_service2%d' % i, '_overall_state_id': i},
+                'other_service%d' % i
+            )
+            services_test.append(service)
+
+        under_test = get_real_host_state_icon(services_test)
+        self.assertEqual('all_services_critical', under_test)
+
+    def test_get_request_history_model(self):
+        """Get History Request Model"""
+
+        under_test = History.get_request_model()
+
+        self.assertTrue('endpoint' in under_test)
+        self.assertEqual('history', under_test['endpoint'])
+        self.assertTrue('params' in under_test)
+        self.assertTrue('projection' in under_test)
+
+    def test_get_request_user_model(self):
+        """Get User Request Model"""
+
+        under_test = User.get_request_model()
+
+        self.assertTrue('endpoint' in under_test)
+        self.assertEqual('user', under_test['endpoint'])
+        self.assertTrue('params' in under_test)
+        self.assertTrue('projection' in under_test)
+
+    def test_get_request_host_model(self):
+        """Get Host Request Model"""
+
+        under_test = Host.get_request_model()
+
+        self.assertTrue('endpoint' in under_test)
+        self.assertEqual('host', under_test['endpoint'])
+        self.assertTrue('params' in under_test)
+        self.assertTrue('projection' in under_test)
+
+    def test_get_request_service_model(self):
+        """Get Service Request Model"""
+
+        under_test = Service.get_request_model()
+
+        self.assertTrue('endpoint' in under_test)
+        self.assertEqual('service', under_test['endpoint'])
+        self.assertTrue('params' in under_test)
+        self.assertTrue('projection' in under_test)
+
+    def test_get_request_daemon_model(self):
+        """Get Daemon Request Model"""
+
+        under_test = Daemon.get_request_model()
+
+        self.assertTrue('endpoint' in under_test)
+        self.assertEqual('alignakdaemon', under_test['endpoint'])
+        self.assertTrue('params' in under_test)
+        self.assertTrue('projection' in under_test)
+
+    def test_get_request_event_model(self):
+        """Get Event Request Model"""
+
+        under_test = Event.get_request_model()
+
+        self.assertTrue('endpoint' in under_test)
+        self.assertEqual('history', under_test['endpoint'])
+        self.assertTrue('params' in under_test)
+        self.assertTrue('projection' in under_test)
