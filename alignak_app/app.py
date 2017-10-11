@@ -59,7 +59,7 @@ class AlignakApp(QObject):
         self.tray_icon = None
         self.reconnect_mode = False
 
-    def start(self):
+    def start(self):  # pragma: no cover
         """
         The main function of Alignak-App
 
