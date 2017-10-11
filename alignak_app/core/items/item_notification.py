@@ -60,7 +60,7 @@ class Notification(ItemModel):
         # Backend use time format in "en_US", so switch if needed
         if "en_US" not in locale.getlocale(locale.LC_TIME) and 'win32' not in sys.platform:
             locale.setlocale(locale.LC_TIME, "en_US.utf-8")
-            logger.warning("App set locale to %s ", locale.getlocale(locale.LC_TIME))
+            logger.debug("App set locale to %s for converting date", locale.getlocale(locale.LC_TIME))
 
         # Define time for the last 30 minutes for notifications
         time_interval = (datetime.datetime.utcnow() - datetime.timedelta(minutes=30)) \

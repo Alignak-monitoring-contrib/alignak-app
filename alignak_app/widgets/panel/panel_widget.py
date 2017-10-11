@@ -147,7 +147,7 @@ class PanelQWidget(QWidget):
             model = QStringListModel()
 
         if not hostnames_list:
-            self.hostnames_list = data_manager.get_all_host_name()
+            self.hostnames_list = data_manager.get_all_hostnames()
         else:
             self.hostnames_list = hostnames_list
 
@@ -171,7 +171,7 @@ class PanelQWidget(QWidget):
 
         if self.line_search.text() in self.hostnames_list:
             # Update linesearch if needed
-            hostnames_list = data_manager.get_all_host_name()
+            hostnames_list = data_manager.get_all_hostnames()
             if hostnames_list != self.hostnames_list:
                 self.create_line_search(hostnames_list)
 

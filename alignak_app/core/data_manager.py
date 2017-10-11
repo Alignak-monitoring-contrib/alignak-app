@@ -154,7 +154,7 @@ class DataManager(object):
 
         return synthesis_count
 
-    def get_all_host_name(self):
+    def get_all_hostnames(self):
         """
         Collect and return all names of all hosts
 
@@ -207,7 +207,8 @@ class DataManager(object):
         """
         Get the last events
 
-        :ret
+        :return: events formated for App to send
+        :rtype: list
         """
 
         events = data_manager.database['notifications']
@@ -215,6 +216,7 @@ class DataManager(object):
 
         notifications_to_send = []
         for event in events:
+            print(event.data)
             # If the notification has not already been sent to the last check
             if event.item_id not in self.old_notifications:
                 message_split = event.data['message'].split(';')
