@@ -157,6 +157,7 @@ class AlignakApp(QObject):
             if 'token' not in app_backend.user:
                 app_backend.user['token'] = app_backend.backend.token
 
+            # Build splash screen
             splash_icon = QPixmap(get_image_path('alignak'))
             splash = QSplashScreen(splash_icon)
 
@@ -177,23 +178,9 @@ class AlignakApp(QObject):
                     while time.time() < t + 0.01:
                         self.parent().processEvents()
 
-            logger.info("Starting Dock...")
-
-            # Prevent from: QWidget: Must construct a QApplication before a QWidget
-            from alignak_app.widgets.dock.events_widget import send_event
-
-            logger.info("Start TrayIcon...")
             self.tray_icon = TrayIcon(QIcon(get_image_path('icon')))
             self.tray_icon.build_menu()
             self.tray_icon.show()
-
-            # Send Welcome Banner
-            send_event(
-                'OK',
-                _('Welcome %s, you are connected to Alignak Backend') %
-                data_manager.database['user'].name,
-            )
-
         else:
             # In case of data provided in config file fails
             logger.error(

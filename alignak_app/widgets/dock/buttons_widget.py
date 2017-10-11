@@ -31,7 +31,7 @@ from PyQt5.Qt import QPushButton, QWidget, QIcon, QHBoxLayout  # pylint: disable
 from PyQt5.Qt import QTimer  # pylint: disable=no-name-in-module
 
 from alignak_app.core.utils import get_image_path, get_css, get_app_config
-from alignak_app.widgets.dock.user_widget import user_widget
+from alignak_app.widgets.dock.user_widget import UserQWidget
 from alignak_app.widgets.panel.panel_widget import panel_widget
 
 logger = getLogger(__name__)
@@ -46,6 +46,7 @@ class ButtonsQWidget(QWidget):
         super(ButtonsQWidget, self).__init__(parent)
         self.setStyleSheet(get_css())
         # Fields
+        self.user_widget = UserQWidget()
         self.update_timer = QTimer()
         self.webui_btn = QPushButton()
         self.profile_btn = QPushButton()
@@ -71,7 +72,7 @@ class ButtonsQWidget(QWidget):
         self.problems_btn.setFixedSize(40, 40)
         layout.addWidget(self.problems_btn)
 
-        user_widget.initialize()
+        self.user_widget.initialize()
         self.profile_btn.setIcon(QIcon(get_image_path('user')))
         self.profile_btn.setFixedSize(40, 40)
         self.profile_btn.clicked.connect(self.open_user_widget)
@@ -112,15 +113,14 @@ class ButtonsQWidget(QWidget):
 
         panel_widget.app_widget.show()
 
-    @staticmethod
-    def open_user_widget():
+    def open_user_widget(self):
         """
         Show UserQWidget
 
         """
 
-        user_widget.update_widget()
-        user_widget.app_widget.show()
+        self.user_widget.update_widget()
+        self.user_widget.app_widget.show()
 
     @staticmethod
     def open_url():  # pragma: no cover

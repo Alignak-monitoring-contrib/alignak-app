@@ -24,15 +24,13 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication
 
-from alignak_app.app import AlignakApp
+from alignak_app.app import AlignakApp, data_manager
 
 
 class TestApp(unittest2.TestCase):
     """
         TODO This file test methods of AlignakApp class.
     """
-
-    # data_manager.database['user'] = User()
 
     @classmethod
     def setUpClass(cls):
@@ -43,8 +41,24 @@ class TestApp(unittest2.TestCase):
         except:
             pass
 
-    def test_app_main(self):
-        """Build Alignak-App"""
+    def test_start_app(self):
+        """Start App"""
+
+        under_test = AlignakApp()
+        under_test.setParent(self.app)
+
+        self.assertIsNone(under_test.tray_icon)
+        self.assertFalse(under_test.reconnect_mode)
+        self.assertFalse(data_manager.is_ready())
+
+        under_test.start()
+
+        self.assertIsNotNone(under_test.tray_icon)
+        self.assertFalse(under_test.reconnect_mode)
+        self.assertTrue(data_manager.is_ready())
+
+    def test_app_reconnect_mode(self):
+        """Reconnect App"""
 
         under_test = AlignakApp()
 

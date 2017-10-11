@@ -110,6 +110,12 @@ class EventsQListWidget(QWidget):
         self.events_list.setSortingEnabled(True)
         self.events_list.setWordWrap(True)
 
+        self.add_event(
+            'OK',
+            _('Welcome %s, you are connected to Alignak Backend') %
+            data_manager.database['user'].name
+        )
+
         layout.addWidget(self.events_list)
 
     def send_datamanager_events(self):

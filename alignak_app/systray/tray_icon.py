@@ -47,7 +47,9 @@ class TrayIcon(QSystemTrayIcon):
         self.menu = QMenu(parent)
         self.qaction_factory = QActionFactory()
         self.app_about = None
-        self.dock = None
+        # Import dock from TrayIcon to fix application icon problem
+        from alignak_app.widgets.dock.dock_widget import DockQWidget
+        self.dock = DockQWidget()
 
     def build_menu(self):
         """
@@ -55,6 +57,7 @@ class TrayIcon(QSystemTrayIcon):
 
         """
 
+        logger.info("Start TrayIcon...")
         # Create actions
         self.create_dock_action()
 
@@ -83,9 +86,6 @@ class TrayIcon(QSystemTrayIcon):
             self
         )
 
-        # Import dock from TrayIcon to fix application icon problem
-        from alignak_app.widgets.dock.dock_widget import DockQWidget
-        self.dock = DockQWidget()
         self.dock.initialize()
         self.dock.app_widget.show()
         self.qaction_factory.get_action('icon').triggered.connect(self.dock.show_dock)

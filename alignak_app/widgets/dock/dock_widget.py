@@ -125,6 +125,3 @@ class DockQWidget(QWidget):
 
         self.app_widget.show()
         QWidget.activateWindow(self.app_widget)
-
-# Initialize dock var to None
-dock = DockQWidget()

@@ -55,7 +55,7 @@ class ThreadManager(QObject):
 
         """
 
-        logger.info("Start backend Manager...")
+        logger.info('Start Thread Manager...')
 
         # Make a first request
         self.create_tasks()

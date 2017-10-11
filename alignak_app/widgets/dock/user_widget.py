@@ -683,7 +683,3 @@ class UserQWidget(QWidget):
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
         center = QApplication.desktop().screenGeometry(screen).center()
         widget.move(center.x() - (widget.width() / 2), center.y() - (widget.height() / 2))
-
-
-# Initialize user_widget object
-user_widget = UserQWidget()
