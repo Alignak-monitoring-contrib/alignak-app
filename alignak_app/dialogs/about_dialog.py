@@ -115,7 +115,7 @@ class AboutQDialog(QDialog):
 
         return link_label
 
-    def show_about(self):
+    def show_about(self):  # pragma: no cover
         """
         Show QWidget
 

@@ -32,7 +32,7 @@ init_config()
 init_localization()
 
 
-class TestActions(unittest2.TestCase):
+class TestActionsQDialogs(unittest2.TestCase):
     """
         This file test the Acknowledge and Downtime classes.
     """

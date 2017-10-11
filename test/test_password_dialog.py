@@ -22,49 +22,84 @@
 import sys
 
 import unittest2
-from PyQt5.QtWidgets import QApplication
 
-from alignak_app.core.backend import AppBackend
-from alignak_app.core.locales import init_localization
-from alignak_app.core.utils import init_config
 from alignak_app.dialogs.password_dialog import PasswordQDialog
+from alignak_app.core.utils import init_config
+from alignak_app.core.locales import init_localization
+
+from PyQt5.QtWidgets import QApplication, QWidget
+
+init_config()
+init_localization()
 
 
 class TestPasswordQDialog(unittest2.TestCase):
     """
-       This file test the PasswordQDialog class.
+        This file test the PasswordQDialog classes.
     """
-
-    init_config()
-    init_localization()
 
     @classmethod
     def setUpClass(cls):
         """Create QApplication"""
         try:
             cls.app = QApplication(sys.argv)
-            cls.app_backend = AppBackend()
-            cls.app_backend.login()
         except:
             pass
 
-    def test_initialize(self):
-        """Initialize PasswordDialog"""
+    def test_about_dialog(self):
+        """Initialize Password QDialog"""
 
         under_test = PasswordQDialog()
 
-        self.assertIsNone(under_test.pass_edit)
-        self.assertIsNone(under_test.confirm_edit)
-        self.assertIsNone(under_test.help_label)
+        self.assertIsNotNone(under_test.pass_edit)
+        self.assertIsNotNone(under_test.confirm_edit)
+        self.assertIsNotNone(under_test.help_label)
 
         under_test.initialize()
 
         self.assertIsNotNone(under_test.pass_edit)
         self.assertIsNotNone(under_test.confirm_edit)
         self.assertIsNotNone(under_test.help_label)
+        self.assertEqual(
+            'Your password must contain at least 5 characters.',
+            under_test.help_label.text()
+        )
+
+    def test_get_password_logo_widget(self):
+        """Get Password Dialog logo Widget"""
+
+        password_test = PasswordQDialog()
+
+        under_test = password_test.get_logo_widget(password_test)
+
+        self.assertIsInstance(under_test, QWidget)
+
+    def test_handle_confirm(self):
+        """Confirm Password"""
+
+        under_test = PasswordQDialog()
+
+        # Passwords do not match
+        under_test.pass_edit.setText('password1')
+        under_test.confirm_edit.setText('password2')
+
+        under_test.handle_confirm()
+
+        self.assertEqual('Passwords do not match !', under_test.help_label.text())
+
+        # Password is too short
+        under_test.pass_edit.setText('pass')
+        under_test.confirm_edit.setText('pass')
+
+        under_test.handle_confirm()
+
+        self.assertEqual(
+            'Your password must contain at least 5 characters.',
+            under_test.help_label.text()
+        )
 
     def test_center(self):
-        """Center PasswordDialog"""
+        """Center Password Dialog"""
 
         under_test = PasswordQDialog()
 

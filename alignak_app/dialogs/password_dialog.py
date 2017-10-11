@@ -50,9 +50,9 @@ class PasswordQDialog(QDialog):
         self.setWindowIcon(QIcon(get_image_path('icon')))
         self.setFixedSize(300, 300)
         # Fields
-        self.pass_edit = None
-        self.confirm_edit = None
-        self.help_label = None
+        self.pass_edit = QLineEdit()
+        self.confirm_edit = QLineEdit()
+        self.help_label = QLabel()
 
     def initialize(self):
         """
@@ -69,7 +69,7 @@ class PasswordQDialog(QDialog):
 
         main_layout.addWidget(self.get_logo_widget(self))
 
-        pass_title = QLabel("Please type a new PASSWORD:")
+        pass_title = QLabel(_("Please type a new PASSWORD:"))
         main_layout.addWidget(pass_title)
         main_layout.setAlignment(pass_title, Qt.AlignCenter)
 
@@ -78,17 +78,15 @@ class PasswordQDialog(QDialog):
         pass_layout = QVBoxLayout()
         pass_widget.setLayout(pass_layout)
 
-        self.pass_edit = QLineEdit()
-        self.pass_edit.setPlaceholderText('type password')
+        self.pass_edit.setPlaceholderText(_('type new password'))
         self.pass_edit.setEchoMode(QLineEdit.Password)
         pass_layout.addWidget(self.pass_edit)
 
-        self.confirm_edit = QLineEdit()
-        self.confirm_edit.setPlaceholderText('confirm password')
+        self.confirm_edit.setPlaceholderText(_('confirm new password'))
         self.confirm_edit.setEchoMode(QLineEdit.Password)
         pass_layout.addWidget(self.confirm_edit)
 
-        self.help_label = QLabel("Your password must contain at least 5 characters.")
+        self.help_label.setText(_("Your password must contain at least 5 characters."))
         self.help_label.setWordWrap(True)
         pass_layout.addWidget(self.help_label)
 
@@ -160,10 +158,10 @@ class PasswordQDialog(QDialog):
             self.accept()
         else:
             if bool(self.pass_edit.text() != self.confirm_edit.text()):
-                self.help_label.setText("Passwords do not match !")
+                self.help_label.setText(_("Passwords do not match !"))
                 self.help_label.setStyleSheet("color: red;")
             if len(self.pass_edit.text()) < 5 or len(self.confirm_edit.text()) < 5:
-                self.help_label.setText("Your password must contain at least 5 characters.")
+                self.help_label.setText(_("Your password must contain at least 5 characters."))
                 self.help_label.setStyleSheet("color: orange;")
 
     @staticmethod
