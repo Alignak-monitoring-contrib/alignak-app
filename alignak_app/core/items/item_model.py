@@ -116,9 +116,28 @@ def get_icon_item(item_type, state, acknowledge, downtime):
     return available_icons[item_type][state]
 
 
+def get_icon_name_from_state(item_type, state):
+    """
+    Return icon name from state for host or service
+
+    :param item_type: type of item: host or service
+    :type item_type: str
+    :param state: state of item
+    :type state: str
+    :return:
+    """
+
+    if state == 'DOWNTIME':
+        return 'downtime'
+    if state == 'ACKNOWLEDGE':
+        return 'acknowledge'
+
+    return '%ss_%s' % (item_type, state.lower())
+
+
 def get_real_host_state_icon(services):
     """
-    Return corresponging
+    Return corresponding icon to number of services who are in alert
 
     :param services: list of Service items
     :type services: list
