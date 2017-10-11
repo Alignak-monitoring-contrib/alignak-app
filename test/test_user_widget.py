@@ -38,9 +38,9 @@ from alignak_app.widgets.dock.user_widget import UserQWidget
 
 
 
-class TestUserProfile(unittest2.TestCase):
+class TestUserQWidget(unittest2.TestCase):
     """
-        TODO This file test the UserProfile class.
+        This file test the UserQWidget class.
     """
 
     data_manager.database['user'] = User()

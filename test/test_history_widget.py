@@ -34,9 +34,9 @@ init_config()
 init_localization()
 
 
-class TestHistory(unittest2.TestCase):
+class TestHistoryQWidget(unittest2.TestCase):
     """
-        This file test the History class.
+        This file test the HistoryQWidget class.
     """
 
     history_data_test = [

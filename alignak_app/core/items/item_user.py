@@ -113,10 +113,12 @@ class User(ItemModel):
 
         return 'n/a'
 
-    def get_period_name(self):
+    def get_period_name(self, item_type):
         """
         Get the period name or alias
 
+        :param item_type: type of item: service | host
+        :type item_type: str
         :return: name or alias of timeperiod
         :rtype: str
         """
@@ -126,7 +128,11 @@ class User(ItemModel):
             'alias'
         ]
 
-        endpoint = '/'.join(['timeperiod', self.data['host_notification_period']])
+        if item_type == 'host':
+            data = 'host_notification_period'
+        else:
+            data = 'service_notification_period'
+        endpoint = '/'.join(['timeperiod', self.data[data]])
 
         period = app_backend.get(endpoint, projection=projection)
 

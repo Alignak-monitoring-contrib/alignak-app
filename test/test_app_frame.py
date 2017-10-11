@@ -28,9 +28,9 @@ from alignak_app.core.utils import init_config
 from alignak_app.frames.app_frame import AppQFrame
 
 
-class TestAppQWidget(unittest2.TestCase):
+class TestAppQFrame(unittest2.TestCase):
     """
-        This file test the AppQWidget class.
+        This file test the AppQFrame class.
     """
 
     init_config()

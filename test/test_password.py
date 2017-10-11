@@ -30,9 +30,9 @@ from alignak_app.core.utils import init_config
 from alignak_app.dialogs.password_dialog import PasswordQDialog
 
 
-class TestUserManager(unittest2.TestCase):
+class TestPasswordQDialog(unittest2.TestCase):
     """
-       TODO This file test the PasswordDialog class.
+       This file test the PasswordQDialog class.
     """
 
     init_config()

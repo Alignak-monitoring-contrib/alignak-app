@@ -619,13 +619,13 @@ class UserQWidget(QWidget):
         self.labels['host_notifications_enabled'].setPixmap(
             self.get_enable_label_icon(self.user.data['host_notifications_enabled'])
         )
-        period = self.user.get_period_name()
+        period = self.user.get_period_name('host')
         self.labels['host_notification_period'].setText(period.capitalize())
 
         self.labels['service_notification_enabled'].setPixmap(
             self.get_enable_label_icon(self.user.data['service_notifications_enabled'])
         )
-        period = self.user.get_period_name()
+        period = self.user.get_period_name('service')
         self.labels['service_notification_period'].setText(period.capitalize())
 
         # Notifications Options

@@ -48,7 +48,7 @@ class ItemModel(object):
         :param _id: id of the item. Often equal to id in alignak backend
         :type _id: str
         :param data: data of the item
-        :type data: dict
+        :type data: dict | list
         :param name: name of the item if available
         :type name: str
         """

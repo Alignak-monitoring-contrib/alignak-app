@@ -28,9 +28,9 @@ from alignak_app.core.utils import init_config
 from alignak_app.dialogs.login_dialog import LoginQDialog
 
 
-class TestAppLogin(unittest2.TestCase):
+class TestLoginQDialog(unittest2.TestCase):
     """
-        This file test the AppLogin class.
+        This file test the LoginQDialog class.
     """
 
     init_config()
