@@ -88,7 +88,7 @@ class DataManager(object):
         :param value: value of the key if needed
         :type value: str
         :return: wanted item
-        :rtype: alignak_app.models.item_model.ItemModel
+        :rtype: alignak_app.core.items.item_model.ItemModel
         """
 
         items = self.database[item_type]
