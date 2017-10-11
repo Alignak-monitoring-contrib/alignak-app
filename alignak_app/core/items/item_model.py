@@ -120,7 +120,7 @@ def get_icon_name(item_type, state, acknowledge, downtime):
     try:
         return available_icons[item_type][state]
     except KeyError as e:
-        logger.error('Wrong KEY for get_icon(): %s' % e)
+        logger.error('Wrong KEY for get_icon(): %s', e)
         return 'error'
 
 
