@@ -44,7 +44,7 @@ class TestLoginQDialog(unittest2.TestCase):
             pass
 
     def test_create_widget(self):
-        """TODO Inititalize AppLogin"""
+        """Inititalize AppLogin"""
 
         under_test = LoginQDialog()
 

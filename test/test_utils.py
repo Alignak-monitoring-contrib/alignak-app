@@ -31,7 +31,7 @@ class TestUtils(unittest2.TestCase):
         This file test methods of `utils.py` file.
     """
 
-    def test_app_config(self):
+    def test_init_config(self):
         """Set and Get app_config"""
 
         # Reset app_config to None
@@ -43,8 +43,8 @@ class TestUtils(unittest2.TestCase):
 
         self.assertIsNotNone(utils.app_config)
 
-    def test_set_app_config(self):
-        """Reload config"""
+    def test_set_get_app_config(self):
+        """Set and Get app_config"""
 
         # Reset and Init "app_config"
         utils.app_config = None
