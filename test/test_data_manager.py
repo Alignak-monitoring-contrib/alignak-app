@@ -115,6 +115,12 @@ class TestDataManager(unittest2.TestCase):
             '_updated': 'Thu, 12 Oct 2017 13:27:02 GMT',
             '_etag': '70a7fd01040ce20c4df459t65g9b548d493e9703',
             'message': 'HOST NOTIFICATION: imported_admin;charnay;WARNING;notify-host-by-email;Alarm timeout'
+        },
+        {
+            '_created': 'Thu, 12 Oct 2017 13:27:02 GMT', '_id': '59df6tg5721j5k77dd3aed',
+            '_updated': 'Thu, 12 Oct 2017 13:27:02 GMT',
+            '_etag': '70a7fd01040ce20c4df459t65g9b548d493e9703',
+            'message': 'SERVICE: imported_admin;charnay;alarm check;OK;notify-host-by-email;All ok'
         }
 
     ]
@@ -180,6 +186,11 @@ class TestDataManager(unittest2.TestCase):
         self.assertEqual('service3', item2.name)
         self.assertEqual('_id3', item2.item_id)
         self.assertEqual('service3', item2.data['name'])
+
+        # Get item who's not here
+        item3 = under_test.get_item('service', 'service10')
+
+        self.assertIsNone(item3)
 
     def test_get_livesynthesis(self):
         """Get Livesynthesis in db"""
@@ -269,7 +280,7 @@ class TestDataManager(unittest2.TestCase):
 
         events = under_test.get_events()
 
-        self.assertEqual(2, len(events))
+        self.assertEqual(3, len(events))
 
         for event in events:
             self.assertTrue('message' in event)
@@ -279,4 +290,25 @@ class TestDataManager(unittest2.TestCase):
                 self.assertTrue('DOWN' in event['message'])
             if event['event_type'] == 'WARNING':
                 self.assertTrue('WARNING' in event['message'])
+            if event['event_type'] == 'OK':
+                self.assertTrue('OK' in event['message'])
+
+    def test_is_ready(self):
+        """Database is Ready"""
+
+        under_test = DataManager()
+
+        self.assertFalse(under_test.is_ready())
+
+        under_test.update_item_database('user', {'data': 'test'})
+        self.assertFalse(under_test.is_ready())
+        under_test.update_item_database('host', {'data': 'test'})
+        self.assertFalse(under_test.is_ready())
+        under_test.update_item_database('service', {'data': 'test'})
+        self.assertFalse(under_test.is_ready())
+        under_test.update_item_database('alignakdaemon', {'data': 'test'})
+        self.assertFalse(under_test.is_ready())
+        under_test.update_item_database('livesynthesis', {'data': 'test'})
+
+        self.assertTrue(under_test.is_ready())
 

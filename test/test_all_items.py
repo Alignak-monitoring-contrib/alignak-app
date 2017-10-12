@@ -209,10 +209,14 @@ class TestAllItems(unittest2.TestCase):
         user_test = User()
         user_test.create(
             '_id',
-            {'host_notification_period': 'no_period'},
+            {'host_notification_period': 'no_period', 'service_notification_period': 'no_period'},
             'name'
         )
         under_test = user_test.get_period_name('host')
+
+        self.assertEqual('n/a', under_test)
+
+        under_test = user_test.get_period_name('service')
 
         self.assertEqual('n/a', under_test)
 
@@ -245,6 +249,20 @@ class TestAllItems(unittest2.TestCase):
         self.assertEqual('alignakdaemon', under_test['endpoint'])
         self.assertTrue('params' in under_test)
         self.assertTrue('projection' in under_test)
+
+    def test_get_daemons_names(self):
+        """Get All Daemon Names"""
+
+        daemon_names = [
+            'poller',
+            'receiver',
+            'reactionner',
+            'arbiter',
+            'scheduler',
+            'broker'
+        ]
+
+        self.assertEqual(daemon_names, Daemon.get_daemons_names())
 
     def test_get_request_event_model(self):
         """Get Event Request Model"""
