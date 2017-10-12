@@ -27,19 +27,25 @@ from alignak_app.core.backend import app_backend
 from alignak_app.core.utils import init_config
 from alignak_app.core.locales import init_localization
 
-from alignak_app.dialogs.status_dialog import StatusQDialog
+from alignak_app.dialogs.token_dialog import TokenQDialog
+from alignak_app.core.data_manager import data_manager
+from alignak_app.core.items.item_user import User
 
-from PyQt5.Qt import QApplication, QPixmap, QWidget
+from PyQt5.Qt import QApplication, QWidget
 
 
-class TestStatusQDialog(unittest2.TestCase):
+class TestTokenQDialog(unittest2.TestCase):
     """
-        This file test methods of StatusQDialog class object
+        This file test methods of TokenQDialog class object
     """
 
     init_config()
     init_localization()
     app_backend.login()
+
+    user = User()
+    user.create('_id', {'token': 'long_token'}, 'name')
+    data_manager.database['user'] = user
 
     @classmethod
     def setUpClass(cls):
@@ -50,51 +56,31 @@ class TestStatusQDialog(unittest2.TestCase):
             pass
 
     def test_initialize(self):
-        """Iniatialize StatusQDialog"""
+        """Iniatialize TokenQDialog"""
 
-        under_test = StatusQDialog()
+        under_test = TokenQDialog()
 
-        self.assertIsNotNone(under_test.app_widget)
-        self.assertIsNotNone(under_test.layout)
-        self.assertFalse(under_test.labels)
+        self.assertIsNone(under_test.layout())
 
         under_test.initialize()
 
-    def test_get_buttons_widget(self):
-        """Get Buttons Status"""
+        self.assertIsNotNone(under_test.layout())
 
-        status_dialog_test = StatusQDialog()
+    def test_get_logo_widget(self):
+        """Get Logo widget Status"""
 
-        under_test = status_dialog_test.get_buttons_widget()
+        token_dialog_test = TokenQDialog()
 
+        under_test = token_dialog_test.get_logo_widget(token_dialog_test)
+
+        self.assertIsNotNone(under_test)
         self.assertIsInstance(under_test, QWidget)
 
-    def test_get_alive_pixmap(self):
-        """Get Alive Pixmap Status"""
-
-        status_dialog_test = StatusQDialog()
-
-        under_test = status_dialog_test.get_alive_pixmap(True)
-        self.assertIsInstance(under_test, QPixmap)
-
-        under_test = status_dialog_test.get_alive_pixmap(False)
-        self.assertIsInstance(under_test, QPixmap)
-
-    def test_get_enable_pixmap(self):
-        """Get Enable Pixmap Status"""
-
-        status_dialog_test = StatusQDialog()
-
-        under_test = status_dialog_test.get_enable_pixmap(True)
-        self.assertIsInstance(under_test, QPixmap)
-
-        under_test = status_dialog_test.get_enable_pixmap(False)
-        self.assertIsInstance(under_test, QPixmap)
 
     def test_center(self):
-        """Center Status Dialog"""
+        """Center Token Dialog"""
 
-        under_test = StatusQDialog()
+        under_test = TokenQDialog()
 
         old_pos_test = under_test.pos()
 
