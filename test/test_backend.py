@@ -56,9 +56,9 @@ class TestAppBackend(unittest2.TestCase):
         self.assertTrue(under_test.backend.authenticated)
         self.assertTrue(connect)
 
-        under_test = AppBackend()
+        second_test = AppBackend()
 
-        connect = under_test.login('admin', 'admin')
+        connect = second_test.login('admin', 'admin')
         self.assertTrue(connect)
 
     def test_hosts_endpoint_without_params(self):
