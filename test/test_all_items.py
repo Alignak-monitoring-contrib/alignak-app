@@ -136,6 +136,9 @@ class TestAllItems(unittest2.TestCase):
         under_test = get_real_host_state_icon(services_test)
         self.assertEqual('all_services_critical', under_test)
 
+        under_test = get_real_host_state_icon([])
+        self.assertEqual('error', under_test)
+
     def test_get_request_history_model(self):
         """Get History Request Model"""
 
@@ -145,6 +148,39 @@ class TestAllItems(unittest2.TestCase):
         self.assertEqual('history', under_test['endpoint'])
         self.assertTrue('params' in under_test)
         self.assertTrue('projection' in under_test)
+
+    def test_get_history_icon_name_from_message(self):
+        """Get History Icon from State"""
+
+        under_test = History.get_history_icon_name_from_message('UNKNOWN', 'downtime')
+        self.assertEqual('downtime', under_test)
+
+        under_test = History.get_history_icon_name_from_message('UP', 'ack')
+        self.assertEqual('acknowledge', under_test)
+
+        under_test = History.get_history_icon_name_from_message('UP', 'event_type')
+        self.assertEqual('hosts_up', under_test)
+
+        under_test = History.get_history_icon_name_from_message('DOWN', 'event_type')
+        self.assertEqual('hosts_down', under_test)
+
+        under_test = History.get_history_icon_name_from_message('UNREACHABLE', 'event_type')
+        self.assertEqual('services_unreachable', under_test)
+
+        under_test = History.get_history_icon_name_from_message('OK', 'event_type')
+        self.assertEqual('services_ok', under_test)
+
+        under_test = History.get_history_icon_name_from_message('WARNING', 'event_type')
+        self.assertEqual('services_warning', under_test)
+
+        under_test = History.get_history_icon_name_from_message('CRITICAL', 'event_type')
+        self.assertEqual('services_critical', under_test)
+
+        under_test = History.get_history_icon_name_from_message('UNKNOWN', 'event_type')
+        self.assertEqual('services_unknown', under_test)
+
+        under_test = History.get_history_icon_name_from_message('error', 'event_type')
+        self.assertEqual('error', under_test)
 
     def test_get_request_user_model(self):
         """Get User Request Model"""

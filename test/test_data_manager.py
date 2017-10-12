@@ -131,7 +131,6 @@ class TestDataManager(unittest2.TestCase):
         event.create(data['_id'], data)
         event_list.append(event)
 
-
     def test_initialize(self):
         """Initialize DataManager"""
 
