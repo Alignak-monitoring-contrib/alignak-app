@@ -104,9 +104,26 @@ class TestDataManager(unittest2.TestCase):
 
     # Event data test
     event_data = [
-        {}
+        {
+            '_created': 'Thu, 12 Oct 2017 13:27:02 GMT', '_id': '59df6da635d17b0277ddaaed',
+            '_updated': 'Thu, 12 Oct 2017 13:27:02 GMT',
+            '_etag': '70a7fd01040ce20cd84d4059849b548d493e9703',
+            'message': 'HOST NOTIFICATION: imported_admin;charnay;DOWN;notify-host-by-email;Alarm timeout'
+        },
+        {
+            '_created': 'Thu, 12 Oct 2017 13:27:02 GMT', '_id': '59df6da635d1j5k77dd3aed',
+            '_updated': 'Thu, 12 Oct 2017 13:27:02 GMT',
+            '_etag': '70a7fd01040ce20c4df459t65g9b548d493e9703',
+            'message': 'HOST NOTIFICATION: imported_admin;charnay;WARNING;notify-host-by-email;Alarm timeout'
+        }
+
     ]
     event_list = []
+    for data in event_data:
+        print(data['_id'])
+        event = Event()
+        event.create(data['_id'], data)
+        event_list.append(event)
 
 
     def test_initialize(self):
@@ -246,4 +263,20 @@ class TestDataManager(unittest2.TestCase):
     def test_get_events(self):
         """Get Events to send"""
 
-        # TODO: simulate a notification message
+        under_test = DataManager()
+
+        under_test.update_item_database('notifications', self.event_list)
+
+        events = under_test.get_events()
+
+        self.assertEqual(2, len(events))
+
+        for event in events:
+            self.assertTrue('message' in event)
+            self.assertTrue('event_type' in event)
+
+            if event['event_type'] == 'DOWN':
+                self.assertTrue('DOWN' in event['message'])
+            if event['event_type'] == 'WARNING':
+                self.assertTrue('WARNING' in event['message'])
+

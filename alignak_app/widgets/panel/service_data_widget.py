@@ -252,8 +252,8 @@ class ServiceDataQWidget(QWidget):
 
             post = app_backend.post('actiondowntime', data)
 
-            send_event('DOWN', 'Downtime for %s is done' % service_item.name)
-            logger.debug('DOWN answer for %s: %s', service_item.name, post)
+            send_event('DOWNTIME', 'Downtime for %s is done' % service_item.name)
+            logger.debug('DOWNTIME answer for %s: %s', service_item.name, post)
 
             try:
                 self.buttons['downtime'].setEnabled(False)

@@ -168,7 +168,7 @@ def send_event(event_type, msg):
     - 'warn': ['WARNING', 'UNREACHABLE', 'WARN']
     - 'problem': ['DOWN', 'CRITICAL', 'ALERT']
     - 'aknowledge': ['ACK']
-    - 'downtime': ['DOWN']
+    - 'downtime': ['DOWNTIME']
     :type event_type: str
     :param msg: event content to display
     :type msg: str

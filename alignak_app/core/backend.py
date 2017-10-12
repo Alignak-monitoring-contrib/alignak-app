@@ -85,7 +85,7 @@ class AppBackend(object):
                 logger.info('Connection by password: %s', str(self.connected))
             except BackendException as e:  # pragma: no cover
                 logger.error('Connection to Backend has failed: %s', str(e))
-        elif username and not password:
+        elif username and not password:  # pragma: no cover
             # Username as token : recommended
             self.backend.authenticated = True
             if self.user:

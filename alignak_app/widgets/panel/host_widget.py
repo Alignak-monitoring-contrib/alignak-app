@@ -236,8 +236,8 @@ class HostQWidget(QWidget):
 
             post = app_backend.post('actiondowntime', data)
 
-            send_event('DOWN', 'Downtime for %s is done' % item.name)
-            logger.debug('DOWN answer for %s: %s', item.name, post)
+            send_event('DOWNTIME', 'Downtime for %s is done' % item.name)
+            logger.debug('DOWNTIME answer for %s: %s', item.name, post)
 
             try:
                 self.buttons['downtime'].setEnabled(False)
@@ -252,14 +252,9 @@ class HostQWidget(QWidget):
 
         """
 
-        if any(
-                history_item.item_id == self.host_item.item_id for
-                history_item in data_manager.database['history']):
-            self.history_widget = HistoryQWidget(self)
-            self.history_widget.initialize(self.host_item.name, self.host_item.item_id)
-            self.history_widget.app_widget.show()
-        else:
-            send_event('WARN', 'History is not yet available...')
+        self.history_widget = HistoryQWidget(self)
+        self.history_widget.initialize(self.host_item.name, self.host_item.item_id)
+        self.history_widget.app_widget.show()
 
     def get_last_check_widget(self):
         """

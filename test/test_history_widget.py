@@ -98,7 +98,7 @@ class TestHistoryQWidget(unittest2.TestCase):
 
         hist_widget_test = HistoryQWidget()
 
-        under_test = hist_widget_test.get_event_widget(self.history_test.data[0])
+        under_test = hist_widget_test.get_hostory_widget_model(self.history_test.data[0], 'Load')
 
         self.assertTrue("ack.processed" in under_test.toolTip())
         self.assertIsNotNone(under_test.layout())

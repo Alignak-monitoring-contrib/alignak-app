@@ -211,12 +211,11 @@ class DataManager(object):
         :rtype: list
         """
 
-        events = data_manager.database['notifications']
+        events = self.database['notifications']
         logger.debug('%s founded: ', str(events))
 
         notifications_to_send = []
         for event in events:
-            print(event.data)
             # If the notification has not already been sent to the last check
             if event.item_id not in self.old_notifications:
                 message_split = event.data['message'].split(';')
@@ -254,9 +253,7 @@ class DataManager(object):
 
                 self.old_notifications.append(event.item_id)
 
-                return notifications_to_send
-
-        return []
+        return notifications_to_send
 
 
 # Creating "data_manager" variable.

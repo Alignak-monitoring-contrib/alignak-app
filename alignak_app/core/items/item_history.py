@@ -58,3 +58,36 @@ class History(ItemModel):
         }
 
         return request_model
+
+    @staticmethod
+    def get_history_icon_name_from_message(message, event_type):
+        """
+        Return icon name related to message or event type
+
+        :return: icon name
+        :rtype: str
+        """
+
+        if 'ack' in event_type:
+            icon_name = 'acknowledge'
+        elif 'downtime' in event_type:
+            icon_name = 'downtime'
+        else:
+            if 'UP' in message:
+                icon_name = 'hosts_up'
+            elif 'DOWN' in message:
+                icon_name = 'hosts_down'
+            elif 'UNREACHABLE' in message:
+                icon_name = 'services_unreachable'
+            elif 'OK' in message:
+                icon_name = 'services_ok'
+            elif 'WARNING' in message:
+                icon_name = 'services_warning'
+            elif 'CRITICAL' in message:
+                icon_name = 'services_critical'
+            elif 'UNKNOWN' in message:
+                icon_name = 'services_unknown'
+            else:
+                icon_name = 'error'
+
+        return icon_name
