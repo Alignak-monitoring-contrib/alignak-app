@@ -50,7 +50,7 @@ class TestApp(unittest2.TestCase):
         self.assertFalse(under_test.reconnect_mode)
 
         # Build alignak_app
-        under_test.reconnect_to_backend('ERROR')
+        under_test.reconnecting_mode('ERROR')
 
         self.assertIsNone(under_test.tray_icon)
         self.assertTrue(under_test.reconnect_mode)

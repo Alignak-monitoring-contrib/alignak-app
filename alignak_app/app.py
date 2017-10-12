@@ -104,7 +104,7 @@ class AlignakApp(QObject):
         else:
             self.display_error_msg()
 
-    def reconnect_to_backend(self, error):  # pragma: no cover
+    def reconnecting_mode(self, error):  # pragma: no cover
         """
         Set AlignakApp in reconnect mode and try to login to Backend
 
@@ -117,22 +117,26 @@ class AlignakApp(QObject):
         logger.error('... caused by %s', error)
         timer = QTimer(self)
 
+        # Stop thread manager
+        thread_manager.stop()
+
         def connect_to_backend():
             """Try to log in to Backend"""
             try:
                 connect = app_backend.login()
                 assert connect
-                # If connect, reconnecting is disable
                 timer.stop()
-                logger.info('Connection restored : %s', connect)
+                # If connect, reconnecting is disable and threads restart
                 self.reconnect_mode = False
+                thread_manager.start()
+                logger.info('Connection restored : %s', connect)
             except AssertionError:
                 logger.error('Backend is still unreachable...')
 
         if timer.isActive():
             pass
         else:
-            timer.start(10000)
+            timer.start(5000)
             timer.timeout.connect(connect_to_backend)
 
     def run(self, username=None, password=None):  # pragma: no cover
@@ -150,6 +154,7 @@ class AlignakApp(QObject):
         if app_backend.connected:
             # Start ThreadManager
             thread_manager.start()
+            self.reconnecting.connect(self.reconnecting_mode)
 
             # Give AlignakApp for AppBackend reconnecting mode
             app_backend.app = self
