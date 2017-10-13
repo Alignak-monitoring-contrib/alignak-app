@@ -49,6 +49,7 @@ class AckQDialog(QDialog):
         self.setStyleSheet(get_css())
         self.setWindowIcon(QIcon(get_image_path('icon')))
         self.setMinimumSize(360, 460)
+        self.setObjectName('dialog')
         # Fields
         self.sticky = True
         self.notify = False
@@ -75,7 +76,7 @@ class AckQDialog(QDialog):
         main_layout.addWidget(get_logo_widget(self))
 
         ack_widget = QWidget()
-        ack_widget.setObjectName('login')
+        ack_widget.setObjectName('dialog')
         ack_layout = QGridLayout(ack_widget)
 
         ack_title = QLabel(_('Request an acknowledge'))
@@ -167,6 +168,7 @@ class DownQDialog(QDialog):
         self.setStyleSheet(get_css())
         self.setWindowIcon(QIcon(get_image_path('icon')))
         self.setMinimumSize(360, 460)
+        self.setObjectName('dialog')
         # Fields
         self.fixed = True
         self.duration = QTimeEdit()
@@ -195,7 +197,7 @@ class DownQDialog(QDialog):
         main_layout.addWidget(get_logo_widget(self))
 
         downtime_widget = QWidget()
-        downtime_widget.setObjectName('login')
+        downtime_widget.setObjectName('dialog')
         downtime_layout = QGridLayout(downtime_widget)
 
         ack_title = QLabel(_('Request a downtime'))

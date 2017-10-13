@@ -45,6 +45,7 @@ class PasswordQDialog(QDialog):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(get_css())
         self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setObjectName('dialog')
         self.setFixedSize(300, 300)
         # Fields
         self.pass_edit = QLineEdit()
@@ -71,7 +72,7 @@ class PasswordQDialog(QDialog):
         main_layout.setAlignment(pass_title, Qt.AlignCenter)
 
         pass_widget = QWidget()
-        pass_widget.setObjectName('login')
+        pass_widget.setObjectName('dialog')
         pass_layout = QVBoxLayout()
         pass_widget.setLayout(pass_layout)
 
