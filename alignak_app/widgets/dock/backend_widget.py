@@ -96,6 +96,8 @@ class LivestateQWidget(QWidget):
         layout.setAlignment(problem_label, Qt.AlignCenter)
 
         icon_label = QLabel()
+        icon_label.setFixedSize(64, 64)
+        icon_label.setScaledContents(True)
         layout.addWidget(icon_label)
         layout.setAlignment(icon_label, Qt.AlignCenter)
 
