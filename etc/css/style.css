@@ -21,6 +21,13 @@ QWidget {
     background-color: white;
 }
 
+QWidget#dialog {
+	border-width: 0px 2px 2px 2px;
+    border-color: #607d8b;
+    border-style: solid;
+    background-color: white;
+}
+
 QScrollBar {
     width: 10px;
     background: white;
