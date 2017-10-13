@@ -43,7 +43,7 @@ class AboutQDialog(QDialog):
         self.setToolTip(_('About'))
         self.setStyleSheet(get_css())
         # Fields
-        self.app_widget = AppQFrame()
+        self.app_frame_model = AppQFrame()
 
     def initialize(self):
         """
@@ -94,9 +94,9 @@ class AboutQDialog(QDialog):
         layout.addWidget(self.get_external_link_label(__alignak_url__))
 
         # Add to AppQWidget
-        self.app_widget.initialize(_('About %s') % __application__)
-        self.app_widget.add_widget(self)
-        self.app_widget.setMinimumSize(400, 400)
+        self.app_frame_model.initialize(_('About %s') % __application__)
+        self.app_frame_model.add_widget(self)
+        self.app_frame_model.setMinimumSize(400, 400)
 
     @staticmethod
     def get_external_link_label(link):
@@ -121,4 +121,4 @@ class AboutQDialog(QDialog):
 
         """
 
-        self.app_widget.show_widget()
+        self.app_frame_model.show_widget()

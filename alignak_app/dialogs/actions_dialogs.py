@@ -23,69 +23,18 @@
     Actions display QDialog's for actions : Acknowledge and Downtime
 """
 
-
 import datetime
 from logging import getLogger
 
 from alignak_app.core.utils import get_image_path, get_css
+from alignak_app.widgets.utils_widgets import get_logo_widget, center_widget
 
-from PyQt5.QtWidgets import QDialog, QWidget  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QTimeEdit, QDateTimeEdit  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QPushButton, QLabel  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QGridLayout, QHBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QVBoxLayout, QTextEdit  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QIcon, QPixmap, QCheckBox, Qt  # pylint: disable=no-name-in-module
-from PyQt5.QtCore import QTime  # pylint: disable=no-name-in-module
-
+from PyQt5.Qt import QDialog, QWidget, QTime, QVBoxLayout, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QGridLayout, QTimeEdit, QDateTimeEdit  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPushButton, QLabel, QTextEdit, QIcon  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPixmap, QCheckBox  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
-
-
-def get_logo_widget(widget):
-    """
-    Return the logo QWidget
-
-    :return: logo QWidget
-    :rtype: QWidget
-    """
-
-    logo_widget = QWidget()
-    logo_widget.setFixedHeight(45)
-    logo_widget.setObjectName('app_widget')
-    logo_layout = QHBoxLayout()
-    logo_widget.setLayout(logo_layout)
-
-    logo_label = QLabel()
-    logo_label.setPixmap(QPixmap(get_image_path('alignak')))
-    logo_label.setObjectName('widget_title')
-    logo_label.setFixedSize(121, 35)
-    logo_label.setScaledContents(True)
-
-    logo_layout.addWidget(logo_label, 0)
-
-    minimize_btn = QPushButton()
-    minimize_btn.setIcon(QIcon(get_image_path('minimize')))
-    minimize_btn.setFixedSize(24, 24)
-    minimize_btn.setObjectName('app_widget')
-    minimize_btn.clicked.connect(widget.showMinimized)
-    logo_layout.addStretch(widget.width())
-    logo_layout.addWidget(minimize_btn, 1)
-
-    maximize_btn = QPushButton()
-    maximize_btn.setIcon(QIcon(get_image_path('maximize')))
-    maximize_btn.setFixedSize(24, 24)
-    maximize_btn.setObjectName('app_widget')
-    maximize_btn.clicked.connect(widget.showMaximized)
-    logo_layout.addWidget(maximize_btn, 2)
-
-    close_btn = QPushButton()
-    close_btn.setIcon(QIcon(get_image_path('exit')))
-    close_btn.setObjectName('app_widget')
-    close_btn.setFixedSize(24, 24)
-    close_btn.clicked.connect(widget.close)
-    logo_layout.addWidget(close_btn, 3)
-
-    return logo_widget
 
 
 class AckQDialog(QDialog):
@@ -119,6 +68,7 @@ class AckQDialog(QDialog):
         """
 
         # Main layout
+        center_widget(self)
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
 
@@ -238,6 +188,7 @@ class DownQDialog(QDialog):
         """
 
         # Main layout
+        center_widget(self)
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
 

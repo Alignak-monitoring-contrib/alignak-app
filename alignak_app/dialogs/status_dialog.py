@@ -28,10 +28,10 @@ from logging import getLogger
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css, get_time_diff_since_last_timestamp
 from alignak_app.frames.app_frame import AppQFrame
+from alignak_app.widgets.utils_widgets import center_widget
 
 from PyQt5.Qt import QPixmap, QDialog, QLabel, QWidget  # pylint: disable=no-name-in-module
 from PyQt5.Qt import Qt, QPushButton, QGridLayout, QHBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QApplication  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -76,7 +76,7 @@ class StatusQDialog(QDialog):
         # Use AppQWidget
         self.app_widget.initialize(_('Alignak Status'))
         self.app_widget.add_widget(self)
-        self.center(self.app_widget)
+        center_widget(self.app_widget)
 
     def get_buttons_widget(self):
         """
@@ -281,14 +281,3 @@ class StatusQDialog(QDialog):
         enable_pixmap = QPixmap(get_image_path(states[enable]))
 
         return enable_pixmap
-
-    @staticmethod
-    def center(widget):
-        """
-        Center QWidget
-
-        """
-
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        center = QApplication.desktop().screenGeometry(screen).center()
-        widget.move(center.x() - (widget.width() / 2), center.y() - (widget.height() / 2))

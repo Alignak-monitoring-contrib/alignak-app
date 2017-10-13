@@ -26,6 +26,7 @@
 
 from logging import getLogger
 from alignak_app.core.utils import get_image_path, get_app_config, get_css
+from alignak_app.widgets.utils_widgets import get_logo_widget, center_widget
 
 from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QWidget, QVBoxLayout  # pylint: disable=no-name-in-module
@@ -142,23 +143,13 @@ class AppQFrame(QFrame):
         else:
             self.setWindowState(Qt.WindowMaximized)
 
-    def center(self):  # pragma: no cover - not testable
-        """
-        Center QWidget
-
-        """
-
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        center = QApplication.desktop().screenGeometry(screen).center()
-        self.move(center.x() - (self.width() / 2), center.y() - (self.height() / 2))
-
     def show_widget(self):  # pragma: no cover - not testable
         """
         Show and center AppQWidget
 
         """
 
-        self.center()
+        center_widget(self)
         self.show()
         QWidget.activateWindow(self)
 

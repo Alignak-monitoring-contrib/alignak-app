@@ -51,11 +51,11 @@ class TestAboutQDialog(unittest2.TestCase):
 
         under_test = AboutQDialog()
 
-        self.assertIsNotNone(under_test.app_widget)
+        self.assertIsNotNone(under_test.app_frame_model)
 
         under_test.initialize()
 
-        self.assertIsNotNone(under_test.app_widget)
+        self.assertIsNotNone(under_test.app_frame_model)
         self.assertIsNotNone(under_test.layout())
 
     def test_get_external_link_label(self):

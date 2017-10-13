@@ -27,10 +27,10 @@ from logging import getLogger
 
 from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.core.data_manager import data_manager
+from alignak_app.widgets.utils_widgets import get_logo_widget, center_widget
 
-from PyQt5.Qt import QWidget, QDialog, QApplication, QIcon, Qt  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPushButton, QLabel, QPixmap, QVBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QHBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QWidget, QDialog, QIcon, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPushButton, QLabel, QVBoxLayout  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -53,14 +53,14 @@ class TokenQDialog(QDialog):
 
         """
 
-        self.center(self)
+        center_widget(self)
 
         # Main layout
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(main_layout)
 
-        main_layout.addWidget(self.get_logo_widget(self))
+        main_layout.addWidget(get_logo_widget(self))
 
         # Token QWidget
         token_widget = QWidget()
@@ -85,63 +85,3 @@ class TokenQDialog(QDialog):
         token_layout.addWidget(accept_btn)
 
         main_layout.addWidget(token_widget)
-
-    @staticmethod
-    def get_logo_widget(widget):
-        """
-        Return the logo QWidget
-
-        :param widget: widget parent, needed for action button
-        :type widget: QWidget
-        :return: logo QWidget
-        :rtype: QWidget
-        """
-
-        logo_widget = QWidget()
-        logo_widget.setFixedHeight(45)
-        logo_widget.setObjectName('app_widget')
-        logo_layout = QHBoxLayout()
-        logo_widget.setLayout(logo_layout)
-
-        logo_label = QLabel()
-        logo_label.setPixmap(QPixmap(get_image_path('token')))
-        logo_label.setFixedSize(32, 32)
-        logo_label.setObjectName('widget_title')
-        logo_label.setScaledContents(True)
-
-        logo_layout.addWidget(logo_label, 0)
-
-        minimize_btn = QPushButton()
-        minimize_btn.setIcon(QIcon(get_image_path('minimize')))
-        minimize_btn.setFixedSize(24, 24)
-        minimize_btn.setObjectName('app_widget')
-        minimize_btn.clicked.connect(widget.showMinimized)
-        logo_layout.addStretch(widget.width())
-        logo_layout.addWidget(minimize_btn, 1)
-
-        maximize_btn = QPushButton()
-        maximize_btn.setIcon(QIcon(get_image_path('maximize')))
-        maximize_btn.setFixedSize(24, 24)
-        maximize_btn.setObjectName('app_widget')
-        maximize_btn.clicked.connect(widget.showMaximized)
-        logo_layout.addWidget(maximize_btn, 2)
-
-        close_btn = QPushButton()
-        close_btn.setIcon(QIcon(get_image_path('exit')))
-        close_btn.setObjectName('app_widget')
-        close_btn.setFixedSize(24, 24)
-        close_btn.clicked.connect(widget.close)
-        logo_layout.addWidget(close_btn, 3)
-
-        return logo_widget
-
-    @staticmethod
-    def center(widget):
-        """
-        Center QWidget
-
-        """
-
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        center = QApplication.desktop().screenGeometry(screen).center()
-        widget.move(center.x() - (widget.width() / 2), center.y() - (widget.height() / 2))

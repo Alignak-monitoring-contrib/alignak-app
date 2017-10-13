@@ -26,13 +26,10 @@
 from logging import getLogger
 
 from alignak_app.core.utils import get_css, get_image_path
+from alignak_app.widgets.utils_widgets import center_widget, get_logo_widget
 
-
-from PyQt5.QtWidgets import QWidget, QDialog, QApplication  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QPushButton  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel, QPixmap  # pylint: disable=no-name-in-module
-
+from PyQt5.Qt import QWidget, QDialog, QPushButton, QVBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -60,14 +57,14 @@ class PasswordQDialog(QDialog):
 
         """
 
-        self.center(self)
+        center_widget(self)
 
         # Main layout
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(main_layout)
 
-        main_layout.addWidget(self.get_logo_widget(self))
+        main_layout.addWidget(get_logo_widget(self))
 
         pass_title = QLabel(_("Please type a new PASSWORD:"))
         main_layout.addWidget(pass_title)
@@ -99,54 +96,6 @@ class PasswordQDialog(QDialog):
 
         main_layout.addWidget(pass_widget)
 
-    @staticmethod
-    def get_logo_widget(widget):
-        """
-        Return the logo QWidget
-
-        :param widget: widget parent, needed for action button
-        :type widget: QWidget
-        :return: logo QWidget
-        :rtype: QWidget
-        """
-
-        logo_widget = QWidget()
-        logo_widget.setFixedHeight(45)
-        logo_widget.setObjectName('app_widget')
-        logo_layout = QHBoxLayout()
-        logo_widget.setLayout(logo_layout)
-
-        logo_label = QLabel()
-        logo_label.setPixmap(QPixmap(get_image_path('password')))
-        logo_label.setObjectName('widget_title')
-        logo_label.setScaledContents(True)
-
-        logo_layout.addWidget(logo_label, 0)
-
-        minimize_btn = QPushButton()
-        minimize_btn.setIcon(QIcon(get_image_path('minimize')))
-        minimize_btn.setFixedSize(24, 24)
-        minimize_btn.setObjectName('app_widget')
-        minimize_btn.clicked.connect(widget.showMinimized)
-        logo_layout.addStretch(widget.width())
-        logo_layout.addWidget(minimize_btn, 1)
-
-        maximize_btn = QPushButton()
-        maximize_btn.setIcon(QIcon(get_image_path('maximize')))
-        maximize_btn.setFixedSize(24, 24)
-        maximize_btn.setObjectName('app_widget')
-        maximize_btn.clicked.connect(widget.showMaximized)
-        logo_layout.addWidget(maximize_btn, 2)
-
-        close_btn = QPushButton()
-        close_btn.setIcon(QIcon(get_image_path('exit')))
-        close_btn.setObjectName('app_widget')
-        close_btn.setFixedSize(24, 24)
-        close_btn.clicked.connect(widget.close)
-        logo_layout.addWidget(close_btn, 3)
-
-        return logo_widget
-
     def handle_confirm(self):
         """
         Handle accept_btn for password
@@ -163,14 +112,3 @@ class PasswordQDialog(QDialog):
             if len(self.pass_edit.text()) < 5 or len(self.confirm_edit.text()) < 5:
                 self.help_label.setText(_("Your password must contain at least 5 characters."))
                 self.help_label.setStyleSheet("color: orange;")
-
-    @staticmethod
-    def center(widget):
-        """
-        Center QWidget
-
-        """
-
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        center = QApplication.desktop().screenGeometry(screen).center()
-        widget.move(center.x() - (widget.width() / 2), center.y() - (widget.height() / 2))
