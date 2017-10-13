@@ -27,16 +27,12 @@ import sys
 
 from logging import getLogger
 
-from alignak_app import __version__
-from alignak_app.core.utils import get_app_config, set_app_config, init_config
+from alignak_app.core.utils import get_app_config
 from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.widgets.utils_widgets import get_logo_widget, center_widget
 
-from PyQt5.QtWidgets import QWidget, QDialog, QApplication  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QPushButton, QGridLayout  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel, QPixmap  # pylint: disable=no-name-in-module
-
+from PyQt5.Qt import QWidget, QDialog, QPushButton, QGridLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel, QVBoxLayout  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
