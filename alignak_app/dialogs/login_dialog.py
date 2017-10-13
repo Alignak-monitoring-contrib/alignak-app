@@ -51,6 +51,7 @@ class LoginQDialog(QDialog):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(get_css())
         self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setObjectName('dialog')
         self.setFixedSize(300, 330)
         # Fields
         self.backend_url = None
@@ -75,24 +76,29 @@ class LoginQDialog(QDialog):
 
         main_layout.addWidget(self.get_logo_widget(self))
 
-        # _ = init_localization()
-        title = QLabel(
-            _('Welcome to <b>Alignak-app</b>')
-        )
-        title.setWordWrap(True)
-        title.setObjectName('title_login')
-        main_layout.addWidget(title)
-        main_layout.setAlignment(title, Qt.AlignCenter)
-
-        version = QLabel(_('Version %s') % __version__)
-        version.setObjectName('version_login')
-        main_layout.addWidget(version)
-        main_layout.setAlignment(version, Qt.AlignCenter | Qt.AlignTop)
-
         # Login QWidget
         login_widget = QWidget(self)
-        login_widget.setObjectName('login')
-        login_layout = QGridLayout(login_widget)
+        login_widget.setObjectName('dialog')
+        login_layout = QGridLayout()
+        login_widget.setLayout(login_layout)
+
+        # _ = init_localization()
+        title = QLabel(
+            _('Welcome to Alignak-app')
+        )
+        title.setObjectName('title')
+        title.setContentsMargins(1, 1, 1, 1)
+        login_layout.addWidget(title, 0, 0, 1, 3)
+        login_layout.setAlignment(title, Qt.AlignCenter)
+
+        version = QLabel(_('Version %s') % __version__)
+        login_layout.addWidget(version, 1, 0, 1, 3)
+        login_layout.setAlignment(version, Qt.AlignCenter | Qt.AlignTop)
+
+        # Welcome text
+        login_label = QLabel(_('<b>Log-in</b> to use the application'))
+        login_layout.addWidget(login_label, 2, 0, 1, 1)
+        login_layout.setAlignment(login_label, Qt.AlignCenter)
 
         # Configuration button
         refresh_conf_btn = QPushButton()
@@ -110,10 +116,6 @@ class LoginQDialog(QDialog):
         server_btn.setToolTip(_('Modify Alignak Server'))
         login_layout.addWidget(server_btn, 2, 2, 1, 1)
 
-        # Welcome text
-        login_label = QLabel(_('<b>Log-in</b> to use the application'))
-        login_layout.addWidget(login_label, 2, 0, 1, 1)
-        login_layout.setAlignment(login_label, Qt.AlignCenter)
 
         # Username field
         self.username_line = QLineEdit(self)
@@ -215,7 +217,7 @@ class LoginQDialog(QDialog):
         main_layout.addWidget(self.get_logo_widget(server_dialog))
 
         server_widget = QWidget(self)
-        server_widget.setObjectName('login')
+        server_widget.setObjectName('dialog')
         server_layout = QGridLayout(server_widget)
 
         # Description
@@ -258,6 +260,8 @@ class LoginQDialog(QDialog):
 
         # Valid Button
         valid_btn = QPushButton(_('Valid'))
+        valid_btn.setObjectName('valid')
+        valid_btn.setMinimumHeight(20)
         valid_btn.clicked.connect(server_dialog.accept)
         server_layout.addWidget(valid_btn, 4, 0, 1, 3)
 
