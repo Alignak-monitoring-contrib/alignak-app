@@ -19,8 +19,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-from time import sleep
-
 import unittest2
 
 from alignak_app.threads.thread_manager import ThreadManager
@@ -28,7 +26,7 @@ from alignak_app.threads.thread_manager import ThreadManager
 from alignak_app.core.utils import init_config
 from alignak_app.core.locales import init_localization
 
-from PyQt5.Qt import QApplication, QTimer
+from PyQt5.Qt import QTimer
 
 init_config()
 init_localization()

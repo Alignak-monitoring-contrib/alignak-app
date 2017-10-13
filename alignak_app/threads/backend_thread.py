@@ -52,9 +52,9 @@ class BackendQThread(QThread):
         super(BackendQThread, self).__init__()
         self.task = task
 
-    def run(self):
+    def run(self):  # pragma: no cover
         """
-        Run the QRunnable. Trigger actions depending on the selected task
+        Run the QThread. Trigger actions depending on the selected task
 
         """
 
@@ -94,13 +94,13 @@ class BackendQThread(QThread):
             request_data['projection']
         )
 
-        if request:
+        if request:  # pragma: no cover
             user.create(
                 request['_items'][0]['_id'],
                 request['_items'][0],
                 request['_items'][0]['name']
             )
-
+            print("----------- update ------------------")
             data_manager.update_item_database('user', user)
 
     @staticmethod
@@ -120,7 +120,7 @@ class BackendQThread(QThread):
         )
 
         hosts_list = []
-        if request:
+        if request:  # pragma: no cover
             for item in request['_items']:
                 host = Host()
 
@@ -150,7 +150,7 @@ class BackendQThread(QThread):
             all_items=True
         )
 
-        if request:
+        if request:  # pragma: no cover
             services_list = []
             for item in request['_items']:
                 service = Service()
@@ -182,7 +182,7 @@ class BackendQThread(QThread):
             all_items=True
         )
 
-        if request:
+        if request:  # pragma: no cover
             daemons_list = []
             for item in request['_items']:
                 daemon = Daemon()
@@ -214,7 +214,7 @@ class BackendQThread(QThread):
             all_items=True
         )
 
-        if request:
+        if request:  # pragma: no cover
             livesynthesis = []
             for item in request['_items']:
                 synthesis = LiveSynthesis()
@@ -249,7 +249,7 @@ class BackendQThread(QThread):
                 request_data['projection'],
                 all_items=False
             )
-            if request:
+            if request:  # pragma: no cover
                 history = History()
 
                 history.create(
@@ -279,7 +279,7 @@ class BackendQThread(QThread):
             all_items=False
         )
 
-        if request:
+        if request:  # pragma: no cover
             notifications = []
             for item in request['_items']:
                 message_split = item['message'].split(';')
