@@ -23,28 +23,19 @@ import sys
 
 import unittest2
 
-from alignak_app.core.backend import app_backend
+from alignak_app.widgets.utils_widgets import get_logo_widget, center_widget, LogoQWidget
 from alignak_app.core.utils import init_config
 from alignak_app.core.locales import init_localization
+from PyQt5.QtWidgets import QApplication, QWidget
 
-from alignak_app.dialogs.token_dialog import TokenQDialog
-from alignak_app.core.data_manager import data_manager
-from alignak_app.core.items.item_user import User
-
-from PyQt5.Qt import QApplication, QWidget
+init_config()
+init_localization()
 
 
-class TestTokenQDialog(unittest2.TestCase):
+class TestLogoQWidget(unittest2.TestCase):
     """
-        This file test methods of TokenQDialog class object
+        This file test the Utils Widget classes and funtions
     """
-
-    init_config()
-    init_localization()
-    app_backend.login()
-
-    user = User()
-    user.create('_id', {'token': 'long_token'}, 'name')
 
     @classmethod
     def setUpClass(cls):
@@ -54,29 +45,43 @@ class TestTokenQDialog(unittest2.TestCase):
         except:
             pass
 
-    def test_initialize(self):
-        """Iniatialize TokenQDialog"""
+    def test_initialize_acknowledge(self):
+        """Initialize LogoQWidget"""
 
-        under_test = TokenQDialog()
+        under_test = LogoQWidget()
 
+        test_widget = QWidget()
+
+        self.assertIsInstance(under_test, LogoQWidget)
         self.assertIsNone(under_test.layout())
-        self.assertEqual('dialog', under_test.objectName())
+        self.assertEqual('app_widget', under_test.objectName())
 
-        data_manager.database['user'] = self.user
-        under_test.initialize()
+        under_test.initialize(test_widget)
 
+        self.assertIsInstance(under_test, LogoQWidget)
         self.assertIsNotNone(under_test.layout())
-        self.assertEqual('dialog', under_test.objectName())
+        self.assertEqual('app_widget', under_test.objectName())
 
-    def test_get_token_widget(self):
-        """Get Token Qwidget"""
+    def test_get_logo_widget(self):
+        """Get LogoQWidget"""
 
-        token_dialog_test = TokenQDialog()
-        self.assertEqual('dialog', token_dialog_test.objectName())
-        data_manager.database['user'] = self.user
+        test_widget = QWidget()
 
-        under_test = token_dialog_test.get_token_widget()
+        under_test = get_logo_widget(test_widget)
 
+        self.assertIsInstance(under_test, LogoQWidget)
         self.assertIsNotNone(under_test.layout())
-        self.assertEqual('dialog', under_test.objectName())
-        self.assertIsInstance(under_test, QWidget)
+        self.assertEqual('app_widget', under_test.objectName())
+
+    def test_center_widget(self):
+        """Center QWidget"""
+
+        under_test = LogoQWidget()
+        old_pos = under_test.pos()
+
+        center_widget(under_test)
+
+        new_pos = under_test.pos()
+
+        self.assertNotEqual(old_pos, new_pos)
+

@@ -27,7 +27,7 @@ from alignak_app.dialogs.password_dialog import PasswordQDialog
 from alignak_app.core.utils import init_config
 from alignak_app.core.locales import init_localization
 
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication
 
 init_config()
 init_localization()
@@ -65,15 +65,6 @@ class TestPasswordQDialog(unittest2.TestCase):
             under_test.help_label.text()
         )
 
-    def test_get_password_logo_widget(self):
-        """Get Password Dialog logo Widget"""
-
-        password_test = PasswordQDialog()
-
-        under_test = password_test.get_logo_widget(password_test)
-
-        self.assertIsInstance(under_test, QWidget)
-
     def test_handle_confirm(self):
         """Confirm Password"""
 
@@ -97,18 +88,3 @@ class TestPasswordQDialog(unittest2.TestCase):
             'Your password must contain at least 5 characters.',
             under_test.help_label.text()
         )
-
-    def test_center(self):
-        """Center Password Dialog"""
-
-        under_test = PasswordQDialog()
-
-        old_pos_test = under_test.pos()
-
-        self.assertFalse(old_pos_test)
-
-        under_test.center(under_test)
-
-        new_pos_test = under_test.pos()
-
-        self.assertTrue(new_pos_test)

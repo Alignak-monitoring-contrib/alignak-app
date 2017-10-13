@@ -46,6 +46,7 @@ class TokenQDialog(QDialog):
         self.setStyleSheet(get_css())
         self.setWindowIcon(QIcon(get_image_path('icon')))
         self.setFixedSize(500, 200)
+        self.setObjectName('dialog')
 
     def initialize(self):
         """
@@ -61,9 +62,19 @@ class TokenQDialog(QDialog):
         self.setLayout(main_layout)
 
         main_layout.addWidget(get_logo_widget(self))
+        main_layout.addWidget(self.get_token_widget())
+
+    def get_token_widget(self):
+        """
+        Return token QWidget
+
+        :return: token QWidget
+        :rtype: QWidget
+        """
 
         # Token QWidget
         token_widget = QWidget()
+        token_widget.setObjectName('dialog')
         token_layout = QVBoxLayout()
         token_widget.setLayout(token_layout)
 
@@ -84,4 +95,4 @@ class TokenQDialog(QDialog):
         accept_btn.setMinimumHeight(30)
         token_layout.addWidget(accept_btn)
 
-        main_layout.addWidget(token_widget)
+        return token_widget

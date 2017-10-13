@@ -82,8 +82,9 @@ class LogoQWidget(QWidget):
         close_btn.clicked.connect(child_widget.close)
         logo_layout.addWidget(close_btn, 3)
 
-    def paintEvent(self, event):
+    def paintEvent(self, _):  # pragma: no cover
         """Override to apply "background-color" property of QWidget"""
+
         opt = QStyleOption()
         opt.initFrom(self)
         painter = QPainter(self)

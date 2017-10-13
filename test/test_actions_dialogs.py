@@ -23,10 +23,10 @@ import sys
 
 import unittest2
 
-from alignak_app.dialogs.actions_dialogs import AckQDialog, DownQDialog, get_logo_widget
+from alignak_app.dialogs.actions_dialogs import AckQDialog, DownQDialog
 from alignak_app.core.utils import init_config
 from alignak_app.core.locales import init_localization
-from PyQt5.QtWidgets import QApplication, QWidget, QTimeEdit, QDateTimeEdit
+from PyQt5.QtWidgets import QApplication, QTimeEdit, QDateTimeEdit
 
 init_config()
 init_localization()
@@ -44,15 +44,6 @@ class TestActionsQDialogs(unittest2.TestCase):
             cls.app = QApplication(sys.argv)
         except:
             pass
-
-    def test_get_logo_widget(self):
-        """Get logo widget"""
-
-        ack_test = AckQDialog()
-        under_test = get_logo_widget(ack_test)
-
-        self.assertIsInstance(under_test, QWidget)
-        self.assertEqual(45, under_test.height())
 
     def test_initialize_acknowledge(self):
         """Initialize Acknowledge"""

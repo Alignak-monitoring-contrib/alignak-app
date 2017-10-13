@@ -90,18 +90,3 @@ class TestStatusQDialog(unittest2.TestCase):
 
         under_test = status_dialog_test.get_enable_pixmap(False)
         self.assertIsInstance(under_test, QPixmap)
-
-    def test_center(self):
-        """Center Status Dialog"""
-
-        under_test = StatusQDialog()
-
-        old_pos_test = under_test.pos()
-
-        self.assertFalse(old_pos_test)
-
-        under_test.center(under_test)
-
-        new_pos_test = under_test.pos()
-
-        self.assertTrue(new_pos_test)
