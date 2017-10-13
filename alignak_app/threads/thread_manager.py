@@ -44,7 +44,6 @@ class ThreadManager(QObject):
 
     def __init__(self, parent=None):
         super(ThreadManager, self).__init__(parent)
-        self.backend_thread = BackendQThread(self)
         self.tasks = self.get_tasks()
         self.timer = QTimer()
         self.threads = []
