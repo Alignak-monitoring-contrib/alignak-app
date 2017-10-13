@@ -36,7 +36,7 @@ init_config()
 init_localization()
 app = QApplication(sys.argv)
 user = User()
-user.create('_id', {'name': 'name'}, 'name')
+user.create('_id', {'name': 'name', 'can_submit_commands': True}, 'name')
 data_manager.database['user'] = user
 from alignak_app.widgets.panel.service_data_widget import ServiceDataQWidget
 
@@ -69,7 +69,10 @@ class TestServiceDataQWidget(unittest2.TestCase):
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
                 'ls_state': 'OK',
-                'aggregation': 'disk'
+                'aggregation': 'disk',
+                'ls_last_check': 123456789,
+                'ls_output': 'All is ok',
+                'business_impact': 2
             },
             'service%d' % i
         )
@@ -130,9 +133,29 @@ class TestServiceDataQWidget(unittest2.TestCase):
 
         service_data_widget_test = ServiceDataQWidget()
 
-        under_test = service_data_widget_test.get_icon_widget()
+        under_test = service_data_widget_test.get_service_icon_widget()
 
         self.assertIsInstance(under_test, QWidget)
+
+    def test_update_widget(self):
+        """Update ServiceData QWidget"""
+
+        under_test = ServiceDataQWidget()
+        under_test.initialize()
+
+        old_labels = {}
+
+        # Store QLabel.text() = ''
+        for label in under_test.labels:
+            old_labels[label] = under_test.labels[label]
+
+        under_test.update_widget(self.service_list[0], '_id1')
+
+        new_labels = under_test.labels
+
+        # Assert labels have been filled by update
+        for label in old_labels:
+            self.assertNotEqual(new_labels[label].text(), old_labels[label])
 
 
 

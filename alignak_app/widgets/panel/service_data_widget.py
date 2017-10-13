@@ -32,7 +32,7 @@ from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.item_model import get_icon_name
 from alignak_app.core.utils import get_image_path, get_css, get_time_diff_since_last_timestamp
-from alignak_app.dialogs.actions_dialogs import AckQDialog, DownQDialog, QDialog
+from alignak_app.dialogs.actions_dialogs import AckQDialog, DownQDialog
 from alignak_app.widgets.dock.events_widget import send_event
 
 logger = getLogger(__name__)
@@ -71,12 +71,12 @@ class ServiceDataQWidget(QWidget):
         layout = QGridLayout()
         self.setLayout(layout)
 
-        layout.addWidget(self.get_icon_widget())
+        layout.addWidget(self.get_service_icon_widget())
         layout.addWidget(self.get_last_check_widget())
         layout.addWidget(self.get_actions_widget())
         self.hide()
 
-    def get_icon_widget(self):
+    def get_service_icon_widget(self):
         """
         Return QWidget with its icon and name
 
@@ -167,7 +167,7 @@ class ServiceDataQWidget(QWidget):
 
         return widget
 
-    def add_acknowledge(self, service_item, host_id):
+    def add_acknowledge(self, service_item, host_id):  # pragma: no cover
         """
         Create AckQDialog and manage acknowledge
 
@@ -187,7 +187,7 @@ class ServiceDataQWidget(QWidget):
         ack_dialog = AckQDialog()
         ack_dialog.initialize('service', service_item.name, comment)
 
-        if ack_dialog.exec_() == QDialog.Accepted:
+        if ack_dialog.exec_() == AckQDialog.Accepted:
             sticky = ack_dialog.sticky
             notify = ack_dialog.notify
             comment = str(ack_dialog.ack_comment_edit.toPlainText())
@@ -214,7 +214,7 @@ class ServiceDataQWidget(QWidget):
         else:
             logger.info('Acknowledge for %s cancelled...', service_item.name)
 
-    def add_downtime(self, service_item, host_id):
+    def add_downtime(self, service_item, host_id):  # pragma: no cover
         """
         Create AckQDialog and manage acknowledge
 
@@ -231,7 +231,7 @@ class ServiceDataQWidget(QWidget):
         downtime_dialog = DownQDialog()
         downtime_dialog.initialize('service', service_item.name, comment)
 
-        if downtime_dialog.exec_() == QDialog.Accepted:
+        if downtime_dialog.exec_() == DownQDialog.Accepted:
             fixed = downtime_dialog.fixed
             duration = downtime_dialog.duration_to_seconds()
             start_stamp = downtime_dialog.start_time.dateTime().toTime_t()
@@ -267,7 +267,7 @@ class ServiceDataQWidget(QWidget):
         Update ServiceDataQWidget
 
         :param service: Service item with its data
-        :type service: alignak_app.models.item_service.Service
+        :type service: alignak_app.core.items.item_service.Service
         :param host_id: id of attached host
         :type host_id: str
         """
