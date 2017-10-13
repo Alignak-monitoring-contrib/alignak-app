@@ -36,7 +36,7 @@ init_config()
 init_localization()
 app = QApplication(sys.argv)
 user = User()
-user.create('_id', {'name': 'name', 'can_submit_commands': True}, 'name')
+user.create('_id', {'name': 'name'}, 'name')
 data_manager.database['user'] = user
 from alignak_app.widgets.panel.service_data_widget import ServiceDataQWidget
 
@@ -149,6 +149,7 @@ class TestServiceDataQWidget(unittest2.TestCase):
         for label in under_test.labels:
             old_labels[label] = under_test.labels[label]
 
+        data_manager.database['user'].data['can_submit_commands'] = True
         under_test.update_widget(self.service_list[0], '_id1')
 
         new_labels = under_test.labels
