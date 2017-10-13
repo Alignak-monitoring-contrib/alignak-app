@@ -45,7 +45,8 @@ class TestTokenQDialog(unittest2.TestCase):
 
     user = User()
     user.create('_id', {'token': 'long_token'}, 'name')
-    data_manager.database['user'] = user
+
+
 
     @classmethod
     def setUpClass(cls):
@@ -62,6 +63,7 @@ class TestTokenQDialog(unittest2.TestCase):
 
         self.assertIsNone(under_test.layout())
 
+        data_manager.database['user'] = self.user
         under_test.initialize()
 
         self.assertIsNotNone(under_test.layout())
@@ -75,7 +77,6 @@ class TestTokenQDialog(unittest2.TestCase):
 
         self.assertIsNotNone(under_test)
         self.assertIsInstance(under_test, QWidget)
-
 
     def test_center(self):
         """Center Token Dialog"""
