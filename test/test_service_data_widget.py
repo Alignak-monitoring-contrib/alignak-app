@@ -30,7 +30,7 @@ from alignak_app.core.items.item_service import Service
 from alignak_app.core.utils import init_config
 from alignak_app.core.locales import init_localization
 
-from PyQt5.Qt import QApplication, QWidget
+from PyQt5.Qt import QApplication, QLabel, QPushButton, QWidget
 
 init_config()
 init_localization()
@@ -38,13 +38,12 @@ app = QApplication(sys.argv)
 user = User()
 user.create('_id', {'name': 'name'}, 'name')
 data_manager.database['user'] = user
+from alignak_app.widgets.panel.service_data_widget import ServiceDataQWidget
 
-from alignak_app.widgets.panel.services_widget import ServicesQWidget
 
-
-class TestServicesQWidget(unittest2.TestCase):
+class TestServiceDataQWidget(unittest2.TestCase):
     """
-        This file test methods of ServicesQWidget class object
+        This file test methods of ServiceDataQWidget class object
     """
 
     # Host data test
@@ -99,65 +98,42 @@ class TestServicesQWidget(unittest2.TestCase):
             pass
 
     def test_initialize(self):
-        """Initialize ServicesQWidget"""
+        """Initialize ServiceDataQWidget"""
 
-        under_test = ServicesQWidget()
+        under_test = ServiceDataQWidget()
 
-        self.assertIsNone(under_test.host_item)
-        self.assertIsNone(under_test.service_items)
-        self.assertIsNotNone(under_test.services_tree_widget)
-        self.assertIsNotNone(under_test.service_data_widget)
-        self.assertIsNotNone(under_test.nb_services_widget)
+        self.assertIsNone(under_test.service_item)
+        self.assertIsNone(under_test.host_id)
+        self.assertIsNotNone(under_test.labels)
+        for label in under_test.labels:
+            self.assertIsInstance(under_test.labels[label], QLabel)
+        self.assertIsNotNone(under_test.buttons)
+        for button in under_test.buttons:
+            self.assertIsInstance(under_test.buttons[button], QPushButton)
 
         under_test.initialize()
 
-        self.assertIsNone(under_test.host_item)
-        self.assertIsNone(under_test.service_items)
-        self.assertIsNotNone(under_test.services_tree_widget)
-        self.assertIsNotNone(under_test.service_data_widget)
-        self.assertIsNotNone(under_test.nb_services_widget)
+        self.assertIsNone(under_test.service_item)
+        self.assertIsNone(under_test.host_id)
+        self.assertIsNotNone(under_test.labels)
+        self.assertIsNotNone(under_test.buttons)
+        for label in under_test.labels:
+            self.assertIsInstance(under_test.labels[label], QLabel)
+        self.assertIsNotNone(under_test.buttons)
+        for button in under_test.buttons:
+            self.assertIsInstance(under_test.buttons[button], QPushButton)
+        # Assert QWidget is Hidden for first display
+        self.assertTrue(under_test.isHidden())
 
-    def test_set_data(self):
-        """Set Data Services QWidget"""
+    def test_get_icon_widget(self):
+        """Get Icon QWidget ServiceDataQWidget"""
 
-        under_test = ServicesQWidget()
-        self.assertIsNone(under_test.host_item)
-        self.assertIsNone(under_test.service_items)
+        service_data_widget_test = ServiceDataQWidget()
 
-        data_manager.update_item_database('host', self.host_list)
-        data_manager.update_item_database('service', self.service_list)
+        under_test = service_data_widget_test.get_icon_widget()
 
-        under_test.set_data('host1')
+        self.assertIsInstance(under_test, QWidget)
 
-        # Assert Data is filled
-        self.assertIsNotNone(under_test.host_item)
-        self.assertIsInstance(under_test.host_item, Host)
-        self.assertEqual('host1', under_test.host_item.name)
 
-        self.assertIsNotNone(under_test.service_items)
-        for service in under_test.service_items:
-            self.assertIsInstance(service, Service)
-            self.assertEqual('_id1', service.data['host'])
 
-    def test_update_widget(self):
-        """Update Services QWidget"""
 
-        under_test = ServicesQWidget()
-        data_manager.update_item_database('host', self.host_list)
-        data_manager.update_item_database('service', self.service_list)
-
-        under_test.set_data('host2')
-        under_test.initialize()
-
-        old_tree_widget = under_test.services_tree_widget
-        old_service_data_widget = under_test.service_data_widget
-        old_nb_services_widget = under_test.nb_services_widget
-        old_service_items = under_test.service_items
-
-        under_test.update_widget()
-
-        self.assertNotEqual(old_tree_widget, under_test.services_tree_widget)
-        self.assertNotEqual(old_service_data_widget, under_test.service_data_widget)
-        self.assertNotEqual(old_nb_services_widget, under_test.nb_services_widget)
-        # Assert Services Items had been sorted
-        self.assertNotEqual(old_service_items, under_test.service_items)
