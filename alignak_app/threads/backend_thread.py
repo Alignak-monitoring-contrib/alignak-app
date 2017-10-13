@@ -100,7 +100,6 @@ class BackendQThread(QThread):
                 request['_items'][0],
                 request['_items'][0]['name']
             )
-            print("----------- update ------------------")
             data_manager.update_item_database('user', user)
 
     @staticmethod

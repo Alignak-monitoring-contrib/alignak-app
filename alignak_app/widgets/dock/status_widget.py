@@ -28,7 +28,7 @@ from alignak_app.core.data_manager import data_manager
 from alignak_app.core.backend import app_backend
 from alignak_app.dialogs.status_dialog import StatusQDialog
 
-from PyQt5.Qt import QWidget, QHBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QWidget, QHBoxLayout, QTimer  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QLabel, QPushButton, QIcon  # pylint: disable=no-name-in-module
 
 
@@ -44,6 +44,7 @@ class DockStatusQWidget(QWidget):
         self.daemons_status = QLabel('pending...')
         self.backend_connected = QLabel('pending...')
         self.status_dialog = StatusQDialog()
+        self.timer = QTimer()
 
     def initialize(self):
         """
@@ -57,7 +58,7 @@ class DockStatusQWidget(QWidget):
         self.setLayout(layout)
 
         # Daemons
-        daemons_title = QLabel('Alignak status:')
+        daemons_title = QLabel(_('Status:'))
         daemons_title.setObjectName('title')
         layout.addWidget(daemons_title)
         layout.addWidget(self.daemons_status)
@@ -71,11 +72,15 @@ class DockStatusQWidget(QWidget):
         layout.addWidget(status_btn)
 
         # Backend state
-        connected_title = QLabel('Backend:')
+        connected_title = QLabel(_('Backend:'))
         connected_title.setObjectName('title')
         layout.addWidget(connected_title)
 
         layout.addWidget(self.backend_connected)
+
+        self.timer.setInterval(15000)
+        self.timer.start()
+        self.timer.timeout.connect(self.update_status)
 
     def show_status_dialog(self):
         """
@@ -110,13 +115,13 @@ class DockStatusQWidget(QWidget):
 
         states = {
             'daemons': {
-                'ok': 'online',
-                'warn': 'flapping',
-                'ko': 'down'
+                'ok': _('online'),
+                'warn': _('flapping'),
+                'ko': _('down')
             },
             'backend': {
-                'ok': 'connected',
-                'ko': 'offline'
+                'ok': _('connected'),
+                'ko': _('offline')
             }
         }
 

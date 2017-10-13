@@ -73,6 +73,11 @@ class DockQWidget(QWidget):
         self.app_widget.move(pos_size['pos'][0], pos_size['pos'][1])
 
         # Add Alignak status
+        status = QLabel(_('Alignak'))
+        status.setObjectName('title')
+        layout.addWidget(status)
+        layout.setAlignment(status, Qt.AlignCenter)
+        layout.addWidget(get_frame_separator())
         self.status_widget.initialize()
         layout.addWidget(self.status_widget)
         self.buttons_widget.initialize()
