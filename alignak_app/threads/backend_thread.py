@@ -100,7 +100,7 @@ class BackendQThread(QThread):
                 request['_items'][0],
                 request['_items'][0]['name']
             )
-            data_manager.update_item_database('user', user)
+            data_manager.update_database('user', user)
 
     @staticmethod
     def query_hosts_data():
@@ -131,7 +131,7 @@ class BackendQThread(QThread):
                 hosts_list.append(host)
 
         if hosts_list:
-            data_manager.update_item_database('host', hosts_list)
+            data_manager.update_database('host', hosts_list)
 
     @staticmethod
     def query_services_data():
@@ -163,7 +163,7 @@ class BackendQThread(QThread):
                 services_list.append(service)
 
             if services_list:
-                data_manager.update_item_database('service', services_list)
+                data_manager.update_database('service', services_list)
 
     @staticmethod
     def query_daemons_data():
@@ -195,7 +195,7 @@ class BackendQThread(QThread):
                 daemons_list.append(daemon)
 
             if daemons_list:
-                data_manager.update_item_database('alignakdaemon', daemons_list)
+                data_manager.update_database('alignakdaemon', daemons_list)
 
     @staticmethod
     def query_livesynthesis_data():
@@ -226,7 +226,7 @@ class BackendQThread(QThread):
                 livesynthesis.append(synthesis)
 
             if livesynthesis:
-                data_manager.update_item_database('livesynthesis', livesynthesis)
+                data_manager.update_database('livesynthesis', livesynthesis)
 
     @staticmethod
     def query_history_data():
@@ -260,7 +260,7 @@ class BackendQThread(QThread):
                 history_list.append(history)
 
         if history_list:
-            data_manager.update_item_database('history', history_list)
+            data_manager.update_database('history', history_list)
 
     @staticmethod
     def query_notifications_data():
@@ -295,4 +295,4 @@ class BackendQThread(QThread):
 
                     notifications.append(notification)
 
-            data_manager.update_item_database('notifications', notifications)
+            data_manager.update_database('notifications', notifications)

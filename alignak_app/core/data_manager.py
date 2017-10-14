@@ -63,7 +63,7 @@ class DataManager(object):
 
         return False
 
-    def update_item_database(self, item_type, items_list):
+    def update_database(self, item_type, items_list):
         """
         Update an item type in database
 
@@ -104,6 +104,21 @@ class DataManager(object):
                     return item
 
         return None
+
+    def update_item_data(self, item_type, item_id, data):
+        """
+        Update a single item in database
+
+        :param item_type:
+        :param item_id:
+        :param data:
+        :return:
+        """
+
+        for item in self.database[item_type]:
+            if item.item_id == item_id:
+                for key in data:
+                    item.data[key] = data[key]
 
     def get_synthesis_count(self):
         """

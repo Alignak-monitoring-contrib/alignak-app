@@ -124,8 +124,8 @@ class TestServicesQWidget(unittest2.TestCase):
         self.assertIsNone(under_test.host_item)
         self.assertIsNone(under_test.service_items)
 
-        data_manager.update_item_database('host', self.host_list)
-        data_manager.update_item_database('service', self.service_list)
+        data_manager.update_database('host', self.host_list)
+        data_manager.update_database('service', self.service_list)
 
         under_test.set_data('host1')
 
@@ -143,8 +143,8 @@ class TestServicesQWidget(unittest2.TestCase):
         """Update Services QWidget"""
 
         under_test = ServicesQWidget()
-        data_manager.update_item_database('host', self.host_list)
-        data_manager.update_item_database('service', self.service_list)
+        data_manager.update_database('host', self.host_list)
+        data_manager.update_database('service', self.service_list)
 
         under_test.set_data('host2')
         under_test.initialize()

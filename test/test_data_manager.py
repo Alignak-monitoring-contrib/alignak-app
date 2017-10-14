@@ -152,7 +152,7 @@ class TestDataManager(unittest2.TestCase):
 
         under_test = DataManager()
 
-        under_test.update_item_database('host', self.host_list)
+        under_test.update_database('host', self.host_list)
 
         # Assert only "host' databse is filled
         self.assertFalse(under_test.database['history'])
@@ -168,7 +168,7 @@ class TestDataManager(unittest2.TestCase):
 
         under_test = DataManager()
 
-        under_test.update_item_database('service', self.service_list)
+        under_test.update_database('service', self.service_list)
 
         self.assertTrue(under_test.database['service'])
 
@@ -200,7 +200,7 @@ class TestDataManager(unittest2.TestCase):
 
         self.assertFalse(synth_test)
 
-        under_test.update_item_database('livesynthesis', self.livesynth_list)
+        under_test.update_database('livesynthesis', self.livesynth_list)
 
         self.assertTrue(under_test.database['livesynthesis'])
 
@@ -219,7 +219,7 @@ class TestDataManager(unittest2.TestCase):
 
         under_test = DataManager()
 
-        under_test.update_item_database('host', self.host_list)
+        under_test.update_database('host', self.host_list)
 
         hostnames_test = under_test.get_all_hostnames()
 
@@ -240,8 +240,8 @@ class TestDataManager(unittest2.TestCase):
 
         under_test = DataManager()
 
-        under_test.update_item_database('host', self.host_list)
-        under_test.update_item_database('service', self.service_list)
+        under_test.update_database('host', self.host_list)
+        under_test.update_database('service', self.service_list)
 
         host_services_test = under_test.get_host_services('_id1')
 
@@ -256,8 +256,8 @@ class TestDataManager(unittest2.TestCase):
 
         under_test = DataManager()
 
-        under_test.update_item_database('host', self.host_list)
-        under_test.update_item_database('service', self.service_list)
+        under_test.update_database('host', self.host_list)
+        under_test.update_database('service', self.service_list)
 
         host_with_services_test = under_test.get_host_with_services('host5')
 
@@ -275,7 +275,7 @@ class TestDataManager(unittest2.TestCase):
 
         under_test = DataManager()
 
-        under_test.update_item_database('notifications', self.event_list)
+        under_test.update_database('notifications', self.event_list)
 
         events = under_test.get_events()
 
@@ -299,15 +299,15 @@ class TestDataManager(unittest2.TestCase):
 
         self.assertFalse(under_test.is_ready())
 
-        under_test.update_item_database('user', {'data': 'test'})
+        under_test.update_database('user', {'data': 'test'})
         self.assertFalse(under_test.is_ready())
-        under_test.update_item_database('host', {'data': 'test'})
+        under_test.update_database('host', {'data': 'test'})
         self.assertFalse(under_test.is_ready())
-        under_test.update_item_database('service', {'data': 'test'})
+        under_test.update_database('service', {'data': 'test'})
         self.assertFalse(under_test.is_ready())
-        under_test.update_item_database('alignakdaemon', {'data': 'test'})
+        under_test.update_database('alignakdaemon', {'data': 'test'})
         self.assertFalse(under_test.is_ready())
-        under_test.update_item_database('livesynthesis', {'data': 'test'})
+        under_test.update_database('livesynthesis', {'data': 'test'})
 
         self.assertTrue(under_test.is_ready())
 
