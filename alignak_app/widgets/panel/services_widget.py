@@ -31,11 +31,9 @@ from alignak_app.frames.app_frame import get_frame_separator
 from alignak_app.widgets.panel.service_tree_item import ServicesTreeItem
 from alignak_app.widgets.panel.service_data_widget import ServiceDataQWidget
 from alignak_app.widgets.panel.number_services_widget import NumberServicesQWidget
-from alignak_app.core.items.item_model import get_icon_name
 
-from PyQt5.Qt import QLabel, QWidget, QIcon, QGridLayout, QSize  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QTreeWidget, QTreeWidgetItem, QHBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPixmap  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QWidget, QIcon, QGridLayout, QSize  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QTreeWidget, QTreeWidgetItem  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
