@@ -117,7 +117,7 @@ class PanelQWidget(QWidget):
         widget.setLayout(layout)
 
         # Search button
-        button = QPushButton(_('Search / Refresh Host'), self)
+        button = QPushButton(_('Search Host'), self)
         button.setObjectName('search')
         button.setFixedHeight(25)
         button.setToolTip(_('Search Host'))
