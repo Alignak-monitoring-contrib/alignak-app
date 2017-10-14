@@ -161,6 +161,8 @@ class ServicesQWidget(QWidget):
                     self.service_data_widget.service_item,
                     self.service_data_widget.host_id
                 )
+            self.service_data_widget.show()
+            service_tree_item.update_item()
 
 
 # Create services_widget object

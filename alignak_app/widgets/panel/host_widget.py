@@ -155,23 +155,23 @@ class HostQWidget(QWidget):
 
         return widget
 
-    def add_acknowledge(self, item):
+    def add_acknowledge(self, host_item):
         """
         Create AckQDialog and manage acknowledge
 
-        :param item: Host item
-        :type item: alignak_app.models.item_host.Host
+        :param host_item: Host item
+        :type host_item: alignak_app.models.item_host.Host
         """
 
         user = data_manager.database['user']
 
         comment = _('Host %s acknowledged by %s, from Alignak-app') % (
-            item.name,
+            host_item.name,
             user.name
         )
 
         ack_dialog = AckQDialog()
-        ack_dialog.initialize('host', item.name, comment)
+        ack_dialog.initialize('host', host_item.name, comment)
 
         if ack_dialog.exec_() == QDialog.Accepted:
             sticky = ack_dialog.sticky
@@ -180,7 +180,7 @@ class HostQWidget(QWidget):
 
             data = {
                 'action': 'add',
-                'host': item.item_id,
+                'host': host_item.item_id,
                 'service': None,
                 'user': user.item_id,
                 'comment': comment,
@@ -190,22 +190,27 @@ class HostQWidget(QWidget):
 
             post = app_backend.post('actionacknowledge', data)
 
-            send_event('ACK', 'Acknowledge for %s is done' % item.name)
-            logger.debug('ACK answer for %s: %s', item.name, post)
+            send_event('ACK', 'Acknowledge for %s is done' % host_item.name)
+            data_manager.update_item_data(
+                'host',
+                host_item.item_id,
+                {'ls_acknowledged': True}
+            )
+            logger.debug('ACK answer for %s: %s', host_item.name, post)
 
             try:
                 self.buttons['acknowledge'].setEnabled(False)
             except RuntimeError as e:
                 logger.warning('Can\'t disable Acknowledge btn: %s', e)
         else:
-            logger.info('Acknowledge for %s cancelled...', item.name)
+            logger.info('Acknowledge for %s cancelled...', host_item.name)
 
-    def add_downtime(self, item):
+    def add_downtime(self, host_item):
         """
         Create AckQDialog and manage acknowledge
 
-        :param item: Host item
-        :type item: alignak_app.models.item_host.Host
+        :param host_item: Host item
+        :type host_item: alignak_app.models.item_host.Host
         """
 
         user = data_manager.database['user']
@@ -213,7 +218,7 @@ class HostQWidget(QWidget):
         comment = _('Schedule downtime by %s, from Alignak-app') % user.name
 
         downtime_dialog = DownQDialog()
-        downtime_dialog.initialize('host', item.name, comment)
+        downtime_dialog.initialize('host', host_item.name, comment)
 
         if downtime_dialog.exec_() == QDialog.Accepted:
             fixed = downtime_dialog.fixed
@@ -224,7 +229,7 @@ class HostQWidget(QWidget):
 
             data = {
                 'action': 'add',
-                'host': item.item_id,
+                'host': host_item.item_id,
                 'service': None,
                 'user': user.item_id,
                 'fixed': fixed,
@@ -236,15 +241,20 @@ class HostQWidget(QWidget):
 
             post = app_backend.post('actiondowntime', data)
 
-            send_event('DOWNTIME', 'Downtime for %s is done' % item.name)
-            logger.debug('DOWNTIME answer for %s: %s', item.name, post)
+            send_event('DOWNTIME', 'Downtime for %s is done' % host_item.name)
+            data_manager.update_item_data(
+                'host',
+                host_item.item_id,
+                {'ls_downtimed': True}
+            )
+            logger.debug('DOWNTIME answer for %s: %s', host_item.name, post)
 
             try:
                 self.buttons['downtime'].setEnabled(False)
             except RuntimeError as e:
                 logger.warning('Can\'t disable Downtime btn: %s', e)
         else:
-            logger.info('Downtime for %s cancelled...', item.name)
+            logger.info('Downtime for %s cancelled...', host_item.name)
 
     def show_history(self):
         """

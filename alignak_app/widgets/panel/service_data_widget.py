@@ -25,15 +25,15 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QLabel, QWidget, QIcon, Qt, QPushButton  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPixmap, QVBoxLayout, QGridLayout  # pylint: disable=no-name-in-module
-
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.item_model import get_icon_name
 from alignak_app.core.utils import get_image_path, get_css, get_time_diff_since_last_timestamp
 from alignak_app.dialogs.actions_dialogs import AckQDialog, DownQDialog
 from alignak_app.widgets.dock.events_widget import send_event
+
+from PyQt5.Qt import QLabel, QWidget, QIcon, Qt, QPushButton  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPixmap, QVBoxLayout, QGridLayout, QTimer  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -48,6 +48,7 @@ class ServiceDataQWidget(QWidget):
         self.setStyleSheet(get_css())
         self.setFixedWidth(200)
         # Fields
+        self.timer = QTimer()
         self.service_item = None
         self.host_id = None
         self.labels = {
@@ -74,6 +75,11 @@ class ServiceDataQWidget(QWidget):
         layout.addWidget(self.get_service_icon_widget())
         layout.addWidget(self.get_last_check_widget())
         layout.addWidget(self.get_actions_widget())
+
+        self.timer.setInterval(10000)
+        self.timer.start()
+        self.timer.timeout.connect(self.periodic_refresh)
+
         self.hide()
 
     def get_service_icon_widget(self):
@@ -205,6 +211,12 @@ class ServiceDataQWidget(QWidget):
             post = app_backend.post('actionacknowledge', data)
 
             send_event('ACK', 'Acknowledge for %s is done' % service_item.name)
+            # Update Item
+            data_manager.update_item_data(
+                'service',
+                service_item.item_id,
+                {'ls_acknowledged': True}
+            )
             logger.debug('ACK answer for %s: %s', service_item.name, post)
 
             try:
@@ -253,6 +265,11 @@ class ServiceDataQWidget(QWidget):
             post = app_backend.post('actiondowntime', data)
 
             send_event('DOWNTIME', 'Downtime for %s is done' % service_item.name)
+            data_manager.update_item_data(
+                'service',
+                service_item.item_id,
+                {'ls_downtimed': True}
+            )
             logger.debug('DOWNTIME answer for %s: %s', service_item.name, post)
 
             try:
@@ -262,7 +279,7 @@ class ServiceDataQWidget(QWidget):
         else:
             logger.info('Downtime for %s cancelled...', service_item.name)
 
-    def update_widget(self, service, host_id):
+    def update_widget(self, service=None, host_id=None):
         """
         Update ServiceDataQWidget
 
@@ -272,8 +289,9 @@ class ServiceDataQWidget(QWidget):
         :type host_id: str
         """
 
-        self.service_item = service
-        self.host_id = host_id
+        if service and host_id:
+            self.service_item = service
+            self.host_id = host_id
 
         icon_name = get_icon_name(
             'service',
@@ -306,4 +324,14 @@ class ServiceDataQWidget(QWidget):
         else:
             self.buttons['downtime'].setEnabled(True)
 
-        self.show()
+    def periodic_refresh(self):
+        """
+        Refresh QWidget periodically
+
+        """
+
+        if self.service_item and self.host_id:
+            updated_service = data_manager.get_item('service', '_id', self.service_item.item_id)
+            if updated_service:
+                self.service_item = updated_service
+            self.update_widget()

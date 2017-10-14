@@ -25,10 +25,11 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QIcon, QTreeWidgetItem  # pylint: disable=no-name-in-module
-
 from alignak_app.core.items.item_model import get_icon_name
 from alignak_app.core.utils import get_image_path
+from alignak_app.core.data_manager import data_manager
+
+from PyQt5.Qt import QIcon, QTreeWidgetItem, QTimer  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -63,3 +64,25 @@ class ServicesTreeItem(QTreeWidgetItem):  # pylint: disable=too-few-public-metho
         )
 
         self.setIcon(0, QIcon(get_image_path(icon_name)))
+
+    def update_item(self):
+        """
+        Update QIcon of service
+
+        """
+
+        icon_name = get_icon_name(
+            'service',
+            self.service_item.data['ls_state'],
+            self.service_item.data['ls_acknowledged'],
+            self.service_item.data['ls_downtimed']
+        )
+
+        service = data_manager.get_item('service', '_id', self.service_id)
+
+        self.setData(0, 0, service.name)
+        self.setData(0, 1, QIcon(get_image_path(icon_name)))
+
+        self.service_item = service
+
+        assert service.item_id == self.service_id
