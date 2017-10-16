@@ -48,7 +48,7 @@ class ThreadManager(QObject):
         self.timer = QTimer()
         self.threads = []
 
-    def start(self):
+    def start(self):  # pragma: no cover
         """
         Start ThreadManager
 
@@ -77,7 +77,7 @@ class ThreadManager(QObject):
             'notifications', 'livesynthesis', 'alignakdaemon', 'history', 'service', 'host', 'user',
         ]
 
-    def create_tasks(self):
+    def create_tasks(self):  # pragma: no cover
         """
         Create tasks to run
 
@@ -91,7 +91,7 @@ class ThreadManager(QObject):
             # Add task to thread to keep a reference
             self.threads.append(backend_thread)
 
-    def add_task(self, task):
+    def add_task(self, task):  # pragma: no cover
         """
         Add a specific QThreads in list
 

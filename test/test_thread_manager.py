@@ -49,25 +49,3 @@ class TestThreadManager(unittest2.TestCase):
             ['notifications', 'livesynthesis', 'alignakdaemon', 'history', 'service', 'host', 'user'],
             under_test.tasks
         )
-
-    def test_start_thread_manager_and_create_tasks(self):
-        """Start Thread Manager and Create Tasks"""
-
-        under_test = ThreadManager()
-        self.assertFalse(under_test.timer.isActive())
-        self.assertFalse(under_test.threads)
-
-        under_test.start()
-
-        self.assertTrue(under_test.timer.isActive())
-        self.assertTrue(under_test.threads)
-
-        # Stop timer to prevent tasks adding
-        under_test.timer.stop()
-        nb_threads_test = len(under_test.threads)
-
-        under_test.add_task('user')
-
-        self.assertNotEqual(len(under_test.threads), nb_threads_test)
-
-        under_test.stop()

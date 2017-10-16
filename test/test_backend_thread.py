@@ -41,44 +41,9 @@ class TestBackendQThread(unittest2.TestCase):
         This file test the BackendQThread classes.
     """
 
-    # @classmethod
-    # def setUpClass(cls):
-    #     """Create QApplication"""
-    #     try:
-    #         cls.app = QApplication(sys.argv)
-    #     except:
-    #         pass
-
     def test_initialize_backend_thread(self):
         """Initialize BackendQThread"""
 
         under_test = BackendQThread('user')
 
         self.assertEqual('user', under_test.task)
-
-    def test_backend_thread_queries(self):
-        """Thread Query User Data"""
-
-        tasks = [
-            'notifications', 'livesynthesis', 'alignakdaemon', 'history', 'service', 'host', 'user',
-        ]
-        for task in tasks:
-            # BackendQThread.query_user_data()
-            under_test = BackendQThread(task)
-            under_test.run()
-            self.assertIsNotNone(data_manager.database[task])
-        #
-        # BackendQThread.query_hosts_data()
-        # self.assertIsNotNone(data_manager.database['host'])
-        #
-        # BackendQThread.query_services_data()
-        # self.assertIsNotNone(data_manager.database['service'])
-        #
-        # BackendQThread.query_daemons_data()
-        # self.assertIsNotNone(data_manager.database['alignakdaemon'])
-        #
-        # BackendQThread.query_livesynthesis_data()
-        # self.assertIsNotNone(data_manager.database['livesynthesis'])
-        #
-        # BackendQThread.query_history_data()
-        # self.assertIsNotNone(data_manager.database['history'])
