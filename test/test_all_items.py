@@ -185,7 +185,7 @@ class TestAllItems(unittest2.TestCase):
     def test_get_request_user_model(self):
         """Get User Request Model"""
 
-        under_test = User.get_request_model()
+        under_test = User.get_request_model('')
 
         self.assertTrue('endpoint' in under_test)
         self.assertEqual('user', under_test['endpoint'])
@@ -224,37 +224,6 @@ class TestAllItems(unittest2.TestCase):
         )
         under_test = user_test.get_role()
         self.assertEqual('power', under_test)
-
-    def test_get_realm_name(self):
-        """Get User Realm Name"""
-
-        user_test = User()
-        user_test.create(
-            '_id',
-            {'_realm': 'no_realm'},
-            'name'
-        )
-        under_test = user_test.get_realm_name()
-
-        self.assertEqual('n/a', under_test)
-        # TODO test if realm is right
-
-    def test_get_period_name(self):
-        """Get Period Name"""
-
-        user_test = User()
-        user_test.create(
-            '_id',
-            {'host_notification_period': 'no_period', 'service_notification_period': 'no_period'},
-            'name'
-        )
-        under_test = user_test.get_period_name('host')
-
-        self.assertEqual('n/a', under_test)
-
-        under_test = user_test.get_period_name('service')
-
-        self.assertEqual('n/a', under_test)
 
     def test_get_request_host_model(self):
         """Get Host Request Model"""

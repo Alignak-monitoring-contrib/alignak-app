@@ -24,9 +24,11 @@
 """
 
 import datetime
+
 from logging import getLogger
 
 from alignak_app.core.items.item_livesynthesis import LiveSynthesis
+
 
 logger = getLogger(__name__)
 
@@ -185,9 +187,12 @@ class DataManager(object):
 
     def get_host_services(self, host_id):
         """
+        Return services of wanted host
 
-        :param host_id:
-        :return:
+        :param host_id: '_id' of host
+        :type host_id: str
+        :return: services of host
+        :rtype: list
         """
 
         services_of_host = []

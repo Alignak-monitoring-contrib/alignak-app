@@ -28,6 +28,14 @@ from logging import getLogger
 
 from alignak_backend_client.client import Backend, BackendException
 
+from alignak_app.core.items.item_daemon import Daemon
+from alignak_app.core.items.item_host import Host
+from alignak_app.core.items.item_livesynthesis import LiveSynthesis
+from alignak_app.core.items.item_event import Event
+from alignak_app.core.items.item_service import Service
+from alignak_app.core.items.item_user import User
+from alignak_app.core.items.item_history import History
+
 from alignak_app.core.utils import get_app_config
 from alignak_app.core.data_manager import data_manager
 
@@ -299,6 +307,275 @@ class AppBackend(object):
                     wanted_service = service
 
         return wanted_service
+
+    def get_realm_name(self, endpoint_id):
+        """
+        Return realm name or alias
+
+        :param endpoint_id: id of endpoint
+        :type endpoint_id: str
+        :return: realm name or alias
+        :rtype: str
+        """
+
+        endpoint = '/'.join(
+            ['realm', endpoint_id]
+        )
+        projection = [
+            'name',
+            'alias'
+        ]
+
+        realm = self.get(endpoint, projection=projection)
+
+        if realm:
+            if realm['alias']:
+                return realm['alias']
+
+            return realm['name']
+
+        return 'n/a'
+
+    def get_period_name(self, endpoint_id):
+        """
+        Get the period name or alias
+
+        :param endpoint_id: id of endpoint
+        :type endpoint_id: str
+        :return: name or alias of timeperiod
+        :rtype: str
+        """
+
+        projection = [
+            'name',
+            'alias'
+        ]
+
+        endpoint = '/'.join(['timeperiod', endpoint_id])
+
+        period = self.get(endpoint, projection=projection)
+
+        if period:
+            if 'alias' in period:
+                return period['alias']
+
+            return period['name']
+
+        return 'n/a'
+
+    def query_user_data(self):
+        """
+        Launch request for "user" endpoint
+
+        """
+
+        user = User()
+
+        request_data = user.get_request_model(self.backend.token)
+
+        request = self.get(
+            request_data['endpoint'],
+            request_data['params'],
+            request_data['projection']
+        )
+
+        if request:  # pragma: no cover
+            user.create(
+                request['_items'][0]['_id'],
+                request['_items'][0],
+                request['_items'][0]['name']
+            )
+            data_manager.update_database('user', user)
+
+    def query_hosts_data(self):
+        """
+        Launch request for "host" endpoint
+
+        """
+
+        request_data = Host.get_request_model()
+
+        request = self.get(
+            request_data['endpoint'],
+            request_data['params'],
+            request_data['projection'],
+            all_items=True
+        )
+
+        hosts_list = []
+        if request:  # pragma: no cover
+            for item in request['_items']:
+                host = Host()
+
+                host.create(
+                    item['_id'],
+                    item,
+                    item['name'],
+                )
+                hosts_list.append(host)
+
+        if hosts_list:
+            data_manager.update_database('host', hosts_list)
+
+    def query_services_data(self):
+        """
+        Launch request for "service" endpoint
+
+        """
+
+        request_data = Service.get_request_model()
+
+        request = self.get(
+            request_data['endpoint'],
+            request_data['params'],
+            request_data['projection'],
+            all_items=True
+        )
+
+        if request:  # pragma: no cover
+            services_list = []
+            for item in request['_items']:
+                service = Service()
+
+                service.create(
+                    item['_id'],
+                    item,
+                    item['name'],
+                )
+
+                services_list.append(service)
+
+            if services_list:
+                data_manager.update_database('service', services_list)
+
+    def query_daemons_data(self):
+        """
+        Launch request for "alignakdaemon" endpoint
+
+        """
+
+        request_data = Daemon.get_request_model()
+
+        request = self.get(
+            request_data['endpoint'],
+            request_data['params'],
+            request_data['projection'],
+            all_items=True
+        )
+
+        if request:  # pragma: no cover
+            daemons_list = []
+            for item in request['_items']:
+                daemon = Daemon()
+
+                daemon.create(
+                    item['_id'],
+                    item,
+                    item['name'],
+                )
+
+                daemons_list.append(daemon)
+
+            if daemons_list:
+                data_manager.update_database('alignakdaemon', daemons_list)
+
+    def query_livesynthesis_data(self):
+        """
+        Launch request for "livesynthesis" endpoint
+
+        """
+
+        request_data = LiveSynthesis.get_request_model()
+
+        request = self.get(
+            request_data['endpoint'],
+            request_data['params'],
+            request_data['projection'],
+            all_items=True
+        )
+
+        if request:  # pragma: no cover
+            livesynthesis = []
+            for item in request['_items']:
+                synthesis = LiveSynthesis()
+
+                synthesis.create(
+                    item['_id'],
+                    item,
+                )
+
+                livesynthesis.append(synthesis)
+
+            if livesynthesis:
+                data_manager.update_database('livesynthesis', livesynthesis)
+
+    def query_history_data(self):
+        """
+        Launch request for "history" endpoint but only for hosts in "data_manager"
+
+        """
+
+        request_data = History.get_request_model()
+
+        history_list = []
+        for host in data_manager.database['host']:
+            request_data['params']['where'] = json.dumps({
+                'host': host.item_id})
+
+            request = self.get(
+                request_data['endpoint'],
+                request_data['params'],
+                request_data['projection'],
+                all_items=False
+            )
+            if request:  # pragma: no cover
+                history = History()
+
+                history.create(
+                    host.item_id,
+                    request['_items'],
+                    host.name,
+                )
+
+                history_list.append(history)
+
+        if history_list:
+            data_manager.update_database('history', history_list)
+
+    def query_notifications_data(self):
+        """
+        Launch request for "history" endpoint but only for notifications of current user
+
+        """
+
+        request_data = Event.get_request_model()
+
+        request = self.get(
+            request_data['endpoint'],
+            request_data['params'],
+            request_data['projection'],
+            all_items=False
+        )
+
+        if request:  # pragma: no cover
+            notifications = []
+            for item in request['_items']:
+                message_split = item['message'].split(';')
+                user = message_split[0].split(':')[1].strip()
+                if 'imported_admin' in user:
+                    user = 'admin'
+                if user == data_manager.database['user'].name:
+                    notification = Event()
+
+                    notification.create(
+                        item['_id'],
+                        item,
+                    )
+
+                    notifications.append(notification)
+
+            if notifications:
+                data_manager.update_database('notifications', notifications)
 
 
 # Creating "app_backend" variable.

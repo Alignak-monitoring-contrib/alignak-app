@@ -593,7 +593,7 @@ class UserQWidget(QWidget):
         self.user = data_manager.database['user']
 
         # Realm, Role, Email
-        self.labels['realm'].setText(self.user.get_realm_name())
+        self.labels['realm'].setText(app_backend.get_realm_name(self.user.data['_realm']))
         self.labels['role'].setText(self.user.get_role().capitalize())
         self.labels['email'].setText(self.user.data['email'])
 
@@ -619,13 +619,13 @@ class UserQWidget(QWidget):
         self.labels['host_notifications_enabled'].setPixmap(
             self.get_enable_label_icon(self.user.data['host_notifications_enabled'])
         )
-        period = self.user.get_period_name('host')
+        period = app_backend.get_period_name(self.user.data['host_notification_period'])
         self.labels['host_notification_period'].setText(period.capitalize())
 
         self.labels['service_notification_enabled'].setPixmap(
             self.get_enable_label_icon(self.user.data['service_notifications_enabled'])
         )
-        period = self.user.get_period_name('service')
+        period = app_backend.get_period_name(self.user.data['service_notification_period'])
         self.labels['service_notification_period'].setText(period.capitalize())
 
         # Notifications Options

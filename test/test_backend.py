@@ -156,3 +156,27 @@ class TestAppBackend(unittest2.TestCase):
         self.assertNotEqual(user_modified['notes'], notes)
         self.assertEqual(user_modified['notes'], '')
 
+    def test_get_realm_name(self):
+        """Get User Realm Name"""
+
+        backend_test = AppBackend()
+        backend_test.login()
+
+        under_test = backend_test.get_realm_name(backend_test.backend.token)
+
+        self.assertEqual('n/a', under_test)
+        # TODO test if realm is right
+
+    def test_get_period_name(self):
+        """Get Period Name"""
+
+        backend_test = AppBackend()
+        backend_test.login()
+
+        under_test = backend_test.get_period_name('host')
+
+        self.assertEqual('n/a', under_test)
+
+        under_test = backend_test.get_period_name('service')
+
+        self.assertEqual('n/a', under_test)

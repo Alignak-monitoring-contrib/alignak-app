@@ -310,4 +310,3 @@ class TestDataManager(unittest2.TestCase):
         under_test.update_database('livesynthesis', {'data': 'test'})
 
         self.assertTrue(under_test.is_ready())
-

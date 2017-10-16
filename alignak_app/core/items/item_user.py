@@ -26,7 +26,6 @@
 import json
 from logging import getLogger
 
-from alignak_app.core.backend import app_backend
 from alignak_app.core.items.item_model import ItemModel
 
 logger = getLogger(__name__)
@@ -42,10 +41,12 @@ class User(ItemModel):
         self.item_type = 'user'
 
     @staticmethod
-    def get_request_model():
+    def get_request_model(token):
         """
         Return the request model for user requests
 
+        :param token: token of user
+        :type token: str
         :return: request model for user endpoint
         :rtype: dict
         """
@@ -60,7 +61,7 @@ class User(ItemModel):
 
         request = {
             'endpoint': 'user',
-            'params': {'where': json.dumps({'token': app_backend.backend.token})},
+            'params': {'where': json.dumps({'token': token})},
             'projection': user_projection
         }
 
@@ -85,61 +86,3 @@ class User(ItemModel):
             role = _('power')
 
         return role
-
-    def get_realm_name(self):
-        """
-        Return realm name or alias
-
-        :return: realm name or alias
-        :rtype: str
-        """
-
-        if '_realm' in self.data:
-            endpoint = '/'.join(
-                ['realm', self.data['_realm']]
-            )
-            projection = [
-                'name',
-                'alias'
-            ]
-
-            realm = app_backend.get(endpoint, projection=projection)
-
-            if realm:
-                if realm['alias']:
-                    return realm['alias']
-
-                return realm['name']
-
-        return 'n/a'
-
-    def get_period_name(self, item_type):
-        """
-        Get the period name or alias
-
-        :param item_type: type of item: service | host
-        :type item_type: str
-        :return: name or alias of timeperiod
-        :rtype: str
-        """
-
-        projection = [
-            'name',
-            'alias'
-        ]
-
-        if item_type == 'host':
-            data = 'host_notification_period'
-        else:
-            data = 'service_notification_period'
-        endpoint = '/'.join(['timeperiod', self.data[data]])
-
-        period = app_backend.get(endpoint, projection=projection)
-
-        if period:
-            if 'alias' in period:
-                return period['alias']
-
-            return period['name']
-
-        return 'n/a'
