@@ -32,7 +32,7 @@ from PyQt5.Qt import QThread, pyqtSignal  # pylint: disable=no-name-in-module
 logger = getLogger(__name__)
 
 
-class BackendQThread(QThread):
+class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
     """
         Class who create a QThread to trigger requests
     """
