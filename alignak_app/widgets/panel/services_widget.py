@@ -25,15 +25,15 @@
 
 from logging import getLogger
 
+from PyQt5.Qt import QTreeWidget, QTreeWidgetItem  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QWidget, QIcon, QGridLayout, QSize  # pylint: disable=no-name-in-module
+
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css
-from alignak_app.frames.app_frame import get_frame_separator
-from alignak_app.widgets.panel.service_tree_item import ServicesTreeItem
-from alignak_app.widgets.panel.service_data_widget import ServiceDataQWidget
+from alignak_app.widgets.frames.app_frame import get_frame_separator
 from alignak_app.widgets.panel.number_services_widget import NumberServicesQWidget
-
-from PyQt5.Qt import QWidget, QIcon, QGridLayout, QSize  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QTreeWidget, QTreeWidgetItem  # pylint: disable=no-name-in-module
+from alignak_app.widgets.panel.service_data_widget import ServiceDataQWidget
+from alignak_app.widgets.panel.service_tree_item import ServicesTreeItem
 
 logger = getLogger(__name__)
 

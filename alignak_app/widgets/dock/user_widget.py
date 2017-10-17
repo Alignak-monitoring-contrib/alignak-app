@@ -33,11 +33,10 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=n
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css
-
 from alignak_app.dialogs.password_dialog import PasswordQDialog
 from alignak_app.dialogs.token_dialog import TokenQDialog
-from alignak_app.frames.app_frame import AppQFrame, get_frame_separator
 from alignak_app.widgets.dock.events_widget import send_event
+from alignak_app.widgets.frames.app_frame import AppQFrame, get_frame_separator
 
 logger = getLogger(__name__)
 

@@ -21,13 +21,6 @@ QWidget {
     background-color: white;
 }
 
-QWidget#dialog {
-	border-width: 0px 2px 2px 2px;
-    border-color: #607d8b;
-    border-style: solid;
-    background-color: white;
-}
-
 QScrollBar {
     width: 10px;
     background: white;
@@ -111,15 +104,24 @@ QLabel#widget_title {
 
 /****** DOCK ******/
 QLabel#ok {
-    color: #27ae60;
+    background-color: #27ae60;
+    color: white;
+    padding: 0px 10px 0px 10px;
+    border-radius: 3px;
 }
 
 QLabel#warn {
-    color: #ff9b44;
+    background-color: #ff9b44;
+    color: white;
+    padding: 0px 10px 0px 10px;
+    border-radius: 3px;
 }
 
 QLabel#ko {
-    color: #f44437;
+    background-color: #f44437;
+    color: white;
+    padding: 0px 10px 0px 10px;
+    border-radius: 3px;
 }
 
 QLabel#total {
@@ -135,14 +137,9 @@ QFrame#separator {
 	border-style: solid;
 }
 
-QWidget#events {
-    border-width: 0px 0px 1px 0px;
-    border-color: #6c9cb3;
-    border-style: solid; 
-}
-
 QListWidget {
     border: none;
+    background-color: transparent;
 }
 
 QListWidget::item:selected {
@@ -150,6 +147,11 @@ QListWidget::item:selected {
     background-color: white;
     border: 1px solid #1fb4e4;
     border-radius: 3px;
+}
+
+QWidget#livestate {
+    background-color: #f5f5f5;
+    border-radius: 5px;
 }
 
 /****** PANEL ******/
@@ -226,8 +228,9 @@ QLabel#itemname {
 }
 
 QTreeWidget {
-    alternate-background-color: #f0f9fd;
-    background: white;
+    /*alternate-background-color: #f0f9fd;*/
+    /*background: white;*/
+    background: rgba(255, 0, 0, 0%);
     selection-background-color: white;
     selection-color: black;
     show-decoration-selected: 1;
@@ -287,3 +290,4 @@ QLabel#notes {
     background-color: #f9f2f4;
     border-radius: 3px;
 }
+

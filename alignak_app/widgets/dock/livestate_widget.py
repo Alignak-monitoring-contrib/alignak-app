@@ -84,6 +84,7 @@ class LivestateQWidget(QWidget):
         layout = QVBoxLayout()
         widget = QWidget()
         widget.setLayout(layout)
+        widget.setObjectName('livestate')
 
         problem_label = QLabel('%d' % problem_nb)
         problem_label.setObjectName('ko')

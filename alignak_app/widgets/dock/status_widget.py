@@ -28,7 +28,7 @@ from alignak_app.core.data_manager import data_manager
 from alignak_app.core.backend import app_backend
 from alignak_app.dialogs.status_dialog import StatusQDialog
 
-from PyQt5.Qt import QWidget, QHBoxLayout, QTimer  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QWidget, QHBoxLayout, QTimer, QPixmap, Qt  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QLabel, QPushButton, QIcon  # pylint: disable=no-name-in-module
 
 
@@ -61,7 +61,11 @@ class DockStatusQWidget(QWidget):
         daemons_title = QLabel(_('Status:'))
         daemons_title.setObjectName('title')
         layout.addWidget(daemons_title)
+        layout.setAlignment(daemons_title, Qt.AlignCenter)
+        self.daemons_status.setFixedSize(16, 16)
+        self.daemons_status.setScaledContents(True)
         layout.addWidget(self.daemons_status)
+        layout.setAlignment(self.daemons_status, Qt.AlignCenter)
 
         # Status button
         self.status_dialog.initialize()
@@ -70,13 +74,18 @@ class DockStatusQWidget(QWidget):
         status_btn.setFixedSize(32, 32)
         status_btn.clicked.connect(self.show_status_dialog)
         layout.addWidget(status_btn)
+        layout.setAlignment(status_btn, Qt.AlignCenter)
 
         # Backend state
         connected_title = QLabel(_('Backend:'))
         connected_title.setObjectName('title')
         layout.addWidget(connected_title)
+        layout.setAlignment(connected_title, Qt.AlignCenter)
 
+        self.backend_connected.setFixedSize(16, 16)
+        self.backend_connected.setScaledContents(True)
         layout.addWidget(self.backend_connected)
+        layout.setAlignment(self.backend_connected, Qt.AlignCenter)
 
         self.timer.setInterval(15000)
         self.timer.start()
@@ -94,19 +103,21 @@ class DockStatusQWidget(QWidget):
     def update_status(self):
         """
         Update dameons and backend status
-        TODO: add pyqtSignal to update
+
         """
 
-        self.backend_connected.setText(self.update_backend_status())
-        self.daemons_status.setText(self.update_daemons_status())
+        self.backend_connected.setPixmap(
+            QPixmap(get_image_path(self.update_backend_status()))
+        )
+        self.daemons_status.setPixmap(
+            QPixmap(get_image_path(self.update_daemons_status()))
+        )
 
     @staticmethod
-    def get_states(item_type, status):
+    def get_states(status):
         """
         Return states of daemons or backend
 
-        :param item_type: backend or daemons
-        :type item_type: str
         :param status: status of item
         :type status: str
         :return: the status string
@@ -114,18 +125,11 @@ class DockStatusQWidget(QWidget):
         """
 
         states = {
-            'daemons': {
-                'ok': _('online'),
-                'warn': _('flapping'),
-                'ko': _('down')
-            },
-            'backend': {
-                'ok': _('connected'),
-                'ko': _('offline')
-            }
+            'ok': 'connected',
+            'ko': 'disconnected'
         }
 
-        return states[item_type][status]
+        return states[status]
 
     def update_daemons_status(self):
         """
@@ -151,9 +155,7 @@ class DockStatusQWidget(QWidget):
         else:
             status = 'ok'
 
-        self.daemons_status.setObjectName(status)
-
-        return self.get_states('daemons', status)
+        return self.get_states(status)
 
     def update_backend_status(self):
         """
@@ -164,8 +166,6 @@ class DockStatusQWidget(QWidget):
         """
 
         if app_backend.connected:
-            self.backend_connected.setObjectName('ok')
-            return self.get_states('backend', 'ok')
+            return self.get_states('ok')
 
-        self.backend_connected.setObjectName('ko')
-        return self.get_states('backend', 'ko')
+        return self.get_states('ko')
