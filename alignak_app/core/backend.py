@@ -162,7 +162,7 @@ class AppBackend(object):
                 logger.debug('GET: %s', endpoint)
                 logger.debug('..with params: %s', str(params))
                 logger.debug('...Response > %s', str(request['_status']))
-            except BackendException as e:
+            except (BackendException, json.decoder.JSONDecodeError) as e:
                 logger.warning('First GET failed: %s', str(e))
                 logger.warning('...Request: %s', str(request))
                 try:
@@ -173,7 +173,7 @@ class AppBackend(object):
                     logger.debug('GET (Retry): %s', endpoint)
                     logger.debug('..with params: %s', str(params))
                     logger.debug('...Response > %s', str(request['_status']))
-                except BackendException as e:  # pragma: no cover
+                except (BackendException, json.decoder.JSONDecodeError) as e:  # pragma: no cover
                     logger.error('GET failed: %s', str(e))
                     logger.error('...Request: %s', str(request))
                     logger.warning('Application checks the connection with the Backend...')
