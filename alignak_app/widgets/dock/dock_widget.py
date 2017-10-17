@@ -108,7 +108,7 @@ class DockQWidget(QWidget):
 
         pos_x = desktop.width() - self.width() * 0.5
 
-        self.app_widget.initialize('')
+        self.app_widget.initialize('', logo=True)
         self.app_widget.add_widget(self)
         self.app_widget.resize(x_size, y_size)
         self.app_widget.move(pos_x + (desktop.width() * 0.1), 0)

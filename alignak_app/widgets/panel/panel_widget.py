@@ -88,7 +88,7 @@ class PanelQWidget(QWidget):
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
         desktop = QApplication.desktop().availableGeometry(screen)
 
-        self.app_widget.initialize('')
+        self.app_widget.initialize(_('Hosts Synthesis View'))
         self.app_widget.add_widget(self)
         self.app_widget.resize(desktop.width() - dock_width, desktop.height())
         self.app_widget.move(0, 0)
