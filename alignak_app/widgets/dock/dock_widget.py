@@ -61,17 +61,6 @@ class DockQWidget(QWidget):
         layout = QGridLayout()
         self.setLayout(layout)
 
-        # Define size and position of dock
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        desktop = QApplication.desktop().availableGeometry(screen)
-
-        pos_size = self.get_position_and_size(desktop)
-
-        self.app_widget.initialize('')
-        self.app_widget.add_widget(self)
-        self.app_widget.resize(pos_size['size'][0], pos_size['size'][1])
-        self.app_widget.move(pos_size['pos'][0], pos_size['pos'][1])
-
         # Add Alignak status
         status = QLabel(_('Alignak'))
         status.setObjectName('title')
@@ -80,7 +69,7 @@ class DockQWidget(QWidget):
         layout.addWidget(get_frame_separator())
         self.status_widget.initialize()
         layout.addWidget(self.status_widget)
-        self.buttons_widget.initialize()
+
         layout.addWidget(self.buttons_widget)
 
         # Livestate
@@ -103,24 +92,29 @@ class DockQWidget(QWidget):
         self.spy_widget.initialize()
         layout.addWidget(self.spy_widget)
 
-    def get_position_and_size(self, desktop):
-        """
-        Return position and size of dock to "stick" on right side
+        self.set_size_and_position()
 
-        :return: size and postion
-        :rtype: dict
+    def set_size_and_position(self):
         """
+        Set the size and postion of DockQWidget
+
+        """
+
+        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+        desktop = QApplication.desktop().availableGeometry(screen)
 
         x_size = desktop.width() * 0.2
         y_size = desktop.height()
 
         pos_x = desktop.width() - self.width() * 0.5
-        pos_y = desktop.height() - self.height() * 0.5
 
-        return {
-            'size': [x_size, y_size],
-            'pos': [pos_x, pos_y]
-        }
+        self.app_widget.initialize('')
+        self.app_widget.add_widget(self)
+        self.app_widget.resize(x_size, y_size)
+        self.app_widget.move(pos_x + (desktop.width() * 0.1), 0)
+
+        # Give width for PanelQWidget
+        self.buttons_widget.initialize(self.app_widget.width())
 
     def show_dock(self):
         """
@@ -129,4 +123,6 @@ class DockQWidget(QWidget):
         """
 
         self.app_widget.show()
+
+        self.buttons_widget.panel_widget.dock_width = self.app_widget.width()
         QWidget.activateWindow(self.app_widget)

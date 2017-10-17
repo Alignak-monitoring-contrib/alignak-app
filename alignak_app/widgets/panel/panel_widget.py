@@ -55,7 +55,7 @@ class PanelQWidget(QWidget):
         self.app_widget = AppQFrame()
         self.hostnames_list = []
 
-    def initialize(self):
+    def initialize(self, dock_width):
         """
         Create the QWidget with its items and layout.
 
@@ -88,16 +88,10 @@ class PanelQWidget(QWidget):
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
         desktop = QApplication.desktop().availableGeometry(screen)
 
-        x_size = desktop.width() * 0.76
-        y_size = desktop.height()
-
-        pos_x = 0
-        pos_y = 0
-
         self.app_widget.initialize('')
         self.app_widget.add_widget(self)
-        self.app_widget.resize(x_size, y_size)
-        self.app_widget.move(pos_x, pos_y)
+        self.app_widget.resize(desktop.width() - dock_width, desktop.height())
+        self.app_widget.move(0, 0)
 
         # Hide widgets for first start
         host_widget.hide()

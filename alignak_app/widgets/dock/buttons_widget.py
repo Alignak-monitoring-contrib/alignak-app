@@ -55,16 +55,18 @@ class ButtonsQWidget(QWidget):
         self.host_btn = QPushButton()
         self.dashboard_btn = QPushButton()
 
-    def initialize(self):
+    def initialize(self, dock_width):
         """
         Initialize QWidget
 
+        :param dock_width: width of dock, needed for PanelQWidget
+        :type dock_width: int
         """
 
         layout = QHBoxLayout()
         self.setLayout(layout)
 
-        self.panel_widget.initialize()
+        self.panel_widget.initialize(dock_width)
         self.host_btn.setIcon(QIcon(get_image_path('host')))
         self.host_btn.setFixedSize(40, 40)
         self.host_btn.clicked.connect(self.open_host_widget)

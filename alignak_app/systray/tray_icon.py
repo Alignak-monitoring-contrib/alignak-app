@@ -87,7 +87,7 @@ class TrayIcon(QSystemTrayIcon):
         )
 
         self.dock.initialize()
-        self.dock.app_widget.show()
+        self.dock.show_dock()
         self.qaction_factory.get_action('icon').triggered.connect(self.dock.show_dock)
 
         self.menu.addAction(self.qaction_factory.get_action('icon'))
