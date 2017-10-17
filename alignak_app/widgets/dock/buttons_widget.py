@@ -32,7 +32,7 @@ from PyQt5.Qt import QTimer  # pylint: disable=no-name-in-module
 
 from alignak_app.core.utils import get_image_path, get_css, get_app_config
 from alignak_app.widgets.dock.user_widget import UserQWidget
-from alignak_app.widgets.panel.panel_widget import panel_widget
+from alignak_app.widgets.panel.panel_widget import PanelQWidget
 
 logger = getLogger(__name__)
 
@@ -47,6 +47,7 @@ class ButtonsQWidget(QWidget):
         self.setStyleSheet(get_css())
         # Fields
         self.user_widget = UserQWidget()
+        self.panel_widget = PanelQWidget()
         self.update_timer = QTimer()
         self.webui_btn = QPushButton()
         self.profile_btn = QPushButton()
@@ -63,6 +64,7 @@ class ButtonsQWidget(QWidget):
         layout = QHBoxLayout()
         self.setLayout(layout)
 
+        self.panel_widget.initialize()
         self.host_btn.setIcon(QIcon(get_image_path('host')))
         self.host_btn.setFixedSize(40, 40)
         self.host_btn.clicked.connect(self.open_host_widget)
@@ -104,14 +106,13 @@ class ButtonsQWidget(QWidget):
             self.webui_btn.setEnabled(False)
             self.webui_btn.setToolTip(_("WebUI is not set in configuration file."))
 
-    @staticmethod
-    def open_host_widget():
+    def open_host_widget(self):
         """
         Show HostQWidget
 
         """
 
-        panel_widget.app_widget.show()
+        self.panel_widget.app_widget.show()
 
     def open_user_widget(self):
         """

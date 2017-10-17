@@ -186,8 +186,3 @@ class PanelQWidget(QWidget):
         else:
             host_widget.hide()
             services_widget.hide()
-
-
-# Initialize PanelQWidget
-panel_widget = PanelQWidget()
-panel_widget.initialize()
