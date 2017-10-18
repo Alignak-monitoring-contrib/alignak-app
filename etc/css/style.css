@@ -21,6 +21,13 @@ QWidget {
     background-color: white;
 }
 
+QWidget#dialog {
+	border-width: 0px 2px 2px 2px;
+    border-color: #607d8b;
+    border-style: solid;
+    background-color: white;
+}
+
 QScrollBar {
     width: 10px;
     background: white;
@@ -228,9 +235,8 @@ QLabel#itemname {
 }
 
 QTreeWidget {
-    /*alternate-background-color: #f0f9fd;*/
-    /*background: white;*/
-    background: rgba(255, 0, 0, 0%);
+    alternate-background-color: #f0f9fd;
+    background: white;
     selection-background-color: white;
     selection-color: black;
     show-decoration-selected: 1;
