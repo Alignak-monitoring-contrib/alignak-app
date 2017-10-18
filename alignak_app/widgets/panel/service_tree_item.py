@@ -25,7 +25,7 @@
 
 from logging import getLogger
 
-from alignak_app.core.items.item_model import get_icon_name
+from alignak_app.core.items.model import get_icon_name
 from alignak_app.core.utils import get_image_path
 from alignak_app.core.data_manager import data_manager
 

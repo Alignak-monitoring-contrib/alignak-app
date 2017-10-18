@@ -24,14 +24,14 @@ import unittest2
 from alignak_app.core.backend import app_backend
 from alignak_app.core.utils import init_config
 from alignak_app.core.locales import init_localization
-from alignak_app.core.items.item_model import *
-from alignak_app.core.items.item_service import Service
-from alignak_app.core.items.item_history import History
-from alignak_app.core.items.item_user import User
-from alignak_app.core.items.item_host import Host
-from alignak_app.core.items.item_livesynthesis import LiveSynthesis
-from alignak_app.core.items.item_daemon import Daemon
-from alignak_app.core.items.item_event import Event
+from alignak_app.core.items.model import *
+from alignak_app.core.items.service import Service
+from alignak_app.core.items.history import History
+from alignak_app.core.items.user import User
+from alignak_app.core.items.host import Host
+from alignak_app.core.items.livesynthesis import LiveSynthesis
+from alignak_app.core.items.daemon import Daemon
+from alignak_app.core.items.event import Event
 
 
 class TestAllItems(unittest2.TestCase):

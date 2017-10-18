@@ -27,7 +27,7 @@ from logging import getLogger
 
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.items.item_model import get_icon_name
+from alignak_app.core.items.model import get_icon_name
 from alignak_app.core.utils import get_image_path, get_css, get_time_diff_since_last_timestamp
 from alignak_app.dialogs.actions_dialogs import AckQDialog, DownQDialog
 from alignak_app.widgets.dock.events_widget import send_event
@@ -284,7 +284,7 @@ class ServiceDataQWidget(QWidget):
         Update ServiceDataQWidget
 
         :param service: Service item with its data
-        :type service: alignak_app.core.items.item_service.Service
+        :type service: alignak_app.core.items.service.Service
         :param host_id: id of attached host
         :type host_id: str
         """

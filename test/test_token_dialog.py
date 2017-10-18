@@ -29,7 +29,7 @@ from alignak_app.core.locales import init_localization
 
 from alignak_app.dialogs.token_dialog import TokenQDialog
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.items.item_user import User
+from alignak_app.core.items.user import User
 
 from PyQt5.Qt import QApplication, QWidget
 

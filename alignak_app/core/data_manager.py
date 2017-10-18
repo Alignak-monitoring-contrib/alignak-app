@@ -27,7 +27,7 @@ import datetime
 
 from logging import getLogger
 
-from alignak_app.core.items.item_livesynthesis import LiveSynthesis
+from alignak_app.core.items.livesynthesis import LiveSynthesis
 
 
 logger = getLogger(__name__)
@@ -90,7 +90,7 @@ class DataManager(object):
         :param value: value of the key if needed
         :type value: str
         :return: wanted item
-        :rtype: alignak_app.core.items.item_model.ItemModel
+        :rtype: alignak_app.core.items.model.ItemModel
         """
 
         items = self.database[item_type]

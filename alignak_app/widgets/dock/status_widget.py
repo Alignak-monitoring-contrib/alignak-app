@@ -26,7 +26,7 @@
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.backend import app_backend
-from alignak_app.core.items.item_daemon import Daemon
+from alignak_app.core.items.daemon import Daemon
 from alignak_app.dialogs.status_dialog import StatusQDialog
 
 from PyQt5.Qt import QWidget, QHBoxLayout, QTimer, QPixmap, Qt  # pylint: disable=no-name-in-module

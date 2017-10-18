@@ -31,7 +31,7 @@ from PyQt5.QtWidgets import QGridLayout, QPushButton  # pylint: disable=no-name-
 from PyQt5.QtWidgets import QWidget, QScrollArea, QLabel  # pylint: disable=no-name-in-module
 
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.items.item_history import History
+from alignak_app.core.items.history import History
 from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.widgets.common.common_frames import AppQFrame, get_frame_separator
 
