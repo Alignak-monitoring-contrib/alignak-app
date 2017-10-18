@@ -78,7 +78,7 @@ class TestHistoryQWidget(unittest2.TestCase):
             pass
 
     def test_initialize(self):
-        """Initialize History"""
+        """Initialize History QWidget"""
 
         under_test = HistoryQWidget()
 

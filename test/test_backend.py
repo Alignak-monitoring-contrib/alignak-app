@@ -61,71 +61,26 @@ class TestAppBackend(unittest2.TestCase):
         connect = second_test.login('admin', 'admin')
         self.assertTrue(connect)
 
-    def test_hosts_endpoint_without_params(self):
-        """Collect Hosts States"""
+    def test_get_endpoint_with_params_and_projection(self):
+        """Backend GET"""
 
         backend_test = AppBackend()
 
         backend_test.login()
 
         # Get hosts states
-        under_test = backend_test.get('host')
+        test_projection = [
+            'name', 'alias'
+        ]
+
+        test_params = {'where': json.dumps({'_is_template': False})}
+
+        under_test = backend_test.get('host', params=test_params, projection=test_projection)
 
         self.assertTrue(under_test)
         self.assertTrue(under_test['_items'])
-
-    def test_service_endpoint_with_params(self):
-        """Collect Services States"""
-
-        backend_test = AppBackend()
-
-        backend_test.login()
-
-        params = {'where': json.dumps({'_is_template': False})}
-        # Get services states
-        under_test = backend_test.get('service', params=params)
-
-        self.assertTrue(under_test)
-        self.assertTrue(under_test['_items'])
-        self.assertTrue(under_test['_status'])
-
-    def test_get_host(self):
-        """GET Host Data"""
-
-        backend_test = AppBackend()
-        backend_test.login()
-        projection_test = ['name', 'alias', 'address']
-
-        under_test = backend_test.get_host('name', 'localhost', projection=projection_test)
-
-        self.assertIsNotNone(under_test)
-
-        # Wanted fields are here
-        self.assertTrue('name' in under_test)
-        self.assertEqual('localhost', under_test['name'])
-        self.assertTrue('address' in under_test)
-        self.assertEqual('127.0.0.1', under_test['address'])
-
-        # Unwanted fields are not returned
-        self.assertTrue('ls_acknowledged' not in under_test)
-        self.assertTrue('ls_downtimed' not in under_test)
-
-    def test_get_service(self):
-        """GET Service Data"""
-
-        backend_test = AppBackend()
-        backend_test.login()
-
-        under_test = backend_test.get_service(
-            self.host_id,
-            self.service_id,
-            ['ls_acknowledged']
-        )
-
-        self.assertIsNotNone(under_test)
-        self.assertTrue('ls_acknowledged' in under_test)
-        self.assertTrue('name' not in under_test)
-        self.assertIsNotNone(under_test['ls_acknowledged'])
+        self.assertTrue('name' in under_test['_items'][0])
+        self.assertTrue('alias' in under_test['_items'][0])
 
     def test_patch(self):
         """PATCH User Notes"""
@@ -162,10 +117,78 @@ class TestAppBackend(unittest2.TestCase):
         backend_test = AppBackend()
         backend_test.login()
 
-        under_test = backend_test.get_realm_name(backend_test.backend.token)
-
+        under_test = backend_test.get_realm_name('false_id')
         self.assertEqual('n/a', under_test)
-        # TODO test if realm is right
+
+        backend_test.login()
+        under_test2 = backend_test.get_realm_name('59c4e38535d17b8dcb0bed42')
+        self.assertEqual('All', under_test2)
+
+    def test_query_user_data(self):
+        """Query User Data"""
+
+        under_test = AppBackend()
+        under_test.login()
+
+        from alignak_app.core.data_manager import data_manager
+        under_test.query_user_data()
+
+        self.assertIsNotNone(data_manager.database['user'])
+
+    def test_query_hosts_data(self):
+        """Query Host Data"""
+
+        under_test = AppBackend()
+        under_test.login()
+
+        from alignak_app.core.data_manager import data_manager
+        under_test.query_hosts_data()
+
+        self.assertIsNotNone(data_manager.database['host'])
+
+    def test_query_services_data(self):
+        """Query Services Data"""
+
+        under_test = AppBackend()
+        under_test.login()
+
+        from alignak_app.core.data_manager import data_manager
+        under_test.query_services_data()
+
+        self.assertIsNotNone(data_manager.database['service'])
+
+    def test_query_daemons_data(self):
+        """Query Daemons Data"""
+
+        under_test = AppBackend()
+        under_test.login()
+
+        from alignak_app.core.data_manager import data_manager
+        under_test.query_daemons_data()
+
+        self.assertIsNotNone(data_manager.database['alignakdaemon'])
+
+    def test_query_livesynthesis_data(self):
+        """Query Live Synthesis Data"""
+
+        under_test = AppBackend()
+        under_test.login()
+
+        from alignak_app.core.data_manager import data_manager
+        under_test.query_livesynthesis_data()
+
+        self.assertIsNotNone(data_manager.database['livesynthesis'])
+
+    def test_query_history_data(self):
+        """Query History Data"""
+
+        under_test = AppBackend()
+        under_test.login()
+
+        from alignak_app.core.data_manager import data_manager
+        under_test.query_history_data()
+
+        self.assertIsNotNone(data_manager.database['history'])
 
     def test_get_period_name(self):
         """Get Period Name"""
@@ -180,3 +203,17 @@ class TestAppBackend(unittest2.TestCase):
         under_test = backend_test.get_period_name('service')
 
         self.assertEqual('n/a', under_test)
+
+    def test_get_backend_status_icon(self):
+        """Get Backend Status Icon Name"""
+
+        backend_test = AppBackend()
+
+        under_test = backend_test.get_backend_status_icon()
+        self.assertEqual('disconnected', under_test)
+
+        backend_test.login()
+
+        under_test = backend_test.get_backend_status_icon()
+        self.assertEqual('connected', under_test)
+
