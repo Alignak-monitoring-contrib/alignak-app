@@ -20,12 +20,12 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Commons QLabel manage creation of QLabels or QPixmaps
+    Common QLabel manage creation of QLabels or QPixmaps
 """
 
 from alignak_app.core.utils import get_image_path
 
-from PyQt5.Qt import QLabel, QPixmap  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPixmap  # pylint: disable=no-name-in-module
 
 
 def get_icon_item(item_type, problem_nb):

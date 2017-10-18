@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The Frames package contains Alignak-app QFrames
+    The Common package contains common QObjects for Alignak-app
 """

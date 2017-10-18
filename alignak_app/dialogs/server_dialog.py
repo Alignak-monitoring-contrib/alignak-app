@@ -31,7 +31,7 @@ from PyQt5.Qt import QWidget, QDialog, QPushButton, QGridLayout  # pylint: disab
 
 from alignak_app.core.utils import get_app_config
 from alignak_app.core.utils import get_css, get_image_path
-from alignak_app.widgets.common.utils_widgets import get_logo_widget, center_widget
+from alignak_app.widgets.common.common_widgets import get_logo_widget, center_widget
 
 logger = getLogger(__name__)
 

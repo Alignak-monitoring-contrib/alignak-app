@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    App Widget manage creation of a QWidget to make a tempalte for all QWidgets of Alignak-app
+    Common QFrames manage creation of QFrames for Alignak-app
 """
 
 
@@ -32,14 +32,14 @@ from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QWidget, QVBoxLayout  # pylint: disable=no-name-in-module
 
 from alignak_app.core.utils import get_image_path, get_app_config, get_css
-from alignak_app.widgets.common.utils_widgets import center_widget
+from alignak_app.widgets.common.common_widgets import center_widget
 
 logger = getLogger(__name__)
 
 
 class AppQFrame(QFrame):
     """
-        Class who create a QWidget template.
+        Class who create a QFrame container for App QWidgets
     """
 
     def __init__(self, parent=None):
@@ -90,15 +90,15 @@ class AppQFrame(QFrame):
 
         logo_label = QLabel()
         logo_label.setObjectName('widget_title')
+        logo_label.setAttribute(Qt.WA_TransparentForMouseEvents)
         if logo:
             logo_label.setPixmap(QPixmap(get_image_path('alignak')))
-            logo_label.setFixedSize(121, 35)
+            logo_label.setFixedSize(120, 30)
             logo_label.setScaledContents(True)
 
             logo_layout.addWidget(logo_label)
         else:
             logo_label.setText('<h3>%s</h3>' % title)
-            logo_label.setAttribute(Qt.WA_TransparentForMouseEvents)
 
         logo_layout.addWidget(logo_label)
         logo_layout.setAlignment(logo_label, Qt.AlignHCenter)

@@ -33,7 +33,7 @@ from alignak_app import __version__
 from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.core.utils import set_app_config, init_config
 from alignak_app.dialogs.server_dialog import ServerQDialog
-from alignak_app.widgets.common.utils_widgets import get_logo_widget, center_widget
+from alignak_app.widgets.common.common_widgets import get_logo_widget, center_widget
 
 logger = getLogger(__name__)
 
