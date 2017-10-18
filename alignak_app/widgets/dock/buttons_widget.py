@@ -123,7 +123,7 @@ class ButtonsQWidget(QWidget):
         """
 
         self.user_widget.update_widget()
-        self.user_widget.app_widget.show()
+        self.user_widget.app_widget.show_widget()
 
     @staticmethod
     def open_url():  # pragma: no cover

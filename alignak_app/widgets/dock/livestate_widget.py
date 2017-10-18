@@ -23,16 +23,17 @@
     Livestate QWidget manage resume of hosts, services and problems
 """
 
-from alignak_app.core.utils import get_image_path, get_css
+from alignak_app.core.utils import get_css
 from alignak_app.core.data_manager import data_manager
+from alignak_app.widgets.common.common_labels import get_icon_item
 
 from PyQt5.Qt import QWidget, QVBoxLayout, QHBoxLayout, Qt  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QLabel, QPixmap, QTimer  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QLabel, QTimer  # pylint: disable=no-name-in-module
 
 
 class LivestateQWidget(QWidget):
     """
-        Class who display hosts, services and problems number
+        Class who display items livestate: hosts, services and number of problems
     """
 
     def __init__(self):
@@ -133,39 +134,8 @@ class LivestateQWidget(QWidget):
                 '%s' % str(items_and_problems[item_type]['problem'])
             )
             self.labels[item_type]['icon'].setPixmap(
-                self.get_icon_item(item_type, items_and_problems[item_type]['problem'])
+                get_icon_item(item_type, items_and_problems[item_type]['problem'])
             )
             self.labels[item_type]['total'].setText(
                 '%s' % str(items_and_problems[item_type]['total'])
             )
-
-    @staticmethod
-    def get_icon_item(item_type, problem_nb):
-        """
-        Return QPixmap with the corresponding image
-
-        :param item_type: type of item: host, service or problem
-        :type item_type: str
-        :param problem_nb: problem number
-        :type problem_nb: int
-        :return: QPixmap with corresponding image
-        :rtype: QPixmap
-        """
-
-        if problem_nb > 0:
-            if item_type == 'host':
-                icon_type = 'hosts_down'
-            elif item_type == 'service':
-                icon_type = 'services_critical'
-            else:
-                icon_type = 'problem'
-        else:
-            if item_type == 'host':
-                icon_type = 'hosts_up'
-            elif item_type == 'service':
-                icon_type = 'services_ok'
-            else:
-                icon_type = 'problem_ok'
-        icon = QPixmap(get_image_path(icon_type))
-
-        return icon

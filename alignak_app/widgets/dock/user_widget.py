@@ -25,7 +25,7 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QIcon, QPixmap, Qt, QHBoxLayout, QLabel  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QIcon, Qt, QHBoxLayout, QLabel  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QLineEdit  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=no-name-in-module
@@ -36,7 +36,8 @@ from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.dialogs.password_dialog import PasswordQDialog
 from alignak_app.dialogs.token_dialog import TokenQDialog
 from alignak_app.widgets.dock.events_widget import send_event
-from alignak_app.widgets.common.app_frames import AppQFrame, get_frame_separator
+from alignak_app.widgets.common.app_frames import AppQFrame, get_frame_separator, center_widget
+from alignak_app.widgets.common.common_labels import get_enable_label_icon
 
 logger = getLogger(__name__)
 
@@ -85,7 +86,7 @@ class UserQWidget(QWidget):
         # Initialize AppQWidget
         self.app_widget = AppQFrame()
         self.app_widget.initialize(_('User View'))
-        self.center(self.app_widget)
+        # center_widget(self.app_widget)
         self.app_widget.add_widget(self)
 
         layout = QVBoxLayout()
@@ -401,7 +402,7 @@ class UserQWidget(QWidget):
         enable_title.setObjectName("subtitle")
         host_notif_layout.addWidget(enable_title, 3, 0, 1, 1)
         self.labels['host_notifications_enabled'].setPixmap(
-            self.get_enable_label_icon(
+            get_enable_label_icon(
                 self.user.data['host_notifications_enabled']
             )
         )
@@ -573,7 +574,7 @@ class UserQWidget(QWidget):
             # Corresponding icon
             self.opt_labels[item_type][opt] = QLabel()
             self.opt_labels[item_type][opt].setPixmap(
-                self.get_enable_label_icon(selected_options[opt])
+                get_enable_label_icon(selected_options[opt])
             )
             self.opt_labels[item_type][opt].setFixedSize(14, 14)
             self.opt_labels[item_type][opt].setScaledContents(True)
@@ -598,10 +599,10 @@ class UserQWidget(QWidget):
 
         # Admin, Commands
         self.labels['is_admin'].setPixmap(
-            self.get_enable_label_icon(self.user.data['is_admin'])
+            get_enable_label_icon(self.user.data['is_admin'])
         )
         self.labels['can_submit_commands'].setPixmap(
-            self.get_enable_label_icon(self.user.data['can_submit_commands'])
+            get_enable_label_icon(self.user.data['can_submit_commands'])
         )
 
         # Alias, Notes, Token
@@ -616,13 +617,13 @@ class UserQWidget(QWidget):
 
         # Notifications
         self.labels['host_notifications_enabled'].setPixmap(
-            self.get_enable_label_icon(self.user.data['host_notifications_enabled'])
+            get_enable_label_icon(self.user.data['host_notifications_enabled'])
         )
         period = app_backend.get_period_name(self.user.data['host_notification_period'])
         self.labels['host_notification_period'].setText(period.capitalize())
 
         self.labels['service_notification_enabled'].setPixmap(
-            self.get_enable_label_icon(self.user.data['service_notifications_enabled'])
+            get_enable_label_icon(self.user.data['service_notifications_enabled'])
         )
         period = app_backend.get_period_name(self.user.data['service_notification_period'])
         self.labels['service_notification_period'].setText(period.capitalize())
@@ -645,32 +646,8 @@ class UserQWidget(QWidget):
             for opt in available_options:
                 selected_options[opt] = bool(opt in options)
                 self.opt_labels[item_type][opt].setPixmap(
-                    self.get_enable_label_icon(selected_options[opt])
+                    get_enable_label_icon(selected_options[opt])
                 )
-
-    @staticmethod
-    def get_enable_label_icon(state):
-        """
-        Return red crosse or green check QPixmap, depending state is True of False
-
-        :param state: state True of False
-        :type state: bool
-        :return: corresponding QPixmap
-        :rtype: QPixmap
-        """
-
-        states = {
-            True: 'checked',
-            False: 'error'
-        }
-
-        # Should never happen
-        if not isinstance(state, bool):
-            state = False
-
-        enable_pixmap = QPixmap(get_image_path(states[state]))
-
-        return enable_pixmap
 
     @staticmethod
     def center(widget):
