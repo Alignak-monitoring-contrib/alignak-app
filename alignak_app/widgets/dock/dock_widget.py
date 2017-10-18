@@ -23,6 +23,8 @@
     Dock manage creation of Alignak-app Dock
 """
 
+import sys
+
 from PyQt5.Qt import QApplication, QWidget, QGridLayout, QIcon  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QListWidget, QLabel, Qt  # pylint: disable=no-name-in-module
 
@@ -106,12 +108,16 @@ class DockQWidget(QWidget):
         x_size = desktop.width() * 0.2
         y_size = desktop.height()
 
-        pos_x = desktop.width() - self.width() * 0.5
-
         self.app_widget.initialize('', logo=True)
         self.app_widget.add_widget(self)
         self.app_widget.resize(x_size, y_size)
-        self.app_widget.move(pos_x + (desktop.width() * 0.1), 0)
+
+        if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
+            pos_x = desktop.width() - (x_size * 0.5)
+        else:
+            pos_x = desktop.width() - x_size
+
+        self.app_widget.move(pos_x, 0)
 
         # Give width for PanelQWidget
         self.buttons_widget.initialize(self.app_widget.width())
