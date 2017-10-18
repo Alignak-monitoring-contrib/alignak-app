@@ -370,7 +370,7 @@ class HostQWidget(QWidget):
         icon_pixmap = QPixmap(get_image_path(icon_name))
 
         self.labels['host_icon'].setPixmap(QPixmap(icon_pixmap))
-        self.labels['host_name'].setText('%s' % self.host_item.name)
+        self.labels['host_name'].setText('%s' % self.host_item.name.capitalize())
 
         icon_name = get_icon_name(
             'host',

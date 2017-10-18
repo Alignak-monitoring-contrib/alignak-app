@@ -23,7 +23,7 @@ QWidget {
 
 QWidget#dialog {
 	border-width: 0px 2px 2px 2px;
-    border-color: #607d8b;
+    border-color: #475c67;
     border-style: solid;
     background-color: white;
 }
@@ -76,12 +76,15 @@ QPushButton#valid:hover {
 
 /****** APP QFRAME ******/
 QWidget#app_widget {
+    border-width: 2px 2px 0px 2px;
+    border-color: #475c67;
+    border-style: solid;
     background-color: #607d8b;
 }
 
 QFrame#app_widget {
     border-width: 2px;
-    border-color: #607d8b;
+    border-color: #475c67;
     border-style: solid;
     background-color: white;
 }
@@ -231,7 +234,7 @@ QLabel#output {
 
 QLabel#itemname {
     font-weight: bold;
-    font: 20pt Comic Sans MS;
+    font-size: 20pt;
 }
 
 QTreeWidget {
