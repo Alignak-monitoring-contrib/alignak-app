@@ -32,7 +32,7 @@ from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget  # pylint: disab
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.widgets.common.common_frames import AppQFrame, get_frame_separator
-from alignak_app.widgets.panel.dashboard_widget import dashboard_widget
+from alignak_app.widgets.panel.dashboard_widget import DashboardQWidget
 from alignak_app.widgets.panel.host_widget import host_widget
 from alignak_app.widgets.panel.services_widget import services_widget
 
@@ -54,6 +54,7 @@ class PanelQWidget(QWidget):
         self.completer = QCompleter()
         self.app_widget = AppQFrame()
         self.hostnames_list = []
+        self.dashboard_widget = DashboardQWidget()
 
     def initialize(self, dock_width):
         """
@@ -65,8 +66,9 @@ class PanelQWidget(QWidget):
         self.setLayout(self.layout)
 
         # Dashboard
-        self.layout.addWidget(dashboard_widget)
-        self.layout.setAlignment(dashboard_widget, Qt.AlignTop)
+        self.dashboard_widget.initialize()
+        self.layout.addWidget(self.dashboard_widget)
+        self.layout.setAlignment(self.dashboard_widget, Qt.AlignTop)
         self.layout.addWidget(get_frame_separator())
 
         # Search bar
@@ -96,7 +98,6 @@ class PanelQWidget(QWidget):
         # Hide widgets for first start
         host_widget.hide()
         services_widget.hide()
-        dashboard_widget.initialize()
 
     def get_search_widget(self):
         """
@@ -170,8 +171,8 @@ class PanelQWidget(QWidget):
                 self.create_line_search(hostnames_list)
 
             # Update QWidgets
-            dashboard_widget.update_dashboard()
-            dashboard_widget.show()
+            self.dashboard_widget.update_dashboard()
+            self.dashboard_widget.show()
             host_widget.update_widget(self.line_search.text())
             host_widget.show()
             services_widget.set_data(self.line_search.text())
