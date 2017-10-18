@@ -25,11 +25,11 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QLabel, QWidget, Qt, QPixmap, QHBoxLayout  # pylint: disable=no-name-in-module
-
 from alignak_app.core.items.model import get_icon_name_from_state
 from alignak_app.core.items.service import Service
 from alignak_app.core.utils import get_image_path, get_css
+
+from PyQt5.Qt import QLabel, QWidget, Qt, QPixmap, QHBoxLayout  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 

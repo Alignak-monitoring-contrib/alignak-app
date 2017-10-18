@@ -34,7 +34,7 @@ from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.widgets.common.common_frames import AppQFrame, get_frame_separator
 from alignak_app.widgets.panel.dashboard_widget import DashboardQWidget
 from alignak_app.widgets.panel.host_widget import HostQWidget
-from alignak_app.widgets.panel.services_widget import services_widget
+from alignak_app.widgets.panel.services_widget import ServicesQWidget
 
 logger = getLogger(__name__)
 
@@ -56,6 +56,7 @@ class PanelQWidget(QWidget):
         self.hostnames_list = []
         self.dashboard_widget = DashboardQWidget()
         self.host_widget = HostQWidget()
+        self.services_widget = ServicesQWidget()
 
     def initialize(self, dock_width):
         """
@@ -66,24 +67,22 @@ class PanelQWidget(QWidget):
         logger.info('Create Panel View...')
         self.setLayout(self.layout)
 
-        # Dashboard
+        # Dashboard widget
         self.dashboard_widget.initialize()
         self.layout.addWidget(self.dashboard_widget)
-        self.layout.setAlignment(self.dashboard_widget, Qt.AlignTop)
         self.layout.addWidget(get_frame_separator())
 
-        # Search bar
+        # Search widget
         search_widget = self.get_search_widget()
         self.layout.addWidget(search_widget)
-        self.layout.setAlignment(search_widget, Qt.AlignTop)
 
-        # Host widgets
+        # Host widget
         self.host_widget.initialize()
         self.layout.addWidget(self.host_widget)
-        self.layout.setAlignment(self.host_widget, Qt.AlignTop)
 
-        # Services widgets
-        self.layout.addWidget(services_widget)
+        # Services widget
+        self.services_widget.initialize()
+        self.layout.addWidget(self.services_widget)
 
         # Align all widgets to Top
         self.layout.setAlignment(Qt.AlignTop)
@@ -99,7 +98,7 @@ class PanelQWidget(QWidget):
 
         # Hide widgets for first start
         self.host_widget.hide()
-        services_widget.hide()
+        self.services_widget.hide()
 
     def get_search_widget(self):
         """
@@ -177,9 +176,9 @@ class PanelQWidget(QWidget):
             self.dashboard_widget.show()
             self.host_widget.update_widget(self.line_search.text())
             self.host_widget.show()
-            services_widget.set_data(self.line_search.text())
-            services_widget.update_widget()
-            services_widget.show()
+            self.services_widget.set_data(self.line_search.text())
+            self.services_widget.update_widget()
+            self.services_widget.show()
         else:
             self.host_widget.hide()
-            services_widget.hide()
+            self.services_widget.hide()

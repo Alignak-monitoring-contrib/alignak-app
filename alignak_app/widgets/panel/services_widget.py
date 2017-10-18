@@ -161,8 +161,3 @@ class ServicesQWidget(QWidget):
                 )
             self.service_data_widget.show()
             service_tree_item.update_item()
-
-
-# Create services_widget object
-services_widget = ServicesQWidget()
-services_widget.initialize()
