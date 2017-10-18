@@ -25,10 +25,9 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QIcon, Qt, QHBoxLayout, QLabel  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QApplication  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QLineEdit  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QWidget, QPushButton, QCheckBox  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QIcon, Qt, QHBoxLayout, QLabel, QWidget  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QGridLayout, QVBoxLayout, QLineEdit  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPushButton, QCheckBox  # pylint: disable=no-name-in-module
 
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
@@ -100,6 +99,7 @@ class UserQWidget(QWidget):
         Create and return informations QWidget
 
         :return: informations QWidget
+        :rtype: QWidget
         """
 
         informations_widget = QWidget()
@@ -648,14 +648,3 @@ class UserQWidget(QWidget):
                 self.opt_labels[item_type][opt].setPixmap(
                     get_enable_label_icon(selected_options[opt])
                 )
-
-    @staticmethod
-    def center(widget):
-        """
-        Center QWidget
-
-        """
-
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        center = QApplication.desktop().screenGeometry(screen).center()
-        widget.move(center.x() - (widget.width() / 2), center.y() - (widget.height() / 2))

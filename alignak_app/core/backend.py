@@ -577,6 +577,19 @@ class AppBackend(object):
             if notifications:
                 data_manager.update_database('notifications', notifications)
 
+    def get_backend_status_icon(self):
+        """
+        Return backend status icon name
+
+        :return: daemon status icon name
+        :rtype: str
+        """
+
+        if self.connected:
+            return Daemon.get_states('ok')
+
+        return Daemon.get_states('ko')
+
 
 # Creating "app_backend" variable.
 app_backend = AppBackend()

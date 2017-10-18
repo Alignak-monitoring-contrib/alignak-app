@@ -26,6 +26,7 @@
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.backend import app_backend
+from alignak_app.core.items.item_daemon import Daemon
 from alignak_app.dialogs.status_dialog import StatusQDialog
 
 from PyQt5.Qt import QWidget, QHBoxLayout, QTimer, QPixmap, Qt  # pylint: disable=no-name-in-module
@@ -107,65 +108,8 @@ class DockStatusQWidget(QWidget):
         """
 
         self.backend_connected.setPixmap(
-            QPixmap(get_image_path(self.update_backend_status()))
+            QPixmap(get_image_path(app_backend.get_backend_status_icon()))
         )
         self.daemons_status.setPixmap(
-            QPixmap(get_image_path(self.update_daemons_status()))
+            QPixmap(get_image_path(Daemon.get_daemons_status_icon()))
         )
-
-    @staticmethod
-    def get_states(status):
-        """
-        Return states of daemons or backend
-
-        :param status: status of item
-        :type status: str
-        :return: the status string
-        :rtype: str
-        """
-
-        states = {
-            'ok': 'connected',
-            'ko': 'disconnected'
-        }
-
-        return states[status]
-
-    def update_daemons_status(self):
-        """
-        Update and return daemons status
-
-        :return: daemons status
-        :rtype: str
-        """
-
-        alignak_daemons = data_manager.database['alignakdaemon']
-
-        daemons_down = 0
-        daemons_nb = len(alignak_daemons)
-        for daemon in alignak_daemons:
-            daemons_nb += 1
-            if not daemon.data['alive']:
-                daemons_down += 1
-
-        if daemons_down == daemons_nb:
-            status = 'ko'
-        elif daemons_down > 0:
-            status = 'warn'
-        else:
-            status = 'ok'
-
-        return self.get_states(status)
-
-    def update_backend_status(self):
-        """
-        Update and return backend status
-
-        :return: daemon status
-        :rtype: str
-        """
-
-        if app_backend.connected:
-            return self.get_states('ok')
-
-        return self.get_states('ko')

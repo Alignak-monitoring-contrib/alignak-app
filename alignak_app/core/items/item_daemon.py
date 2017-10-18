@@ -26,6 +26,7 @@
 
 from logging import getLogger
 
+from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.item_model import ItemModel
 
 logger = getLogger(__name__)
@@ -79,3 +80,48 @@ class Daemon(ItemModel):
             'scheduler',
             'broker'
         ]
+
+    @staticmethod
+    def get_states(status):
+        """
+        Return states of daemons or backend
+
+        :param status: status of item
+        :type status: str
+        :return: the status string
+        :rtype: str
+        """
+
+        states = {
+            'ok': 'connected',
+            'ko': 'disconnected'
+        }
+
+        return states[status]
+
+    @staticmethod
+    def get_daemons_status_icon():
+        """
+        Return daemons status icon name
+
+        :return: daemons status icon name
+        :rtype: str
+        """
+
+        alignak_daemons = data_manager.database['alignakdaemon']
+
+        daemons_down = 0
+        daemons_nb = len(alignak_daemons)
+        for daemon in alignak_daemons:
+            daemons_nb += 1
+            if not daemon.data['alive']:
+                daemons_down += 1
+
+        if daemons_down == daemons_nb:
+            status = 'ko'
+        elif daemons_down > 0:
+            status = 'warn'
+        else:
+            status = 'ok'
+
+        return Daemon.get_states(status)
