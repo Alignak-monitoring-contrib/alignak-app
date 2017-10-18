@@ -32,7 +32,7 @@ from alignak_app.widgets.dock.events_widget import events_widget
 from alignak_app.widgets.dock.livestate_widget import LivestateQWidget
 from alignak_app.widgets.dock.spy_widget import SpyQListWidget
 from alignak_app.widgets.dock.status_widget import DockStatusQWidget
-from alignak_app.widgets.frames.app_frame import AppQFrame, get_frame_separator
+from alignak_app.widgets.common.app_frames import AppQFrame, get_frame_separator
 
 
 class DockQWidget(QWidget):

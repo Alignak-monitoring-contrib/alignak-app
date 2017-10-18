@@ -126,7 +126,7 @@ class LivestateQWidget(QWidget):
 
         """
 
-        items_and_problems = self.get_items_and_problems()
+        items_and_problems = data_manager.get_items_and_problems()
 
         for item_type in self.labels:
             self.labels[item_type]['problem'].setText(
@@ -169,44 +169,3 @@ class LivestateQWidget(QWidget):
         icon = QPixmap(get_image_path(icon_type))
 
         return icon
-
-    @staticmethod
-    def get_items_and_problems():
-        """
-        Return total of items and problems
-
-        :return: dict of problem and total number for each item
-        :rtype: dict
-        """
-
-        livesynthesis = data_manager.database['livesynthesis']
-
-        hosts_total = 0
-        hosts_problems = 0
-        services_total = 0
-        services_problems = 0
-        for synth in livesynthesis:
-            hosts_total += synth.data['hosts_total']
-            hosts_problems += synth.data['hosts_down_soft']
-            hosts_problems += synth.data['hosts_down_hard']
-
-            services_total += synth.data['services_total']
-            services_problems += synth.data['services_critical_soft']
-            services_problems += synth.data['services_critical_hard']
-
-        items_and_problems = {
-            'host': {
-                'problem': hosts_problems,
-                'total': hosts_total
-            },
-            'service': {
-                'problem': services_problems,
-                'total': services_total
-            },
-            'problem': {
-                'problem': hosts_problems + services_problems,
-                'total': hosts_total + services_total
-            }
-        }
-
-        return items_and_problems

@@ -275,6 +275,46 @@ class DataManager(object):
 
         return notifications_to_send
 
+    def get_items_and_problems(self):
+        """
+        Return total of items and problems
+
+        :return: dict of problem and total number for each item
+        :rtype: dict
+        """
+
+        livesynthesis = self.database['livesynthesis']
+
+        hosts_total = 0
+        hosts_problems = 0
+        services_total = 0
+        services_problems = 0
+        for synth in livesynthesis:
+            hosts_total += synth.data['hosts_total']
+            hosts_problems += synth.data['hosts_down_soft']
+            hosts_problems += synth.data['hosts_down_hard']
+
+            services_total += synth.data['services_total']
+            services_problems += synth.data['services_critical_soft']
+            services_problems += synth.data['services_critical_hard']
+
+        items_and_problems = {
+            'host': {
+                'problem': hosts_problems,
+                'total': hosts_total
+            },
+            'service': {
+                'problem': services_problems,
+                'total': services_total
+            },
+            'problem': {
+                'problem': hosts_problems + services_problems,
+                'total': hosts_total + services_total
+            }
+        }
+
+        return items_and_problems
+
 
 # Creating "data_manager" variable.
 data_manager = DataManager()

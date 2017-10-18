@@ -29,7 +29,7 @@ from PyQt5.Qt import Qt, QVBoxLayout, QLabel, QDialog  # pylint: disable=no-name
 from alignak_app import __doc_url__, __project_url__, __alignak_url__, __application__
 from alignak_app import __releasenotes__, __version__, __copyright__
 from alignak_app.core.utils import get_css
-from alignak_app.widgets.frames.app_frame import AppQFrame
+from alignak_app.widgets.common.app_frames import AppQFrame
 
 
 class AboutQDialog(QDialog):
