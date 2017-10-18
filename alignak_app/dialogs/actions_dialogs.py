@@ -26,13 +26,13 @@
 import datetime
 from logging import getLogger
 
-from alignak_app.core.utils import get_image_path, get_css
-from alignak_app.widgets.utils_widgets import get_logo_widget, center_widget
-
 from PyQt5.Qt import QDialog, QWidget, QTime, QVBoxLayout, Qt  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QGridLayout, QTimeEdit, QDateTimeEdit  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPushButton, QLabel, QTextEdit, QIcon  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QPixmap, QCheckBox  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPushButton, QLabel, QTextEdit, QIcon  # pylint: disable=no-name-in-module
+
+from alignak_app.core.utils import get_image_path, get_css
+from alignak_app.widgets.common.utils_widgets import get_logo_widget, center_widget
 
 logger = getLogger(__name__)
 
