@@ -250,64 +250,6 @@ class AppBackend(object):
 
         return request
 
-    def get_host(self, key, value, projection=None):
-        """
-        Return the host corresponding to "key"/"value" pair
-
-        :param key: key corresponding to value
-        :type key: str
-        :param value: value of key
-        :type value: str
-        :param projection: list of field to get, if None, get all
-        :type projection: list|None
-        :return: None if not found or item dict
-        :rtype: dict|None
-        """
-
-        params = {'where': json.dumps({'_is_template': False, key: value})}
-
-        hosts = self.get('host', params, projection=projection)
-
-        if hosts and hosts['_items']:
-            wanted_host = hosts['_items'][0]
-        else:
-            wanted_host = None
-
-        return wanted_host
-
-    def get_service(self, host_id, service_id, projection=None):
-        """
-        Returns the desired service of the specified host
-
-        :param host_id: "_id" of host
-        :type host_id: str
-        :param service_id: "_id" of wanted service
-        :type service_id: str
-        :param projection: list of field to get, if None, get all
-        :type projection: list|None
-        :return: wanted service
-        :rtype: dict
-        """
-
-        params = {
-            'where': json.dumps({
-                '_is_template': False,
-                'host': host_id
-            })
-        }
-
-        services = self.get('service', params=params, projection=projection)
-
-        wanted_service = None
-        if services:
-            if services['_items']:
-                wanted_service = services['_items'][0]
-            for service in services['_items']:
-                if service['_id'] == service_id:
-                    wanted_service = service
-
-        return wanted_service
-
     def get_realm_name(self, endpoint_id):
         """
         Return realm name or alias
@@ -379,7 +321,7 @@ class AppBackend(object):
             request_data['projection']
         )
 
-        if request:  # pragma: no cover
+        if request:
             user.create(
                 request['_items'][0]['_id'],
                 request['_items'][0],
@@ -403,7 +345,7 @@ class AppBackend(object):
         )
 
         hosts_list = []
-        if request:  # pragma: no cover
+        if request:
             for item in request['_items']:
                 host = Host()
 
@@ -432,7 +374,7 @@ class AppBackend(object):
             all_items=True
         )
 
-        if request:  # pragma: no cover
+        if request:
             services_list = []
             for item in request['_items']:
                 service = Service()
@@ -463,7 +405,7 @@ class AppBackend(object):
             all_items=True
         )
 
-        if request:  # pragma: no cover
+        if request:
             daemons_list = []
             for item in request['_items']:
                 daemon = Daemon()
@@ -494,7 +436,7 @@ class AppBackend(object):
             all_items=True
         )
 
-        if request:  # pragma: no cover
+        if request:
             livesynthesis = []
             for item in request['_items']:
                 synthesis = LiveSynthesis()
@@ -528,7 +470,7 @@ class AppBackend(object):
                 request_data['projection'],
                 all_items=False
             )
-            if request:  # pragma: no cover
+            if request:
                 history = History()
 
                 history.create(
@@ -542,7 +484,7 @@ class AppBackend(object):
         if history_list:
             data_manager.update_database('history', history_list)
 
-    def query_notifications_data(self):
+    def query_notifications_data(self):  # pragma: no cover, notifications can be empty
         """
         Launch request for "history" endpoint but only for notifications of current user
 
@@ -557,7 +499,7 @@ class AppBackend(object):
             all_items=False
         )
 
-        if request:  # pragma: no cover
+        if request:
             notifications = []
             for item in request['_items']:
                 message_split = item['message'].split(';')

@@ -155,7 +155,7 @@ class HostQWidget(QWidget):
 
         return widget
 
-    def add_acknowledge(self, host_item):
+    def add_acknowledge(self, host_item):  # pragma: no cover
         """
         Create AckQDialog and manage acknowledge
 
@@ -205,7 +205,7 @@ class HostQWidget(QWidget):
         else:
             logger.info('Acknowledge for %s cancelled...', host_item.name)
 
-    def add_downtime(self, host_item):
+    def add_downtime(self, host_item):  # pragma: no cover
         """
         Create AckQDialog and manage acknowledge
 
