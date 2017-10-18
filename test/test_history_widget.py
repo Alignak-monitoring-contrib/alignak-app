@@ -84,13 +84,10 @@ class TestHistoryQWidget(unittest2.TestCase):
 
         self.assertIsNone(under_test.layout())
         self.assertIsInstance(under_test.app_widget, AppQFrame)
-        self.assertIsNone(under_test.refresh_btn)
 
         under_test.initialize('charnay', 'id')
 
         self.assertIsNotNone(under_test.layout())
-        self.assertIsNotNone(under_test.refresh_btn)
-        self.assertEqual(under_test.refresh_btn.objectName(), 'id')
         self.assertEqual(under_test.app_widget.windowTitle(), "History of Charnay")
 
     def test_get_event_widget(self):
@@ -98,7 +95,7 @@ class TestHistoryQWidget(unittest2.TestCase):
 
         hist_widget_test = HistoryQWidget()
 
-        under_test = hist_widget_test.get_hostory_widget_model(self.history_test.data[0], 'Load')
+        under_test = hist_widget_test.get_history_widget_model(self.history_test.data[0], 'Load')
 
         self.assertTrue("ack.processed" in under_test.toolTip())
         self.assertIsNotNone(under_test.layout())

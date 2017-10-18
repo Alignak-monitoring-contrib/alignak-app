@@ -33,7 +33,7 @@ from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.widgets.common.common_frames import AppQFrame, get_frame_separator
 from alignak_app.widgets.panel.dashboard_widget import DashboardQWidget
-from alignak_app.widgets.panel.host_widget import host_widget
+from alignak_app.widgets.panel.host_widget import HostQWidget
 from alignak_app.widgets.panel.services_widget import services_widget
 
 logger = getLogger(__name__)
@@ -55,6 +55,7 @@ class PanelQWidget(QWidget):
         self.app_widget = AppQFrame()
         self.hostnames_list = []
         self.dashboard_widget = DashboardQWidget()
+        self.host_widget = HostQWidget()
 
     def initialize(self, dock_width):
         """
@@ -77,8 +78,9 @@ class PanelQWidget(QWidget):
         self.layout.setAlignment(search_widget, Qt.AlignTop)
 
         # Host widgets
-        self.layout.addWidget(host_widget)
-        self.layout.setAlignment(host_widget, Qt.AlignTop)
+        self.host_widget.initialize()
+        self.layout.addWidget(self.host_widget)
+        self.layout.setAlignment(self.host_widget, Qt.AlignTop)
 
         # Services widgets
         self.layout.addWidget(services_widget)
@@ -96,7 +98,7 @@ class PanelQWidget(QWidget):
         self.app_widget.move(0, 0)
 
         # Hide widgets for first start
-        host_widget.hide()
+        self.host_widget.hide()
         services_widget.hide()
 
     def get_search_widget(self):
@@ -173,11 +175,11 @@ class PanelQWidget(QWidget):
             # Update QWidgets
             self.dashboard_widget.update_dashboard()
             self.dashboard_widget.show()
-            host_widget.update_widget(self.line_search.text())
-            host_widget.show()
+            self.host_widget.update_widget(self.line_search.text())
+            self.host_widget.show()
             services_widget.set_data(self.line_search.text())
             services_widget.update_widget()
             services_widget.show()
         else:
-            host_widget.hide()
+            self.host_widget.hide()
             services_widget.hide()

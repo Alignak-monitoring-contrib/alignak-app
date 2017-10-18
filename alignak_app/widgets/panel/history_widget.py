@@ -20,20 +20,19 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    History display the history of a host
+    History QWidget display the history of a host
 """
 
 
 from logging import getLogger
 
-from PyQt5.Qt import QPixmap, QIcon, Qt  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QGridLayout, QPushButton  # pylint: disable=no-name-in-module
-from PyQt5.QtWidgets import QWidget, QScrollArea, QLabel  # pylint: disable=no-name-in-module
-
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.history import History
 from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.widgets.common.common_frames import AppQFrame, get_frame_separator
+
+from PyQt5.Qt import QWidget, QScrollArea, QLabel  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPixmap, Qt, QGridLayout  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -49,7 +48,6 @@ class HistoryQWidget(QWidget):
         self.setObjectName("history")
         # Fields
         self.app_widget = AppQFrame()
-        self.refresh_btn = None
 
     def initialize(self, hostname, host_id):
         """
@@ -80,20 +78,12 @@ class HistoryQWidget(QWidget):
         layout.addWidget(event_desc, 0, 0, 1, 1)
         layout.setAlignment(event_desc, Qt.AlignCenter)
 
-        self.refresh_btn = QPushButton()
-        self.refresh_btn.setIcon(QIcon(get_image_path('refresh')))
-        self.refresh_btn.setFixedSize(32, 32)
-        self.refresh_btn.setObjectName(host_id)
-        self.refresh_btn.setToolTip(_("Refresh history"))
-        layout.addWidget(self.refresh_btn, 0, 1, 1, 1)
-        layout.setAlignment(self.refresh_btn, Qt.AlignRight)
-
         # History QWidgets
         host_history_events = data_manager.get_item('history', host_id)
         line = 1
 
         for history_event in host_history_events.data:
-            history_widget = self.get_hostory_widget_model(history_event, hostname)
+            history_widget = self.get_history_widget_model(history_event, hostname)
 
             layout.addWidget(history_widget, line, 0, 2, 2)
             layout.addWidget(get_frame_separator(), line + 1, 0, 1, 2)
@@ -101,7 +91,7 @@ class HistoryQWidget(QWidget):
             line += 3
 
     @staticmethod
-    def get_hostory_widget_model(event, hostname):
+    def get_history_widget_model(event, hostname):
         """
         Create and return event QWidgets
 

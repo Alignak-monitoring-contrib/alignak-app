@@ -413,8 +413,3 @@ class HostQWidget(QWidget):
         else:
             self.buttons['history'].setToolTip(_('History is not available, please wait...'))
             self.buttons['history'].setEnabled(False)
-
-
-# Create HostQWidget object
-host_widget = HostQWidget()
-host_widget.initialize()
