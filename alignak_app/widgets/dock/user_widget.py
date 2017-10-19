@@ -385,7 +385,7 @@ class UserQWidget(QWidget):
         host_notif_layout.addWidget(notif_title, 0, 0, 1, 2)
         host_notif_layout.addWidget(get_frame_separator(), 1, 0, 1, 2)
 
-        state_title = QLabel(_("<h5>State:</h5>"))
+        state_title = QLabel(_("<h5>Notification enabled:</h5>"))
         state_title.setObjectName("subtitle")
         host_notif_layout.addWidget(state_title, 2, 0, 1, 1)
         self.host_notif_state = QCheckBox()
@@ -395,35 +395,24 @@ class UserQWidget(QWidget):
         self.host_notif_state.setFixedSize(18, 18)
         host_notif_layout.addWidget(self.host_notif_state, 2, 1, 1, 1)
 
-        enable_title = QLabel(_("<h5>Notification enabled:</h5>"))
-        enable_title.setMinimumHeight(32)
-        enable_title.setObjectName("subtitle")
-        host_notif_layout.addWidget(enable_title, 3, 0, 1, 1)
-        self.labels['host_notifications_enabled'].setPixmap(
-            get_enable_label_icon(
-                self.user.data['host_notifications_enabled']
-            )
-        )
-        self.labels['host_notifications_enabled'].setFixedSize(14, 14)
-        self.labels['host_notifications_enabled'].setScaledContents(True)
-        self.labels['host_notifications_enabled'].setPixmap(
-            get_enable_label_icon(self.user.data['host_notifications_enabled'])
-        )
-        host_notif_layout.addWidget(self.labels['host_notifications_enabled'], 3, 1, 1, 1)
-
         period_title = QLabel(_("<h5>Notification period:</h5>"))
         period_title.setObjectName("subtitle")
-        host_notif_layout.addWidget(period_title, 4, 0, 1, 1)
-        host_notif_layout.addWidget(self.labels['host_notification_period'], 4, 1, 1, 1)
+        host_notif_layout.addWidget(period_title, 3, 0, 1, 1)
+        self.labels['host_notification_period'].setText(
+            app_backend.get_period_name(
+                data_manager.database['user'].data['host_notification_period']
+            )
+        )
+        host_notif_layout.addWidget(self.labels['host_notification_period'], 3, 1, 1, 1)
 
         option_title = QLabel(_("<h5>Options:</h5>"))
         option_title.setObjectName("subtitle")
-        host_notif_layout.addWidget(option_title, 5, 0, 1, 2)
+        host_notif_layout.addWidget(option_title, 4, 0, 1, 2)
         host_notif_layout.setAlignment(option_title, Qt.AlignCenter)
 
         option_widget = UserOptionsQWidget()
         option_widget.initialize('host', self.user.data['host_notification_options'])
-        host_notif_layout.addWidget(option_widget, 6, 0, 1, 2)
+        host_notif_layout.addWidget(option_widget, 5, 0, 1, 2)
 
         return host_notif_widget
 
@@ -444,7 +433,7 @@ class UserQWidget(QWidget):
         service_notif_layout.addWidget(notif_title, 0, 0, 1, 2)
         service_notif_layout.addWidget(get_frame_separator(), 1, 0, 1, 2)
 
-        state_title = QLabel(_("<h5>State:</h5>"))
+        state_title = QLabel(_("<h5>Notification enabled:</h5>"))
         state_title.setObjectName("subtitle")
         service_notif_layout.addWidget(state_title, 2, 0, 1, 1)
         self.service_notif_state = QCheckBox()
@@ -454,30 +443,24 @@ class UserQWidget(QWidget):
         self.service_notif_state.setFixedSize(18, 18)
         service_notif_layout.addWidget(self.service_notif_state, 2, 1, 1, 1)
 
-        enable_title = QLabel(_("<h5>Notification enabled:</h5>"))
-        enable_title.setObjectName("subtitle")
-        enable_title.setMinimumHeight(32)
-        service_notif_layout.addWidget(enable_title, 3, 0, 1, 1)
-        self.labels['service_notifications_enabled'].setFixedSize(14, 14)
-        self.labels['service_notifications_enabled'].setScaledContents(True)
-        self.labels['service_notifications_enabled'].setPixmap(
-            get_enable_label_icon(self.user.data['service_notifications_enabled'])
-        )
-        service_notif_layout.addWidget(self.labels['service_notifications_enabled'], 3, 1, 1, 1)
-
         period_title = QLabel(_("<h5>Notification period:</h5>"))
         period_title.setObjectName("subtitle")
-        service_notif_layout.addWidget(period_title, 4, 0, 1, 1)
-        service_notif_layout.addWidget(self.labels['service_notification_period'], 4, 1, 1, 1)
+        service_notif_layout.addWidget(period_title, 3, 0, 1, 1)
+        self.labels['service_notification_period'].setText(
+            app_backend.get_period_name(
+                data_manager.database['user'].data['service_notification_period']
+            )
+        )
+        service_notif_layout.addWidget(self.labels['service_notification_period'], 3, 1, 1, 1)
 
         option_title = QLabel(_("<h5>Options:</h5>"))
         option_title.setObjectName("subtitle")
-        service_notif_layout.addWidget(option_title, 5, 0, 1, 2)
+        service_notif_layout.addWidget(option_title, 4, 0, 1, 2)
         service_notif_layout.setAlignment(option_title, Qt.AlignCenter)
 
         option_widget = UserOptionsQWidget()
         option_widget.initialize('service', self.user.data['service_notification_options'])
-        service_notif_layout.addWidget(option_widget, 6, 0, 1, 2)
+        service_notif_layout.addWidget(option_widget, 5, 0, 1, 2)
 
         return service_notif_widget
 
