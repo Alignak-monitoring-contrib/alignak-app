@@ -25,8 +25,8 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QIcon, Qt, QHBoxLayout, QLabel, QWidget  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QGridLayout, QVBoxLayout, QLineEdit  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QIcon, Qt, QHBoxLayout, QLabel, QWidget  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QPushButton, QCheckBox  # pylint: disable=no-name-in-module
 
 from alignak_app.core.backend import app_backend
@@ -34,10 +34,10 @@ from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css
 from alignak_app.dialogs.password_dialog import PasswordQDialog
 from alignak_app.dialogs.token_dialog import TokenQDialog
-from alignak_app.widgets.dock.events_widget import send_event
+from alignak_app.dialogs.user_options_dialog import show_options_dialog
 from alignak_app.widgets.common.common_frames import AppQFrame, get_frame_separator
 from alignak_app.widgets.common.common_labels import get_enable_label_icon
-from alignak_app.widgets.dock.user_options_dialog import show_options_dialog
+from alignak_app.widgets.dock.events_widget import send_event
 
 logger = getLogger(__name__)
 
