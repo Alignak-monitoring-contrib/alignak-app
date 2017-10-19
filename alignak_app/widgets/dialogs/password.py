@@ -88,7 +88,7 @@ class PasswordQDialog(QDialog):
         self.help_label.setWordWrap(True)
         pass_layout.addWidget(self.help_label)
 
-        # Login button
+        # Accept button
         accept_btn = QPushButton('Confirm', self)
         accept_btn.clicked.connect(self.handle_confirm)
         accept_btn.setObjectName('valid')

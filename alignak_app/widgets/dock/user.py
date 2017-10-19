@@ -34,6 +34,7 @@ from alignak_app.widgets.dock.events import send_event
 from alignak_app.widgets.dialogs.user_options import show_options_dialog
 from alignak_app.widgets.dialogs.token import TokenQDialog
 from alignak_app.widgets.dialogs.password import PasswordQDialog
+from alignak_app.widgets.dialogs.user_notes import UserNotesQDialog
 
 from PyQt5.Qt import QGridLayout, QVBoxLayout, QLineEdit  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QIcon, Qt, QHBoxLayout, QLabel, QWidget  # pylint: disable=no-name-in-module
@@ -70,8 +71,6 @@ class UserQWidget(QWidget):
         self.password_btn = None
         self.token_btn = QPushButton()
         self.notes_btn = None
-        self.notes_edit = None
-        self.user = data_manager.database['user']
 
     def initialize(self):
         """
@@ -203,7 +202,7 @@ class UserQWidget(QWidget):
         rights_layout.addWidget(password_title, 3, 0, 1, 1)
         self.password_btn = QPushButton()
         self.password_btn.setObjectName("password")
-        self.password_btn.clicked.connect(self.edit_notes)
+        self.password_btn.clicked.connect(self.patch_data)
         self.password_btn.setIcon(QIcon(get_image_path('password')))
         self.password_btn.setToolTip(_('Change my password'))
         self.password_btn.setFixedSize(32, 32)
@@ -256,18 +255,11 @@ class UserQWidget(QWidget):
         self.notes_btn.setToolTip(_("Edit your notes."))
         self.notes_btn.setObjectName("notes")
         self.notes_btn.setFixedSize(32, 32)
-        self.notes_btn.clicked.connect(self.edit_notes)
+        self.notes_btn.clicked.connect(self.patch_data)
         notes_layout.addWidget(self.notes_btn, 2, 3, 1, 1)
 
-        # Add and hide QLineEdit; Shown only when edited
-        self.notes_edit = QLineEdit()
-        self.notes_edit.hide()
-        self.notes_edit.editingFinished.connect(self.patch_notes)
-        self.notes_edit.setToolTip(_('Type enter to validate your notes.'))
-        notes_layout.addWidget(self.notes_edit, 3, 0, 1, 4)
-
         # Create QLabel for notes
-        self.labels['notes'].setText(self.user.data['notes'])
+        self.labels['notes'].setText(data_manager.database['user'].data['notes'])
         self.labels['notes'].setWordWrap(True)
         self.labels['notes'].setObjectName('notes')
         notes_layout.addWidget(self.labels['notes'], 3, 0, 1, 4)
@@ -276,7 +268,7 @@ class UserQWidget(QWidget):
 
         return notes_widget
 
-    def edit_notes(self):
+    def patch_data(self):
         """
         Hide and show QLabel for notes or PATCH password
 
@@ -285,10 +277,29 @@ class UserQWidget(QWidget):
         btn = self.sender()
 
         if "notes" in btn.objectName():
-            self.labels['notes'].hide()
-            self.notes_edit.setText(self.labels['notes'].text())
-            self.notes_edit.show()
-            self.notes_edit.setFocus()
+            notes_dialog = UserNotesQDialog()
+            notes_dialog.initialize(data_manager.database['user'].data['notes'])
+            if notes_dialog.exec_() == UserNotesQDialog.Accepted:
+                data = {'notes': str(notes_dialog.notes_edit.toPlainText())}
+                headers = {'If-Match': data_manager.database['user'].data['_etag']}
+                endpoint = '/'.join(['user', data_manager.database['user'].item_id])
+
+                patched = app_backend.patch(endpoint, data, headers)
+
+                if patched:
+                    data_manager.database['user'].update_data(
+                        'notes', notes_dialog.notes_edit.toPlainText()
+                    )
+                    self.labels['notes'].setText(notes_dialog.notes_edit.toPlainText())
+                    message = _(
+                        _("Your notes have been edited.")
+                    )
+                    send_event('INFO', message)
+                else:
+                    send_event(
+                        'ERROR',
+                        _("Backend PATCH failed, please check your logs !")
+                    )
         elif "password" in btn.objectName():
             pass_dialog = PasswordQDialog()
             pass_dialog.initialize()
@@ -297,8 +308,8 @@ class UserQWidget(QWidget):
                 new_password = pass_dialog.pass_edit.text()
 
                 data = {'password': str(new_password)}
-                headers = {'If-Match': self.user.data['_etag']}
-                endpoint = '/'.join(['user', self.user.item_id])
+                headers = {'If-Match': data_manager.database['user'].data['_etag']}
+                endpoint = '/'.join(['user', data_manager.database['user'].item_id])
 
                 patched = app_backend.patch(endpoint, data, headers)
 
@@ -311,39 +322,6 @@ class UserQWidget(QWidget):
                     )
         else:
             logger.error("Wrong sender in UserProfile.")
-
-    def patch_notes(self):  # pragma: no cover
-        """
-        Patch notes user when edition is finished
-
-        """
-
-        # Patch only if text have really changed
-        if bool(self.notes_edit.text() != self.user.data['notes']):
-            data = {'notes': str(self.notes_edit.text())}
-            headers = {'If-Match': self.user.data['_etag']}
-            endpoint = '/'.join(['user', self.user.item_id])
-
-            patched = app_backend.patch(endpoint, data, headers)
-
-            if patched:
-                data_manager.database['user'].update_data('notes', self.notes_edit.text())
-                message = _(
-                    _("The notes for the %s have been edited.")
-                ) % self.user.name
-                send_event('INFO', message)
-            else:
-                send_event(
-                    'ERROR',
-                    _("Backend PATCH failed, please check your logs !")
-                )
-
-            self.notes_edit.hide()
-            self.labels['notes'].setText(self.user.data['notes'])
-            self.labels['notes'].show()
-        else:
-            self.labels['notes'].show()
-            self.notes_edit.hide()
 
     def get_notifications_widget(self):
         """
@@ -388,7 +366,9 @@ class UserQWidget(QWidget):
         state_title.setObjectName("subtitle")
         host_notif_layout.addWidget(state_title, 2, 0, 1, 1)
         self.host_notif_state = QCheckBox()
-        self.host_notif_state.setChecked(self.user.data['host_notifications_enabled'])
+        self.host_notif_state.setChecked(
+            data_manager.database['user'].data['host_notifications_enabled']
+        )
         self.host_notif_state.stateChanged.connect(self.enable_notifications)
         self.host_notif_state.setObjectName('hostactions')
         self.host_notif_state.setFixedSize(18, 18)
@@ -439,7 +419,9 @@ class UserQWidget(QWidget):
         service_notif_layout.addWidget(state_title, 2, 0, 1, 1)
         self.service_notif_state = QCheckBox()
         self.service_notif_state.setObjectName('serviceactions')
-        self.service_notif_state.setChecked(self.user.data['service_notifications_enabled'])
+        self.service_notif_state.setChecked(
+            data_manager.database['user'].data['service_notifications_enabled']
+        )
         self.service_notif_state.stateChanged.connect(self.enable_notifications)
         self.service_notif_state.setFixedSize(18, 18)
         service_notif_layout.addWidget(self.service_notif_state, 2, 1, 1, 1)
@@ -488,8 +470,8 @@ class UserQWidget(QWidget):
             notification_enabled = bool(check_btn.checkState())
 
             data = {notification_type: notification_enabled}
-            headers = {'If-Match': self.user.data['_etag']}
-            endpoint = '/'.join(['user', self.user.item_id])
+            headers = {'If-Match': data_manager.database['user'].data['_etag']}
+            endpoint = '/'.join(['user', data_manager.database['user'].item_id])
 
             patched = app_backend.patch(endpoint, data, headers)
 
@@ -513,26 +495,25 @@ class UserQWidget(QWidget):
 
         """
 
-        # Update user data
-        self.user = data_manager.database['user']
-
         # Realm, Role, Email
-        self.labels['realm'].setText(app_backend.get_realm_name(self.user.data['_realm']))
-        self.labels['role'].setText(self.user.get_role().capitalize())
-        self.labels['email'].setText(self.user.data['email'])
+        self.labels['realm'].setText(
+            app_backend.get_realm_name(data_manager.database['user'].data['_realm'])
+        )
+        self.labels['role'].setText(data_manager.database['user'].get_role().capitalize())
+        self.labels['email'].setText(data_manager.database['user'].data['email'])
 
         # Admin, Commands
         self.labels['is_admin'].setPixmap(
-            get_enable_label_icon(self.user.data['is_admin'])
+            get_enable_label_icon(data_manager.database['user'].data['is_admin'])
         )
         self.labels['can_submit_commands'].setPixmap(
-            get_enable_label_icon(self.user.data['can_submit_commands'])
+            get_enable_label_icon(data_manager.database['user'].data['can_submit_commands'])
         )
 
         # Alias, Notes, Token
-        self.labels['alias'].setText(self.user.data['alias'])
+        self.labels['alias'].setText(data_manager.database['user'].data['alias'])
 
-        if self.user.data['is_admin']:
+        if data_manager.database['user'].data['is_admin']:
             self.token_btn.setEnabled(True)
             self.token_btn.setToolTip(_('See my token'))
         else:
