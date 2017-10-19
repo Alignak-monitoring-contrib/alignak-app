@@ -86,20 +86,12 @@ class TestUserQWidget(unittest2.TestCase):
 
         under_test = UserQWidget()
 
-        options_test = ['d', 'u', 'r', 'f', 's', 'n']
-
         main_widget_test = under_test.get_informations_widget()
-        info_widget_test = under_test.get_identity_widget()
-        rights_widget_test = under_test.get_rights_widget()
-        notes_widget_test = under_test.get_notes_widget()
         notif_widget_test = under_test.get_notifications_widget()
         host_notif_widget_test = under_test.get_hosts_notif_widget()
         services_notif_widget_test = under_test.get_services_notif_widget()
 
         self.assertIsInstance(main_widget_test, QWidget)
-        self.assertIsInstance(info_widget_test, QWidget)
-        self.assertIsInstance(rights_widget_test, QWidget)
-        self.assertIsInstance(notes_widget_test, QWidget)
         self.assertIsInstance(notif_widget_test, QWidget)
         self.assertIsInstance(host_notif_widget_test, QWidget)
         self.assertIsInstance(services_notif_widget_test, QWidget)
