@@ -25,20 +25,29 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QGridLayout, QLabel, QWidget  # pylint: disable=no-name-in-module
-
+from alignak_app.core.utils import get_css, get_image_path
 from alignak_app.widgets.common.common_labels import get_enable_label_icon
+from alignak_app.widgets.common.common_widgets import get_logo_widget, center_widget
+
+from PyQt5.Qt import QGridLayout, QLabel, QWidget, Qt, QDialog  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QVBoxLayout, QPushButton, QIcon  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
 
-class UserOptionsQWidget(QWidget):
+class UserOptionsQWidget(QDialog):
     """
         TODO
     """
 
     def __init__(self, parent=None):
         super(UserOptionsQWidget, self).__init__(parent)
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setStyleSheet(get_css())
+        self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setFixedSize(350, 300)
+        self.setObjectName('dialog')
+        # Fields
         self.options_labels = {
             'host': {
                 'd': QLabel(),
@@ -80,6 +89,26 @@ class UserOptionsQWidget(QWidget):
 
     def initialize(self, item_type, options):
         """
+        Create QWidget with App widget logo, options and their icons
+
+        :param item_type: define item type for options: host or service
+        :type item_type: str
+        :param options: list of notification options
+        :type options: list
+        """
+
+        center_widget(self)
+
+        # Main layout
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(main_layout)
+
+        main_layout.addWidget(get_logo_widget(self))
+        main_layout.addWidget(self.get_notifications_widget(item_type, options))
+
+    def get_notifications_widget(self, item_type, options):
+        """
         Create QWidget with options and their icons
 
         :param item_type: define item type for options: host or service
@@ -90,22 +119,39 @@ class UserOptionsQWidget(QWidget):
         :rtype: QWidget
         """
 
-        selected_options = self.get_selected_options(item_type, options)
+        options_widget = QWidget()
+        options_widget.setObjectName('dialog')
+        options_layout = QGridLayout(options_widget)
 
-        line = 0
-        layout = QGridLayout()
-        self.setLayout(layout)
+        options_title = QLabel(_("Options:"))
+        options_title.setObjectName("subtitle")
+        options_layout.addWidget(options_title, 0, 0, 1, 2)
+        options_layout.setAlignment(options_title, Qt.AlignCenter)
+
+        line = 1
+        selected_options = self.get_selected_options(item_type, options)
         for opt in selected_options:
             # Title
-            layout.addWidget(self.titles_labels[item_type][opt], line, 0, 1, 1)
+            object_name = 'user' + str(selected_options[opt])
+            self.titles_labels[item_type][opt].setObjectName(object_name)
+            options_layout.addWidget(self.titles_labels[item_type][opt], line, 0, 1, 1)
             # Icon
             self.options_labels[item_type][opt].setPixmap(
                 get_enable_label_icon(selected_options[opt])
             )
             self.options_labels[item_type][opt].setFixedSize(14, 14)
             self.options_labels[item_type][opt].setScaledContents(True)
-            layout.addWidget(self.options_labels[item_type][opt], line, 1, 1, 1)
+            options_layout.addWidget(self.options_labels[item_type][opt], line, 1, 1, 1)
             line += 1
+
+        # Login button
+        accept_btn = QPushButton('OK', self)
+        accept_btn.clicked.connect(self.accept)
+        accept_btn.setObjectName('valid')
+        accept_btn.setMinimumHeight(30)
+        options_layout.addWidget(accept_btn, line, 0, 1, 2)
+
+        return options_widget
 
     @staticmethod
     def get_selected_options(item_type, options):
@@ -126,3 +172,18 @@ class UserOptionsQWidget(QWidget):
             selected_options[opt] = bool(opt in options)
 
         return selected_options
+
+
+def show_options_dialog(item_type, notification_options):
+    """
+    Show the UserOptionsQDialog
+
+    :param item_type: type of item we want options
+    :type item_type: str
+    :param notification_options: options for the wanted item type
+    :type notification_options: list
+    """
+
+    option_widget = UserOptionsQWidget()
+    option_widget.initialize(item_type, notification_options)
+    option_widget.exec_()

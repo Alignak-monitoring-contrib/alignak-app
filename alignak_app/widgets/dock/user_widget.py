@@ -37,7 +37,7 @@ from alignak_app.dialogs.token_dialog import TokenQDialog
 from alignak_app.widgets.dock.events_widget import send_event
 from alignak_app.widgets.common.common_frames import AppQFrame, get_frame_separator
 from alignak_app.widgets.common.common_labels import get_enable_label_icon
-from alignak_app.widgets.dock.user_options_widget import UserOptionsQWidget
+from alignak_app.widgets.dock.user_options_widget import show_options_dialog
 
 logger = getLogger(__name__)
 
@@ -82,7 +82,6 @@ class UserQWidget(QWidget):
         # Initialize AppQWidget
         self.app_widget = AppQFrame()
         self.app_widget.initialize(_('User View'))
-        # center_widget(self.app_widget)
         self.app_widget.add_widget(self)
 
         layout = QVBoxLayout()
@@ -405,14 +404,16 @@ class UserQWidget(QWidget):
         )
         host_notif_layout.addWidget(self.labels['host_notification_period'], 3, 1, 1, 1)
 
-        option_title = QLabel(_("<h5>Options:</h5>"))
-        option_title.setObjectName("subtitle")
-        host_notif_layout.addWidget(option_title, 4, 0, 1, 2)
-        host_notif_layout.setAlignment(option_title, Qt.AlignCenter)
+        option_btn = QPushButton()
+        option_btn.setIcon(QIcon(get_image_path('options')))
+        option_btn.setFixedSize(64, 32)
+        option_btn.clicked.connect(lambda: show_options_dialog(
+            'host',
+            data_manager.database['user'].data['host_notification_options']
+        ))
 
-        option_widget = UserOptionsQWidget()
-        option_widget.initialize('host', self.user.data['host_notification_options'])
-        host_notif_layout.addWidget(option_widget, 5, 0, 1, 2)
+        host_notif_layout.addWidget(option_btn, 4, 0, 1, 2)
+        host_notif_layout.setAlignment(option_btn, Qt.AlignCenter)
 
         return host_notif_widget
 
@@ -453,14 +454,16 @@ class UserQWidget(QWidget):
         )
         service_notif_layout.addWidget(self.labels['service_notification_period'], 3, 1, 1, 1)
 
-        option_title = QLabel(_("<h5>Options:</h5>"))
-        option_title.setObjectName("subtitle")
-        service_notif_layout.addWidget(option_title, 4, 0, 1, 2)
-        service_notif_layout.setAlignment(option_title, Qt.AlignCenter)
+        option_btn = QPushButton()
+        option_btn.setIcon(QIcon(get_image_path('options')))
+        option_btn.setFixedSize(64, 32)
+        option_btn.clicked.connect(lambda: show_options_dialog(
+            'service',
+            data_manager.database['user'].data['service_notification_options']
+        ))
 
-        option_widget = UserOptionsQWidget()
-        option_widget.initialize('service', self.user.data['service_notification_options'])
-        service_notif_layout.addWidget(option_widget, 5, 0, 1, 2)
+        service_notif_layout.addWidget(option_btn, 4, 0, 1, 2)
+        service_notif_layout.setAlignment(option_btn, Qt.AlignCenter)
 
         return service_notif_widget
 
