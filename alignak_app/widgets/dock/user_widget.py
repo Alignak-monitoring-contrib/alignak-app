@@ -313,7 +313,7 @@ class UserQWidget(QWidget):
         else:
             logger.error("Wrong sender in UserProfile.")
 
-    def patch_notes(self):
+    def patch_notes(self):  # pragma: no cover
         """
         Patch notes user when edition is finished
 
@@ -481,10 +481,8 @@ class UserQWidget(QWidget):
             logger.error('Wrong caller %s', self.sender().objectName())
 
         if notification_type:
-            if check_btn.checkState() > 0:
-                notification_enabled = True
-            else:
-                notification_enabled = False
+            # btn.checkState() equal to 0 or 2
+            notification_enabled = bool(check_btn.checkState())
 
             data = {notification_type: notification_enabled}
             headers = {'If-Match': self.user.data['_etag']}
@@ -499,14 +497,12 @@ class UserQWidget(QWidget):
                     check_btn.objectName().replace('actions', ''),
                     enabled
                 )
-                send_event('OK', message)
+                send_event('INFO', message)
             else:
                 send_event(
                     'ERROR',
                     _("Backend PATCH failed, please check your logs !")
                 )
-
-        self.update_notifications(check_btn.objectName())
 
     def update_widget(self):
         """
@@ -539,29 +535,3 @@ class UserQWidget(QWidget):
         else:
             self.token_btn.setEnabled(False)
             self.token_btn.setToolTip(_('Token is only available for Administrators !'))
-
-        self.update_notifications('hostactions')
-        self.update_notifications('serviceactions')
-
-    def update_notifications(self, item_type):
-        """
-        Update the notifications icon and period
-
-        :param item_type: type of notifications: hostactions | serviceactions
-        :type item_type str
-        """
-
-        if item_type == 'hostactions':
-            self.labels['host_notifications_enabled'].setPixmap(
-                get_enable_label_icon(
-                    data_manager.database['user'].data['host_notifications_enabled']
-                )
-            )
-        elif item_type == 'serviceactions':
-            self.labels['service_notifications_enabled'].setPixmap(
-                get_enable_label_icon(
-                    data_manager.database['user'].data['service_notifications_enabled']
-                )
-            )
-        else:
-            logger.error('Update notification failed: %s', item_type)

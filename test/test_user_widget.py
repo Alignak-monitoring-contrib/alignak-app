@@ -95,7 +95,6 @@ class TestUserQWidget(unittest2.TestCase):
         notif_widget_test = under_test.get_notifications_widget()
         host_notif_widget_test = under_test.get_hosts_notif_widget()
         services_notif_widget_test = under_test.get_services_notif_widget()
-        options_widget_test = under_test.get_options_widget('host', options_test)
 
         self.assertIsInstance(main_widget_test, QWidget)
         self.assertIsInstance(info_widget_test, QWidget)
@@ -104,4 +103,3 @@ class TestUserQWidget(unittest2.TestCase):
         self.assertIsInstance(notif_widget_test, QWidget)
         self.assertIsInstance(host_notif_widget_test, QWidget)
         self.assertIsInstance(services_notif_widget_test, QWidget)
-        self.assertIsInstance(options_widget_test, QWidget)

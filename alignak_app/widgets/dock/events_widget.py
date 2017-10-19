@@ -36,11 +36,18 @@ class EventItem(QListWidgetItem):
         Class who create an event QListWidgetItem
     """
 
-    def initialize(self, event_type, msg):
+    def __init__(self):
+        super(EventItem, self).__init__()
+        self.timer = None
+
+    def initialize(self, event_type, msg, timer=False):
         """
         Initialize QListWidgetItem
 
         """
+
+        if timer:
+            self.timer = QTimer()
 
         self.setText("%s" % msg)
         self.setToolTip(msg)
@@ -48,6 +55,14 @@ class EventItem(QListWidgetItem):
         self.setForeground(QColor("#000"))
 
         self.setSizeHint(QSize(self.sizeHint().width(), 50))
+
+    def close_item(self):
+        """
+
+        :return:
+        """
+
+        self.setHidden(True)
 
     @staticmethod
     def get_color_event(event_type):
@@ -107,13 +122,13 @@ class EventsQListWidget(QWidget):
         self.events_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.events_list.doubleClicked.connect(self.remove_event)
         self.events_list.setAcceptDrops(True)
-        self.events_list.setSortingEnabled(True)
         self.events_list.setWordWrap(True)
 
         self.add_event(
             'OK',
             _('Welcome %s, you are connected to Alignak Backend') %
-            data_manager.database['user'].name
+            data_manager.database['user'].name,
+            timer=True
         )
 
         layout.addWidget(self.events_list)
@@ -130,7 +145,7 @@ class EventsQListWidget(QWidget):
             for event in events:
                 self.add_event(event['event_type'], event['message'])
 
-    def add_event(self, event_type, msg):
+    def add_event(self, event_type, msg, timer=False):
         """
         Add event to events list
 
@@ -138,12 +153,29 @@ class EventsQListWidget(QWidget):
         :type event_type: str
         :param msg: event content to display
         :type msg: str
+        :param timer: set if event is temporary or not
+        :type timer: bool
         """
 
         event = EventItem()
-        event.initialize(event_type, msg)
+        event.initialize(event_type, msg, timer=timer)
 
         self.events_list.addItem(event)
+        if timer:
+            QTimer.singleShot(
+                10000,
+                lambda: self.remove_timer_event(event)
+            )
+
+    def remove_timer_event(self, event):
+        """
+        Remove EventItem with timer
+
+        :param event: EventItem with timer
+        :type event: EventItem
+        """
+
+        self.events_list.takeItem(self.events_list.row(event))
 
     def remove_event(self):
         """
@@ -158,7 +190,7 @@ events_widget = EventsQListWidget()
 events_widget.initialize()
 
 
-def send_event(event_type, msg):
+def send_event(event_type, msg, timer=False):
     """
     Access function to simplify code in rest of application
 
@@ -172,6 +204,8 @@ def send_event(event_type, msg):
     :type event_type: str
     :param msg: event content to display
     :type msg: str
+    :param timer: define if event is temporary or not
+    :type timer: bool
     """
 
-    events_widget.add_event(event_type, msg)
+    events_widget.add_event(event_type, msg, timer)

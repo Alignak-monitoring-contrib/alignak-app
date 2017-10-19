@@ -115,7 +115,9 @@ class StatusQWidget(QWidget):
             QPixmap(get_image_path(Daemon.get_daemons_status_icon()))
         )
 
-    def paintEvent(self, event):
+    def paintEvent(self, _):
+        """Override to paint background"""
+
         opt = QStyleOption()
         opt.initFrom(self)
         painter = QPainter(self)

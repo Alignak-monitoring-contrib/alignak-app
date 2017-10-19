@@ -298,10 +298,15 @@ class AppBackend(object):
         period = self.get(endpoint, projection=projection)
 
         if period:
-            if 'alias' in period:
-                return period['alias']
+            if 'host' in endpoint or 'service' in endpoint:
+                period_items = period['_items'][0]
+            else:
+                period_items = period
 
-            return period['name']
+            if 'alias' in period_items:
+                return period_items['alias']
+
+            return period_items['name']
 
         return 'n/a'
 
