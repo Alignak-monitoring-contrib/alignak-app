@@ -37,7 +37,7 @@ from alignak_app.dialogs.token_dialog import TokenQDialog
 from alignak_app.widgets.dock.events_widget import send_event
 from alignak_app.widgets.common.common_frames import AppQFrame, get_frame_separator
 from alignak_app.widgets.common.common_labels import get_enable_label_icon
-from alignak_app.widgets.dock.user_options_widget import show_options_dialog
+from alignak_app.widgets.dock.user_options_dialog import show_options_dialog
 
 logger = getLogger(__name__)
 

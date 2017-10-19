@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    TODO
+    User Options QDialog manage creation options QDialogs
 """
 
 from logging import getLogger
@@ -35,13 +35,13 @@ from PyQt5.Qt import QVBoxLayout, QPushButton, QIcon  # pylint: disable=no-name-
 logger = getLogger(__name__)
 
 
-class UserOptionsQWidget(QDialog):
+class UserOptionsQDialog(QDialog):
     """
-        TODO
+        Class who create options QDialog
     """
 
     def __init__(self, parent=None):
-        super(UserOptionsQWidget, self).__init__(parent)
+        super(UserOptionsQDialog, self).__init__(parent)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(get_css())
         self.setWindowIcon(QIcon(get_image_path('icon')))
@@ -89,7 +89,7 @@ class UserOptionsQWidget(QDialog):
 
     def initialize(self, item_type, options):
         """
-        Create QWidget with App widget logo, options and their icons
+        Initialize QDialog with App widget logo and options QWidget
 
         :param item_type: define item type for options: host or service
         :type item_type: str
@@ -156,8 +156,14 @@ class UserOptionsQWidget(QDialog):
     @staticmethod
     def get_selected_options(item_type, options):
         """
-        TODO
-        :return:
+        Return the options who are selected or not
+
+        :param item_type: type of item we want options
+        :type item_type: str
+        :param options: options for the wanted item type
+        :type options: list
+        :return: dict of options selected
+        :rtype: dict
         """
 
         items_options = {
@@ -184,6 +190,6 @@ def show_options_dialog(item_type, notification_options):
     :type notification_options: list
     """
 
-    option_widget = UserOptionsQWidget()
+    option_widget = UserOptionsQDialog()
     option_widget.initialize(item_type, notification_options)
     option_widget.exec_()
