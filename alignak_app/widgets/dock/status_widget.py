@@ -24,22 +24,23 @@
 """
 
 from alignak_app.core.utils import get_image_path, get_css
-from alignak_app.core.data_manager import data_manager
 from alignak_app.core.backend import app_backend
 from alignak_app.core.items.daemon import Daemon
 from alignak_app.dialogs.status_dialog import StatusQDialog
 
 from PyQt5.Qt import QWidget, QHBoxLayout, QTimer, QPixmap, Qt  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QLabel, QPushButton, QIcon  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QLabel, QPushButton, QIcon, QStyleOption  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPainter, QStyle  # pylint: disable=no-name-in-module
 
 
-class DockStatusQWidget(QWidget):
+class StatusQWidget(QWidget):
     """
         Class who display daemons and backend status
     """
 
     def __init__(self):
-        super(DockStatusQWidget, self).__init__()
+        super(StatusQWidget, self).__init__()
+        self.setObjectName('livestate')
         self.setStyleSheet(get_css())
         # Fields
         self.daemons_status = QLabel('pending...')
@@ -113,3 +114,9 @@ class DockStatusQWidget(QWidget):
         self.daemons_status.setPixmap(
             QPixmap(get_image_path(Daemon.get_daemons_status_icon()))
         )
+
+    def paintEvent(self, event):
+        opt = QStyleOption()
+        opt.initFrom(self)
+        painter = QPainter(self)
+        self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)

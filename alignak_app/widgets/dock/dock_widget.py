@@ -33,7 +33,7 @@ from alignak_app.widgets.dock.buttons_widget import ButtonsQWidget
 from alignak_app.widgets.dock.events_widget import events_widget
 from alignak_app.widgets.dock.livestate_widget import LivestateQWidget
 from alignak_app.widgets.dock.spy_widget import SpyQListWidget
-from alignak_app.widgets.dock.status_widget import DockStatusQWidget
+from alignak_app.widgets.dock.status_widget import StatusQWidget
 from alignak_app.widgets.common.common_frames import AppQFrame, get_frame_separator
 
 
@@ -48,7 +48,7 @@ class DockQWidget(QWidget):
         self.setWindowIcon(QIcon(get_image_path('icon')))
         # Fields
         self.app_widget = AppQFrame()
-        self.status_widget = DockStatusQWidget()
+        self.status_widget = StatusQWidget()
         self.buttons_widget = ButtonsQWidget()
         self.livestate_widget = LivestateQWidget()
         self.spy_widgetlist = QListWidget()

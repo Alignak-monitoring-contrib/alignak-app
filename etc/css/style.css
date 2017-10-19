@@ -161,7 +161,12 @@ QListWidget::item:selected {
 
 QWidget#livestate {
     background-color: #f5f5f5;
+    border-width: 1px;
     border-radius: 5px;
+}
+
+QLabel#livestate {
+    background-color: #f5f5f5;
 }
 
 /****** PANEL ******/
