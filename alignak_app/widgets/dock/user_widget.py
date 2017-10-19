@@ -37,6 +37,7 @@ from alignak_app.dialogs.token_dialog import TokenQDialog
 from alignak_app.widgets.dock.events_widget import send_event
 from alignak_app.widgets.common.common_frames import AppQFrame, get_frame_separator
 from alignak_app.widgets.common.common_labels import get_enable_label_icon
+from alignak_app.widgets.dock.user_options_widget import UserOptionsQWidget
 
 logger = getLogger(__name__)
 
@@ -60,12 +61,8 @@ class UserQWidget(QWidget):
             'notes': QLabel(),
             'host_notifications_enabled': QLabel(),
             'host_notification_period': QLabel(),
-            'service_notification_enabled': QLabel(),
+            'service_notifications_enabled': QLabel(),
             'service_notification_period': QLabel(),
-        }
-        self.opt_labels = {
-            'host': {},
-            'service': {}
         }
         self.app_widget = None
         self.host_notif_state = None
@@ -271,6 +268,7 @@ class UserQWidget(QWidget):
         notes_layout.addWidget(self.notes_edit, 3, 0, 1, 4)
 
         # Create QLabel for notes
+        self.labels['notes'].setText(self.user.data['notes'])
         self.labels['notes'].setWordWrap(True)
         self.labels['notes'].setObjectName('notes')
         notes_layout.addWidget(self.labels['notes'], 3, 0, 1, 4)
@@ -334,7 +332,7 @@ class UserQWidget(QWidget):
                 message = _(
                     _("The notes for the %s have been edited.")
                 ) % self.user.name
-                send_event('OK', message)
+                send_event('INFO', message)
             else:
                 send_event(
                     'ERROR',
@@ -342,8 +340,8 @@ class UserQWidget(QWidget):
                 )
 
             self.notes_edit.hide()
+            self.labels['notes'].setText(self.user.data['notes'])
             self.labels['notes'].show()
-            self.update_widget()
         else:
             self.labels['notes'].show()
             self.notes_edit.hide()
@@ -408,6 +406,9 @@ class UserQWidget(QWidget):
         )
         self.labels['host_notifications_enabled'].setFixedSize(14, 14)
         self.labels['host_notifications_enabled'].setScaledContents(True)
+        self.labels['host_notifications_enabled'].setPixmap(
+            get_enable_label_icon(self.user.data['host_notifications_enabled'])
+        )
         host_notif_layout.addWidget(self.labels['host_notifications_enabled'], 3, 1, 1, 1)
 
         period_title = QLabel(_("<h5>Notification period:</h5>"))
@@ -420,7 +421,8 @@ class UserQWidget(QWidget):
         host_notif_layout.addWidget(option_title, 5, 0, 1, 2)
         host_notif_layout.setAlignment(option_title, Qt.AlignCenter)
 
-        option_widget = self.get_options_widget('host', self.user.data['host_notification_options'])
+        option_widget = UserOptionsQWidget()
+        option_widget.initialize('host', self.user.data['host_notification_options'])
         host_notif_layout.addWidget(option_widget, 6, 0, 1, 2)
 
         return host_notif_widget
@@ -456,9 +458,12 @@ class UserQWidget(QWidget):
         enable_title.setObjectName("subtitle")
         enable_title.setMinimumHeight(32)
         service_notif_layout.addWidget(enable_title, 3, 0, 1, 1)
-        self.labels['service_notification_enabled'].setFixedSize(14, 14)
-        self.labels['service_notification_enabled'].setScaledContents(True)
-        service_notif_layout.addWidget(self.labels['service_notification_enabled'], 3, 1, 1, 1)
+        self.labels['service_notifications_enabled'].setFixedSize(14, 14)
+        self.labels['service_notifications_enabled'].setScaledContents(True)
+        self.labels['service_notifications_enabled'].setPixmap(
+            get_enable_label_icon(self.user.data['service_notifications_enabled'])
+        )
+        service_notif_layout.addWidget(self.labels['service_notifications_enabled'], 3, 1, 1, 1)
 
         period_title = QLabel(_("<h5>Notification period:</h5>"))
         period_title.setObjectName("subtitle")
@@ -470,9 +475,8 @@ class UserQWidget(QWidget):
         service_notif_layout.addWidget(option_title, 5, 0, 1, 2)
         service_notif_layout.setAlignment(option_title, Qt.AlignCenter)
 
-        option_widget = self.get_options_widget(
-            'service', self.user.data['service_notification_options']
-        )
+        option_widget = UserOptionsQWidget()
+        option_widget.initialize('service', self.user.data['service_notification_options'])
         service_notif_layout.addWidget(option_widget, 6, 0, 1, 2)
 
         return service_notif_widget
@@ -494,8 +498,11 @@ class UserQWidget(QWidget):
             logger.error('Wrong caller %s', self.sender().objectName())
 
         if notification_type:
-            # QPushButton "checkState()" is equal to 0 or 2
-            notification_enabled = True if check_btn.checkState() else False
+            if check_btn.checkState() > 0:
+                notification_enabled = True
+            else:
+                notification_enabled = False
+
             data = {notification_type: notification_enabled}
             headers = {'If-Match': self.user.data['_etag']}
             endpoint = '/'.join(['user', self.user.item_id])
@@ -516,72 +523,7 @@ class UserQWidget(QWidget):
                     _("Backend PATCH failed, please check your logs !")
                 )
 
-        self.update_widget()
-
-    def get_options_widget(self, item_type, options):
-        """
-        Create and return QWidget with options and their icons
-
-        :param item_type: define item type for options: host or service
-        :type item_type: str
-        :param options: list of notification options
-        :type options: list
-        :return: QWidget with options and icons
-        :rtype: QWidget
-        """
-
-        items_options = {
-            'host': ['d', 'u', 'r', 'f', 's', 'n'],
-            'service': ['w', 'u', 'c', 'r', 'f', 's', 'n']
-        }
-
-        available_options = items_options[item_type]
-
-        selected_options = {}
-        for opt in available_options:
-            selected_options[opt] = bool(opt in options)
-
-        option_names = {
-            'host': {
-                'd': 'DOWN',
-                'u': 'UNREACHABLE',
-                'r': 'RECOVERY',
-                'f': 'FLAPPING',
-                's': 'DOWNTIME',
-                'n': 'NONE'
-            },
-            'service': {
-                'w': 'WARNING',
-                'u': 'UNKNOWN',
-                'c': 'CRITICAL',
-                'r': 'RECOVERY',
-                'f': 'FLAPPING',
-                's': 'DOWNTIME',
-                'n': 'NONE'
-            }
-        }
-
-        line = 0
-        options_widget = QWidget()
-        options_layout = QGridLayout()
-        options_widget.setLayout(options_layout)
-        for opt in selected_options:
-            # Name of Option
-            option_label = QLabel(option_names[item_type][opt])
-            object_name = 'user' + str(selected_options[opt])
-            option_label.setObjectName(object_name)
-            options_layout.addWidget(option_label, line, 0, 1, 1)
-            # Corresponding icon
-            self.opt_labels[item_type][opt] = QLabel()
-            self.opt_labels[item_type][opt].setPixmap(
-                get_enable_label_icon(selected_options[opt])
-            )
-            self.opt_labels[item_type][opt].setFixedSize(14, 14)
-            self.opt_labels[item_type][opt].setScaledContents(True)
-            options_layout.addWidget(self.opt_labels[item_type][opt], line, 1, 1, 1)
-            line += 1
-
-        return options_widget
+        self.update_notifications(check_btn.objectName())
 
     def update_widget(self):
         """
@@ -607,7 +549,7 @@ class UserQWidget(QWidget):
 
         # Alias, Notes, Token
         self.labels['alias'].setText(self.user.data['alias'])
-        self.labels['notes'].setText(self.user.data['notes'])
+
         if self.user.data['is_admin']:
             self.token_btn.setEnabled(True)
             self.token_btn.setToolTip(_('See my token'))
@@ -615,36 +557,28 @@ class UserQWidget(QWidget):
             self.token_btn.setEnabled(False)
             self.token_btn.setToolTip(_('Token is only available for Administrators !'))
 
-        # Notifications
-        self.labels['host_notifications_enabled'].setPixmap(
-            get_enable_label_icon(self.user.data['host_notifications_enabled'])
-        )
-        period = app_backend.get_period_name(self.user.data['host_notification_period'])
-        self.labels['host_notification_period'].setText(period.capitalize())
+        self.update_notifications('hostactions')
+        self.update_notifications('serviceactions')
 
-        self.labels['service_notification_enabled'].setPixmap(
-            get_enable_label_icon(self.user.data['service_notifications_enabled'])
-        )
-        period = app_backend.get_period_name(self.user.data['service_notification_period'])
-        self.labels['service_notification_period'].setText(period.capitalize())
+    def update_notifications(self, item_type):
+        """
+        Update the notifications icon and period
 
-        # Notifications Options
-        items_options = {
-            'host': ['d', 'u', 'r', 'f', 's', 'n'],
-            'service': ['w', 'u', 'c', 'r', 'f', 's', 'n']
-        }
+        :param item_type: type of notifications: hostactions | serviceactions
+        :type item_type str
+        """
 
-        for item_type in self.opt_labels:
-            if item_type == 'host':
-                options = self.user.data['host_notification_options']
-            else:
-                options = self.user.data['service_notification_options']
-
-            available_options = items_options[item_type]
-
-            selected_options = {}
-            for opt in available_options:
-                selected_options[opt] = bool(opt in options)
-                self.opt_labels[item_type][opt].setPixmap(
-                    get_enable_label_icon(selected_options[opt])
+        if item_type == 'hostactions':
+            self.labels['host_notifications_enabled'].setPixmap(
+                get_enable_label_icon(
+                    data_manager.database['user'].data['host_notifications_enabled']
                 )
+            )
+        elif item_type == 'serviceactions':
+            self.labels['service_notifications_enabled'].setPixmap(
+                get_enable_label_icon(
+                    data_manager.database['user'].data['service_notifications_enabled']
+                )
+            )
+        else:
+            logger.error('Update notification failed: %s', item_type)
