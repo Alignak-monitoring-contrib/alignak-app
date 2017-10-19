@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The Widgets package contains classes contains QWidgets.
+    The Widgets package contains classes contains QWidgets and QDialog of Alignak-app
 """

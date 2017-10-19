@@ -32,8 +32,8 @@ from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.model import get_icon_name
 from alignak_app.core.utils import get_image_path, get_css, get_time_diff_since_last_timestamp
-from alignak_app.widgets.dialogs.actions_dialogs import AckQDialog, DownQDialog
-from alignak_app.widgets.dock.events_widget import send_event
+from alignak_app.widgets.dialogs.actions import AckQDialog, DownQDialog
+from alignak_app.widgets.dock.events import send_event
 
 logger = getLogger(__name__)
 

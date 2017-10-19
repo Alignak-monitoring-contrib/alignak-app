@@ -30,8 +30,8 @@ from PyQt5.Qt import Qt, QPushButton, QGridLayout, QHBoxLayout  # pylint: disabl
 
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_image_path, get_css, get_time_diff_since_last_timestamp
-from alignak_app.widgets.common.common_frames import AppQFrame
-from alignak_app.widgets.common.common_widgets import center_widget
+from alignak_app.widgets.common.frames import AppQFrame
+from alignak_app.widgets.common.widgets import center_widget
 
 logger = getLogger(__name__)
 

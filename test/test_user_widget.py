@@ -34,7 +34,7 @@ app = QApplication(sys.argv)
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.user import User
 
-from alignak_app.widgets.dock.user_widget import UserQWidget
+from alignak_app.widgets.dock.user import UserQWidget
 
 
 

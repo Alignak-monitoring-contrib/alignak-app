@@ -32,7 +32,7 @@ from PyQt5.Qt import QPixmap, QCheckBox  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QPushButton, QLabel, QTextEdit, QIcon  # pylint: disable=no-name-in-module
 
 from alignak_app.core.utils import get_image_path, get_css
-from alignak_app.widgets.common.common_widgets import get_logo_widget, center_widget
+from alignak_app.widgets.common.widgets import get_logo_widget, center_widget
 
 logger = getLogger(__name__)
 

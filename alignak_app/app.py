@@ -39,7 +39,7 @@ from alignak_app.core.utils import get_image_path, get_main_folder, get_app_work
 from alignak_app.core.utils import init_config, get_app_config
 from alignak_app.systray.tray_icon import TrayIcon
 from alignak_app.threads.thread_manager import thread_manager
-from alignak_app.widgets.dialogs.login_dialog import LoginQDialog
+from alignak_app.widgets.dialogs.login import LoginQDialog
 
 # Initialize app config, logger and localization
 init_config()

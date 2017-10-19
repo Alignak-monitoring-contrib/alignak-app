@@ -26,8 +26,8 @@
 from logging import getLogger
 
 from alignak_app.core.utils import get_css, get_image_path
-from alignak_app.widgets.common.common_labels import get_enable_label_icon
-from alignak_app.widgets.common.common_widgets import get_logo_widget, center_widget
+from alignak_app.widgets.common.labels import get_enable_label_icon
+from alignak_app.widgets.common.widgets import get_logo_widget, center_widget
 
 from PyQt5.Qt import QGridLayout, QLabel, QWidget, Qt, QDialog  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QVBoxLayout, QPushButton, QIcon  # pylint: disable=no-name-in-module

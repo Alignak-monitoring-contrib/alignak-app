@@ -29,7 +29,7 @@ from logging import getLogger
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.history import History
 from alignak_app.core.utils import get_css, get_image_path
-from alignak_app.widgets.common.common_frames import AppQFrame, get_frame_separator
+from alignak_app.widgets.common.frames import AppQFrame, get_frame_separator
 
 from PyQt5.Qt import QWidget, QScrollArea, QLabel  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QPixmap, Qt, QGridLayout  # pylint: disable=no-name-in-module

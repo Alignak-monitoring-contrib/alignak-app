@@ -31,7 +31,7 @@ from PyQt5.Qt import QMenu, QSystemTrayIcon  # pylint: disable=no-name-in-module
 from alignak_app.core.utils import init_config
 from alignak_app.systray.qactions_factory import QActionFactory
 from alignak_app.threads.thread_manager import thread_manager
-from alignak_app.widgets.dialogs.about_dialog import AboutQDialog
+from alignak_app.widgets.dialogs.about import AboutQDialog
 
 logger = getLogger(__name__)
 
@@ -48,7 +48,7 @@ class TrayIcon(QSystemTrayIcon):
         self.qaction_factory = QActionFactory()
         self.app_about = None
         # Import dock from TrayIcon to fix application icon problem
-        from alignak_app.widgets.dock.dock_widget import DockQWidget
+        from alignak_app.widgets.dock.dock import DockQWidget
         self.dock = DockQWidget()
 
     def build_menu(self):
@@ -169,5 +169,5 @@ class TrayIcon(QSystemTrayIcon):
 
         logger.info('Reload configuration...')
         init_config()
-        from alignak_app.widgets.dock.events_widget import send_event
+        from alignak_app.widgets.dock.events import send_event
         send_event('INFO', _('Configuration reloaded'), timer=True)

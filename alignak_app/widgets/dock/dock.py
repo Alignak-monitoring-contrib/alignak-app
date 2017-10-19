@@ -29,12 +29,12 @@ from PyQt5.Qt import QApplication, QWidget, QGridLayout, QIcon  # pylint: disabl
 from PyQt5.Qt import QListWidget, QLabel, Qt  # pylint: disable=no-name-in-module
 
 from alignak_app.core.utils import get_css, get_image_path
-from alignak_app.widgets.dock.buttons_widget import ButtonsQWidget
-from alignak_app.widgets.dock.events_widget import events_widget
-from alignak_app.widgets.dock.livestate_widget import LivestateQWidget
-from alignak_app.widgets.dock.spy_widget import SpyQListWidget
-from alignak_app.widgets.dock.status_widget import StatusQWidget
-from alignak_app.widgets.common.common_frames import AppQFrame, get_frame_separator
+from alignak_app.widgets.dock.buttons import ButtonsQWidget
+from alignak_app.widgets.dock.events import events_widget
+from alignak_app.widgets.dock.livestate import LivestateQWidget
+from alignak_app.widgets.dock.spy import SpyQListWidget
+from alignak_app.widgets.dock.status import StatusQWidget
+from alignak_app.widgets.common.frames import AppQFrame, get_frame_separator
 
 
 class DockQWidget(QWidget):

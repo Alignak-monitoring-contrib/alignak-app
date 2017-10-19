@@ -38,7 +38,7 @@ app = QApplication(sys.argv)
 user = User()
 user.create('_id', {'name': 'name'}, 'name')
 data_manager.database['user'] = user
-from alignak_app.widgets.panel.service_data_widget import ServiceDataQWidget
+from alignak_app.widgets.panel.service import ServiceDataQWidget
 
 
 class TestServiceDataQWidget(unittest2.TestCase):

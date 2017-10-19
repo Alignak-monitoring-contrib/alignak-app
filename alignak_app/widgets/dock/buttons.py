@@ -31,8 +31,8 @@ from PyQt5.Qt import QPushButton, QWidget, QIcon, QHBoxLayout  # pylint: disable
 from PyQt5.Qt import QTimer  # pylint: disable=no-name-in-module
 
 from alignak_app.core.utils import get_image_path, get_css, get_app_config
-from alignak_app.widgets.dock.user_widget import UserQWidget
-from alignak_app.widgets.panel.panel_widget import PanelQWidget
+from alignak_app.widgets.dock.user import UserQWidget
+from alignak_app.widgets.panel.panel import PanelQWidget
 
 logger = getLogger(__name__)
 

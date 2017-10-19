@@ -25,7 +25,7 @@
 
 from alignak_app.core.utils import get_css
 from alignak_app.core.data_manager import data_manager
-from alignak_app.widgets.common.common_labels import get_icon_item
+from alignak_app.widgets.common.labels import get_icon_item
 
 from PyQt5.Qt import QWidget, QVBoxLayout, QHBoxLayout, Qt  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QLabel, QTimer  # pylint: disable=no-name-in-module

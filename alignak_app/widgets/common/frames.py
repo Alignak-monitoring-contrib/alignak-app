@@ -32,7 +32,7 @@ from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QWidget, QVBoxLayout  # pylint: disable=no-name-in-module
 
 from alignak_app.core.utils import get_image_path, get_app_config, get_css
-from alignak_app.widgets.common.common_widgets import center_widget
+from alignak_app.widgets.common.widgets import center_widget
 
 logger = getLogger(__name__)
 

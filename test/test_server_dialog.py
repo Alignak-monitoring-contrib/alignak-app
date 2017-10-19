@@ -27,7 +27,7 @@ from PyQt5.Qt import QApplication, QLineEdit
 from alignak_app.core.backend import app_backend
 from alignak_app.core.locales import init_localization
 from alignak_app.core.utils import init_config
-from alignak_app.widgets.dialogs.server_dialog import ServerQDialog
+from alignak_app.widgets.dialogs.server import ServerQDialog
 
 
 class TestServerQDialog(unittest2.TestCase):

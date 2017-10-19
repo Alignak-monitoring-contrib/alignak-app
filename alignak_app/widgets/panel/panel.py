@@ -31,10 +31,10 @@ from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget  # pylint: disab
 
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.utils import get_css, get_image_path
-from alignak_app.widgets.common.common_frames import AppQFrame, get_frame_separator
-from alignak_app.widgets.panel.dashboard_widget import DashboardQWidget
-from alignak_app.widgets.panel.host_widget import HostQWidget
-from alignak_app.widgets.panel.services_widget import ServicesQWidget
+from alignak_app.widgets.common.frames import AppQFrame, get_frame_separator
+from alignak_app.widgets.panel.dashboard import DashboardQWidget
+from alignak_app.widgets.panel.host import HostQWidget
+from alignak_app.widgets.panel.services import ServicesQWidget
 
 logger = getLogger(__name__)
 

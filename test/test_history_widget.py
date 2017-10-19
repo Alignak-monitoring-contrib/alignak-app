@@ -28,7 +28,7 @@ from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.history import History
 from alignak_app.core.locales import init_localization
 from alignak_app.core.utils import init_config
-from alignak_app.widgets.panel.history_widget import HistoryQWidget, AppQFrame
+from alignak_app.widgets.panel.history import HistoryQWidget, AppQFrame
 
 init_config()
 init_localization()
