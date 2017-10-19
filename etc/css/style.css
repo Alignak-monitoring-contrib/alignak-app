@@ -268,26 +268,20 @@ QLabel#actions {
     font-size: 14px;
 }
 
-QCheckBox#actions, QCheckBox#hostactions, QCheckBox#serviceactions {
-    background-color: #607d8b;
-    color: white;
-    border: 0.5px solid #607d8b;
-    border-radius: 8px;
-}
-
-QCheckBox#actions::indicator, QCheckBox#hostactions::indicator, QCheckBox#serviceactions::indicator {
+QCheckBox#host_notifications_enabled::indicator, QCheckBox#service_notifications_enabled::indicator {
     width: 14px;
     height: 14px;
-    border: none;
-    border: 0.5px solid #607d8b;
+    border: 1.4px solid #607d8b;
     border-radius: 8px;
+    background-color: white;
 }
 
-QCheckBox#actions::indicator::checked, QCheckBox#hostactions::checked, QCheckBox#serviceactions::checked {
+
+QCheckBox#host_notifications_enabled::indicator::checked, QCheckBox#service_notifications_enabled::indicator::checked {
     background-color: #58c75c;
 }
 
-QCheckBox#actions::indicator::unchecked, QCheckBox#hostactions::indicator::unchecked, QCheckBox#serviceactions::indicator::unchecked {
+QCheckBox#host_notifications_enabled::indicator::unchecked, QCheckBox#service_notifications_enbaled::indicator::unchecked {
     background-color: white;
 }
 
