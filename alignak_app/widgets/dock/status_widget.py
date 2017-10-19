@@ -23,14 +23,14 @@
     ResumeStatus QWidget display alignak daemons and backend status
 """
 
-from alignak_app.core.utils import get_image_path, get_css
-from alignak_app.core.backend import app_backend
-from alignak_app.core.items.daemon import Daemon
-from alignak_app.dialogs.status_dialog import StatusQDialog
-
-from PyQt5.Qt import QWidget, QHBoxLayout, QTimer, QPixmap, Qt  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QLabel, QPushButton, QIcon, QStyleOption  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QPainter, QStyle  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QWidget, QHBoxLayout, QTimer, QPixmap, Qt  # pylint: disable=no-name-in-module
+
+from alignak_app.core.backend import app_backend
+from alignak_app.core.items.daemon import Daemon
+from alignak_app.core.utils import get_image_path, get_css
+from alignak_app.widgets.dialogs.status_dialog import StatusQDialog
 
 
 class StatusQWidget(QWidget):
