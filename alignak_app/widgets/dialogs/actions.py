@@ -92,7 +92,7 @@ class AckQDialog(QDialog):
         sticky_checkbox = QCheckBox()
         sticky_checkbox.setObjectName('actions')
         sticky_checkbox.setChecked(self.sticky)
-        sticky_checkbox.setFixedSize(18, 18)
+        sticky_checkbox.setFixedSize(18, 16)
         ack_layout.addWidget(sticky_checkbox, 2, 1, 1, 1)
 
         sticky_info = QLabel(
@@ -111,7 +111,7 @@ class AckQDialog(QDialog):
         notify_checkbox = QCheckBox()
         notify_checkbox.setObjectName('actions')
         notify_checkbox.setChecked(self.notify)
-        notify_checkbox.setFixedSize(18, 18)
+        notify_checkbox.setFixedSize(18, 16)
         ack_layout.addWidget(notify_checkbox, 4, 1, 1, 1)
 
         notify_info = QLabel(
@@ -213,7 +213,7 @@ class DownQDialog(QDialog):
         fixed_checkbox = QCheckBox()
         fixed_checkbox.setObjectName('actions')
         fixed_checkbox.setChecked(self.fixed)
-        fixed_checkbox.setFixedSize(18, 18)
+        fixed_checkbox.setFixedSize(18, 16)
         downtime_layout.addWidget(fixed_checkbox, 2, 1, 1, 1)
 
         fixed_label = QLabel(_('Fixed'))

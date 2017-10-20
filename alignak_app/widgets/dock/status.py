@@ -61,7 +61,7 @@ class StatusQWidget(QWidget):
 
         # Daemons
         daemons_title = QLabel(_('Status:'))
-        daemons_title.setObjectName('title')
+        daemons_title.setObjectName('livestatetitle')
         layout.addWidget(daemons_title)
         layout.setAlignment(daemons_title, Qt.AlignCenter)
         self.daemons_status.setFixedSize(16, 16)
@@ -80,7 +80,7 @@ class StatusQWidget(QWidget):
 
         # Backend state
         connected_title = QLabel(_('Backend:'))
-        connected_title.setObjectName('title')
+        connected_title.setObjectName('livestatetitle')
         layout.addWidget(connected_title)
         layout.setAlignment(connected_title, Qt.AlignCenter)
 

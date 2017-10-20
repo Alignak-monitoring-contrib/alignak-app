@@ -21,18 +21,19 @@
 
 """
     Buttons QWidget manage the buttons for:
-     dashboard, host, problems, user and webui
+     host, problems, user and webui
 """
 
 import webbrowser
-from logging import getLogger
 
-from PyQt5.Qt import QPushButton, QWidget, QIcon, QHBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QTimer  # pylint: disable=no-name-in-module
+from logging import getLogger
 
 from alignak_app.core.utils import get_image_path, get_css, get_app_config
 from alignak_app.widgets.dock.user import UserQWidget
 from alignak_app.widgets.panel.panel import PanelQWidget
+
+from PyQt5.Qt import QPushButton, QWidget, QIcon, QHBoxLayout  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QTimer  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
@@ -74,6 +75,8 @@ class ButtonsQWidget(QWidget):
 
         self.problems_btn.setIcon(QIcon(get_image_path('problem')))
         self.problems_btn.setFixedSize(40, 40)
+        self.problems_btn.setEnabled(False)
+        self.problems_btn.setToolTip(_('Coming soon...'))
         layout.addWidget(self.problems_btn)
 
         self.user_widget.initialize()
@@ -84,7 +87,9 @@ class ButtonsQWidget(QWidget):
 
         self.webui_btn.setIcon(QIcon(get_image_path('web')))
         self.webui_btn.setFixedSize(40, 40)
-        self.webui_btn.clicked.connect(self.open_url)
+        self.webui_btn.clicked.connect(
+            lambda: self.open_url(get_app_config('Alignak', 'webui'))
+        )
         layout.addWidget(self.webui_btn)
 
         self.update_widget()
@@ -99,9 +104,7 @@ class ButtonsQWidget(QWidget):
 
         """
 
-        webui_url = get_app_config('Alignak', 'webui')
-
-        if webui_url:
+        if get_app_config('Alignak', 'webui'):
             self.webui_btn.setEnabled(True)
             self.webui_btn.setToolTip(_("Open WebUI in browser"))
         else:
@@ -126,13 +129,14 @@ class ButtonsQWidget(QWidget):
         self.user_widget.app_widget.show_widget()
 
     @staticmethod
-    def open_url():  # pragma: no cover
+    def open_url(webui_url):  # pragma: no cover
         """
         Add a link to Alignak-WebUI on every menu
 
+        :param webui_url: url of webui of available
+        :type webui_url: str
         """
 
-        webui_url = get_app_config('Alignak', 'webui')
         if webui_url:
             logger.debug('Open url : ' + webui_url + '/login')
             webbrowser.open(webui_url + '/login')
