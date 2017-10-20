@@ -66,6 +66,7 @@ class UserNotesQDialog(QDialog):
         main_layout.addWidget(get_logo_widget(self))
 
         notes_title = QLabel(_("Please modify your notes:"))
+        notes_title.setObjectName('subtitle')
         main_layout.addWidget(notes_title)
         main_layout.setAlignment(notes_title, Qt.AlignCenter)
 

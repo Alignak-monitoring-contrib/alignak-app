@@ -82,6 +82,7 @@ class UserQWidget(QWidget):
         self.app_widget = AppQFrame()
         self.app_widget.initialize(_('User View'))
         self.app_widget.add_widget(self)
+        self.app_widget.setMinimumHeight(500)
 
         layout = QVBoxLayout()
         self.setLayout(layout)
@@ -122,6 +123,7 @@ class UserQWidget(QWidget):
         self.labels['is_admin'].setFixedSize(14, 14)
         self.labels['is_admin'].setScaledContents(True)
         info_layout.addWidget(self.labels['is_admin'], line, 3, 1, 1)
+        info_layout.setAlignment(self.labels['is_admin'], Qt.AlignCenter)
 
         notes_title = QLabel(_('Notes:'))
         notes_title.setObjectName("title")
@@ -148,6 +150,7 @@ class UserQWidget(QWidget):
         self.labels['can_submit_commands'].setFixedSize(14, 14)
         self.labels['can_submit_commands'].setScaledContents(True)
         info_layout.addWidget(self.labels['can_submit_commands'], line, 3, 1, 1)
+        info_layout.setAlignment(self.labels['can_submit_commands'], Qt.AlignCenter)
 
         # Create QLabel for notes
         self.labels['notes'].setText(data_manager.database['user'].data['notes'])
@@ -300,6 +303,7 @@ class UserQWidget(QWidget):
         state_title.setObjectName("subtitle")
         host_notif_layout.addWidget(state_title, 2, 0, 1, 1)
         self.host_notif_state = QCheckBox()
+        self.host_notif_state.setFixedSize(18, 16)
         self.host_notif_state.setChecked(
             data_manager.database['user'].data['host_notifications_enabled']
         )
@@ -352,6 +356,7 @@ class UserQWidget(QWidget):
         service_notif_layout.addWidget(state_title, 2, 0, 1, 1)
         self.service_notif_state = QCheckBox()
         self.service_notif_state.setObjectName('service_notifications_enabled')
+        self.service_notif_state.setFixedSize(18, 16)
         self.service_notif_state.setChecked(
             data_manager.database['user'].data['service_notifications_enabled']
         )

@@ -234,7 +234,7 @@ class DownQDialog(QDialog):
         downtime_layout.addWidget(duration_label, 4, 0, 1, 1)
 
         duration_clock = QLabel()
-        duration_clock.setPixmap(QPixmap(get_image_path('clock')))
+        duration_clock.setPixmap(QPixmap(get_image_path('time')))
         downtime_layout.addWidget(duration_clock, 4, 1, 1, 1)
         duration_clock.setFixedSize(16, 16)
         duration_clock.setScaledContents(True)
