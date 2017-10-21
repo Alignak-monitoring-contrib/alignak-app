@@ -145,7 +145,7 @@ class UserOptionsQDialog(QDialog):
             line += 1
 
         # Login button
-        accept_btn = QPushButton('OK', self)
+        accept_btn = QPushButton(_('OK'), self)
         accept_btn.clicked.connect(self.accept)
         accept_btn.setObjectName('valid')
         accept_btn.setMinimumHeight(30)
