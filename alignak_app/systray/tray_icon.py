@@ -78,8 +78,6 @@ class TrayIcon(QSystemTrayIcon):
 
         """
 
-        logger.info('Create Dashboard action')
-
         self.qaction_factory.create(
             'icon',
             _('Dock'),

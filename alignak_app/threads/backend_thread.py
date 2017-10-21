@@ -39,31 +39,31 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
 
     quit_thread = pyqtSignal(name='close_thread')
 
-    def __init__(self, task):
+    def __init__(self, thread):
         super(BackendQThread, self).__init__()
-        self.task = task
+        self.thread = thread
 
     def run(self):  # pragma: no cover
         """
-        Run the QThread. Trigger actions depending on the selected task
+        Run the QThread. Trigger actions depending on the selected thread
 
         """
 
         self.quit_thread.connect(self.quit)
 
-        if 'user' in self.task:
+        if 'user' in self.thread:
             app_backend.query_user_data()
-        elif 'host' in self.task:
+        elif 'host' in self.thread:
             app_backend.query_hosts_data()
-        elif 'service' in self.task:
+        elif 'service' in self.thread:
             app_backend.query_services_data()
-        elif 'alignakdaemon' in self.task:
+        elif 'alignakdaemon' in self.thread:
             app_backend.query_daemons_data()
-        elif 'livesynthesis' in self.task:
+        elif 'livesynthesis' in self.thread:
             app_backend.query_livesynthesis_data()
-        elif 'history' in self.task:
+        elif 'history' in self.thread:
             app_backend.query_history_data()
-        elif 'notifications' in self.task:
+        elif 'notifications' in self.thread:
             app_backend.query_notifications_data()
         else:
-            logger.error("Tasks is unknown: %s", self.task)
+            logger.error("Tasks is unknown: %s", self.thread)

@@ -107,7 +107,7 @@ class AlignakApp(QObject):
         else:
             self.display_error_msg()
 
-    def reconnecting_mode(self, error):  # pragma: no cover
+    def app_reconnecting_mode(self, error):  # pragma: no cover
         """
         Set AlignakApp in reconnect mode and try to login to Backend
 
@@ -156,8 +156,11 @@ class AlignakApp(QObject):
         # Check if connected
         if app_backend.connected:
             # Start ThreadManager
+            for i in range(1, 5):
+                # Launch 'alignakdaemon', 'history', 'service', 'host', 'user' threads
+                thread_manager.create_tasks()
             thread_manager.start()
-            self.reconnecting.connect(self.reconnecting_mode)
+            self.reconnecting.connect(self.app_reconnecting_mode)
 
             # Give AlignakApp for AppBackend reconnecting mode
             app_backend.app = self

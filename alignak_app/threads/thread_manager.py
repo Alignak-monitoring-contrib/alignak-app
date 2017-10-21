@@ -44,7 +44,7 @@ class ThreadManager(QObject):
 
     def __init__(self, parent=None):
         super(ThreadManager, self).__init__(parent)
-        self.tasks = self.get_tasks()
+        self.threads_to_launch = self.get_threads_to_launch()
         self.timer = QTimer()
         self.threads = []
 
@@ -60,48 +60,40 @@ class ThreadManager(QObject):
         self.create_tasks()
 
         # Then request periodically
-        self.timer.setInterval(15000)
+        self.timer.setInterval(5000)
         self.timer.start()
         self.timer.timeout.connect(self.create_tasks)
 
     @staticmethod
-    def get_tasks():
+    def get_threads_to_launch():
         """
-        Return the tasks to run in BackendQRunnable
+        Return the threads_to_launch to run in BackendQRunnable
 
-        :return: tasks to run
+        :return: threads_to_launch to run
         :rtype: list
         """
 
+        logger.debug('Get new threads to launch')
         return [
-            'notifications', 'livesynthesis', 'alignakdaemon', 'history', 'service', 'host', 'user',
+            'notifications', 'livesynthesis', 'alignakdaemon', 'history', 'service', 'host', 'user'
         ]
 
     def create_tasks(self):  # pragma: no cover
         """
-        Create tasks to run
+        Create threads_to_launch to run
 
         """
 
-        self.threads = []
-        for cur_task in self.tasks:
-            backend_thread = BackendQThread(cur_task)
-            backend_thread.start()
+        if not self.threads_to_launch:
+            self.threads_to_launch = self.get_threads_to_launch()
 
-            # Add task to thread to keep a reference
-            self.threads.append(backend_thread)
+        cur_thread = self.threads_to_launch.pop()
+        logger.debug('Laucnh new thread %s', cur_thread)
 
-    def add_task(self, task):  # pragma: no cover
-        """
-        Add a specific QThreads in list
-
-        :param task: one of the following:
-        - 'notifications', 'livesynthesis', 'alignakdaemon', 'history', 'service', 'host', 'user'
-        :type task: str
-        """
-
-        backend_thread = BackendQThread(task)
+        backend_thread = BackendQThread(cur_thread)
         backend_thread.start()
+
+        # Add current thread to threads list to keep a reference
         self.threads.append(backend_thread)
 
     def stop(self):
@@ -112,8 +104,9 @@ class ThreadManager(QObject):
 
         logger.info("Stop backend threads...")
         self.timer.stop()
-        for task in self.threads:
-            task.quit_thread.emit()
+        for thread in self.threads:
+            logger.debug('Try to quit thread: %s', thread)
+            thread.quit_thread.emit()
 
         logger.info("Backend threads are finished.")
 

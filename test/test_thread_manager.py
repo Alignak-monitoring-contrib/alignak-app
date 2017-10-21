@@ -47,5 +47,5 @@ class TestThreadManager(unittest2.TestCase):
         self.assertIsInstance(under_test.timer, QTimer)
         self.assertEqual(
             ['notifications', 'livesynthesis', 'alignakdaemon', 'history', 'service', 'host', 'user'],
-            under_test.tasks
+            under_test.threads_to_launch
         )
