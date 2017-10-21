@@ -44,7 +44,6 @@ class DockQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(DockQWidget, self).__init__(parent)
-        print(app_css)
         self.setStyleSheet(app_css)
         self.setWindowIcon(QIcon(get_image('icon')))
         # Fields

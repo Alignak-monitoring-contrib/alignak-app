@@ -129,7 +129,7 @@ default_parameters = {
 # Global variables, access by function
 app_config = None
 app_images = None
-app_css = ''
+app_css = None
 error_config = 0
 
 
@@ -267,6 +267,10 @@ def get_image(name):
 
 
 def init_css():
+    """
+    Init the css file and fill app_css
+
+    """
 
     global app_css  # pylint: disable=global-statement
 

@@ -147,7 +147,9 @@ class LoginQDialog(QDialog):
             backend_url = '%(url)s:' + str(server_dialog.server_port.text()).rstrip()
             edit_setting_value('Alignak', 'backend', backend_url)
             edit_setting_value('Alignak', 'url', str(server_dialog.server_url.text()).rstrip())
-            edit_setting_value('Alignak', 'processes', str(server_dialog.server_proc.text()).rstrip())
+            edit_setting_value(
+                'Alignak', 'processes', str(server_dialog.server_proc.text()).rstrip()
+            )
 
     def showEvent(self, _):
         """ QDialog.showEvent(QShowEvent) """

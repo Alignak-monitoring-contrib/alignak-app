@@ -165,7 +165,7 @@ class DownQDialog(QDialog):
         super(DownQDialog, self).__init__(parent)
         self.setWindowTitle(_('Request a Downtime'))
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setStyleSheet(get_css())
+        self.setStyleSheet(app_css)
         self.setWindowIcon(QIcon(get_image('icon')))
         self.setMinimumSize(360, 460)
         self.setObjectName('dialog')
