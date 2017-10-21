@@ -29,7 +29,7 @@ from PyQt5.Qt import QTreeWidget, QTreeWidgetItem  # pylint: disable=no-name-in-
 from PyQt5.Qt import QWidget, QIcon, QGridLayout, QSize  # pylint: disable=no-name-in-module
 
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.utils import get_image_path, get_css
+from alignak_app.core.utils import get_image, app_css
 from alignak_app.widgets.common.frames import get_frame_separator
 from alignak_app.widgets.panel.number_services import NumberServicesQWidget
 from alignak_app.widgets.panel.service import ServiceDataQWidget
@@ -45,7 +45,7 @@ class ServicesQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(ServicesQWidget, self).__init__(parent)
-        self.setStyleSheet(get_css())
+        self.setStyleSheet(app_css)
         # Fields
         self.host_item = None
         self.service_items = None
@@ -125,7 +125,7 @@ class ServicesQWidget(QWidget):
         for aggregation in aggregations:
             main_tree = QTreeWidgetItem()
             main_tree.setText(0, aggregation)
-            main_tree.setIcon(0, QIcon(get_image_path('tree')))
+            main_tree.setIcon(0, QIcon(get_image('tree')))
             for service in self.service_items:
                 if service.data['aggregation'] == aggregation:
                     service_tree = ServicesTreeItem()

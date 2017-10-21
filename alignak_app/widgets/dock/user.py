@@ -27,7 +27,7 @@ from logging import getLogger
 
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.utils import get_image_path, get_css
+from alignak_app.core.utils import get_image, app_css
 from alignak_app.widgets.common.frames import AppQFrame, get_frame_separator
 from alignak_app.widgets.common.labels import get_enable_label_icon
 from alignak_app.widgets.dock.events import send_event
@@ -50,7 +50,7 @@ class UserQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(UserQWidget, self).__init__(parent)
-        self.setStyleSheet(get_css())
+        self.setStyleSheet(app_css)
         # Fields
         self.labels = {
             'realm': QLabel(),
@@ -129,7 +129,7 @@ class UserQWidget(QWidget):
         notes_title.setObjectName("title")
         info_layout.addWidget(notes_title, line, 4, 1, 1)
 
-        self.notes_btn.setIcon(QIcon(get_image_path('edit')))
+        self.notes_btn.setIcon(QIcon(get_image('edit')))
         self.notes_btn.setToolTip(_("Edit your notes."))
         self.notes_btn.setObjectName("notes")
         self.notes_btn.setFixedSize(32, 32)
@@ -172,7 +172,7 @@ class UserQWidget(QWidget):
 
         self.password_btn.setObjectName("password")
         self.password_btn.clicked.connect(self.patch_data)
-        self.password_btn.setIcon(QIcon(get_image_path('password')))
+        self.password_btn.setIcon(QIcon(get_image('password')))
         self.password_btn.setToolTip(_('Change my password'))
         self.password_btn.setFixedSize(32, 32)
         info_layout.addWidget(self.password_btn, line, 3, 1, 1)
@@ -188,7 +188,7 @@ class UserQWidget(QWidget):
         token_title.setObjectName("subtitle")
         info_layout.addWidget(token_title, line, 2, 1, 2)
 
-        self.token_btn.setIcon(QIcon(get_image_path('token')))
+        self.token_btn.setIcon(QIcon(get_image('token')))
         self.token_btn.setFixedSize(32, 32)
         self.token_btn.clicked.connect(self.show_token_dialog)
         info_layout.addWidget(self.token_btn, line, 3, 1, 1)
@@ -322,7 +322,7 @@ class UserQWidget(QWidget):
         host_notif_layout.addWidget(self.labels['host_notification_period'], 3, 1, 1, 1)
 
         option_btn = QPushButton()
-        option_btn.setIcon(QIcon(get_image_path('options')))
+        option_btn.setIcon(QIcon(get_image('options')))
         option_btn.setFixedSize(64, 32)
         option_btn.clicked.connect(lambda: show_options_dialog(
             'host',
@@ -374,7 +374,7 @@ class UserQWidget(QWidget):
         service_notif_layout.addWidget(self.labels['service_notification_period'], 3, 1, 1, 1)
 
         option_btn = QPushButton()
-        option_btn.setIcon(QIcon(get_image_path('options')))
+        option_btn.setIcon(QIcon(get_image('options')))
         option_btn.setFixedSize(64, 32)
         option_btn.clicked.connect(lambda: show_options_dialog(
             'service',

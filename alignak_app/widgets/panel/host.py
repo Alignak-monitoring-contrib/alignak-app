@@ -32,8 +32,8 @@ from PyQt5.Qt import QPushButton, QIcon  # pylint: disable=no-name-in-module
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.model import get_icon_name, get_real_host_state_icon
-from alignak_app.core.utils import get_image_path, get_css
-from alignak_app.core.utils import get_time_diff_since_last_timestamp
+from alignak_app.core.utils import get_image, app_css
+from alignak_app.core.app_time import get_time_diff_since_last_timestamp
 from alignak_app.widgets.dialogs.actions import AckQDialog, DownQDialog, QDialog
 from alignak_app.widgets.dock.events import send_event
 from alignak_app.widgets.panel.history import HistoryQWidget
@@ -48,7 +48,7 @@ class HostQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(HostQWidget, self).__init__(parent)
-        self.setStyleSheet(get_css())
+        self.setStyleSheet(app_css)
         # Fields
         self.host_item = None
         self.service_items = None
@@ -139,15 +139,15 @@ class HostQWidget(QWidget):
         action_title.setObjectName('title')
         layout.addWidget(action_title)
 
-        self.buttons['acknowledge'].setIcon(QIcon(get_image_path('acknowledge')))
+        self.buttons['acknowledge'].setIcon(QIcon(get_image('acknowledge')))
         self.buttons['acknowledge'].clicked.connect(lambda: self.add_acknowledge(self.host_item))
         layout.addWidget(self.buttons['acknowledge'])
 
-        self.buttons['downtime'].setIcon(QIcon(get_image_path('downtime')))
+        self.buttons['downtime'].setIcon(QIcon(get_image('downtime')))
         self.buttons['downtime'].clicked.connect(lambda: self.add_downtime(self.host_item))
         layout.addWidget(self.buttons['downtime'])
 
-        self.buttons['history'].setIcon(QIcon(get_image_path('time')))
+        self.buttons['history'].setIcon(QIcon(get_image('time')))
         self.buttons['history'].clicked.connect(self.show_history)
         layout.addWidget(self.buttons['history'])
 
@@ -367,7 +367,7 @@ class HostQWidget(QWidget):
         self.set_data(hostname)
 
         icon_name = get_real_host_state_icon(self.service_items)
-        icon_pixmap = QPixmap(get_image_path(icon_name))
+        icon_pixmap = QPixmap(get_image(icon_name))
 
         self.labels['host_icon'].setPixmap(QPixmap(icon_pixmap))
         self.labels['host_name'].setText('%s' % self.host_item.name.capitalize())
@@ -378,7 +378,7 @@ class HostQWidget(QWidget):
             self.host_item.data['ls_acknowledged'],
             self.host_item.data['ls_downtimed']
         )
-        pixmap_icon = QPixmap(get_image_path(icon_name))
+        pixmap_icon = QPixmap(get_image(icon_name))
         final_icon = pixmap_icon.scaled(32, 32, Qt.KeepAspectRatio)
         self.labels['state_icon'].setPixmap(final_icon)
 

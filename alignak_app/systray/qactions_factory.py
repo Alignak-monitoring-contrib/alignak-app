@@ -25,7 +25,7 @@
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_image_path
+from alignak_app.core.utils import get_image
 
 from PyQt5.QtWidgets import QAction  # pylint: disable=no-name-in-module
 from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
@@ -49,7 +49,7 @@ class QActionFactory(object):
         """
 
         q_action = QAction(
-            QIcon(get_image_path(name)),
+            QIcon(get_image(name)),
             content,
             parent
         )

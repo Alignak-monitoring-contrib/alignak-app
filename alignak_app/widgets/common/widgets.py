@@ -23,7 +23,7 @@
     Utils QWidget manage global QWidgets used by Alignak-app
 """
 
-from alignak_app.core.utils import get_image_path, get_css
+from alignak_app.core.utils import get_image, app_css
 
 from PyQt5.Qt import QPushButton, QHBoxLayout, QApplication  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QWidget, QIcon, QLabel, QPixmap  # pylint: disable=no-name-in-module
@@ -39,7 +39,7 @@ class LogoQWidget(QWidget):
         super(LogoQWidget, self).__init__()
         self.setFixedHeight(45)
         self.setObjectName('app_widget')
-        self.setStyleSheet(get_css())
+        self.setStyleSheet(app_css)
 
     def initialize(self, child_widget):
         """
@@ -53,7 +53,7 @@ class LogoQWidget(QWidget):
         self.setLayout(logo_layout)
 
         logo_label = QLabel()
-        logo_label.setPixmap(QPixmap(get_image_path('alignak')))
+        logo_label.setPixmap(QPixmap(get_image('alignak')))
         logo_label.setObjectName('widget_title')
         logo_label.setFixedSize(121, 35)
         logo_label.setScaledContents(True)
@@ -61,7 +61,7 @@ class LogoQWidget(QWidget):
         logo_layout.addWidget(logo_label, 0)
 
         minimize_btn = QPushButton()
-        minimize_btn.setIcon(QIcon(get_image_path('minimize')))
+        minimize_btn.setIcon(QIcon(get_image('minimize')))
         minimize_btn.setFixedSize(24, 24)
         minimize_btn.setObjectName('app_widget')
         minimize_btn.clicked.connect(child_widget.showMinimized)
@@ -69,14 +69,14 @@ class LogoQWidget(QWidget):
         logo_layout.addWidget(minimize_btn, 1)
 
         maximize_btn = QPushButton()
-        maximize_btn.setIcon(QIcon(get_image_path('maximize')))
+        maximize_btn.setIcon(QIcon(get_image('maximize')))
         maximize_btn.setFixedSize(24, 24)
         maximize_btn.setObjectName('app_widget')
         maximize_btn.clicked.connect(child_widget.showMaximized)
         logo_layout.addWidget(maximize_btn, 2)
 
         close_btn = QPushButton()
-        close_btn.setIcon(QIcon(get_image_path('exit')))
+        close_btn.setIcon(QIcon(get_image('exit')))
         close_btn.setObjectName('app_widget')
         close_btn.setFixedSize(24, 24)
         close_btn.clicked.connect(child_widget.close)

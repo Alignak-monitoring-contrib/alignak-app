@@ -30,7 +30,7 @@ from PyQt5.Qt import QCompleter, QLineEdit, QIcon, QHBoxLayout  # pylint: disabl
 from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget  # pylint: disable=no-name-in-module
 
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.utils import get_css, get_image_path
+from alignak_app.core.utils import app_css, get_image
 from alignak_app.widgets.common.frames import AppQFrame, get_frame_separator
 from alignak_app.widgets.panel.dashboard import DashboardQWidget
 from alignak_app.widgets.panel.host import HostQWidget
@@ -46,8 +46,8 @@ class PanelQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(PanelQWidget, self).__init__(parent)
-        self.setStyleSheet(get_css())
-        self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setStyleSheet(app_css)
+        self.setWindowIcon(QIcon(get_image('icon')))
         # Fields
         self.layout = QVBoxLayout()
         self.line_search = QLineEdit()

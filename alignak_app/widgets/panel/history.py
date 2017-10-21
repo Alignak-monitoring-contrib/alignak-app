@@ -28,7 +28,7 @@ from logging import getLogger
 
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.history import History
-from alignak_app.core.utils import get_css, get_image_path
+from alignak_app.core.utils import app_css, get_image
 from alignak_app.widgets.common.frames import AppQFrame, get_frame_separator
 
 from PyQt5.Qt import QWidget, QScrollArea, QLabel  # pylint: disable=no-name-in-module
@@ -44,7 +44,7 @@ class HistoryQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(HistoryQWidget, self).__init__(parent)
-        self.setStyleSheet(get_css())
+        self.setStyleSheet(app_css)
         self.setObjectName("history")
         # Fields
         self.app_widget = AppQFrame()
@@ -124,7 +124,7 @@ class HistoryQWidget(QWidget):
         message_label.setWordWrap(True)
         event_layout.addWidget(message_label, 1, 0, 1, 1)
 
-        icon = QPixmap(get_image_path(icon_name))
+        icon = QPixmap(get_image(icon_name))
         icon_label = QLabel()
         icon_label.setToolTip(event['type'])
         icon_label.setFixedSize(32, 32)

@@ -23,7 +23,7 @@
     Events QWidgets manage creation of events
 """
 
-from alignak_app.core.utils import get_css
+from alignak_app.core.utils import app_css
 from alignak_app.core.data_manager import data_manager
 
 from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget  # pylint: disable=no-name-in-module
@@ -98,7 +98,7 @@ class EventsQListWidget(QWidget):
 
     def __init__(self):
         super(EventsQListWidget, self).__init__()
-        self.setStyleSheet(get_css())
+        self.setStyleSheet(app_css)
         self.setObjectName('events')
         # Fields
         self.events_list = QListWidget()

@@ -25,7 +25,7 @@
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_css, get_image_path
+from alignak_app.core.utils import app_css, get_image
 from alignak_app.widgets.common.labels import get_enable_label_icon
 from alignak_app.widgets.common.widgets import get_logo_widget, center_widget
 
@@ -43,8 +43,8 @@ class UserOptionsQDialog(QDialog):
     def __init__(self, parent=None):
         super(UserOptionsQDialog, self).__init__(parent)
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setStyleSheet(get_css())
-        self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setStyleSheet(app_css)
+        self.setWindowIcon(QIcon(get_image('icon')))
         self.setFixedSize(350, 300)
         self.setObjectName('dialog')
         # Fields

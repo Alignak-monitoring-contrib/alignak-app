@@ -29,7 +29,8 @@ from PyQt5.Qt import QPixmap, QDialog, QLabel, QWidget  # pylint: disable=no-nam
 from PyQt5.Qt import Qt, QPushButton, QGridLayout, QHBoxLayout  # pylint: disable=no-name-in-module
 
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.utils import get_image_path, get_css, get_time_diff_since_last_timestamp
+from alignak_app.core.utils import get_image, app_css
+from alignak_app.core.app_time import get_time_diff_since_last_timestamp
 from alignak_app.widgets.common.frames import AppQFrame
 from alignak_app.widgets.common.widgets import center_widget
 
@@ -43,7 +44,7 @@ class StatusQDialog(QDialog):
 
     def __init__(self, parent=None):
         super(StatusQDialog, self).__init__(parent)
-        self.setStyleSheet(get_css())
+        self.setStyleSheet(app_css)
         # Fields
         self.app_widget = AppQFrame()
         self.layout = QGridLayout()
@@ -254,7 +255,7 @@ class StatusQDialog(QDialog):
         if not isinstance(alive, bool):
             alive = False
 
-        enable_pixmap = QPixmap(get_image_path(states[alive]))
+        enable_pixmap = QPixmap(get_image(states[alive]))
 
         return enable_pixmap
 
@@ -278,6 +279,6 @@ class StatusQDialog(QDialog):
         if not isinstance(enable, bool):
             enable = False
 
-        enable_pixmap = QPixmap(get_image_path(states[enable]))
+        enable_pixmap = QPixmap(get_image(states[enable]))
 
         return enable_pixmap

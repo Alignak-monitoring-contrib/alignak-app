@@ -30,7 +30,7 @@ from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel, QVBoxLayout  # pylint: disabl
 from PyQt5.Qt import QWidget, QDialog, QPushButton, QGridLayout  # pylint: disable=no-name-in-module
 
 from alignak_app.core.utils import get_app_config
-from alignak_app.core.utils import get_css, get_image_path
+from alignak_app.core.utils import app_css, get_image
 from alignak_app.widgets.common.widgets import get_logo_widget, center_widget
 
 logger = getLogger(__name__)
@@ -45,8 +45,8 @@ class ServerQDialog(QDialog):
         super(ServerQDialog, self).__init__(parent)
         self.setWindowTitle(_('Server Configuration'))
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setStyleSheet(get_css())
-        self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setStyleSheet(app_css)
+        self.setWindowIcon(QIcon(get_image('icon')))
         self.setObjectName('dialog')
         self.setFixedSize(300, 330)
         # Fields

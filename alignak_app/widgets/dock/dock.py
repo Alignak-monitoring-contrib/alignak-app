@@ -28,7 +28,7 @@ import sys
 from PyQt5.Qt import QApplication, QWidget, QGridLayout, QIcon  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QListWidget, QLabel, Qt  # pylint: disable=no-name-in-module
 
-from alignak_app.core.utils import get_css, get_image_path
+from alignak_app.core.utils import app_css, get_image
 from alignak_app.widgets.dock.buttons import ButtonsQWidget
 from alignak_app.widgets.dock.events import events_widget
 from alignak_app.widgets.dock.livestate import LivestateQWidget
@@ -44,8 +44,9 @@ class DockQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(DockQWidget, self).__init__(parent)
-        self.setStyleSheet(get_css())
-        self.setWindowIcon(QIcon(get_image_path('icon')))
+        print(app_css)
+        self.setStyleSheet(app_css)
+        self.setWindowIcon(QIcon(get_image('icon')))
         # Fields
         self.app_widget = AppQFrame()
         self.status_widget = StatusQWidget()

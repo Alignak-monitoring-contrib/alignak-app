@@ -23,7 +23,7 @@
     Common QLabel manage creation of QLabels or QPixmaps
 """
 
-from alignak_app.core.utils import get_image_path
+from alignak_app.core.utils import get_image
 
 from PyQt5.Qt import QPixmap  # pylint: disable=no-name-in-module
 
@@ -54,7 +54,7 @@ def get_icon_item(item_type, problem_nb):
             icon_type = 'services_ok'
         else:
             icon_type = 'problem_ok'
-    icon = QPixmap(get_image_path(icon_type))
+    icon = QPixmap(get_image(icon_type))
 
     return icon
 
@@ -78,6 +78,6 @@ def get_enable_label_icon(state):
     if not isinstance(state, bool):
         state = False
 
-    enable_pixmap = QPixmap(get_image_path(states[state]))
+    enable_pixmap = QPixmap(get_image(states[state]))
 
     return enable_pixmap

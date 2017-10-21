@@ -28,7 +28,7 @@ from PyQt5.Qt import Qt, QVBoxLayout, QLabel, QDialog  # pylint: disable=no-name
 
 from alignak_app import __doc_url__, __project_url__, __alignak_url__, __application__
 from alignak_app import __releasenotes__, __version__, __copyright__
-from alignak_app.core.utils import get_css
+from alignak_app.core.utils import app_css
 from alignak_app.widgets.common.frames import AppQFrame
 
 
@@ -41,7 +41,7 @@ class AboutQDialog(QDialog):
         super(AboutQDialog, self).__init__(parent)
         # General settings
         self.setToolTip(_('About'))
-        self.setStyleSheet(get_css())
+        self.setStyleSheet(app_css)
         # Fields
         self.app_frame_model = AppQFrame()
 

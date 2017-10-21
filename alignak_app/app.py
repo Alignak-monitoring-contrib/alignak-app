@@ -35,8 +35,8 @@ from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.locales import init_localization
 from alignak_app.core.logs import create_logger
-from alignak_app.core.utils import get_image_path, get_main_folder, get_app_workdir
-from alignak_app.core.utils import init_config, get_app_config
+from alignak_app.core.utils import get_image, get_main_folder, get_app_workdir
+from alignak_app.core.utils import init_config, get_app_config, init_css
 from alignak_app.systray.tray_icon import TrayIcon
 from alignak_app.threads.thread_manager import thread_manager
 from alignak_app.widgets.dialogs.login import LoginQDialog
@@ -44,6 +44,7 @@ from alignak_app.widgets.dialogs.login import LoginQDialog
 # Initialize app config, logger and localization
 init_config()
 logger = create_logger()
+init_css()
 init_localization()
 
 
@@ -163,7 +164,7 @@ class AlignakApp(QObject):
                 app_backend.user['token'] = app_backend.backend.token
 
             # Build splash screen
-            splash_icon = QPixmap(get_image_path('alignak'))
+            splash_icon = QPixmap(get_image('alignak'))
             splash = QSplashScreen(splash_icon)
 
             progressbar = QProgressBar(splash)
@@ -183,7 +184,7 @@ class AlignakApp(QObject):
                     while time.time() < t + 0.01:
                         self.parent().processEvents()
 
-            self.tray_icon = TrayIcon(QIcon(get_image_path('icon')))
+            self.tray_icon = TrayIcon(QIcon(get_image('icon')))
             self.tray_icon.build_menu()
             self.tray_icon.show()
         else:

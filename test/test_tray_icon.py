@@ -30,7 +30,7 @@ from PyQt5.QtWidgets import QMenu
 from alignak_app.core.backend import AppBackend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.user import User
-from alignak_app.core.utils import get_image_path
+from alignak_app.core.utils import get_image
 from alignak_app.core.utils import init_config
 from alignak_app.systray.tray_icon import TrayIcon
 
@@ -42,7 +42,7 @@ class TestTrayIcon(unittest2.TestCase):
 
     init_config()
 
-    icon = QIcon(get_image_path('icon'))
+    icon = QIcon(get_image('icon'))
 
     backend = AppBackend()
     backend.login()

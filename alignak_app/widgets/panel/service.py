@@ -31,7 +31,8 @@ from PyQt5.Qt import QPixmap, QVBoxLayout, QGridLayout, QTimer  # pylint: disabl
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.model import get_icon_name
-from alignak_app.core.utils import get_image_path, get_css, get_time_diff_since_last_timestamp
+from alignak_app.core.utils import get_image, app_css
+from alignak_app.core.app_time import get_time_diff_since_last_timestamp
 from alignak_app.widgets.dialogs.actions import AckQDialog, DownQDialog
 from alignak_app.widgets.dock.events import send_event
 
@@ -45,7 +46,7 @@ class ServiceDataQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(ServiceDataQWidget, self).__init__(parent)
-        self.setStyleSheet(get_css())
+        self.setStyleSheet(app_css)
         self.setFixedWidth(200)
         # Fields
         self.timer = QTimer()
@@ -157,13 +158,13 @@ class ServiceDataQWidget(QWidget):
         action_title.setObjectName('title')
         layout.addWidget(action_title)
 
-        self.buttons['acknowledge'].setIcon(QIcon(get_image_path('acknowledge')))
+        self.buttons['acknowledge'].setIcon(QIcon(get_image('acknowledge')))
         self.buttons['acknowledge'].clicked.connect(
             lambda: self.add_acknowledge(self.service_item, self.host_id)
         )
         layout.addWidget(self.buttons['acknowledge'])
 
-        self.buttons['downtime'].setIcon(QIcon(get_image_path('downtime')))
+        self.buttons['downtime'].setIcon(QIcon(get_image('downtime')))
         self.buttons['downtime'].clicked.connect(
             lambda: self.add_downtime(self.service_item, self.host_id)
         )
@@ -299,7 +300,7 @@ class ServiceDataQWidget(QWidget):
             self.service_item.data['ls_acknowledged'],
             self.service_item.data['ls_downtimed']
         )
-        icon_pixmap = QPixmap(get_image_path(icon_name))
+        icon_pixmap = QPixmap(get_image(icon_name))
 
         self.labels['service_icon'].setPixmap(QPixmap(icon_pixmap))
         self.labels['service_name'].setText('%s' % self.service_item.name)

@@ -56,12 +56,12 @@ class TestUtils(unittest2.TestCase):
         self.assertEqual('http://demo.alignak.net', under_test)
 
         # Change url
-        utils.set_app_config('Alignak', 'url', 'http://127.0.0.1')
+        utils.edit_setting_value('Alignak', 'url', 'http://127.0.0.1')
         new_under_test = utils.get_app_config('Alignak', 'url')
         self.assertEqual('http://127.0.0.1', new_under_test)
 
         # Back url to normal
-        utils.set_app_config('Alignak', 'url', 'http://demo.alignak.net')
+        utils.edit_setting_value('Alignak', 'url', 'http://demo.alignak.net')
         last_under_test = utils.get_app_config('Alignak', 'url')
 
         self.assertEqual('http://demo.alignak.net', last_under_test)
@@ -89,6 +89,6 @@ class TestUtils(unittest2.TestCase):
 
         expected_img = utils.get_main_folder() + '/images/icon.svg'
 
-        under_test = utils.get_image_path('icon')
+        under_test = utils.get_image('icon')
 
         self.assertEqual(under_test, expected_img)

@@ -25,13 +25,11 @@
 
 import os
 import sys
-import time
 
 from logging import getLogger
 
 import configparser
 from configparser import NoOptionError, NoSectionError, DuplicateOptionError, DuplicateSectionError
-from datetime import datetime
 
 from alignak_app import __project_url__
 
@@ -128,26 +126,31 @@ default_parameters = {
     'services_warning': 'service_warning.svg',
 }
 
-# Global variable, access by function
+# Global variables, access by function
 app_config = None
+app_images = None
+app_css = ''
+error_config = 0
 
 
-def get_filenames():
+def get_setting_file(filename):
     """
-    Return filenames depending platform
+    Return wanted config file, depending platform
 
+    :param filename: name of the setting file
+    :type filename: str
     :return: filenames str or list
     :rtype: str|list
     """
 
     if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-        config_filenames = '%s/settings.cfg' % get_app_workdir()
+        config_file = '%s/%s' % (get_app_workdir(), filename)
     elif 'win32' in sys.platform:  # pragma: no cover - not testable
-        config_filenames = '%s\\settings.cfg' % get_app_workdir()
+        config_file = '%s\\%s' % (get_app_workdir(), filename)
     else:
         sys.exit('Your system seems not compatible. Please consult: %s' % __project_url__)
 
-    return config_filenames
+    return config_file
 
 
 def init_config():
@@ -158,21 +161,22 @@ def init_config():
 
     # Define "app_config" as "global" to access it from anywhere
     global app_config  # pylint: disable=global-statement
+    global app_images  # pylint: disable=global-statement
 
     app_config = configparser.ConfigParser()
+    app_images = configparser.ConfigParser()
 
     logger.info('Read configuration file...')
     try:
-        app_config.read(get_filenames())
+        app_config.read(get_setting_file('settings.cfg'))
+        app_images.read(get_setting_file('images.ini'))
         logger.info('Configuration file is OK.')
     except (DuplicateOptionError, DuplicateSectionError) as e:  # pragma: no cover - not testable
-        logger.error('Duplicate Option/Section in file [%s] !', str(get_filenames()))
-        logger.error(str(e))
-        sys.exit('Duplicate Option/Section in file [%s] !' % str(get_filenames()))
+        logger.error('Duplicate Option/Section in file [%s] !', e)
+        sys.exit('Duplicate Option/Section in file [%s] !' % e)
     except Exception as f:  # pragma: no cover - not testable
-        logger.error('Configuration file is missing in [%s] !', str(get_filenames()))
-        logger.error(str(f))
-        sys.exit('Configuration file is missing in [%s] !' % str(get_filenames()))
+        logger.error('Configuration file is missing in [%s] !', f)
+        sys.exit('Configuration file is missing in [%s] !' % f)
 
 
 def get_app_config(section, option, boolean=False):
@@ -197,24 +201,28 @@ def get_app_config(section, option, boolean=False):
             return default_parameters[option]
 
 
-def set_app_config(section, option, new_value):
+def edit_setting_value(section, option, new_value):
     """
     Set an option in configuration file
 
-    :param section:
-    :param option:
-    :param new_value:
+    :param section: section to edit
+    :type section: str
+    :param option: option to edit, corresponding to the wanted section
+    :type option: str
+    :param new_value: new value to set in place of old
+    :type new_value: str
     """
 
     try:
         # Read configuration file and store in list
-        with open(get_filenames(), 'r') as config_file:
+        with open(get_setting_file('settings.cfg'), 'r') as config_file:
             data = config_file.readlines()
-            file_to_write = get_filenames()
+            file_to_write = get_setting_file('settings.cfg')
         # Update values
         for d in data:
             if option in d[0:len(option)]:
                 data[data.index(d)] = option + ' = ' + new_value + '\n'
+        # Setting the current configuration
         app_config.set(section, option, new_value)
         with open(file_to_write, 'w') as new_config_file:
             new_config_file.writelines(data)
@@ -223,10 +231,7 @@ def set_app_config(section, option, new_value):
         logger.error('Can\'t set Option in configuration file : ' + str(e))
 
 
-error_config = 0
-
-
-def get_image_path(name):
+def get_image(name):
     """
     Return the path of wanted image
 
@@ -241,7 +246,7 @@ def get_image_path(name):
     img_path = get_main_folder()
 
     try:
-        img = '%s/images/%s' % (img_path, app_config.get('Images', name))
+        img = '%s/images/%s' % (img_path, app_images.get('Images', name))
 
         return img
     except (NoOptionError, NoSectionError) as e:
@@ -261,82 +266,13 @@ def get_image_path(name):
             sys.exit(error_msg)
 
 
-def get_css():
-    """
-    Read css file and return its content
+def init_css():
 
-    :return: css text
-    :rtype: str
-    """
+    global app_css  # pylint: disable=global-statement
 
     try:
-        with open('%s/css/style.css' % (get_main_folder())) as css:
-            return css.read()
-    except (IOError, NoSectionError) as e:  # pragma: no cover - not testable
+        css = open('%s/css/style.css' % (get_main_folder()))
+        app_css = css.read()
+    except (IOError, NoSectionError) as e:
         logger.error('CSS File is missing : %s', str(e))
-        return ""
-
-
-def get_time_diff_since_last_timestamp(timestamp):  # pragma: no cover - not testable
-    """
-    Return the diff between the last time stamp
-
-    :param timestamp: timestamp of the last check
-    :type timestamp: float
-    :return: time difference formatted
-    :rtype: str
-    """
-
-    if not timestamp:
-        return 'n/a'
-
-    time_delta = int(time.time()) - int(timestamp)
-
-    # If it's now, say it :)
-    if time_delta < 3:
-        if 0 > time_delta > -4:
-            return _('Very soon')
-        if time_delta >= 0:
-            return _('Just now')
-
-    seconds = int(round(time_delta))
-    minutes, seconds = divmod(seconds, 60)
-    hours, minutes = divmod(minutes, 60)
-    days, hours = divmod(hours, 24)
-    weeks, days = divmod(days, 7)
-    months, weeks = divmod(weeks, 4)
-    years, months = divmod(months, 12)
-
-    duration = []
-    if years > 0:
-        duration.append('%dy' % years)
-    else:
-        if months > 0:
-            duration.append('%dM' % months)
-        if weeks > 0:
-            duration.append('%dw' % weeks)
-        if days > 0:
-            duration.append('%dd' % days)
-        if hours > 0:
-            duration.append('%dh' % hours)
-        if minutes > 0:
-            duration.append('%dm' % minutes)
-        if seconds > 0:
-            duration.append('%ds' % seconds)
-
-    return ' ' + ' '.join(duration) + ' ago'
-
-
-def get_date_from_timestamp(timestamp):
-    """
-    Return date from timestamp
-    :param timestamp: timestamp to convert to date
-    :type timestamp: int
-    :return: corresponding date
-    :rtype: str
-    """
-
-    if timestamp:
-        return datetime.fromtimestamp(timestamp)
-
-    return 'n/a'
+        app_css = ""

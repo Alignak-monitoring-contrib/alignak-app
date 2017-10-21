@@ -28,7 +28,7 @@ from logging import getLogger
 from alignak_app.core.items.host import Host
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.service import Service
-from alignak_app.core.utils import get_css, get_image_path
+from alignak_app.core.utils import app_css, get_image
 
 from PyQt5.Qt import QGridLayout, QLabel, QPixmap, Qt, QWidget  # pylint: disable=no-name-in-module
 
@@ -44,7 +44,7 @@ class DashboardQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(DashboardQWidget, self).__init__(parent)
-        self.setStyleSheet(get_css())
+        self.setStyleSheet(app_css)
         # Fields
         self.layout = QGridLayout()
         self.items_nb = {
@@ -93,7 +93,7 @@ class DashboardQWidget(QWidget):
         row = 1
         for icon in Host.get_available_icons():
             item_icon = QLabel()
-            item_icon.setPixmap(QPixmap(get_image_path(icon)))
+            item_icon.setPixmap(QPixmap(get_image(icon)))
             item_icon.setFixedSize(18, 18)
             item_icon.setScaledContents(True)
             item_icon.setToolTip(icon.replace('hosts_', '').upper())
@@ -116,7 +116,7 @@ class DashboardQWidget(QWidget):
         row = 1
         for icon in Service.get_available_icons():
             item_icon = QLabel()
-            item_icon.setPixmap(QPixmap(get_image_path(icon)))
+            item_icon.setPixmap(QPixmap(get_image(icon)))
             item_icon.setFixedSize(18, 18)
             item_icon.setScaledContents(True)
             item_icon.setToolTip(icon.replace('services_', '').upper())

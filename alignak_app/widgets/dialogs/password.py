@@ -28,7 +28,7 @@ from logging import getLogger
 from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QWidget, QDialog, QPushButton, QVBoxLayout  # pylint: disable=no-name-in-module
 
-from alignak_app.core.utils import get_css, get_image_path
+from alignak_app.core.utils import app_css, get_image
 from alignak_app.widgets.common.widgets import center_widget, get_logo_widget
 
 logger = getLogger(__name__)
@@ -43,8 +43,8 @@ class PasswordQDialog(QDialog):
         super(PasswordQDialog, self).__init__(parent)
         self.setWindowTitle('User Password')
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setStyleSheet(get_css())
-        self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setStyleSheet(app_css)
+        self.setWindowIcon(QIcon(get_image('icon')))
         self.setObjectName('dialog')
         self.setFixedSize(300, 300)
         # Fields

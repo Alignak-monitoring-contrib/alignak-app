@@ -30,8 +30,8 @@ from PyQt5.Qt import QVBoxLayout, QGridLayout, QLineEdit  # pylint: disable=no-n
 from PyQt5.Qt import QWidget, QDialog, QPushButton, Qt, QIcon  # pylint: disable=no-name-in-module
 
 from alignak_app import __version__
-from alignak_app.core.utils import get_css, get_image_path
-from alignak_app.core.utils import set_app_config, init_config
+from alignak_app.core.utils import app_css, get_image
+from alignak_app.core.utils import edit_setting_value, init_config
 from alignak_app.widgets.common.widgets import get_logo_widget, center_widget
 from alignak_app.widgets.dialogs.server import ServerQDialog
 
@@ -47,8 +47,8 @@ class LoginQDialog(QDialog):
         super(LoginQDialog, self).__init__(parent)
         self.setWindowTitle('Login to Alignak')
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setStyleSheet(get_css())
-        self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setStyleSheet(app_css)
+        self.setWindowIcon(QIcon(get_image('icon')))
         self.setObjectName('dialog')
         self.setFixedSize(300, 330)
         # Fields
@@ -97,7 +97,7 @@ class LoginQDialog(QDialog):
         refresh_conf_btn = QPushButton()
         refresh_conf_btn.clicked.connect(init_config)
         refresh_conf_btn.setFixedSize(25, 25)
-        refresh_conf_btn.setIcon(QIcon(get_image_path('refresh')))
+        refresh_conf_btn.setIcon(QIcon(get_image('refresh')))
         refresh_conf_btn.setToolTip(_('Reload configuration'))
         login_layout.addWidget(refresh_conf_btn, 2, 1, 1, 1)
 
@@ -105,7 +105,7 @@ class LoginQDialog(QDialog):
         server_btn = QPushButton()
         server_btn.clicked.connect(self.handle_server)
         server_btn.setFixedSize(25, 25)
-        server_btn.setIcon(QIcon(get_image_path('host')))
+        server_btn.setIcon(QIcon(get_image('host')))
         server_btn.setToolTip(_('Modify Alignak Server'))
         login_layout.addWidget(server_btn, 2, 2, 1, 1)
 
@@ -145,9 +145,9 @@ class LoginQDialog(QDialog):
 
         if server_dialog.exec_() == QDialog.Accepted:
             backend_url = '%(url)s:' + str(server_dialog.server_port.text()).rstrip()
-            set_app_config('Alignak', 'backend', backend_url)
-            set_app_config('Alignak', 'url', str(server_dialog.server_url.text()).rstrip())
-            set_app_config('Alignak', 'processes', str(server_dialog.server_proc.text()).rstrip())
+            edit_setting_value('Alignak', 'backend', backend_url)
+            edit_setting_value('Alignak', 'url', str(server_dialog.server_url.text()).rstrip())
+            edit_setting_value('Alignak', 'processes', str(server_dialog.server_proc.text()).rstrip())
 
     def showEvent(self, _):
         """ QDialog.showEvent(QShowEvent) """

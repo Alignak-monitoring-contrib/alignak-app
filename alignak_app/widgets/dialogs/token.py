@@ -29,7 +29,7 @@ from PyQt5.Qt import QPushButton, QLabel, QVBoxLayout  # pylint: disable=no-name
 from PyQt5.Qt import QWidget, QDialog, QIcon, Qt  # pylint: disable=no-name-in-module
 
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.utils import get_css, get_image_path
+from alignak_app.core.utils import app_css, get_image
 from alignak_app.widgets.common.widgets import get_logo_widget, center_widget
 
 logger = getLogger(__name__)
@@ -43,8 +43,8 @@ class TokenQDialog(QDialog):
     def __init__(self, parent=None):
         super(TokenQDialog, self).__init__(parent)
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setStyleSheet(get_css())
-        self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setStyleSheet(app_css)
+        self.setWindowIcon(QIcon(get_image('icon')))
         self.setFixedSize(500, 200)
         self.setObjectName('dialog')
 

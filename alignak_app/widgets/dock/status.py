@@ -29,7 +29,7 @@ from PyQt5.Qt import QWidget, QHBoxLayout, QTimer, QPixmap, Qt  # pylint: disabl
 
 from alignak_app.core.backend import app_backend
 from alignak_app.core.items.daemon import Daemon
-from alignak_app.core.utils import get_image_path, get_css
+from alignak_app.core.utils import get_image, app_css
 from alignak_app.widgets.dialogs.status import StatusQDialog
 
 
@@ -41,7 +41,7 @@ class StatusQWidget(QWidget):
     def __init__(self):
         super(StatusQWidget, self).__init__()
         self.setObjectName('livestate')
-        self.setStyleSheet(get_css())
+        self.setStyleSheet(app_css)
         # Fields
         self.daemons_status = QLabel('pending...')
         self.backend_connected = QLabel('pending...')
@@ -72,7 +72,7 @@ class StatusQWidget(QWidget):
         # Status button
         self.status_dialog.initialize()
         status_btn = QPushButton()
-        status_btn.setIcon(QIcon(get_image_path('icon')))
+        status_btn.setIcon(QIcon(get_image('icon')))
         status_btn.setFixedSize(32, 32)
         status_btn.clicked.connect(self.show_status_dialog)
         layout.addWidget(status_btn)
@@ -109,10 +109,10 @@ class StatusQWidget(QWidget):
         """
 
         self.backend_connected.setPixmap(
-            QPixmap(get_image_path(app_backend.get_backend_status_icon()))
+            QPixmap(get_image(app_backend.get_backend_status_icon()))
         )
         self.daemons_status.setPixmap(
-            QPixmap(get_image_path(Daemon.get_daemons_status_icon()))
+            QPixmap(get_image(Daemon.get_daemons_status_icon()))
         )
 
     def paintEvent(self, _):

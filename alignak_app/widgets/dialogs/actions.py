@@ -31,7 +31,7 @@ from PyQt5.Qt import QGridLayout, QTimeEdit, QDateTimeEdit  # pylint: disable=no
 from PyQt5.Qt import QPixmap, QCheckBox  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QPushButton, QLabel, QTextEdit, QIcon  # pylint: disable=no-name-in-module
 
-from alignak_app.core.utils import get_image_path, get_css
+from alignak_app.core.utils import get_image, app_css
 from alignak_app.widgets.common.widgets import get_logo_widget, center_widget
 
 logger = getLogger(__name__)
@@ -46,8 +46,8 @@ class AckQDialog(QDialog):
         super(AckQDialog, self).__init__(parent)
         self.setWindowTitle(_('Request an Acknowledge'))
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setStyleSheet(get_css())
-        self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setStyleSheet(app_css)
+        self.setWindowIcon(QIcon(get_image('icon')))
         self.setMinimumSize(360, 460)
         self.setObjectName('dialog')
         # Fields
@@ -166,7 +166,7 @@ class DownQDialog(QDialog):
         self.setWindowTitle(_('Request a Downtime'))
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(get_css())
-        self.setWindowIcon(QIcon(get_image_path('icon')))
+        self.setWindowIcon(QIcon(get_image('icon')))
         self.setMinimumSize(360, 460)
         self.setObjectName('dialog')
         # Fields
@@ -234,7 +234,7 @@ class DownQDialog(QDialog):
         downtime_layout.addWidget(duration_label, 4, 0, 1, 1)
 
         duration_clock = QLabel()
-        duration_clock.setPixmap(QPixmap(get_image_path('time')))
+        duration_clock.setPixmap(QPixmap(get_image('time')))
         downtime_layout.addWidget(duration_clock, 4, 1, 1, 1)
         duration_clock.setFixedSize(16, 16)
         duration_clock.setScaledContents(True)
@@ -253,7 +253,7 @@ class DownQDialog(QDialog):
         downtime_layout.addWidget(date_range_label, 6, 0, 1, 1)
 
         calendar_label = QLabel()
-        calendar_label.setPixmap(QPixmap(get_image_path('calendar')))
+        calendar_label.setPixmap(QPixmap(get_image('calendar')))
         calendar_label.setFixedSize(16, 16)
         calendar_label.setScaledContents(True)
         downtime_layout.addWidget(calendar_label, 6, 1, 1, 1)

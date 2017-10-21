@@ -31,7 +31,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QPushButton  # pylint: disable=no-name-
 from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QWidget, QVBoxLayout  # pylint: disable=no-name-in-module
 
-from alignak_app.core.utils import get_image_path, get_app_config, get_css
+from alignak_app.core.utils import get_image, get_app_config, app_css
 from alignak_app.widgets.common.widgets import center_widget
 
 logger = getLogger(__name__)
@@ -45,8 +45,8 @@ class AppQFrame(QFrame):
     def __init__(self, parent=None):
         super(AppQFrame, self).__init__(parent)
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setWindowIcon(QIcon(get_image_path('icon')))
-        self.setStyleSheet(get_css())
+        self.setWindowIcon(QIcon(get_image('icon')))
+        self.setStyleSheet(app_css)
         self.offset = None
 
     def initialize(self, title, logo=False):
@@ -92,7 +92,7 @@ class AppQFrame(QFrame):
         logo_label.setObjectName('widget_title')
         logo_label.setAttribute(Qt.WA_TransparentForMouseEvents)
         if logo:
-            logo_label.setPixmap(QPixmap(get_image_path('alignak')))
+            logo_label.setPixmap(QPixmap(get_image('alignak')))
             logo_label.setFixedSize(120, 30)
             logo_label.setScaledContents(True)
 
@@ -104,21 +104,21 @@ class AppQFrame(QFrame):
         logo_layout.setAlignment(logo_label, Qt.AlignHCenter)
 
         minimize_btn = QPushButton()
-        minimize_btn.setIcon(QIcon(get_image_path('minimize')))
+        minimize_btn.setIcon(QIcon(get_image('minimize')))
         minimize_btn.setFixedSize(22, 22)
         minimize_btn.setObjectName('app_widget')
         minimize_btn.clicked.connect(self.minimize)
         logo_layout.addWidget(minimize_btn)
 
         maximize_btn = QPushButton()
-        maximize_btn.setIcon(QIcon(get_image_path('maximize')))
+        maximize_btn.setIcon(QIcon(get_image('maximize')))
         maximize_btn.setFixedSize(22, 22)
         maximize_btn.setObjectName('app_widget')
         maximize_btn.clicked.connect(self.minimize_maximize)
         logo_layout.addWidget(maximize_btn)
 
         close_btn = QPushButton()
-        close_btn.setIcon(QIcon(get_image_path('exit')))
+        close_btn.setIcon(QIcon(get_image('exit')))
         close_btn.setFixedSize(22, 22)
         close_btn.setObjectName('app_widget')
         close_btn.clicked.connect(self.close)

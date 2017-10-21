@@ -28,7 +28,7 @@ import webbrowser
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_image_path, get_css, get_app_config
+from alignak_app.core.utils import get_image, app_css, get_app_config
 from alignak_app.widgets.dock.user import UserQWidget
 from alignak_app.widgets.panel.panel import PanelQWidget
 
@@ -45,7 +45,7 @@ class ButtonsQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(ButtonsQWidget, self).__init__(parent)
-        self.setStyleSheet(get_css())
+        self.setStyleSheet(app_css)
         # Fields
         self.user_widget = UserQWidget()
         self.panel_widget = PanelQWidget()
@@ -68,24 +68,24 @@ class ButtonsQWidget(QWidget):
         self.setLayout(layout)
 
         self.panel_widget.initialize(dock_width)
-        self.host_btn.setIcon(QIcon(get_image_path('host')))
+        self.host_btn.setIcon(QIcon(get_image('host')))
         self.host_btn.setFixedSize(40, 40)
         self.host_btn.clicked.connect(self.open_host_widget)
         layout.addWidget(self.host_btn)
 
-        self.problems_btn.setIcon(QIcon(get_image_path('problem')))
+        self.problems_btn.setIcon(QIcon(get_image('problem')))
         self.problems_btn.setFixedSize(40, 40)
         self.problems_btn.setEnabled(False)
         self.problems_btn.setToolTip(_('Coming soon...'))
         layout.addWidget(self.problems_btn)
 
         self.user_widget.initialize()
-        self.profile_btn.setIcon(QIcon(get_image_path('user')))
+        self.profile_btn.setIcon(QIcon(get_image('user')))
         self.profile_btn.setFixedSize(40, 40)
         self.profile_btn.clicked.connect(self.open_user_widget)
         layout.addWidget(self.profile_btn)
 
-        self.webui_btn.setIcon(QIcon(get_image_path('web')))
+        self.webui_btn.setIcon(QIcon(get_image('web')))
         self.webui_btn.setFixedSize(40, 40)
         self.webui_btn.clicked.connect(
             lambda: self.open_url(get_app_config('Alignak', 'webui'))
