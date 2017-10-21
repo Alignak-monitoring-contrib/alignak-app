@@ -28,7 +28,7 @@ import webbrowser
 
 from logging import getLogger
 
-from alignak_app.core.utils import get_image, app_css, get_app_config
+from alignak_app.core.config import get_image, app_css, get_app_config
 from alignak_app.widgets.dock.user import UserQWidget
 from alignak_app.widgets.panel.panel import PanelQWidget
 

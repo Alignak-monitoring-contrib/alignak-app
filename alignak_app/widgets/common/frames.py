@@ -31,7 +31,7 @@ from PyQt5.QtWidgets import QHBoxLayout, QPushButton  # pylint: disable=no-name-
 from PyQt5.QtWidgets import QLabel  # pylint: disable=no-name-in-module
 from PyQt5.QtWidgets import QWidget, QVBoxLayout  # pylint: disable=no-name-in-module
 
-from alignak_app.core.utils import get_image, get_app_config, app_css
+from alignak_app.core.config import get_image, get_app_config, app_css
 from alignak_app.widgets.common.widgets import center_widget
 
 logger = getLogger(__name__)

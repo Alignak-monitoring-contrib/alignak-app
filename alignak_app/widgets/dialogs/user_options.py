@@ -25,7 +25,7 @@
 
 from logging import getLogger
 
-from alignak_app.core.utils import app_css, get_image
+from alignak_app.core.config import app_css, get_image
 from alignak_app.widgets.common.labels import get_enable_label_icon
 from alignak_app.widgets.common.widgets import get_logo_widget, center_widget
 

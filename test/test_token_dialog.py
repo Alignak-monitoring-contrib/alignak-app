@@ -28,7 +28,7 @@ from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.user import User
 from alignak_app.core.locales import init_localization
-from alignak_app.core.utils import init_config
+from alignak_app.core.config import init_config
 from alignak_app.widgets.dialogs.token import TokenQDialog
 
 

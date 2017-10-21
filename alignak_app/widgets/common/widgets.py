@@ -23,7 +23,7 @@
     Utils QWidget manage global QWidgets used by Alignak-app
 """
 
-from alignak_app.core.utils import get_image, app_css
+from alignak_app.core.config import get_image, app_css
 
 from PyQt5.Qt import QPushButton, QHBoxLayout, QApplication  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QWidget, QIcon, QLabel, QPixmap  # pylint: disable=no-name-in-module

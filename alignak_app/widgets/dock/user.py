@@ -27,7 +27,7 @@ from logging import getLogger
 
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.utils import get_image, app_css
+from alignak_app.core.config import get_image, app_css
 from alignak_app.widgets.common.frames import AppQFrame, get_frame_separator
 from alignak_app.widgets.common.labels import get_enable_label_icon
 from alignak_app.widgets.dock.events import send_event

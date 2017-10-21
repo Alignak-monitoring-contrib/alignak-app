@@ -28,7 +28,7 @@ from logging import getLogger
 from PyQt5.Qt import QTimer, QObject  # pylint: disable=no-name-in-module
 
 from alignak_app.core.locales import init_localization
-from alignak_app.core.utils import init_config
+from alignak_app.core.config import init_config
 from alignak_app.threads.backend_thread import BackendQThread
 
 

@@ -23,7 +23,7 @@ import os
 
 import unittest2
 
-import alignak_app.core.utils as utils
+import alignak_app.core.config as utils
 
 
 class TestUtils(unittest2.TestCase):

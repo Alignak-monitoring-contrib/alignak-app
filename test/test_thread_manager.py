@@ -23,7 +23,7 @@ import unittest2
 
 from alignak_app.threads.thread_manager import ThreadManager
 
-from alignak_app.core.utils import init_config
+from alignak_app.core.config import init_config
 from alignak_app.core.locales import init_localization
 
 from PyQt5.Qt import QTimer

@@ -36,7 +36,7 @@ from alignak_app.core.items.service import Service
 from alignak_app.core.items.user import User
 from alignak_app.core.items.history import History
 
-from alignak_app.core.utils import get_app_config
+from alignak_app.core.config import get_app_config
 from alignak_app.core.data_manager import data_manager
 
 logger = getLogger(__name__)

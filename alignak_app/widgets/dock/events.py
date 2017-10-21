@@ -23,7 +23,7 @@
     Events QWidgets manage creation of events
 """
 
-from alignak_app.core.utils import app_css
+from alignak_app.core.config import app_css
 from alignak_app.core.data_manager import data_manager
 
 from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget  # pylint: disable=no-name-in-module

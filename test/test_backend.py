@@ -24,7 +24,7 @@ import json
 import unittest2
 
 from alignak_app.core.backend import AppBackend
-from alignak_app.core.utils import init_config, get_app_config
+from alignak_app.core.config import init_config, get_app_config
 
 
 class TestAppBackend(unittest2.TestCase):

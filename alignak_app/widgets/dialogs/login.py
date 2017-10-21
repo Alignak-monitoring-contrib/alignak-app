@@ -30,8 +30,8 @@ from PyQt5.Qt import QVBoxLayout, QGridLayout, QLineEdit  # pylint: disable=no-n
 from PyQt5.Qt import QWidget, QDialog, QPushButton, Qt, QIcon  # pylint: disable=no-name-in-module
 
 from alignak_app import __version__
-from alignak_app.core.utils import app_css, get_image
-from alignak_app.core.utils import edit_setting_value, init_config
+from alignak_app.core.config import app_css, get_image
+from alignak_app.core.config import edit_setting_value, init_config
 from alignak_app.widgets.common.widgets import get_logo_widget, center_widget
 from alignak_app.widgets.dialogs.server import ServerQDialog
 

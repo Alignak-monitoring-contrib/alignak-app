@@ -29,7 +29,7 @@ from PyQt5.Qt import QTreeWidget, QTreeWidgetItem  # pylint: disable=no-name-in-
 from PyQt5.Qt import QWidget, QIcon, QGridLayout, QSize  # pylint: disable=no-name-in-module
 
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.utils import get_image, app_css
+from alignak_app.core.config import get_image, app_css
 from alignak_app.widgets.common.frames import get_frame_separator
 from alignak_app.widgets.panel.number_services import NumberServicesQWidget
 from alignak_app.widgets.panel.service import ServiceDataQWidget

@@ -24,7 +24,7 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication
 
-from alignak_app.core.utils import init_config
+from alignak_app.core.config import init_config
 from alignak_app.widgets.common.frames import AppQFrame
 
 

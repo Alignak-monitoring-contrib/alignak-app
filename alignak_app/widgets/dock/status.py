@@ -29,7 +29,7 @@ from PyQt5.Qt import QWidget, QHBoxLayout, QTimer, QPixmap, Qt  # pylint: disabl
 
 from alignak_app.core.backend import app_backend
 from alignak_app.core.items.daemon import Daemon
-from alignak_app.core.utils import get_image, app_css
+from alignak_app.core.config import get_image, app_css
 from alignak_app.widgets.dialogs.status import StatusQDialog
 
 

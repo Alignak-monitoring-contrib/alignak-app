@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Utils manage configurations
+    Config manage configurations of Alignak-app
 """
 
 import os

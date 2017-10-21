@@ -23,7 +23,7 @@
     Livestate QWidget manage resume of hosts, services and problems
 """
 
-from alignak_app.core.utils import app_css
+from alignak_app.core.config import app_css
 from alignak_app.core.data_manager import data_manager
 from alignak_app.widgets.common.labels import get_icon_item
 

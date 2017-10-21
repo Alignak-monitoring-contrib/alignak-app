@@ -27,7 +27,7 @@ from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.user import User
 from alignak_app.core.items.host import Host
 from alignak_app.core.items.service import Service
-from alignak_app.core.utils import init_config
+from alignak_app.core.config import init_config
 from alignak_app.core.locales import init_localization
 
 from PyQt5.Qt import QApplication, QWidget

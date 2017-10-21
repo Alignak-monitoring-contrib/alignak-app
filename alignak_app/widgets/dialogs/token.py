@@ -29,7 +29,7 @@ from PyQt5.Qt import QPushButton, QLabel, QVBoxLayout  # pylint: disable=no-name
 from PyQt5.Qt import QWidget, QDialog, QIcon, Qt  # pylint: disable=no-name-in-module
 
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.utils import app_css, get_image
+from alignak_app.core.config import app_css, get_image
 from alignak_app.widgets.common.widgets import get_logo_widget, center_widget
 
 logger = getLogger(__name__)
