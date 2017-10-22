@@ -42,7 +42,7 @@ class TestThreadManager(unittest2.TestCase):
 
         under_test = ThreadManager()
 
-        self.assertFalse(under_test.threads)
+        self.assertFalse(under_test.current_threads)
         self.assertIsNotNone(under_test.timer)
         self.assertIsInstance(under_test.timer, QTimer)
         self.assertEqual(

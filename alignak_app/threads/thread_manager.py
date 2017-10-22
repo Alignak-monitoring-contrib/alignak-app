@@ -28,7 +28,7 @@ from logging import getLogger
 from PyQt5.Qt import QTimer, QObject  # pylint: disable=no-name-in-module
 
 from alignak_app.core.locales import init_localization
-from alignak_app.core.config import init_config
+from alignak_app.core.config import init_config, get_app_config
 from alignak_app.threads.backend_thread import BackendQThread
 
 
@@ -39,14 +39,14 @@ init_localization()
 
 class ThreadManager(QObject):
     """
-        Class who create BackendQRunnable to periodically request on Alignak Backend
+        Class who create BackendQThreads periodically, to request on Alignak Backend endpoints
     """
 
     def __init__(self, parent=None):
         super(ThreadManager, self).__init__(parent)
+        self.current_threads = []
         self.threads_to_launch = self.get_threads_to_launch()
         self.timer = QTimer()
-        self.threads = []
 
     def start(self):  # pragma: no cover
         """
@@ -56,16 +56,12 @@ class ThreadManager(QObject):
 
         logger.info('Start Thread Manager...')
 
-        # Make a first request
-        self.create_tasks()
-
-        # Then request periodically
-        self.timer.setInterval(5000)
+        requests_interval = int(get_app_config('Alignak-app', 'requests_interval')) * 1000
+        self.timer.setInterval(requests_interval)
         self.timer.start()
-        self.timer.timeout.connect(self.create_tasks)
+        self.timer.timeout.connect(self.launch_threads)
 
-    @staticmethod
-    def get_threads_to_launch():
+    def get_threads_to_launch(self):
         """
         Return the threads_to_launch to run in BackendQRunnable
 
@@ -73,12 +69,20 @@ class ThreadManager(QObject):
         :rtype: list
         """
 
-        logger.debug('Get new threads to launch')
-        return [
-            'notifications', 'livesynthesis', 'alignakdaemon', 'history', 'service', 'host', 'user'
+        threads_to_launch = []
+        available_threads = [
+            'notifications', 'history', 'livesynthesis', 'alignakdaemon', 'service', 'host', 'user'
         ]
 
-    def create_tasks(self):  # pragma: no cover
+        # Add BackendQThread only if they are not already running
+        for available_thread in available_threads:
+            if not any(available_thread == thread.thread_name for thread in self.current_threads):
+                threads_to_launch.append(available_thread)
+
+        logger.debug('Get new threads to launch %s', threads_to_launch)
+        return threads_to_launch
+
+    def launch_threads(self):  # pragma: no cover
         """
         Create threads_to_launch to run
 
@@ -88,27 +92,32 @@ class ThreadManager(QObject):
             self.threads_to_launch = self.get_threads_to_launch()
 
         cur_thread = self.threads_to_launch.pop()
-        logger.debug('Laucnh new thread %s', cur_thread)
-
         backend_thread = BackendQThread(cur_thread)
         backend_thread.start()
 
-        # Add current thread to threads list to keep a reference
-        self.threads.append(backend_thread)
+        self.current_threads.append(backend_thread)
 
-    def stop(self):
+        # Cleaning threads who are finished
+        for thread in self.current_threads:
+            if thread.isFinished():
+                logger.debug('Remove finished thread: %s', thread.thread_name)
+                thread.quit()
+                thread.wait()
+                self.current_threads.remove(thread)
+
+    def stop_threads(self):
         """
-        Stop the manager and close all running QThreads
+        Stop ThreadManager and close all running BackendQThreads
 
         """
 
         logger.info("Stop backend threads...")
         self.timer.stop()
-        for thread in self.threads:
-            logger.debug('Try to quit thread: %s', thread)
+        for thread in self.current_threads:
+            logger.debug('Try to quit thread: %s', thread.thread_name)
             thread.quit_thread.emit()
 
-        logger.info("Backend threads are finished.")
+        logger.info("The backend threads were stopped !")
 
 
 thread_manager = ThreadManager()

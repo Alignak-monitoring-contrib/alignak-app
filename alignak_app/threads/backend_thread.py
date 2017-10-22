@@ -41,29 +41,29 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
 
     def __init__(self, thread):
         super(BackendQThread, self).__init__()
-        self.thread = thread
+        self.thread_name = thread
 
     def run(self):  # pragma: no cover
         """
-        Run the QThread. Trigger actions depending on the selected thread
+        Run the QThread. Trigger actions depending on the selected thread_name
 
         """
 
         self.quit_thread.connect(self.quit)
 
-        if 'user' in self.thread:
+        if 'user' in self.thread_name:
             app_backend.query_user_data()
-        elif 'host' in self.thread:
+        elif 'host' in self.thread_name:
             app_backend.query_hosts_data()
-        elif 'service' in self.thread:
+        elif 'service' in self.thread_name:
             app_backend.query_services_data()
-        elif 'alignakdaemon' in self.thread:
+        elif 'alignakdaemon' in self.thread_name:
             app_backend.query_daemons_data()
-        elif 'livesynthesis' in self.thread:
+        elif 'livesynthesis' in self.thread_name:
             app_backend.query_livesynthesis_data()
-        elif 'history' in self.thread:
+        elif 'history' in self.thread_name:
             app_backend.query_history_data()
-        elif 'notifications' in self.thread:
+        elif 'notifications' in self.thread_name:
             app_backend.query_notifications_data()
         else:
-            logger.error("Tasks is unknown: %s", self.thread)
+            logger.error("Tasks is unknown: %s", self.thread_name)

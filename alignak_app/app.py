@@ -120,8 +120,8 @@ class AlignakApp(QObject):
         logger.error('... caused by %s', error)
         timer = QTimer(self)
 
-        # Stop thread manager
-        thread_manager.stop()
+        # Stop thread_name manager
+        thread_manager.stop_threads()
 
         def connect_to_backend():
             """Try to log in to Backend"""
@@ -156,10 +156,10 @@ class AlignakApp(QObject):
         # Check if connected
         if app_backend.connected:
             # Start ThreadManager
-            for i in range(1, 5):
+            for i in range(0, 5):
                 # Launch 'alignakdaemon', 'history', 'service', 'host', 'user' threads
-                thread_manager.create_tasks()
-            thread_manager.start()
+                thread_manager.launch_threads()
+
             self.reconnecting.connect(self.app_reconnecting_mode)
 
             # Give AlignakApp for AppBackend reconnecting mode
@@ -189,6 +189,8 @@ class AlignakApp(QObject):
                     while time.time() < t + 0.01:
                         self.parent().processEvents()
 
+            # Launch other threads and run TrayIcon()
+            thread_manager.start()
             self.tray_icon = TrayIcon(QIcon(get_image('icon')))
             self.tray_icon.build_menu()
             self.tray_icon.show()

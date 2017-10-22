@@ -154,7 +154,7 @@ class TrayIcon(QSystemTrayIcon):
 
         """
 
-        thread_manager.stop()
+        thread_manager.stop_threads()
 
         sys.exit(0)
 
