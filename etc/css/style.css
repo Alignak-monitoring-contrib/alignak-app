@@ -290,6 +290,10 @@ QCheckBox#host_notifications_enabled::indicator::unchecked, QCheckBox#service_no
     background-color: white;
 }
 
+QTimeEdit, QDateTimeEdit {
+    background-color: #f0f9fd;
+}
+
 /****** USER *******/
 QLabel#userTrue {
     color: #4caf50;

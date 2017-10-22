@@ -80,13 +80,14 @@ class AckQDialog(QDialog):
         ack_layout = QGridLayout(ack_widget)
 
         ack_title = QLabel(_('Request an acknowledge'))
+        ack_title.setObjectName('title')
         ack_layout.addWidget(ack_title, 0, 0, 1, 2)
 
-        host_label = QLabel('%s: %s' % (item_type.capitalize(), item_name))
+        host_label = QLabel('<b>%s:</b> %s' % (item_type.capitalize(), item_name))
         ack_layout.addWidget(host_label, 1, 0, 1, 1)
 
         sticky_label = QLabel(_('Acknowledge is sticky:'))
-        sticky_label.setObjectName('actions')
+        sticky_label.setObjectName('subtitle')
         ack_layout.addWidget(sticky_label, 2, 0, 1, 1)
 
         sticky_checkbox = QCheckBox()
@@ -105,7 +106,7 @@ class AckQDialog(QDialog):
         ack_layout.addWidget(sticky_info, 3, 0, 1, 2)
 
         notify_label = QLabel(_('Acknowledge notifies:'))
-        notify_label.setObjectName('actions')
+        notify_label.setObjectName('subtitle')
         ack_layout.addWidget(notify_label, 4, 0, 1, 1)
 
         notify_checkbox = QCheckBox()
@@ -121,7 +122,7 @@ class AckQDialog(QDialog):
         ack_layout.addWidget(notify_info, 5, 0, 1, 2)
 
         ack_comment = QLabel(_('Acknowledge comment:'))
-        ack_comment.setObjectName('actions')
+        ack_comment.setObjectName('subtitle')
         ack_layout.addWidget(ack_comment, 6, 0, 1, 1)
 
         self.ack_comment_edit = QTextEdit()
@@ -200,14 +201,15 @@ class DownQDialog(QDialog):
         downtime_widget.setObjectName('dialog')
         downtime_layout = QGridLayout(downtime_widget)
 
-        ack_title = QLabel(_('Request a downtime'))
-        downtime_layout.addWidget(ack_title, 0, 0, 1, 3)
+        downtime_title = QLabel(_('Request a downtime'))
+        downtime_title.setObjectName('title')
+        downtime_layout.addWidget(downtime_title, 0, 0, 1, 3)
 
-        host_label = QLabel('%s: %s' % (item_type.capitalize(), item_name))
+        host_label = QLabel('<b>%s:</b> %s' % (item_type.capitalize(), item_name))
         downtime_layout.addWidget(host_label, 1, 0, 1, 1)
 
         options_label = QLabel(_('Downtime options:'))
-        options_label.setObjectName('actions')
+        options_label.setObjectName('subtitle')
         downtime_layout.addWidget(options_label, 2, 0, 1, 1)
 
         fixed_checkbox = QCheckBox()
@@ -230,7 +232,7 @@ class DownQDialog(QDialog):
         downtime_layout.addWidget(fixed_info, 3, 0, 1, 3)
 
         duration_label = QLabel(_('Duration'))
-        duration_label.setObjectName('actions')
+        duration_label.setObjectName('subtitle')
         downtime_layout.addWidget(duration_label, 4, 0, 1, 1)
 
         duration_clock = QLabel()
@@ -249,7 +251,7 @@ class DownQDialog(QDialog):
         downtime_layout.addWidget(duration_info, 5, 0, 1, 3)
 
         date_range_label = QLabel(_('Downtime date range'))
-        date_range_label.setObjectName('actions')
+        date_range_label.setObjectName('subtitle')
         downtime_layout.addWidget(date_range_label, 6, 0, 1, 1)
 
         calendar_label = QLabel()
