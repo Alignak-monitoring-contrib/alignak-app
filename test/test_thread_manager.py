@@ -22,6 +22,7 @@
 import unittest2
 
 from alignak_app.threads.thread_manager import ThreadManager
+from alignak_app.threads.backend_thread import BackendQThread
 
 from alignak_app.core.config import init_config
 from alignak_app.core.locales import init_localization
@@ -46,6 +47,30 @@ class TestThreadManager(unittest2.TestCase):
         self.assertIsNotNone(under_test.timer)
         self.assertIsInstance(under_test.timer, QTimer)
         self.assertEqual(
-            ['notifications', 'livesynthesis', 'alignakdaemon', 'history', 'service', 'host', 'user'],
+            ['notifications', 'history', 'livesynthesis', 'alignakdaemon', 'service', 'host', 'user'],
             under_test.threads_to_launch
         )
+
+    def test_get_threads_to_launch(self):
+        """Get QThreads to Launch"""
+
+        thread_mgr_test = ThreadManager()
+
+        under_test = thread_mgr_test.get_threads_to_launch()
+
+        # If there is no current thread, all threads are added
+        self.assertEqual([], thread_mgr_test.current_threads)
+        self.assertEqual(
+            ['notifications', 'history', 'livesynthesis', 'alignakdaemon', 'service', 'host', 'user'],
+            under_test
+        )
+
+        thread_mgr_test.current_threads = [BackendQThread('user'), BackendQThread('host')]
+
+        under_test = thread_mgr_test.get_threads_to_launch()
+
+        # If there is current thread, ThreadManager add only threads who are necessary
+        self.assertNotEqual([], thread_mgr_test.current_threads)
+        self.assertTrue('user' not in under_test)
+        self.assertTrue('host' not in under_test)
+
