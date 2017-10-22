@@ -232,7 +232,7 @@ class DataManager(object):
         """
 
         events = self.database['notifications']
-        logger.debug('%s founded: ', str(events))
+        logger.debug('Notifications found: %s', str(events))
 
         notifications_to_send = []
         for event in events:
