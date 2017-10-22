@@ -23,7 +23,7 @@
     Events QWidgets manage creation of events
 """
 
-from alignak_app.core.config import app_css
+from alignak_app.core.config import app_css, get_app_config
 from alignak_app.core.data_manager import data_manager
 
 from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget  # pylint: disable=no-name-in-module
@@ -58,8 +58,8 @@ class EventItem(QListWidgetItem):
 
     def close_item(self):
         """
+        Hide items when timer is finished
 
-        :return:
         """
 
         self.setHidden(True)
@@ -81,7 +81,7 @@ class EventItem(QListWidgetItem):
             '#e67e22': ['WARNING', 'UNREACHABLE', 'WARN'],
             '#e74c3c': ['DOWN', 'CRITICAL', 'ALERT'],
             '#f39c12': ['ACK'],
-            '#f1c40f': ['DOWN']
+            '#f1c40f': ['DOWNTIME']
         }
 
         for key, _ in available_colors.items():
@@ -162,8 +162,9 @@ class EventsQListWidget(QWidget):
 
         self.events_list.addItem(event)
         if timer:
+            event_duration = int(get_app_config('Alignak-app', 'notification_duration')) * 1000
             QTimer.singleShot(
-                10000,
+                event_duration,
                 lambda: self.remove_timer_event(event)
             )
 
