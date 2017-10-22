@@ -40,7 +40,7 @@ class StatusQWidget(QWidget):
 
     def __init__(self):
         super(StatusQWidget, self).__init__()
-        self.setObjectName('livestate')
+        self.setObjectName('bordered')
         self.setStyleSheet(app_css)
         # Fields
         self.daemons_status = QLabel('pending...')
@@ -61,11 +61,13 @@ class StatusQWidget(QWidget):
 
         # Daemons
         daemons_title = QLabel(_('Status:'))
-        daemons_title.setObjectName('livestatetitle')
+        daemons_title.setObjectName('borderedtitle')
         layout.addWidget(daemons_title)
         layout.setAlignment(daemons_title, Qt.AlignCenter)
+
         self.daemons_status.setFixedSize(16, 16)
         self.daemons_status.setScaledContents(True)
+        self.daemons_status.setObjectName('borderedtitle')
         layout.addWidget(self.daemons_status)
         layout.setAlignment(self.daemons_status, Qt.AlignCenter)
 
@@ -80,16 +82,17 @@ class StatusQWidget(QWidget):
 
         # Backend state
         connected_title = QLabel(_('Backend:'))
-        connected_title.setObjectName('livestatetitle')
+        connected_title.setObjectName('borderedtitle')
         layout.addWidget(connected_title)
         layout.setAlignment(connected_title, Qt.AlignCenter)
 
         self.backend_connected.setFixedSize(16, 16)
         self.backend_connected.setScaledContents(True)
+        self.backend_connected.setObjectName('borderedtitle')
         layout.addWidget(self.backend_connected)
         layout.setAlignment(self.backend_connected, Qt.AlignCenter)
 
-        self.timer.setInterval(15000)
+        self.timer.setInterval(15000)  # TODO make it customizable
         self.timer.start()
         self.timer.timeout.connect(self.update_status)
 

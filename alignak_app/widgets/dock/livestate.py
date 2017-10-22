@@ -28,7 +28,7 @@ from alignak_app.core.data_manager import data_manager
 from alignak_app.widgets.common.labels import get_icon_item
 
 from PyQt5.Qt import QWidget, QVBoxLayout, QHBoxLayout, Qt  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QLabel, QTimer  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QLabel, QTimer, QStyleOption, QPainter, QStyle  # pylint: disable=no-name-in-module
 
 
 class LivestateQWidget(QWidget):
@@ -39,6 +39,7 @@ class LivestateQWidget(QWidget):
     def __init__(self):
         super(LivestateQWidget, self).__init__()
         self.setStyleSheet(app_css)
+        self.setObjectName('bordered')
         # Fields
         self.labels = {
             'host': None,
@@ -85,7 +86,7 @@ class LivestateQWidget(QWidget):
         layout = QVBoxLayout()
         widget = QWidget()
         widget.setLayout(layout)
-        widget.setObjectName('livestate')
+        widget.setObjectName('bordered')
 
         problem_label = QLabel('%d' % problem_nb)
         problem_label.setObjectName('ko')
@@ -100,7 +101,7 @@ class LivestateQWidget(QWidget):
         icon_label = QLabel()
         icon_label.setFixedSize(64, 64)
         icon_label.setScaledContents(True)
-        icon_label.setObjectName('livestate')
+        icon_label.setObjectName('borderedtitle')
         layout.addWidget(icon_label)
         layout.setAlignment(icon_label, Qt.AlignCenter)
 
@@ -140,3 +141,11 @@ class LivestateQWidget(QWidget):
             self.labels[item_type]['total'].setText(
                 '%s' % str(items_and_problems[item_type]['total'])
             )
+
+    def paintEvent(self, _):
+        """Override to paint background"""
+
+        opt = QStyleOption()
+        opt.initFrom(self)
+        painter = QPainter(self)
+        self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)

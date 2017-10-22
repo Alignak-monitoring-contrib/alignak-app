@@ -22,10 +22,20 @@ QWidget {
 }
 
 QWidget#dialog {
-	border-width: 0px 2px 2px 2px;
+    border-width: 0px 2px 2px 2px;
     border-color: #475c67;
     border-style: solid;
     background-color: white;
+}
+
+QWidget#bordered {
+    background-color: #f5f5f5;
+    border-radius: 3px;
+}
+
+QLabel#borderedtitle {
+    background-color: #f5f5f5;
+    font-weight: bold;
 }
 
 QScrollBar {
@@ -135,16 +145,16 @@ QLabel#ko {
 }
 
 QLabel#total {
-    background-color: #ccc;
-    color: #607d8b;
+    background-color: #3b4155;
+    color: #fff;
     padding: 0px 10px 0px 10px;
     border-radius: 3px;
 }
 
 QFrame#separator {
     border-width: 0px 0px 1px 0px;
-	border-color: #6c9cb3;
-	border-style: solid;
+    border-color: #6c9cb3;
+    border-style: solid;
 }
 
 QListWidget {
@@ -159,20 +169,6 @@ QListWidget::item:selected {
     border-radius: 3px;
 }
 
-QWidget#livestate {
-    background-color: #f5f5f5;
-    border-width: 1px;
-    border-radius: 5px;
-}
-
-QLabel#livestatetitle {
-    background-color: #f5f5f5;
-    font-weight: bold;
-}
-
-QLabel#livestate {
-    background-color: #f5f5f5;
-}
 
 /****** PANEL ******/
 QPushButton#search {
