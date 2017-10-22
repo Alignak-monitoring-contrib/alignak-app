@@ -92,7 +92,7 @@ class StatusQWidget(QWidget):
         layout.addWidget(self.backend_connected)
         layout.setAlignment(self.backend_connected, Qt.AlignCenter)
 
-        self.timer.setInterval(15000)  # TODO make it customizable
+        self.timer.setInterval(15000)
         self.timer.start()
         self.timer.timeout.connect(self.update_status)
 
