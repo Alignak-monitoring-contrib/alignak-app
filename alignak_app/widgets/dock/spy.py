@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Spy QWidgets manage creation of events
+    Spy QWidgets manage host items who are spied
 """
 
 from PyQt5.Qt import QLabel, QVBoxLayout, Qt  # pylint: disable=no-name-in-module
@@ -47,16 +47,16 @@ class SpyQListWidget(QWidget):
         layout = QVBoxLayout()
         self.setLayout(layout)
 
-        event_title = QLabel("Spied hosts... Coming soon !")
-        layout.addWidget(event_title)
-        layout.setAlignment(event_title, Qt.AlignCenter)
-
-        self.spied_list.setDragDropMode(QAbstractItemView.InternalMove)
+        self.spied_list.setDragDropMode(QAbstractItemView.DragDrop)
         self.spied_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.spied_list.doubleClicked.connect(self.remove_event)
         self.spied_list.setAcceptDrops(True)
-        self.spied_list.setSortingEnabled(True)
         self.spied_list.setWordWrap(True)
+
+        drop_hint_item = EventItem()
+        drop_hint_item.setText("Drop Events here...")
+        drop_hint_item.setFlags(Qt.ItemIsDropEnabled)
+        self.spied_list.insertItem(0, drop_hint_item)
 
         layout.addWidget(self.spied_list)
 

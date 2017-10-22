@@ -39,6 +39,7 @@ class EventItem(QListWidgetItem):
     def __init__(self):
         super(EventItem, self).__init__()
         self.timer = None
+        self.spied_on = False
 
     def initialize(self, event_type, msg, timer=False):
         """
@@ -118,10 +119,9 @@ class EventsQListWidget(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
 
-        self.events_list.setDragDropMode(QAbstractItemView.InternalMove)
+        self.events_list.setDragDropMode(QAbstractItemView.DragOnly)
         self.events_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.events_list.doubleClicked.connect(self.remove_event)
-        self.events_list.setAcceptDrops(True)
         self.events_list.setWordWrap(True)
 
         self.add_event(

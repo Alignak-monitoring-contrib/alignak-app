@@ -91,6 +91,12 @@ class DockQWidget(QWidget):
         layout.addWidget(get_frame_separator())
         layout.addWidget(events_widget)
 
+        # Spieds hosts
+        spy_title = QLabel(_('Spied Hosts'))
+        spy_title.setObjectName('title')
+        layout.addWidget(spy_title)
+        layout.setAlignment(spy_title, Qt.AlignCenter)
+        layout.addWidget(get_frame_separator())
         self.spy_widget.initialize()
         layout.addWidget(self.spy_widget)
 
