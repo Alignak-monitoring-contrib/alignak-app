@@ -25,8 +25,8 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QLabel, QWidget, QIcon, Qt, QPushButton  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPixmap, QVBoxLayout, QGridLayout, QTimer  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QLabel, QWidget, QIcon, Qt, QPushButton
+from PyQt5.Qt import QPixmap, QVBoxLayout, QGridLayout, QTimer
 
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager

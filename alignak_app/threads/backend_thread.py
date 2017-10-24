@@ -25,9 +25,9 @@
 
 from logging import getLogger
 
-from alignak_app.core.backend import app_backend
+from PyQt5.Qt import QThread, pyqtSignal
 
-from PyQt5.Qt import QThread, pyqtSignal  # pylint: disable=no-name-in-module
+from alignak_app.core.backend import app_backend
 
 logger = getLogger(__name__)
 

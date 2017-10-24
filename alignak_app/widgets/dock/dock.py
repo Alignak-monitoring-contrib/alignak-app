@@ -25,8 +25,7 @@
 
 import sys
 
-from PyQt5.Qt import QApplication, QWidget, QGridLayout, QIcon  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QListWidget, QLabel, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QApplication, QWidget, QGridLayout, QIcon, QListWidget, QLabel, Qt
 
 from alignak_app.core.config import app_css, get_image
 from alignak_app.widgets.dock.buttons import ButtonsQWidget

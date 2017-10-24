@@ -25,9 +25,8 @@
 
 from alignak_app.core.config import get_image, app_css
 
-from PyQt5.Qt import QPushButton, QHBoxLayout, QApplication  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QWidget, QIcon, QLabel, QPixmap  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QStyleOption, QStyle, QPainter  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QPushButton, QHBoxLayout, QApplication, QWidget, QIcon, QLabel, QPixmap
+from PyQt5.Qt import QStyleOption, QStyle, QPainter
 
 
 class LogoQWidget(QWidget):

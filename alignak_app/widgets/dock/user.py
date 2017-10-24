@@ -25,6 +25,8 @@
 
 from logging import getLogger
 
+from PyQt5.Qt import QGridLayout, QVBoxLayout, QIcon, Qt, QLabel, QWidget, QPushButton, QCheckBox
+
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.config import get_image, app_css
@@ -35,10 +37,6 @@ from alignak_app.widgets.dialogs.user_options import show_options_dialog
 from alignak_app.widgets.dialogs.token import TokenQDialog
 from alignak_app.widgets.dialogs.password import PasswordQDialog
 from alignak_app.widgets.dialogs.user_notes import UserNotesQDialog
-
-from PyQt5.Qt import QGridLayout, QVBoxLayout  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QIcon, Qt, QLabel, QWidget  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPushButton, QCheckBox  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 

@@ -26,7 +26,7 @@
 import sys
 from logging import getLogger
 
-from PyQt5.Qt import QMenu, QSystemTrayIcon  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QMenu, QSystemTrayIcon
 
 from alignak_app.core.config import init_config
 from alignak_app.systray.qactions_factory import QActionFactory

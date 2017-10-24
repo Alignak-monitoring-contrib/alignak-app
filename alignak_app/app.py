@@ -27,6 +27,9 @@ import sys
 import time
 from logging import DEBUG, INFO
 
+from PyQt5.Qt import QPixmap, QTimer, QProgressBar, Qt, pyqtSignal, QObject, QIcon
+from PyQt5.Qt import QDialog, QMessageBox, QSplashScreen
+
 from alignak_app.core.backend import app_backend
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.locales import init_localization
@@ -34,10 +37,6 @@ from alignak_app.core.logs import create_logger
 from alignak_app.core.config import get_image, get_main_folder, get_app_workdir
 from alignak_app.core.config import init_config, get_app_config, init_css
 from alignak_app.threads.thread_manager import thread_manager
-
-from PyQt5.Qt import QPixmap, QTimer, QProgressBar, Qt  # pylint: disable=no-name-in-module
-from PyQt5.Qt import pyqtSignal, QObject, QIcon  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QDialog, QMessageBox, QSplashScreen  # pylint: disable=no-name-in-module
 
 # Init App settings before importing QWidgets
 logger = create_logger()

@@ -20,12 +20,11 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    ResumeStatus QWidget display alignak daemons and backend status
+    Status QWidget display alignak daemons and backend status
 """
 
-from PyQt5.Qt import QLabel, QPushButton, QIcon, QStyleOption  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPainter, QStyle  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QWidget, QHBoxLayout, QTimer, QPixmap, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QLabel, QPushButton, QIcon, QStyleOption, QPainter, QStyle
+from PyQt5.Qt import QWidget, QHBoxLayout, QTimer, QPixmap, Qt
 
 from alignak_app.core.backend import app_backend
 from alignak_app.core.items.daemon import Daemon

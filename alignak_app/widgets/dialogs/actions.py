@@ -26,10 +26,8 @@
 import datetime
 from logging import getLogger
 
-from PyQt5.Qt import QDialog, QWidget, QTime, QVBoxLayout, Qt  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QGridLayout, QTimeEdit, QDateTimeEdit  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPixmap, QCheckBox  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QPushButton, QLabel, QTextEdit, QIcon  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QDialog, QWidget, QTime, QVBoxLayout, Qt, QGridLayout, QTimeEdit, QDateTimeEdit
+from PyQt5.Qt import QPixmap, QCheckBox, QPushButton, QLabel, QTextEdit, QIcon
 
 from alignak_app.core.config import get_image, app_css
 from alignak_app.widgets.common.widgets import get_logo_widget, center_widget

@@ -23,13 +23,12 @@
     Livestate QWidget manage resume of hosts, services and problems
 """
 
+from PyQt5.Qt import QWidget, QVBoxLayout, QHBoxLayout, Qt, QStyleOption, QPainter, QStyle
+from PyQt5.Qt import QLabel, QTimer
+
 from alignak_app.core.config import app_css
 from alignak_app.core.data_manager import data_manager
 from alignak_app.widgets.common.labels import get_icon_item
-
-from PyQt5.Qt import QWidget, QVBoxLayout, QHBoxLayout, Qt  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QLabel, QTimer  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QStyleOption, QPainter, QStyle  # pylint: disable=no-name-in-module
 
 
 class LivestateQWidget(QWidget):

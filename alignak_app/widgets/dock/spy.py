@@ -23,8 +23,7 @@
     Spy QWidgets manage host items who are spied
 """
 
-from PyQt5.Qt import QVBoxLayout, Qt  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QVBoxLayout, Qt, QWidget, QAbstractItemView, QListWidget
 
 from alignak_app.widgets.dock.events import EventItem
 

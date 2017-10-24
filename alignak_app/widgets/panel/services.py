@@ -25,8 +25,7 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QTreeWidget, QTreeWidgetItem  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QWidget, QIcon, QGridLayout, QSize  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QTreeWidget, QTreeWidgetItem, QWidget, QIcon, QGridLayout, QSize
 
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.config import get_image, app_css

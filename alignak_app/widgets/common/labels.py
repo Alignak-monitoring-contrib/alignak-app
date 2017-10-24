@@ -23,9 +23,9 @@
     Common QLabel manage creation of QLabels or QPixmaps
 """
 
-from alignak_app.core.config import get_image
+from PyQt5.Qt import QPixmap
 
-from PyQt5.Qt import QPixmap  # pylint: disable=no-name-in-module
+from alignak_app.core.config import get_image
 
 
 def get_icon_item(item_type, problem_nb):

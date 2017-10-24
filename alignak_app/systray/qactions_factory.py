@@ -25,11 +25,9 @@
 
 from logging import getLogger
 
+from PyQt5.Qt import QAction, QIcon
+
 from alignak_app.core.config import get_image
-
-from PyQt5.QtWidgets import QAction  # pylint: disable=no-name-in-module
-from PyQt5.QtGui import QIcon  # pylint: disable=no-name-in-module
-
 
 logger = getLogger(__name__)
 

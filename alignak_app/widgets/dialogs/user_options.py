@@ -25,12 +25,11 @@
 
 from logging import getLogger
 
+from PyQt5.Qt import QGridLayout, QLabel, QWidget, Qt, QDialog, QVBoxLayout, QPushButton, QIcon
+
 from alignak_app.core.config import app_css, get_image
 from alignak_app.widgets.common.labels import get_enable_label_icon
 from alignak_app.widgets.common.widgets import get_logo_widget, center_widget
-
-from PyQt5.Qt import QGridLayout, QLabel, QWidget, Qt, QDialog  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QVBoxLayout, QPushButton, QIcon  # pylint: disable=no-name-in-module
 
 logger = getLogger(__name__)
 
