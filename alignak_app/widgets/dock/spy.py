@@ -31,7 +31,7 @@ from alignak_app.widgets.dock.events import EventItem
 
 class SpyQListWidget(QListWidget):
     """
-        TODO
+        Class who create QListWidget for spied hosts
     """
 
     def __init__(self):
@@ -40,15 +40,14 @@ class SpyQListWidget(QListWidget):
 
     def dragMoveEvent(self, event):
         """
-        TODO
-        :param event:
-        :return:
+        Override dragMoveEvent to only accept EventItem() objects who are "spied_on"
+
+        :param event: event triggered when something move
         """
 
         if isinstance(event.source().currentItem(), EventItem):
             item = event.source().currentItem()
             if item.spied_on:
-                print('Can be spied')
                 event.accept()
             else:
                 event.ignore()
@@ -57,17 +56,16 @@ class SpyQListWidget(QListWidget):
 
     def dropEvent(self, event):
         """
-        TODO
-        :param event:
-        :return:
+        Override dropEvent to get dropped item
+
+        :param event: event triggered when something is dropped
         """
 
         item = event.source().currentItem()
+
         if item.spied_on:
             self.spied_hosts.append(item)
-            print(item.data)
-        else:
-            item.setHidden(True)
+
         super(SpyQListWidget, self).dropEvent(event)
 
 
