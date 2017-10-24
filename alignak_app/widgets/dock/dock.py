@@ -32,7 +32,7 @@ from alignak_app.core.config import app_css, get_image
 from alignak_app.widgets.dock.buttons import ButtonsQWidget
 from alignak_app.widgets.dock.events import events_widget
 from alignak_app.widgets.dock.livestate import LivestateQWidget
-from alignak_app.widgets.dock.spy import SpyQListWidget
+from alignak_app.widgets.dock.spy import SpyQWidget
 from alignak_app.widgets.dock.status import StatusQWidget
 from alignak_app.widgets.common.frames import AppQFrame, get_frame_separator
 
@@ -52,7 +52,7 @@ class DockQWidget(QWidget):
         self.buttons_widget = ButtonsQWidget()
         self.livestate_widget = LivestateQWidget()
         self.spy_widgetlist = QListWidget()
-        self.spy_widget = SpyQListWidget()
+        self.spy_widget = SpyQWidget()
 
     def initialize(self):
         """

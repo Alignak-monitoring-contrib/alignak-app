@@ -40,12 +40,26 @@ class EventItem(QListWidgetItem):
         super(EventItem, self).__init__()
         self.timer = None
         self.spied_on = False
+        self.data = None
 
-    def initialize(self, event_type, msg, timer=False):
+    # pylint: disable=too-many-arguments
+    def initialize(self, event_type, msg, timer=False, spied_on=False, data=None):
         """
         Initialize QListWidgetItem
 
+        :param event_type: the type of event: OK, DOWN, ACK, ...
+        :type event_type: str
+        :param msg: message of event
+        :type msg: str
+        :param timer: timer to hide event at end of time
+        :param spied_on: make event spy able
+        :type spied_on: bool
+        :param data: data of host. Only necessary if "be_spied" is True
+        :type data: dict
         """
+
+        self.spied_on = spied_on
+        self.data = data
 
         if timer:
             self.timer = QTimer()
@@ -92,13 +106,13 @@ class EventItem(QListWidgetItem):
         return ''
 
 
-class EventsQListWidget(QWidget):
+class EventsQWidget(QWidget):
     """
         Class who create QWidget for events
     """
 
     def __init__(self):
-        super(EventsQListWidget, self).__init__()
+        super(EventsQWidget, self).__init__()
         self.setStyleSheet(app_css)
         self.setObjectName('events')
         # Fields
@@ -132,6 +146,20 @@ class EventsQListWidget(QWidget):
         )
 
         layout.addWidget(self.events_list)
+        self.test_host_event()
+
+    def test_host_event(self):
+        """
+        TODO: FOR TEST
+        :return:
+        """
+
+        event = EventItem()
+        event.initialize('DOWN', 'Tests for Spied Hosts')
+        event.spied_on = True
+        event.data = {'host': '_id'}
+
+        self.events_list.addItem(event)
 
     def send_datamanager_events(self):
         """
@@ -145,20 +173,24 @@ class EventsQListWidget(QWidget):
             for event in events:
                 self.add_event(event['event_type'], event['message'])
 
-    def add_event(self, event_type, msg, timer=False):
+    # pylint: disable=too-many-arguments
+    def add_event(self, event_type, msg, timer=False, spied_on=False, data=None):
         """
         Add event to events list
 
-        :param event_type: type of event
+        :param event_type: the type of event: OK, DOWN, ACK, ...
         :type event_type: str
-        :param msg: event content to display
+        :param msg: message of event
         :type msg: str
-        :param timer: set if event is temporary or not
-        :type timer: bool
+        :param timer: timer to hide event at end of time
+        :param spied_on: make event spy able
+        :type spied_on: bool
+        :param data: data of host. Only necessary if "be_spied" is True
+        :type data: dict
         """
 
         event = EventItem()
-        event.initialize(event_type, msg, timer=timer)
+        event.initialize(event_type, msg, timer=timer, spied_on=spied_on, data=data)
 
         self.events_list.addItem(event)
         if timer:
@@ -187,11 +219,11 @@ class EventsQListWidget(QWidget):
         self.events_list.takeItem(self.events_list.currentRow())
 
 
-events_widget = EventsQListWidget()
+events_widget = EventsQWidget()
 events_widget.initialize()
 
 
-def send_event(event_type, msg, timer=False):
+def send_event(event_type, msg, timer=False, spied_on=False, data=None):
     """
     Access function to simplify code in rest of application
 
@@ -203,10 +235,13 @@ def send_event(event_type, msg, timer=False):
     - 'aknowledge': ['ACK']
     - 'downtime': ['DOWNTIME']
     :type event_type: str
-    :param msg: event content to display
+    :param msg: message of event
     :type msg: str
-    :param timer: define if event is temporary or not
-    :type timer: bool
+    :param timer: timer to hide event at end of time
+    :param spied_on: make event spy able
+    :type spied_on: bool
+    :param data: data of host. Only necessary if "be_spied" is True
+    :type data: dict
     """
 
-    events_widget.add_event(event_type, msg, timer)
+    events_widget.add_event(event_type, msg, timer=timer, spied_on=spied_on, data=data)

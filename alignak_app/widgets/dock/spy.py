@@ -23,20 +23,62 @@
     Spy QWidgets manage host items who are spied
 """
 
-from PyQt5.Qt import QLabel, QVBoxLayout, Qt  # pylint: disable=no-name-in-module
+from PyQt5.Qt import QVBoxLayout, Qt  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget  # pylint: disable=no-name-in-module
 
 from alignak_app.widgets.dock.events import EventItem
 
 
-class SpyQListWidget(QWidget):
+class SpyQListWidget(QListWidget):
+    """
+        TODO
+    """
+
+    def __init__(self):
+        super(SpyQListWidget, self).__init__()
+        self.spied_hosts = []
+
+    def dragMoveEvent(self, event):
+        """
+        TODO
+        :param event:
+        :return:
+        """
+
+        if isinstance(event.source().currentItem(), EventItem):
+            item = event.source().currentItem()
+            if item.spied_on:
+                print('Can be spied')
+                event.accept()
+            else:
+                event.ignore()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        """
+        TODO
+        :param event:
+        :return:
+        """
+
+        item = event.source().currentItem()
+        if item.spied_on:
+            self.spied_hosts.append(item)
+            print(item.data)
+        else:
+            item.setHidden(True)
+        super(SpyQListWidget, self).dropEvent(event)
+
+
+class SpyQWidget(QWidget):
     """
         Class who create QWidget for spied hosts
     """
 
     def __init__(self):
-        super(SpyQListWidget, self).__init__()
-        self.spied_list = QListWidget()
+        super(SpyQWidget, self).__init__()
+        self.spied_list = SpyQListWidget()
 
     def initialize(self):
         """
@@ -59,20 +101,6 @@ class SpyQListWidget(QWidget):
         self.spied_list.insertItem(0, drop_hint_item)
 
         layout.addWidget(self.spied_list)
-
-    def add_event(self, event_type, msg):
-        """
-        Add event to events list
-
-        :param event_type: type of event
-        :param msg:
-        :return:
-        """
-
-        event = EventItem()
-        event.initialize(event_type, msg)
-
-        self.spied_list.addItem(event)
 
     def remove_event(self):
         """
