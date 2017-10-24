@@ -30,6 +30,7 @@ from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.history import History
 from alignak_app.core.config import app_css, get_image
 from alignak_app.widgets.common.frames import AppQFrame, get_frame_separator
+from alignak_app.widgets.common.widgets import center_widget
 
 from PyQt5.Qt import QWidget, QScrollArea, QLabel  # pylint: disable=no-name-in-module
 from PyQt5.Qt import QPixmap, Qt, QGridLayout  # pylint: disable=no-name-in-module
@@ -89,6 +90,8 @@ class HistoryQWidget(QWidget):
             layout.addWidget(get_frame_separator(), line + 1, 0, 1, 2)
 
             line += 3
+
+        center_widget(self.app_widget)
 
     @staticmethod
     def get_history_widget_model(event, hostname):
