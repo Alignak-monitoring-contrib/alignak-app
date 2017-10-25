@@ -39,10 +39,10 @@ class EventItem(QListWidgetItem):
         super(EventItem, self).__init__()
         self.timer = None
         self.spied_on = False
-        self.data = None
+        self.host = None
 
     # pylint: disable=too-many-arguments
-    def initialize(self, event_type, msg, timer=False, spied_on=False, data=None):
+    def initialize(self, event_type, msg, timer=False, spied_on=False, host=None):
         """
         Initialize QListWidgetItem
 
@@ -53,12 +53,12 @@ class EventItem(QListWidgetItem):
         :param timer: timer to hide event at end of time
         :param spied_on: make event spy able
         :type spied_on: bool
-        :param data: data of host. Only necessary if "be_spied" is True
-        :type data: dict
+        :param host: _id of host. Only necessary if "be_spied" is True
+        :type host: str
         """
 
         self.spied_on = spied_on
-        self.data = data
+        self.host = host
 
         if timer:
             self.timer = QTimer()
@@ -170,10 +170,16 @@ class EventsQWidget(QWidget):
 
         if events:
             for event in events:
-                self.add_event(event['event_type'], event['message'])
+                self.add_event(
+                    event['event_type'],
+                    event['message'],
+                    timer=False,
+                    spied_on=True,
+                    host=event['host']
+                )
 
     # pylint: disable=too-many-arguments
-    def add_event(self, event_type, msg, timer=False, spied_on=False, data=None):
+    def add_event(self, event_type, msg, timer=False, spied_on=False, host=None):
         """
         Add event to events list
 
@@ -184,12 +190,12 @@ class EventsQWidget(QWidget):
         :param timer: timer to hide event at end of time
         :param spied_on: make event spy able
         :type spied_on: bool
-        :param data: data of host. Only necessary if "be_spied" is True
-        :type data: dict
+        :param host: data of host. Only necessary if "be_spied" is True
+        :type host: str
         """
 
         event = EventItem()
-        event.initialize(event_type, msg, timer=timer, spied_on=spied_on, data=data)
+        event.initialize(event_type, msg, timer=timer, spied_on=spied_on, host=host)
 
         self.events_list.addItem(event)
         if timer:
@@ -222,7 +228,7 @@ events_widget = EventsQWidget()
 events_widget.initialize()
 
 
-def send_event(event_type, msg, timer=False, spied_on=False, data=None):
+def send_event(event_type, msg, timer=False, spied_on=False, host=None):
     """
     Access function to simplify code in rest of application
 
@@ -239,8 +245,8 @@ def send_event(event_type, msg, timer=False, spied_on=False, data=None):
     :param timer: timer to hide event at end of time
     :param spied_on: make event spy able
     :type spied_on: bool
-    :param data: data of host. Only necessary if "be_spied" is True
-    :type data: dict
+    :param host: _id of host. Only necessary if "be_spied" is True
+    :type host: str
     """
 
-    events_widget.add_event(event_type, msg, timer=timer, spied_on=spied_on, data=data)
+    events_widget.add_event(event_type, msg, timer=timer, spied_on=spied_on, host=host)

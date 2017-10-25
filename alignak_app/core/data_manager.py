@@ -268,7 +268,7 @@ class DataManager(object):
                     message = "%s [%s]: %s - %s" % (host, state, output, local_time)
 
                 notifications_to_send.append(
-                    {'event_type': state, 'message': message}
+                    {'event_type': state, 'message': message, 'host': event.data['host']}
                 )
 
                 self.old_notifications.append(event.item_id)

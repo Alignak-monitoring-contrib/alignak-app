@@ -47,7 +47,11 @@ class SpyQListWidget(QListWidget):
         if isinstance(event.source().currentItem(), EventItem):
             item = event.source().currentItem()
             if item.spied_on:
-                event.accept()
+                if item.host not in self.spied_hosts:
+                    self.spied_hosts.append(item.host)
+                    event.accept()
+                else:
+                    event.ignore()
             else:
                 event.ignore()
         else:

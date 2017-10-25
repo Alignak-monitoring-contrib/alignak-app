@@ -54,7 +54,7 @@ class Event(ItemModel):
         """
 
         notification_projection = {
-            'message', '_updated'
+            'message', '_updated', 'host'
         }
 
         # Backend use time format in "en_US", so switch if needed
