@@ -179,6 +179,18 @@ QPushButton#search {
     padding-left: 5px;
     padding-right: 5px;
 }
+QPushButton#search:disabled {
+    background-color: #ccc;
+}
+
+QPushButton#disabled {
+    background-color: #ccc;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
 
 QPushButton#search:hover {
     background-color: #03a9f4;

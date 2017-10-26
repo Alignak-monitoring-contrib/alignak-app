@@ -56,7 +56,7 @@ class PanelQWidget(QWidget):
         self.dashboard_widget = DashboardQWidget()
         self.host_widget = HostQWidget()
         self.services_widget = ServicesQWidget()
-        self.spy_button = QPushButton("Spy !")
+        self.spy_button = QPushButton(_("Spy Host"))
         self.spy_widget = None
 
     def initialize(self, dock_width, spy_widget):
@@ -151,6 +151,7 @@ class PanelQWidget(QWidget):
         if self.line_search.text() in self.hostnames_list:
             host = data_manager.get_item('host', 'name', self.line_search.text())
             self.spy_widget.spied_list_widget.host_spied.emit(host.item_id)
+            self.spy_button.setEnabled(False)
 
     def create_line_search(self, hostnames_list=None):
         """
@@ -193,6 +194,13 @@ class PanelQWidget(QWidget):
             hostnames_list = data_manager.get_all_hostnames()
             if hostnames_list != self.hostnames_list:
                 self.create_line_search(hostnames_list)
+
+            # Set spy button enable or not
+            is_spied = bool(
+                data_manager.get_item('host', 'name', self.line_search.text()).item_id not in
+                self.spy_widget.spied_list_widget.spied_hosts
+            )
+            self.spy_button.setEnabled(is_spied)
 
             # Update QWidgets
             self.dashboard_widget.update_dashboard()
