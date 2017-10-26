@@ -56,11 +56,17 @@ class PanelQWidget(QWidget):
         self.dashboard_widget = DashboardQWidget()
         self.host_widget = HostQWidget()
         self.services_widget = ServicesQWidget()
+        self.spy_button = QPushButton("Spy !")
+        self.spy_widget = None
 
-    def initialize(self, dock_width):
+    def initialize(self, dock_width, spy_widget):
         """
         Create the QWidget with its items and layout.
 
+        :param dock_width: width of dock, needed for PanelQWidget
+        :type dock_width: int
+        :param spy_widget: SpyQWidget to allow HostQWidget add spied host
+        :type spy_widget: alignak_app.widgets.dock.spy.SpyQWidget
         """
 
         logger.info('Create Panel View...')
@@ -99,6 +105,8 @@ class PanelQWidget(QWidget):
         self.host_widget.hide()
         self.services_widget.hide()
 
+        self.spy_widget = spy_widget
+
     def get_search_widget(self):
         """
         Create and return the search QWidget
@@ -124,9 +132,25 @@ class PanelQWidget(QWidget):
         self.line_search.cursorPositionChanged.connect(button.click)
         layout.addWidget(self.line_search)
 
+        self.spy_button.setIcon(QIcon(get_image('spy')))
+        self.spy_button.setObjectName('search')
+        self.spy_button.setFixedHeight(25)
+        self.spy_button.clicked.connect(self.spy_host)
+        layout.addWidget(self.spy_button)
+
         self.create_line_search()
 
         return widget
+
+    def spy_host(self):
+        """
+        Spy host who is available in line_search QLineEdit
+
+        """
+
+        if self.line_search.text() in self.hostnames_list:
+            host = data_manager.get_item('host', 'name', self.line_search.text())
+            self.spy_widget.spied_list_widget.host_spied.emit(host.item_id)
 
     def create_line_search(self, hostnames_list=None):
         """

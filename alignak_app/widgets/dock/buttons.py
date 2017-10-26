@@ -55,18 +55,20 @@ class ButtonsQWidget(QWidget):
         self.host_btn = QPushButton()
         self.dashboard_btn = QPushButton()
 
-    def initialize(self, dock_width):
+    def initialize(self, dock_width, spy_widget):
         """
         Initialize QWidget
 
         :param dock_width: width of dock, needed for PanelQWidget
         :type dock_width: int
+        :param spy_widget: SpyQWidget to allow HostQWidget add spied host
+        :type spy_widget: alignak_app.widgets.dock.spy.SpyQWidget
         """
 
         layout = QHBoxLayout()
         self.setLayout(layout)
 
-        self.panel_widget.initialize(dock_width)
+        self.panel_widget.initialize(dock_width, spy_widget)
         self.host_btn.setIcon(QIcon(get_image('host')))
         self.host_btn.setFixedSize(40, 40)
         self.host_btn.clicked.connect(self.open_host_widget)

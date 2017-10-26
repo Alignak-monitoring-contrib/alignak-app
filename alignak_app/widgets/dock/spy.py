@@ -35,14 +35,35 @@ class SpyQListWidget(QListWidget):
     """
 
     item_dropped = pyqtSignal(EventItem, name="remove_item")
+    host_spied = pyqtSignal(str, name="host_spied")
 
     def __init__(self):
         super(SpyQListWidget, self).__init__()
         self.spied_hosts = []
+        self.host_spied.connect(self.add_host_spied)
+
+    def add_host_spied(self, host_id):
+        """
+        Add a host to spied list.
+
+        :param host_id: "_id" of host to spy
+        :type host_id: str
+        """
+
+        self.spied_hosts.append(host_id)
+        host = data_manager.get_item('host', '_id', host_id)
+        item = EventItem()
+        item.initialize(
+            'INFO',
+            'Host %s is spied !' % host.name.capitalize()
+        )
+        item.host = host.item_id
+        self.addItem(item)
 
     def dragMoveEvent(self, event):
         """
-        Override dragMoveEvent to only accept EventItem() objects who are "spied_on"
+        Override dragMoveEvent.
+         Only accept EventItem() objects who are "spied_on" and not already spied
 
         :param event: event triggered when something move
         """
@@ -58,7 +79,8 @@ class SpyQListWidget(QListWidget):
 
     def dropEvent(self, event):
         """
-        Override dropEvent to get dropped item
+        Override dropEvent.
+         Get dropped item data, create a new one, and delete the one who is in EventsQWidget
 
         :param event: event triggered when something is dropped
         """
@@ -84,7 +106,7 @@ class SpyQWidget(QWidget):
 
     def __init__(self):
         super(SpyQWidget, self).__init__()
-        self.spied_list = SpyQListWidget()
+        self.spied_list_widget = SpyQListWidget()
 
     def initialize(self):
         """
@@ -95,18 +117,18 @@ class SpyQWidget(QWidget):
         layout = QVBoxLayout()
         self.setLayout(layout)
 
-        self.spied_list.setDragDropMode(QAbstractItemView.DragDrop)
-        self.spied_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.spied_list.doubleClicked.connect(self.remove_event)
-        self.spied_list.setAcceptDrops(True)
-        self.spied_list.setWordWrap(True)
+        self.spied_list_widget.setDragDropMode(QAbstractItemView.DragDrop)
+        self.spied_list_widget.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.spied_list_widget.doubleClicked.connect(self.remove_event)
+        self.spied_list_widget.setAcceptDrops(True)
+        self.spied_list_widget.setWordWrap(True)
 
         drop_hint_item = EventItem()
         drop_hint_item.setText("Drop Events here...")
         drop_hint_item.setFlags(Qt.ItemIsDropEnabled)
-        self.spied_list.insertItem(0, drop_hint_item)
+        self.spied_list_widget.insertItem(0, drop_hint_item)
 
-        layout.addWidget(self.spied_list)
+        layout.addWidget(self.spied_list_widget)
 
     def remove_event(self):
         """
@@ -114,4 +136,4 @@ class SpyQWidget(QWidget):
 
         """
 
-        self.spied_list.takeItem(self.spied_list.currentRow())
+        self.spied_list_widget.takeItem(self.spied_list_widget.currentRow())

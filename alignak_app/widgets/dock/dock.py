@@ -99,7 +99,7 @@ class DockQWidget(QWidget):
         self.spy_widget.initialize()
         layout.addWidget(self.spy_widget)
 
-        self.spy_widget.spied_list.item_dropped.connect(events_widget.remove_event)
+        self.spy_widget.spied_list_widget.item_dropped.connect(events_widget.remove_event)
 
         self.set_size_and_position()
 
@@ -127,7 +127,7 @@ class DockQWidget(QWidget):
         self.app_widget.move(pos_x, 0)
 
         # Give width for PanelQWidget
-        self.buttons_widget.initialize(self.app_widget.width())
+        self.buttons_widget.initialize(self.app_widget.width(), self.spy_widget)
 
     def show_dock(self):
         """
