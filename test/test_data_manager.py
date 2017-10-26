@@ -108,19 +108,22 @@ class TestDataManager(unittest2.TestCase):
             '_created': 'Thu, 12 Oct 2017 13:27:02 GMT', '_id': '59df6da635d17b0277ddaaed',
             '_updated': 'Thu, 12 Oct 2017 13:27:02 GMT',
             '_etag': '70a7fd01040ce20cd84d4059849b548d493e9703',
-            'message': 'HOST NOTIFICATION: imported_admin;charnay;DOWN;notify-host-by-email;Alarm timeout'
+            'message': 'HOST NOTIFICATION: imported_admin;charnay;DOWN;notify-host-by-email;Alarm timeout',
+            'host': 'host1'
         },
         {
             '_created': 'Thu, 12 Oct 2017 13:27:02 GMT', '_id': '59df6da635d1j5k77dd3aed',
             '_updated': 'Thu, 12 Oct 2017 13:27:02 GMT',
             '_etag': '70a7fd01040ce20c4df459t65g9b548d493e9703',
-            'message': 'HOST NOTIFICATION: imported_admin;charnay;WARNING;notify-host-by-email;Alarm timeout'
+            'message': 'HOST NOTIFICATION: imported_admin;charnay;WARNING;notify-host-by-email;Alarm timeout',
+            'host': 'host2'
         },
         {
             '_created': 'Thu, 12 Oct 2017 13:27:02 GMT', '_id': '59df6tg5721j5k77dd3aed',
             '_updated': 'Thu, 12 Oct 2017 13:27:02 GMT',
             '_etag': '70a7fd01040ce20c4df459t65g9b548d493e9703',
-            'message': 'SERVICE: imported_admin;charnay;alarm check;OK;notify-host-by-email;All ok'
+            'message': 'SERVICE: imported_admin;charnay;alarm check;OK;notify-host-by-email;All ok',
+            'host': 'host3'
         }
 
     ]
