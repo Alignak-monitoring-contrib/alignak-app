@@ -23,8 +23,9 @@
     Spy QWidgets manage host items who are spied
 """
 
-from PyQt5.Qt import QVBoxLayout, Qt, QWidget, QAbstractItemView, QListWidget
+from PyQt5.Qt import QVBoxLayout, Qt, QWidget, QAbstractItemView, QListWidget, pyqtSignal
 
+from alignak_app.core.data_manager import data_manager
 from alignak_app.widgets.dock.events import EventItem
 
 
@@ -32,6 +33,8 @@ class SpyQListWidget(QListWidget):
     """
         Class who create QListWidget for spied hosts
     """
+
+    item_dropped = pyqtSignal(EventItem, name="remove_item")
 
     def __init__(self):
         super(SpyQListWidget, self).__init__()
@@ -45,13 +48,19 @@ class SpyQListWidget(QListWidget):
         """
 
         if isinstance(event.source().currentItem(), EventItem):
-            item = event.source().currentItem()
-            if item.spied_on:
-                if item.host not in self.spied_hosts:
-                    self.spied_hosts.append(item.host)
-                    event.accept()
-                else:
-                    event.ignore()
+            if event.source().currentItem().spied_on and \
+                    (event.source().currentItem().host not in self.spied_hosts):
+                self.spied_hosts.append(event.source().currentItem().host)
+                host = data_manager.get_item('host', '_id', event.source().currentItem().host)
+                item = EventItem()
+                item.initialize(
+                    'ACK',
+                    '%s is spied !' % host.name
+                )
+                item.host = event.source().currentItem().host
+                self.addItem(item)
+                event.accept()
+
             else:
                 event.ignore()
         else:
@@ -68,6 +77,7 @@ class SpyQListWidget(QListWidget):
 
         if item.spied_on:
             self.spied_hosts.append(item)
+            self.item_dropped.emit(item)
 
         super(SpyQListWidget, self).dropEvent(event)
 

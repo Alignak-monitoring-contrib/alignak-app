@@ -99,6 +99,8 @@ class DockQWidget(QWidget):
         self.spy_widget.initialize()
         layout.addWidget(self.spy_widget)
 
+        self.spy_widget.spied_list.item_dropped.connect(events_widget.remove_event)
+
         self.set_size_and_position()
 
     def set_size_and_position(self):

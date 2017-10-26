@@ -23,7 +23,7 @@
     Events QWidgets manage creation of events
 """
 
-from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget, QListWidgetItem, QSize, QTimer
+from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget, QListWidgetItem, QSize, QTimer, Qt
 from PyQt5.Qt import QVBoxLayout, QColor
 
 from alignak_app.core.config import app_css, get_app_config
@@ -156,7 +156,7 @@ class EventsQWidget(QWidget):
         event = EventItem()
         event.initialize('DOWN', 'Tests for Spied Hosts')
         event.spied_on = True
-        event.data = {'host': '_id'}
+        event.data = {'host': '59c4e40635d17b8e0c6accae'}
 
         self.events_list.addItem(event)
 
@@ -215,13 +215,20 @@ class EventsQWidget(QWidget):
 
         self.events_list.takeItem(self.events_list.row(event))
 
-    def remove_event(self):
+    def remove_event(self, item=None):
         """
         Remove item when user double click on an item
 
+        :param item: item to remove, else remove the current row
+        :type item: EventItem
         """
 
-        self.events_list.takeItem(self.events_list.currentRow())
+        if item:
+            print("Item to remove: ", item)
+            row = self.events_list.row(item)
+            self.events_list.takeItem(row)
+        else:
+            self.events_list.takeItem(self.events_list.currentRow())
 
 
 events_widget = EventsQWidget()
