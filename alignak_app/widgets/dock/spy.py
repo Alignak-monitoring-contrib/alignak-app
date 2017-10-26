@@ -50,6 +50,25 @@ class SpyQListWidget(QListWidget):
         :type host_id: str
         """
 
+        if host_id not in self.spied_hosts:
+            self.spied_hosts.append(host_id)
+            host = data_manager.get_item('host', '_id', host_id)
+            item = EventItem()
+            item.initialize(
+                'INFO',
+                'Host %s is spied !' % host.name.capitalize()
+            )
+            item.host = host.item_id
+            self.addItem(item)
+
+    def create_item_spied(self, host_id):
+        """
+        Create spy EventItem with host _id
+
+        :param host_id: "_id" of host to spy
+        :type host_id: str
+        """
+
         self.spied_hosts.append(host_id)
         host = data_manager.get_item('host', '_id', host_id)
         item = EventItem()
@@ -85,15 +104,9 @@ class SpyQListWidget(QListWidget):
         :param event: event triggered when something is dropped
         """
 
-        self.spied_hosts.append(event.source().currentItem().host)
-        host = data_manager.get_item('host', '_id', event.source().currentItem().host)
-        item = EventItem()
-        item.initialize(
-            'INFO',
-            'Host %s is spied !' % host.name.capitalize()
-        )
-        item.host = host.item_id
-        self.addItem(item)
+        self.create_item_spied(event.source().currentItem().host)
+
+        # Remove the item dropped and original, to let only new one created
         row = self.row(event.source().currentItem())
         self.takeItem(row)
         self.item_dropped.emit(event.source().currentItem())
