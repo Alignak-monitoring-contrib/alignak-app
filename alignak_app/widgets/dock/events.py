@@ -156,7 +156,7 @@ class EventsQWidget(QWidget):
         event = EventItem()
         event.initialize('DOWN', 'Tests for Spied Hosts')
         event.spied_on = True
-        event.data = {'host': '59c4e40635d17b8e0c6accae'}
+        event.host = '59c4e40635d17b8e0c6accae'
 
         self.events_list.addItem(event)
 
@@ -224,7 +224,6 @@ class EventsQWidget(QWidget):
         """
 
         if item:
-            print("Item to remove: ", item)
             row = self.events_list.row(item)
             self.events_list.takeItem(row)
         else:

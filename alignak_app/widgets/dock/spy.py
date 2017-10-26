@@ -50,17 +50,7 @@ class SpyQListWidget(QListWidget):
         if isinstance(event.source().currentItem(), EventItem):
             if event.source().currentItem().spied_on and \
                     (event.source().currentItem().host not in self.spied_hosts):
-                self.spied_hosts.append(event.source().currentItem().host)
-                host = data_manager.get_item('host', '_id', event.source().currentItem().host)
-                item = EventItem()
-                item.initialize(
-                    'ACK',
-                    '%s is spied !' % host.name
-                )
-                item.host = event.source().currentItem().host
-                self.addItem(item)
                 event.accept()
-
             else:
                 event.ignore()
         else:
@@ -73,13 +63,18 @@ class SpyQListWidget(QListWidget):
         :param event: event triggered when something is dropped
         """
 
-        item = event.source().currentItem()
-
-        if item.spied_on:
-            self.spied_hosts.append(item)
-            self.item_dropped.emit(item)
-
-        super(SpyQListWidget, self).dropEvent(event)
+        self.spied_hosts.append(event.source().currentItem().host)
+        host = data_manager.get_item('host', '_id', event.source().currentItem().host)
+        item = EventItem()
+        item.initialize(
+            'INFO',
+            'Host %s is spied !' % host.name.capitalize()
+        )
+        item.host = host.item_id
+        self.addItem(item)
+        row = self.row(event.source().currentItem())
+        self.takeItem(row)
+        self.item_dropped.emit(event.source().currentItem())
 
 
 class SpyQWidget(QWidget):
