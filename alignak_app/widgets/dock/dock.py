@@ -25,9 +25,12 @@
 
 import sys
 
-from PyQt5.Qt import QApplication, QWidget, QGridLayout, QIcon, QListWidget, QLabel, Qt
+from PyQt5.Qt import QApplication, QWidget, QGridLayout, QIcon, QLabel, Qt, QTimer
 
 from alignak_app.core.config import app_css, get_image
+from alignak_app.core.app_time import get_time_diff_since_last_timestamp
+from alignak_app.core.data_manager import data_manager
+from alignak_app.core.items.model import get_host_msg_and_event_type
 from alignak_app.widgets.dock.buttons import ButtonsQWidget
 from alignak_app.widgets.dock.events import events_widget
 from alignak_app.widgets.dock.livestate import LivestateQWidget
@@ -50,8 +53,9 @@ class DockQWidget(QWidget):
         self.status_widget = StatusQWidget()
         self.buttons_widget = ButtonsQWidget()
         self.livestate_widget = LivestateQWidget()
-        self.spy_widgetlist = QListWidget()
         self.spy_widget = SpyQWidget()
+        self.spy_timer = QTimer()
+        self.spied_hosts = []
 
     def initialize(self):
         """
@@ -61,6 +65,10 @@ class DockQWidget(QWidget):
 
         layout = QGridLayout()
         self.setLayout(layout)
+
+        self.spy_timer.setInterval(30000)
+        self.spy_timer.start()
+        self.spy_timer.timeout.connect(self.send_spy_events)
 
         # Add Alignak status
         status = QLabel(_('Alignak'))
@@ -99,9 +107,32 @@ class DockQWidget(QWidget):
         self.spy_widget.initialize()
         layout.addWidget(self.spy_widget)
 
-        self.spy_widget.spied_list_widget.item_dropped.connect(events_widget.remove_event)
+        self.spy_widget.spy_list_widget.item_dropped.connect(events_widget.remove_event)
 
         self.set_size_and_position()
+
+    def send_spy_events(self):
+        """
+        Send event for one host spied
+
+        """
+
+        if not self.spied_hosts:
+            # Reversed the list to have the host first spied on
+            self.spied_hosts = list(reversed(self.spy_widget.spy_list_widget.spied_hosts))
+
+        host_id = self.spied_hosts.pop()
+        host_and_services = data_manager.get_host_with_services(host_id)
+
+        msg_and_event_type = get_host_msg_and_event_type(host_and_services)
+
+        events_widget.add_event(
+            msg_and_event_type['event_type'],
+            msg_and_event_type['message'],
+            timer=False,
+            spied_on=True,
+            host=host_and_services['host'].item_id
+        )
 
     def set_size_and_position(self):
         """

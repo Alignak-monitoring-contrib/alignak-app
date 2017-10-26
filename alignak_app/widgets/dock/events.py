@@ -223,7 +223,7 @@ class EventsQWidget(QWidget):
         :type item: EventItem
         """
 
-        if item:
+        if isinstance(item, EventItem):
             row = self.events_list.row(item)
             self.events_list.takeItem(row)
         else:

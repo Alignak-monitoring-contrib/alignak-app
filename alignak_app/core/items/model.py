@@ -26,6 +26,8 @@
 
 from logging import getLogger
 
+from alignak_app.core.app_time import get_time_diff_since_last_timestamp
+
 
 logger = getLogger(__name__)
 
@@ -147,7 +149,7 @@ def get_real_host_state_icon(services):
     """
     Return corresponding icon to number of services who are in alert
 
-    :param services: list of Service items
+    :param services: list of Service() items
     :type services: list
     :return: icon corresponding to state
     :rtype: str
@@ -171,4 +173,92 @@ def get_real_host_state_icon(services):
         return icon_names[max_state_lvl]
 
     logger.error('Empty services in get_real_host_state_icon()')
+
     return 'error'
+
+
+def get_host_msg_and_event_type(host_and_services):
+    """
+    Return corresponding event icon to number of services who are in alert
+
+    :param host_and_services: Host() item and its Service() items
+    :type host_and_services: dict
+    :return: event type and message
+    :rtype: dict
+    """
+
+    def get_host_state_msg(host_data):
+        """
+        Return the host state message
+
+        :param host_data: data of host
+        :type host_data: dict
+        :return: the host message
+        :rtype: str
+        """
+
+        if host_data['ls_downtimed']:
+            host_state = _('downtimed')
+        elif host_data['ls_acknowledged']:
+            host_state = _('acknowledged')
+        else:
+            host_state = host_data['ls_state'].lower()
+
+        return host_state
+
+    host_msg = get_host_state_msg(host_and_services['host'].data)
+
+    event_messages = [
+        {
+            'message': '%s is %s. You have nothing to do.' % (
+                host_and_services['host'].name.capitalize(),
+                host_msg
+            ),
+            'event_type': 'OK'
+        },
+        {
+            'message': '%s is %s and his services are ok or acknowledged.' % (
+                host_and_services['host'].name.capitalize(),
+                host_msg
+            ),
+            'event_type': 'INFO'
+        },
+        {
+            'message': '%s is %s and his services are ok or downtimed.' % (
+                host_and_services['host'].name.capitalize(),
+                host_msg
+            ),
+            'event_type': 'INFO'
+        },
+        {
+            'message': '%s is %s, some services may be unknown or unreachable.' % (
+                host_and_services['host'].name.capitalize(),
+                host_msg
+            ),
+            'event_type': 'WARNING'
+        },
+        {
+            'message': 'TODO: %s is %s, some services may be in critical condition !' % (
+                host_and_services['host'].name.capitalize(),
+                host_msg
+            ),
+            'event_type': 'DOWN'
+        }
+    ]
+    state_lvl = []
+
+    for service in host_and_services['services']:
+        state_lvl.append(service.data['_overall_state_id'])
+
+    max_state_lvl = max(state_lvl)
+
+    try:
+        msg_and_event_type = event_messages[max_state_lvl]
+    except IndexError as e:
+        logger.error('Empty services in get_real_host_state_icon()', e)
+        msg_and_event_type = {
+            'message': 'Host is %s.' % host_msg,
+            'event_type': host_and_services['host'].data['ls_state']
+        }
+
+    return msg_and_event_type

@@ -150,7 +150,7 @@ class PanelQWidget(QWidget):
 
         if self.line_search.text() in self.hostnames_list:
             host = data_manager.get_item('host', 'name', self.line_search.text())
-            self.spy_widget.spied_list_widget.host_spied.emit(host.item_id)
+            self.spy_widget.spy_list_widget.host_spied.emit(host.item_id)
             self.spy_button.setEnabled(False)
 
     def create_line_search(self, hostnames_list=None):
@@ -198,7 +198,7 @@ class PanelQWidget(QWidget):
             # Set spy button enable or not
             is_spied = bool(
                 data_manager.get_item('host', 'name', self.line_search.text()).item_id not in
-                self.spy_widget.spied_list_widget.spied_hosts
+                self.spy_widget.spy_list_widget.spied_hosts
             )
             self.spy_button.setEnabled(is_spied)
 

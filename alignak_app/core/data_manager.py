@@ -202,17 +202,17 @@ class DataManager(object):
 
         return services_of_host
 
-    def get_host_with_services(self, host_name):
+    def get_host_with_services(self, host_field):
         """
         Returns the desired host and all its services
 
-        :param host_name: desired host
-        :type host_name: str
+        :param host_field: field of wanted host: host_id | name
+        :type host_field: str
         :return dict with host data and its associated services
         :rtype: dict
         """
 
-        host = self.get_item('host', host_name)
+        host = self.get_item('host', host_field)
 
         services_host = self.get_host_services(host.item_id)
 
