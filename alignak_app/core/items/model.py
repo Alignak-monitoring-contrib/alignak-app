@@ -255,7 +255,7 @@ def get_host_msg_and_event_type(host_and_services):
     try:
         msg_and_event_type = event_messages[max_state_lvl]
     except IndexError as e:
-        logger.error('Empty services in get_real_host_state_icon()', e)
+        logger.error('get_host_msg_and_event_type(): empty services, %e', e)
         msg_and_event_type = {
             'message': 'Host is %s.' % host_msg,
             'event_type': host_and_services['host'].data['ls_state']

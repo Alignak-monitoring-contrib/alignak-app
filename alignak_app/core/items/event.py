@@ -81,12 +81,3 @@ class Event(ItemModel):
         }
 
         return request_model
-
-
-def get_spy_message(event_type):
-    """
-    Return message for psy events
-
-    :param event_type:
-    :return:
-    """
