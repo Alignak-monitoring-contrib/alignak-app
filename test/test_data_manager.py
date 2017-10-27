@@ -21,11 +21,11 @@
 
 import unittest2
 
-from alignak_app.core.items.host import Host
-from alignak_app.core.items.service import Service
-from alignak_app.core.items.user import User
-from alignak_app.core.items.livesynthesis import LiveSynthesis
-from alignak_app.core.items.event import Event
+from alignak_app.core.models.host import Host
+from alignak_app.core.models.service import Service
+from alignak_app.core.models.user import User
+from alignak_app.core.models.livesynthesis import LiveSynthesis
+from alignak_app.core.models.event import Event
 from alignak_app.core.data_manager import DataManager
 
 

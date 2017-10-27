@@ -27,7 +27,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QIcon, QTreeWidgetItem
 
-from alignak_app.core.items.model import get_icon_name
+from alignak_app.core.models.item import get_icon_name
 from alignak_app.core.config import get_image
 from alignak_app.core.data_manager import data_manager
 

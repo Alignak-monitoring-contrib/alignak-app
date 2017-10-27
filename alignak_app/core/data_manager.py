@@ -27,7 +27,7 @@ import datetime
 
 from logging import getLogger
 
-from alignak_app.core.items.livesynthesis import LiveSynthesis
+from alignak_app.core.models.livesynthesis import LiveSynthesis
 
 
 logger = getLogger(__name__)

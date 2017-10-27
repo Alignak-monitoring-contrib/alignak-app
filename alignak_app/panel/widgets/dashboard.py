@@ -27,9 +27,9 @@ from logging import getLogger
 
 from PyQt5.Qt import QGridLayout, QLabel, QPixmap, Qt, QWidget
 
-from alignak_app.core.items.host import Host
+from alignak_app.core.models.host import Host
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.items.service import Service
+from alignak_app.core.models.service import Service
 from alignak_app.core.config import app_css, get_image
 
 logger = getLogger(__name__)

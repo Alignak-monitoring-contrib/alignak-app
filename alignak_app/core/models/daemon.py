@@ -27,7 +27,7 @@
 from logging import getLogger
 
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.items.model import ItemModel
+from alignak_app.core.models.item import ItemModel
 
 logger = getLogger(__name__)
 

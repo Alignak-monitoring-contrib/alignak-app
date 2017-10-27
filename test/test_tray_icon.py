@@ -29,7 +29,7 @@ from PyQt5.QtWidgets import QMenu
 
 from alignak_app.core.backend import AppBackend
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.items.user import User
+from alignak_app.core.models.user import User
 from alignak_app.core.config import get_image
 from alignak_app.core.config import init_config
 from alignak_app.systray.tray_icon import TrayIcon

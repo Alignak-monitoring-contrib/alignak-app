@@ -28,13 +28,13 @@ from logging import getLogger
 
 from alignak_backend_client.client import Backend, BackendException
 
-from alignak_app.core.items.daemon import Daemon
-from alignak_app.core.items.host import Host
-from alignak_app.core.items.livesynthesis import LiveSynthesis
-from alignak_app.core.items.event import Event
-from alignak_app.core.items.service import Service
-from alignak_app.core.items.user import User
-from alignak_app.core.items.history import History
+from alignak_app.core.models.daemon import Daemon
+from alignak_app.core.models.host import Host
+from alignak_app.core.models.livesynthesis import LiveSynthesis
+from alignak_app.core.models.event import Event
+from alignak_app.core.models.service import Service
+from alignak_app.core.models.user import User
+from alignak_app.core.models.history import History
 
 from alignak_app.core.config import get_app_config
 from alignak_app.core.data_manager import data_manager

@@ -32,7 +32,7 @@ init_localization()
 app = QApplication(sys.argv)
 
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.items.user import User
+from alignak_app.core.models.user import User
 
 from alignak_app.dock.widgets.user import UserQWidget
 
