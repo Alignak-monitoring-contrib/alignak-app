@@ -145,20 +145,6 @@ class EventsQWidget(QWidget):
         )
 
         layout.addWidget(self.events_list)
-        self.test_host_event()
-
-    def test_host_event(self):
-        """
-        TODO: FOR TEST
-        :return:
-        """
-
-        event = EventItem()
-        event.initialize('DOWN', 'Tests for Spied Hosts')
-        event.spied_on = True
-        event.host = '59c4e40635d17b8e0c6accae'
-
-        self.events_list.addItem(event)
 
     def send_datamanager_events(self):
         """

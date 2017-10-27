@@ -29,7 +29,7 @@ from PyQt5.Qt import QLabel, QWidget, QIcon, Qt, QPushButton
 from PyQt5.Qt import QPixmap, QVBoxLayout, QGridLayout, QTimer
 
 from alignak_app.common.actions import AckQDialog, DownQDialog
-from alignak_app.core.app_time import get_time_diff_since_last_timestamp
+from alignak_app.core.time import get_time_diff_since_last_timestamp
 from alignak_app.core.backend import app_backend
 from alignak_app.core.config import get_image, app_css
 from alignak_app.core.data_manager import data_manager

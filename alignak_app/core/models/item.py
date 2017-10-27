@@ -26,7 +26,7 @@
 
 from logging import getLogger
 
-from alignak_app.core.app_time import get_time_diff_since_last_timestamp
+from alignak_app.core.time import get_time_diff_since_last_timestamp
 
 
 logger = getLogger(__name__)

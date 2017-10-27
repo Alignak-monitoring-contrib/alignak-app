@@ -29,7 +29,7 @@ from PyQt5.Qt import QLabel, QWidget, QGridLayout, Qt, QPixmap, QVBoxLayout, QHB
 from PyQt5.Qt import QPushButton, QIcon
 
 from alignak_app.common.actions import AckQDialog, DownQDialog, QDialog
-from alignak_app.core.app_time import get_time_diff_since_last_timestamp
+from alignak_app.core.time import get_time_diff_since_last_timestamp
 from alignak_app.core.backend import app_backend
 from alignak_app.core.config import get_image, app_css
 from alignak_app.core.data_manager import data_manager
@@ -387,7 +387,9 @@ class HostQWidget(QWidget):
         self.labels['ls_last_check'].setText(since_last_check)
         self.labels['ls_output'].setText(self.host_item.data['ls_output'])
 
-        self.labels['realm'].setText(self.host_item.data['_realm'])
+        self.labels['realm'].setText(
+            app_backend.get_realm_name(self.host_item.data['_realm'])
+        )
         self.labels['address'].setText(self.host_item.data['address'])
         self.labels['business_impact'].setText(str(self.host_item.data['business_impact']))
         self.labels['notes'].setText(self.host_item.data['notes'])
