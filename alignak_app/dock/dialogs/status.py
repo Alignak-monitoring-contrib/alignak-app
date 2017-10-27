@@ -25,13 +25,14 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QPixmap, QDialog, QLabel, QWidget, Qt, QPushButton, QGridLayout, QHBoxLayout
+from PyQt5.Qt import QDialog, QLabel, QWidget, Qt, QPushButton, QGridLayout, QHBoxLayout
 
 from alignak_app.core.app_time import get_time_diff_since_last_timestamp
-from alignak_app.core.config import get_image, app_css
+from alignak_app.core.config import app_css
 from alignak_app.core.data_manager import data_manager
 from alignak_app.common.frames import AppQFrame
 from alignak_app.common.widgets import center_widget
+from alignak_app.common.labels import get_enable_pixmap, get_alive_pixmap
 
 logger = getLogger(__name__)
 
@@ -216,68 +217,20 @@ class StatusQDialog(QDialog):
 
         for daemon_item in daemons:
             self.labels[daemon_item.name]['alive'].setPixmap(
-                self.get_alive_pixmap(daemon_item.data['alive'])
+                get_alive_pixmap(daemon_item.data['alive'])
             )
             self.labels[daemon_item.name]['name'].setText(daemon_item.name)
             self.labels[daemon_item.name]['address'].setText(
                 '%s:%s' % (daemon_item.data['address'], daemon_item.data['port'])
             )
             self.labels[daemon_item.name]['reachable'].setPixmap(
-                self.get_enable_pixmap(daemon_item.data['reachable'])
+                get_enable_pixmap(daemon_item.data['reachable'])
             )
             self.labels[daemon_item.name]['spare'].setPixmap(
-                self.get_enable_pixmap(daemon_item.data['spare'])
+                get_enable_pixmap(daemon_item.data['spare'])
             )
             self.labels[daemon_item.name]['passive'].setPixmap(
-                self.get_enable_pixmap(daemon_item.data['passive'])
+                get_enable_pixmap(daemon_item.data['passive'])
             )
             last_check = get_time_diff_since_last_timestamp(daemon_item.data['last_check'])
             self.labels[daemon_item.name]['last_check'].setText(last_check)
-
-    @staticmethod
-    def get_alive_pixmap(alive):
-        """
-        Return problem or valid QPixmap, depending alive is True of False
-
-        :param alive: alive True of False
-        :type alive: bool
-        :return: corresponding QPixmap
-        :rtype: QPixmap
-        """
-
-        states = {
-            True: 'connected',
-            False: 'disconnected'
-        }
-
-        # Should never happen
-        if not isinstance(alive, bool):
-            alive = False
-
-        enable_pixmap = QPixmap(get_image(states[alive]))
-
-        return enable_pixmap
-
-    @staticmethod
-    def get_enable_pixmap(enable):
-        """
-        Return red crosse or green check QPixmap, depending enable is True of False
-
-        :param enable: enable True of False
-        :type enable: bool
-        :return: corresponding QPixmap
-        :rtype: QPixmap
-        """
-
-        states = {
-            True: 'checked',
-            False: 'error'
-        }
-
-        # Should never happen
-        if not isinstance(enable, bool):
-            enable = False
-
-        enable_pixmap = QPixmap(get_image(states[enable]))
-
-        return enable_pixmap

@@ -59,9 +59,9 @@ def get_icon_item(item_type, problem_nb):
     return icon
 
 
-def get_enable_label_icon(state):
+def get_enable_pixmap(state):
     """
-    Return red crosse or green check QPixmap, depending state is True of False
+    Return error cross or green check QPixmap, depending state is True of False
 
     :param state: state True of False
     :type state: bool
@@ -79,5 +79,29 @@ def get_enable_label_icon(state):
         state = False
 
     enable_pixmap = QPixmap(get_image(states[state]))
+
+    return enable_pixmap
+
+
+def get_alive_pixmap(alive):
+    """
+    Return connected or disconnected QPixmap, depending alive is True of False
+
+    :param alive: alive True of False
+    :type alive: bool
+    :return: corresponding QPixmap
+    :rtype: QPixmap
+    """
+
+    states = {
+        True: 'connected',
+        False: 'disconnected'
+    }
+
+    # Should never happen
+    if not isinstance(alive, bool):
+        alive = False
+
+    enable_pixmap = QPixmap(get_image(states[alive]))
 
     return enable_pixmap

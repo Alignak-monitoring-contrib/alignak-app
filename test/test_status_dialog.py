@@ -66,25 +66,3 @@ class TestStatusQDialog(unittest2.TestCase):
         under_test = status_dialog_test.get_buttons_widget()
 
         self.assertIsInstance(under_test, QWidget)
-
-    def test_get_alive_pixmap(self):
-        """Get Alive Pixmap Status"""
-
-        status_dialog_test = StatusQDialog()
-
-        under_test = status_dialog_test.get_alive_pixmap(True)
-        self.assertIsInstance(under_test, QPixmap)
-
-        under_test = status_dialog_test.get_alive_pixmap(False)
-        self.assertIsInstance(under_test, QPixmap)
-
-    def test_get_enable_pixmap(self):
-        """Get Enable Pixmap Status"""
-
-        status_dialog_test = StatusQDialog()
-
-        under_test = status_dialog_test.get_enable_pixmap(True)
-        self.assertIsInstance(under_test, QPixmap)
-
-        under_test = status_dialog_test.get_enable_pixmap(False)
-        self.assertIsInstance(under_test, QPixmap)
