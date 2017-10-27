@@ -20,17 +20,16 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
-
 import unittest2
 
+from PyQt5.Qt import QApplication, QLabel, QPushButton, QWidget
+
+from alignak_app.core.config import init_config
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.items.user import User
 from alignak_app.core.items.host import Host
 from alignak_app.core.items.service import Service
-from alignak_app.core.config import init_config
+from alignak_app.core.items.user import User
 from alignak_app.core.locales import init_localization
-
-from PyQt5.Qt import QApplication, QLabel, QPushButton, QWidget
 
 init_config()
 init_localization()
@@ -38,7 +37,7 @@ app = QApplication(sys.argv)
 user = User()
 user.create('_id', {'name': 'name'}, 'name')
 data_manager.database['user'] = user
-from alignak_app.widgets.panel.service import ServiceDataQWidget
+from alignak_app.panel.widgets.service import ServiceDataQWidget
 
 
 class TestServiceDataQWidget(unittest2.TestCase):

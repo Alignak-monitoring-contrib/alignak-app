@@ -34,8 +34,8 @@ from alignak_app.core.config import get_image, app_css
 from alignak_app.core.data_manager import data_manager
 from alignak_app.core.items.model import get_icon_name, get_real_host_state_icon
 from alignak_app.dock.widgets.events import send_event
+from alignak_app.panel.widgets.history import HistoryQWidget
 from alignak_app.widgets.dialogs.actions import AckQDialog, DownQDialog, QDialog
-from alignak_app.widgets.panel.history import HistoryQWidget
 
 logger = getLogger(__name__)
 

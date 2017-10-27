@@ -20,21 +20,20 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
-import unittest2
 
+import unittest2
+from PyQt5.Qt import QApplication
+
+from alignak_app.core.config import init_config
 from alignak_app.core.data_manager import data_manager
-from alignak_app.core.items.user import User
 from alignak_app.core.items.host import Host
 from alignak_app.core.items.service import Service
-from alignak_app.core.config import init_config
-
-
-from PyQt5.Qt import QApplication
+from alignak_app.core.items.user import User
 
 app = QApplication(sys.argv)
 data_manager.database['user'] = User()
 data_manager.database['user'].create('_id', {}, 'name')
-from alignak_app.widgets.panel.host import HostQWidget
+from alignak_app.panel.widgets.host import HostQWidget
 
 
 class TestHostQWidget(unittest2.TestCase):

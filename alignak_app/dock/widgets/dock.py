@@ -120,18 +120,19 @@ class DockQWidget(QWidget):
             # Reversed the list to have the host first spied on
             self.spied_hosts = list(reversed(self.spy_widget.spy_list_widget.spied_hosts))
 
-        host_id = self.spied_hosts.pop()
-        host_and_services = data_manager.get_host_with_services(host_id)
+        if self.spied_hosts:
+            host_id = self.spied_hosts.pop()
+            host_and_services = data_manager.get_host_with_services(host_id)
 
-        msg_and_event_type = get_host_msg_and_event_type(host_and_services)
+            msg_and_event_type = get_host_msg_and_event_type(host_and_services)
 
-        events_widget.add_event(
-            msg_and_event_type['event_type'],
-            msg_and_event_type['message'],
-            timer=False,
-            spied_on=True,
-            host=host_and_services['host'].item_id
-        )
+            events_widget.add_event(
+                msg_and_event_type['event_type'],
+                msg_and_event_type['message'],
+                timer=False,
+                spied_on=True,
+                host=host_and_services['host'].item_id
+            )
 
     def set_size_and_position(self):
         """
