@@ -137,12 +137,12 @@ class AckQDialog(QDialog):
 
         main_layout.addWidget(ack_widget)
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event):  # pylint: no cover
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         self.offset = event.pos()
 
-    def mouseMoveEvent(self, event):
+    def mouseMoveEvent(self, event):  # pylint: no cover
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         try:
@@ -308,12 +308,12 @@ class DownQDialog(QDialog):
         else:
             self.accept()
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event):  # pylint: no cover
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         self.offset = event.pos()
 
-    def mouseMoveEvent(self, event):
+    def mouseMoveEvent(self, event):  # pylint: no cover
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         try:

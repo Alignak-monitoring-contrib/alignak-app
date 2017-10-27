@@ -31,7 +31,7 @@ from PyQt5.Qt import QGridLayout, QVBoxLayout, QIcon, Qt, QLabel, QWidget, QPush
 from alignak_app.core.backend import app_backend
 from alignak_app.core.config import get_image, app_css
 from alignak_app.core.data_manager import data_manager
-from alignak_app.common.labels import get_enable_pixmap
+from alignak_app.common.labels import get_icon_pixmap
 from alignak_app.common.frames import AppQFrame, get_frame_separator
 from alignak_app.dock.dialogs.password import PasswordQDialog
 from alignak_app.dock.dialogs.token import TokenQDialog
@@ -430,10 +430,13 @@ class UserQWidget(QWidget):
 
         # Admin, Commands
         self.labels['is_admin'].setPixmap(
-            get_enable_pixmap(data_manager.database['user'].data['is_admin'])
+            get_icon_pixmap(data_manager.database['user'].data['is_admin'], ['checked', 'error'])
         )
         self.labels['can_submit_commands'].setPixmap(
-            get_enable_pixmap(data_manager.database['user'].data['can_submit_commands'])
+            get_icon_pixmap(
+                data_manager.database['user'].data['can_submit_commands'],
+                ['checked', 'error']
+            )
         )
 
         # Alias, Notes, Token

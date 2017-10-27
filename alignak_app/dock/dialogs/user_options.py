@@ -28,7 +28,7 @@ from logging import getLogger
 from PyQt5.Qt import QGridLayout, QLabel, QWidget, Qt, QDialog, QVBoxLayout, QPushButton, QIcon
 
 from alignak_app.core.config import app_css, get_image
-from alignak_app.common.labels import get_enable_pixmap
+from alignak_app.common.labels import get_icon_pixmap
 from alignak_app.common.widgets import get_logo_widget, center_widget
 
 logger = getLogger(__name__)
@@ -136,7 +136,7 @@ class UserOptionsQDialog(QDialog):
             options_layout.addWidget(self.titles_labels[item_type][opt], line, 0, 1, 1)
             # Icon
             self.options_labels[item_type][opt].setPixmap(
-                get_enable_pixmap(selected_options[opt])
+                get_icon_pixmap(selected_options[opt], ['checked', 'error'])
             )
             self.options_labels[item_type][opt].setFixedSize(14, 14)
             self.options_labels[item_type][opt].setScaledContents(True)

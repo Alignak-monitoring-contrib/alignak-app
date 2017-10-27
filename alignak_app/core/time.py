@@ -79,19 +79,6 @@ def get_time_diff_since_last_timestamp(timestamp):  # pragma: no cover - not tes
         if seconds > 0:
             duration.append('%ds' % seconds)
 
-    return ' ' + ' '.join(duration) + ' ago'
+    time_diff = ' ' + ' '.join(duration)
 
-
-def get_date_from_timestamp(timestamp):
-    """
-    Return date from timestamp
-    :param timestamp: timestamp to convert to date
-    :type timestamp: int
-    :return: corresponding date
-    :rtype: str
-    """
-
-    if timestamp:
-        return datetime.fromtimestamp(timestamp)
-
-    return 'n/a'
+    return _('%s ago') % time_diff

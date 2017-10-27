@@ -54,54 +54,32 @@ def get_icon_item(item_type, problem_nb):
             icon_type = 'services_ok'
         else:
             icon_type = 'problem_ok'
+
     icon = QPixmap(get_image(icon_type))
 
     return icon
 
 
-def get_enable_pixmap(state):
+def get_icon_pixmap(value, icons):
     """
-    Return error cross or green check QPixmap, depending state is True of False
+    Return corresponding icon name in icons
 
-    :param state: state True of False
-    :type state: bool
-    :return: corresponding QPixmap
+    :param value: value of attribute
+    :type value: bool
+    :param icons: pair of icons
+    :type icons: list
+    :return: pixmap icon corresponding to value
     :rtype: QPixmap
     """
 
-    states = {
-        True: 'checked',
-        False: 'error'
+    if not isinstance(value, bool) or not value:
+        value = False
+
+    available_icons = {
+        True: icons[0],
+        False: icons[1]
     }
 
-    # Should never happen
-    if not isinstance(state, bool):
-        state = False
+    pixmap = QPixmap(get_image(available_icons[value]))
 
-    enable_pixmap = QPixmap(get_image(states[state]))
-
-    return enable_pixmap
-
-
-def get_alive_pixmap(alive):
-    """
-    Return connected or disconnected QPixmap, depending alive is True of False
-
-    :param alive: alive True of False
-    :type alive: bool
-    :return: corresponding QPixmap
-    :rtype: QPixmap
-    """
-
-    states = {
-        True: 'connected',
-        False: 'disconnected'
-    }
-
-    # Should never happen
-    if not isinstance(alive, bool):
-        alive = False
-
-    enable_pixmap = QPixmap(get_image(states[alive]))
-
-    return enable_pixmap
+    return pixmap

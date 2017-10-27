@@ -32,7 +32,7 @@ from alignak_app.core.config import app_css
 from alignak_app.core.data_manager import data_manager
 from alignak_app.common.frames import AppQFrame
 from alignak_app.common.widgets import center_widget
-from alignak_app.common.labels import get_enable_pixmap, get_alive_pixmap
+from alignak_app.common.labels import get_icon_pixmap
 
 logger = getLogger(__name__)
 
@@ -217,20 +217,20 @@ class StatusQDialog(QDialog):
 
         for daemon_item in daemons:
             self.labels[daemon_item.name]['alive'].setPixmap(
-                get_alive_pixmap(daemon_item.data['alive'])
+                get_icon_pixmap(daemon_item.data['alive'], ['connected', 'disconnected'])
             )
             self.labels[daemon_item.name]['name'].setText(daemon_item.name)
             self.labels[daemon_item.name]['address'].setText(
                 '%s:%s' % (daemon_item.data['address'], daemon_item.data['port'])
             )
             self.labels[daemon_item.name]['reachable'].setPixmap(
-                get_enable_pixmap(daemon_item.data['reachable'])
+                get_icon_pixmap(daemon_item.data['reachable'], ['checked', 'error'])
             )
             self.labels[daemon_item.name]['spare'].setPixmap(
-                get_enable_pixmap(daemon_item.data['spare'])
+                get_icon_pixmap(daemon_item.data['spare'], ['checked', 'error'])
             )
             self.labels[daemon_item.name]['passive'].setPixmap(
-                get_enable_pixmap(daemon_item.data['passive'])
+                get_icon_pixmap(daemon_item.data['passive'], ['checked', 'error'])
             )
             last_check = get_time_diff_since_last_timestamp(daemon_item.data['last_check'])
             self.labels[daemon_item.name]['last_check'].setText(last_check)
