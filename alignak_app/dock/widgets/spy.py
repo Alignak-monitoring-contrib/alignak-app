@@ -40,11 +40,11 @@ class SpyQListWidget(QListWidget):
     def __init__(self):
         super(SpyQListWidget, self).__init__()
         self.spied_hosts = []
-        self.host_spied.connect(self.add_host_spied)
+        self.host_spied.connect(self.add_spy_host)
 
-    def add_host_spied(self, host_id):
+    def add_spy_host(self, host_id):
         """
-        Add a host to spied list.
+        Add a host to spied list and create corresponding EventItem()
 
         :param host_id: "_id" of host to spy
         :type host_id: str
@@ -60,24 +60,6 @@ class SpyQListWidget(QListWidget):
             )
             item.host = host.item_id
             self.addItem(item)
-
-    def create_item_spied(self, host_id):
-        """
-        Create spy EventItem with host _id
-
-        :param host_id: "_id" of host to spy
-        :type host_id: str
-        """
-
-        self.spied_hosts.append(host_id)
-        host = data_manager.get_item('host', '_id', host_id)
-        item = EventItem()
-        item.initialize(
-            'INFO',
-            'Host %s is spied !' % host.name.capitalize()
-        )
-        item.host = host.item_id
-        self.addItem(item)
 
     def dragMoveEvent(self, event):
         """
@@ -104,7 +86,7 @@ class SpyQListWidget(QListWidget):
         :param event: event triggered when something is dropped
         """
 
-        self.create_item_spied(event.source().currentItem().host)
+        self.add_spy_host(event.source().currentItem().host)
 
         # Remove the item dropped and original, to let only new one created
         row = self.row(event.source().currentItem())
