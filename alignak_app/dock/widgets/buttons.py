@@ -25,13 +25,12 @@
 """
 
 import webbrowser
-
 from logging import getLogger
 
 from PyQt5.Qt import QPushButton, QWidget, QIcon, QHBoxLayout, QTimer
 
 from alignak_app.core.config import get_image, app_css, get_app_config
-from alignak_app.widgets.dock.user import UserQWidget
+from alignak_app.dock.widgets.user import UserQWidget
 from alignak_app.widgets.panel.panel import PanelQWidget
 
 logger = getLogger(__name__)

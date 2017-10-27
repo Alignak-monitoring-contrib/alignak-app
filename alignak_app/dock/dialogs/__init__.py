@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The Dock package contains classes who manage Right Dock QWidgets
+    The Dock.Dialogs package contains classes who manage Dock QDialogs
 """

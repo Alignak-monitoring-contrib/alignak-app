@@ -25,9 +25,9 @@ import unittest2
 from PyQt5.Qt import QApplication, QPixmap, QWidget
 
 from alignak_app.core.backend import app_backend
-from alignak_app.core.locales import init_localization
 from alignak_app.core.config import init_config
-from alignak_app.widgets.dialogs.status import StatusQDialog
+from alignak_app.core.locales import init_localization
+from alignak_app.dock.dialogs.status import StatusQDialog
 
 
 class TestStatusQDialog(unittest2.TestCase):
