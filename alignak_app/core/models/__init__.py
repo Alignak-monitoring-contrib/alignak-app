@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The Items package contains classes who create items who are stored in DataManager()
+    The Core.Models package contains classes who create items who are stored in DataManager()
 """

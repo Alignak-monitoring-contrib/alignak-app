@@ -30,8 +30,8 @@ from PyQt5.Qt import QWidget, QDialog, QPushButton, Qt, QIcon
 
 from alignak_app import __version__
 from alignak_app.common.widgets import get_logo_widget, center_widget
-from alignak_app.core.config import app_css, get_image
-from alignak_app.core.config import edit_setting_value, init_config
+from alignak_app.core.utils.config import app_css, get_image
+from alignak_app.core.utils.config import edit_setting_value, init_config
 from alignak_app.login.server import ServerQDialog
 
 logger = getLogger(__name__)

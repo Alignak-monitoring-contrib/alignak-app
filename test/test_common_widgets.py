@@ -24,9 +24,9 @@ import sys
 import unittest2
 from PyQt5.Qt import QApplication, QWidget
 
-from alignak_app.core.config import init_config
-from alignak_app.core.locales import init_localization
+from alignak_app.core.utils.config import init_config
 from alignak_app.common.widgets import get_logo_widget, center_widget, LogoQWidget
+from alignak_app.core.utils.locales import init_localization
 
 init_config()
 init_localization()

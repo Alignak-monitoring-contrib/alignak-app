@@ -24,8 +24,8 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication
 
-from alignak_app.core.config import init_config
-from alignak_app.core.locales import init_localization
+from alignak_app.core.utils.config import init_config
+from alignak_app.core.utils.locales import init_localization
 from alignak_app.dock.dialogs.password import PasswordQDialog
 
 init_config()

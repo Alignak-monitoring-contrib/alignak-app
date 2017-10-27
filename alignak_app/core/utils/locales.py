@@ -25,11 +25,10 @@
 
 import os
 import sys
-
-from logging import getLogger
 from gettext import GNUTranslations, NullTranslations
+from logging import getLogger
 
-from alignak_app.core.config import get_app_config, get_main_folder
+from alignak_app.core.utils.config import get_app_config, get_main_folder
 
 logger = getLogger(__name__)
 

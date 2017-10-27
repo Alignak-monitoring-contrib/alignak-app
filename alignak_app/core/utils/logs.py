@@ -24,13 +24,12 @@
 """
 
 import os
-
-from logging import getLogger
-from logging import Formatter
 from logging import DEBUG
+from logging import Formatter
+from logging import getLogger
 from logging.handlers import TimedRotatingFileHandler
 
-from alignak_app.core.config import get_app_workdir, get_app_config
+from alignak_app.core.utils.config import get_app_workdir, get_app_config
 
 
 # Application Logger

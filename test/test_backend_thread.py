@@ -19,17 +19,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-
 import unittest2
 
-from alignak_app.core.data_manager import data_manager
-from alignak_app.core.config import init_config
-from alignak_app.core.locales import init_localization
-from alignak_app.core.backend import app_backend
+from alignak_app.core.utils.config import init_config
+from alignak_app.core.utils.locales import init_localization
+from alignak_app.core.backend.client import app_backend
 from alignak_app.threads.backend_thread import BackendQThread
-
-from PyQt5.Qt import QApplication
 
 init_config()
 init_localization()

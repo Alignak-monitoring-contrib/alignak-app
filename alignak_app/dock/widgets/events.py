@@ -23,11 +23,11 @@
     Events QWidgets manage creation of events
 """
 
-from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget, QListWidgetItem, QSize, QTimer
 from PyQt5.Qt import QVBoxLayout, QColor
+from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget, QListWidgetItem, QSize, QTimer
 
-from alignak_app.core.config import app_css, get_app_config
-from alignak_app.core.data_manager import data_manager
+from alignak_app.core.backend.data_manager import data_manager
+from alignak_app.core.utils.config import app_css, get_app_config
 
 
 class EventItem(QListWidgetItem):

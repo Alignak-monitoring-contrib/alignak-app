@@ -27,10 +27,9 @@ from logging import getLogger
 
 from PyQt5.Qt import QTimer, QObject
 
-from alignak_app.core.locales import init_localization
-from alignak_app.core.config import init_config, get_app_config
+from alignak_app.core.utils.config import init_config, get_app_config
+from alignak_app.core.utils.locales import init_localization
 from alignak_app.threads.backend_thread import BackendQThread
-
 
 init_config()
 logger = getLogger(__name__)

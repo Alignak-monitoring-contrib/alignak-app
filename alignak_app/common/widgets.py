@@ -23,10 +23,10 @@
     Utils QWidget manage global QWidgets used by Alignak-app
 """
 
-from alignak_app.core.config import get_image, app_css
-
 from PyQt5.Qt import QPushButton, QHBoxLayout, QApplication, QWidget, QIcon, QLabel, QPixmap
 from PyQt5.Qt import QStyleOption, QStyle, QPainter
+
+from alignak_app.core.utils.config import get_image, app_css
 
 
 class LogoQWidget(QWidget):

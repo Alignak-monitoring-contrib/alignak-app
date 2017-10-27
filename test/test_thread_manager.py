@@ -20,14 +20,12 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest2
-
-from alignak_app.threads.thread_manager import ThreadManager
-from alignak_app.threads.backend_thread import BackendQThread
-
-from alignak_app.core.config import init_config
-from alignak_app.core.locales import init_localization
-
 from PyQt5.Qt import QTimer
+
+from alignak_app.core.utils.config import init_config
+from alignak_app.core.utils.locales import init_localization
+from alignak_app.threads.backend_thread import BackendQThread
+from alignak_app.threads.thread_manager import ThreadManager
 
 init_config()
 init_localization()

@@ -21,12 +21,12 @@
 
 import unittest2
 
+from alignak_app.core.backend.data_manager import DataManager
+from alignak_app.core.models.event import Event
 from alignak_app.core.models.host import Host
+from alignak_app.core.models.livesynthesis import LiveSynthesis
 from alignak_app.core.models.service import Service
 from alignak_app.core.models.user import User
-from alignak_app.core.models.livesynthesis import LiveSynthesis
-from alignak_app.core.models.event import Event
-from alignak_app.core.data_manager import DataManager
 
 
 class TestDataManager(unittest2.TestCase):

@@ -22,11 +22,11 @@
 import sys
 
 import unittest2
-from PyQt5.Qt import QApplication, QPixmap, QWidget
+from PyQt5.Qt import QApplication, QWidget
 
-from alignak_app.core.backend import app_backend
-from alignak_app.core.config import init_config
-from alignak_app.core.locales import init_localization
+from alignak_app.core.utils.config import init_config
+from alignak_app.core.backend.client import app_backend
+from alignak_app.core.utils.locales import init_localization
 from alignak_app.dock.dialogs.status import StatusQDialog
 
 

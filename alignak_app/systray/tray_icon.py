@@ -28,7 +28,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QMenu, QSystemTrayIcon
 
-from alignak_app.core.config import init_config
+from alignak_app.core.utils.config import init_config
 from alignak_app.systray.dialogs.about import AboutQDialog
 from alignak_app.systray.qactions_factory import QActionFactory
 from alignak_app.threads.thread_manager import thread_manager

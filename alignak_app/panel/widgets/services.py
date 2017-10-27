@@ -28,8 +28,8 @@ from logging import getLogger
 from PyQt5.Qt import QTreeWidget, QTreeWidgetItem, QWidget, QIcon, QGridLayout, QSize
 
 from alignak_app.common.frames import get_frame_separator
-from alignak_app.core.config import get_image, app_css
-from alignak_app.core.data_manager import data_manager
+from alignak_app.core.backend.data_manager import data_manager
+from alignak_app.core.utils.config import get_image, app_css
 from alignak_app.panel.widgets.number_services import NumberServicesQWidget
 from alignak_app.panel.widgets.service import ServiceDataQWidget
 from alignak_app.panel.widgets.service_tree_item import ServicesTreeItem
