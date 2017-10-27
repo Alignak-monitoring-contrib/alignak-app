@@ -45,7 +45,7 @@ init_config()
 init_localization()
 
 # pylint: disable=wrong-import-position,ungrouped-imports
-from alignak_app.login.login import LoginQDialog
+from alignak_app.login.form import LoginQDialog
 from alignak_app.systray.tray_icon import TrayIcon
 
 

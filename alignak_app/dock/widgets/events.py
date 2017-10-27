@@ -238,20 +238,20 @@ def send_event(event_type, msg, timer=False, spied_on=False, host=None):
     """
     Access function to simplify code in rest of application
 
-    :param event_type: type of event. Follow the following:
-    - 'valid': ['OK', 'UP']
-    - 'info': ['UNKNOWN', 'INFO']
-    - 'warn': ['WARNING', 'UNREACHABLE', 'WARN']
-    - 'problem': ['DOWN', 'CRITICAL', 'ALERT']
-    - 'aknowledge': ['ACK']
-    - 'downtime': ['DOWNTIME']
+    :param event_type: type of event, define color of EventItem()
+    - 'green': ['OK', 'UP']
+    - 'blue': ['UNKNOWN', 'INFO']
+    - 'orange': ['WARNING', 'UNREACHABLE', 'WARN']
+    - 'red': ['DOWN', 'CRITICAL', 'ALERT']
+    - 'yellow': ['ACK']
+    - 'yellow': ['DOWNTIME']
     :type event_type: str
     :param msg: message of event
     :type msg: str
     :param timer: timer to hide event at end of time
     :param spied_on: make event spy able
     :type spied_on: bool
-    :param host: _id of host. Only necessary if "be_spied" is True
+    :param host: _id of host. Only necessary if "spied_on" is True
     :type host: str
     """
 

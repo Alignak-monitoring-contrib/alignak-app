@@ -84,7 +84,7 @@ class AppBackend(object):
         logger.info('Try to connect to app_backend...')
 
         if username and password:
-            # Username & password : not recommended, without "widgets.login.py" form.
+            # Username & password : not recommended, without "login.form.py" form.
             try:
                 self.connected = self.backend.login(username, password)
                 if self.connected:
