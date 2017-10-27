@@ -30,7 +30,7 @@ from PyQt5.Qt import QDialog, QWidget, QTime, QVBoxLayout, Qt, QGridLayout, QTim
 from PyQt5.Qt import QPixmap, QCheckBox, QPushButton, QLabel, QTextEdit, QIcon
 
 from alignak_app.core.config import get_image, app_css
-from alignak_app.widgets.common.widgets import get_logo_widget, center_widget
+from alignak_app.common.widgets import get_logo_widget, center_widget
 
 logger = getLogger(__name__)
 

@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The Dialogs package contains classes who create QDialog in Alignak-app
+    The Systray.Dialogs package contains classes who manage Systray QDialogs
 """

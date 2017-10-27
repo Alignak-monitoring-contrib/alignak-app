@@ -28,8 +28,8 @@ from PyQt5.Qt import Qt, QVBoxLayout, QLabel, QDialog
 
 from alignak_app import __doc_url__, __project_url__, __alignak_url__, __application__
 from alignak_app import __releasenotes__, __version__, __copyright__
+from alignak_app.common.frames import AppQFrame
 from alignak_app.core.config import app_css
-from alignak_app.widgets.common.frames import AppQFrame
 
 
 class AboutQDialog(QDialog):
