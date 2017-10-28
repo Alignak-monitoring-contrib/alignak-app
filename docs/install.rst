@@ -13,9 +13,8 @@ You must have Alignak Suite installed before using this app :
 
 * `alignak`_
 * `alignak-backend`_
-* `alignak-webui`_ (optional)
 
-Alignak-app need at least a functionnal **alignak-backend** to connect with it.
+Alignak-app need at least a functionnal and available **alignak-backend** to connect with it !
 
 Windows Users
 -------------
@@ -39,6 +38,8 @@ You can install with pip::
     pip3 install alignak_app --user
 
 The required Python modules are automatically installed if not present on your system.
+
+An installation for root will be available as soon as possible.
 
 From Sources
 ------------

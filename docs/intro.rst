@@ -25,10 +25,11 @@ Features
 Alignak-App has many features:
 
   * Multi-platfom: Linux / Windows
-  * Multi-screen: notifies you on your active screen
+  * Receive Alignak notifications inside application
+  * Spy host: choose to monitor multiple hosts and receive their states
+  * Search Hosts and Services, acknowledge problems, schedule downtimes and more
   * Many configurations
   * Links to your `Alignak WebUI`_ from the menus
-  * Search Hosts and Services, acknowledge problems, schedule downtimes and more
 
 Release cycle
 ~~~~~~~~~~~~~
