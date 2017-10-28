@@ -28,7 +28,7 @@ from PyQt5.Qt import QWidget, QVBoxLayout, QHBoxLayout, Qt, QStyleOption, QPaint
 
 from alignak_app.common.labels import get_icon_item
 from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.utils.config import app_css
+from alignak_app.core.utils.config import app_css, get_app_config
 
 
 class LivestateQWidget(QWidget):
@@ -65,7 +65,8 @@ class LivestateQWidget(QWidget):
 
         self.update_labels()
 
-        self.timer.setInterval(15000)
+        update_livestate = int(get_app_config('Alignak-app', 'update_livestate')) * 1000
+        self.timer.setInterval(update_livestate)
         self.timer.start()
         self.timer.timeout.connect(self.update_labels)
 

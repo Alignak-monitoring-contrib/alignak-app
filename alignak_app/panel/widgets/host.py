@@ -26,14 +26,14 @@
 from logging import getLogger
 
 from PyQt5.Qt import QLabel, QWidget, QGridLayout, Qt, QPixmap, QVBoxLayout, QHBoxLayout
-from PyQt5.Qt import QPushButton, QIcon
-from alignak_app.core.utils.config import get_image, app_css
+from PyQt5.Qt import QPushButton, QIcon, QTimer
 
-from alignak_app.common.actions import AckQDialog, DownQDialog, QDialog
+from alignak_app.core.utils.config import get_image, app_css, get_app_config
+from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
 from alignak_app.core.backend.client import app_backend
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.item import get_icon_name, get_real_host_state_icon
-from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
+from alignak_app.common.actions import AckQDialog, DownQDialog, QDialog
 from alignak_app.dock.widgets.events import send_event
 from alignak_app.panel.widgets.history import HistoryQWidget
 
@@ -68,18 +68,7 @@ class HostQWidget(QWidget):
             'history': QPushButton()
         }
         self.history_widget = None
-
-    def set_data(self, hostname):
-        """
-        Set data of host and service
-
-        :param hostname: name of host to display
-        :type hostname: str
-        """
-
-        host_and_services = data_manager.get_host_with_services(hostname)
-        self.host_item = host_and_services['host']
-        self.service_items = host_and_services['services']
+        self.refresh_timer = QTimer()
 
     def initialize(self):
         """
@@ -98,6 +87,23 @@ class HostQWidget(QWidget):
         layout.addWidget(self.get_last_check_widget())
 
         layout.addWidget(self.get_variables_widget())
+
+        update_host = int(get_app_config('Alignak-app', 'update_host')) * 1000
+        self.refresh_timer.setInterval(update_host)
+        self.refresh_timer.start()
+        self.refresh_timer.timeout.connect(self.update_host)
+
+    def set_data(self, hostname):
+        """
+        Set data of host and service
+
+        :param hostname: name of host to display
+        :type hostname: str
+        """
+
+        host_and_services = data_manager.get_host_with_services(hostname)
+        self.host_item = host_and_services['host']
+        self.service_items = host_and_services['services']
 
     def get_host_icon_widget(self):
         """
@@ -357,7 +363,7 @@ class HostQWidget(QWidget):
 
         return widget
 
-    def update_widget(self, hostname):
+    def update_host(self, hostname):
         """
         Update HostQWidget data and QLabels
 

@@ -25,12 +25,12 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QGridLayout, QLabel, QPixmap, Qt, QWidget
+from PyQt5.Qt import QGridLayout, QLabel, QPixmap, Qt, QWidget, QTimer
 
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.host import Host
 from alignak_app.core.models.service import Service
-from alignak_app.core.utils.config import app_css, get_image
+from alignak_app.core.utils.config import app_css, get_image, get_app_config
 
 logger = getLogger(__name__)
 
@@ -67,6 +67,7 @@ class DashboardQWidget(QWidget):
             'acknowledge': QLabel(),
             'downtime': QLabel()
         }
+        self.refresh_timer = QTimer()
 
     def initialize(self):
         """
@@ -80,6 +81,11 @@ class DashboardQWidget(QWidget):
         self.get_services_resume_widget()
 
         self.update_dashboard()
+
+        update_dashboard = int(get_app_config('Alignak-app', 'update_dashboard')) * 1000
+        self.refresh_timer.setInterval(update_dashboard)
+        self.refresh_timer.start()
+        self.refresh_timer.timeout.connect(self.update_dashboard)
 
     def get_host_resume_widget(self):
         """

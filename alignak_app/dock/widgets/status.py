@@ -28,7 +28,7 @@ from PyQt5.Qt import QWidget, QHBoxLayout, QTimer, QPixmap, Qt
 
 from alignak_app.core.backend.client import app_backend
 from alignak_app.core.models.daemon import Daemon
-from alignak_app.core.utils.config import get_image, app_css
+from alignak_app.core.utils.config import get_image, app_css, get_app_config
 from alignak_app.dock.dialogs.status import StatusQDialog
 
 
@@ -45,7 +45,7 @@ class StatusQWidget(QWidget):
         self.daemons_status = QLabel('pending...')
         self.backend_connected = QLabel('pending...')
         self.status_dialog = StatusQDialog()
-        self.timer = QTimer()
+        self.refresh_timer = QTimer()
 
     def initialize(self):
         """
@@ -91,9 +91,10 @@ class StatusQWidget(QWidget):
         layout.addWidget(self.backend_connected)
         layout.setAlignment(self.backend_connected, Qt.AlignCenter)
 
-        self.timer.setInterval(15000)
-        self.timer.start()
-        self.timer.timeout.connect(self.update_status)
+        update_status = int(get_app_config('Alignak-app', 'update_status')) * 1000
+        self.refresh_timer.setInterval(update_status)
+        self.refresh_timer.start()
+        self.refresh_timer.timeout.connect(self.update_status)
 
     def show_status_dialog(self):
         """

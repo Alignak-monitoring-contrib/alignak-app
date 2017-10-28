@@ -205,7 +205,7 @@ class PanelQWidget(QWidget):
             # Update QWidgets
             self.dashboard_widget.update_dashboard()
             self.dashboard_widget.show()
-            self.host_widget.update_widget(self.line_search.text())
+            self.host_widget.update_host(self.line_search.text())
             self.host_widget.show()
             self.services_widget.set_data(self.line_search.text())
             self.services_widget.update_widget()
