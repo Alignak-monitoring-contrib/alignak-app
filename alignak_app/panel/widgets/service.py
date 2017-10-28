@@ -28,11 +28,11 @@ from logging import getLogger
 from PyQt5.Qt import QLabel, QWidget, QIcon, Qt, QPushButton
 from PyQt5.Qt import QPixmap, QVBoxLayout, QGridLayout, QTimer
 
-from alignak_app.core.utils.config import get_image, app_css
+from alignak_app.core.utils.config import get_image, app_css, get_app_config
+from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
 from alignak_app.core.backend.client import app_backend
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.item import get_icon_name
-from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
 from alignak_app.common.actions import AckQDialog, DownQDialog
 from alignak_app.dock.widgets.events import send_event
 
@@ -49,7 +49,7 @@ class ServiceDataQWidget(QWidget):
         self.setStyleSheet(app_css)
         self.setFixedWidth(200)
         # Fields
-        self.timer = QTimer()
+        self.refresh_timer = QTimer()
         self.service_item = None
         self.host_id = None
         self.labels = {
@@ -77,9 +77,10 @@ class ServiceDataQWidget(QWidget):
         layout.addWidget(self.get_last_check_widget())
         layout.addWidget(self.get_actions_widget())
 
-        self.timer.setInterval(10000)
-        self.timer.start()
-        self.timer.timeout.connect(self.periodic_refresh)
+        update_service = int(get_app_config('Alignak-app', 'update_service')) * 1000
+        self.refresh_timer.setInterval(update_service)
+        self.refresh_timer.start()
+        self.refresh_timer.timeout.connect(self.periodic_refresh)
 
         self.hide()
 

@@ -91,7 +91,7 @@ class HostQWidget(QWidget):
         update_host = int(get_app_config('Alignak-app', 'update_host')) * 1000
         self.refresh_timer.setInterval(update_host)
         self.refresh_timer.start()
-        self.refresh_timer.timeout.connect(self.update_host)
+        self.refresh_timer.timeout.connect(lambda: self.update_host(self.host_item.name))
 
     def set_data(self, hostname):
         """
