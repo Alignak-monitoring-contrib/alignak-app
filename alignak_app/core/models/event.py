@@ -28,8 +28,10 @@ import datetime
 import json
 import locale
 import sys
+
 from logging import getLogger
 
+from alignak_app.core.utils.config import get_app_config
 from alignak_app.core.models.item import ItemModel
 
 logger = getLogger(__name__)
@@ -64,8 +66,9 @@ class Event(ItemModel):
                 "App set locale to %s for converting date", locale.getlocale(locale.LC_TIME)
             )
 
-        # Define time for the last 30 minutes for notifications
-        time_interval = (datetime.datetime.utcnow() - datetime.timedelta(minutes=30)) \
+        # Define time for the last X minutes define in config file for events
+        notif_elapsed = int(get_app_config('Alignak-app', 'notification_elapsed'))
+        time_interval = (datetime.datetime.utcnow() - datetime.timedelta(minutes=notif_elapsed)) \
             .strftime("%a, %d %b %Y %H:%M:%S GMT")
 
         request_model = {

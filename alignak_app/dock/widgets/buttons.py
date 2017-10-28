@@ -94,7 +94,8 @@ class ButtonsQWidget(QWidget):
 
         self.update_widget()
 
-        self.update_timer.setInterval(15000)
+        update_buttons = int(get_app_config('Alignak-app', 'update_buttons')) * 1000
+        self.update_timer.setInterval(update_buttons)
         self.update_timer.start()
         self.update_timer.timeout.connect(self.update_widget)
 

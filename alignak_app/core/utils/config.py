@@ -94,14 +94,10 @@ def get_main_folder():
 
 # Application Configuration
 default_parameters = {
-    'synthesis_interval': 30,
-    'daemon_interval': 60,
-    'item_interval': 30,
-    'duration': 8,
-    'position': 'top:right',
-    'animation': 1000,
+    'notification_elapsed': 30,
+    'notification_duration': 30,
+    'spy_interval': 60,
     'filename': 'alignakapp',
-    'location': False,
     'debug': True,
     'username': '',
     'password': '',
@@ -109,21 +105,8 @@ default_parameters = {
     'backend': 'http://127.0.0.1:5000',
     'webui': 'http://127.0.0.1:5001',
     'processes': '1',
-    'bi_less': 0,
     'path': '/alignak_app',
     'img': '/images',
-    'icon': 'alignak.svg',
-    'about': 'about.svg',
-    'exit': 'exit.svg',
-    'checked': 'checked.svg',
-    'error': 'error.svg',
-    'hosts_up': 'host_up.svg',
-    'hosts_down': 'host_down.svg',
-    'hosts_unreachable': 'host_unreachable.svg',
-    'services_ok': 'service_ok.svg',
-    'services_critical': 'service_critical.svg',
-    'services_unknown': 'service_unknown.svg',
-    'services_warning': 'service_warning.svg',
 }
 
 # Global variables, access by function
