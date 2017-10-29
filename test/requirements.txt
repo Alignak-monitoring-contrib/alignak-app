@@ -4,6 +4,6 @@ nose
 nose-cov
 coverage<=4.1
 coveralls
-pep8
+pycodestyle
 future
 pylint
