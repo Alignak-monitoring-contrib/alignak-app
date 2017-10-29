@@ -33,6 +33,7 @@ from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
 from alignak_app.core.backend.client import app_backend
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.item import get_icon_name, get_real_host_state_icon
+from alignak_app.core.models.item import get_host_msg_and_event_type
 from alignak_app.common.actions import AckQDialog, DownQDialog, QDialog
 from alignak_app.dock.widgets.events import send_event
 from alignak_app.panel.widgets.history import HistoryQWidget
@@ -375,6 +376,11 @@ class HostQWidget(QWidget):
         icon_pixmap = QPixmap(get_image(icon_name))
 
         self.labels['host_icon'].setPixmap(QPixmap(icon_pixmap))
+        self.labels['host_icon'].setToolTip(
+            get_host_msg_and_event_type(
+                {'host': self.host_item, 'services': self.service_items}
+            )['message']
+        )
         self.labels['host_name'].setText('%s' % self.host_item.name.capitalize())
 
         icon_name = get_icon_name(
@@ -386,6 +392,7 @@ class HostQWidget(QWidget):
         pixmap_icon = QPixmap(get_image(icon_name))
         final_icon = pixmap_icon.scaled(32, 32, Qt.KeepAspectRatio)
         self.labels['state_icon'].setPixmap(final_icon)
+        self.labels['state_icon'].setToolTip(self.host_item.get_tooltip())
 
         since_last_check = get_time_diff_since_last_timestamp(
             self.host_item.data['ls_last_check']

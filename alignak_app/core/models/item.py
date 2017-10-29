@@ -80,6 +80,25 @@ class ItemModel(object):
 
         self.data[key] = new_value
 
+    def get_tooltip(self):
+        """
+        Return the tooltip message depending state and actions
+
+        :return: toottip message
+        :rtype: str
+        """
+
+        action = ''
+        if self.data['ls_downtimed']:
+            action = 'downtimed'
+        if self.data['ls_acknowledged']:
+            action = 'acknowledged'
+
+        if action:
+            return '%s is %s and %s' % (self.name.capitalize(), self.data['ls_state'], action)
+
+        return '%s is %s' % (self.name.capitalize(), self.data['ls_state'])
+
 
 def get_icon_name(item_type, state, acknowledge, downtime):
     """
@@ -184,59 +203,35 @@ def get_host_msg_and_event_type(host_and_services):
     :rtype: dict
     """
 
-    def get_host_state_msg(host_data):
-        """
-        Return the host state message
-
-        :param host_data: data of host
-        :type host_data: dict
-        :return: the host message
-        :rtype: str
-        """
-
-        if host_data['ls_downtimed']:
-            host_state = _('downtimed')
-        elif host_data['ls_acknowledged']:
-            host_state = _('acknowledged')
-        else:
-            host_state = host_data['ls_state'].lower()
-
-        return host_state
-
-    host_msg = get_host_state_msg(host_and_services['host'].data)
+    host_msg = host_and_services['host'].get_tooltip()
 
     event_messages = [
         {
-            'message': '%s is %s. You have nothing to do.' % (
-                host_and_services['host'].name.capitalize(),
+            'message': _('%s. You have nothing to do.') % (
                 host_msg
             ),
             'event_type': 'OK'
         },
         {
-            'message': '%s is %s and his services are ok or acknowledged.' % (
-                host_and_services['host'].name.capitalize(),
+            'message': _('%s and his services are ok or acknowledged.') % (
                 host_msg
             ),
             'event_type': 'INFO'
         },
         {
-            'message': '%s is %s and his services are ok or downtimed.' % (
-                host_and_services['host'].name.capitalize(),
+            'message': _('%s and his services are ok or downtimed.') % (
                 host_msg
             ),
             'event_type': 'INFO'
         },
         {
-            'message': '%s is %s, some services may be unknown or unreachable.' % (
-                host_and_services['host'].name.capitalize(),
+            'message': _('%s, some services may be unknown or unreachable.') % (
                 host_msg
             ),
             'event_type': 'WARNING'
         },
         {
-            'message': 'TODO: %s is %s, some services may be in critical condition !' % (
-                host_and_services['host'].name.capitalize(),
+            'message': _('TODO: %s, some services may be in critical condition !') % (
                 host_msg
             ),
             'event_type': 'DOWN'

@@ -24,6 +24,7 @@
 """
 
 from logging import getLogger
+from operator import itemgetter
 
 from PyQt5.Qt import QTreeWidget, QTreeWidgetItem, QWidget, QIcon, QGridLayout, QSize
 
@@ -110,8 +111,11 @@ class ServicesQWidget(QWidget):
             if not service.data['aggregation']:
                 service.data['aggregation'] = 'Global'
 
-        # Sort list by aggregation
-        newlist = sorted(self.service_items, key=lambda s: s.data['aggregation'])
+        # First sort list by state then by aggregation
+        newlist = sorted(
+            self.service_items,
+            key=lambda s: itemgetter('ls_state', 'ls_acknowledged', 'aggregation')(s.data)
+        )
         self.service_items = newlist
 
         # Get list of aggregations
@@ -125,10 +129,12 @@ class ServicesQWidget(QWidget):
             main_tree = QTreeWidgetItem()
             main_tree.setText(0, aggregation)
             main_tree.setIcon(0, QIcon(get_image('tree')))
+            main_tree.setToolTip(0, aggregation)
             for service in self.service_items:
                 if service.data['aggregation'] == aggregation:
                     service_tree = ServicesTreeItem()
                     service_tree.initialize(service)
+                    service_tree.setToolTip(0, service.get_tooltip())
                     self.services_tree_widget.clicked.connect(self.update_service_data)
                     main_tree.addChild(service_tree)
 

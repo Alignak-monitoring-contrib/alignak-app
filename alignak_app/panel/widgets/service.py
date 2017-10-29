@@ -304,6 +304,7 @@ class ServiceDataQWidget(QWidget):
         icon_pixmap = QPixmap(get_image(icon_name))
 
         self.labels['service_icon'].setPixmap(QPixmap(icon_pixmap))
+        self.labels['service_icon'].setToolTip(self.service_item.get_tooltip())
         self.labels['service_name'].setText('%s' % self.service_item.name)
 
         since_last_check = get_time_diff_since_last_timestamp(
