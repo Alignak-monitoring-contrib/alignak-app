@@ -92,7 +92,7 @@ class HostQWidget(QWidget):
         update_host = int(get_app_config('Alignak-app', 'update_host')) * 1000
         self.refresh_timer.setInterval(update_host)
         self.refresh_timer.start()
-        self.refresh_timer.timeout.connect(lambda: self.update_host(self.host_item.name))
+        self.refresh_timer.timeout.connect(self.update_host)
 
     def set_data(self, hostname):
         """
@@ -364,66 +364,72 @@ class HostQWidget(QWidget):
 
         return widget
 
-    def update_host(self, hostname):
+    def update_host(self, hostname=None):
         """
         Update HostQWidget data and QLabels
 
         """
 
-        self.set_data(hostname)
-
-        icon_name = get_real_host_state_icon(self.service_items)
-        icon_pixmap = QPixmap(get_image(icon_name))
-
-        self.labels['host_icon'].setPixmap(QPixmap(icon_pixmap))
-        self.labels['host_icon'].setToolTip(
-            get_host_msg_and_event_type(
-                {'host': self.host_item, 'services': self.service_items}
-            )['message']
-        )
-        self.labels['host_name'].setText('%s' % self.host_item.name.capitalize())
-
-        icon_name = get_icon_name(
-            'host',
-            self.host_item.data['ls_state'],
-            self.host_item.data['ls_acknowledged'],
-            self.host_item.data['ls_downtimed']
-        )
-        pixmap_icon = QPixmap(get_image(icon_name))
-        final_icon = pixmap_icon.scaled(32, 32, Qt.KeepAspectRatio)
-        self.labels['state_icon'].setPixmap(final_icon)
-        self.labels['state_icon'].setToolTip(self.host_item.get_tooltip())
-
-        since_last_check = get_time_diff_since_last_timestamp(
-            self.host_item.data['ls_last_check']
-        )
-        self.labels['ls_last_check'].setText(since_last_check)
-        self.labels['ls_output'].setText(self.host_item.data['ls_output'])
-
-        self.labels['realm'].setText(
-            app_backend.get_realm_name(self.host_item.data['_realm'])
-        )
-        self.labels['address'].setText(self.host_item.data['address'])
-        self.labels['business_impact'].setText(str(self.host_item.data['business_impact']))
-        self.labels['notes'].setText(self.host_item.data['notes'])
-
-        if self.host_item.data['ls_acknowledged'] or 'UP' in self.host_item.data['ls_state'] \
-                or not data_manager.database['user'].data['can_submit_commands']:
-            self.buttons['acknowledge'].setEnabled(False)
+        if self.host_item and not hostname:
+            self.set_data(self.host_item.name)
+        elif hostname:
+            self.set_data(hostname)
         else:
-            self.buttons['acknowledge'].setEnabled(True)
+            pass
 
-        if self.host_item.data['ls_downtimed'] \
-                or not data_manager.database['user'].data['can_submit_commands']:
-            self.buttons['downtime'].setEnabled(False)
-        else:
-            self.buttons['downtime'].setEnabled(True)
+        if self.host_item or hostname:
+            icon_name = get_real_host_state_icon(self.service_items)
+            icon_pixmap = QPixmap(get_image(icon_name))
 
-        if any(
-                history_item.item_id == self.host_item.item_id for
-                history_item in data_manager.database['history']):
-            self.buttons['history'].setEnabled(True)
-            self.buttons['history'].setToolTip(_('History is available'))
-        else:
-            self.buttons['history'].setToolTip(_('History is not available, please wait...'))
-            self.buttons['history'].setEnabled(False)
+            self.labels['host_icon'].setPixmap(QPixmap(icon_pixmap))
+            self.labels['host_icon'].setToolTip(
+                get_host_msg_and_event_type(
+                    {'host': self.host_item, 'services': self.service_items}
+                )['message']
+            )
+            self.labels['host_name'].setText('%s' % self.host_item.name.capitalize())
+
+            icon_name = get_icon_name(
+                'host',
+                self.host_item.data['ls_state'],
+                self.host_item.data['ls_acknowledged'],
+                self.host_item.data['ls_downtimed']
+            )
+            pixmap_icon = QPixmap(get_image(icon_name))
+            final_icon = pixmap_icon.scaled(32, 32, Qt.KeepAspectRatio)
+            self.labels['state_icon'].setPixmap(final_icon)
+            self.labels['state_icon'].setToolTip(self.host_item.get_tooltip())
+
+            since_last_check = get_time_diff_since_last_timestamp(
+                self.host_item.data['ls_last_check']
+            )
+            self.labels['ls_last_check'].setText(since_last_check)
+            self.labels['ls_output'].setText(self.host_item.data['ls_output'])
+
+            self.labels['realm'].setText(
+                app_backend.get_realm_name(self.host_item.data['_realm'])
+            )
+            self.labels['address'].setText(self.host_item.data['address'])
+            self.labels['business_impact'].setText(str(self.host_item.data['business_impact']))
+            self.labels['notes'].setText(self.host_item.data['notes'])
+
+            if self.host_item.data['ls_acknowledged'] or 'UP' in self.host_item.data['ls_state'] \
+                    or not data_manager.database['user'].data['can_submit_commands']:
+                self.buttons['acknowledge'].setEnabled(False)
+            else:
+                self.buttons['acknowledge'].setEnabled(True)
+
+            if self.host_item.data['ls_downtimed'] \
+                    or not data_manager.database['user'].data['can_submit_commands']:
+                self.buttons['downtime'].setEnabled(False)
+            else:
+                self.buttons['downtime'].setEnabled(True)
+
+            if any(
+                    history_item.item_id == self.host_item.item_id for
+                    history_item in data_manager.database['history']):
+                self.buttons['history'].setEnabled(True)
+                self.buttons['history'].setToolTip(_('History is available'))
+            else:
+                self.buttons['history'].setToolTip(_('History is not available, please wait...'))
+                self.buttons['history'].setEnabled(False)
