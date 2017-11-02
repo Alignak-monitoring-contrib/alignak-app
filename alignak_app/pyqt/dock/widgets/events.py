@@ -225,7 +225,7 @@ def init_event_widget():
 
     """
 
-    global events_widget
+    global events_widget  # pylint: disable=global-statement
 
     events_widget = EventsQWidget()
     events_widget.initialize()
