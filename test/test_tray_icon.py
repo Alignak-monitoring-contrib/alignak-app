@@ -22,6 +22,7 @@
 import sys
 
 import unittest2
+
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QAction
 from PyQt5.QtWidgets import QApplication
@@ -32,12 +33,13 @@ from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.user import User
 from alignak_app.core.utils.config import get_image
 from alignak_app.core.utils.config import init_config
-from alignak_app.systray.tray_icon import TrayIcon
+
+from alignak_app.pyqt.systray.tray_icon import TrayIcon
 
 
 class TestTrayIcon(unittest2.TestCase):
     """
-        TODO This file test the TrayIcon class.
+        This file test the TrayIcon class.
     """
 
     init_config()

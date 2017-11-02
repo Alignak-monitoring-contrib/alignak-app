@@ -26,7 +26,8 @@ from PyQt5.QtWidgets import QApplication, QLabel
 
 from alignak_app.core.utils.config import init_config
 from alignak_app.core.utils.locales import init_localization
-from alignak_app.systray.dialogs.about import AboutQDialog
+
+from alignak_app.pyqt.systray.dialogs.about import AboutQDialog
 
 init_config()
 init_localization()

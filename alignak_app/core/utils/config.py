@@ -143,7 +143,7 @@ def init_config():
 
     """
 
-    # Define "app_config" as "global" to access it from anywhere
+    # Define "app_config" and "app_images" as "global" to access it from anywhere
     global app_config  # pylint: disable=global-statement
     global app_images  # pylint: disable=global-statement
 

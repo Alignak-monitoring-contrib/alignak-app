@@ -24,8 +24,9 @@ from PyQt5.Qt import QTimer
 
 from alignak_app.core.utils.config import init_config
 from alignak_app.core.utils.locales import init_localization
-from alignak_app.threads.backend_thread import BackendQThread
-from alignak_app.threads.thread_manager import ThreadManager
+
+from alignak_app.pyqt.threads.backend_thread import BackendQThread
+from alignak_app.pyqt.threads.thread_manager import ThreadManager
 
 init_config()
 init_localization()
