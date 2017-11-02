@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-02 19:05+0100\n"
-"PO-Revision-Date: 2017-11-02 18:59+0100\n"
+"POT-Creation-Date: 2017-11-02 19:16+0100\n"
+"PO-Revision-Date: 2017-11-02 19:20+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -17,6 +17,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.8.7.1\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: ../core/models/item.py:98
+#, python-format
+msgid "%s is %s and %s"
+msgstr "%s est %s et %s"
+
+#: ../core/models/item.py:100
+#, python-format
+msgid "%s is %s"
+msgstr "%s est %s"
 
 #: ../core/models/item.py:210
 #, python-format
@@ -42,6 +52,11 @@ msgstr "%s, certains services peuvent être inconnus ou injoignables."
 #, python-format
 msgid "TODO: %s, some services may be in critical condition !"
 msgstr "A FAIRE: %s, certains services sont dans un état critique !"
+
+#: ../core/models/item.py:252
+#, python-format
+msgid "Host is %s."
+msgstr "L'Hôte est %s."
 
 #: ../core/models/user.py:78
 msgid "user"
@@ -297,7 +312,7 @@ msgstr "<h5>Domaine:</h5>"
 msgid "<h5>Administrator:</h5>"
 msgstr "<h5>Administrateur:</h5>"
 
-#: ../pyqt/dock/widgets/user.py:127
+#: ../pyqt/dock/widgets/user.py:127 ../pyqt/panel/widgets/host.py:359
 msgid "Notes:"
 msgstr "Notes:"
 
@@ -471,15 +486,61 @@ msgstr "Historique de %s"
 msgid "The last 25 events for %s"
 msgstr "Les 25 derniers évènements pour %s"
 
+#: ../pyqt/panel/widgets/host.py:145 ../pyqt/panel/widgets/service.py:158
+msgid "Actions:"
+msgstr "Actions:"
+
 #: ../pyqt/panel/widgets/host.py:175
 #, python-format
 msgid "Host %s acknowledged by %s, from Alignak-app"
 msgstr "L'hôte %s a été reconnu par %s, depuis Alignak-app"
 
+#: ../pyqt/panel/widgets/host.py:200 ../pyqt/panel/widgets/service.py:215
+#, python-format
+msgid "Acknowledge for %s is done"
+msgstr "Reconnaissance pour %s effectuée"
+
 #: ../pyqt/panel/widgets/host.py:225
 #, python-format
 msgid "Schedule downtime by %s, from Alignak-app"
 msgstr "Temps d'arrêt planifié  par %s, depuis Alignak-app"
+
+#: ../pyqt/panel/widgets/host.py:251 ../pyqt/panel/widgets/service.py:269
+#, python-format
+msgid "Downtime for %s is done"
+msgstr "Temps d'Arrêt pour %s effectué"
+
+#: ../pyqt/panel/widgets/host.py:289 ../pyqt/panel/widgets/service.py:123
+msgid "My last check"
+msgstr "Mon dernier contrôle"
+
+#: ../pyqt/panel/widgets/host.py:295
+msgid "State:"
+msgstr "État:"
+
+#: ../pyqt/panel/widgets/host.py:302 ../pyqt/panel/widgets/service.py:129
+msgid "When:"
+msgstr "Quand:"
+
+#: ../pyqt/panel/widgets/host.py:309 ../pyqt/panel/widgets/service.py:136
+msgid "Output"
+msgstr "Sortie"
+
+#: ../pyqt/panel/widgets/host.py:332
+msgid "My variables"
+msgstr "Mes données"
+
+#: ../pyqt/panel/widgets/host.py:338
+msgid "Realm:"
+msgstr "Domaine:"
+
+#: ../pyqt/panel/widgets/host.py:345
+msgid "Host address:"
+msgstr "Adresse de l'hôte:"
+
+#: ../pyqt/panel/widgets/host.py:352
+msgid "Business impact:"
+msgstr "Impact sur l'infrastructure:"
 
 #: ../pyqt/panel/widgets/host.py:433
 msgid "History is available"

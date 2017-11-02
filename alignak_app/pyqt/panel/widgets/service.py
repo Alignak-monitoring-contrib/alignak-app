@@ -120,20 +120,20 @@ class ServiceDataQWidget(QWidget):
         widget.setLayout(layout)
 
         # Title
-        check_title = QLabel('My last check')
+        check_title = QLabel(_('My last check'))
         check_title.setObjectName('itemtitle')
         check_title.setFixedHeight(30)
         layout.addWidget(check_title, 0, 0, 1, 2)
 
         # When last check
-        when_title = QLabel("When:")
+        when_title = QLabel(_("When:"))
         when_title.setObjectName('title')
         layout.addWidget(when_title, 2, 0, 1, 1)
 
         layout.addWidget(self.labels['ls_last_check'], 2, 1, 1, 1)
 
         # Output
-        output_title = QLabel("Output")
+        output_title = QLabel(_("Output"))
         output_title.setObjectName('title')
         layout.addWidget(output_title, 3, 0, 1, 1)
 
@@ -155,7 +155,7 @@ class ServiceDataQWidget(QWidget):
         layout = QVBoxLayout()
         widget.setLayout(layout)
 
-        action_title = QLabel('Actions:')
+        action_title = QLabel(_('Actions:'))
         action_title.setObjectName('title')
         layout.addWidget(action_title)
 
@@ -212,7 +212,7 @@ class ServiceDataQWidget(QWidget):
 
             post = app_backend.post('actionacknowledge', data)
 
-            send_event('ACK', 'Acknowledge for %s is done' % service_item.name)
+            send_event('ACK', _('Acknowledge for %s is done') % service_item.name)
             # Update Item
             data_manager.update_item_data(
                 'service',
@@ -266,7 +266,7 @@ class ServiceDataQWidget(QWidget):
 
             post = app_backend.post('actiondowntime', data)
 
-            send_event('DOWNTIME', 'Downtime for %s is done' % service_item.name)
+            send_event('DOWNTIME', _('Downtime for %s is done') % service_item.name)
             data_manager.update_item_data(
                 'service',
                 service_item.item_id,

@@ -95,9 +95,9 @@ class ItemModel(object):
             action = 'acknowledged'
 
         if action:
-            return '%s is %s and %s' % (self.name.capitalize(), self.data['ls_state'], action)
+            return _('%s is %s and %s') % (self.name.capitalize(), self.data['ls_state'], action)
 
-        return '%s is %s' % (self.name.capitalize(), self.data['ls_state'])
+        return _('%s is %s') % (self.name.capitalize(), self.data['ls_state'])
 
 
 def get_icon_name(item_type, state, acknowledge, downtime):
@@ -249,7 +249,7 @@ def get_host_msg_and_event_type(host_and_services):
     except IndexError as e:
         logger.error('get_host_msg_and_event_type(): empty services, %e', e)
         msg_and_event_type = {
-            'message': 'Host is %s.' % host_msg,
+            'message': _('Host is %s.') % host_msg,
             'event_type': host_and_services['host'].data['ls_state']
         }
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-02 19:05+0100\n"
+"POT-Creation-Date: 2017-11-02 19:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,16 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../core/models/item.py:98
+#, python-format
+msgid "%s is %s and %s"
+msgstr ""
+
+#: ../core/models/item.py:100
+#, python-format
+msgid "%s is %s"
+msgstr ""
 
 #: ../core/models/item.py:210
 #, python-format
@@ -40,6 +50,11 @@ msgstr ""
 #: ../core/models/item.py:234
 #, python-format
 msgid "TODO: %s, some services may be in critical condition !"
+msgstr ""
+
+#: ../core/models/item.py:252
+#, python-format
+msgid "Host is %s."
 msgstr ""
 
 #: ../core/models/user.py:78
@@ -290,7 +305,7 @@ msgstr ""
 msgid "<h5>Administrator:</h5>"
 msgstr ""
 
-#: ../pyqt/dock/widgets/user.py:127
+#: ../pyqt/dock/widgets/user.py:127 ../pyqt/panel/widgets/host.py:359
 msgid "Notes:"
 msgstr ""
 
@@ -462,14 +477,60 @@ msgstr ""
 msgid "The last 25 events for %s"
 msgstr ""
 
+#: ../pyqt/panel/widgets/host.py:145 ../pyqt/panel/widgets/service.py:158
+msgid "Actions:"
+msgstr ""
+
 #: ../pyqt/panel/widgets/host.py:175
 #, python-format
 msgid "Host %s acknowledged by %s, from Alignak-app"
 msgstr ""
 
+#: ../pyqt/panel/widgets/host.py:200 ../pyqt/panel/widgets/service.py:215
+#, python-format
+msgid "Acknowledge for %s is done"
+msgstr ""
+
 #: ../pyqt/panel/widgets/host.py:225
 #, python-format
 msgid "Schedule downtime by %s, from Alignak-app"
+msgstr ""
+
+#: ../pyqt/panel/widgets/host.py:251 ../pyqt/panel/widgets/service.py:269
+#, python-format
+msgid "Downtime for %s is done"
+msgstr ""
+
+#: ../pyqt/panel/widgets/host.py:289 ../pyqt/panel/widgets/service.py:123
+msgid "My last check"
+msgstr ""
+
+#: ../pyqt/panel/widgets/host.py:295
+msgid "State:"
+msgstr ""
+
+#: ../pyqt/panel/widgets/host.py:302 ../pyqt/panel/widgets/service.py:129
+msgid "When:"
+msgstr ""
+
+#: ../pyqt/panel/widgets/host.py:309 ../pyqt/panel/widgets/service.py:136
+msgid "Output"
+msgstr ""
+
+#: ../pyqt/panel/widgets/host.py:332
+msgid "My variables"
+msgstr ""
+
+#: ../pyqt/panel/widgets/host.py:338
+msgid "Realm:"
+msgstr ""
+
+#: ../pyqt/panel/widgets/host.py:345
+msgid "Host address:"
+msgstr ""
+
+#: ../pyqt/panel/widgets/host.py:352
+msgid "Business impact:"
 msgstr ""
 
 #: ../pyqt/panel/widgets/host.py:433

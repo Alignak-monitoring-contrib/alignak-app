@@ -142,7 +142,7 @@ class HostQWidget(QWidget):
         layout = QVBoxLayout()
         widget.setLayout(layout)
 
-        action_title = QLabel('Actions:')
+        action_title = QLabel(_('Actions:'))
         action_title.setObjectName('title')
         layout.addWidget(action_title)
 
@@ -197,7 +197,7 @@ class HostQWidget(QWidget):
 
             post = app_backend.post('actionacknowledge', data)
 
-            send_event('ACK', 'Acknowledge for %s is done' % host_item.name)
+            send_event('ACK', _('Acknowledge for %s is done') % host_item.name)
             data_manager.update_item_data(
                 'host',
                 host_item.item_id,
@@ -248,7 +248,7 @@ class HostQWidget(QWidget):
 
             post = app_backend.post('actiondowntime', data)
 
-            send_event('DOWNTIME', 'Downtime for %s is done' % host_item.name)
+            send_event('DOWNTIME', _('Downtime for %s is done') % host_item.name)
             data_manager.update_item_data(
                 'host',
                 host_item.item_id,
@@ -286,27 +286,27 @@ class HostQWidget(QWidget):
         widget.setLayout(layout)
 
         # Title
-        check_title = QLabel('My last check')
+        check_title = QLabel(_('My last check'))
         check_title.setObjectName('itemtitle')
         check_title.setFixedHeight(30)
         layout.addWidget(check_title, 0, 0, 1, 2)
 
         # State
-        state_title = QLabel("State:")
+        state_title = QLabel(_("State:"))
         state_title.setObjectName('title')
         layout.addWidget(state_title, 1, 0, 1, 1)
 
         layout.addWidget(self.labels['state_icon'], 1, 1, 1, 1)
 
         # When last check
-        when_title = QLabel("When:")
+        when_title = QLabel(_("When:"))
         when_title.setObjectName('title')
         layout.addWidget(when_title, 2, 0, 1, 1)
 
         layout.addWidget(self.labels['ls_last_check'], 2, 1, 1, 1)
 
         # Output
-        output_title = QLabel("Output")
+        output_title = QLabel(_("Output"))
         output_title.setObjectName('title')
         layout.addWidget(output_title, 3, 0, 1, 1)
 
@@ -329,34 +329,34 @@ class HostQWidget(QWidget):
         widget.setLayout(layout)
 
         # Title
-        check_title = QLabel('My variables')
+        check_title = QLabel(_('My variables'))
         check_title.setObjectName('itemtitle')
         check_title.setFixedHeight(30)
         layout.addWidget(check_title, 0, 0, 1, 2)
 
         # Realm
-        realm_title = QLabel("Realm:")
+        realm_title = QLabel(_("Realm:"))
         realm_title.setObjectName('title')
         layout.addWidget(realm_title, 1, 0, 1, 1)
 
         layout.addWidget(self.labels['realm'], 1, 1, 1, 1)
 
         # Address
-        address_title = QLabel("Host address:")
+        address_title = QLabel(_("Host address:"))
         address_title.setObjectName('title')
         layout.addWidget(address_title, 2, 0, 1, 1)
 
         layout.addWidget(self.labels['address'], 2, 1, 1, 1)
 
         # Business impact
-        address_title = QLabel("Business impact:")
+        address_title = QLabel(_("Business impact:"))
         address_title.setObjectName('title')
         layout.addWidget(address_title, 3, 0, 1, 1)
 
         layout.addWidget(self.labels['business_impact'], 3, 1, 1, 1)
 
         # Notes
-        notes_title = QLabel("Notes:")
+        notes_title = QLabel(_("Notes:"))
         notes_title.setObjectName('title')
         layout.addWidget(notes_title, 4, 0, 1, 1)
 
