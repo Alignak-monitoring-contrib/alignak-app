@@ -117,11 +117,12 @@ class DashboardQWidget(QWidget):
         for icon in Host.get_available_icons():
             self.hosts_buttons[icon].setIcon(QIcon(get_image(icon)))
             self.hosts_buttons[icon].setFixedSize(48, 24)
+            self.hosts_buttons[icon].setObjectName(icon)
             self.hosts_buttons[icon].setToolTip(
                 _('Hosts %s. See in WebUI ?') % icon.replace('hosts_', '').upper()
             )
             self.hosts_buttons[icon].clicked.connect(
-                lambda: open_url('hosts%s' % get_url_endpoint_from_icon_name(icon))
+                lambda: self.open_item_type_url('hosts')
             )
             self.layout.addWidget(self.hosts_buttons[icon], 0, row, 1, 1)
             self.layout.setAlignment(self.hosts_buttons[icon], Qt.AlignCenter)
@@ -143,11 +144,12 @@ class DashboardQWidget(QWidget):
         for icon in Service.get_available_icons():
             self.services_buttons[icon].setIcon(QIcon(get_image(icon)))
             self.services_buttons[icon].setFixedSize(48, 24)
+            self.services_buttons[icon].setObjectName(icon)
             self.services_buttons[icon].setToolTip(
                 _('Services %s. See in WebUI ?') % icon.replace('services_', '').upper()
             )
             self.services_buttons[icon].clicked.connect(
-                lambda: open_url('services%s' % get_url_endpoint_from_icon_name(icon))
+                lambda: self.open_item_type_url('services')
             )
             self.layout.addWidget(self.services_buttons[icon], 2, row, 1, 1)
             self.layout.setAlignment(self.services_buttons[icon], Qt.AlignCenter)
@@ -155,6 +157,18 @@ class DashboardQWidget(QWidget):
             self.layout.addWidget(self.services_labels[icon], 3, row, 1, 1)
             self.layout.setAlignment(self.services_labels[icon], Qt.AlignCenter)
             row += 1
+
+    def open_item_type_url(self, item_type):
+        """
+        Retrieve sender to send right endpoint to open_url() function for item type
+
+        :param item_type: type of item: hosts | services
+        :type item_type: str
+        """
+
+        endpoint = self.sender().objectName()
+
+        open_url('%s%s' % (item_type, get_url_endpoint_from_icon_name(endpoint)))
 
     def update_dashboard(self):
         """
