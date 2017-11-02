@@ -368,14 +368,14 @@ class HostQWidget(QWidget):
         """
         Update HostQWidget data and QLabels
 
+        :param hostname: name of host who is display
+        :type hostname: str
         """
 
         if self.host_item and not hostname:
             self.set_data(self.host_item.name)
-        elif hostname:
+        if hostname:
             self.set_data(hostname)
-        else:
-            pass
 
         if self.host_item or hostname:
             icon_name = get_real_host_state_icon(self.service_items)
