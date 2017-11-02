@@ -73,9 +73,9 @@ class ServiceDataQWidget(QWidget):
         layout = QGridLayout()
         self.setLayout(layout)
 
-        layout.addWidget(self.get_service_icon_widget())
-        layout.addWidget(self.get_last_check_widget())
-        layout.addWidget(self.get_actions_widget())
+        layout.addWidget(self.get_service_icon_widget(), 0, 0, 1, 1)
+        layout.addWidget(self.get_actions_widget(), 0, 1, 1, 1)
+        layout.addWidget(self.get_last_check_widget(), 1, 0, 1, 2)
 
         update_service = int(get_app_config('Alignak-app', 'update_service')) * 1000
         self.refresh_timer.setInterval(update_service)
