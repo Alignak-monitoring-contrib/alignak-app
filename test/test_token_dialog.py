@@ -28,8 +28,7 @@ from alignak_app.core.backend.client import app_backend
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.user import User
 from alignak_app.core.utils.config import init_config
-from alignak_app.core.utils.locales import init_localization
-
+from alignak_app.locales.locales import init_localization
 from alignak_app.pyqt.dock.dialogs.token import TokenQDialog
 
 

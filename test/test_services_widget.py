@@ -29,7 +29,7 @@ from alignak_app.core.models.host import Host
 from alignak_app.core.models.service import Service
 from alignak_app.core.models.user import User
 from alignak_app.core.utils.config import init_config
-from alignak_app.core.utils.locales import init_localization
+from alignak_app.locales.locales import init_localization
 
 init_config()
 init_localization()

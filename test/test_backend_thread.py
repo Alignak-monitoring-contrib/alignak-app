@@ -23,8 +23,7 @@ import unittest2
 
 from alignak_app.core.backend.client import app_backend
 from alignak_app.core.utils.config import init_config
-from alignak_app.core.utils.locales import init_localization
-
+from alignak_app.locales.locales import init_localization
 from alignak_app.pyqt.threads.backend_thread import BackendQThread
 
 init_config()
