@@ -30,10 +30,11 @@ from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget
 
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.utils.config import app_css, get_image
-from alignak_app.panel.widgets.dashboard import DashboardQWidget
-from alignak_app.panel.widgets.host import HostQWidget
-from alignak_app.panel.widgets.services import ServicesQWidget
+
+from alignak_app.pyqt.panel.widgets.services import ServicesQWidget
+from alignak_app.pyqt.panel.widgets.dashboard import DashboardQWidget
 from alignak_app.pyqt.common.frames import AppQFrame, get_frame_separator
+from alignak_app.pyqt.panel.widgets.host import HostQWidget
 
 logger = getLogger(__name__)
 

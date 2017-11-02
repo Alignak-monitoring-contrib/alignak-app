@@ -24,11 +24,11 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication, QWidget
 
-from alignak_app.core.utils.config import init_config
-from alignak_app.core.utils.locales import init_localization
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.history import History
-from alignak_app.panel.widgets.history import HistoryQWidget, AppQFrame
+from alignak_app.core.utils.config import init_config
+from alignak_app.core.utils.locales import init_localization
+from alignak_app.pyqt.panel.widgets.history import HistoryQWidget, AppQFrame
 
 init_config()
 init_localization()

@@ -30,8 +30,8 @@ from PyQt5.Qt import QPushButton, QWidget, QIcon, QHBoxLayout, QTimer
 
 from alignak_app.core.utils.config import get_image, app_css, get_app_config, open_url
 
-from alignak_app.panel.widgets.panel import PanelQWidget
 from alignak_app.pyqt.dock.widgets.user import UserQWidget
+from alignak_app.pyqt.panel.widgets.panel import PanelQWidget
 
 logger = getLogger(__name__)
 
