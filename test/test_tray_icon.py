@@ -33,8 +33,10 @@ from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.user import User
 from alignak_app.core.utils.config import get_image
 from alignak_app.core.utils.config import init_config
+from alignak_app.core.utils.locales import init_localization
 
 from alignak_app.pyqt.systray.tray_icon import TrayIcon
+from alignak_app.pyqt.dock.widgets.events import init_event_widget
 
 
 class TestTrayIcon(unittest2.TestCase):
@@ -43,6 +45,7 @@ class TestTrayIcon(unittest2.TestCase):
     """
 
     init_config()
+    init_localization()
 
     icon = QIcon(get_image('icon'))
 
@@ -74,6 +77,7 @@ class TestTrayIcon(unittest2.TestCase):
 
     def test_tray_icon(self):
         """Init TrayIcon and QMenu"""
+        init_event_widget()
         under_test = TrayIcon(TestTrayIcon.icon)
 
         self.assertIsInstance(under_test.menu, QMenu)
@@ -102,6 +106,8 @@ class TestTrayIcon(unittest2.TestCase):
 
     def test_build_menu(self):
         """Build Menu add QActions"""
+
+        init_event_widget()
 
         for key in self.user_key:
             if key == 'host_notifications_enabled' or key == 'service_notifications_enabled':

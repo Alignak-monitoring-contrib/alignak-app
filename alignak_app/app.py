@@ -33,20 +33,19 @@ from PyQt5.Qt import QPixmap, QTimer, QProgressBar, Qt, pyqtSignal, QObject, QIc
 from alignak_app.core.backend.client import app_backend
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.utils.config import get_image, get_main_folder, get_app_workdir
-from alignak_app.core.utils.config import init_config, get_app_config, init_css
+from alignak_app.core.utils.config import init_config, get_app_config
 from alignak_app.core.utils.locales import init_localization
 from alignak_app.core.utils.logs import create_logger
 
-# Init App settings before importing QWidgets
-init_config()
-init_css()
-init_localization()
-logger = create_logger()
-
-# pylint: disable=wrong-import-position,ungrouped-imports
 from alignak_app.pyqt.threads.thread_manager import thread_manager
 from alignak_app.pyqt.login.form import LoginQDialog
 from alignak_app.pyqt.systray.tray_icon import TrayIcon
+from alignak_app.pyqt.dock.widgets.events import init_event_widget
+
+# Init App settings before importing QWidgets
+init_config()
+init_localization()
+logger = create_logger()
 
 
 class AlignakApp(QObject):
@@ -190,6 +189,7 @@ class AlignakApp(QObject):
 
             # Launch other threads and run TrayIcon()
             thread_manager.start()
+            init_event_widget()
             self.tray_icon = TrayIcon(QIcon(get_image('icon')))
             self.tray_icon.build_menu()
             self.tray_icon.show()

@@ -266,6 +266,9 @@ def init_css():
         app_css = ""
 
 
+init_css()
+
+
 def open_url(endpoint='login'):  # pragma: no cover
     """
     Open web browser on wanted endpoint

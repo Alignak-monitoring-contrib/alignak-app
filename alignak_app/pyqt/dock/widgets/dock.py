@@ -34,7 +34,7 @@ from alignak_app.core.utils.config import app_css, get_image, get_app_config
 from alignak_app.pyqt.common.frames import AppQFrame, get_frame_separator
 from alignak_app.pyqt.dock.widgets.status import StatusQWidget
 from alignak_app.pyqt.dock.widgets.buttons import ButtonsQWidget
-from alignak_app.pyqt.dock.widgets.events import events_widget
+from alignak_app.pyqt.dock.widgets.events import get_events_widget
 from alignak_app.pyqt.dock.widgets.livestate import LivestateQWidget
 from alignak_app.pyqt.dock.widgets.spy import SpyQWidget
 
@@ -97,7 +97,7 @@ class DockQWidget(QWidget):
         layout.addWidget(last_event_label)
         layout.setAlignment(last_event_label, Qt.AlignCenter)
         layout.addWidget(get_frame_separator())
-        layout.addWidget(events_widget)
+        layout.addWidget(get_events_widget())
 
         # Spieds hosts
         spy_title = QLabel(_('Spied Hosts'))
@@ -108,7 +108,7 @@ class DockQWidget(QWidget):
         self.spy_widget.initialize()
         layout.addWidget(self.spy_widget)
 
-        self.spy_widget.spy_list_widget.item_dropped.connect(events_widget.remove_event)
+        self.spy_widget.spy_list_widget.item_dropped.connect(get_events_widget().remove_event)
 
         self.set_size_and_position()
 
@@ -128,7 +128,7 @@ class DockQWidget(QWidget):
 
             msg_and_event_type = get_host_msg_and_event_type(host_and_services)
 
-            events_widget.add_event(
+            get_events_widget().add_event(
                 msg_and_event_type['event_type'],
                 msg_and_event_type['message'],
                 timer=False,

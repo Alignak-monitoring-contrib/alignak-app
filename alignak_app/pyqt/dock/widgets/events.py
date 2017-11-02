@@ -216,8 +216,30 @@ class EventsQWidget(QWidget):
             self.events_list.takeItem(self.events_list.currentRow())
 
 
-events_widget = EventsQWidget()
-events_widget.initialize()
+events_widget = None
+
+
+def init_event_widget():
+    """
+    Initialize the global EventsQWidget. Used for drag & drop and send events
+
+    """
+
+    global events_widget
+
+    events_widget = EventsQWidget()
+    events_widget.initialize()
+
+
+def get_events_widget():
+    """
+    Return EventsQWidget instance
+
+    :return: EventsQWidget instance
+    :rtype: EventsQWidget
+    """
+
+    return events_widget
 
 
 def send_event(event_type, msg, timer=False, spied_on=False, host=None):
