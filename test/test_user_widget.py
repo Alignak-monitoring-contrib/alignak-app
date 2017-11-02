@@ -33,7 +33,8 @@ app = QApplication(sys.argv)
 
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.user import User
-from alignak_app.dock.widgets.user import UserQWidget
+
+from alignak_app.pyqt.dock.widgets.user import UserQWidget
 
 
 class TestUserQWidget(unittest2.TestCase):

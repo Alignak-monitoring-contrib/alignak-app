@@ -28,16 +28,16 @@ from logging import getLogger
 from PyQt5.Qt import QGridLayout, QVBoxLayout, QIcon, Qt, QLabel, QWidget, QPushButton, QCheckBox
 
 from alignak_app.core.backend.client import app_backend
-from alignak_app.core.utils.config import get_image, app_css
 from alignak_app.core.backend.data_manager import data_manager
+from alignak_app.core.utils.config import get_image, app_css
 
-from alignak_app.pyqt.common.labels import get_icon_pixmap
 from alignak_app.pyqt.common.frames import AppQFrame, get_frame_separator
-from alignak_app.dock.dialogs.password import PasswordQDialog
-from alignak_app.dock.dialogs.token import TokenQDialog
-from alignak_app.dock.dialogs.user_notes import UserNotesQDialog
-from alignak_app.dock.dialogs.user_options import show_options_dialog
-from alignak_app.dock.widgets.events import send_event
+from alignak_app.pyqt.common.labels import get_icon_pixmap
+from alignak_app.pyqt.dock.widgets.events import send_event
+from alignak_app.pyqt.dock.dialogs.password import PasswordQDialog
+from alignak_app.pyqt.dock.dialogs.token import TokenQDialog
+from alignak_app.pyqt.dock.dialogs.user_notes import UserNotesQDialog
+from alignak_app.pyqt.dock.dialogs.user_options import show_options_dialog
 
 logger = getLogger(__name__)
 

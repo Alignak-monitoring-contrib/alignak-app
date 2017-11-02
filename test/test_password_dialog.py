@@ -26,7 +26,8 @@ from PyQt5.QtWidgets import QApplication
 
 from alignak_app.core.utils.config import init_config
 from alignak_app.core.utils.locales import init_localization
-from alignak_app.dock.dialogs.password import PasswordQDialog
+
+from alignak_app.pyqt.dock.dialogs.password import PasswordQDialog
 
 init_config()
 init_localization()
