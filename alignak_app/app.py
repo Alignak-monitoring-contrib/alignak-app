@@ -36,11 +36,10 @@ from alignak_app.core.utils.config import get_image, get_main_folder, get_app_wo
 from alignak_app.core.utils.config import init_config, get_app_config
 from alignak_app.core.utils.locales import init_localization
 from alignak_app.core.utils.logs import create_logger
-
-from alignak_app.pyqt.threads.thread_manager import thread_manager
-from alignak_app.pyqt.login.form import LoginQDialog
-from alignak_app.pyqt.systray.tray_icon import TrayIcon
 from alignak_app.pyqt.dock.widgets.events import init_event_widget
+from alignak_app.pyqt.login.dialogs.login import LoginQDialog
+from alignak_app.pyqt.systray.tray_icon import TrayIcon
+from alignak_app.pyqt.threads.thread_manager import thread_manager
 
 # Init App settings before importing QWidgets
 init_config()
