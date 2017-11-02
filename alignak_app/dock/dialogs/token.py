@@ -27,9 +27,9 @@ from logging import getLogger
 
 from PyQt5.Qt import QPushButton, QLabel, QVBoxLayout, QWidget, QDialog, QIcon, Qt
 
-from alignak_app.common.widgets import get_logo_widget, center_widget
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.utils.config import app_css, get_image
+from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget
 
 logger = getLogger(__name__)
 

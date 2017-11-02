@@ -28,13 +28,13 @@ from logging import getLogger
 from PyQt5.Qt import QLabel, QWidget, QIcon, Qt, QPushButton
 from PyQt5.Qt import QPixmap, QVBoxLayout, QGridLayout, QTimer
 
-from alignak_app.core.utils.config import get_image, app_css, get_app_config
-from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
 from alignak_app.core.backend.client import app_backend
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.item import get_icon_name
-from alignak_app.common.actions import AckQDialog, DownQDialog
+from alignak_app.core.utils.config import get_image, app_css, get_app_config
+from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
 from alignak_app.dock.widgets.events import send_event
+from alignak_app.pyqt.common.actions import AckQDialog, DownQDialog
 
 logger = getLogger(__name__)
 

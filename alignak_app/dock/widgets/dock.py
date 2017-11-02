@@ -30,12 +30,12 @@ from PyQt5.Qt import QApplication, QWidget, QGridLayout, QIcon, QLabel, Qt, QTim
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.item import get_host_msg_and_event_type
 from alignak_app.core.utils.config import app_css, get_image, get_app_config
-from alignak_app.common.frames import AppQFrame, get_frame_separator
 from alignak_app.dock.widgets.buttons import ButtonsQWidget
 from alignak_app.dock.widgets.events import events_widget
 from alignak_app.dock.widgets.livestate import LivestateQWidget
 from alignak_app.dock.widgets.spy import SpyQWidget
 from alignak_app.dock.widgets.status import StatusQWidget
+from alignak_app.pyqt.common.frames import AppQFrame, get_frame_separator
 
 
 class DockQWidget(QWidget):
