@@ -25,6 +25,7 @@
 
 import os
 import sys
+import webbrowser
 
 from logging import getLogger
 
@@ -263,3 +264,42 @@ def init_css():
     except (IOError, NoSectionError) as e:
         logger.error('CSS File is missing : %s', str(e))
         app_css = ""
+
+
+def open_url(endpoint='login'):  # pragma: no cover
+    """
+    Open web browser on wanted endpoint
+
+    :param endpoint: endpoint of webui
+    :type endpoint: str
+    """
+
+    if get_app_config('Alignak', 'webui'):
+        logger.debug('Open url : ' + get_app_config('Alignak', 'webui') + '/' + endpoint)
+        webbrowser.open(get_app_config('Alignak', 'webui') + '/' + endpoint)
+
+
+def get_url_endpoint_from_icon_name(icon_name):
+    """
+    Return endpoint depending of "icon_name"
+
+    :param icon_name: icon name: hosts_up, services_ok, acknowledge
+    :return:
+    """
+
+    available_endpoints = {
+        'hosts_up': 'ls_state:UP',
+        'hosts_unreachable': 'ls_state:UNREACHABLE',
+        'hosts_down': 'ls_state:DOWN',
+        'services_ok': 'ls_state:OK',
+        'services_warning': 'ls_state:WARNING',
+        'services_critical': 'ls_state:CRITICAL',
+        'services_unknown': 'ls_state:UNKNOWN',
+        'services_unreachable': 'ls_state:UNREACHABLE',
+        'acknowledge': 'ls_acknowledged:yes',
+        'downtime': 'ls_downtimed:yes'
+    }
+
+    final_endpoint = '/table?search=%s' % available_endpoints[icon_name]
+
+    return final_endpoint

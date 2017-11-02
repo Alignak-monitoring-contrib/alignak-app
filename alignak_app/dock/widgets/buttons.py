@@ -29,7 +29,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QPushButton, QWidget, QIcon, QHBoxLayout, QTimer
 
-from alignak_app.core.utils.config import get_image, app_css, get_app_config
+from alignak_app.core.utils.config import get_image, app_css, get_app_config, open_url
 from alignak_app.dock.widgets.user import UserQWidget
 from alignak_app.panel.widgets.panel import PanelQWidget
 
@@ -76,7 +76,7 @@ class ButtonsQWidget(QWidget):
         self.problems_btn.setIcon(QIcon(get_image('problem')))
         self.problems_btn.setFixedSize(40, 40)
         self.problems_btn.setEnabled(False)
-        self.problems_btn.setToolTip(_('Coming soon...'))
+        self.problems_btn.setToolTip(_('Problems View coming soon...'))
         layout.addWidget(self.problems_btn)
 
         self.user_widget.initialize()
@@ -88,7 +88,7 @@ class ButtonsQWidget(QWidget):
         self.webui_btn.setIcon(QIcon(get_image('web')))
         self.webui_btn.setFixedSize(40, 40)
         self.webui_btn.clicked.connect(
-            lambda: self.open_url(get_app_config('Alignak', 'webui'))
+            lambda: open_url('livestate')
         )
         layout.addWidget(self.webui_btn)
 
@@ -128,16 +128,3 @@ class ButtonsQWidget(QWidget):
 
         self.user_widget.update_widget()
         self.user_widget.app_widget.show_widget()
-
-    @staticmethod
-    def open_url(webui_url):  # pragma: no cover
-        """
-        Add a link to Alignak-WebUI on every menu
-
-        :param webui_url: url of webui of available
-        :type webui_url: str
-        """
-
-        if webui_url:
-            logger.debug('Open url : ' + webui_url + '/login')
-            webbrowser.open(webui_url + '/login')

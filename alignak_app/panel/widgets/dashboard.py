@@ -25,12 +25,13 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QGridLayout, QLabel, QPixmap, Qt, QWidget, QTimer
+from PyQt5.Qt import QGridLayout, QLabel, QPixmap, Qt, QWidget, QTimer, QPushButton, QIcon
 
+from alignak_app.core.utils.config import app_css, get_image, get_app_config
+from alignak_app.core.utils.config import open_url, get_url_endpoint_from_icon_name
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.host import Host
 from alignak_app.core.models.service import Service
-from alignak_app.core.utils.config import app_css, get_image, get_app_config
 
 logger = getLogger(__name__)
 
@@ -67,6 +68,22 @@ class DashboardQWidget(QWidget):
             'acknowledge': QLabel(),
             'downtime': QLabel()
         }
+        self.hosts_buttons = {
+            'hosts_up': QPushButton(),
+            'hosts_unreachable': QPushButton(),
+            'hosts_down': QPushButton(),
+            'acknowledge': QPushButton(),
+            'downtime': QPushButton()
+        }
+        self.services_buttons = {
+            'services_ok': QPushButton(),
+            'services_warning': QPushButton(),
+            'services_critical': QPushButton(),
+            'services_unknown': QPushButton(),
+            'services_unreachable': QPushButton(),
+            'acknowledge': QPushButton(),
+            'downtime': QPushButton()
+        }
         self.refresh_timer = QTimer()
 
     def initialize(self):
@@ -98,13 +115,16 @@ class DashboardQWidget(QWidget):
         self.layout.addWidget(self.items_nb['hosts_nb'], 1, 0, 1, 1)
         row = 1
         for icon in Host.get_available_icons():
-            item_icon = QLabel()
-            item_icon.setPixmap(QPixmap(get_image(icon)))
-            item_icon.setFixedSize(18, 18)
-            item_icon.setScaledContents(True)
-            item_icon.setToolTip(icon.replace('hosts_', '').upper())
-            self.layout.addWidget(item_icon, 0, row, 1, 1)
-            self.layout.setAlignment(item_icon, Qt.AlignCenter)
+            self.hosts_buttons[icon].setIcon(QIcon(get_image(icon)))
+            self.hosts_buttons[icon].setFixedSize(48, 24)
+            self.hosts_buttons[icon].setToolTip(
+                _('Hosts %s. See in WebUI ?') % icon.replace('hosts_', '').upper()
+            )
+            self.hosts_buttons[icon].clicked.connect(
+                lambda: open_url('hosts%s' % get_url_endpoint_from_icon_name(icon))
+            )
+            self.layout.addWidget(self.hosts_buttons[icon], 0, row, 1, 1)
+            self.layout.setAlignment(self.hosts_buttons[icon], Qt.AlignCenter)
             self.hosts_labels[icon].setObjectName(icon)
             self.layout.addWidget(self.hosts_labels[icon], 1, row, 1, 1)
             self.layout.setAlignment(self.hosts_labels[icon], Qt.AlignCenter)
@@ -121,13 +141,16 @@ class DashboardQWidget(QWidget):
         self.layout.addWidget(self.items_nb['services_nb'], 3, 0, 1, 1)
         row = 1
         for icon in Service.get_available_icons():
-            item_icon = QLabel()
-            item_icon.setPixmap(QPixmap(get_image(icon)))
-            item_icon.setFixedSize(18, 18)
-            item_icon.setScaledContents(True)
-            item_icon.setToolTip(icon.replace('services_', '').upper())
-            self.layout.addWidget(item_icon, 2, row, 1, 1)
-            self.layout.setAlignment(item_icon, Qt.AlignCenter)
+            self.services_buttons[icon].setIcon(QIcon(get_image(icon)))
+            self.services_buttons[icon].setFixedSize(48, 24)
+            self.services_buttons[icon].setToolTip(
+                _('Services %s. See in WebUI ?') % icon.replace('services_', '').upper()
+            )
+            self.services_buttons[icon].clicked.connect(
+                lambda: open_url('services%s' % get_url_endpoint_from_icon_name(icon))
+            )
+            self.layout.addWidget(self.services_buttons[icon], 2, row, 1, 1)
+            self.layout.setAlignment(self.services_buttons[icon], Qt.AlignCenter)
             self.services_labels[icon].setObjectName(icon)
             self.layout.addWidget(self.services_labels[icon], 3, row, 1, 1)
             self.layout.setAlignment(self.services_labels[icon], Qt.AlignCenter)
