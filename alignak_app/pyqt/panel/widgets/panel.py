@@ -35,6 +35,7 @@ from alignak_app.pyqt.panel.widgets.services import ServicesQWidget
 from alignak_app.pyqt.panel.widgets.dashboard import DashboardQWidget
 from alignak_app.pyqt.common.frames import AppQFrame, get_frame_separator
 from alignak_app.pyqt.panel.widgets.host import HostQWidget
+from alignak_app.pyqt.dock.widgets.events import EventItem
 
 logger = getLogger(__name__)
 
@@ -48,6 +49,7 @@ class PanelQWidget(QWidget):
         super(PanelQWidget, self).__init__(parent)
         self.setStyleSheet(app_css)
         self.setWindowIcon(QIcon(get_image('icon')))
+        self.setAcceptDrops(True)
         # Fields
         self.layout = QVBoxLayout()
         self.line_search = QLineEdit()
@@ -214,3 +216,42 @@ class PanelQWidget(QWidget):
         else:
             self.host_widget.hide()
             self.services_widget.hide()
+
+    def dragMoveEvent(self, event):
+        """
+        Override dragMoveEvent.
+         Only accept EventItem() objects who are "spied_on" and not already spied
+
+        :param event: event triggered when something move
+        """
+
+        if isinstance(event.source().currentItem(), EventItem):
+            if event.source().currentItem().spied_on:
+                event.accept()
+            else:
+                event.ignore()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        """
+        Override dropEvent.
+         Get dropped item data, create a new one, and delete the one who is in EventsQWidget
+
+        :param event: event triggered when something is dropped
+        """
+
+        host = data_manager.get_item('host', '_id', event.source().currentItem().host)
+
+        self.line_search.setText(host.name)
+        self.display_host()
+
+    def dragEnterEvent(self, event):
+        """
+        Override dragEnterEvent.
+
+        :param event: event triggered when something enter
+        """
+
+        event.accept()
+        event.acceptProposedAction()
