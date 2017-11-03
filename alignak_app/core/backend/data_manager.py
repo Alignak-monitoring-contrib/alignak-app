@@ -297,6 +297,8 @@ class DataManager(object):
             services_total += synth.data['services_total']
             services_problems += synth.data['services_critical_soft']
             services_problems += synth.data['services_critical_hard']
+            services_problems += synth.data['services_warning_soft']
+            services_problems += synth.data['services_warning_hard']
 
         items_and_problems = {
             'host': {
