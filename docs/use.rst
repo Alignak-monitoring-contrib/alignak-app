@@ -31,16 +31,27 @@ You'll also see a resume of number of problems for hosts and services monitored 
 Events part
 ~~~~~~~~~~~
 
-This is one of the most interesting features of the application. You'll receive many informations in this part like alignak notifications, actions informations (like acknowledge or modifications you do in App).
-You will also be able to drag and drop a notification from a host in the container below (Spy Hosts). Then App will send you regular notifications about that host.
+This is one of the most interesting features of the application. You'll receive many informations in this part like alignak notifications, acknowledge or modifications you do in App.
 
-Some notifications will be temporary but some others not. If you want to remove an event, simply double click on it.
+**Events:**
+
+  * If you want to remove an event, simply double click on it.
+  * Full events text can be see in tooltip when you keep mouse over.
+  * Some events are temporary and remove themselves.
+  * Some events can be drag and drop (see below)
+
+**Drag & Drop:**
+
+  * Events from a host or a service can be drag to in "Spy Hosts". Then App will send you regular notifications about that host.
+  * Drag and drop events also in host synthesis view (Panel), to display host instantly !
 
 Spy part
 ~~~~~~~~
 
-This is where you can find the list of hosts that you spy on. You can spy on as many hosts as you want.
-To stop spying on a host, just double click on it.
+This is where you can find the list of hosts that you spy on.
+
+  * You can spy on as many hosts as you want.
+  * To stop spying on a host, just double click on it, host will be removed.
 
 App Panel
 ---------
