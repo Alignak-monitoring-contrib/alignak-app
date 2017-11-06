@@ -21,10 +21,12 @@ Alignak part
 This part of dock contains informations about your connection to backend and the states of Alignak daemons.
 If you've some connection problems or if backend is restart, you'll see icons change.
 
+You can also see each daemon state by clicking on button with Alignak icon.
+
 Livestate part
 ~~~~~~~~~~~~~~
 
-In the livestate part, you'll have many buttons whi let you see: hosts, your user configuration, problems view (available soon) and a button to reach your WebUI if available.
+In the livestate part, you'll have many buttons who let you see: hosts, user configuration, problems view (available soon) and a button to reach your WebUI if available.
 
 You'll also see a resume of number of problems for hosts and services monitored in your backend.
 
@@ -43,7 +45,7 @@ This is one of the most interesting features of the application. You'll receive 
 **Drag & Drop:**
 
   * Events from a host or a service can be drag to in "Spy Hosts". Then App will send you regular notifications about that host.
-  * Drag and drop events also in host synthesis view (Panel), to display host instantly !
+  * Events can also be move to host synthesis view (Panel), to display host instantly.
 
 Spy part
 ~~~~~~~~
@@ -51,7 +53,7 @@ Spy part
 This is where you can find the list of hosts that you spy on.
 
   * You can spy on as many hosts as you want.
-  * To stop spying on a host, just double click on it, host will be removed.
+  * To stop spying on a host, just double click on it, host will be removed from list.
 
 App Panel
 ---------
@@ -66,3 +68,8 @@ When you select a host, its information and the list of its services will be dis
 You will then be able to perform various actions such as seeing the details of each of its services, acknowledging a problem or planning a downtime for an item (service or host).
 
 You will also have access to the host's history. It may take a while to be available. It depends on the number of hosts monitored in backend.
+
+WebUI
+-----
+
+App also have lot of buttons which bring you to WebUI. You've to set WebUI url in configuration file to make this buttons available.

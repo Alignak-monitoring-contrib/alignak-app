@@ -206,3 +206,29 @@ class DashboardQWidget(QWidget):
                 logger.error(e)
             item_text = '%d (%.01f%%)' % (service_nb, percent)
             self.services_labels[icon].setText(item_text)
+
+        for button in self.hosts_buttons:
+            if get_app_config('Alignak', 'webui'):
+                self.hosts_buttons[button].setEnabled(True)
+                self.hosts_buttons[button].setToolTip(
+                    _('Hosts %s. See in WebUI ?') % button.replace('hosts_', '').upper()
+                )
+            else:
+                # self.hosts_buttons[button].setEnabled(False)
+                self.hosts_buttons[button].setToolTip(
+                    _("Hosts %s. WebUI is not set in configuration file.") % button.replace(
+                        'hosts_', '').upper()
+                )
+
+        for button in self.services_buttons:
+            if get_app_config('Alignak', 'webui'):
+                self.services_buttons[button].setEnabled(True)
+                self.services_buttons[button].setToolTip(
+                    _('Services %s. See in WebUI ?') % button.replace('services_', '').upper()
+                )
+            else:
+                # self.services_buttons[button].setEnabled(False)
+                self.services_buttons[button].setToolTip(
+                    _("Services %s. WebUI is not set in configuration file.") % button.replace(
+                        'services_', '').upper()
+                )
