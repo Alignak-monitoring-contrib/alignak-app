@@ -167,18 +167,18 @@ class HostQWidget(QWidget):
         Create AckQDialog and manage acknowledge
 
         :param host_item: Host item
-        :type host_item: alignak_app.models.item_host.Host
+        :type host_item: alignak_app.core.models.host.Host
         """
 
         user = data_manager.database['user']
 
         comment = _('Host %s acknowledged by %s, from Alignak-app') % (
-            host_item.name,
+            host_item.get_display_name(),
             user.name
         )
 
         ack_dialog = AckQDialog()
-        ack_dialog.initialize('host', host_item.name, comment)
+        ack_dialog.initialize('host', host_item.get_display_name(), comment)
 
         if ack_dialog.exec_() == QDialog.Accepted:
             sticky = ack_dialog.sticky
@@ -197,7 +197,7 @@ class HostQWidget(QWidget):
 
             post = app_backend.post('actionacknowledge', data)
 
-            send_event('ACK', _('Acknowledge for %s is done') % host_item.name)
+            send_event('ACK', _('Acknowledge for %s is done') % host_item.get_display_name())
             data_manager.update_item_data(
                 'host',
                 host_item.item_id,
@@ -217,15 +217,18 @@ class HostQWidget(QWidget):
         Create AckQDialog and manage acknowledge
 
         :param host_item: Host item
-        :type host_item: alignak_app.models.item_host.Host
+        :type host_item: alignak_app.core.models.host.Host
         """
 
         user = data_manager.database['user']
 
-        comment = _('Schedule downtime by %s, from Alignak-app') % user.name
+        comment = _('Schedule downtime on %s by %s, from Alignak-app') % (
+            host_item.get_display_name(),
+            user.name
+        )
 
         downtime_dialog = DownQDialog()
-        downtime_dialog.initialize('host', host_item.name, comment)
+        downtime_dialog.initialize('host', host_item.get_display_name(), comment)
 
         if downtime_dialog.exec_() == QDialog.Accepted:
             fixed = downtime_dialog.fixed
@@ -248,7 +251,7 @@ class HostQWidget(QWidget):
 
             post = app_backend.post('actiondowntime', data)
 
-            send_event('DOWNTIME', _('Downtime for %s is done') % host_item.name)
+            send_event('DOWNTIME', _('Downtime for %s is done') % host_item.get_display_name())
             data_manager.update_item_data(
                 'host',
                 host_item.item_id,
@@ -388,7 +391,7 @@ class HostQWidget(QWidget):
                     {'host': self.host_item, 'services': self.service_items}
                 )['message']
             )
-            self.labels['host_name'].setText('%s' % self.host_item.name.capitalize())
+            self.labels['host_name'].setText('%s' % self.host_item.get_display_name())
 
             icon_name = get_icon_name(
                 'host',

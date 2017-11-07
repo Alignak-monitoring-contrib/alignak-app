@@ -95,3 +95,17 @@ class Service(ItemModel):
             'services_ok', 'services_warning', 'services_critical', 'services_unknown',
             'services_unreachable', 'acknowledge', 'downtime'
         ]
+
+    def get_display_name(self):
+        """
+        Return alias or name if available
+
+        :return: name or alias
+        :rtype: str
+        """
+
+        if self.data['alias']:
+            return self.data['alias'].capitalize()
+        else:
+            return self.data['name'].capitalize()
+

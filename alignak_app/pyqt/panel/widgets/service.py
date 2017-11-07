@@ -180,7 +180,7 @@ class ServiceDataQWidget(QWidget):
         Create AckQDialog and manage acknowledge
 
         :param service_item: Service item
-        :type service_item: alignak_app.models.item_service.Service
+        :type service_item: alignak_app.core.models.service.Service
         :param host_id: id of attached host
         :type host_id: str
         """
@@ -188,7 +188,7 @@ class ServiceDataQWidget(QWidget):
         user = data_manager.database['user']
 
         comment = _('Service %s acknowledged by %s, from Alignak-app') % (
-            service_item.name,
+            service_item.get_display_name(),
             user.name
         )
 
@@ -212,7 +212,7 @@ class ServiceDataQWidget(QWidget):
 
             post = app_backend.post('actionacknowledge', data)
 
-            send_event('ACK', _('Acknowledge for %s is done') % service_item.name)
+            send_event('ACK', _('Acknowledge for %s is done') % service_item.get_display_name())
             # Update Item
             data_manager.update_item_data(
                 'service',
@@ -233,14 +233,16 @@ class ServiceDataQWidget(QWidget):
         Create AckQDialog and manage acknowledge
 
         :param service_item: Service item
-        :type service_item: alignak_app.models.item_service.Service
+        :type service_item: alignak_app.core.models.service.Service
         :param host_id: id of attached host
         :type host_id: str
         """
 
         user = data_manager.database['user']
 
-        comment = _('Downtime on %s by %s, from Alignak-app') % (service_item.name, user.name)
+        comment = _('Schedule downtime on %s by %s, from Alignak-app') % (
+            service_item.get_display_name(), user.name
+        )
 
         downtime_dialog = DownQDialog()
         downtime_dialog.initialize('service', service_item.name, comment)
@@ -266,7 +268,7 @@ class ServiceDataQWidget(QWidget):
 
             post = app_backend.post('actiondowntime', data)
 
-            send_event('DOWNTIME', _('Downtime for %s is done') % service_item.name)
+            send_event('DOWNTIME', _('Downtime for %s is done') % service_item.get_display_name())
             data_manager.update_item_data(
                 'service',
                 service_item.item_id,
@@ -286,7 +288,7 @@ class ServiceDataQWidget(QWidget):
         Update ServiceDataQWidget
 
         :param service: Service item with its data
-        :type service: alignak_app.core.items.service.Service
+        :type service: alignak_app.core.models.service.Service
         :param host_id: id of attached host
         :type host_id: str
         """
@@ -305,7 +307,7 @@ class ServiceDataQWidget(QWidget):
 
         self.labels['service_icon'].setPixmap(QPixmap(icon_pixmap))
         self.labels['service_icon'].setToolTip(self.service_item.get_tooltip())
-        self.labels['service_name'].setText('%s' % self.service_item.name)
+        self.labels['service_name'].setText('%s' % self.service_item.get_display_name())
 
         since_last_check = get_time_diff_since_last_timestamp(
             self.service_item.data['ls_last_check']

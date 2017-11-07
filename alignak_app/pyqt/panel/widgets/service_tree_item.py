@@ -49,12 +49,12 @@ class ServicesTreeItem(QTreeWidgetItem):  # pylint: disable=too-few-public-metho
         Initialize the QTreeWidgetItem
 
         :param service_item: service item with its data
-        :type service_item: alignak_app.models.item_service.Service
+        :type service_item: alignak_app.core.models.service.Service
         """
 
         self.service_item = service_item
         self.service_id = service_item.item_id
-        self.setText(0, self.service_item.name)
+        self.setText(0, self.service_item.get_display_name())
 
         icon_name = get_icon_name(
             'service',
@@ -80,7 +80,7 @@ class ServicesTreeItem(QTreeWidgetItem):  # pylint: disable=too-few-public-metho
 
         service = data_manager.get_item('service', '_id', self.service_id)
 
-        self.setData(0, 0, service.name)
+        self.setData(0, 0, service.get_display_name())
         self.setData(0, 1, QIcon(get_image(icon_name)))
 
         self.service_item = service

@@ -72,3 +72,16 @@ class Host(ItemModel):
         """
 
         return ['hosts_up', 'hosts_unreachable', 'hosts_down', 'acknowledge', 'downtime']
+
+    def get_display_name(self):
+        """
+        Return alias or name if available
+
+        :return: name or alias
+        :rtype: str
+        """
+
+        if self.data['alias']:
+            return self.data['alias'].capitalize()
+        else:
+            return self.data['name'].capitalize()
