@@ -231,7 +231,7 @@ def get_host_msg_and_event_type(host_and_services):
             'event_type': 'WARNING'
         },
         {
-            'message': _('TODO: %s, some services may be in critical condition !') % (
+            'message': _('%s, some services may be in critical condition !') % (
                 host_msg
             ),
             'event_type': 'DOWN'

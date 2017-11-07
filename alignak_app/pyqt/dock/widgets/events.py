@@ -23,11 +23,11 @@
     Events QWidgets manage creation of events
 """
 
-from PyQt5.Qt import QVBoxLayout, QColor
+from PyQt5.Qt import QVBoxLayout, QColor, QIcon
 from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget, QListWidgetItem, QSize, QTimer
 
 from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.utils.config import app_css, get_app_config
+from alignak_app.core.utils.config import app_css, get_app_config, get_image
 
 
 class EventItem(QListWidgetItem):
@@ -70,6 +70,9 @@ class EventItem(QListWidgetItem):
 
         self.setSizeHint(QSize(self.sizeHint().width(), 50))
 
+        if 'TODO' in event_type:
+            self.setIcon(QIcon(get_image('todo')))
+
     def close_item(self):
         """
         Hide items when timer is finished
@@ -95,7 +98,8 @@ class EventItem(QListWidgetItem):
             '#e67e22': ['WARNING', 'UNREACHABLE', 'WARN'],
             '#e74c3c': ['DOWN', 'CRITICAL', 'ALERT'],
             '#f39c12': ['ACK'],
-            '#f1c40f': ['DOWNTIME']
+            '#f1c40f': ['DOWNTIME'],
+            '#e99754': ['TODO']
         }
 
         for key, _ in available_colors.items():

@@ -129,7 +129,7 @@ class DockQWidget(QWidget):
             msg_and_event_type = get_host_msg_and_event_type(host_and_services)
 
             get_events_widget().add_event(
-                msg_and_event_type['event_type'],
+                'TODO',
                 msg_and_event_type['message'],
                 timer=False,
                 spied_on=True,
