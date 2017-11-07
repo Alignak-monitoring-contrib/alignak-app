@@ -72,6 +72,10 @@ class EventItem(QListWidgetItem):
 
         if 'TODO' in event_type:
             self.setIcon(QIcon(get_image('todo')))
+        elif self.host:
+            self.setIcon(QIcon(get_image('event')))
+        else:
+            pass
 
     def close_item(self):
         """
@@ -99,7 +103,7 @@ class EventItem(QListWidgetItem):
             '#e74c3c': ['DOWN', 'CRITICAL', 'ALERT'],
             '#f39c12': ['ACK'],
             '#f1c40f': ['DOWNTIME'],
-            '#e99754': ['TODO']
+            '#fd9205': ['TODO']
         }
 
         for key, _ in available_colors.items():
