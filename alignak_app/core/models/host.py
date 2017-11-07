@@ -83,5 +83,5 @@ class Host(ItemModel):
 
         if self.data['alias']:
             return self.data['alias'].capitalize()
-        else:
-            return self.data['name'].capitalize()
+
+        return self.data['name'].capitalize()

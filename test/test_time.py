@@ -41,4 +41,4 @@ class TestTime(unittest2.TestCase):
         under_test = get_time_diff_since_last_timestamp(float())
 
         self.assertIsInstance(under_test, str)
-        self.assertTrue('n/a' in under_test)
+        self.assertEqual('<span style="color: red;">Not yet checked!</span>', under_test)

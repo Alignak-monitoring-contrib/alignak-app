@@ -65,6 +65,7 @@ class TestServicesQWidget(unittest2.TestCase):
             '_id%d' % i,
             {
                 'name': 'service%d' % i,
+                'alias': 'Service %d' % i,
                 'host': '_id%d' % i,
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
@@ -79,6 +80,7 @@ class TestServicesQWidget(unittest2.TestCase):
             'other_id2%d' % i,
             {
                 'name': 'other_service2%d' % i,
+                'alias': 'Other Service %d' % i,
                 'host': '_id%d' % i,
                 'ls_acknowledged': False,
                 'ls_downtimed': False,

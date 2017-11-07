@@ -64,6 +64,7 @@ class TestServiceDataQWidget(unittest2.TestCase):
             '_id%d' % i,
             {
                 'name': 'service%d' % i,
+                'alias': 'service %d' % i,
                 'host': '_id%d' % i,
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
