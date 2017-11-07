@@ -27,8 +27,6 @@ import time
 
 from logging import getLogger
 
-from datetime import datetime
-
 logger = getLogger(__name__)
 
 
@@ -43,7 +41,8 @@ def get_time_diff_since_last_timestamp(timestamp):  # pragma: no cover - not tes
     """
 
     if not timestamp:
-        return 'n/a'
+        msg = _('Not yet checked!')
+        return '<span style="color: red;">%s</span>' % msg
 
     time_delta = int(time.time()) - int(timestamp)
 
