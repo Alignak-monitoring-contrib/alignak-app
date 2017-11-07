@@ -23,6 +23,8 @@
     Events QWidgets manage creation of events
 """
 
+import time
+
 from PyQt5.Qt import QVBoxLayout, QColor, QIcon
 from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget, QListWidgetItem, QSize, QTimer
 
@@ -64,7 +66,9 @@ class EventItem(QListWidgetItem):
             self.timer = QTimer()
 
         self.setText("%s" % msg)
-        self.setToolTip(msg)
+        send_at = time.strftime("%a, %d %b %Y %H:%M:%S")
+        msg_to_send = '%s. (Send at %s)' % (msg, send_at)
+        self.setToolTip(msg_to_send)
         self.setBackground(QColor(self.get_color_event(event_type)))
         self.setForeground(QColor("#000"))
 
