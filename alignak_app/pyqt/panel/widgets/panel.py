@@ -26,7 +26,7 @@
 from logging import getLogger
 
 from PyQt5.Qt import QApplication, QPushButton, QCompleter, QLineEdit, QIcon, QHBoxLayout
-from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget
+from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget, QTabWidget
 
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.utils.config import app_css, get_image
@@ -36,6 +36,7 @@ from alignak_app.pyqt.panel.widgets.dashboard import DashboardQWidget
 from alignak_app.pyqt.common.frames import AppQFrame, get_frame_separator
 from alignak_app.pyqt.panel.widgets.host import HostQWidget
 from alignak_app.pyqt.dock.widgets.events import EventItem
+from alignak_app.pyqt.dock.widgets.problems import ProblemsQWidget
 
 logger = getLogger(__name__)
 
@@ -47,6 +48,7 @@ class PanelQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(PanelQWidget, self).__init__(parent)
+        self.tab_widget = QTabWidget()
         self.setStyleSheet(app_css)
         self.setWindowIcon(QIcon(get_image('icon')))
         self.setAcceptDrops(True)
@@ -80,20 +82,13 @@ class PanelQWidget(QWidget):
         self.layout.addWidget(self.dashboard_widget)
         self.layout.addWidget(get_frame_separator())
 
-        # Search widget
-        search_widget = self.get_search_widget()
-        self.layout.addWidget(search_widget)
+        self.tab_widget.addTab(self.get_synthesis_widget(), "Host Synthesis")
 
-        # Host widget
-        self.host_widget.initialize()
-        self.layout.addWidget(self.host_widget)
+        problems_widget = ProblemsQWidget()
+        problems_widget.initialize()
+        self.tab_widget.addTab(problems_widget, "Problems")
 
-        # Services widget
-        self.services_widget.initialize()
-        self.layout.addWidget(self.services_widget)
-
-        # Align all widgets to Top
-        self.layout.setAlignment(Qt.AlignTop)
+        self.layout.addWidget(self.tab_widget)
 
         # Apply size and position on AppQWidget
         screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
@@ -109,6 +104,35 @@ class PanelQWidget(QWidget):
         self.services_widget.hide()
 
         self.spy_widget = spy_widget
+
+    def get_synthesis_widget(self):
+        """
+        Return synthesis QWidget()
+
+        :return: synthesis QWidget()
+        :rtype: QWidget
+        """
+
+        synthesis_widget = QWidget()
+        synthesis_layout = QVBoxLayout()
+        synthesis_widget.setLayout(synthesis_layout)
+
+        # Search widget
+        search_widget = self.get_search_widget()
+        synthesis_layout.addWidget(search_widget)
+
+        # Host widget
+        self.host_widget.initialize()
+        synthesis_layout.addWidget(self.host_widget)
+
+        # Services widget
+        self.services_widget.initialize()
+        synthesis_layout.addWidget(self.services_widget)
+
+        # Align all widgets to Top
+        synthesis_layout.setAlignment(Qt.AlignTop)
+
+        return synthesis_widget
 
     def get_search_widget(self):
         """

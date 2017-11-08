@@ -48,7 +48,6 @@ class ButtonsQWidget(QWidget):
         # Fields
         self.user_widget = UserQWidget()
         self.panel_widget = PanelQWidget()
-        self.problems_widget = ProblemsQWidget()
         self.update_timer = QTimer()
         self.webui_btn = QPushButton()
         self.profile_btn = QPushButton()
@@ -75,7 +74,6 @@ class ButtonsQWidget(QWidget):
         self.host_btn.clicked.connect(self.open_host_widget)
         layout.addWidget(self.host_btn)
 
-        self.problems_widget.initialize()
         self.problems_btn.setIcon(QIcon(get_image('problem')))
         self.problems_btn.setFixedSize(40, 40)
         self.problems_btn.setToolTip(_('See current problems'))
@@ -122,6 +120,7 @@ class ButtonsQWidget(QWidget):
         """
 
         self.panel_widget.app_widget.show()
+        self.panel_widget.tab_widget.setCurrentIndex(0)
 
     def open_problems_widget(self):
         """
@@ -129,7 +128,8 @@ class ButtonsQWidget(QWidget):
 
         """
 
-        self.problems_widget.app_frame.show_widget()
+        self.panel_widget.app_widget.show()
+        self.panel_widget.tab_widget.setCurrentIndex(1)
 
     def open_user_widget(self):
         """

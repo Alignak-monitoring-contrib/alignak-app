@@ -50,7 +50,6 @@ class ProblemsQWidget(QWidget):
         # Fields
         self.headers_list = ['Item Type', 'Host', 'Service', 'State', 'Actions', 'Output']
         self.problems_title = QLabel()
-        self.app_frame = AppQFrame()
         self.layout = QVBoxLayout()
 
     def initialize(self):
@@ -74,10 +73,6 @@ class ProblemsQWidget(QWidget):
         self.problem_widget.setHorizontalHeaderLabels(self.headers_list)
         self.problem_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.layout.addWidget(self.problem_widget)
-
-        self.app_frame.initialize(_('Problems'))
-        self.app_frame.add_widget(self)
-        self.app_frame.setMinimumSize(1200, 800)
 
         self.update_problems_data()
 

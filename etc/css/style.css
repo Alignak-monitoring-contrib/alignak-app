@@ -174,10 +174,15 @@ QTableWidget {
     gridline-color: white;
 }
 
+QTableWidget::item {
+    border-width: 0px 0px 1px 0px;
+    border-color: #6c9cb3;
+    border-style: solid;
+}
+
 QHeaderView::section {
     background-color: #607d8b;
     color: white;
-    border-style: none;
 }
 
 /****** PANEL ******/
