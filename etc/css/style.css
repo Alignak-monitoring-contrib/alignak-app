@@ -170,6 +170,15 @@ QListWidget::item:selected {
     border-radius: 3px;
 }
 
+QTableWidget {
+    gridline-color: white;
+}
+
+QHeaderView::section {
+    background-color: #607d8b;
+    color: white;
+    border-style: none;
+}
 
 /****** PANEL ******/
 QPushButton#search {
