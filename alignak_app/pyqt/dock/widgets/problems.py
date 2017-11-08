@@ -104,34 +104,6 @@ class ProblemsQWidget(QWidget):
 
         return widget_title
 
-    def update_problems_data(self):
-        """
-        Update data of QTableWidget and problems title
-
-        """
-
-        problems_data = data_manager.get_problems()
-
-        self.problems_title.setText(
-            _('There are %d issues to manage (hosts: %d, services: %d)') % (
-                len(problems_data['problems']),
-                problems_data['hosts_nb'],
-                problems_data['services_nb']
-            )
-        )
-        self.problem_widget.setRowCount(len(problems_data['problems']))
-
-        row = 0
-        for item in problems_data['problems']:
-            table_items = self.get_table_items_problem(item)
-            self.problem_widget.setCellWidget(row, 0, table_items[0])
-            self.problem_widget.setItem(row, 1, table_items[1])
-            self.problem_widget.setItem(row, 2, table_items[2])
-            self.problem_widget.setItem(row, 3, table_items[3])
-            self.problem_widget.setCellWidget(row, 4, table_items[4])
-            self.problem_widget.setItem(row, 5, table_items[5])
-            row += 1
-
     # noinspection PyListCreation
     def get_table_items_problem(self, item):
         """
@@ -237,3 +209,31 @@ class ProblemsQWidget(QWidget):
         layout_actions.setAlignment(Qt.AlignCenter)
 
         return widget_actions
+
+    def update_problems_data(self):
+        """
+        Update data of QTableWidget and problems title
+
+        """
+
+        problems_data = data_manager.get_problems()
+
+        self.problems_title.setText(
+            _('There are %d problems to manage (hosts: %d, services: %d)') % (
+                len(problems_data['problems']),
+                problems_data['hosts_nb'],
+                problems_data['services_nb']
+            )
+        )
+        self.problem_widget.setRowCount(len(problems_data['problems']))
+
+        row = 0
+        for item in problems_data['problems']:
+            table_items = self.get_table_items_problem(item)
+            self.problem_widget.setCellWidget(row, 0, table_items[0])
+            self.problem_widget.setItem(row, 1, table_items[1])
+            self.problem_widget.setItem(row, 2, table_items[2])
+            self.problem_widget.setItem(row, 3, table_items[3])
+            self.problem_widget.setCellWidget(row, 4, table_items[4])
+            self.problem_widget.setItem(row, 5, table_items[5])
+            row += 1
