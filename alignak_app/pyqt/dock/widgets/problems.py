@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    DataManager manage alignak data provided by BackendQRunnable
+    Problems manage view of problems found in Alignak backend
 """
 
 from logging import getLogger

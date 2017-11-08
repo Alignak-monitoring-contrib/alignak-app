@@ -355,6 +355,9 @@ class DataManager(object):
                     problems.append(service)
                     services_nb += 1
 
+        problems = sorted(problems, key=lambda x: x.data['ls_state'], reverse=True)
+        problems = sorted(problems, key=lambda x: x.item_type)
+
         problems_data = {
             'hosts_nb': hosts_nb,
             'services_nb': services_nb,
