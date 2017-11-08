@@ -31,6 +31,7 @@ from PyQt5.Qt import QPushButton, QWidget, QIcon, QHBoxLayout, QTimer
 from alignak_app.core.utils.config import get_image, app_css, get_app_config, open_url
 
 from alignak_app.pyqt.dock.widgets.user import UserQWidget
+from alignak_app.pyqt.dock.widgets.problems import ProblemsQWidget
 from alignak_app.pyqt.panel.widgets.panel import PanelQWidget
 
 logger = getLogger(__name__)
@@ -47,6 +48,7 @@ class ButtonsQWidget(QWidget):
         # Fields
         self.user_widget = UserQWidget()
         self.panel_widget = PanelQWidget()
+        self.problems_widget = ProblemsQWidget()
         self.update_timer = QTimer()
         self.webui_btn = QPushButton()
         self.profile_btn = QPushButton()
@@ -73,10 +75,11 @@ class ButtonsQWidget(QWidget):
         self.host_btn.clicked.connect(self.open_host_widget)
         layout.addWidget(self.host_btn)
 
+        self.problems_widget.initialize()
         self.problems_btn.setIcon(QIcon(get_image('problem')))
         self.problems_btn.setFixedSize(40, 40)
-        self.problems_btn.setEnabled(False)
-        self.problems_btn.setToolTip(_('Problems View coming soon...'))
+        self.problems_btn.setToolTip(_('See current problems'))
+        self.problems_btn.clicked.connect(self.open_problems_widget)
         layout.addWidget(self.problems_btn)
 
         self.user_widget.initialize()
@@ -119,6 +122,14 @@ class ButtonsQWidget(QWidget):
         """
 
         self.panel_widget.app_widget.show()
+
+    def open_problems_widget(self):
+        """
+        Show ProblemsQWidget
+
+        """
+
+        self.problems_widget.app_frame.show_widget()
 
     def open_user_widget(self):
         """

@@ -317,6 +317,49 @@ class DataManager(object):
 
         return items_and_problems
 
+    def get_problems(self):
+        """
+        Return items who are in problem: hosts and services
+
+        :return: dict of items in problem, and number for each type of item
+        :rtype: dict
+        """
+
+        problems = []
+        hosts_nb = 0
+        services_nb = 0
+        for host in self.database['host']:
+            if host.data['ls_state'] == 'DOWN' and not \
+                    host.data['ls_acknowledged'] and not \
+                    host.data['ls_downtimed']:
+                problems.append(host)
+                hosts_nb += 1
+
+        for service in self.database['service']:
+            if service.data['ls_state'] == 'WARNING' and not \
+                    service.data['ls_acknowledged'] and not \
+                    service.data['ls_downtimed']:
+                problems.append(service)
+                services_nb += 1
+            if service.data['ls_state'] == 'CRITICAL'and not \
+                    service.data['ls_acknowledged'] and not \
+                    service.data['ls_downtimed']:
+                problems.append(service)
+                services_nb += 1
+            if service.data['ls_state'] == 'UNKNOWN'and not \
+                    service.data['ls_acknowledged'] and not \
+                    service.data['ls_downtimed']:
+                problems.append(service)
+                services_nb += 1
+
+        problems_data = {
+            'hosts_nb': hosts_nb,
+            'services_nb': services_nb,
+            'problems': problems
+        }
+
+        return problems_data
+
 
 # Creating "data_manager" variable.
 data_manager = DataManager()

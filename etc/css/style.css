@@ -40,6 +40,7 @@ QLabel#borderedtitle {
 
 QScrollBar {
     width: 10px;
+    height: 10px;
     background: white;
 }
 
@@ -47,12 +48,12 @@ QScrollBar:vertical {
     background: white;
 }
 
-QScrollBar::handle:vertical {
-    background: #3b4155;
+QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+    background: #3884c3;
     border-radius: 5px;
 }
 
-QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical, QScrollBar::left-arrow:horizontal, QScrollBar::right-arrow:horizontal {
     border: none;
     background: none;
     color: none;
@@ -60,7 +61,7 @@ QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
     width: 0px;
 }
 
-QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical, QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
     border: none;
     background: none;
 }
