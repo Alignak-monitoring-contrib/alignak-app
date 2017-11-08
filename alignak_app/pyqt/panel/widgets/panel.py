@@ -30,13 +30,12 @@ from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget, QTabWidget
 
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.utils.config import app_css, get_image
-
-from alignak_app.pyqt.panel.widgets.services import ServicesQWidget
-from alignak_app.pyqt.panel.widgets.dashboard import DashboardQWidget
 from alignak_app.pyqt.common.frames import AppQFrame, get_frame_separator
-from alignak_app.pyqt.panel.widgets.host import HostQWidget
 from alignak_app.pyqt.dock.widgets.events import EventItem
-from alignak_app.pyqt.dock.widgets.problems import ProblemsQWidget
+from alignak_app.pyqt.panel.widgets.dashboard import DashboardQWidget
+from alignak_app.pyqt.panel.widgets.host import HostQWidget
+from alignak_app.pyqt.panel.widgets.problems import ProblemsQWidget
+from alignak_app.pyqt.panel.widgets.services import ServicesQWidget
 
 logger = getLogger(__name__)
 
@@ -82,11 +81,11 @@ class PanelQWidget(QWidget):
         self.layout.addWidget(self.dashboard_widget)
         self.layout.addWidget(get_frame_separator())
 
-        self.tab_widget.addTab(self.get_synthesis_widget(), "Host Synthesis")
+        self.tab_widget.addTab(self.get_synthesis_widget(), _("Host Synthesis"))
 
         problems_widget = ProblemsQWidget()
         problems_widget.initialize()
-        self.tab_widget.addTab(problems_widget, "Problems")
+        self.tab_widget.addTab(problems_widget, _("Problems"))
 
         self.layout.addWidget(self.tab_widget)
 
