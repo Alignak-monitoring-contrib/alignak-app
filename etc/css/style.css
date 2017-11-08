@@ -49,7 +49,7 @@ QScrollBar:vertical {
 }
 
 QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
-    background: #3884c3;
+    background: #3b4155;
     border-radius: 5px;
 }
 
