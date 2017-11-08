@@ -11,6 +11,7 @@ python-targets:
 pyflakes:
   disable:
     - F821
+    - E0611
 ignore-paths:
   - bin
   - docs
