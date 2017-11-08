@@ -106,6 +106,8 @@ class TestTrayIcon(unittest2.TestCase):
         """Build Menu add QActions"""
 
         init_event_widget()
+        data_manager.database['host'] = []
+        data_manager.database['service'] = []
 
         for key in self.user_key:
             if key == 'host_notifications_enabled' or key == 'service_notifications_enabled':

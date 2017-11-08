@@ -38,6 +38,9 @@ logger = getLogger(__name__)
 
 
 class ProblemsQWidget(QWidget):
+    """
+        Class who create Problems QWidget
+    """
 
     def __init__(self, parent=None):
         super(ProblemsQWidget, self).__init__(parent)

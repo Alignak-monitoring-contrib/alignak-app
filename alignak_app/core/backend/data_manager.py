@@ -328,29 +328,32 @@ class DataManager(object):
         problems = []
         hosts_nb = 0
         services_nb = 0
-        for host in self.database['host']:
-            if host.data['ls_state'] == 'DOWN' and not \
-                    host.data['ls_acknowledged'] and not \
-                    host.data['ls_downtimed']:
-                problems.append(host)
-                hosts_nb += 1
 
-        for service in self.database['service']:
-            if service.data['ls_state'] == 'WARNING' and not \
-                    service.data['ls_acknowledged'] and not \
-                    service.data['ls_downtimed']:
-                problems.append(service)
-                services_nb += 1
-            if service.data['ls_state'] == 'CRITICAL'and not \
-                    service.data['ls_acknowledged'] and not \
-                    service.data['ls_downtimed']:
-                problems.append(service)
-                services_nb += 1
-            if service.data['ls_state'] == 'UNKNOWN'and not \
-                    service.data['ls_acknowledged'] and not \
-                    service.data['ls_downtimed']:
-                problems.append(service)
-                services_nb += 1
+        if self.database['host']:
+            for host in self.database['host']:
+                if host.data['ls_state'] == 'DOWN' and not \
+                        host.data['ls_acknowledged'] and not \
+                        host.data['ls_downtimed']:
+                    problems.append(host)
+                    hosts_nb += 1
+
+        if self.database['service']:
+            for service in self.database['service']:
+                if service.data['ls_state'] == 'WARNING' and not \
+                        service.data['ls_acknowledged'] and not \
+                        service.data['ls_downtimed']:
+                    problems.append(service)
+                    services_nb += 1
+                if service.data['ls_state'] == 'CRITICAL'and not \
+                        service.data['ls_acknowledged'] and not \
+                        service.data['ls_downtimed']:
+                    problems.append(service)
+                    services_nb += 1
+                if service.data['ls_state'] == 'UNKNOWN'and not \
+                        service.data['ls_acknowledged'] and not \
+                        service.data['ls_downtimed']:
+                    problems.append(service)
+                    services_nb += 1
 
         problems_data = {
             'hosts_nb': hosts_nb,
