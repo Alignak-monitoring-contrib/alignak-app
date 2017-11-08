@@ -48,6 +48,8 @@ class ProblemsQWidget(QWidget):
         self.problem_widget = QTableWidget()
         self.setWindowIcon(QIcon(get_image('icon')))
         # Fields
+        self.headers_list = ['Item Type', 'Host', 'Service', 'State', 'Actions', 'Output']
+        self.problems_title = QLabel()
         self.app_frame = AppQFrame()
         self.layout = QVBoxLayout()
 
@@ -58,26 +60,66 @@ class ProblemsQWidget(QWidget):
         """
 
         self.setLayout(self.layout)
-        problems_data = data_manager.get_problems()
-        headers_list = ['Item Type', 'Host', 'Service', 'State', 'Actions', 'Output']
 
-        problems_title = QLabel(
+        self.layout.addWidget(self.get_problems_widget_title())
+
+        self.problem_widget.verticalHeader().hide()
+        self.problem_widget.verticalHeader().setDefaultSectionSize(40)
+        self.problem_widget.setColumnCount(len(self.headers_list))
+        self.problem_widget.setColumnWidth(1, 150)
+        self.problem_widget.setColumnWidth(2, 150)
+        self.problem_widget.setColumnWidth(5, 600)
+        self.problem_widget.setSortingEnabled(True)
+        self.problem_widget.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)
+        self.problem_widget.setHorizontalHeaderLabels(self.headers_list)
+        self.problem_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.layout.addWidget(self.problem_widget)
+
+        self.app_frame.initialize(_('Problems'))
+        self.app_frame.add_widget(self)
+        self.app_frame.setMinimumSize(1200, 800)
+
+        self.update_problems_data()
+
+    def get_problems_widget_title(self):
+        """
+        Return QWidget title with number of problems and refresh QPushButton
+
+        :return: QWidget with number of problems
+        :rtype: QWidget
+        """
+
+        widget_title = QWidget()
+        layout_title = QHBoxLayout()
+        widget_title.setLayout(layout_title)
+
+        self.problems_title.setObjectName('title')
+        layout_title.addWidget(self.problems_title)
+
+        refresh_btn = QPushButton(_('Refresh'))
+        refresh_btn.setObjectName('search')
+        refresh_btn.setFixedSize(120, 30)
+        refresh_btn.clicked.connect(self.update_problems_data)
+        layout_title.addWidget(refresh_btn)
+
+        return widget_title
+
+    def update_problems_data(self):
+        """
+        Update data of QTableWidget and problems title
+
+        """
+
+        problems_data = data_manager.get_problems()
+
+        self.problems_title.setText(
             _('There are %d issues to manage (hosts: %d, services: %d)') % (
                 len(problems_data['problems']),
                 problems_data['hosts_nb'],
                 problems_data['services_nb']
             )
         )
-        problems_title.setObjectName('title')
-        self.layout.addWidget(problems_title)
-
-        self.problem_widget.verticalHeader().hide()
-        self.problem_widget.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)
-        self.problem_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.problem_widget.setSortingEnabled(True)
-        self.problem_widget.setColumnCount(len(headers_list))
         self.problem_widget.setRowCount(len(problems_data['problems']))
-        self.problem_widget.setHorizontalHeaderLabels(headers_list)
 
         row = 0
         for item in problems_data['problems']:
@@ -89,16 +131,6 @@ class ProblemsQWidget(QWidget):
             self.problem_widget.setCellWidget(row, 4, table_items[4])
             self.problem_widget.setItem(row, 5, table_items[5])
             row += 1
-
-        self.problem_widget.verticalHeader().setDefaultSectionSize(40)
-        self.problem_widget.setColumnWidth(1, 150)
-        self.problem_widget.setColumnWidth(2, 150)
-        self.problem_widget.setColumnWidth(5, 600)
-
-        self.layout.addWidget(self.problem_widget)
-        self.app_frame.initialize(_('Problems'))
-        self.app_frame.add_widget(self)
-        self.app_frame.setMinimumSize(1000, self.problem_widget.height())
 
     # noinspection PyListCreation
     def get_table_items_problem(self, item):
