@@ -193,7 +193,7 @@ class DownQDialog(QDialog):
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
 
-        main_layout.addWidget(get_logo_widget(self), _('Request Downtime'))
+        main_layout.addWidget(get_logo_widget(self, _('Request Downtime')))
 
         downtime_widget = QWidget()
         downtime_widget.setObjectName('dialog')

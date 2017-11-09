@@ -56,7 +56,7 @@ class TestCommonQWidget(unittest2.TestCase):
         self.assertIsNone(under_test.layout())
         self.assertEqual('app_widget', under_test.objectName())
 
-        under_test.initialize(test_widget)
+        under_test.initialize(test_widget, '')
 
         self.assertIsInstance(under_test, LogoQWidget)
         self.assertIsNotNone(under_test.layout())
