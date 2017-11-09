@@ -64,7 +64,7 @@ class PasswordQDialog(QDialog):
         main_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(main_layout)
 
-        main_layout.addWidget(get_logo_widget(self))
+        main_layout.addWidget(get_logo_widget(self, _('Edit Password')))
 
         pass_title = QLabel(_("Please type a new PASSWORD:"))
         main_layout.addWidget(pass_title)

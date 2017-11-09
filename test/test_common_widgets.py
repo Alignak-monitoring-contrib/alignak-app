@@ -67,7 +67,7 @@ class TestCommonQWidget(unittest2.TestCase):
 
         test_widget = QWidget()
 
-        under_test = get_logo_widget(test_widget)
+        under_test = get_logo_widget(test_widget, '')
 
         self.assertIsInstance(under_test, LogoQWidget)
         self.assertIsNotNone(under_test.layout())

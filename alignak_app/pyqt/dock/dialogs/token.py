@@ -60,7 +60,7 @@ class TokenQDialog(QDialog):
         main_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(main_layout)
 
-        main_layout.addWidget(get_logo_widget(self))
+        main_layout.addWidget(get_logo_widget(self, _('See Token')))
         main_layout.addWidget(self.get_token_widget())
 
     def get_token_widget(self):

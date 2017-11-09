@@ -23,7 +23,7 @@
     Utils QWidget manage global QWidgets used by Alignak-app
 """
 
-from PyQt5.Qt import QPushButton, QHBoxLayout, QApplication, QWidget, QIcon, QLabel, QPixmap
+from PyQt5.Qt import QPushButton, QHBoxLayout, QApplication, QWidget, QIcon, QLabel
 from PyQt5.Qt import QStyleOption, QStyle, QPainter
 
 from alignak_app.core.utils.config import get_image, app_css
@@ -40,23 +40,22 @@ class LogoQWidget(QWidget):
         self.setObjectName('app_widget')
         self.setStyleSheet(app_css)
 
-    def initialize(self, child_widget):
+    def initialize(self, child_widget, title):
         """
         Initialize QWidget
 
         :param child_widget: widget child of LogoQWidget, needed for action button and layout
         :type child_widget: QWidget
+        :param title: title of widget
+        :type title: str
         """
 
         logo_layout = QHBoxLayout()
         self.setLayout(logo_layout)
 
         logo_label = QLabel()
-        logo_label.setPixmap(QPixmap(get_image('alignak')))
         logo_label.setObjectName('widget_title')
-        logo_label.setFixedSize(121, 35)
-        logo_label.setScaledContents(True)
-
+        logo_label.setText('<h4>%s</h4>' % title)
         logo_layout.addWidget(logo_label, 0)
 
         minimize_btn = QPushButton()
@@ -90,18 +89,20 @@ class LogoQWidget(QWidget):
         self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)
 
 
-def get_logo_widget(child_widget):
+def get_logo_widget(child_widget, title):
     """
     Return LogoQWidget with alignak logo
 
     :param child_widget: widget child of LogoQWidget, needed for action button and layout
     :type child_widget: QWidget
+    :param title: title of widget
+    :type title: str
     :return: Logo QWidget with buttons and child QWidget
     :rtype: QWidget
     """
 
     logo_widget = LogoQWidget()
-    logo_widget.initialize(child_widget)
+    logo_widget.initialize(child_widget, title)
 
     return logo_widget
 

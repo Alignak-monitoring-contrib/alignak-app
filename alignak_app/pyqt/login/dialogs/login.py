@@ -66,7 +66,7 @@ class LoginQDialog(QDialog):
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
 
-        main_layout.addWidget(get_logo_widget(self))
+        main_layout.addWidget(get_logo_widget(self, _('Login')))
 
         # Login QWidget
         login_widget = QWidget(self)

@@ -104,7 +104,13 @@ class UserOptionsQDialog(QDialog):
         main_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(main_layout)
 
-        main_layout.addWidget(get_logo_widget(self))
+        if item_type == 'host':
+            logo_widget_title = _('Host Notifications')
+        else:
+            logo_widget_title = _('Service Notifications')
+        main_layout.addWidget(
+            get_logo_widget(self, logo_widget_title)
+        )
         main_layout.addWidget(self.get_notifications_widget(item_type, options))
 
     def get_notifications_widget(self, item_type, options):

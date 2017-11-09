@@ -71,7 +71,7 @@ class AckQDialog(QDialog):
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
 
-        main_layout.addWidget(get_logo_widget(self))
+        main_layout.addWidget(get_logo_widget(self, _('Request Acknowledge')))
 
         ack_widget = QWidget()
         ack_widget.setObjectName('dialog')
@@ -193,7 +193,7 @@ class DownQDialog(QDialog):
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
 
-        main_layout.addWidget(get_logo_widget(self))
+        main_layout.addWidget(get_logo_widget(self), _('Request Downtime'))
 
         downtime_widget = QWidget()
         downtime_widget.setObjectName('dialog')

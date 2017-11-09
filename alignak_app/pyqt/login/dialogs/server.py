@@ -64,7 +64,7 @@ class ServerQDialog(QDialog):
         main_layout = QVBoxLayout()
         self.setLayout(main_layout)
         main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.addWidget(get_logo_widget(self))
+        main_layout.addWidget(get_logo_widget(self, _('Alignak server')))
 
         server_widget = QWidget(self)
         server_widget.setObjectName('dialog')
