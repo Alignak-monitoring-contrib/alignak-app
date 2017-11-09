@@ -114,10 +114,6 @@ QWidget#logo {
     background-color: #607d8b;
 }
 
-QWidget#widget_title {
-    background-color: #607d8b;
-}
-
 QLabel#widget_title {
     background-color: #607d8b;
     color: white;
