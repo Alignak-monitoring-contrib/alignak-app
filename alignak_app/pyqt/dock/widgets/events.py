@@ -110,15 +110,15 @@ class EventItem(QListWidgetItem):
             '#e67e22': ['WARNING', 'UNREACHABLE', 'WARN'],
             '#e74c3c': ['DOWN', 'CRITICAL', 'ALERT'],
             '#f39c12': ['ACK'],
-            '#f1c40f': ['DOWNTIME'],
+            '#f1c40f': ['DOWNTIME', 'DOWNTIMESTART (DOWN)'],
             '#fd9205': ['TODO']
         }
-
+        print(event_type)
         for key, _ in available_colors.items():
             if event_type in available_colors[key]:
                 return key
 
-        return ''
+        return '#e74c3c'
 
 
 class EventsQWidget(QWidget):
