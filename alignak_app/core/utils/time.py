@@ -42,6 +42,7 @@ def get_time_diff_since_last_timestamp(timestamp):  # pragma: no cover - not tes
 
     if not timestamp:
         msg = _('Not yet checked!')
+        logger.debug('No timestamp.')
         return '<span style="color: red;">%s</span>' % msg
 
     time_delta = int(time.time()) - int(timestamp)

@@ -66,6 +66,8 @@ class AckQDialog(QDialog):
         :type comment: str
         """
 
+        logger.debug("Create Acknowledge QDialog...")
+
         # Main layout
         center_widget(self)
         main_layout = QVBoxLayout(self)
@@ -187,6 +189,8 @@ class DownQDialog(QDialog):
         :param comment: the default comment of action
         :type comment: str
         """
+
+        logger.debug("Create Downtime QDialog...")
 
         # Main layout
         center_widget(self)

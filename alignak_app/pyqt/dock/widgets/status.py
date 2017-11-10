@@ -23,6 +23,8 @@
     Status QWidget display alignak daemons and backend status
 """
 
+from logging import getLogger
+
 from PyQt5.Qt import QLabel, QPushButton, QIcon, QStyleOption, QPainter, QStyle
 from PyQt5.Qt import QWidget, QHBoxLayout, QTimer, QPixmap, Qt
 
@@ -31,6 +33,8 @@ from alignak_app.core.models.daemon import Daemon
 from alignak_app.core.utils.config import get_image, app_css, get_app_config
 
 from alignak_app.pyqt.dock.dialogs.status import StatusQDialog
+
+logger = getLogger(__name__)
 
 
 class StatusQWidget(QWidget):
@@ -112,6 +116,7 @@ class StatusQWidget(QWidget):
 
         """
 
+        logger.info("Update Status QWidget...")
         self.backend_connected.setPixmap(
             QPixmap(get_image(app_backend.get_backend_status_icon()))
         )

@@ -76,9 +76,11 @@ class TrayIcon(QSystemTrayIcon):
 
     def create_dock_action(self):
         """
-        Create dashboard action
+        Create "dock" action
 
         """
+
+        logger.debug('Create Dock Action')
 
         self.qaction_factory.create(
             'icon',
@@ -98,6 +100,8 @@ class TrayIcon(QSystemTrayIcon):
 
         """
 
+        logger.debug('Create Reload Action')
+
         self.qaction_factory.create(
             'refresh',
             _('Reload Configuration'),
@@ -108,13 +112,13 @@ class TrayIcon(QSystemTrayIcon):
 
         self.menu.addAction(self.qaction_factory.get_action('refresh'))
 
-        logger.info('Create Reload Action')
-
     def create_about_action(self):
         """
         Create AppAbout QWidget and "about" action.
 
         """
+
+        logger.debug('Create About Action')
 
         self.app_about = AboutQDialog()
         self.app_about.initialize()
@@ -129,15 +133,13 @@ class TrayIcon(QSystemTrayIcon):
 
         self.menu.addAction(self.qaction_factory.get_action('about'))
 
-        logger.info('Create About Action')
-
     def create_quit_action(self):
         """
         Create quit action.
 
         """
 
-        logger.info('Create Quit Action')
+        logger.debug('Create Quit Action')
 
         self.qaction_factory.create(
             'exit',

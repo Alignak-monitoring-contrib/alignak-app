@@ -23,11 +23,15 @@
     Spy QWidgets manage host items who are spied
 """
 
+from logging import getLogger
+
 from PyQt5.Qt import QVBoxLayout, Qt, QWidget, QAbstractItemView, QListWidget, pyqtSignal
 
 from alignak_app.core.backend.data_manager import data_manager
 
 from alignak_app.pyqt.dock.widgets.events import EventItem
+
+logger = getLogger(__name__)
 
 
 class SpyQListWidget(QListWidget):
@@ -61,6 +65,9 @@ class SpyQListWidget(QListWidget):
             )
             item.host = host.item_id
             self.addItem(item)
+
+            logger.info('Spy a new host: %s', host.name)
+            logger.debug('... with id: %s', host_id)
 
     def dragMoveEvent(self, event):
         """

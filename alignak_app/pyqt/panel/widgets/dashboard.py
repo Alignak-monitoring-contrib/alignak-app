@@ -178,6 +178,8 @@ class DashboardQWidget(QWidget):
 
         synthesis = data_manager.get_synthesis_count()
 
+        logger.info('Update Dashboard QWidget...')
+
         hosts_sum = 0
         for item in synthesis['hosts']:
             hosts_sum += synthesis['hosts'][item]

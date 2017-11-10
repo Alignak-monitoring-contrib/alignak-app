@@ -259,7 +259,7 @@ class UserQWidget(QWidget):
                         'ERROR', _("Backend PATCH failed, please check your logs !")
                     )
         else:
-            logger.error("Wrong sender in UserProfile.")
+            logger.error("Wrong sender in UserQWidget.patch_data() !")
 
     def get_notifications_widget(self):
         """

@@ -25,11 +25,15 @@
 
 import time
 
+from logging import getLogger
+
 from PyQt5.Qt import QVBoxLayout, QColor, QIcon
 from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget, QListWidgetItem, QSize, QTimer
 
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.utils.config import app_css, get_app_config, get_image
+
+logger = getLogger(__name__)
 
 
 class EventItem(QListWidgetItem):
@@ -192,6 +196,10 @@ class EventsQWidget(QWidget):
         :type host: str
         """
 
+        logger.debug('Add Event [%s]')
+        logger.debug(
+            '... with msg: %s, timer: %s, spied_on: %s, host: %s', msg, timer, spied_on, host
+        )
         event = EventItem()
         event.initialize(event_type, msg, timer=timer, spied_on=spied_on, host=host)
 
@@ -211,6 +219,7 @@ class EventsQWidget(QWidget):
         :type event: EventItem
         """
 
+        logger.debug('Remove Event from timer: %s', event)
         self.events_list.takeItem(self.events_list.row(event))
 
     def remove_event(self, item=None):
@@ -222,9 +231,11 @@ class EventsQWidget(QWidget):
         """
 
         if isinstance(item, EventItem):
+            logger.debug('Remove Event: %s', item)
             row = self.events_list.row(item)
             self.events_list.takeItem(row)
         else:
+            logger.debug('Remove Event: %s', item)
             self.events_list.takeItem(self.events_list.currentRow())
 
 

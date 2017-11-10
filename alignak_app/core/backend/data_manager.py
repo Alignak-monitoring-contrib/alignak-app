@@ -61,6 +61,7 @@ class DataManager(object):
         if self.database['user'] and self.database['host'] and \
                 self.database['service'] and self.database['alignakdaemon'] and \
                 self.database['livesynthesis']:
+            logger.info("Datamanager is ready :)")
             return True
 
         return False
@@ -93,6 +94,8 @@ class DataManager(object):
         :rtype: alignak_app.core.items.model.ItemModel
         """
 
+        logger.debug('Get database Item [%s] : %s, %s', item_type, key, value)
+
         items = self.database[item_type]
 
         for item in items:
@@ -116,6 +119,8 @@ class DataManager(object):
         :param data:
         :return:
         """
+
+        logger.debug('Update database Item [%s] : %s, %s', item_type, item_id, data)
 
         for item in self.database[item_type]:
             if item.item_id == item_id:
@@ -167,8 +172,6 @@ class DataManager(object):
                 synthesis_count['services']['acknowledge'] += realm['services_acknowledged']
                 synthesis_count['services']['downtime'] += realm['services_in_downtime']
 
-        logger.info('Store current states...')
-
         return synthesis_count
 
     def get_all_hostnames(self):
@@ -182,6 +185,8 @@ class DataManager(object):
         host_names = []
         for host in self.database['host']:
             host_names.append(host.name)
+
+        logger.debug('List of hosts in database: %s', host_names)
 
         return host_names
 
