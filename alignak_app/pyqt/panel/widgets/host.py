@@ -104,6 +104,7 @@ class HostQWidget(QWidget):
         """
 
         host_and_services = data_manager.get_host_with_services(hostname)
+
         self.host_item = host_and_services['host']
         self.service_items = host_and_services['services']
 
@@ -375,6 +376,8 @@ class HostQWidget(QWidget):
         :param hostname: name of host who is display
         :type hostname: str
         """
+
+        logger.info('Update Host QWidget...')
 
         if self.host_item and not hostname:
             self.set_data(self.host_item.name)

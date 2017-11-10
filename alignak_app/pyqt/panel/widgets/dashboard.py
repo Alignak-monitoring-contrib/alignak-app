@@ -216,7 +216,6 @@ class DashboardQWidget(QWidget):
                     _('Hosts %s. See in WebUI ?') % button.replace('hosts_', '').upper()
                 )
             else:
-                # self.hosts_buttons[button].setEnabled(False)
                 self.hosts_buttons[button].setToolTip(
                     _("Hosts %s. WebUI is not set in configuration file.") % button.replace(
                         'hosts_', '').upper()
@@ -229,7 +228,6 @@ class DashboardQWidget(QWidget):
                     _('Services %s. See in WebUI ?') % button.replace('services_', '').upper()
                 )
             else:
-                # self.services_buttons[button].setEnabled(False)
                 self.services_buttons[button].setToolTip(
                     _("Services %s. WebUI is not set in configuration file.") % button.replace(
                         'services_', '').upper()

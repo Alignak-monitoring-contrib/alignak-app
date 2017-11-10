@@ -60,6 +60,8 @@ class HistoryQWidget(QWidget):
         :type host_id: str
         """
 
+        logger.debug('Open History for %s', hostname)
+
         # Create ScrollArea
         scroll = QScrollArea()
         scroll.setWidget(self)

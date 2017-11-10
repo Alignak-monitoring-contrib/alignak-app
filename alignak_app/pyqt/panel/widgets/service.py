@@ -293,6 +293,8 @@ class ServiceDataQWidget(QWidget):
         :type host_id: str
         """
 
+        logger.info('Update Service Qwidget...')
+
         if service and host_id:
             self.service_item = service
             self.host_id = host_id

@@ -266,6 +266,9 @@ class PanelQWidget(QWidget):
 
         host = data_manager.get_item('host', '_id', event.source().currentItem().host)
 
+        logger.debug('Drag and drop host in Panel: %s', host.name)
+        logger.debug('... with current item: %s', event.source().currentItem())
+
         self.line_search.setText(host.name)
         self.display_host()
 

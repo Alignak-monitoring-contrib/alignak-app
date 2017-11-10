@@ -212,6 +212,8 @@ class ProblemsQWidget(QWidget):
 
         """
 
+        logger.info('Update Problems QWidget...')
+
         problems_data = data_manager.get_problems()
 
         self.problems_title.setText(

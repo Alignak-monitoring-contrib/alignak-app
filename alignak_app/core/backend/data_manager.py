@@ -91,7 +91,7 @@ class DataManager(object):
         :param value: value of the key if needed
         :type value: str
         :return: wanted item
-        :rtype: alignak_app.core.items.model.ItemModel
+        :rtype: alignak_app.core.models.item.ItemModel
         """
 
         logger.debug('Get database Item [%s] : %s, %s', item_type, key, value)
@@ -368,6 +368,10 @@ class DataManager(object):
             'services_nb': services_nb,
             'problems': problems
         }
+
+        logger.debug('Host problems found: %s', problems_data['hosts_nb'])
+        logger.debug('Service problems found: %s', problems_data['services_nb'])
+        logger.debug('Problems found: %s', problems_data['problems'])
 
         return problems_data
 

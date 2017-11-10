@@ -71,14 +71,16 @@ class ServicesTreeItem(QTreeWidgetItem):  # pylint: disable=too-few-public-metho
 
         """
 
+        service = data_manager.get_item('service', '_id', self.service_id)
+        logger.debug('Update current Service QTreeWidgetItem...')
+        logger.debug('... for service: %s', service.name)
+
         icon_name = get_icon_name(
             'service',
             self.service_item.data['ls_state'],
             self.service_item.data['ls_acknowledged'],
             self.service_item.data['ls_downtimed']
         )
-
-        service = data_manager.get_item('service', '_id', self.service_id)
 
         self.setData(0, 0, service.get_display_name())
         self.setData(0, 1, QIcon(get_image(icon_name)))
