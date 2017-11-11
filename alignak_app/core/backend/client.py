@@ -41,7 +41,7 @@ from alignak_app.core.utils.config import get_app_config
 logger = getLogger(__name__)
 
 
-class AppBackend(object):
+class BackendClient(object):
     """
         Class who collect informations with Backend-Client and returns data for
         Alignak-App.
@@ -538,4 +538,4 @@ class AppBackend(object):
 
 
 # Creating "app_backend" variable.
-app_backend = AppBackend()
+app_backend = BackendClient()

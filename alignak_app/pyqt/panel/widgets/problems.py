@@ -45,9 +45,9 @@ class ProblemsQWidget(QWidget):
     def __init__(self, parent=None):
         super(ProblemsQWidget, self).__init__(parent)
         self.setStyleSheet(app_css)
-        self.problem_widget = QTableWidget()
         self.setWindowIcon(QIcon(get_image('icon')))
         # Fields
+        self.problem_widget = QTableWidget()
         self.headers_list = ['Item Type', 'Host', 'Service', 'State', 'Actions', 'Output']
         self.problems_title = QLabel()
         self.layout = QVBoxLayout()

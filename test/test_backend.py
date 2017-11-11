@@ -23,7 +23,7 @@ import json
 
 import unittest2
 
-from alignak_app.core.backend.client import AppBackend
+from alignak_app.core.backend.client import BackendClient
 from alignak_app.core.utils.config import init_config, get_app_config
 
 
@@ -43,7 +43,7 @@ class TestAppBackend(unittest2.TestCase):
     def test_log_to_backend(self):
         """Connection to Alignak-Backend"""
 
-        under_test = AppBackend()
+        under_test = BackendClient()
 
         connect = under_test.login()
 
@@ -56,7 +56,7 @@ class TestAppBackend(unittest2.TestCase):
         self.assertTrue(under_test.backend.authenticated)
         self.assertTrue(connect)
 
-        second_test = AppBackend()
+        second_test = BackendClient()
 
         connect = second_test.login('admin', 'admin')
         self.assertTrue(connect)
@@ -64,7 +64,7 @@ class TestAppBackend(unittest2.TestCase):
     def test_get_endpoint_with_params_and_projection(self):
         """Backend GET"""
 
-        backend_test = AppBackend()
+        backend_test = BackendClient()
 
         backend_test.login()
 
@@ -85,7 +85,7 @@ class TestAppBackend(unittest2.TestCase):
     def test_patch(self):
         """PATCH User Notes"""
 
-        under_test = AppBackend()
+        under_test = BackendClient()
         under_test.login()
 
         users = under_test.get('user')
@@ -114,7 +114,7 @@ class TestAppBackend(unittest2.TestCase):
     def test_get_realm_name(self):
         """Get User Realm Name"""
 
-        backend_test = AppBackend()
+        backend_test = BackendClient()
         backend_test.login()
 
         under_test = backend_test.get_realm_name('false_id')
@@ -127,7 +127,7 @@ class TestAppBackend(unittest2.TestCase):
     def test_query_user_data(self):
         """Query User Data"""
 
-        under_test = AppBackend()
+        under_test = BackendClient()
         under_test.login()
 
         from alignak_app.core.backend.data_manager import data_manager
@@ -138,7 +138,7 @@ class TestAppBackend(unittest2.TestCase):
     def test_query_hosts_data(self):
         """Query Host Data"""
 
-        under_test = AppBackend()
+        under_test = BackendClient()
         under_test.login()
 
         from alignak_app.core.backend.data_manager import data_manager
@@ -149,7 +149,7 @@ class TestAppBackend(unittest2.TestCase):
     def test_query_services_data(self):
         """Query Services Data"""
 
-        under_test = AppBackend()
+        under_test = BackendClient()
         under_test.login()
 
         from alignak_app.core.backend.data_manager import data_manager
@@ -160,7 +160,7 @@ class TestAppBackend(unittest2.TestCase):
     def test_query_daemons_data(self):
         """Query Daemons Data"""
 
-        under_test = AppBackend()
+        under_test = BackendClient()
         under_test.login()
 
         from alignak_app.core.backend.data_manager import data_manager
@@ -171,7 +171,7 @@ class TestAppBackend(unittest2.TestCase):
     def test_query_livesynthesis_data(self):
         """Query Live Synthesis Data"""
 
-        under_test = AppBackend()
+        under_test = BackendClient()
         under_test.login()
 
         from alignak_app.core.backend.data_manager import data_manager
@@ -182,7 +182,7 @@ class TestAppBackend(unittest2.TestCase):
     def test_query_history_data(self):
         """Query History Data"""
 
-        under_test = AppBackend()
+        under_test = BackendClient()
         under_test.login()
 
         from alignak_app.core.backend.data_manager import data_manager
@@ -193,7 +193,7 @@ class TestAppBackend(unittest2.TestCase):
     def test_get_period_name(self):
         """Get Period Name"""
 
-        backend_test = AppBackend()
+        backend_test = BackendClient()
         backend_test.login()
 
         under_test = backend_test.get_period_name('host')
@@ -207,7 +207,7 @@ class TestAppBackend(unittest2.TestCase):
     def test_get_backend_status_icon(self):
         """Get Backend Status Icon Name"""
 
-        backend_test = AppBackend()
+        backend_test = BackendClient()
 
         under_test = backend_test.get_backend_status_icon()
         self.assertEqual('disconnected', under_test)

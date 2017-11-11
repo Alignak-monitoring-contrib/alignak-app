@@ -40,7 +40,12 @@ class TestDataManager(unittest2.TestCase):
         host = Host()
         host.create(
             '_id%d' % i,
-            {'name': 'host%d' % i},
+            {
+                'name': 'host%d' % i,
+                'ls_state': 'DOWN',
+                'ls_acknowledged': False,
+                'ls_downtimed': False,
+             },
             'host%d' % i
         )
         host_list.append(host)
@@ -51,14 +56,26 @@ class TestDataManager(unittest2.TestCase):
         service = Service()
         service.create(
             '_id%d' % i,
-            {'name': 'service%d' % i, 'host': '_id%d' % i},
+            {
+                'name': 'service%d' % i,
+                'host': '_id%d' % i,
+                'ls_state': 'CRITICAL',
+                'ls_acknowledged': False,
+                'ls_downtimed': False,
+            },
             'service%d' % i
         )
         service_list.append(service)
         service = Service()
         service.create(
             'other_id2%d' % i,
-            {'name': 'other_service2%d' % i, 'host': '_id%d' % i},
+            {
+                'name': 'other_service2%d' % i,
+                'host': '_id%d' % i,
+                'ls_state': 'UP',
+                'ls_acknowledged': True,
+                'ls_downtimed': False,
+            },
             'other_service%d' % i
         )
         service_list.append(service)
@@ -313,3 +330,58 @@ class TestDataManager(unittest2.TestCase):
         under_test.update_database('livesynthesis', {'data': 'test'})
 
         self.assertTrue(under_test.is_ready())
+
+    def test_get_problems(self):
+        """Get Database Problems"""
+
+        under_test = DataManager()
+
+        under_test.update_database('host', self.host_list)
+        under_test.update_database('service', self.service_list)
+
+        problems_test = under_test.get_problems()
+
+        self.assertEqual(problems_test['hosts_nb'], 10)
+        self.assertEqual(problems_test['services_nb'], 10)
+        self.assertIsNotNone(problems_test['problems'])
+
+        host_list = []
+        for i in range(0, 10):
+            host = Host()
+            host.create(
+                '_id%d' % i,
+                {
+                    'name': 'host%d' % i,
+                    'ls_state': 'DOWN',
+                    'ls_acknowledged': True,
+                    'ls_downtimed': False,
+                },
+                'host%d' % i
+            )
+            host_list.append(host)
+
+        # Service data test
+        service_list = []
+        for i in range(0, 10):
+            service = Service()
+            service.create(
+                '_id%d' % i,
+                {
+                    'name': 'service%d' % i,
+                    'host': '_id%d' % i,
+                    'ls_state': 'CRITICAL',
+                    'ls_acknowledged': True,
+                    'ls_downtimed': False,
+                },
+                'service%d' % i
+            )
+            service_list.append(service)
+
+        under_test.update_database('host', host_list)
+        under_test.update_database('service', service_list)
+
+        problems_test = under_test.get_problems()
+
+        self.assertEqual(problems_test['hosts_nb'], 0)
+        self.assertEqual(problems_test['services_nb'], 0)
+        self.assertFalse(problems_test['problems'])
