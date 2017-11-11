@@ -35,8 +35,7 @@ from alignak_app.core.models.item import get_icon_name, get_real_host_state_icon
 from alignak_app.core.utils.config import get_image, app_css, get_app_config
 from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
 
-from alignak_app.pyqt.common.actions import AckQDialog, DownQDialog, QDialog
-from alignak_app.pyqt.dock.widgets.events import send_event
+from alignak_app.pyqt.common.actions import ActionsQWidget
 from alignak_app.pyqt.panel.widgets.history import HistoryQWidget
 
 logger = getLogger(__name__)
@@ -49,6 +48,7 @@ class HostQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(HostQWidget, self).__init__(parent)
+        self.actions_widget = ActionsQWidget()
         self.setStyleSheet(app_css)
         # Fields
         self.host_item = None
@@ -64,11 +64,7 @@ class HostQWidget(QWidget):
             'business_impact': QLabel(),
             'notes': QLabel()
         }
-        self.buttons = {
-            'acknowledge': QPushButton(),
-            'downtime': QPushButton(),
-            'history': QPushButton()
-        }
+        self.history_btn = QPushButton()
         self.history_widget = None
         self.refresh_timer = QTimer()
 
@@ -147,125 +143,16 @@ class HostQWidget(QWidget):
         action_title.setObjectName('title')
         layout.addWidget(action_title)
 
-        self.buttons['acknowledge'].setIcon(QIcon(get_image('acknowledge')))
-        self.buttons['acknowledge'].clicked.connect(lambda: self.add_acknowledge(self.host_item))
-        layout.addWidget(self.buttons['acknowledge'])
+        self.actions_widget.initialize(self.host_item)
+        layout.addWidget(self.actions_widget)
 
-        self.buttons['downtime'].setIcon(QIcon(get_image('downtime')))
-        self.buttons['downtime'].clicked.connect(lambda: self.add_downtime(self.host_item))
-        layout.addWidget(self.buttons['downtime'])
-
-        self.buttons['history'].setIcon(QIcon(get_image('time')))
-        self.buttons['history'].clicked.connect(self.show_history)
-        layout.addWidget(self.buttons['history'])
+        self.history_btn.setIcon(QIcon(get_image('time')))
+        self.history_btn.clicked.connect(self.show_history)
+        layout.addWidget(self.history_btn)
 
         layout.setAlignment(Qt.AlignCenter)
 
         return widget
-
-    def add_acknowledge(self, host_item):  # pragma: no cover
-        """
-        Create AckQDialog and manage acknowledge
-
-        :param host_item: Host item
-        :type host_item: alignak_app.core.models.host.Host
-        """
-
-        user = data_manager.database['user']
-
-        comment = _('Host %s acknowledged by %s, from Alignak-app') % (
-            host_item.get_display_name(),
-            user.name
-        )
-
-        ack_dialog = AckQDialog()
-        ack_dialog.initialize('host', host_item.get_display_name(), comment)
-
-        if ack_dialog.exec_() == QDialog.Accepted:
-            sticky = ack_dialog.sticky
-            notify = ack_dialog.notify
-            comment = str(ack_dialog.ack_comment_edit.toPlainText())
-
-            data = {
-                'action': 'add',
-                'host': host_item.item_id,
-                'service': None,
-                'user': user.item_id,
-                'comment': comment,
-                'notify': notify,
-                'sticky': sticky
-            }
-
-            post = app_backend.post('actionacknowledge', data)
-
-            send_event('ACK', _('Acknowledge for %s is done') % host_item.get_display_name())
-            data_manager.update_item_data(
-                'host',
-                host_item.item_id,
-                {'ls_acknowledged': True}
-            )
-            logger.debug('ACK answer for %s: %s', host_item.name, post)
-
-            try:
-                self.buttons['acknowledge'].setEnabled(False)
-            except RuntimeError as e:
-                logger.warning('Can\'t disable Acknowledge btn: %s', e)
-        else:
-            logger.info('Acknowledge for %s cancelled...', host_item.name)
-
-    def add_downtime(self, host_item):  # pragma: no cover
-        """
-        Create AckQDialog and manage acknowledge
-
-        :param host_item: Host item
-        :type host_item: alignak_app.core.models.host.Host
-        """
-
-        user = data_manager.database['user']
-
-        comment = _('Schedule downtime on %s by %s, from Alignak-app') % (
-            host_item.get_display_name(),
-            user.name
-        )
-
-        downtime_dialog = DownQDialog()
-        downtime_dialog.initialize('host', host_item.get_display_name(), comment)
-
-        if downtime_dialog.exec_() == QDialog.Accepted:
-            fixed = downtime_dialog.fixed
-            duration = downtime_dialog.duration_to_seconds()
-            start_stamp = downtime_dialog.start_time.dateTime().toTime_t()
-            end_stamp = downtime_dialog.end_time.dateTime().toTime_t()
-            comment = downtime_dialog.comment_edit.toPlainText()
-
-            data = {
-                'action': 'add',
-                'host': host_item.item_id,
-                'service': None,
-                'user': user.item_id,
-                'fixed': fixed,
-                'duration': duration,
-                'start_time': start_stamp,
-                'end_time': end_stamp,
-                'comment': comment,
-            }
-
-            post = app_backend.post('actiondowntime', data)
-
-            send_event('DOWNTIME', _('Downtime for %s is done') % host_item.get_display_name())
-            data_manager.update_item_data(
-                'host',
-                host_item.item_id,
-                {'ls_downtimed': True}
-            )
-            logger.debug('DOWNTIME answer for %s: %s', host_item.name, post)
-
-            try:
-                self.buttons['downtime'].setEnabled(False)
-            except RuntimeError as e:
-                logger.warning('Can\'t disable Downtime btn: %s', e)
-        else:
-            logger.info('Downtime for %s cancelled...', host_item.name)
 
     def show_history(self):
         """
@@ -420,23 +307,14 @@ class HostQWidget(QWidget):
             self.labels['business_impact'].setText(str(self.host_item.data['business_impact']))
             self.labels['notes'].setText(self.host_item.data['notes'])
 
-            if self.host_item.data['ls_acknowledged'] or 'UP' in self.host_item.data['ls_state'] \
-                    or not data_manager.database['user'].data['can_submit_commands']:
-                self.buttons['acknowledge'].setEnabled(False)
-            else:
-                self.buttons['acknowledge'].setEnabled(True)
-
-            if self.host_item.data['ls_downtimed'] \
-                    or not data_manager.database['user'].data['can_submit_commands']:
-                self.buttons['downtime'].setEnabled(False)
-            else:
-                self.buttons['downtime'].setEnabled(True)
+            self.actions_widget.item = self.host_item
+            self.actions_widget.update_widget()
 
             if any(
                     history_item.item_id == self.host_item.item_id for
                     history_item in data_manager.database['history']):
-                self.buttons['history'].setEnabled(True)
-                self.buttons['history'].setToolTip(_('History is available'))
+                self.history_btn.setEnabled(True)
+                self.history_btn.setToolTip(_('History is available'))
             else:
-                self.buttons['history'].setToolTip(_('History is not available, please wait...'))
-                self.buttons['history'].setEnabled(False)
+                self.history_btn.setToolTip(_('History is not available, please wait...'))
+                self.history_btn.setEnabled(False)

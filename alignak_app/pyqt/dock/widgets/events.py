@@ -113,7 +113,7 @@ class EventItem(QListWidgetItem):
             '#f1c40f': ['DOWNTIME', 'DOWNTIMESTART (DOWN)'],
             '#fd9205': ['TODO']
         }
-        print(event_type)
+
         for key, _ in available_colors.items():
             if event_type in available_colors[key]:
                 return key

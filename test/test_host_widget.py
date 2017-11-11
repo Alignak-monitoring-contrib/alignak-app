@@ -63,7 +63,7 @@ class TestHostQWidget(unittest2.TestCase):
         self.assertIsNone(under_test.history_widget)
         self.assertIsNone(under_test.layout())
         self.assertIsNotNone(under_test.labels)
-        self.assertIsNotNone(under_test.buttons)
+        self.assertIsNotNone(under_test.history_btn)
 
         under_test.initialize()
 

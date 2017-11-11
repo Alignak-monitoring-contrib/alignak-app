@@ -50,7 +50,7 @@ class ActionsQWidget(QWidget):
         self.acknowledge_btn = QPushButton()
         self.item = None
 
-    def initialize(self, item):
+    def initialize(self, item, horizontal=False):
         """
         Initialize Actions QWidget
 
@@ -58,7 +58,11 @@ class ActionsQWidget(QWidget):
 
         self.item = item
 
-        layout = QHBoxLayout()
+        if horizontal:
+            layout = QHBoxLayout()
+        else:
+            layout = QVBoxLayout()
+
         self.setLayout(layout)
 
         self.acknowledge_btn.setIcon(QIcon(get_image('acknowledge')))
@@ -139,7 +143,7 @@ class ActionsQWidget(QWidget):
         )
 
         downtime_dialog = DownQDialog()
-        downtime_dialog.initialize(self.item.item_type, self.item.name, comment)
+        downtime_dialog.initialize(self.item.item_type, self.item.get_display_name(), comment)
 
         if downtime_dialog.exec_() == DownQDialog.Accepted:
             fixed = downtime_dialog.fixed
