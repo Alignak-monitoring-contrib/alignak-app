@@ -27,12 +27,182 @@ import datetime
 from logging import getLogger
 
 from PyQt5.Qt import QDialog, QWidget, QTime, QVBoxLayout, Qt, QGridLayout, QTimeEdit, QDateTimeEdit
-from PyQt5.Qt import QPixmap, QCheckBox, QPushButton, QLabel, QTextEdit, QIcon
+from PyQt5.Qt import QPixmap, QCheckBox, QPushButton, QLabel, QTextEdit, QIcon, QHBoxLayout
 
 from alignak_app.core.utils.config import get_image, app_css
+from alignak_app.core.backend.client import app_backend
+from alignak_app.core.backend.data_manager import data_manager
+
+from alignak_app.pyqt.dock.widgets.events import send_event
 from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget
 
 logger = getLogger(__name__)
+
+
+class ActionsQWidget(QWidget):
+    """
+        Class who create Actions QWidget
+    """
+
+    def __init__(self, parent=None):
+        super(ActionsQWidget, self).__init__(parent)
+        self.downtime_btn = QPushButton()
+        self.acknowledge_btn = QPushButton()
+        self.item = None
+
+    def initialize(self, item):
+        """
+        Initialize Actions QWidget
+
+        """
+
+        self.item = item
+
+        layout = QHBoxLayout()
+        self.setLayout(layout)
+
+        self.acknowledge_btn.setIcon(QIcon(get_image('acknowledge')))
+        self.acknowledge_btn.setMinimumSize(18, 18)
+        self.acknowledge_btn.clicked.connect(self.add_acknowledge)
+        layout.addWidget(self.acknowledge_btn)
+
+        self.downtime_btn.setIcon(QIcon(get_image('downtime')))
+        self.downtime_btn.setMinimumSize(18, 18)
+        self.downtime_btn.clicked.connect(self.add_downtime)
+        layout.addWidget(self.downtime_btn)
+
+        layout.setAlignment(Qt.AlignCenter)
+
+    def add_acknowledge(self):  # pragma: no cover
+        """
+        Create AckQDialog and manage acknowledge
+
+        """
+
+        user = data_manager.database['user']
+
+        comment = _('Service %s acknowledged by %s, from Alignak-app') % (
+            self.item.get_display_name(),
+            user.name
+        )
+
+        ack_dialog = AckQDialog()
+        ack_dialog.initialize(self.item.item_type, self.item.get_display_name(), comment)
+
+        if ack_dialog.exec_() == AckQDialog.Accepted:
+            sticky = ack_dialog.sticky
+            notify = ack_dialog.notify
+            comment = str(ack_dialog.ack_comment_edit.toPlainText())
+
+            data = {
+                'action': 'add',
+                'user': user.item_id,
+                'comment': comment,
+                'notify': notify,
+                'sticky': sticky
+            }
+            if self.item.item_type == 'service':
+                data['host'] = self.item.data['host']
+                data['service'] = self.item.item_id
+            else:
+                data['host'] = self.item.item_id
+                data['service'] = None
+
+            post = app_backend.post('actionacknowledge', data)
+
+            send_event('ACK', _('Acknowledge for %s is done') % self.item.get_display_name())
+            # Update Item
+            data_manager.update_item_data(
+                self.item.item_type,
+                self.item.item_id,
+                {'ls_acknowledged': True}
+            )
+            logger.debug('ACK answer for %s: %s', self.item.name, post)
+
+            try:
+                self.acknowledge_btn.setEnabled(False)
+            except RuntimeError as e:
+                logger.warning('Can\'t disable Acknowledge btn: %s', e)
+        else:
+            logger.info('Acknowledge for %s cancelled...', self.item.name)
+
+    def add_downtime(self):  # pragma: no cover
+        """
+        Create DownQDialog and manage downtime
+
+        """
+
+        user = data_manager.database['user']
+
+        comment = _('Schedule downtime on %s by %s, from Alignak-app') % (
+            self.item.get_display_name(), user.name
+        )
+
+        downtime_dialog = DownQDialog()
+        downtime_dialog.initialize(self.item.item_type, self.item.name, comment)
+
+        if downtime_dialog.exec_() == DownQDialog.Accepted:
+            fixed = downtime_dialog.fixed
+            duration = downtime_dialog.duration_to_seconds()
+            start_stamp = downtime_dialog.start_time.dateTime().toTime_t()
+            end_stamp = downtime_dialog.end_time.dateTime().toTime_t()
+            comment = downtime_dialog.comment_edit.toPlainText()
+
+            data = {
+                'action': 'add',
+                'user': user.item_id,
+                'fixed': fixed,
+                'duration': duration,
+                'start_time': start_stamp,
+                'end_time': end_stamp,
+                'comment': comment,
+            }
+
+            if self.item.item_type == 'service':
+                data['host'] = self.item.data['host']
+                data['service'] = self.item.item_id
+            else:
+                data['host'] = self.item.item_id
+                data['service'] = None
+
+            post = app_backend.post('actiondowntime', data)
+
+            send_event('DOWNTIME', _('Downtime for %s is done') % self.item.get_display_name())
+            data_manager.update_item_data(
+                self.item.item_type,
+                self.item.item_id,
+                {'ls_downtimed': True}
+            )
+            logger.debug('DOWNTIME answer for %s: %s', self.item.name, post)
+
+            try:
+                self.downtime_btn.setEnabled(False)
+            except RuntimeError as e:
+                logger.warning('Can\'t disable Downtime btn: %s', e)
+        else:
+            logger.info('Downtime for %s cancelled...', self.item.name)
+
+    def update_widget(self):
+        """
+        Update QWidget
+
+        """
+
+        self.item = data_manager.get_item(self.item.item_type, '_id', self.item.item_id)
+
+        if self.item.data['ls_acknowledged'] or \
+                self.item.data['ls_state'] == 'OK' or \
+                self.item.data['ls_state'] == 'UP' or not \
+                data_manager.database['user'].data['can_submit_commands']:
+            self.acknowledge_btn.setEnabled(False)
+        else:
+            self.acknowledge_btn.setEnabled(True)
+
+        if self.item.data['ls_downtimed'] or not \
+                data_manager.database['user'].data['can_submit_commands']:
+            self.acknowledge_btn.setEnabled(False)
+        else:
+            self.acknowledge_btn.setEnabled(True)
 
 
 class AckQDialog(QDialog):
