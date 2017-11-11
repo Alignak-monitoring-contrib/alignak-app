@@ -51,7 +51,7 @@ class TestServiceDataQWidget(unittest2.TestCase):
         host = Host()
         host.create(
             '_id%d' % i,
-            {'name': 'host%d' % i},
+            {'name': 'host%d' % i, '_id': '_id%d' % i},
             'host%d' % i
         )
         host_list.append(host)
@@ -65,6 +65,7 @@ class TestServiceDataQWidget(unittest2.TestCase):
             {
                 'name': 'service%d' % i,
                 'alias': 'service %d' % i,
+                '_id': '_id%d' % i,
                 'host': '_id%d' % i,
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
@@ -82,6 +83,7 @@ class TestServiceDataQWidget(unittest2.TestCase):
             'other_id2%d' % i,
             {
                 'name': 'other_service2%d' % i,
+                '_id': 'other_id2%d' % i,
                 'host': '_id%d' % i,
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
@@ -150,6 +152,8 @@ class TestServiceDataQWidget(unittest2.TestCase):
             old_labels[label] = under_test.labels[label]
 
         data_manager.database['user'].data['can_submit_commands'] = True
+        data_manager.update_database('service', self.service_list)
+
         under_test.update_widget(self.service_list[0], '_id1')
 
         new_labels = under_test.labels

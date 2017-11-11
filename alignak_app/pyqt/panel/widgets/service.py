@@ -25,16 +25,14 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QLabel, QWidget, QIcon, Qt, QPushButton
-from PyQt5.Qt import QPixmap, QVBoxLayout, QGridLayout, QTimer
+from PyQt5.Qt import QLabel, QWidget, Qt, QPushButton, QPixmap, QVBoxLayout, QGridLayout, QTimer
 
-from alignak_app.core.backend.client import app_backend
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.item import get_icon_name
 from alignak_app.core.utils.config import get_image, app_css, get_app_config
 from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
-from alignak_app.pyqt.common.actions import AckQDialog, DownQDialog
-from alignak_app.pyqt.dock.widgets.events import send_event
+
+from alignak_app.pyqt.common.actions import ActionsQWidget
 
 logger = getLogger(__name__)
 
@@ -63,6 +61,7 @@ class ServiceDataQWidget(QWidget):
             'acknowledge': QPushButton(),
             'downtime': QPushButton()
         }
+        self.actions_widget = ActionsQWidget()
 
     def initialize(self):
         """
@@ -159,129 +158,12 @@ class ServiceDataQWidget(QWidget):
         action_title.setObjectName('title')
         layout.addWidget(action_title)
 
-        self.buttons['acknowledge'].setIcon(QIcon(get_image('acknowledge')))
-        self.buttons['acknowledge'].clicked.connect(
-            lambda: self.add_acknowledge(self.service_item, self.host_id)
-        )
-        layout.addWidget(self.buttons['acknowledge'])
-
-        self.buttons['downtime'].setIcon(QIcon(get_image('downtime')))
-        self.buttons['downtime'].clicked.connect(
-            lambda: self.add_downtime(self.service_item, self.host_id)
-        )
-        layout.addWidget(self.buttons['downtime'])
+        self.actions_widget.initialize(self.service_item)
+        layout.addWidget(self.actions_widget)
 
         layout.setAlignment(Qt.AlignCenter)
 
         return widget
-
-    def add_acknowledge(self, service_item, host_id):  # pragma: no cover
-        """
-        Create AckQDialog and manage acknowledge
-
-        :param service_item: Service item
-        :type service_item: alignak_app.core.models.service.Service
-        :param host_id: id of attached host
-        :type host_id: str
-        """
-
-        user = data_manager.database['user']
-
-        comment = _('Service %s acknowledged by %s, from Alignak-app') % (
-            service_item.get_display_name(),
-            user.name
-        )
-
-        ack_dialog = AckQDialog()
-        ack_dialog.initialize('service', service_item.name, comment)
-
-        if ack_dialog.exec_() == AckQDialog.Accepted:
-            sticky = ack_dialog.sticky
-            notify = ack_dialog.notify
-            comment = str(ack_dialog.ack_comment_edit.toPlainText())
-
-            data = {
-                'action': 'add',
-                'host': host_id,
-                'service': service_item.item_id,
-                'user': user.item_id,
-                'comment': comment,
-                'notify': notify,
-                'sticky': sticky
-            }
-
-            post = app_backend.post('actionacknowledge', data)
-
-            send_event('ACK', _('Acknowledge for %s is done') % service_item.get_display_name())
-            # Update Item
-            data_manager.update_item_data(
-                'service',
-                service_item.item_id,
-                {'ls_acknowledged': True}
-            )
-            logger.debug('ACK answer for %s: %s', service_item.name, post)
-
-            try:
-                self.buttons['acknowledge'].setEnabled(False)
-            except RuntimeError as e:
-                logger.warning('Can\'t disable Acknowledge btn: %s', e)
-        else:
-            logger.info('Acknowledge for %s cancelled...', service_item.name)
-
-    def add_downtime(self, service_item, host_id):  # pragma: no cover
-        """
-        Create AckQDialog and manage acknowledge
-
-        :param service_item: Service item
-        :type service_item: alignak_app.core.models.service.Service
-        :param host_id: id of attached host
-        :type host_id: str
-        """
-
-        user = data_manager.database['user']
-
-        comment = _('Schedule downtime on %s by %s, from Alignak-app') % (
-            service_item.get_display_name(), user.name
-        )
-
-        downtime_dialog = DownQDialog()
-        downtime_dialog.initialize('service', service_item.name, comment)
-
-        if downtime_dialog.exec_() == DownQDialog.Accepted:
-            fixed = downtime_dialog.fixed
-            duration = downtime_dialog.duration_to_seconds()
-            start_stamp = downtime_dialog.start_time.dateTime().toTime_t()
-            end_stamp = downtime_dialog.end_time.dateTime().toTime_t()
-            comment = downtime_dialog.comment_edit.toPlainText()
-
-            data = {
-                'action': 'add',
-                'host': host_id,
-                'service': service_item.item_id,
-                'user': user.item_id,
-                'fixed': fixed,
-                'duration': duration,
-                'start_time': start_stamp,
-                'end_time': end_stamp,
-                'comment': comment,
-            }
-
-            post = app_backend.post('actiondowntime', data)
-
-            send_event('DOWNTIME', _('Downtime for %s is done') % service_item.get_display_name())
-            data_manager.update_item_data(
-                'service',
-                service_item.item_id,
-                {'ls_downtimed': True}
-            )
-            logger.debug('DOWNTIME answer for %s: %s', service_item.name, post)
-
-            try:
-                self.buttons['downtime'].setEnabled(False)
-            except RuntimeError as e:
-                logger.warning('Can\'t disable Downtime btn: %s', e)
-        else:
-            logger.info('Downtime for %s cancelled...', service_item.name)
 
     def update_widget(self, service=None, host_id=None):
         """
@@ -319,17 +201,8 @@ class ServiceDataQWidget(QWidget):
 
         self.labels['business_impact'].setText(str(self.service_item.data['business_impact']))
 
-        if self.service_item.data['ls_acknowledged'] or 'OK' in self.service_item.data['ls_state'] \
-                or not data_manager.database['user'].data['can_submit_commands']:
-            self.buttons['acknowledge'].setEnabled(False)
-        else:
-            self.buttons['acknowledge'].setEnabled(True)
-
-        if self.service_item.data['ls_downtimed'] \
-                or not data_manager.database['user'].data['can_submit_commands']:
-            self.buttons['downtime'].setEnabled(False)
-        else:
-            self.buttons['downtime'].setEnabled(True)
+        self.actions_widget.item = self.service_item
+        self.actions_widget.update_widget()
 
     def periodic_refresh(self):
         """

@@ -204,9 +204,9 @@ class ActionsQWidget(QWidget):
 
         if self.item.data['ls_downtimed'] or not \
                 data_manager.database['user'].data['can_submit_commands']:
-            self.acknowledge_btn.setEnabled(False)
+            self.downtime_btn.setEnabled(False)
         else:
-            self.acknowledge_btn.setEnabled(True)
+            self.downtime_btn.setEnabled(True)
 
 
 class AckQDialog(QDialog):
