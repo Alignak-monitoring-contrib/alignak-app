@@ -25,7 +25,7 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QGridLayout, QLabel, QPixmap, Qt, QWidget, QTimer, QPushButton, QIcon
+from PyQt5.Qt import QGridLayout, QLabel, Qt, QWidget, QTimer, QPushButton, QIcon
 
 from alignak_app.core.utils.config import app_css, get_image, get_app_config
 from alignak_app.core.utils.config import open_url, get_url_endpoint_from_icon_name
