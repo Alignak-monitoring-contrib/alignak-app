@@ -38,6 +38,11 @@ QLabel#borderedtitle {
     font-weight: bold;
 }
 
+QPushButton {
+    border: 1px solid #ccc;
+    border-radius: 0.2em;
+}
+
 QScrollBar {
     width: 10px;
     height: 10px;
@@ -174,6 +179,10 @@ QTableWidget::item {
     border-width: 0px 0px 1px 0px;
     border-color: #6c9cb3;
     border-style: solid;
+}
+
+QTableWidget::item:selected {
+    color: black;
 }
 
 QHeaderView::section {

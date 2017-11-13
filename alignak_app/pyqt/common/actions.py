@@ -66,12 +66,12 @@ class ActionsQWidget(QWidget):
         self.setLayout(layout)
 
         self.acknowledge_btn.setIcon(QIcon(get_image('acknowledge')))
-        self.acknowledge_btn.setMinimumSize(18, 18)
+        self.acknowledge_btn.setMinimumSize(20, 20)
         self.acknowledge_btn.clicked.connect(self.add_acknowledge)
         layout.addWidget(self.acknowledge_btn)
 
         self.downtime_btn.setIcon(QIcon(get_image('downtime')))
-        self.downtime_btn.setMinimumSize(18, 18)
+        self.downtime_btn.setMinimumSize(20, 20)
         self.downtime_btn.clicked.connect(self.add_downtime)
         layout.addWidget(self.downtime_btn)
 

@@ -150,6 +150,7 @@ class EventsQWidget(QWidget):
 
         self.events_list.setDragDropMode(QAbstractItemView.DragOnly)
         self.events_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.events_list.setDropIndicatorShown(True)
         self.events_list.doubleClicked.connect(self.remove_event)
         self.events_list.setWordWrap(True)
 
