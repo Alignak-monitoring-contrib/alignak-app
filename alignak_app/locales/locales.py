@@ -49,7 +49,7 @@ def init_localization():  # pragma: no cover
             )
         else:
             lang_filename = get_main_folder() + "\\locales\\%s.mo" % get_app_config(
-                'Config', 'locale'
+                'Alignak-app', 'locale'
             )
         logger.info(
             "Opening message file %s for locale %s",
