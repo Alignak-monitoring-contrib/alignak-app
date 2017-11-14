@@ -4,6 +4,10 @@ QLabel {
     font-family: Roboto,Helvetica,Arial,sans-serif;
 }
 
+QLabel#error {
+    color: red;
+}
+
 QLabel#title {
     font-weight: bold;
 }

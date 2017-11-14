@@ -199,6 +199,8 @@ class AlignakApp(QObject):
             )
             login = LoginQDialog()
             login.create_widget()
+            login.connection_lbl.setText(_('Bad identifiers. Please try again'))
+            login.connection_lbl.setObjectName('error')
 
             if login.exec_() == QDialog.Accepted:
                 username = str(login.username_line.text())

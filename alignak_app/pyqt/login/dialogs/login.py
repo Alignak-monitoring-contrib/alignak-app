@@ -55,6 +55,7 @@ class LoginQDialog(QDialog):
         self.username_line = None
         self.password_line = None
         self.offset = None
+        self.connection_lbl = QLabel(_('Type your Alignak username and password.'))
 
     def create_widget(self):
         """
@@ -96,20 +97,24 @@ class LoginQDialog(QDialog):
         server_btn = QPushButton()
         server_btn.clicked.connect(self.handle_server)
         server_btn.setFixedSize(25, 25)
-        server_btn.setIcon(QIcon(get_image('host')))
+        server_btn.setIcon(QIcon(get_image('server_settings')))
         server_btn.setToolTip(_('Modify Alignak Server'))
         login_layout.addWidget(server_btn, 2, 1, 1, 1)
+
+        # Connection label
+        self.connection_lbl.setWordWrap(True)
+        login_layout.addWidget(self.connection_lbl, 3, 0, 1, 2)
 
         # Username field
         self.username_line = QLineEdit(self)
         self.username_line.setPlaceholderText(_('Username'))
-        login_layout.addWidget(self.username_line, 3, 0, 1, 2)
+        login_layout.addWidget(self.username_line, 4, 0, 1, 2)
 
         # Password field
         self.password_line = QLineEdit(self)
         self.password_line.setPlaceholderText(_('Password'))
         self.password_line.setEchoMode(QLineEdit.Password)
-        login_layout.addWidget(self.password_line, 4, 0, 1, 2)
+        login_layout.addWidget(self.password_line, 5, 0, 1, 2)
 
         # Login button
         login_button = QPushButton(_('LOGIN'), self)
@@ -117,7 +122,7 @@ class LoginQDialog(QDialog):
         login_button.setObjectName('valid')
         login_button.setMinimumHeight(30)
         login_button.setDefault(True)
-        login_layout.addWidget(login_button, 5, 0, 1, 2)
+        login_layout.addWidget(login_button, 6, 0, 1, 2)
 
         main_layout.addWidget(login_widget)
         self.setLayout(main_layout)
