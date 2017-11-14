@@ -190,7 +190,7 @@ def get_real_host_state_icon(services):
 
     logger.error('Empty services in get_real_host_state_icon()')
 
-    return 'error'
+    return 'all_services_none'
 
 
 def get_host_msg_and_event_type(host_and_services):
@@ -242,15 +242,20 @@ def get_host_msg_and_event_type(host_and_services):
     for service in host_and_services['services']:
         state_lvl.append(service.data['_overall_state_id'])
 
-    max_state_lvl = max(state_lvl)
-
     try:
+        max_state_lvl = max(state_lvl)
         msg_and_event_type = event_messages[max_state_lvl]
     except IndexError as e:
         logger.error('get_host_msg_and_event_type(): empty services, %e', e)
         msg_and_event_type = {
             'message': _('Host is %s.') % host_msg,
             'event_type': host_and_services['host'].data['ls_state']
+        }
+    except ValueError as e:
+        logger.error('No services found for this host.')
+        return {
+            'message': _('No services.'),
+            'event_type': 'OK'
         }
 
     return msg_and_event_type
