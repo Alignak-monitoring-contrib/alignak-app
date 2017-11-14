@@ -53,7 +53,12 @@ class TestLoginQDialog(unittest2.TestCase):
                 'ls_downtimed': True,
                 'ls_acknowledged': True,
                 'ls_state': 'UNKNOWN',
-                'ls_output': 'output host %d' % i
+                'ls_output': 'output host %d' % i,
+                'ls_last_check': '',
+                '_realm': '59c4e38535d17b8dcb0bed42',
+                'address': '127.0.0.1',
+                'business_impact': '2',
+                'notes': 'host notes'
             },
             'host%d' % i
         )
