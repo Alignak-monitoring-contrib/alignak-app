@@ -17,7 +17,7 @@ script:
   - pip freeze
   # Code static analysis
   - pycodestyle --max-line-length=100 --exclude='*.pyc, *.cfg, *.log' --ignore='E402' alignak_app/*
-  - pylint --extension-pkg-whitelist=PyQt5,sip --rcfile=.pylintrc alignak_app/
+  - pylint --rcfile=.pylintrc alignak_app/
   # No pep257 currently (Code doc compliance)
   # - pep257 --select=D300 alignak_app
   # Code dynamic analysis
