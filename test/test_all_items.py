@@ -21,7 +21,12 @@
 
 import unittest2
 
+from alignak_app.core.utils.config import init_config
+from alignak_app.locales.locales import init_localization
+
 from alignak_app.core.backend.client import app_backend
+from alignak_app.core.backend.data_manager import data_manager
+
 from alignak_app.core.models.daemon import Daemon
 from alignak_app.core.models.event import Event
 from alignak_app.core.models.history import History
@@ -30,8 +35,6 @@ from alignak_app.core.models.item import *
 from alignak_app.core.models.livesynthesis import LiveSynthesis
 from alignak_app.core.models.service import Service
 from alignak_app.core.models.user import User
-from alignak_app.core.utils.config import init_config
-from alignak_app.locales.locales import init_localization
 
 
 class TestAllItems(unittest2.TestCase):
@@ -42,6 +45,42 @@ class TestAllItems(unittest2.TestCase):
     init_config()
     init_localization()
     app_backend.login()
+
+    # Host data test
+    host_list = []
+    for i in range(0, 10):
+        host = Host()
+        host.create(
+            '_id%d' % i,
+            {
+                'name': 'host%d' % i,
+                'ls_downtimed': True,
+                'ls_acknowledged': True,
+                'ls_state': 'UNKNOWN',
+            },
+            'host%d' % i
+        )
+        host_list.append(host)
+
+    # Service data test
+    service_list = []
+    for i in range(0, 10):
+        service = Service()
+        service.create(
+            '_id%d' % i,
+            {
+                'name': 'service%d' % i,
+                'alias': 'Service %d' % i,
+                'host': '_id%d' % i,
+                'ls_acknowledged': False,
+                'ls_downtimed': False,
+                'ls_state': 'CRITICAL',
+                'aggregation': 'disk',
+                '_overall_state_id': 4
+            },
+            'service%d' % i
+        )
+        service_list.append(service)
 
     def test_item_model(self):
         """Create ItemModel"""
@@ -137,7 +176,23 @@ class TestAllItems(unittest2.TestCase):
         self.assertEqual('all_services_critical', under_test)
 
         under_test = get_real_host_state_icon([])
-        self.assertEqual('error', under_test)
+        self.assertEqual('all_services_none', under_test)
+
+    def test_get_host_msg_and_event_type(self):
+        """Get Host Message and Event Type"""
+
+        data_manager.update_database('host', self.host_list)
+        data_manager.update_database('service', self.service_list)
+
+        host_and_services = data_manager.get_host_with_services('_id1')
+
+        under_test = get_host_msg_and_event_type(host_and_services)
+
+        self.assertEqual(
+            'Host1 is UNKNOWN and acknowledged, some services may be in critical condition !',
+            under_test['message']
+        )
+        self.assertEqual(under_test['event_type'], 'DOWN')
 
     def test_get_request_history_model(self):
         """Get History Request Model"""

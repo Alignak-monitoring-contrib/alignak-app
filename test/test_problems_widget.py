@@ -25,6 +25,9 @@ import unittest2
 
 from PyQt5.Qt import QApplication
 
+from alignak_app.core.models.host import Host
+from alignak_app.core.models.service import Service
+from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.pyqt.panel.widgets.problems import ProblemsQWidget, QWidget
 
 
@@ -32,6 +35,48 @@ class TestDataManager(unittest2.TestCase):
     """
         This file test the ProblemsQWidget class.
     """
+
+    # Host data test
+    host_list = []
+    for i in range(0, 10):
+        host = Host()
+        host.create(
+            '_id%d' % i,
+            {
+                'name': 'host%d' % i,
+                'alias': 'Host %d' % i,
+                '_id': '_id%d' % i,
+                'ls_downtimed': True,
+                'ls_acknowledged': True,
+                'ls_state': 'UNKNOWN',
+                'ls_output': 'output host %d' % i
+            },
+            'host%d' % i
+        )
+        host_list.append(host)
+
+    # Service data test
+    service_list = []
+    for i in range(0, 10):
+        service = Service()
+        service.create(
+            '_id%d' % i,
+            {
+                'name': 'service%d' % i,
+                'alias': 'Service %d' % i,
+                'host': '_id%d' % i,
+                'ls_acknowledged': False,
+                'ls_downtimed': False,
+                'ls_state': 'CRITICAL',
+                'ls_output': 'output host %d' % i,
+                'aggregation': 'disk',
+                '_overall_state_id': 4
+            },
+            'service%d' % i
+        )
+        service_list.append(service)
+
+
 
     @classmethod
     def setUpClass(cls):
@@ -55,6 +100,8 @@ class TestDataManager(unittest2.TestCase):
             under_test.headers_list
         )
 
+        data_manager.update_database('host', self.host_list)
+        data_manager.update_database('service', self.service_list)
         under_test.initialize()
 
         self.assertIsNotNone(under_test.layout)
