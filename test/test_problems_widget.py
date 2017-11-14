@@ -76,8 +76,6 @@ class TestDataManager(unittest2.TestCase):
         )
         service_list.append(service)
 
-
-
     @classmethod
     def setUpClass(cls):
         """Create QApplication"""

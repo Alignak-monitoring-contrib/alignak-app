@@ -70,7 +70,7 @@ class PanelQWidget(QWidget):
         :param dock_width: width of dock, needed for PanelQWidget
         :type dock_width: int
         :param spy_widget: SpyQWidget to allow HostQWidget add spied host
-        :type spy_widget: alignak_app.widgets.dock.spy.SpyQWidget
+        :type spy_widget: alignak_app.pyqt.dock.widgets.spy.SpyQWidget
         """
 
         logger.info('Create Panel View...')
