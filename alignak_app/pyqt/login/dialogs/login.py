@@ -30,7 +30,7 @@ from PyQt5.Qt import QWidget, QDialog, QPushButton, Qt, QIcon
 
 from alignak_app import __version__
 from alignak_app.core.utils.config import app_css, get_image
-from alignak_app.core.utils.config import edit_setting_value, init_config
+from alignak_app.core.utils.config import edit_setting_value
 from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget
 from alignak_app.pyqt.login.dialogs.server import ServerQDialog
 
@@ -80,11 +80,11 @@ class LoginQDialog(QDialog):
         )
         title.setObjectName('title')
         title.setContentsMargins(1, 1, 1, 1)
-        login_layout.addWidget(title, 0, 0, 1, 3)
+        login_layout.addWidget(title, 0, 0, 1, 2)
         login_layout.setAlignment(title, Qt.AlignCenter)
 
         version = QLabel(_('Version %s') % __version__)
-        login_layout.addWidget(version, 1, 0, 1, 3)
+        login_layout.addWidget(version, 1, 0, 1, 2)
         login_layout.setAlignment(version, Qt.AlignCenter | Qt.AlignTop)
 
         # Welcome text
@@ -92,32 +92,24 @@ class LoginQDialog(QDialog):
         login_layout.addWidget(login_label, 2, 0, 1, 1)
         login_layout.setAlignment(login_label, Qt.AlignCenter)
 
-        # Configuration button
-        refresh_conf_btn = QPushButton()
-        refresh_conf_btn.clicked.connect(init_config)
-        refresh_conf_btn.setFixedSize(25, 25)
-        refresh_conf_btn.setIcon(QIcon(get_image('refresh')))
-        refresh_conf_btn.setToolTip(_('Reload configuration'))
-        login_layout.addWidget(refresh_conf_btn, 2, 1, 1, 1)
-
         # Server button
         server_btn = QPushButton()
         server_btn.clicked.connect(self.handle_server)
         server_btn.setFixedSize(25, 25)
         server_btn.setIcon(QIcon(get_image('host')))
         server_btn.setToolTip(_('Modify Alignak Server'))
-        login_layout.addWidget(server_btn, 2, 2, 1, 1)
+        login_layout.addWidget(server_btn, 2, 1, 1, 1)
 
         # Username field
         self.username_line = QLineEdit(self)
         self.username_line.setPlaceholderText(_('Username'))
-        login_layout.addWidget(self.username_line, 3, 0, 1, 3)
+        login_layout.addWidget(self.username_line, 3, 0, 1, 2)
 
         # Password field
         self.password_line = QLineEdit(self)
         self.password_line.setPlaceholderText(_('Password'))
         self.password_line.setEchoMode(QLineEdit.Password)
-        login_layout.addWidget(self.password_line, 4, 0, 1, 3)
+        login_layout.addWidget(self.password_line, 4, 0, 1, 2)
 
         # Login button
         login_button = QPushButton(_('LOGIN'), self)
@@ -125,7 +117,7 @@ class LoginQDialog(QDialog):
         login_button.setObjectName('valid')
         login_button.setMinimumHeight(30)
         login_button.setDefault(True)
-        login_layout.addWidget(login_button, 5, 0, 1, 3)
+        login_layout.addWidget(login_button, 5, 0, 1, 2)
 
         main_layout.addWidget(login_widget)
         self.setLayout(main_layout)
