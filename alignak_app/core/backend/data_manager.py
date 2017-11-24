@@ -292,19 +292,27 @@ class DataManager(object):
 
         hosts_total = 0
         hosts_problems = 0
+        hosts_not_monitored = 0
         services_total = 0
         services_problems = 0
+        services_not_monitored = 0
         for synth in livesynthesis:
             hosts_total += synth.data['hosts_total']
             hosts_problems += synth.data['hosts_down_soft']
             hosts_problems += synth.data['hosts_down_hard']
+            if 'hosts_not_monitored' in synth.data:
+                hosts_not_monitored += synth.data['hosts_not_monitored']
 
             services_total += synth.data['services_total']
             services_problems += synth.data['services_critical_soft']
             services_problems += synth.data['services_critical_hard']
             services_problems += synth.data['services_warning_soft']
             services_problems += synth.data['services_warning_hard']
+            if 'services_not_monitored' in synth.data:
+                hosts_not_monitored += synth.data['services_not_monitored']
 
+        hosts_total = hosts_total - hosts_not_monitored
+        services_total = services_total - services_not_monitored
         items_and_problems = {
             'host': {
                 'problem': hosts_problems,
