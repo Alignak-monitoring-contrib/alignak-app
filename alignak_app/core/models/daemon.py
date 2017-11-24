@@ -94,6 +94,7 @@ class Daemon(ItemModel):
 
         states = {
             'ok': 'connected',
+            'flapping': 'flapping',
             'ko': 'disconnected'
         }
 
@@ -120,7 +121,7 @@ class Daemon(ItemModel):
         if daemons_down == daemons_nb:
             status = 'ko'
         elif daemons_down > 0:
-            status = 'warn'
+            status = 'flapping'
         else:
             status = 'ok'
 
