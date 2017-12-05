@@ -24,24 +24,26 @@
 """
 
 import sys
+import time
 from logging import DEBUG, INFO
 
-from alignak_app.core.logs import create_logger
-from alignak_app.core.notifier import AppNotifier
-from alignak_app.core.utils import get_image_path, get_main_folder, get_app_workdir
-from alignak_app.core.utils import init_config, get_app_config
-from alignak_app.systray.tray_icon import TrayIcon
-from alignak_app.widgets.login import AppLogin
-from alignak_app.widgets.banner import bannerManager, send_banner
-from alignak_app.core.backend import AppBackend
-from alignak_app.dashboard.app_dashboard import Dashboard
+from PyQt5.Qt import QDialog, QMessageBox, QSplashScreen
+from PyQt5.Qt import QPixmap, QTimer, QProgressBar, Qt, pyqtSignal, QObject, QIcon
 
-from PyQt5.QtWidgets import QDialog, QMessageBox  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QIcon, QTimer  # pylint: disable=no-name-in-module
-from PyQt5.Qt import QObject, pyqtSignal  # pylint: disable=no-name-in-module
+from alignak_app.core.backend.client import app_backend
+from alignak_app.core.backend.data_manager import data_manager
+from alignak_app.core.utils.config import get_image, get_main_folder, get_app_workdir
+from alignak_app.core.utils.config import init_config, get_app_config
+from alignak_app.core.utils.logs import create_logger
+from alignak_app.locales.locales import init_localization
+from alignak_app.pyqt.dock.widgets.events import init_event_widget
+from alignak_app.pyqt.login.dialogs.login import LoginQDialog
+from alignak_app.pyqt.systray.tray_icon import TrayIcon
+from alignak_app.pyqt.threads.thread_manager import thread_manager
 
-# Initialize logger and config
+# Init App settings before importing QWidgets
 init_config()
+init_localization()
 logger = create_logger()
 
 
@@ -50,24 +52,18 @@ class AlignakApp(QObject):
         Class who build Alignak-app and initialize configuration, notifier and systray icon.
     """
 
-    reconnecting = pyqtSignal(AppBackend, str, name='reconnecting')
+    reconnecting = pyqtSignal(str, name='reconnecting')
 
     def __init__(self, parent=None):
         super(AlignakApp, self).__init__(parent)
         self.tray_icon = None
-        self.notifier = None
-        self.notifier_timer = QTimer()
         self.reconnect_mode = False
-        self.dashboard = None
 
-    def start(self):
+    def start(self):  # pragma: no cover
         """
         The main function of Alignak-App
 
         """
-
-        # Start BannerManager
-        bannerManager.start()
 
         # Define level of logger
         logger.name = 'alignak_app.app'
@@ -86,11 +82,13 @@ class AlignakApp(QObject):
             # If not username and password, create login form, else connect with config data.
             if not get_app_config('Alignak', 'username') and \
                     not get_app_config('Alignak', 'password'):  # pragma: no cover - Not testable
-                login = AppLogin()
+                login = LoginQDialog()
                 login.create_widget()
 
                 if login.exec_() == QDialog.Accepted:
-                    self.run(login.app_backend)
+                    username = str(login.username_line.text())
+                    password = str(login.password_line.text())
+                    self.run(username, password)
                 else:
                     logger.info('Alignak-App closes...')
                     sys.exit(0)
@@ -106,94 +104,111 @@ class AlignakApp(QObject):
         else:
             self.display_error_msg()
 
-    def reconnect_to_backend(self, app_backend, error):  # pragma: no cover
+    def app_reconnecting_mode(self, error):  # pragma: no cover
         """
         Set AlignakApp in reconnect mode and try to login to Backend
 
-        :param app_backend: AppBackend object
-        :type app_backend: AppBackend
         :param error: string error to display in banner
         :type error: str
         """
 
         self.reconnect_mode = True
         logger.warning('Application reconnecting MODE: %s', self.reconnecting)
-        send_banner('ERROR', 'Alignak Backend seems unreachable ! %s' % error, duration=5000)
+        logger.error('... caused by %s', error)
         timer = QTimer(self)
+
+        # Stop thread_name manager
+        thread_manager.stop_threads()
 
         def connect_to_backend():
             """Try to log in to Backend"""
             try:
                 connect = app_backend.login()
                 assert connect
-                # If connect, reconnecting is disable
                 timer.stop()
-                logger.info('Connection restored : %s', connect)
-                send_banner(
-                    'OK',
-                    'Connection with the Backend has been restored ! You are logged in again',
-                    duration=5000
-                )
+                # If connect, reconnecting is disable and threads restart
                 self.reconnect_mode = False
+                thread_manager.start()
+                logger.info('Connection restored : %s', connect)
             except AssertionError:
-                send_banner(
-                    'ERROR',
-                    'Backend is still unreachable... Alignak-app try to reconnect',
-                    duration=5000
-                )
                 logger.error('Backend is still unreachable...')
 
         if timer.isActive():
             pass
         else:
-            timer.start(10000)
+            timer.start(5000)
             timer.timeout.connect(connect_to_backend)
 
-    def run(self, app_backend=None):  # pragma: no cover
+    def run(self, username=None, password=None):  # pragma: no cover
         """
         Start all Alignak-app processes and create AppBackend if connection by config file.
 
-        :param app_backend: AppBackend object
-        :type app_backend: alignak_app.core.backend.AppBackend | None
         """
 
-        # If not login form, app try anyway to connect by token
-        if not app_backend:
-            app_backend = AppBackend()
-            connect = app_backend.login()
-            if connect:
-                username = app_backend.get_user(projection=['name'])['name']
-                send_banner('OK', 'Welcome %s, you are connected to Alignak Backend' % username)
-            else:
-                self.display_error_msg()
-
-        if 'token' not in app_backend.user:
-            app_backend.user['token'] = app_backend.backend.token
-
-        # Dashboard
-        self.dashboard = Dashboard()
-        self.dashboard.initialize()
-
-        # TrayIcon
-        self.tray_icon = TrayIcon(QIcon(get_image_path('icon')))
-        self.tray_icon.build_menu(app_backend, self.dashboard)
-        self.tray_icon.show()
-
-        app_backend.app = self
-        start = bool(app_backend.get_user(projection=['name']))
-
-        if start:
-            # Notifier
-            self.notifier = AppNotifier()
-            self.notifier.initialize(app_backend, self.tray_icon, self.dashboard)
-
-            self.notifier_timer.start(self.notifier.interval)
-            self.notifier_timer.timeout.connect(self.notifier.check_data)
-
-            self.reconnecting.connect(self.reconnect_to_backend)
+        if username and password:
+            app_backend.login(username, password)
         else:
-            # In case of...
-            self.display_error_msg()
+            app_backend.login()
+
+        # Check if connected
+        if app_backend.connected:
+            # Start ThreadManager
+            for i in range(0, 5):
+                # Launch 'alignakdaemon', 'history', 'service', 'host', 'user' threads
+                thread_manager.launch_threads()
+
+            self.reconnecting.connect(self.app_reconnecting_mode)
+
+            # Give AlignakApp for AppBackend reconnecting mode
+            app_backend.app = self
+
+            if 'token' not in app_backend.user:
+                app_backend.user['token'] = app_backend.backend.token
+
+            # Build splash screen
+            splash_icon = QPixmap(get_image('alignak'))
+            splash = QSplashScreen(splash_icon)
+
+            progressbar = QProgressBar(splash)
+            progressbar.setTextVisible(False)
+            progressbar.setStyleSheet('border-top: none; color: none;')
+            progressbar.setFixedSize(splash_icon.width(), splash_icon.height())
+            progressbar.setAlignment(Qt.AlignCenter)
+
+            splash.setMask(splash_icon.mask())
+            splash.show()
+
+            logger.info("Preparing DataManager...")
+            while not data_manager.is_ready():
+                for i in range(0, 100):
+                    progressbar.setValue(i)
+                    t = time.time()
+                    while time.time() < t + 0.01:
+                        self.parent().processEvents()
+
+            # Launch other threads and run TrayIcon()
+            thread_manager.start()
+            init_event_widget()
+            self.tray_icon = TrayIcon(QIcon(get_image('icon')))
+            self.tray_icon.build_menu()
+            self.tray_icon.show()
+        else:
+            # In case of data provided in config file fails
+            logger.error(
+                'Fails to connect with the information provided in the configuration file !'
+            )
+            login = LoginQDialog()
+            login.create_widget()
+            login.connection_lbl.setText(_('Bad identifiers. Please try again'))
+            login.connection_lbl.setObjectName('error')
+
+            if login.exec_() == QDialog.Accepted:
+                username = str(login.username_line.text())
+                password = str(login.password_line.text())
+                self.run(username, password)
+            else:
+                logger.info('Alignak-App closes...')
+                sys.exit(0)
 
     @staticmethod
     def display_error_msg():  # pragma: no cover
@@ -203,12 +218,16 @@ class AlignakApp(QObject):
         """
 
         logger.error('Something seems wrong in your configuration.'
-                     'Please configure Alignak-app before starting it.')
+                     'Please configure Alignak-app before starting it. '
+                     'And make sure the backend is available')
 
         QMessageBox.critical(
             None,
-            'Configuration / Connection ERROR',
-            'Something seems wrong in your configuration.'
-            'Please configure Alignak-app before starting it.'
+            _('Configuration / Connection ERROR'),
+            _(
+                'Something seems wrong in your configuration. '
+                'Please configure Alignak-app before starting it. '
+                'And make sure the backend is available'
+            )
         )
         sys.exit()

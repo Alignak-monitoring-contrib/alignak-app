@@ -40,7 +40,7 @@ So make sure that you have the right to write and read.
 
 You must set an **absolute path** for this settings.
 
-Then only put/copy the ``settings.cfg``, located in application main folder, inside the one you have defined.
+Then only put/copy the ``settings.cfg`` in the folder you have defined.
 
 **Note:** If you have not set this option, application use the same directory than cited above. If you have no rights, application will crash.
 
@@ -59,44 +59,22 @@ The most significant Section is **[Backend]**. You need set your backend url, po
 
 .. [ToKnow] " Without connection on Backend of Alignak, App won't start ! "
 
-[Alignak-App] section
+Settings file
+-------------
+
+Here is the full ``settings.cfg`` file. This file contains comments for each setting.
+
+    .. literalinclude:: ../etc/settings.cfg
+
+Connection to Backend
 ---------------------
 
-This section contains main configuration for *alignak-app*.
+Alignak-app have a login form by default, who let you to connect with the username and password define in backend.
 
-  * **synthesis_interval:** defines (in seconds) the frequency of checks to the backend API *livesynthesis*.
-  * **daemon_interval:** defines (in seconds) the frequency of checks to the backend API *alignakdaemon*.
-  * **item_interval:** defines (in seconds) the frequency of checks to the backend API for other checks.
-
-[Dashboard] section
--------------------
-
-This section contains configuration of Dashboard application.
-
-  * **position:** define default position of dashboard.
-  * **pop:** define if you want the dashboard "pop" at each backend changes or not.
-  * **duration:** define how long the dashboard is displayed if *pop* mode is set to *yes*
-  * **sticky:** define if the dashboard can be move or not.
-
-[Banners] section
------------------
-
-This section contains configuration of banners.
-
-  * **title:** choose to display banner title or not, if the colors are not enough.
-  * **changes:** display banners at each backend changes or not.
-  * **duration:** set the time (in seconds) before a banner that indicates changes will close.
-  * **animation:** define speed of animation. Must be equal or greater than 0 !
-
-[Alignak] section
------------------
-
-This section contains parameters to interact with Alignak.
-
-For "username" and "password", choose from the following 3 ways to connect:
+You can also set connection information in settings file:
 
   * **Recommended:** leave empty "username" and "password". Alignak-app will display a login Window.
-  * **Recommended:** set your token in "username" field and leave "password" empty.
+  * **Recommended:** set your token in "username" field and leave "password" empty (See below).
   * **Not recommended:** set your "username" and your "password". This method is less secure.
 
 To obtain a token, open a python terminal and type the following commands::
@@ -112,32 +90,3 @@ To obtain a token, open a python terminal and type the following commands::
     )
     print(r.text)
 
-Then:
-
-  * **url:** url of Alignak, without port. (IP or FQDN if you have it). You can call this option after with ``%(alignak_url)s`` syntax, but **only in this section !**
-  * **backend:** your backend url. Default is: ``%(alignak_url)s:5000`` but you can also put the IP or FQDN.
-  * **webui:** url of your WebUI. Default is: ``%(alignak_url)s:80`` but you can also put the IP or FQDN.
-  * **processes:** number of processes used for backend connection
-
-[Log] section
--------------
-
-This section contains log system of application.
-
-  * **filename:** define name of file where logs will be stored
-  * **location:** set this setting if you want to store your logs somewhere else
-  * **debug:** activate the debug mode of application
-
-[Config] section
-----------------
-
-This section contains application paths. Be **careful** if you modify something in this section.
-
-  * **path:** this is the main path of application.
-  * **img:** this the images path. This path is relative of the [path] value.
-
-[Images] section
-----------------
-
-This section contains images names. You can add your own images if you want, but they had to be in *images* application folder.
-They are also all in ``.svg`` format (except alignak logo) and can therefore be easily modified.

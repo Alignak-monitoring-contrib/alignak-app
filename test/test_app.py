@@ -19,12 +19,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-import unittest2
 import sys
 
-from alignak_app.app import AlignakApp
-
+import unittest2
 from PyQt5.QtWidgets import QApplication
+
+from alignak_app.app import AlignakApp
 
 
 class TestApp(unittest2.TestCase):
@@ -41,20 +41,16 @@ class TestApp(unittest2.TestCase):
         except:
             pass
 
-    def test_app_main(self):
-        """Build Alignak-App"""
+    def test_app_reconnect_mode(self):
+        """Reconnect App"""
 
         under_test = AlignakApp()
 
         self.assertIsNone(under_test.tray_icon)
-        self.assertIsNone(under_test.notifier)
-        self.assertIsNone(under_test.dashboard)
-        self.assertFalse(under_test.notifier_timer.isActive())
+        self.assertFalse(under_test.reconnect_mode)
 
         # Build alignak_app
-        under_test.start()
+        under_test.app_reconnecting_mode('ERROR')
 
-        self.assertIsNotNone(under_test.tray_icon)
-        self.assertIsNotNone(under_test.notifier)
-        self.assertIsNotNone(under_test.dashboard)
-        self.assertTrue(under_test.notifier_timer.isActive())
+        self.assertIsNone(under_test.tray_icon)
+        self.assertTrue(under_test.reconnect_mode)

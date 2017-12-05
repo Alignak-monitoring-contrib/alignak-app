@@ -50,30 +50,34 @@ It is used to :
 * View, in real time, an host synthesis (host and its services state)
 * Acknowledge problems or schedule downtimes on your Hosts / Services
 
+App use `PyQt5 <https://www.riverbankcomputing.com/software/pyqt/intro>`_, bindings of Qt application framework.
+
 Installation
 ------------
 
 To install Alignak-app::
 
-    # For Linux users with python2
-    sudo apt-get install python-qt4
-    # For Linux and Windows users with python3
-    pip3 install PyQt5 --user
+    ##### WINDOWS USERS #####
+    # An installer for Windows is available on this repository.
+    # To keep it free, installer is not signed, so Windows Defender SmartScreen will warn you about that.
+    # Just click on "More Informations" and on "Execute anyway" to run installer.
 
-    # For Windows users, we recommend using python3, else install PyQt from the download page
-
+    ##### LINUX USERS #####
     # Alignak App
     pip3 install alignak_app --user -v
 
+    # First run
+    ~/.local/alignak_app/bin/alignak-app
+
+    # If you've already run App, just do
+    alignak-app start
+
+    ##### Development #####
     # If you want development version, run:
     git clone https://github.com/Alignak-monitoring-contrib/alignak-app
     cd alignak-app
+    pip3 install -r requirements.txt
     pip3 install . --user -v
-
-    # Follow instructions displayed during pip install and run the app (1st run will finalize the installation)
-    alignak-app start
-
-    # An installer for Windows is also available on this repository.
 
 You can find more help in the documentation below.
 

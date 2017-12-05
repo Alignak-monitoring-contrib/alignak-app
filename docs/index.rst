@@ -9,13 +9,14 @@ Welcome to Alignak-App's documentation!
 Documentation content:
 
 .. toctree::
-   :maxdepth: 3
+    :maxdepth: 3
 
-   intro
-   install
-   config
-   launch
-   setup
+    intro
+    install
+    config
+    launch
+    use
+    setup
 
 
 Indices and tables

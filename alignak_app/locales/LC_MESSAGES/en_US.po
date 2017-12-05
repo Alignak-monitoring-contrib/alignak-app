@@ -1,0 +1,642 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-11-03 12:02+0100\n"
+"PO-Revision-Date: 2017-11-03 12:34+0100\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: en\n"
+
+#: ../core/models/item.py:98
+#, python-format
+msgid "%s is %s and %s"
+msgstr "%s is %s and %s"
+
+#: ../core/models/item.py:100
+#, python-format
+msgid "%s is %s"
+msgstr "%s is %s"
+
+#: ../core/models/item.py:210
+#, python-format
+msgid "%s. You have nothing to do."
+msgstr "%s. You have nothing to do."
+
+#: ../core/models/item.py:216
+#, python-format
+msgid "%s and his services are ok or acknowledged."
+msgstr "%s and his services are ok or acknowledged."
+
+#: ../core/models/item.py:222
+#, python-format
+msgid "%s and his services are ok or downtimed."
+msgstr "%s and his services are ok or downtimed."
+
+#: ../core/models/item.py:228
+#, python-format
+msgid "%s, some services may be unknown or unreachable."
+msgstr "%s, some services may be unknown or unreachable."
+
+#: ../core/models/item.py:234
+#, python-format
+msgid "TODO: %s, some services may be in critical condition !"
+msgstr "TODO: %s, some services may be in critical condition !"
+
+#: ../core/models/item.py:252
+#, python-format
+msgid "Host is %s."
+msgstr "Host is %s."
+
+#: ../core/models/user.py:78
+msgid "user"
+msgstr "user"
+
+#: ../core/models/user.py:82
+msgid "administrator"
+msgstr "administrator"
+
+#: ../core/models/user.py:86
+msgid "power"
+msgstr "power"
+
+#: ../core/utils/time.py:53
+msgid "Very soon"
+msgstr "Very soon"
+
+#: ../core/utils/time.py:55
+msgid "Just now"
+msgstr "Just now"
+
+#: ../core/utils/time.py:84
+#, python-format
+msgid "%s ago"
+msgstr "%s ago"
+
+#: ../pyqt/common/actions.py:45
+msgid "Request an Acknowledge"
+msgstr "Request an Acknowledge"
+
+#: ../pyqt/common/actions.py:80
+msgid "Request an acknowledge"
+msgstr "Request an acknowledge"
+
+#: ../pyqt/common/actions.py:87
+msgid "Acknowledge is sticky:"
+msgstr "Acknowledge is sticky:"
+
+#: ../pyqt/common/actions.py:99
+msgid ""
+"If checked, the acknowledge will remain until the element returns to an \"OK"
+"\" state."
+msgstr ""
+"If checked, the acknowledge will remain until the element returns to an \"OK"
+"\" state."
+
+#: ../pyqt/common/actions.py:106
+msgid "Acknowledge notifies:"
+msgstr "Acknowledge notifies:"
+
+#: ../pyqt/common/actions.py:117
+msgid "If checked, a notification will be sent out to the concerned contacts."
+msgstr "If checked, a notification will be sent out to the concerned contacts."
+
+#: ../pyqt/common/actions.py:122
+msgid "Acknowledge comment:"
+msgstr "Acknowledge comment:"
+
+#: ../pyqt/common/actions.py:131
+msgid "REQUEST ACKNOWLEDGE"
+msgstr "REQUEST ACKNOWLEDGE"
+
+#: ../pyqt/common/actions.py:165
+msgid "Request a Downtime"
+msgstr "Request a Downtime"
+
+#: ../pyqt/common/actions.py:202
+msgid "Request a downtime"
+msgstr "Request a downtime"
+
+#: ../pyqt/common/actions.py:209
+msgid "Downtime options:"
+msgstr "Downtime options:"
+
+#: ../pyqt/common/actions.py:219
+msgid "Fixed"
+msgstr "Fixed"
+
+#: ../pyqt/common/actions.py:225
+msgid ""
+"If checked, downtime will start and end at the times specified by the “start "
+"time” and “end time” fields."
+msgstr ""
+"If checked, downtime will start and end at the times specified by the “start "
+"time” and “end time” fields."
+
+#: ../pyqt/common/actions.py:232
+msgid "Duration"
+msgstr "Duration"
+
+#: ../pyqt/common/actions.py:247
+msgid "Sets the duration if it is a non-fixed downtime."
+msgstr "Sets the duration if it is a non-fixed downtime."
+
+#: ../pyqt/common/actions.py:251
+msgid "Downtime date range"
+msgstr "Downtime date range"
+
+#: ../pyqt/common/actions.py:261
+msgid "Start time:"
+msgstr "Start time:"
+
+#: ../pyqt/common/actions.py:269
+msgid "End time:"
+msgstr "End time:"
+
+#: ../pyqt/common/actions.py:281
+msgid "REQUEST DOWNTIME"
+msgstr "REQUEST DOWNTIME"
+
+#: ../pyqt/dock/dialogs/password.py:69
+msgid "Please type a new PASSWORD:"
+msgstr "Please type a new PASSWORD:"
+
+#: ../pyqt/dock/dialogs/password.py:78
+msgid "type new password"
+msgstr "type new password"
+
+#: ../pyqt/dock/dialogs/password.py:82
+msgid "confirm new password"
+msgstr "confirm new password"
+
+#: ../pyqt/dock/dialogs/password.py:86 ../pyqt/dock/dialogs/password.py:113
+msgid "Your password must contain at least 5 characters."
+msgstr "Your password must contain at least 5 characters."
+
+#: ../pyqt/dock/dialogs/password.py:110
+msgid "Passwords do not match !"
+msgstr "Passwords do not match !"
+
+#: ../pyqt/dock/dialogs/status.py:79
+msgid "Alignak Status"
+msgstr "Alignak Status"
+
+#: ../pyqt/dock/dialogs/status.py:95 ../pyqt/dock/dialogs/user_options.py:148
+msgid "OK"
+msgstr "OK"
+
+#: ../pyqt/dock/dialogs/status.py:101
+msgid "Refresh"
+msgstr "Refresh"
+
+#: ../pyqt/dock/dialogs/status.py:135
+msgid "State"
+msgstr "State"
+
+#: ../pyqt/dock/dialogs/status.py:140
+msgid "Daemon name"
+msgstr "Daemon name"
+
+#: ../pyqt/dock/dialogs/status.py:144
+msgid "Address"
+msgstr "Address"
+
+#: ../pyqt/dock/dialogs/status.py:148
+msgid "Reachable"
+msgstr "Reachable"
+
+#: ../pyqt/dock/dialogs/status.py:153
+msgid "Spare"
+msgstr "Spare"
+
+#: ../pyqt/dock/dialogs/status.py:158
+msgid "Passive daemon"
+msgstr "Passive daemon"
+
+#: ../pyqt/dock/dialogs/status.py:163
+msgid "Last check"
+msgstr "Last check"
+
+#: ../pyqt/dock/dialogs/user_notes.py:67
+msgid "Please modify your notes:"
+msgstr "Please modify your notes:"
+
+#: ../pyqt/dock/dialogs/user_notes.py:89
+msgid "type your notes"
+msgstr "type your notes"
+
+#: ../pyqt/dock/dialogs/user_notes.py:94
+msgid "Confirm"
+msgstr "Confirm"
+
+#: ../pyqt/dock/dialogs/user_options.py:126
+msgid "Options:"
+msgstr "Options:"
+
+#: ../pyqt/dock/widgets/buttons.py:79
+msgid "Problems View coming soon..."
+msgstr "Problems View coming soon..."
+
+#: ../pyqt/dock/widgets/buttons.py:110
+msgid "Open WebUI in browser"
+msgstr "Open WebUI in browser"
+
+#: ../pyqt/dock/widgets/buttons.py:113
+msgid "WebUI is not set in configuration file."
+msgstr "WebUI is not set in configuration file."
+
+#: ../pyqt/dock/widgets/dock.py:75
+msgid "Alignak"
+msgstr "Alignak"
+
+#: ../pyqt/dock/widgets/dock.py:86
+msgid "Livestate"
+msgstr "Livestate"
+
+#: ../pyqt/dock/widgets/dock.py:95
+msgid "Last Events"
+msgstr "Last Events"
+
+#: ../pyqt/dock/widgets/dock.py:103
+msgid "Spied Hosts"
+msgstr "Spied Hosts"
+
+#: ../pyqt/dock/widgets/events.py:142
+#, python-format
+msgid "Welcome %s, you are connected to Alignak Backend"
+msgstr "Welcome %s, you are connected to Alignak Backend"
+
+#: ../pyqt/dock/widgets/livestate.py:95
+#, python-format
+msgid "Number of unhandled %s problems"
+msgstr "Number of unhandled %s problems"
+
+#: ../pyqt/dock/widgets/livestate.py:112
+#, python-format
+msgid "Number of monitored %s"
+msgstr "Number of monitored %s"
+
+#: ../pyqt/dock/widgets/status.py:63
+msgid "Status:"
+msgstr "Status:"
+
+#: ../pyqt/dock/widgets/status.py:84
+msgid "Backend:"
+msgstr "Backend:"
+
+#: ../pyqt/dock/widgets/user.py:82
+msgid "User View"
+msgstr "User View"
+
+#: ../pyqt/dock/widgets/user.py:105
+msgid "User informations:"
+msgstr "User informations:"
+
+#: ../pyqt/dock/widgets/user.py:113
+msgid "<h5>Realm:</h5>"
+msgstr "<h5>Realm:</h5>"
+
+#: ../pyqt/dock/widgets/user.py:118
+msgid "<h5>Administrator:</h5>"
+msgstr "<h5>Administrator:</h5>"
+
+#: ../pyqt/dock/widgets/user.py:127 ../pyqt/panel/widgets/host.py:359
+msgid "Notes:"
+msgstr "Notes:"
+
+#: ../pyqt/dock/widgets/user.py:132
+msgid "Edit your notes."
+msgstr "Edit your notes."
+
+#: ../pyqt/dock/widgets/user.py:140
+msgid "<h5>Role:</h5>"
+msgstr "<h5>Role:</h5>"
+
+#: ../pyqt/dock/widgets/user.py:145
+msgid "<h5>Commands:</h5>"
+msgstr "<h5>Commands:</h5>"
+
+#: ../pyqt/dock/widgets/user.py:163
+msgid "<h5>Email:</h5>"
+msgstr "<h5>Email:</h5>"
+
+#: ../pyqt/dock/widgets/user.py:168
+msgid "<h5>Password:</h5>"
+msgstr "<h5>Password:</h5>"
+
+#: ../pyqt/dock/widgets/user.py:175
+msgid "Change my password"
+msgstr "Change my password"
+
+#: ../pyqt/dock/widgets/user.py:181
+msgid "<h5>Alias:</h5>"
+msgstr "<h5>Alias:</h5>"
+
+#: ../pyqt/dock/widgets/user.py:186
+msgid "<h5>Token:</h5>"
+msgstr "<h5>Token:</h5>"
+
+#: ../pyqt/dock/widgets/user.py:233
+msgid "Your notes have been edited."
+msgstr "Your notes have been edited."
+
+#: ../pyqt/dock/widgets/user.py:239 ../pyqt/dock/widgets/user.py:259
+msgid "Backend PATCH failed, please check your logs !"
+msgstr "Backend PATCH failed, please check your logs !"
+
+#: ../pyqt/dock/widgets/user.py:255
+msgid "Your password has been updated !"
+msgstr "Your password has been updated !"
+
+#: ../pyqt/dock/widgets/user.py:296
+msgid "Hosts notifications configurations"
+msgstr "Hosts notifications configurations"
+
+#: ../pyqt/dock/widgets/user.py:301 ../pyqt/dock/widgets/user.py:353
+msgid "<h5>Notification enabled:</h5>"
+msgstr "<h5>Notification enabled:</h5>"
+
+#: ../pyqt/dock/widgets/user.py:313 ../pyqt/dock/widgets/user.py:365
+msgid "<h5>Notification period:</h5>"
+msgstr "<h5>Notification period:</h5>"
+
+#: ../pyqt/dock/widgets/user.py:348
+msgid "Services notifications configurations"
+msgstr "Services notifications configurations"
+
+#: ../pyqt/dock/widgets/user.py:407
+#, python-format
+msgid "Notifications for %ss are %s"
+msgstr "Notifications for %ss are %s"
+
+#: ../pyqt/dock/widgets/user.py:415
+msgid "Backend PATCH failed, if problem persist, please check your logs !"
+msgstr "Backend PATCH failed, if problem persist, please check your logs !"
+
+#: ../pyqt/dock/widgets/user.py:447
+msgid "See my token"
+msgstr "See my token"
+
+#: ../pyqt/dock/widgets/user.py:450
+msgid "Token is only available for Administrators !"
+msgstr "Token is only available for Administrators !"
+
+#: ../pyqt/login/dialogs/login.py:79
+msgid "Welcome to Alignak-app"
+msgstr "Welcome to Alignak-app"
+
+#: ../pyqt/login/dialogs/login.py:86
+#, python-format
+msgid "Version %s"
+msgstr "Version %s"
+
+#: ../pyqt/login/dialogs/login.py:91
+msgid "<b>Log-in</b> to use the application"
+msgstr "<b>Log-in</b> to use the application"
+
+#: ../pyqt/login/dialogs/login.py:100
+msgid "Reload configuration"
+msgstr "Reload configuration"
+
+#: ../pyqt/login/dialogs/login.py:108
+msgid "Modify Alignak Server"
+msgstr "Modify Alignak Server"
+
+#: ../pyqt/login/dialogs/login.py:113
+msgid "Username"
+msgstr "Username"
+
+#: ../pyqt/login/dialogs/login.py:118
+msgid "Password"
+msgstr "Password"
+
+#: ../pyqt/login/dialogs/login.py:123
+msgid "LOGIN"
+msgstr "LOGIN"
+
+#: ../pyqt/login/dialogs/server.py:46
+msgid "Server Configuration"
+msgstr "Server Configuration"
+
+#: ../pyqt/login/dialogs/server.py:76
+msgid ""
+"<h3>Alignak Backend</h3><p>Here you can define alignak settings.</p><b>Be "
+"sure to enter a valid address</b>"
+msgstr ""
+"<h3>Alignak Backend</h3><p>Here you can define alignak settings.</p><b>Be "
+"sure to enter a valid address</b>"
+
+#: ../pyqt/login/dialogs/server.py:84
+msgid "Server"
+msgstr "Server"
+
+#: ../pyqt/login/dialogs/server.py:86
+msgid "alignak backend url"
+msgstr "alignak backend url"
+
+#: ../pyqt/login/dialogs/server.py:91
+msgid "Port"
+msgstr "Port"
+
+#: ../pyqt/login/dialogs/server.py:93
+msgid "alignak backend port"
+msgstr "alignak backend port"
+
+#: ../pyqt/login/dialogs/server.py:99
+msgid "Processes"
+msgstr "Processes"
+
+#: ../pyqt/login/dialogs/server.py:103
+msgid "alignak backend processes"
+msgstr "alignak backend processes"
+
+#: ../pyqt/login/dialogs/server.py:109
+msgid "Valid"
+msgstr "Valid"
+
+#: ../pyqt/panel/widgets/dashboard.py:122
+#, python-format
+msgid "Hosts %s. See in WebUI ?"
+msgstr "Hosts %s. See in WebUI ?"
+
+#: ../pyqt/panel/widgets/dashboard.py:149
+#, python-format
+msgid "Services %s. See in WebUI ?"
+msgstr "Services %s. See in WebUI ?"
+
+#: ../pyqt/panel/widgets/history.py:69
+#, python-format
+msgid "History of %s"
+msgstr "History of %s"
+
+#: ../pyqt/panel/widgets/history.py:77
+#, python-format
+msgid "The last 25 events for %s"
+msgstr "The last 25 events for %s"
+
+#: ../pyqt/panel/widgets/host.py:145 ../pyqt/panel/widgets/service.py:158
+msgid "Actions:"
+msgstr "Actions:"
+
+#: ../pyqt/panel/widgets/host.py:175
+#, python-format
+msgid "Host %s acknowledged by %s, from Alignak-app"
+msgstr "Host %s acknowledged by %s, from Alignak-app"
+
+#: ../pyqt/panel/widgets/host.py:200 ../pyqt/panel/widgets/service.py:215
+#, python-format
+msgid "Acknowledge for %s is done"
+msgstr "Acknowledge for %s is done"
+
+#: ../pyqt/panel/widgets/host.py:225
+#, python-format
+msgid "Schedule downtime by %s, from Alignak-app"
+msgstr "Schedule downtime by %s, from Alignak-app"
+
+#: ../pyqt/panel/widgets/host.py:251 ../pyqt/panel/widgets/service.py:269
+#, python-format
+msgid "Downtime for %s is done"
+msgstr "Downtime for %s is done"
+
+#: ../pyqt/panel/widgets/host.py:289 ../pyqt/panel/widgets/service.py:123
+msgid "My last check"
+msgstr "My last check"
+
+#: ../pyqt/panel/widgets/host.py:295
+msgid "State:"
+msgstr "State:"
+
+#: ../pyqt/panel/widgets/host.py:302 ../pyqt/panel/widgets/service.py:129
+msgid "When:"
+msgstr "When:"
+
+#: ../pyqt/panel/widgets/host.py:309 ../pyqt/panel/widgets/service.py:136
+msgid "Output"
+msgstr "Output"
+
+#: ../pyqt/panel/widgets/host.py:332
+msgid "My variables"
+msgstr "My variables"
+
+#: ../pyqt/panel/widgets/host.py:338
+msgid "Realm:"
+msgstr "Realm:"
+
+#: ../pyqt/panel/widgets/host.py:345
+msgid "Host address:"
+msgstr "Host address:"
+
+#: ../pyqt/panel/widgets/host.py:352
+msgid "Business impact:"
+msgstr "Business impact:"
+
+#: ../pyqt/panel/widgets/host.py:433
+msgid "History is available"
+msgstr "History is available"
+
+#: ../pyqt/panel/widgets/host.py:435
+msgid "History is not available, please wait..."
+msgstr "History is not available, please wait..."
+
+#: ../pyqt/panel/widgets/number_services.py:112
+#, python-format
+msgid "<b>Services of %s: </b> %d services"
+msgstr "<b>Services of %s: </b> %d services"
+
+#: ../pyqt/panel/widgets/panel.py:60
+msgid "Spy Host"
+msgstr "Spy Host"
+
+#: ../pyqt/panel/widgets/panel.py:100
+msgid "Hosts Synthesis View"
+msgstr "Hosts Synthesis View"
+
+#: ../pyqt/panel/widgets/panel.py:124 ../pyqt/panel/widgets/panel.py:127
+msgid "Search Host"
+msgstr "Search Host"
+
+#: ../pyqt/panel/widgets/panel.py:184 ../pyqt/panel/widgets/panel.py:185
+msgid "Type a host name to display its data"
+msgstr "Type a host name to display its data"
+
+#: ../pyqt/panel/widgets/service.py:190
+#, python-format
+msgid "Service %s acknowledged by %s, from Alignak-app"
+msgstr "Service %s acknowledged by %s, from Alignak-app"
+
+#: ../pyqt/panel/widgets/service.py:243
+#, python-format
+msgid "Downtime on %s by %s, from Alignak-app"
+msgstr "Downtime on %s by %s, from Alignak-app"
+
+#: ../pyqt/systray/dialogs/about.py:43 ../pyqt/systray/tray_icon.py:124
+msgid "About"
+msgstr "About"
+
+#: ../pyqt/systray/dialogs/about.py:58
+msgid "Application version:"
+msgstr "Application version:"
+
+#: ../pyqt/systray/dialogs/about.py:61
+#, python-format
+msgid "%s, version %s"
+msgstr "%s, version %s"
+
+#: ../pyqt/systray/dialogs/about.py:65
+msgid "Copyright:"
+msgstr "Copyright:"
+
+#: ../pyqt/systray/dialogs/about.py:72
+msgid "Home page:"
+msgstr "Home page:"
+
+#: ../pyqt/systray/dialogs/about.py:78
+msgid "User documentation"
+msgstr "User documentation"
+
+#: ../pyqt/systray/dialogs/about.py:84
+msgid "Release notes:"
+msgstr "Release notes:"
+
+#: ../pyqt/systray/dialogs/about.py:91
+msgid "About Alignak solution:"
+msgstr "About Alignak solution:"
+
+#: ../pyqt/systray/dialogs/about.py:97
+#, python-format
+msgid "About %s"
+msgstr "About %s"
+
+#: ../pyqt/systray/tray_icon.py:85
+msgid "Dock"
+msgstr "Dock"
+
+#: ../pyqt/systray/tray_icon.py:103
+msgid "Reload Configuration"
+msgstr "Reload Configuration"
+
+#: ../pyqt/systray/tray_icon.py:174
+msgid "Configuration reloaded"
+msgstr "Configuration reloaded"
+
+#: ../app.py:224
+msgid "Configuration / Connection ERROR"
+msgstr "Configuration / Connection ERROR"
+
+#: ../app.py:226
+msgid ""
+"Something seems wrong in your configuration. Please configure Alignak-app "
+"before starting it. And make sure the backend is available"
+msgstr ""
+"Something seems wrong in your configuration. Please configure Alignak-app "
+"before starting it. And make sure the backend is available"

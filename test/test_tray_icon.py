@@ -22,17 +22,19 @@
 import sys
 
 import unittest2
-
-from alignak_app.core.backend import AppBackend
-from alignak_app.core.utils import get_image_path
-from alignak_app.core.utils import init_config
-from alignak_app.systray.tray_icon import TrayIcon
-from alignak_app.dashboard.app_dashboard import Dashboard
-
-from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMenu
 from PyQt5.QtWidgets import QAction
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QMenu
+
+from alignak_app.core.backend.client import BackendClient
+from alignak_app.core.backend.data_manager import data_manager
+from alignak_app.core.models.user import User
+from alignak_app.core.utils.config import get_image
+from alignak_app.core.utils.config import init_config
+from alignak_app.locales.locales import init_localization
+from alignak_app.pyqt.dock.widgets.events import init_event_widget
+from alignak_app.pyqt.systray.tray_icon import TrayIcon
 
 
 class TestTrayIcon(unittest2.TestCase):
@@ -41,11 +43,27 @@ class TestTrayIcon(unittest2.TestCase):
     """
 
     init_config()
+    init_localization()
 
-    icon = QIcon(get_image_path('icon'))
+    icon = QIcon(get_image('icon'))
 
-    backend = AppBackend()
+    backend = BackendClient()
     backend.login()
+
+    data_manager.database['user'] = User()
+    data_manager.database['user'].data = {}
+    user_key = [
+        '_realm', 'is_admin', 'back_role_super_admin', 'alias', 'name', 'notes', 'email',
+        'can_submit_commands', 'token', 'host_notifications_enabled',
+        'service_notifications_enabled', 'host_notification_period',
+        'service_notification_period', 'host_notification_options',
+        'service_notification_options',
+    ]
+    for key in user_key:
+        if key == 'host_notifications_enabled' or key == 'service_notifications_enabled':
+            data_manager.database['user'].data[key] = True
+        else:
+            data_manager.database['user'].data[key] = 'nothing'
 
     @classmethod
     def setUpClass(cls):
@@ -57,38 +75,10 @@ class TestTrayIcon(unittest2.TestCase):
 
     def test_tray_icon(self):
         """Init TrayIcon and QMenu"""
+        init_event_widget()
         under_test = TrayIcon(TestTrayIcon.icon)
 
         self.assertIsInstance(under_test.menu, QMenu)
-
-    def test_host_actions(self):
-        """Hosts QActions are created"""
-        under_test = TrayIcon(TestTrayIcon.icon)
-
-        self.assertFalse(under_test.qaction_factory.actions)
-
-        under_test.create_hosts_actions()
-
-        self.assertIsInstance(under_test.qaction_factory.get('hosts_up'), QAction)
-        self.assertIsInstance(under_test.qaction_factory.get('hosts_down'), QAction)
-        self.assertIsInstance(under_test.qaction_factory.get('hosts_unreachable'), QAction)
-        self.assertIsInstance(under_test.qaction_factory.get('hosts_acknowledge'), QAction)
-        self.assertIsInstance(under_test.qaction_factory.get('hosts_downtime'), QAction)
-
-    def test_services_actions(self):
-        """Services QActions are created"""
-        under_test = TrayIcon(TestTrayIcon.icon)
-
-        self.assertFalse(under_test.qaction_factory.actions)
-
-        under_test.create_services_actions()
-
-        self.assertIsInstance(under_test.qaction_factory.get('services_ok'), QAction)
-        self.assertIsInstance(under_test.qaction_factory.get('services_warning'), QAction)
-        self.assertIsInstance(under_test.qaction_factory.get('services_critical'), QAction)
-        self.assertIsInstance(under_test.qaction_factory.get('services_unknown'), QAction)
-        self.assertIsInstance(under_test.qaction_factory.get('services_acknowledge'), QAction)
-        self.assertIsInstance(under_test.qaction_factory.get('services_downtime'), QAction)
 
     def test_about_action(self):
         """About QAction is created"""
@@ -99,7 +89,7 @@ class TestTrayIcon(unittest2.TestCase):
         under_test.create_about_action()
 
         self.assertIsNotNone(under_test.qaction_factory)
-        self.assertIsInstance(under_test.qaction_factory.get('about'), QAction)
+        self.assertIsInstance(under_test.qaction_factory.get_action('about'), QAction)
 
     def test_quit_action(self):
         """Quit QAction is created"""
@@ -109,97 +99,32 @@ class TestTrayIcon(unittest2.TestCase):
 
         under_test.create_quit_action()
 
-        self.assertIsNotNone(under_test.qaction_factory.get('exit'))
-        self.assertIsInstance(under_test.qaction_factory.get('exit'), QAction)
+        self.assertIsNotNone(under_test.qaction_factory.get_action('exit'))
+        self.assertIsInstance(under_test.qaction_factory.get_action('exit'), QAction)
 
     def test_build_menu(self):
         """Build Menu add QActions"""
+
+        init_event_widget()
+        data_manager.database['host'] = []
+        data_manager.database['service'] = []
+
+        for key in self.user_key:
+            if key == 'host_notifications_enabled' or key == 'service_notifications_enabled':
+                data_manager.database['user'].data[key] = True
+            else:
+                data_manager.database['user'].data[key] = 'nothing'
+
         under_test = TrayIcon(TestTrayIcon.icon)
-        dashboard_test = Dashboard()
 
         # Assert no actions in Menu
         self.assertFalse(under_test.menu.actions())
         self.assertIsNone(under_test.app_about)
-        self.assertIsNone(under_test.synthesis)
-        self.assertIsNone(under_test.alignak_status)
         self.assertIsNotNone(under_test.qaction_factory)
 
-        under_test.build_menu(self.backend, dashboard_test)
+        under_test.build_menu()
 
         # Assert actions are added in Menu
         self.assertTrue(under_test.menu.actions())
         self.assertIsNotNone(under_test.app_about)
-        self.assertIsNotNone(under_test.synthesis)
-        self.assertIsNotNone(under_test.alignak_status)
         self.assertIsNotNone(under_test.qaction_factory)
-
-    def test_update_menus_actions(self):
-        """Update Menu QActions"""
-        under_test = TrayIcon(TestTrayIcon.icon)
-
-        dashboard_test = Dashboard()
-        under_test.build_menu(self.backend, dashboard_test)
-
-        self.assertEqual('Hosts UP, Wait...',
-                         under_test.qaction_factory.get('hosts_up').text())
-        self.assertEqual('Hosts DOWN, Wait...',
-                         under_test.qaction_factory.get('hosts_down').text())
-        self.assertEqual('Hosts UNREACHABLE, Wait...',
-                         under_test.qaction_factory.get('hosts_unreachable').text())
-
-        self.assertEqual('Services OK, Wait...',
-                         under_test.qaction_factory.get('services_ok').text())
-        self.assertEqual('Services WARNING, Wait...',
-                         under_test.qaction_factory.get('services_warning').text())
-        self.assertEqual('Services CRITICAL, Wait...',
-                         under_test.qaction_factory.get('services_critical').text())
-        self.assertEqual('Services UNKNOWN, Wait...',
-                         under_test.qaction_factory.get('services_unknown').text())
-
-        synthesis = {
-            'hosts': {
-                'up': 1,
-                'down': 2,
-                'unreachable': 3,
-                'acknowledge': 4,
-                'downtime': 5,
-            },
-            'services': {
-                'ok': 4,
-                'warning': 5,
-                'critical': 6,
-                'unknown': 7,
-                'unreachable': 8,
-                'acknowledge': 9,
-                'downtime': 10,
-
-            }
-        }
-
-        under_test.update_menu_actions(synthesis)
-
-        self.assertEqual('Hosts UP (1)',
-                         under_test.qaction_factory.get('hosts_up').text())
-        self.assertEqual('Hosts DOWN (2)',
-                         under_test.qaction_factory.get('hosts_down').text())
-        self.assertEqual('Hosts UNREACHABLE (3)',
-                         under_test.qaction_factory.get('hosts_unreachable').text())
-        self.assertEqual('Hosts ACKNOWLEDGE (4)',
-                         under_test.qaction_factory.get('hosts_acknowledge').text())
-        self.assertEqual('Hosts DOWNTIME (5)',
-                         under_test.qaction_factory.get('hosts_downtime').text())
-
-        self.assertEqual('Services OK (4)',
-                         under_test.qaction_factory.get('services_ok').text())
-        self.assertEqual('Services WARNING (5)',
-                         under_test.qaction_factory.get('services_warning').text())
-        self.assertEqual('Services CRITICAL (6)',
-                         under_test.qaction_factory.get('services_critical').text())
-        self.assertEqual('Services UNKNOWN (7)',
-                         under_test.qaction_factory.get('services_unknown').text())
-        self.assertEqual('Services UNREACHABLE (8)',
-                         under_test.qaction_factory.get('services_unreachable').text())
-        self.assertEqual('Services ACKNOWLEDGE (9)',
-                         under_test.qaction_factory.get('services_acknowledge').text())
-        self.assertEqual('Services DOWNTIME (10)',
-                         under_test.qaction_factory.get('services_downtime').text())

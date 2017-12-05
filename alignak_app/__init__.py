@@ -22,15 +22,15 @@
 """
     Alignak App
 
-    This module is desktop application, in system tray, for Alignak solution.
+    This module is a desktop application, with a system tray icon, for Alignak solution.
 
     Application notify you when you have changes in your monitoring
-    You'll be notified on your desktop and you can trigger actions inside application
+    You can trigger actions inside application, see status of monitored items
 """
 
 
 # Application version and manifest
-VERSION = (1, 0, 1)
+VERSION = (1, 1, 0)
 __application__ = u"Alignak-App"
 __short_version__ = '.'.join((str(each) for each in VERSION[:2]))
 __version__ = '.'.join((str(each) for each in VERSION[:4]))

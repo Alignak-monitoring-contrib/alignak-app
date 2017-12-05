@@ -19,11 +19,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-import os
-
 import unittest2
 
-import alignak_app.core.utils as utils
+import alignak_app.core.utils.config as utils
 
 
 class TestUtils(unittest2.TestCase):
@@ -31,7 +29,7 @@ class TestUtils(unittest2.TestCase):
         This file test methods of `utils.py` file.
     """
 
-    def test_app_config(self):
+    def test_init_config(self):
         """Set and Get app_config"""
 
         # Reset app_config to None
@@ -43,8 +41,8 @@ class TestUtils(unittest2.TestCase):
 
         self.assertIsNotNone(utils.app_config)
 
-    def test_set_app_config(self):
-        """Reload config"""
+    def test_set_get_app_config(self):
+        """Set and Get app_config"""
 
         # Reset and Init "app_config"
         utils.app_config = None
@@ -56,12 +54,12 @@ class TestUtils(unittest2.TestCase):
         self.assertEqual('http://demo.alignak.net', under_test)
 
         # Change url
-        utils.set_app_config('Alignak', 'url', 'http://127.0.0.1')
+        utils.edit_setting_value('Alignak', 'url', 'http://127.0.0.1')
         new_under_test = utils.get_app_config('Alignak', 'url')
         self.assertEqual('http://127.0.0.1', new_under_test)
 
         # Back url to normal
-        utils.set_app_config('Alignak', 'url', 'http://demo.alignak.net')
+        utils.edit_setting_value('Alignak', 'url', 'http://demo.alignak.net')
         last_under_test = utils.get_app_config('Alignak', 'url')
 
         self.assertEqual('http://demo.alignak.net', last_under_test)
@@ -89,6 +87,6 @@ class TestUtils(unittest2.TestCase):
 
         expected_img = utils.get_main_folder() + '/images/icon.svg'
 
-        under_test = utils.get_image_path('icon')
+        under_test = utils.get_image('icon')
 
         self.assertEqual(under_test, expected_img)

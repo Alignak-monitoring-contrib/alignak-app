@@ -42,5 +42,4 @@ mkdir -p ~/.local/alignak_app/images/
 mkdir -p ~/.local/alignak_app/css/
 cp -R --verbose etc/images/* ~/.local/alignak_app/images/
 cp -R --verbose etc/css/* ~/.local/alignak_app/css/
-cp --verbose test/etc/settings.cfg ~/.local/alignak_app/
-cp --verbose test/etc/app_workdir.ini ~/.local/alignak_app/
+cp -R --verbose test/etc/* ~/.local/alignak_app/

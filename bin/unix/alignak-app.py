@@ -49,7 +49,7 @@ if 'win32' not in sys.platform:
         )
         sys.exit()
 
-alignak_app = AlignakApp()
+alignak_app = AlignakApp(app)
 alignak_app.start()
 
 sys.exit(app.exec_())
