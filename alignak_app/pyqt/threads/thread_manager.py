@@ -77,6 +77,7 @@ class ThreadManager(QObject):
                 threads_to_launch.append(available_thread)
 
         logger.debug('Get new threads to launch %s', threads_to_launch)
+
         return threads_to_launch
 
     def launch_threads(self):  # pragma: no cover
@@ -88,11 +89,13 @@ class ThreadManager(QObject):
         if not self.threads_to_launch:
             self.threads_to_launch = self.get_threads_to_launch()
 
-        cur_thread = self.threads_to_launch.pop()
-        backend_thread = BackendQThread(cur_thread)
-        backend_thread.start()
+        # In case of all threads are not running
+        if self.threads_to_launch:
+            cur_thread = self.threads_to_launch.pop()
+            backend_thread = BackendQThread(cur_thread)
+            backend_thread.start()
 
-        self.current_threads.append(backend_thread)
+            self.current_threads.append(backend_thread)
 
         # Cleaning threads who are finished
         for thread in self.current_threads:
