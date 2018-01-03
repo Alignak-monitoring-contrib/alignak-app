@@ -138,6 +138,7 @@ class ServiceDataQWidget(QWidget):
 
         self.labels['ls_output'].setObjectName('output')
         self.labels['ls_output'].setWordWrap(True)
+        self.labels['ls_output'].setTextInteractionFlags(Qt.TextSelectableByMouse)
         layout.addWidget(self.labels['ls_output'], 3, 1, 1, 1)
 
         return widget
