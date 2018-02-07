@@ -212,7 +212,7 @@ def edit_setting_value(section, option, new_value):
             new_config_file.writelines(data)
 
     except NoOptionError as e:  # pragma: no cover
-        logger.error('Can\'t set Option in configuration file : ' + str(e))
+        logger.error('Can\'t set Option in configuration file : %s', e)
 
 
 def get_image(name):
@@ -234,7 +234,7 @@ def get_image(name):
 
         return img
     except (NoOptionError, NoSectionError) as e:
-        logger.error('Bad Option : ' + str(e))
+        logger.error('Bad Option : %s', e)
 
         error_config += 1
         if error_config < 7:

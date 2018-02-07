@@ -67,4 +67,4 @@ class QActionFactory(object):
         try:
             return self.actions[name]
         except KeyError as e:
-            logger.error('Bad value for QAction : ' + str(e))
+            logger.error('Bad value for QAction : %s', e)
