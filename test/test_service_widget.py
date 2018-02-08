@@ -51,7 +51,12 @@ class TestServiceDataQWidget(unittest2.TestCase):
         host = Host()
         host.create(
             '_id%d' % i,
-            {'name': 'host%d' % i, '_id': '_id%d' % i},
+            {
+                'name': 'host%d' % i,
+                '_id': '_id%d' % i,
+                'passive_checks_enabled': False,
+                'active_checks_enabled': True
+            },
             'host%d' % i
         )
         host_list.append(host)
@@ -73,7 +78,9 @@ class TestServiceDataQWidget(unittest2.TestCase):
                 'aggregation': 'disk',
                 'ls_last_check': 123456789,
                 'ls_output': 'All is ok',
-                'business_impact': 2
+                'business_impact': 2,
+                'passive_checks_enabled': False,
+                'active_checks_enabled': True
             },
             'service%d' % i
         )
@@ -88,7 +95,9 @@ class TestServiceDataQWidget(unittest2.TestCase):
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
                 'ls_state': 'CRITICAL',
-                'aggregation': 'CPU'
+                'aggregation': 'CPU',
+                'passive_checks_enabled': False,
+                'active_checks_enabled': True
             },
             'other_service%d' % i
         )

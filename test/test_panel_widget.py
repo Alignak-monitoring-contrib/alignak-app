@@ -58,7 +58,9 @@ class TestLoginQDialog(unittest2.TestCase):
                 '_realm': '59c4e38535d17b8dcb0bed42',
                 'address': '127.0.0.1',
                 'business_impact': '2',
-                'notes': 'host notes'
+                'notes': 'host notes',
+                'passive_checks_enabled': False,
+                'active_checks_enabled': True
             },
             'host%d' % i
         )
@@ -79,7 +81,9 @@ class TestLoginQDialog(unittest2.TestCase):
                 'ls_state': 'CRITICAL',
                 'ls_output': 'output host %d' % i,
                 'aggregation': 'disk',
-                '_overall_state_id': 4
+                '_overall_state_id': 4,
+                'passive_checks_enabled': False,
+                'active_checks_enabled': True
             },
             'service%d' % i
         )

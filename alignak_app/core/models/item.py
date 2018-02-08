@@ -93,6 +93,8 @@ class ItemModel(object):
             action = 'downtimed'
         if self.data['ls_acknowledged']:
             action = 'acknowledged'
+        if not self.data['active_checks_enabled'] and not self.data['passive_checks_enabled']:
+            action = 'not monitored'
 
         if action:
             return _('%s is %s and %s') % (self.name.capitalize(), self.data['ls_state'], action)
@@ -177,7 +179,8 @@ def get_real_host_state_icon(services):
             'all_services_ok',
             'all_services_ok',
             'all_services_warning',
-            'all_services_critical'
+            'all_services_critical',
+            'all_services_none'
         ]
         state_lvl = []
 
@@ -186,7 +189,11 @@ def get_real_host_state_icon(services):
 
         max_state_lvl = max(state_lvl)
 
-        return icon_names[max_state_lvl]
+        try:
+            return icon_names[max_state_lvl]
+        except IndexError as e:
+            logger.error('get_real_host_state_icon: unkown real state, icon not found: %s', e)
+            return icon_names[5]
 
     logger.error('Empty services in get_real_host_state_icon()')
 
@@ -235,6 +242,12 @@ def get_host_msg_and_event_type(host_and_services):
                 host_msg
             ),
             'event_type': 'DOWN'
+        },
+        {
+            'message': _('%s, no data to display.') % (
+                host_msg
+            ),
+            'event_type': 'DOWN'
         }
     ]
     state_lvl = []
@@ -247,12 +260,12 @@ def get_host_msg_and_event_type(host_and_services):
         msg_and_event_type = event_messages[max_state_lvl]
     except IndexError as e:
         logger.error('get_host_msg_and_event_type(): empty services, %e', e)
-        msg_and_event_type = {
+        return {
             'message': _('Host is %s.') % host_msg,
             'event_type': host_and_services['host'].data['ls_state']
         }
     except ValueError as e:
-        logger.error('No services found for this host.')
+        logger.error('No services found for this host: %e', e)
         return {
             'message': _('No services.'),
             'event_type': 'OK'

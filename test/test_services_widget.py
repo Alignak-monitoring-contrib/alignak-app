@@ -52,7 +52,11 @@ class TestServicesQWidget(unittest2.TestCase):
         host = Host()
         host.create(
             '_id%d' % i,
-            {'name': 'host%d' % i},
+            {
+                'name': 'host%d' % i,
+                'passive_checks_enabled': False,
+                'active_checks_enabled': True
+            },
             'host%d' % i
         )
         host_list.append(host)
@@ -70,7 +74,9 @@ class TestServicesQWidget(unittest2.TestCase):
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
                 'ls_state': 'OK',
-                'aggregation': 'disk'
+                'aggregation': 'disk',
+                'passive_checks_enabled': False,
+                'active_checks_enabled': True
             },
             'service%d' % i
         )
@@ -85,7 +91,9 @@ class TestServicesQWidget(unittest2.TestCase):
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
                 'ls_state': 'CRITICAL',
-                'aggregation': 'CPU'
+                'aggregation': 'CPU',
+                'passive_checks_enabled': False,
+                'active_checks_enabled': True
             },
             'other_service%d' % i
         )

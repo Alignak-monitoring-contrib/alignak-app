@@ -57,6 +57,8 @@ class TestAllItems(unittest2.TestCase):
                 'ls_downtimed': True,
                 'ls_acknowledged': True,
                 'ls_state': 'UNKNOWN',
+                'passive_checks_enabled': False,
+                'active_checks_enabled': True
             },
             'host%d' % i
         )
@@ -76,7 +78,9 @@ class TestAllItems(unittest2.TestCase):
                 'ls_downtimed': False,
                 'ls_state': 'CRITICAL',
                 'aggregation': 'disk',
-                '_overall_state_id': 4
+                '_overall_state_id': 4,
+                'passive_checks_enabled': False,
+                'active_checks_enabled': True
             },
             'service%d' % i
         )

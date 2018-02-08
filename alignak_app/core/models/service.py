@@ -52,7 +52,7 @@ class Service(ItemModel):
         services_projection = [
             'name', 'alias', 'display_name', 'ls_state', 'ls_acknowledged', 'ls_downtimed',
             'ls_last_check', 'ls_output', 'business_impact', 'customs', '_overall_state_id',
-            'aggregation', 'host'
+            'aggregation', 'host', 'passive_checks_enabled', 'active_checks_enabled'
         ]
 
         request = {
