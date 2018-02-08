@@ -2,7 +2,7 @@
 unittest2
 nose
 nose-cov
-coverage<=4.1
+coverage
 coveralls
 pycodestyle
 future
