@@ -152,11 +152,7 @@ class DockQWidget(QWidget):
         self.app_widget.add_widget(self)
         self.app_widget.resize(x_size, y_size)
 
-        if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-            pos_x = desktop.width() - (x_size * 0.5)
-        else:
-            pos_x = desktop.width() - x_size
-
+        pos_x = desktop.width() - x_size
         self.app_widget.move(pos_x, 0)
 
         # Give width for PanelQWidget
