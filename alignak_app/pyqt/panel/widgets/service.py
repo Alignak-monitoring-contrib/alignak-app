@@ -186,7 +186,9 @@ class ServiceDataQWidget(QWidget):
             'service',
             self.service_item.data['ls_state'],
             self.service_item.data['ls_acknowledged'],
-            self.service_item.data['ls_downtimed']
+            self.service_item.data['ls_downtimed'],
+            self.service_item.data['passive_checks_enabled'] +
+            self.service_item.data['active_checks_enabled']
         )
         icon_pixmap = QPixmap(get_image(icon_name))
 

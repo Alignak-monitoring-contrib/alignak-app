@@ -102,7 +102,7 @@ class ItemModel(object):
         return _('%s is %s') % (self.name.capitalize(), self.data['ls_state'])
 
 
-def get_icon_name(item_type, state, acknowledge, downtime):
+def get_icon_name(item_type, state, acknowledge, downtime, monitored):
     """
     Return icon for a host or a service item
 
@@ -114,6 +114,8 @@ def get_icon_name(item_type, state, acknowledge, downtime):
     :type acknowledge: bool
     :param downtime: if item is downtimed
     :type downtime: bool
+    :param monitored: define if host is monitored or not (0 is not monitored, 1 or 2 is monitored)
+    :type monitored: int
     :return: icon name for icon
     :rtype: str
     """
@@ -122,6 +124,11 @@ def get_icon_name(item_type, state, acknowledge, downtime):
         return 'downtime'
     if acknowledge:
         return 'acknowledge'
+    if monitored == 0:
+        if 'host' in item_type:
+            return 'hosts_none'
+
+        return 'services_none'
 
     available_icons = {
         'host': {
@@ -232,19 +239,19 @@ def get_host_msg_and_event_type(host_and_services):
             'event_type': 'INFO'
         },
         {
-            'message': _('%s, some services may be unknown or unreachable.') % (
+            'message': _('%s, some services may be unknown.') % (
                 host_msg
             ),
             'event_type': 'WARNING'
         },
         {
-            'message': _('%s, some services may be in critical condition !') % (
+            'message': _('%s, some services may be in critical condition or unreachable !') % (
                 host_msg
             ),
             'event_type': 'DOWN'
         },
         {
-            'message': _('%s, no data to display.') % (
+            'message': _('%s, some services are not monitored.') % (
                 host_msg
             ),
             'event_type': 'DOWN'

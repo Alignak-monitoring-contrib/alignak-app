@@ -60,7 +60,9 @@ class ServicesTreeItem(QTreeWidgetItem):  # pylint: disable=too-few-public-metho
             'service',
             service_item.data['ls_state'],
             service_item.data['ls_acknowledged'],
-            service_item.data['ls_downtimed']
+            service_item.data['ls_downtimed'],
+            service_item.data['passive_checks_enabled'] +
+            service_item.data['active_checks_enabled']
         )
 
         self.setIcon(0, QIcon(get_image(icon_name)))
@@ -79,7 +81,9 @@ class ServicesTreeItem(QTreeWidgetItem):  # pylint: disable=too-few-public-metho
             'service',
             self.service_item.data['ls_state'],
             self.service_item.data['ls_acknowledged'],
-            self.service_item.data['ls_downtimed']
+            self.service_item.data['ls_downtimed'],
+            self.service_item.data['passive_checks_enabled'] +
+            self.service_item.data['active_checks_enabled']
         )
 
         self.setData(0, 0, service.get_display_name())
