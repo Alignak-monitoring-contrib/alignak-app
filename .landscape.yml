@@ -3,16 +3,18 @@ test-warnings: false
 strictness: medium
 max-line-length: 100
 autodetect: true
+pep8:
+  full: true
+pep257:
+  run: false
+mccabe:
+  run: false
 requirements:
   - requirements.txt
-  - test/requirements.txt
 python-targets:
   - 3
-pyflakes:
-  disable:
-    - F821
-    - E0611
 ignore-paths:
   - bin
   - docs
   - etc
+  - test
