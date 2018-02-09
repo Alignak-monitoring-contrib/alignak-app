@@ -250,6 +250,11 @@ QLabel#services_unreachable, QLabel#hosts_unreachable {
     font: 10pt;
 }
 
+QLabel#hosts_not_monitored, QLabel#services_not_monitored {
+    color: #b4b6b7;
+    font: 10pt;
+}
+
 QLabel#acknowledge {
     color: #f39c12;
     font: 10pt;
