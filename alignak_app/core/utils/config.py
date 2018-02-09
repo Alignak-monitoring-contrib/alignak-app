@@ -212,7 +212,7 @@ def edit_setting_value(section, option, new_value):
             new_config_file.writelines(data)
 
     except NoOptionError as e:  # pragma: no cover
-        logger.error('Can\'t set Option in configuration file : ' + str(e))
+        logger.error('Can\'t set Option in configuration file : %s', e)
 
 
 def get_image(name):
@@ -234,7 +234,7 @@ def get_image(name):
 
         return img
     except (NoOptionError, NoSectionError) as e:
-        logger.error('Bad Option : ' + str(e))
+        logger.error('Bad Option : %s', e)
 
         error_config += 1
         if error_config < 7:
@@ -303,6 +303,10 @@ def get_url_endpoint_from_icon_name(icon_name):
         'downtime': 'ls_downtimed:yes'
     }
 
-    final_endpoint = '/table?search=%s' % available_endpoints[icon_name]
+    try:
+        final_endpoint = '/table?search=%s' % available_endpoints[icon_name]
+    except KeyError as e:
+        logger.warning('Endpoint not available: %s', e)
+        final_endpoint = '/table'
 
     return final_endpoint

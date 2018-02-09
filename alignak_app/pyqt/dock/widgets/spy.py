@@ -61,7 +61,7 @@ class SpyQListWidget(QListWidget):
             item = EventItem()
             item.initialize(
                 'INFO',
-                'Host %s is spied !' % host.name.capitalize()
+                _('Host %s is spied by Alignak-app !') % host.name.capitalize()
             )
             item.host = host.item_id
             self.addItem(item)
@@ -127,7 +127,7 @@ class SpyQWidget(QWidget):
         self.spy_list_widget.setWordWrap(True)
 
         drop_hint_item = EventItem()
-        drop_hint_item.setText("Drop Events here to spy host...")
+        drop_hint_item.setText(_('Drop Events here to spy host...'))
         drop_hint_item.setFlags(Qt.ItemIsDropEnabled)
         self.spy_list_widget.insertItem(0, drop_hint_item)
 

@@ -1,4 +1,4 @@
-pyqt5
+pyqt5<5.10
 configparser
 future
 alignak_backend_client

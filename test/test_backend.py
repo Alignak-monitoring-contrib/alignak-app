@@ -179,16 +179,16 @@ class TestAppBackend(unittest2.TestCase):
 
         self.assertIsNotNone(data_manager.database['livesynthesis'])
 
-    def test_query_history_data(self):
-        """Query History Data"""
-
-        under_test = BackendClient()
-        under_test.login()
-
-        from alignak_app.core.backend.data_manager import data_manager
-        under_test.query_history_data()
-
-        self.assertIsNotNone(data_manager.database['history'])
+    # def test_query_history_data(self):
+    #     """Query History Data"""
+    #
+    #     under_test = BackendClient()
+    #     under_test.login()
+    #
+    #     from alignak_app.core.backend.data_manager import data_manager
+    #     under_test.query_history_data()
+    #
+    #     self.assertIsNotNone(data_manager.database['history'])
 
     def test_get_period_name(self):
         """Get Period Name"""

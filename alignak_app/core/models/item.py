@@ -90,9 +90,11 @@ class ItemModel(object):
 
         action = ''
         if self.data['ls_downtimed']:
-            action = 'downtimed'
+            action = _('downtimed')
         if self.data['ls_acknowledged']:
-            action = 'acknowledged'
+            action = _('acknowledged')
+        if not self.data['active_checks_enabled'] and not self.data['passive_checks_enabled']:
+            action = _('not monitored')
 
         if action:
             return _('%s is %s and %s') % (self.name.capitalize(), self.data['ls_state'], action)
@@ -100,7 +102,7 @@ class ItemModel(object):
         return _('%s is %s') % (self.name.capitalize(), self.data['ls_state'])
 
 
-def get_icon_name(item_type, state, acknowledge, downtime):
+def get_icon_name(item_type, state, acknowledge, downtime, monitored):
     """
     Return icon for a host or a service item
 
@@ -112,6 +114,8 @@ def get_icon_name(item_type, state, acknowledge, downtime):
     :type acknowledge: bool
     :param downtime: if item is downtimed
     :type downtime: bool
+    :param monitored: define if host is monitored or not (0 is not monitored, 1 or 2 is monitored)
+    :type monitored: int
     :return: icon name for icon
     :rtype: str
     """
@@ -120,6 +124,11 @@ def get_icon_name(item_type, state, acknowledge, downtime):
         return 'downtime'
     if acknowledge:
         return 'acknowledge'
+    if monitored == 0:
+        if 'host' in item_type:
+            return 'hosts_not_monitored'
+
+        return 'services_not_monitored'
 
     available_icons = {
         'host': {
@@ -177,7 +186,8 @@ def get_real_host_state_icon(services):
             'all_services_ok',
             'all_services_ok',
             'all_services_warning',
-            'all_services_critical'
+            'all_services_critical',
+            'all_services_none'
         ]
         state_lvl = []
 
@@ -186,7 +196,11 @@ def get_real_host_state_icon(services):
 
         max_state_lvl = max(state_lvl)
 
-        return icon_names[max_state_lvl]
+        try:
+            return icon_names[max_state_lvl]
+        except IndexError as e:
+            logger.error('get_real_host_state_icon: unkown real state, icon not found: %s', e)
+            return icon_names[5]
 
     logger.error('Empty services in get_real_host_state_icon()')
 
@@ -225,13 +239,19 @@ def get_host_msg_and_event_type(host_and_services):
             'event_type': 'INFO'
         },
         {
-            'message': _('%s, some services may be unknown or unreachable.') % (
+            'message': _('%s, some services may be unknown.') % (
                 host_msg
             ),
             'event_type': 'WARNING'
         },
         {
-            'message': _('%s, some services may be in critical condition !') % (
+            'message': _('%s, some services may be in critical condition or unreachable !') % (
+                host_msg
+            ),
+            'event_type': 'DOWN'
+        },
+        {
+            'message': _('%s, some services are not monitored.') % (
                 host_msg
             ),
             'event_type': 'DOWN'
@@ -246,13 +266,13 @@ def get_host_msg_and_event_type(host_and_services):
         max_state_lvl = max(state_lvl)
         msg_and_event_type = event_messages[max_state_lvl]
     except IndexError as e:
-        logger.error('get_host_msg_and_event_type(): empty services, %e', e)
-        msg_and_event_type = {
+        logger.error('get_host_msg_and_event_type(): empty services, %s', e)
+        return {
             'message': _('Host is %s.') % host_msg,
             'event_type': host_and_services['host'].data['ls_state']
         }
     except ValueError as e:
-        logger.error('No services found for this host.')
+        logger.warning('No services found for this host: %s', e)
         return {
             'message': _('No services.'),
             'event_type': 'OK'

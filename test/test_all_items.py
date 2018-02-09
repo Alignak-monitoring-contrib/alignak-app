@@ -57,6 +57,8 @@ class TestAllItems(unittest2.TestCase):
                 'ls_downtimed': True,
                 'ls_acknowledged': True,
                 'ls_state': 'UNKNOWN',
+                'passive_checks_enabled': False,
+                'active_checks_enabled': True
             },
             'host%d' % i
         )
@@ -76,7 +78,9 @@ class TestAllItems(unittest2.TestCase):
                 'ls_downtimed': False,
                 'ls_state': 'CRITICAL',
                 'aggregation': 'disk',
-                '_overall_state_id': 4
+                '_overall_state_id': 4,
+                'passive_checks_enabled': False,
+                'active_checks_enabled': True
             },
             'service%d' % i
         )
@@ -121,20 +125,23 @@ class TestAllItems(unittest2.TestCase):
     def test_get_icon_name(self):
         """Get Icon Name"""
 
-        under_test = get_icon_name('host', 'UP', acknowledge=False, downtime=False)
+        under_test = get_icon_name('host', 'UP', acknowledge=False, downtime=False, monitored=1)
         self.assertEqual('hosts_up', under_test)
 
-        under_test = get_icon_name('service', 'WARNING', acknowledge=False, downtime=False)
+        under_test = get_icon_name('service', 'WARNING', acknowledge=False, downtime=False, monitored=1)
         self.assertEqual('services_warning', under_test)
 
-        under_test = get_icon_name('host', 'DOWN', acknowledge=True, downtime=False)
+        under_test = get_icon_name('host', 'DOWN', acknowledge=True, downtime=False, monitored=1)
         self.assertEqual('acknowledge', under_test)
 
-        under_test = get_icon_name('service', 'UNREACHABLE', acknowledge=True, downtime=True)
+        under_test = get_icon_name('service', 'UNREACHABLE', acknowledge=True, downtime=True, monitored=2)
         self.assertEqual('downtime', under_test)
 
-        under_test = get_icon_name('host', 'OK', acknowledge=False, downtime=False)
+        under_test = get_icon_name('host', 'OK', acknowledge=False, downtime=False, monitored=1)
         self.assertEqual('error', under_test)
+
+        under_test = get_icon_name('host', 'OK', acknowledge=False, downtime=False, monitored=False + False)
+        self.assertEqual('hosts_not_monitored', under_test)
 
     def test_get_icon_name_from_state(self):
         """Get Icon Name from State"""
@@ -189,7 +196,7 @@ class TestAllItems(unittest2.TestCase):
         under_test = get_host_msg_and_event_type(host_and_services)
 
         self.assertEqual(
-            'Host1 is UNKNOWN and acknowledged, some services may be in critical condition !',
+            'Host1 is UNKNOWN and acknowledged, some services may be in critical condition or unreachable !',
             under_test['message']
         )
         self.assertEqual(under_test['event_type'], 'DOWN')

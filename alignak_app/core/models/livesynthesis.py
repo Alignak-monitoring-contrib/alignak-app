@@ -72,7 +72,8 @@ class LiveSynthesis(ItemModel):
                 'down': 0,
                 'unreachable': 0,
                 'acknowledge': 0,
-                'downtime': 0
+                'downtime': 0,
+                'not_monitored': 0
             },
             'services': {
                 'ok': 0,
@@ -81,7 +82,8 @@ class LiveSynthesis(ItemModel):
                 'warning': 0,
                 'unreachable': 0,
                 'acknowledge': 0,
-                'downtime': 0
+                'downtime': 0,
+                'not_monitored': 0
             }
         }
 

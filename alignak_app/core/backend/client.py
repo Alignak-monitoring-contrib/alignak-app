@@ -20,10 +20,11 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    App Backend manage connexion and access to app_backend.
+    Client manage connection and access to Alignak backend.
 """
 
 import json
+
 from logging import getLogger
 
 from alignak_backend_client.client import Backend, BackendException
@@ -43,8 +44,7 @@ logger = getLogger(__name__)
 
 class BackendClient(object):
     """
-        Class who collect informations with Backend-Client and returns data for
-        Alignak-App.
+        Class who collect informations with Backend-Client and returns data for Alignak-App.
     """
 
     def __init__(self):
@@ -55,7 +55,7 @@ class BackendClient(object):
 
     def login(self, username=None, password=None):
         """
-        Connect to app_backend with credentials in settings.cfg.
+        Connect to alignak backend
 
         :param username: name or token of user
         :type username: str
@@ -103,13 +103,13 @@ class BackendClient(object):
 
             # Make backend connected to test token
             self.connected = True
-            user = self.get('livesynthesis')
+            connection_test = self.get('livesynthesis')
 
-            self.connected = bool(user)
+            self.connected = bool(connection_test)
+            logger.info('Connection by token: %s', str(self.connected))
+
             if not self.connected:
                 return False
-
-            logger.info('Connection by token: %s', str(self.connected))
         else:
             # Else exit
             logger.error(
@@ -360,8 +360,8 @@ class BackendClient(object):
                 )
                 hosts_list.append(host)
 
-        if hosts_list:
-            data_manager.update_database('host', hosts_list)
+            if hosts_list:
+                data_manager.update_database('host', hosts_list)
 
     def query_services_data(self):
         """

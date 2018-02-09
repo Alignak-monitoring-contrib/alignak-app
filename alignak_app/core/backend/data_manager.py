@@ -58,8 +58,8 @@ class DataManager(object):
         :rtype: bool
         """
 
-        if self.database['user'] and self.database['host'] and \
-                self.database['service'] and self.database['alignakdaemon'] and \
+        if self.database['host'] and \
+                self.database['service'] and \
                 self.database['livesynthesis']:
             logger.info("Datamanager is ready :)")
             return True
@@ -154,6 +154,9 @@ class DataManager(object):
                 synthesis_count['hosts']['acknowledge'] += realm['hosts_acknowledged']
                 synthesis_count['hosts']['downtime'] += realm['hosts_in_downtime']
 
+                if 'hosts_not_monitored' in realm:
+                    synthesis_count['hosts']['not_monitored'] += realm['hosts_not_monitored']
+
                 synthesis_count['services']['ok'] += realm['services_ok_soft']
                 synthesis_count['services']['ok'] += realm['services_ok_hard']
 
@@ -171,6 +174,9 @@ class DataManager(object):
 
                 synthesis_count['services']['acknowledge'] += realm['services_acknowledged']
                 synthesis_count['services']['downtime'] += realm['services_in_downtime']
+
+                if 'services_not_monitored' in realm:
+                    synthesis_count['services']['not_monitored'] += realm['services_not_monitored']
 
         return synthesis_count
 
@@ -309,7 +315,7 @@ class DataManager(object):
             services_problems += synth.data['services_warning_soft']
             services_problems += synth.data['services_warning_hard']
             if 'services_not_monitored' in synth.data:
-                hosts_not_monitored += synth.data['services_not_monitored']
+                services_not_monitored += synth.data['services_not_monitored']
 
         hosts_total = hosts_total - hosts_not_monitored
         services_total = services_total - services_not_monitored

@@ -203,6 +203,7 @@ class HostQWidget(QWidget):
 
         self.labels['ls_output'].setObjectName('output')
         self.labels['ls_output'].setWordWrap(True)
+        self.labels['ls_output'].setTextInteractionFlags(Qt.TextSelectableByMouse)
         layout.addWidget(self.labels['ls_output'], 3, 1, 1, 1)
 
         return widget
@@ -287,7 +288,9 @@ class HostQWidget(QWidget):
                 'host',
                 self.host_item.data['ls_state'],
                 self.host_item.data['ls_acknowledged'],
-                self.host_item.data['ls_downtimed']
+                self.host_item.data['ls_downtimed'],
+                self.host_item.data['passive_checks_enabled'] +
+                self.host_item.data['active_checks_enabled']
             )
             pixmap_icon = QPixmap(get_image(icon_name))
             final_icon = pixmap_icon.scaled(32, 32, Qt.KeepAspectRatio)

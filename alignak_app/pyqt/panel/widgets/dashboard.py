@@ -56,6 +56,7 @@ class DashboardQWidget(QWidget):
             'hosts_up': QLabel(),
             'hosts_unreachable': QLabel(),
             'hosts_down': QLabel(),
+            'hosts_not_monitored': QLabel(),
             'acknowledge': QLabel(),
             'downtime': QLabel()
         }
@@ -65,6 +66,7 @@ class DashboardQWidget(QWidget):
             'services_critical': QLabel(),
             'services_unknown': QLabel(),
             'services_unreachable': QLabel(),
+            'services_not_monitored': QLabel(),
             'acknowledge': QLabel(),
             'downtime': QLabel()
         }
@@ -72,6 +74,7 @@ class DashboardQWidget(QWidget):
             'hosts_up': QPushButton(),
             'hosts_unreachable': QPushButton(),
             'hosts_down': QPushButton(),
+            'hosts_not_monitored': QPushButton(),
             'acknowledge': QPushButton(),
             'downtime': QPushButton()
         }
@@ -81,6 +84,7 @@ class DashboardQWidget(QWidget):
             'services_critical': QPushButton(),
             'services_unknown': QPushButton(),
             'services_unreachable': QPushButton(),
+            'services_not_monitored': QPushButton(),
             'acknowledge': QPushButton(),
             'downtime': QPushButton()
         }
