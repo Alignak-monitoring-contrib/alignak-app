@@ -90,11 +90,11 @@ class ItemModel(object):
 
         action = ''
         if self.data['ls_downtimed']:
-            action = 'downtimed'
+            action = _('downtimed')
         if self.data['ls_acknowledged']:
-            action = 'acknowledged'
+            action = _('acknowledged')
         if not self.data['active_checks_enabled'] and not self.data['passive_checks_enabled']:
-            action = 'not monitored'
+            action = _('not monitored')
 
         if action:
             return _('%s is %s and %s') % (self.name.capitalize(), self.data['ls_state'], action)

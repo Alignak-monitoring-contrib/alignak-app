@@ -48,7 +48,9 @@ class ProblemsQWidget(QWidget):
         self.setWindowIcon(QIcon(get_image('icon')))
         # Fields
         self.problem_widget = QTableWidget()
-        self.headers_list = ['Item Type', 'Host', 'Service', 'State', 'Actions', 'Output']
+        self.headers_list = [
+            _('Item Type'), _('Host'), _('Service'), _('State'), _('Actions'), _('Output')
+        ]
         self.problems_title = QLabel()
         self.layout = QVBoxLayout()
 
