@@ -126,9 +126,9 @@ def get_icon_name(item_type, state, acknowledge, downtime, monitored):
         return 'acknowledge'
     if monitored == 0:
         if 'host' in item_type:
-            return 'hosts_none'
+            return 'hosts_not_monitored'
 
-        return 'services_none'
+        return 'services_not_monitored'
 
     available_icons = {
         'host': {
@@ -266,13 +266,13 @@ def get_host_msg_and_event_type(host_and_services):
         max_state_lvl = max(state_lvl)
         msg_and_event_type = event_messages[max_state_lvl]
     except IndexError as e:
-        logger.error('get_host_msg_and_event_type(): empty services, %e', e)
+        logger.error('get_host_msg_and_event_type(): empty services, %s', e)
         return {
             'message': _('Host is %s.') % host_msg,
             'event_type': host_and_services['host'].data['ls_state']
         }
     except ValueError as e:
-        logger.error('No services found for this host: %e', e)
+        logger.warning('No services found for this host: %s', e)
         return {
             'message': _('No services.'),
             'event_type': 'OK'

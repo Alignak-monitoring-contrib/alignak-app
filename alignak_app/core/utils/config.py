@@ -303,6 +303,10 @@ def get_url_endpoint_from_icon_name(icon_name):
         'downtime': 'ls_downtimed:yes'
     }
 
-    final_endpoint = '/table?search=%s' % available_endpoints[icon_name]
+    try:
+        final_endpoint = '/table?search=%s' % available_endpoints[icon_name]
+    except KeyError as e:
+        logger.warning('Endpoint not available: %s', e)
+        final_endpoint = '/table'
 
     return final_endpoint

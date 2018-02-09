@@ -72,7 +72,8 @@ class Host(ItemModel):
         :rtype: list
         """
 
-        return ['hosts_up', 'hosts_unreachable', 'hosts_down', 'acknowledge', 'downtime']
+        return ['hosts_up', 'hosts_unreachable', 'hosts_down', 'acknowledge',
+                'downtime', 'hosts_not_monitored']
 
     def get_display_name(self):
         """

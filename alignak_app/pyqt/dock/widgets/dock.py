@@ -23,8 +23,6 @@
     Dock manage creation of Alignak-app Dock
 """
 
-import sys
-
 from PyQt5.Qt import QApplication, QWidget, QGridLayout, QIcon, QLabel, Qt, QTimer
 
 from alignak_app.core.backend.data_manager import data_manager

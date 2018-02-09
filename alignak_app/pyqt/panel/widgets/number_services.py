@@ -50,6 +50,7 @@ class NumberServicesQWidget(QWidget):
             'WARNING': QLabel(),
             'UNREACHABLE': QLabel(),
             'CRITICAL': QLabel(),
+            'NOT_MONITORED': QLabel(),
             'ACKNOWLEDGE': QLabel(),
             'DOWNTIME': QLabel()
         }
@@ -102,7 +103,12 @@ class NumberServicesQWidget(QWidget):
 
         services_total = 0
         for service in services_items:
-            if service.data['ls_downtimed']:
+            if not service.data['passive_checks_enabled'] and \
+                    not service.data['active_checks_enabled'] and \
+                    not service.data['ls_downtimed'] and \
+                    not service.data['ls_acknowledged']:
+                services_data['NOT_MONITORED'] += 1
+            elif service.data['ls_downtimed']:
                 services_data['DOWNTIME'] += 1
             elif service.data['ls_acknowledged']:
                 services_data['ACKNOWLEDGE'] += 1
