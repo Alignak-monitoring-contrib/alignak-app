@@ -141,7 +141,7 @@ class TestAllItems(unittest2.TestCase):
         self.assertEqual('error', under_test)
 
         under_test = get_icon_name('host', 'OK', acknowledge=False, downtime=False, monitored=False + False)
-        self.assertEqual('hosts_none', under_test)
+        self.assertEqual('hosts_not_monitored', under_test)
 
     def test_get_icon_name_from_state(self):
         """Get Icon Name from State"""
