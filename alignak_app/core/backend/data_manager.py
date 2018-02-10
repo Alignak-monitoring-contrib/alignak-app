@@ -54,17 +54,24 @@ class DataManager(object):
         """
         Check if DataManager is filled and ready
 
-        :return: if ready or not
-        :rtype: bool
+        :return: if ready or current status
+        :rtype: str
         """
 
         if self.database['host'] and \
                 self.database['service'] and \
                 self.database['livesynthesis']:
             logger.info("Datamanager is ready :)")
-            return True
+            return 'READY'
 
-        return False
+        if not self.database['livesynthesis']:
+            return 'Collecting livesynthesis...'
+        if not self.database['host']:
+            return 'Collecting hosts...'
+        if not self.database['service']:
+            return 'Collecting services...'
+
+        return 'Please wait...'
 
     def update_database(self, item_type, items_list):
         """

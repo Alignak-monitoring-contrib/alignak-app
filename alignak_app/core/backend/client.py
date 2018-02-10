@@ -67,7 +67,7 @@ class BackendClient(object):
 
         # Credentials
         if not username and not password:
-            if data_manager.is_ready():
+            if data_manager.is_ready() == 'READY':
                 username = data_manager.database['user'].name
             else:
                 username = get_app_config('Alignak', 'username')

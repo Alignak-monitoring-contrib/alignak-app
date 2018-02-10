@@ -165,7 +165,7 @@ class TestDataManager(unittest2.TestCase):
         self.assertTrue('user' in under_test.database)
 
         self.assertFalse(under_test.old_notifications)
-        self.assertFalse(under_test.is_ready())
+        self.assertNotEqual('READY', under_test.is_ready())
 
     def test_update_item_database(self):
         """Update DataManager Database"""
@@ -317,19 +317,15 @@ class TestDataManager(unittest2.TestCase):
 
         under_test = DataManager()
 
-        self.assertFalse(under_test.is_ready())
+        self.assertNotEqual('READY', under_test.is_ready())
 
-        under_test.update_database('user', {'data': 'test'})
-        self.assertFalse(under_test.is_ready())
         under_test.update_database('host', {'data': 'test'})
-        self.assertFalse(under_test.is_ready())
+        self.assertNotEqual('READY', under_test.is_ready())
         under_test.update_database('service', {'data': 'test'})
-        self.assertFalse(under_test.is_ready())
-        under_test.update_database('alignakdaemon', {'data': 'test'})
-        self.assertFalse(under_test.is_ready())
+        self.assertNotEqual('READY', under_test.is_ready())
         under_test.update_database('livesynthesis', {'data': 'test'})
 
-        self.assertTrue(under_test.is_ready())
+        self.assertEqual('READY', under_test.is_ready())
 
     def test_get_problems(self):
         """Get Database Problems"""

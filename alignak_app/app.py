@@ -27,16 +27,16 @@ import sys
 import time
 from logging import DEBUG, INFO
 
-from PyQt5.Qt import QDialog, QMessageBox, QSplashScreen
-from PyQt5.Qt import QPixmap, QTimer, QProgressBar, Qt, pyqtSignal, QObject, QIcon
+from PyQt5.Qt import QDialog, QMessageBox, QTimer, QProgressBar, Qt, pyqtSignal, QObject, QIcon
 
 from alignak_app.core.backend.client import app_backend
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.utils.config import get_image, get_main_folder, get_app_workdir
-from alignak_app.core.utils.config import init_config, get_app_config
+from alignak_app.core.utils.config import init_config, get_app_config, app_css
 from alignak_app.core.utils.logs import create_logger
 from alignak_app.locales.locales import init_localization
 from alignak_app.pyqt.dock.widgets.events import init_event_widget
+from alignak_app.pyqt.common.widgets import center_widget
 from alignak_app.pyqt.login.dialogs.login import LoginQDialog
 from alignak_app.pyqt.systray.tray_icon import TrayIcon
 from alignak_app.pyqt.threads.thread_manager import thread_manager
@@ -45,6 +45,38 @@ from alignak_app.pyqt.threads.thread_manager import thread_manager
 init_config()
 init_localization()
 logger = create_logger()
+
+
+class AppProgressBar(QProgressBar):
+    """
+        AppProgressBar in busy mode with text displayed at the center.
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.setRange(0, 0)
+        self.setAlignment(Qt.AlignCenter)
+        self._text = None
+
+    def set_text(self, text):
+        """
+        Set text of QProgressBar
+
+        :param text: text of progress bar
+        :type text: str
+        """
+
+        self._text = text
+
+    def text(self):
+        """
+        Overload: text(self) -> str
+
+        :return: text of progress bar
+        :rtype: str
+        """
+
+        return self._text
 
 
 class AlignakApp(QObject):
@@ -153,7 +185,7 @@ class AlignakApp(QObject):
         # Check if connected
         if app_backend.connected:
             # Start ThreadManager
-            for i in range(0, 5):
+            for _ in range(0, 5):
                 # Launch 'alignakdaemon', 'history', 'service', 'host', 'user' threads
                 thread_manager.launch_threads()
 
@@ -165,28 +197,25 @@ class AlignakApp(QObject):
             if 'token' not in app_backend.user:
                 app_backend.user['token'] = app_backend.backend.token
 
-            # Build splash screen
-            splash_icon = QPixmap(get_image('alignak'))
-            splash = QSplashScreen(splash_icon)
-
-            progressbar = QProgressBar(splash)
-            progressbar.setTextVisible(False)
-            progressbar.setStyleSheet('border-top: none; color: none;')
-            progressbar.setFixedSize(splash_icon.width(), splash_icon.height())
-            progressbar.setAlignment(Qt.AlignCenter)
-
-            splash.setMask(splash_icon.mask())
-            splash.show()
+            progressbar = AppProgressBar()
+            progressbar.setWindowIcon(QIcon(get_image('icon')))
+            progressbar.setWindowFlags(Qt.FramelessWindowHint)
+            progressbar.setFixedSize(400, 50)
+            progressbar.setStyleSheet(app_css)
+            center_widget(progressbar)
 
             logger.info("Preparing DataManager...")
-            while not data_manager.is_ready():
-                for i in range(0, 100):
-                    progressbar.setValue(i)
+            while data_manager.is_ready() != 'READY':
+                progressbar.show()
+                for _ in range(0, 100):
                     t = time.time()
                     while time.time() < t + 0.01:
+                        status = data_manager.is_ready()
+                        progressbar.set_text('%s' % status)
                         self.parent().processEvents()
 
             # Launch other threads and run TrayIcon()
+            progressbar.close()
             thread_manager.start()
             init_event_widget()
             self.tray_icon = TrayIcon(QIcon(get_image('icon')))
