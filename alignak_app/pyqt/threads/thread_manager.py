@@ -105,6 +105,22 @@ class ThreadManager(QObject):
                 thread.wait()
                 self.current_threads.remove(thread)
 
+    def add_thread(self, thread_name, data):
+        """
+        Add a thread, actually used for new history
+
+        :param thread_name: name of thread
+        :type thread_name: str
+        :param data: data to give to thread for request
+        :type data: dict
+        """
+
+        if not any(data == thread.data for thread in self.current_threads):
+            thread = BackendQThread(thread_name, data)
+            thread.start()
+
+            self.current_threads.append(thread)
+
     def stop_threads(self):
         """
         Stop ThreadManager and close all running BackendQThreads

@@ -455,18 +455,21 @@ class BackendClient(object):
             if livesynthesis:
                 data_manager.update_database('livesynthesis', livesynthesis)
 
-    def query_history_data(self):
+    def query_history_data(self, hostname=None, host_id=None):
         """
         Launch request for "history" endpoint but only for hosts in "data_manager"
 
+        :param hostname: name of host we want history
+        :type hostname: str
+        :param host_id: id of host for history
+        :type host_id: str
         """
 
         request_data = History.get_request_model()
 
-        history_list = []
-        for host in data_manager.database['host']:
+        if hostname and host_id:
             request_data['params']['where'] = json.dumps({
-                'host': host.item_id})
+                'host': host_id})
 
             request = self.get(
                 request_data['endpoint'],
@@ -475,18 +478,39 @@ class BackendClient(object):
                 all_items=False
             )
             if request:
-                history = History()
+                host_history_events = History()
 
-                history.create(
-                    host.item_id,
+                host_history_events.create(
+                    host_id,
                     request['_items'],
-                    host.name,
+                    hostname,
                 )
+                logger.debug('Add history for %s (%s)', hostname, host_id)
+                data_manager.database['history'].append(host_history_events)
+        else:  # pragma: no cover, too long to test
+            history_list = []
+            for history in data_manager.database['history']:
+                request_data['params']['where'] = json.dumps({
+                    'host': history.item_id})
 
-                history_list.append(history)
+                request = self.get(
+                    request_data['endpoint'],
+                    request_data['params'],
+                    request_data['projection'],
+                    all_items=False
+                )
+                if request:
+                    host_history_events = History()
 
-        if history_list:
-            data_manager.update_database('history', history_list)
+                    host_history_events.create(
+                        host_id,
+                        request['_items'],
+                        history.name,
+                    )
+                    history_list.append(history)
+
+            if history_list:
+                data_manager.update_database('history', history_list)
 
     def query_notifications_data(self):  # pragma: no cover, notifications can be empty
         """

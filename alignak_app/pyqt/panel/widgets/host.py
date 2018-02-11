@@ -37,6 +37,7 @@ from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
 
 from alignak_app.pyqt.common.actions import ActionsQWidget
 from alignak_app.pyqt.panel.widgets.history import HistoryQWidget
+from alignak_app.pyqt.threads.thread_manager import thread_manager
 
 logger = getLogger(__name__)
 
@@ -320,4 +321,8 @@ class HostQWidget(QWidget):
                 self.history_btn.setToolTip(_('History is available'))
             else:
                 self.history_btn.setToolTip(_('History is not available, please wait...'))
+                thread_manager.add_thread(
+                    'newhistory',
+                    {'hostname': self.host_item.name, 'host_id': self.host_item.item_id}
+                )
                 self.history_btn.setEnabled(False)

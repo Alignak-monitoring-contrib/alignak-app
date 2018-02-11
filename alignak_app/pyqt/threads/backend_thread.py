@@ -39,9 +39,10 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
 
     quit_thread = pyqtSignal(name='close_thread')
 
-    def __init__(self, thread):
+    def __init__(self, thread, data=None):
         super(BackendQThread, self).__init__()
         self.thread_name = thread
+        self.data = data
 
     def run(self):  # pragma: no cover
         """
@@ -51,6 +52,7 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
 
         self.quit_thread.connect(self.quit)
         logger.debug('THREAD: launch a new thread for %s', self.thread_name)
+        logger.debug('... with data: %s', self.data)
 
         if 'user' in self.thread_name:
             app_backend.query_user_data()
@@ -62,8 +64,10 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
             app_backend.query_daemons_data()
         elif 'livesynthesis' in self.thread_name:
             app_backend.query_livesynthesis_data()
-        elif 'history' in self.thread_name:
+        elif self.thread_name == 'history':
             app_backend.query_history_data()
+        elif self.thread_name == 'newhistory':
+            app_backend.query_history_data(self.data['hostname'], self.data['host_id'])
         elif 'notifications' in self.thread_name:
             app_backend.query_notifications_data()
         else:

@@ -34,11 +34,8 @@ class TestAppBackend(unittest2.TestCase):
 
     # Create config for all methods.
     init_config()
-
-    @classmethod
-    def setUpClass(cls):
-        cls.host_id = '59c4e40635d17b8e096acc70'
-        cls.service_id = '59c4e41535d17b8e0c6acd50'
+    host_id = '59c4e40635d17b8e0c6accae'
+    hostname = 'cogny'
 
     def test_log_to_backend(self):
         """Connection to Alignak-Backend"""
@@ -179,16 +176,16 @@ class TestAppBackend(unittest2.TestCase):
 
         self.assertIsNotNone(data_manager.database['livesynthesis'])
 
-    # def test_query_history_data(self):
-    #     """Query History Data"""
-    #
-    #     under_test = BackendClient()
-    #     under_test.login()
-    #
-    #     from alignak_app.core.backend.data_manager import data_manager
-    #     under_test.query_history_data()
-    #
-    #     self.assertIsNotNone(data_manager.database['history'])
+    def test_query_history_data(self):
+        """Query History Data"""
+
+        under_test = BackendClient()
+        under_test.login()
+
+        from alignak_app.core.backend.data_manager import data_manager
+        under_test.query_history_data(self.hostname, self.host_id)
+
+        self.assertIsNotNone(data_manager.database['history'])
 
     def test_get_period_name(self):
         """Get Period Name"""
@@ -216,4 +213,3 @@ class TestAppBackend(unittest2.TestCase):
 
         under_test = backend_test.get_backend_status_icon()
         self.assertEqual('connected', under_test)
-
