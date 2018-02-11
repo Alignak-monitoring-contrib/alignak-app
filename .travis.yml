@@ -23,7 +23,7 @@ script:
   # Code dynamic analysis
   - cd test/
   - coverage erase
-  - pytest --cov=alignak_app --cov-config test/.coveragerc test/test_*.py
+  - pytest --cov=alignak_app --cov-config=.coveragerc test_*.py
   # - ls -la $HOME/.local/alignak_app
   - coverage report -m
   - cd ..
