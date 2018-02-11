@@ -57,6 +57,10 @@ class AppProgressBar(QProgressBar):
         self.setRange(0, 0)
         self.setAlignment(Qt.AlignCenter)
         self._text = None
+        self.setWindowIcon(QIcon(get_image('icon')))
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setFixedSize(250, 40)
+        self.setStyleSheet(app_css)
 
     def set_text(self, text):
         """
@@ -197,11 +201,8 @@ class AlignakApp(QObject):
             if 'token' not in app_backend.user:
                 app_backend.user['token'] = app_backend.backend.token
 
+            # Create Progress Bar
             progressbar = AppProgressBar()
-            progressbar.setWindowIcon(QIcon(get_image('icon')))
-            progressbar.setWindowFlags(Qt.FramelessWindowHint)
-            progressbar.setFixedSize(400, 50)
-            progressbar.setStyleSheet(app_css)
             center_widget(progressbar)
 
             logger.info("Preparing DataManager...")

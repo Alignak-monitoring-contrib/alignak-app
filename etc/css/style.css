@@ -23,9 +23,8 @@ QToolTip {
 }
 
 QProgressBar:horizontal {
-    border: 1px solid gray;
+    border: 1px solid transparent;
     border-radius: 3px;
-    background: white;
     padding: 1px;
 }
 
