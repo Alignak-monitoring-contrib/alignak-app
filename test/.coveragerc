@@ -1,0 +1,7 @@
+[report]
+exclude_lines =
+    pragma: no cover
+
+[run]
+source =
+    alignak_app
