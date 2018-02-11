@@ -67,4 +67,4 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
         elif 'notifications' in self.thread_name:
             app_backend.query_notifications_data()
         else:
-            logger.error("Tasks is unknown: %s", self.thread_name)
+            logger.error("Thread is unknown: %s", self.thread_name)
