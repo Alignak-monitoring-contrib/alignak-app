@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright (c) 2015-2016:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
