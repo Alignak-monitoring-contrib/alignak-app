@@ -30,6 +30,7 @@ from PyQt5.Qt import QMainWindow, QWidget, QGridLayout, QIcon, Qt
 from alignak_app.core.utils.config import app_css, get_image
 
 from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget
+from alignak_app.pyqt.common.frames import get_frame_separator
 from alignak_app.pyqt.dock.widgets.dock import DockQWidget
 from alignak_app.pyqt.panel.widgets.panel import PanelQWidget
 
@@ -56,7 +57,10 @@ class AppMain(QMainWindow):
 
         """
 
+        logger.info('Create Main Window...')
+
         app_widget = QWidget()
+        app_widget.setObjectName('dialog')
         app_layout = QGridLayout()
         app_layout.setContentsMargins(0, 0, 0, 0)
         app_widget.setLayout(app_layout)
@@ -65,9 +69,10 @@ class AppMain(QMainWindow):
         self.dock.setFixedWidth(330)
         self.panel_widget.initialize(self.dock.spy_widget)
 
-        app_layout.addWidget(get_logo_widget(self, 'Alignak-App'), 0, 0, 1, 2)
+        app_layout.addWidget(get_logo_widget(self, 'Alignak-App'), 0, 0, 1, 3)
         app_layout.addWidget(self.panel_widget, 1, 0, 1, 1)
-        app_layout.addWidget(self.dock, 1, 1, 1, 1)
+        app_layout.addWidget(get_frame_separator(True), 1, 1, 1, 1)
+        app_layout.addWidget(self.dock, 1, 2, 1, 1)
 
         self.connect_dock_buttons()
 

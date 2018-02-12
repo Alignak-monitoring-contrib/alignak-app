@@ -168,8 +168,14 @@ QLabel#total {
     border-radius: 3px;
 }
 
-QFrame#separator {
+QFrame#hseparator {
     border-width: 0px 0px 1px 0px;
+    border-color: #6c9cb3;
+    border-style: solid;
+}
+
+QFrame#vseparator {
+    border-width: 0px 1px 0px 0px;
     border-color: #6c9cb3;
     border-style: solid;
 }

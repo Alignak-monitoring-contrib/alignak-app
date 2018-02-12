@@ -184,7 +184,7 @@ class AppQFrame(QFrame):
             logger.warning('Move Event %s: %s', self.objectName(), str(e))
 
 
-def get_frame_separator():
+def get_frame_separator(vertical=False):
     """
     Return a frame separator
 
@@ -193,7 +193,11 @@ def get_frame_separator():
     """
 
     line = QFrame()
-    line.setObjectName('separator')
-    line.setFrameShape(QFrame.HLine)
+    if vertical:
+        line.setObjectName('vseparator')
+        line.setFrameShape(QFrame.VLine)
+    else:
+        line.setObjectName('hseparator')
+        line.setFrameShape(QFrame.HLine)
 
     return line
