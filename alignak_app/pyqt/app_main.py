@@ -27,7 +27,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QMainWindow, QWidget, QGridLayout, QIcon, Qt
 
-from alignak_app.core.utils.config import app_css, get_image
+from alignak_app.core.utils.config import app_css, get_image, get_app_config
 
 from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget
 from alignak_app.pyqt.common.frames import get_frame_separator
@@ -80,7 +80,13 @@ class AppMain(QMainWindow):
         self.setMinimumSize(1300, 800)
         center_widget(self)
 
-        self.show()
+        display = get_app_config('Alignak-app', 'display')
+        if "min" in display:
+            self.show()
+        elif "max" in display:
+            self.showMaximized()
+        else:
+            pass
 
     def connect_dock_buttons(self):
         """

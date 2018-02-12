@@ -24,7 +24,7 @@
 """
 
 from PyQt5.Qt import QPushButton, QHBoxLayout, QApplication, QWidget, QIcon, QLabel
-from PyQt5.Qt import QStyleOption, QStyle, QPainter
+from PyQt5.Qt import QStyleOption, QStyle, QPainter, Qt
 
 from alignak_app.core.utils.config import get_image, app_css
 
@@ -39,6 +39,8 @@ class LogoQWidget(QWidget):
         self.setFixedHeight(45)
         self.setObjectName('app_widget')
         self.setStyleSheet(app_css)
+        self.child_widget = None
+        self.old_state = None
 
     def initialize(self, child_widget, title):
         """
@@ -49,6 +51,8 @@ class LogoQWidget(QWidget):
         :param title: title of widget
         :type title: str
         """
+
+        self.child_widget = child_widget
 
         logo_layout = QHBoxLayout()
         self.setLayout(logo_layout)
@@ -62,7 +66,7 @@ class LogoQWidget(QWidget):
         minimize_btn.setIcon(QIcon(get_image('minimize')))
         minimize_btn.setFixedSize(24, 24)
         minimize_btn.setObjectName('app_widget')
-        minimize_btn.clicked.connect(child_widget.showMinimized)
+        minimize_btn.clicked.connect(self.minimize)
         logo_layout.addStretch(child_widget.width())
         logo_layout.addWidget(minimize_btn, 1)
 
@@ -70,7 +74,7 @@ class LogoQWidget(QWidget):
         maximize_btn.setIcon(QIcon(get_image('maximize')))
         maximize_btn.setFixedSize(24, 24)
         maximize_btn.setObjectName('app_widget')
-        maximize_btn.clicked.connect(child_widget.showMaximized)
+        maximize_btn.clicked.connect(self.minimize_maximize)
         logo_layout.addWidget(maximize_btn, 2)
 
         close_btn = QPushButton()
@@ -87,6 +91,33 @@ class LogoQWidget(QWidget):
         opt.initFrom(self)
         painter = QPainter(self)
         self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)
+
+    def minimize(self):  # pragma: no cover - not testable
+        """
+        Minimize QWidget
+
+        """
+
+        if self.child_widget.windowState() == Qt.WindowMinimized:
+            self.child_widget.setWindowState(Qt.WindowNoState)
+        else:
+            self.old_state = self.child_widget.windowState()
+            self.child_widget.setWindowState(Qt.WindowMinimized)
+
+    def minimize_maximize(self):  # pragma: no cover - not testable
+        """
+        Minimize / Maximize QWidget
+
+        """
+
+        if self.child_widget.windowState() == Qt.WindowMaximized:
+            if self.old_state:
+                self.child_widget.setWindowState(self.old_state)
+            else:
+                self.child_widget.setWindowState(Qt.WindowNoState)
+        else:
+            self.old_state = self.child_widget.windowState()
+            self.child_widget.setWindowState(Qt.WindowMaximized)
 
 
 def get_logo_widget(child_widget, title):

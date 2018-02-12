@@ -52,15 +52,15 @@ class TestCommonQWidget(unittest2.TestCase):
 
         test_widget = QWidget()
 
-        self.assertIsInstance(under_test, LogoQWidget)
         self.assertIsNone(under_test.layout())
         self.assertEqual('app_widget', under_test.objectName())
+        self.assertIsNone(under_test.child_widget)
 
         under_test.initialize(test_widget, '')
 
-        self.assertIsInstance(under_test, LogoQWidget)
         self.assertIsNotNone(under_test.layout())
         self.assertEqual('app_widget', under_test.objectName())
+        self.assertIsNotNone(under_test.child_widget)
 
     def test_get_logo_widget(self):
         """Get LogoQWidget"""
