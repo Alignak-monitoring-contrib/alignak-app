@@ -61,7 +61,6 @@ class DataManager(object):
         if self.database['host'] and \
                 self.database['service'] and \
                 self.database['livesynthesis']:
-            logger.info("Datamanager is ready :)")
             return 'READY'
 
         if not self.database['livesynthesis']:

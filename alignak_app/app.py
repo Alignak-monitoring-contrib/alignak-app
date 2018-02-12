@@ -218,6 +218,7 @@ class AlignakApp(QObject):
                         self.parent().processEvents()
 
             # Launch other threads and run TrayIcon()
+            logger.info("Datamanager is ready :)")
             progressbar.close()
             thread_manager.start()
             init_event_widget()
