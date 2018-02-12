@@ -198,7 +198,7 @@ def get_real_host_state_icon(services):
 
         try:
             return icon_names[max_state_lvl]
-        except IndexError as e:
+        except IndexError as e:  # pragma: no cover
             logger.error('get_real_host_state_icon: unkown real state, icon not found: %s', e)
             return icon_names[5]
 

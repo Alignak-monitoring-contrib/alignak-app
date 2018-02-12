@@ -24,7 +24,7 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication
 
-from alignak_app.app import AlignakApp
+from alignak_app.app import AlignakApp, AppProgressBar
 
 
 class TestApp(unittest2.TestCase):
@@ -54,3 +54,15 @@ class TestApp(unittest2.TestCase):
 
         self.assertIsNone(under_test.tray_icon)
         self.assertTrue(under_test.reconnect_mode)
+
+    def test_app_progressbar(self):
+        """App Progress Bar"""
+
+        under_test = AppProgressBar()
+
+        self.assertEqual(under_test.minimum(), 0)
+        self.assertEqual(under_test.maximum(), 0)
+
+        under_test.set_text('test')
+
+        self.assertEqual('test', under_test.text())

@@ -29,7 +29,6 @@ from logging import getLogger
 
 from alignak_app.core.models.livesynthesis import LiveSynthesis
 
-
 logger = getLogger(__name__)
 
 

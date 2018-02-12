@@ -90,3 +90,14 @@ class TestUtils(unittest2.TestCase):
         under_test = utils.get_image('icon')
 
         self.assertEqual(under_test, expected_img)
+
+    def test_get_url_endpoint_from_icon_name(self):
+        """get Url Endpoint from Icon Name"""
+
+        under_test = utils.get_url_endpoint_from_icon_name('services_ok')
+
+        self.assertEqual('/table?search=ls_state:OK', under_test)
+
+        under_test = utils.get_url_endpoint_from_icon_name('unknown_icon')
+
+        self.assertEqual('/table', under_test)

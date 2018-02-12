@@ -319,11 +319,11 @@ class TestDataManager(unittest2.TestCase):
 
         self.assertNotEqual('READY', under_test.is_ready())
 
+        under_test.update_database('livesynthesis', {'data': 'test'})
+        self.assertNotEqual('READY', under_test.is_ready())
         under_test.update_database('host', {'data': 'test'})
         self.assertNotEqual('READY', under_test.is_ready())
         under_test.update_database('service', {'data': 'test'})
-        self.assertNotEqual('READY', under_test.is_ready())
-        under_test.update_database('livesynthesis', {'data': 'test'})
 
         self.assertEqual('READY', under_test.is_ready())
 
@@ -381,3 +381,25 @@ class TestDataManager(unittest2.TestCase):
         self.assertEqual(problems_test['hosts_nb'], 0)
         self.assertEqual(problems_test['services_nb'], 0)
         self.assertFalse(problems_test['problems'])
+
+    def test_update_item_data(self):
+        """Update Item Data"""
+
+        under_test = DataManager()
+        under_test.update_database('host', self.host_list)
+
+        self.assertEqual('DOWN', under_test.get_item('host', '_id1').data['ls_state'])
+
+        # Update item data "ls_state"
+        under_test.update_item_data(
+            'host',
+            '_id1',
+            {
+                'name': 'host1',
+                'ls_state': 'UP',
+                'ls_acknowledged': False,
+                'ls_downtimed': False,
+             }
+        )
+
+        self.assertEqual('UP', under_test.get_item('host', '_id1').data['ls_state'])
