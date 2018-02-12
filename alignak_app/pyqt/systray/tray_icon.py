@@ -30,6 +30,7 @@ from PyQt5.Qt import QMenu, QSystemTrayIcon
 
 from alignak_app.core.utils.config import init_config, init_css
 
+from alignak_app.pyqt.common.app_main import AppMain
 from alignak_app.pyqt.systray.dialogs.about import AboutQDialog
 from alignak_app.pyqt.systray.qactions_factory import QActionFactory
 from alignak_app.pyqt.threads.thread_manager import thread_manager
@@ -51,7 +52,7 @@ class TrayIcon(QSystemTrayIcon):
         self.menu = QMenu(parent)
         self.qaction_factory = QActionFactory()
         self.app_about = None
-        self.dock = DockQWidget()
+        self.app_main = AppMain()
 
     def build_menu(self):
         """
@@ -84,13 +85,12 @@ class TrayIcon(QSystemTrayIcon):
 
         self.qaction_factory.create(
             'icon',
-            _('Dock'),
+            _('Alignak-App'),
             self
         )
 
-        self.dock.initialize()
-        self.dock.show_dock()
-        self.qaction_factory.get_action('icon').triggered.connect(self.dock.show_dock)
+        self.app_main.initialize()
+        self.qaction_factory.get_action('icon').triggered.connect(self.app_main.show)
 
         self.menu.addAction(self.qaction_factory.get_action('icon'))
 

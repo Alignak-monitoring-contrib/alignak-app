@@ -30,7 +30,6 @@ from PyQt5.Qt import QPushButton, QWidget, QIcon, QHBoxLayout, QTimer
 
 from alignak_app.core.utils.config import get_image, app_css, get_app_config, open_url
 from alignak_app.pyqt.dock.widgets.user import UserQWidget
-from alignak_app.pyqt.panel.widgets.panel import PanelQWidget
 
 logger = getLogger(__name__)
 
@@ -45,7 +44,6 @@ class ButtonsQWidget(QWidget):
         self.setStyleSheet(app_css)
         # Fields
         self.user_widget = UserQWidget()
-        self.panel_widget = PanelQWidget()
         self.update_timer = QTimer()
         self.webui_btn = QPushButton()
         self.profile_btn = QPushButton()
@@ -53,29 +51,22 @@ class ButtonsQWidget(QWidget):
         self.host_btn = QPushButton()
         self.dashboard_btn = QPushButton()
 
-    def initialize(self, dock_width, spy_widget):
+    def initialize(self):
         """
         Initialize QWidget
 
-        :param dock_width: width of dock, needed for PanelQWidget
-        :type dock_width: int
-        :param spy_widget: SpyQWidget to allow HostQWidget add spied host
-        :type spy_widget: alignak_app.widgets.dock.spy.SpyQWidget
         """
 
         layout = QHBoxLayout()
         self.setLayout(layout)
 
-        self.panel_widget.initialize(dock_width, spy_widget)
         self.host_btn.setIcon(QIcon(get_image('host')))
         self.host_btn.setFixedSize(40, 40)
-        self.host_btn.clicked.connect(self.open_host_widget)
         layout.addWidget(self.host_btn)
 
         self.problems_btn.setIcon(QIcon(get_image('problem')))
         self.problems_btn.setFixedSize(40, 40)
         self.problems_btn.setToolTip(_('See current problems'))
-        self.problems_btn.clicked.connect(self.open_problems_widget)
         layout.addWidget(self.problems_btn)
 
         self.user_widget.initialize()
@@ -112,24 +103,6 @@ class ButtonsQWidget(QWidget):
         else:
             self.webui_btn.setEnabled(False)
             self.webui_btn.setToolTip(_("WebUI is not set in configuration file."))
-
-    def open_host_widget(self):
-        """
-        Show HostQWidget
-
-        """
-
-        self.panel_widget.app_widget.show()
-        self.panel_widget.tab_widget.setCurrentIndex(0)
-
-    def open_problems_widget(self):
-        """
-        Show ProblemsQWidget
-
-        """
-
-        self.panel_widget.app_widget.show()
-        self.panel_widget.tab_widget.setCurrentIndex(1)
 
     def open_user_widget(self):
         """

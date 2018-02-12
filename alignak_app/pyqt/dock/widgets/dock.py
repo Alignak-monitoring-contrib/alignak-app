@@ -23,13 +23,13 @@
     Dock manage creation of Alignak-app Dock
 """
 
-from PyQt5.Qt import QApplication, QWidget, QGridLayout, QIcon, QLabel, Qt, QTimer
+from PyQt5.Qt import QWidget, QGridLayout, QIcon, QLabel, Qt, QTimer
 
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.item import get_host_msg_and_event_type
 from alignak_app.core.utils.config import app_css, get_image, get_app_config
 
-from alignak_app.pyqt.common.frames import AppQFrame, get_frame_separator
+from alignak_app.pyqt.common.frames import get_frame_separator
 from alignak_app.pyqt.dock.widgets.status import StatusQWidget
 from alignak_app.pyqt.dock.widgets.buttons import ButtonsQWidget
 from alignak_app.pyqt.dock.widgets.events import get_events_widget
@@ -47,7 +47,6 @@ class DockQWidget(QWidget):
         self.setStyleSheet(app_css)
         self.setWindowIcon(QIcon(get_image('icon')))
         # Fields
-        self.app_widget = AppQFrame()
         self.status_widget = StatusQWidget()
         self.buttons_widget = ButtonsQWidget()
         self.livestate_widget = LivestateQWidget()
@@ -78,6 +77,7 @@ class DockQWidget(QWidget):
         self.status_widget.initialize()
         layout.addWidget(self.status_widget)
 
+        self.buttons_widget.initialize()
         layout.addWidget(self.buttons_widget)
 
         # Livestate
@@ -108,8 +108,6 @@ class DockQWidget(QWidget):
 
         self.spy_widget.spy_list_widget.item_dropped.connect(get_events_widget().remove_event)
 
-        self.set_size_and_position()
-
     def send_spy_events(self):
         """
         Send event for one host spied
@@ -133,36 +131,3 @@ class DockQWidget(QWidget):
                 spied_on=True,
                 host=host_and_services['host'].item_id
             )
-
-    def set_size_and_position(self):
-        """
-        Set the size and postion of DockQWidget
-
-        """
-
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        desktop = QApplication.desktop().availableGeometry(screen)
-
-        x_size = desktop.width() * 0.2
-        y_size = desktop.height()
-
-        self.app_widget.initialize('', logo=True)
-        self.app_widget.add_widget(self)
-        self.app_widget.resize(x_size, y_size)
-
-        pos_x = desktop.width() - x_size
-        self.app_widget.move(pos_x, 0)
-
-        # Give width for PanelQWidget
-        self.buttons_widget.initialize(self.app_widget.width(), self.spy_widget)
-
-    def show_dock(self):
-        """
-        Show the dock by making AppQWidget window active
-
-        """
-
-        self.app_widget.show()
-
-        self.buttons_widget.panel_widget.dock_width = self.app_widget.width()
-        QWidget.activateWindow(self.app_widget)

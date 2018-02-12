@@ -25,12 +25,12 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QApplication, QPushButton, QCompleter, QLineEdit, QIcon, QHBoxLayout
+from PyQt5.Qt import QPushButton, QCompleter, QLineEdit, QIcon, QHBoxLayout
 from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget, QTabWidget
 
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.utils.config import app_css, get_image
-from alignak_app.pyqt.common.frames import AppQFrame, get_frame_separator
+from alignak_app.pyqt.common.frames import get_frame_separator
 from alignak_app.pyqt.dock.widgets.events import EventItem
 from alignak_app.pyqt.panel.widgets.dashboard import DashboardQWidget
 from alignak_app.pyqt.panel.widgets.host import HostQWidget
@@ -55,7 +55,6 @@ class PanelQWidget(QWidget):
         self.layout = QVBoxLayout()
         self.line_search = QLineEdit()
         self.completer = QCompleter()
-        self.app_widget = AppQFrame()
         self.hostnames_list = []
         self.dashboard_widget = DashboardQWidget()
         self.host_widget = HostQWidget()
@@ -63,12 +62,10 @@ class PanelQWidget(QWidget):
         self.spy_button = QPushButton(_("Spy Host"))
         self.spy_widget = None
 
-    def initialize(self, dock_width, spy_widget):
+    def initialize(self, spy_widget):
         """
         Create the QWidget with its items and layout.
 
-        :param dock_width: width of dock, needed for PanelQWidget
-        :type dock_width: int
         :param spy_widget: SpyQWidget to allow HostQWidget add spied host
         :type spy_widget: alignak_app.pyqt.dock.widgets.spy.SpyQWidget
         """
@@ -80,25 +77,16 @@ class PanelQWidget(QWidget):
         self.dashboard_widget.initialize()
         self.layout.addWidget(self.dashboard_widget)
         self.layout.addWidget(get_frame_separator())
+        self.layout.addWidget(self.tab_widget)
 
         self.tab_widget.addTab(self.get_synthesis_widget(), _("Host Synthesis"))
 
         problems_widget = ProblemsQWidget()
         problems_widget.initialize()
+
         self.tab_widget.addTab(problems_widget, _("Problems"))
 
-        self.layout.addWidget(self.tab_widget)
-
-        # Apply size and position on AppQWidget
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
-        desktop = QApplication.desktop().availableGeometry(screen)
-
-        self.app_widget.initialize(_('Hosts Synthesis View'))
-        self.app_widget.add_widget(self)
-        self.app_widget.resize(desktop.width() - dock_width, desktop.height())
-        self.app_widget.move(0, 0)
-
-        # Hide widgets for first start
+        # Hide widget for first display
         self.host_widget.hide()
         self.services_widget.hide()
 

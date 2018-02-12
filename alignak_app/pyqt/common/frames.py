@@ -169,35 +169,19 @@ class AppQFrame(QFrame):
     def mousePressEvent(self, event):  # pragma: no cover - not testable
         """ QWidget.mousePressEvent(QMouseEvent) """
 
-        sticky = False
-
-        if 'Dashboard' in self.windowTitle():
-            sticky = bool(get_app_config('Dashboard', 'sticky', boolean=True))
-
-        if not sticky:
-            self.offset = event.pos()
-        else:
-            pass
+        self.offset = event.pos()
 
     def mouseMoveEvent(self, event):  # pragma: no cover - not testable
         """ QWidget.mousePressEvent(QMouseEvent) """
 
-        sticky = False
-
-        if 'Dashboard' in self.windowTitle():
-            sticky = bool(get_app_config('Dashboard', 'sticky', boolean=True))
-
-        if not sticky:
-            try:
-                x = event.globalX()
-                y = event.globalY()
-                x_w = self.offset.x()
-                y_w = self.offset.y()
-                self.move(x - x_w, y - y_w)
-            except AttributeError as e:
-                logger.warning('Move Event %s: %s', self.objectName(), str(e))
-        else:
-            pass
+        try:
+            x = event.globalX()
+            y = event.globalY()
+            x_w = self.offset.x()
+            y_w = self.offset.y()
+            self.move(x - x_w, y - y_w)
+        except AttributeError as e:
+            logger.warning('Move Event %s: %s', self.objectName(), str(e))
 
 
 def get_frame_separator():

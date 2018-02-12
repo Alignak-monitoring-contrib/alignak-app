@@ -107,7 +107,6 @@ class TestLoginQDialog(unittest2.TestCase):
         self.assertIsNotNone(under_test.layout)
         self.assertIsNotNone(under_test.line_search)
         self.assertIsNotNone(under_test.completer)
-        self.assertIsNotNone(under_test.app_widget)
         self.assertIsNotNone(under_test.dashboard_widget)
         self.assertIsNotNone(under_test.host_widget)
         self.assertIsNotNone(under_test.services_widget)
@@ -117,12 +116,11 @@ class TestLoginQDialog(unittest2.TestCase):
         self.assertFalse(under_test.hostnames_list)
 
         spy_widget_test = SpyQWidget()
-        under_test.initialize(800, spy_widget_test)
+        under_test.initialize(spy_widget_test)
 
         self.assertIsNotNone(under_test.layout)
         self.assertIsNotNone(under_test.line_search)
         self.assertIsNotNone(under_test.completer)
-        self.assertIsNotNone(under_test.app_widget)
         self.assertIsNotNone(under_test.dashboard_widget)
         self.assertIsNotNone(under_test.host_widget)
         self.assertIsNotNone(under_test.services_widget)
@@ -140,7 +138,7 @@ class TestLoginQDialog(unittest2.TestCase):
 
         under_test = PanelQWidget()
         spy_widget_test = SpyQWidget()
-        under_test.initialize(800, spy_widget_test)
+        under_test.initialize(spy_widget_test)
 
         # Host is not in hostname_list
         under_test.line_search.setText('no_host')
