@@ -23,11 +23,11 @@
     Dock manage creation of Alignak-app Dock
 """
 
-from PyQt5.Qt import QWidget, QGridLayout, QIcon, QLabel, Qt, QTimer
+from PyQt5.Qt import QWidget, QGridLayout, QLabel, Qt, QTimer
 
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.item import get_host_msg_and_event_type
-from alignak_app.core.utils.config import app_css, get_image, get_app_config
+from alignak_app.core.utils.config import get_app_config
 
 from alignak_app.pyqt.common.frames import get_frame_separator
 from alignak_app.pyqt.dock.widgets.status import StatusQWidget
@@ -44,8 +44,6 @@ class DockQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(DockQWidget, self).__init__(parent)
-        self.setStyleSheet(app_css)
-        self.setWindowIcon(QIcon(get_image('icon')))
         # Fields
         self.status_widget = StatusQWidget()
         self.buttons_widget = ButtonsQWidget()

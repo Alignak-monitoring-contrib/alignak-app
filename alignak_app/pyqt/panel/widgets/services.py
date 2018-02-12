@@ -29,7 +29,7 @@ from operator import itemgetter
 from PyQt5.Qt import QTreeWidget, QTreeWidgetItem, QWidget, QIcon, QGridLayout, QSize
 
 from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.utils.config import get_image, app_css
+from alignak_app.core.utils.config import get_image
 
 from alignak_app.pyqt.common.frames import get_frame_separator
 from alignak_app.pyqt.panel.widgets.service_tree_item import ServicesTreeItem
@@ -46,7 +46,6 @@ class ServicesQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(ServicesQWidget, self).__init__(parent)
-        self.setStyleSheet(app_css)
         # Fields
         self.host_item = None
         self.service_items = None

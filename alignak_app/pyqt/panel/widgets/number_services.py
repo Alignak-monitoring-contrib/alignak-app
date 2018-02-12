@@ -29,7 +29,7 @@ from PyQt5.Qt import QLabel, QWidget, Qt, QPixmap, QHBoxLayout
 
 from alignak_app.core.models.item import get_icon_name_from_state
 from alignak_app.core.models.service import Service
-from alignak_app.core.utils.config import get_image, app_css
+from alignak_app.core.utils.config import get_image
 
 logger = getLogger(__name__)
 
@@ -41,7 +41,6 @@ class NumberServicesQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(NumberServicesQWidget, self).__init__(parent)
-        self.setStyleSheet(app_css)
         # Fields
         self.services_title = QLabel()
         self.nb_labels = {

@@ -41,7 +41,7 @@ class ButtonsQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(ButtonsQWidget, self).__init__(parent)
-        self.setStyleSheet(app_css)
+        # self.setStyleSheet(app_css)
         # Fields
         self.user_widget = UserQWidget()
         self.update_timer = QTimer()

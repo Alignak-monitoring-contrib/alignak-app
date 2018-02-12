@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Dock manage creation of Alignak-app Dock
+    App Main manage creation of Alignak-app Dock QMainWindow
 """
 
 from logging import getLogger
@@ -38,7 +38,7 @@ logger = getLogger(__name__)
 
 class AppMain(QMainWindow):
     """
-        Class who create QWidgets for dock
+        Class who create QMainWindow of Alignak-app
     """
 
     def __init__(self, parent=None):
@@ -58,6 +58,7 @@ class AppMain(QMainWindow):
 
         app_widget = QWidget()
         app_layout = QGridLayout()
+        app_layout.setContentsMargins(0, 0, 0, 0)
         app_widget.setLayout(app_layout)
 
         self.dock.initialize()

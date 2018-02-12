@@ -29,7 +29,7 @@ from PyQt5.Qt import QLabel, QWidget, Qt, QPushButton, QPixmap, QVBoxLayout, QGr
 
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.item import get_icon_name
-from alignak_app.core.utils.config import get_image, app_css, get_app_config
+from alignak_app.core.utils.config import get_image, get_app_config
 from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
 
 from alignak_app.pyqt.common.actions import ActionsQWidget
@@ -44,7 +44,6 @@ class ServiceDataQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(ServiceDataQWidget, self).__init__(parent)
-        self.setStyleSheet(app_css)
         self.setFixedWidth(200)
         # Fields
         self.refresh_timer = QTimer()
@@ -191,8 +190,11 @@ class ServiceDataQWidget(QWidget):
             self.service_item.data['active_checks_enabled']
         )
         icon_pixmap = QPixmap(get_image(icon_name))
+        icon_pixmap.setDevicePixelRatio(1.0)
 
         self.labels['service_icon'].setPixmap(QPixmap(icon_pixmap))
+        self.labels['service_icon'].setScaledContents(True)
+        self.labels['service_icon'].setFixedSize(48, 48)
         self.labels['service_icon'].setToolTip(self.service_item.get_tooltip())
         self.labels['service_name'].setText('%s' % self.service_item.get_display_name())
 

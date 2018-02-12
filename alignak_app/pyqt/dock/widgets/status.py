@@ -30,7 +30,7 @@ from PyQt5.Qt import QWidget, QHBoxLayout, QTimer, QPixmap, Qt
 
 from alignak_app.core.backend.client import app_backend
 from alignak_app.core.models.daemon import Daemon
-from alignak_app.core.utils.config import get_image, app_css, get_app_config
+from alignak_app.core.utils.config import get_image, get_app_config
 
 from alignak_app.pyqt.dock.dialogs.status import StatusQDialog
 
@@ -45,7 +45,6 @@ class StatusQWidget(QWidget):
     def __init__(self):
         super(StatusQWidget, self).__init__()
         self.setObjectName('bordered')
-        self.setStyleSheet(app_css)
         # Fields
         self.daemons_status = QLabel('pending...')
         self.backend_connected = QLabel('pending...')

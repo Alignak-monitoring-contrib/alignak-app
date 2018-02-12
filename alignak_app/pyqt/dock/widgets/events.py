@@ -31,7 +31,7 @@ from PyQt5.Qt import QVBoxLayout, QColor, QIcon
 from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget, QListWidgetItem, QSize, QTimer
 
 from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.utils.config import app_css, get_app_config, get_image
+from alignak_app.core.utils.config import get_app_config, get_image
 
 logger = getLogger(__name__)
 
@@ -128,7 +128,6 @@ class EventsQWidget(QWidget):
 
     def __init__(self):
         super(EventsQWidget, self).__init__()
-        self.setStyleSheet(app_css)
         self.setObjectName('events')
         # Fields
         self.events_list = QListWidget()

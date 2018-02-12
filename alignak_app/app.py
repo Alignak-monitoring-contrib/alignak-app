@@ -34,7 +34,9 @@ from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.utils.config import get_image, get_main_folder, get_app_workdir
 from alignak_app.core.utils.config import init_config, get_app_config, app_css
 from alignak_app.core.utils.logs import create_logger
+
 from alignak_app.locales.locales import init_localization
+
 from alignak_app.pyqt.dock.widgets.events import init_event_widget
 from alignak_app.pyqt.common.widgets import center_widget
 from alignak_app.pyqt.login.dialogs.login import LoginQDialog

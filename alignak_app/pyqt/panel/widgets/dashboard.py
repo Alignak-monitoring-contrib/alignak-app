@@ -27,7 +27,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QGridLayout, QLabel, Qt, QWidget, QTimer, QPushButton, QIcon
 
-from alignak_app.core.utils.config import app_css, get_image, get_app_config
+from alignak_app.core.utils.config import get_image, get_app_config
 from alignak_app.core.utils.config import open_url, get_url_endpoint_from_icon_name
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.host import Host
@@ -45,7 +45,6 @@ class DashboardQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(DashboardQWidget, self).__init__(parent)
-        self.setStyleSheet(app_css)
         # Fields
         self.layout = QGridLayout()
         self.items_nb = {

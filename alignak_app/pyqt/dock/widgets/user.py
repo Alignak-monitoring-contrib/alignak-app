@@ -49,7 +49,7 @@ class UserQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(UserQWidget, self).__init__(parent)
-        self.setStyleSheet(app_css)
+        # self.setStyleSheet(app_css)
         # Fields
         self.labels = {
             'realm': QLabel(),
