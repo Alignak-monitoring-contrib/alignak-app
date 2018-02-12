@@ -30,11 +30,10 @@ from PyQt5.Qt import QMenu, QSystemTrayIcon
 
 from alignak_app.core.utils.config import init_config, init_css
 
-from alignak_app.pyqt.common.app_main import AppMain
+from alignak_app.pyqt.app_main import AppMain
 from alignak_app.pyqt.systray.dialogs.about import AboutQDialog
 from alignak_app.pyqt.systray.qactions_factory import QActionFactory
 from alignak_app.pyqt.threads.thread_manager import thread_manager
-from alignak_app.pyqt.dock.widgets.dock import DockQWidget
 from alignak_app.pyqt.dock.widgets.events import send_event
 
 
