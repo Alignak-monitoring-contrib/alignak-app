@@ -207,7 +207,7 @@ class Settings(object):
             return '%s/images/%s' % (self.app_dir, self.img_config.get('Images', name))
         except (NoOptionError, NoSectionError) as e:
             logger.error('Image not found or not set in [images.ini] : %s', e)
-            return '%s/images/error.svg'
+            return '%s/images/error.svg' % self.app_dir
 
     def init_css(self):
         """
@@ -218,7 +218,7 @@ class Settings(object):
         try:
             css = open('%s/css/style.css' % self.app_dir)
             self.css_style = css.read()
-        except (IOError, NoSectionError) as e:
+        except IOError as e:
             logger.error('CSS File is missing : %s', str(e))
             self.css_style = ""
 

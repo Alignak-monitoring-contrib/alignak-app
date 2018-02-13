@@ -206,7 +206,7 @@ class UserQWidget(QWidget):
 
         token_dialog.exec_()
 
-    def patch_data(self):
+    def patch_data(self):  # pragma: no cover
         """
         Hide and show QLabel for notes or PATCH password
 

@@ -226,7 +226,7 @@ class PanelQWidget(QWidget):
             self.host_widget.hide()
             self.services_widget.hide()
 
-    def dragMoveEvent(self, event):
+    def dragMoveEvent(self, event):  # pragma: no cover
         """
         Override dragMoveEvent.
          Only accept EventItem() objects who are "spied_on" and not already spied
@@ -242,7 +242,7 @@ class PanelQWidget(QWidget):
         else:
             event.ignore()
 
-    def dropEvent(self, event):
+    def dropEvent(self, event):  # pragma: no cover
         """
         Override dropEvent.
          Get dropped item data, create a new one, and delete the one who is in EventsQWidget
