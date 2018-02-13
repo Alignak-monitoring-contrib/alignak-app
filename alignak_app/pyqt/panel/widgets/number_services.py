@@ -29,7 +29,7 @@ from PyQt5.Qt import QLabel, QWidget, Qt, QPixmap, QHBoxLayout
 
 from alignak_app.core.models.item import get_icon_name_from_state
 from alignak_app.core.models.service import Service
-from alignak_app.core.utils.config import get_image
+from alignak_app.core.utils.config import settings
 
 logger = getLogger(__name__)
 
@@ -73,7 +73,7 @@ class NumberServicesQWidget(QWidget):
 
         for icon in Service.get_available_icons():
             state = icon.replace('services_', '').upper()
-            icon_pixmap = QPixmap(get_image(icon))
+            icon_pixmap = QPixmap(settings.get_image(icon))
             item_icon = QLabel()
             item_icon.setPixmap(icon_pixmap)
             item_icon.setFixedSize(18, 18)

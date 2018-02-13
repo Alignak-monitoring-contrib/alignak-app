@@ -28,7 +28,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QMenu, QSystemTrayIcon
 
-from alignak_app.core.utils.config import init_config, init_css
+from alignak_app.core.utils.config import settings
 
 from alignak_app.pyqt.app_main import AppMain
 from alignak_app.pyqt.systray.dialogs.about import AboutQDialog
@@ -169,7 +169,7 @@ class TrayIcon(QSystemTrayIcon):
         """
 
         logger.info('Reload configuration...')
-        init_config()
-        init_css()
+        settings.init_config()
+        settings.init_css()
 
         send_event('INFO', _('Configuration reloaded'), timer=True)

@@ -27,7 +27,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QGridLayout, QLabel, Qt, QWidget, QTimer, QPushButton, QIcon
 
-from alignak_app.core.utils.config import get_image, get_app_config
+from alignak_app.core.utils.config import settings
 from alignak_app.core.utils.config import open_url, get_url_endpoint_from_icon_name
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.host import Host
@@ -102,7 +102,7 @@ class DashboardQWidget(QWidget):
 
         self.update_dashboard()
 
-        update_dashboard = int(get_app_config('Alignak-app', 'update_dashboard')) * 1000
+        update_dashboard = int(settings.get_config('Alignak-app', 'update_dashboard')) * 1000
         self.refresh_timer.setInterval(update_dashboard)
         self.refresh_timer.start()
         self.refresh_timer.timeout.connect(self.update_dashboard)
@@ -118,7 +118,7 @@ class DashboardQWidget(QWidget):
         self.layout.addWidget(self.items_nb['hosts_nb'], 1, 0, 1, 1)
         row = 1
         for icon in Host.get_available_icons():
-            self.hosts_buttons[icon].setIcon(QIcon(get_image(icon)))
+            self.hosts_buttons[icon].setIcon(QIcon(settings.get_image(icon)))
             self.hosts_buttons[icon].setFixedSize(48, 24)
             self.hosts_buttons[icon].setObjectName(icon)
             self.hosts_buttons[icon].setToolTip(
@@ -145,7 +145,7 @@ class DashboardQWidget(QWidget):
         self.layout.addWidget(self.items_nb['services_nb'], 3, 0, 1, 1)
         row = 1
         for icon in Service.get_available_icons():
-            self.services_buttons[icon].setIcon(QIcon(get_image(icon)))
+            self.services_buttons[icon].setIcon(QIcon(settings.get_image(icon)))
             self.services_buttons[icon].setFixedSize(48, 24)
             self.services_buttons[icon].setObjectName(icon)
             self.services_buttons[icon].setToolTip(
@@ -213,7 +213,7 @@ class DashboardQWidget(QWidget):
             self.services_labels[icon].setText(item_text)
 
         for button in self.hosts_buttons:
-            if get_app_config('Alignak', 'webui'):
+            if settings.get_config('Alignak', 'webui'):
                 self.hosts_buttons[button].setEnabled(True)
                 self.hosts_buttons[button].setToolTip(
                     _('Hosts %s. See in WebUI ?') % button.replace('hosts_', '').upper()
@@ -225,7 +225,7 @@ class DashboardQWidget(QWidget):
                 )
 
         for button in self.services_buttons:
-            if get_app_config('Alignak', 'webui'):
+            if settings.get_config('Alignak', 'webui'):
                 self.services_buttons[button].setEnabled(True)
                 self.services_buttons[button].setToolTip(
                     _('Services %s. See in WebUI ?') % button.replace('services_', '').upper()

@@ -31,7 +31,7 @@ import sys
 
 from logging import getLogger
 
-from alignak_app.core.utils.config import get_app_config
+from alignak_app.core.utils.config import settings
 from alignak_app.core.models.item import ItemModel
 
 logger = getLogger(__name__)
@@ -67,7 +67,7 @@ class Event(ItemModel):
             )
 
         # Define time for the last X minutes define in config file for events
-        notif_elapsed = int(get_app_config('Alignak-app', 'notification_elapsed'))
+        notif_elapsed = int(settings.get_config('Alignak-app', 'notification_elapsed'))
         time_interval = (datetime.datetime.utcnow() - datetime.timedelta(minutes=notif_elapsed)) \
             .strftime("%a, %d %b %Y %H:%M:%S GMT")
 

@@ -27,7 +27,7 @@ from PyQt5.Qt import QWidget, QGridLayout, QLabel, Qt, QTimer
 
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.item import get_host_msg_and_event_type
-from alignak_app.core.utils.config import get_app_config
+from alignak_app.core.utils.config import settings
 
 from alignak_app.pyqt.common.frames import get_frame_separator
 from alignak_app.pyqt.dock.widgets.status import StatusQWidget
@@ -61,7 +61,7 @@ class DockQWidget(QWidget):
         layout = QGridLayout()
         self.setLayout(layout)
 
-        spy_interval = int(get_app_config('Alignak-app', 'spy_interval')) * 1000
+        spy_interval = int(settings.get_config('Alignak-app', 'spy_interval')) * 1000
         self.spy_timer.setInterval(spy_interval)
         self.spy_timer.start()
         self.spy_timer.timeout.connect(self.send_spy_events)

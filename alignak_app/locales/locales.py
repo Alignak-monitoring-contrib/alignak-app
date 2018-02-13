@@ -28,7 +28,7 @@ import sys
 from gettext import GNUTranslations, NullTranslations
 from logging import getLogger
 
-from alignak_app.core.utils.config import get_app_config, get_main_folder
+from alignak_app.core.utils.config import settings
 
 logger = getLogger(__name__)
 
@@ -45,15 +45,15 @@ def init_localization():  # pragma: no cover
         if 'win32' not in sys.platform:
             lang_filename = os.path.join(
                 os.path.abspath(os.path.dirname(__file__)),
-                "LC_MESSAGES/%s.mo" % get_app_config('Alignak-app', 'locale')
+                "LC_MESSAGES/%s.mo" % settings.get_config('Alignak-app', 'locale')
             )
         else:
-            lang_filename = get_main_folder() + "\\locales\\%s.mo" % get_app_config(
+            lang_filename = settings.app_dir + "\\locales\\%s.mo" % settings.get_config(
                 'Alignak-app', 'locale'
             )
         logger.info(
             "Opening message file %s for locale %s",
-            lang_filename, get_app_config('Alignak-app', 'locale')
+            lang_filename, settings.get_config('Alignak-app', 'locale')
         )
         translation = GNUTranslations(open(lang_filename, "rb"))
         translation.install()

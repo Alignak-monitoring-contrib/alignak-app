@@ -27,7 +27,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QAction, QIcon
 
-from alignak_app.core.utils.config import get_image
+from alignak_app.core.utils.config import settings
 
 logger = getLogger(__name__)
 
@@ -47,7 +47,7 @@ class QActionFactory(object):
         """
 
         q_action = QAction(
-            QIcon(get_image(name)),
+            QIcon(settings.get_image(name)),
             content,
             parent
         )

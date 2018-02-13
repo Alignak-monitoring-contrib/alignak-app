@@ -29,8 +29,7 @@ from PyQt5.Qt import QLabel, QVBoxLayout, QGridLayout, QLineEdit
 from PyQt5.Qt import QWidget, QDialog, QPushButton, Qt, QIcon
 
 from alignak_app import __version__
-from alignak_app.core.utils.config import app_css, get_image
-from alignak_app.core.utils.config import edit_setting_value
+from alignak_app.core.utils.config import settings
 from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget
 from alignak_app.pyqt.login.dialogs.server import ServerQDialog
 
@@ -46,8 +45,8 @@ class LoginQDialog(QDialog):
         super(LoginQDialog, self).__init__(parent)
         self.setWindowTitle('Login to Alignak')
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setStyleSheet(app_css)
-        self.setWindowIcon(QIcon(get_image('icon')))
+        self.setStyleSheet(settings.css_style)
+        self.setWindowIcon(QIcon(settings.get_image('icon')))
         self.setObjectName('dialog')
         self.setFixedSize(300, 330)
         # Fields
@@ -97,7 +96,7 @@ class LoginQDialog(QDialog):
         server_btn = QPushButton()
         server_btn.clicked.connect(self.handle_server)
         server_btn.setFixedSize(25, 25)
-        server_btn.setIcon(QIcon(get_image('server_settings')))
+        server_btn.setIcon(QIcon(settings.get_image('server_settings')))
         server_btn.setToolTip(_('Modify Alignak Server'))
         login_layout.addWidget(server_btn, 2, 1, 1, 1)
 
@@ -141,9 +140,9 @@ class LoginQDialog(QDialog):
 
         if server_dialog.exec_() == QDialog.Accepted:
             backend_url = '%(url)s:' + str(server_dialog.server_port.text()).rstrip()
-            edit_setting_value('Alignak', 'backend', backend_url)
-            edit_setting_value('Alignak', 'url', str(server_dialog.server_url.text()).rstrip())
-            edit_setting_value(
+            settings.edit_setting_value('Alignak', 'backend', backend_url)
+            settings.edit_setting_value('Alignak', 'url', str(server_dialog.server_url.text()).rstrip())
+            settings.edit_setting_value(
                 'Alignak', 'processes', str(server_dialog.server_proc.text()).rstrip()
             )
 

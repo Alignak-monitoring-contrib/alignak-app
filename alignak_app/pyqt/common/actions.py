@@ -29,7 +29,7 @@ from logging import getLogger
 from PyQt5.Qt import QDialog, QWidget, QTime, QVBoxLayout, Qt, QGridLayout, QTimeEdit, QDateTimeEdit
 from PyQt5.Qt import QPixmap, QCheckBox, QPushButton, QLabel, QTextEdit, QIcon, QHBoxLayout
 
-from alignak_app.core.utils.config import get_image, app_css
+from alignak_app.core.utils.config import settings
 from alignak_app.core.backend.client import app_backend
 from alignak_app.core.backend.data_manager import data_manager
 
@@ -65,12 +65,12 @@ class ActionsQWidget(QWidget):
 
         self.setLayout(layout)
 
-        self.acknowledge_btn.setIcon(QIcon(get_image('acknowledge')))
+        self.acknowledge_btn.setIcon(QIcon(settings.get_image('acknowledge')))
         self.acknowledge_btn.setMinimumSize(20, 20)
         self.acknowledge_btn.clicked.connect(self.add_acknowledge)
         layout.addWidget(self.acknowledge_btn)
 
-        self.downtime_btn.setIcon(QIcon(get_image('downtime')))
+        self.downtime_btn.setIcon(QIcon(settings.get_image('downtime')))
         self.downtime_btn.setMinimumSize(20, 20)
         self.downtime_btn.clicked.connect(self.add_downtime)
         layout.addWidget(self.downtime_btn)
@@ -218,8 +218,8 @@ class AckQDialog(QDialog):
         super(AckQDialog, self).__init__(parent)
         self.setWindowTitle(_('Request an Acknowledge'))
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setStyleSheet(app_css)
-        self.setWindowIcon(QIcon(get_image('icon')))
+        self.setStyleSheet(settings.css_style)
+        self.setWindowIcon(QIcon(settings.get_image('icon')))
         self.setMinimumSize(360, 460)
         self.setObjectName('dialog')
         # Fields
@@ -340,8 +340,8 @@ class DownQDialog(QDialog):
         super(DownQDialog, self).__init__(parent)
         self.setWindowTitle(_('Request a Downtime'))
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setStyleSheet(app_css)
-        self.setWindowIcon(QIcon(get_image('icon')))
+        self.setStyleSheet(settings.css_style)
+        self.setWindowIcon(QIcon(settings.get_image('icon')))
         self.setMinimumSize(360, 460)
         self.setObjectName('dialog')
         # Fields
@@ -412,7 +412,7 @@ class DownQDialog(QDialog):
         downtime_layout.addWidget(duration_label, 4, 0, 1, 1)
 
         duration_clock = QLabel()
-        duration_clock.setPixmap(QPixmap(get_image('time')))
+        duration_clock.setPixmap(QPixmap(settings.get_image('time')))
         downtime_layout.addWidget(duration_clock, 4, 1, 1, 1)
         duration_clock.setFixedSize(16, 16)
         duration_clock.setScaledContents(True)
@@ -431,7 +431,7 @@ class DownQDialog(QDialog):
         downtime_layout.addWidget(date_range_label, 6, 0, 1, 1)
 
         calendar_label = QLabel()
-        calendar_label.setPixmap(QPixmap(get_image('calendar')))
+        calendar_label.setPixmap(QPixmap(settings.get_image('calendar')))
         calendar_label.setFixedSize(16, 16)
         calendar_label.setScaledContents(True)
         downtime_layout.addWidget(calendar_label, 6, 1, 1, 1)

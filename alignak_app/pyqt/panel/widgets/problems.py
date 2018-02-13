@@ -29,7 +29,7 @@ from PyQt5.Qt import QWidget, QIcon, QTableWidget, QTableWidgetItem, QVBoxLayout
 from PyQt5.Qt import QAbstractItemView, QPixmap, QLabel, QHBoxLayout
 
 from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.utils.config import get_image
+from alignak_app.core.utils.config import settings
 from alignak_app.core.models.item import get_icon_name_from_state
 
 from alignak_app.pyqt.common.actions import ActionsQWidget
@@ -44,7 +44,7 @@ class ProblemsQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(ProblemsQWidget, self).__init__(parent)
-        self.setWindowIcon(QIcon(get_image('icon')))
+        self.setWindowIcon(QIcon(settings.get_image('icon')))
         # Fields
         self.problem_widget = QTableWidget()
         self.headers_list = [
@@ -166,7 +166,7 @@ class ProblemsQWidget(QWidget):
         widget_icon.setLayout(layout_icon)
 
         icon_label = QLabel()
-        icon = QPixmap(get_image(get_icon_name_from_state(item_type, state)))
+        icon = QPixmap(settings.get_image(get_icon_name_from_state(item_type, state)))
         icon_label.setPixmap(icon)
         icon_label.setFixedSize(18, 18)
         icon_label.setScaledContents(True)

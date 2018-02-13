@@ -28,7 +28,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QPushButton, QWidget, QIcon, QHBoxLayout, QTimer
 
-from alignak_app.core.utils.config import get_image, app_css, get_app_config, open_url
+from alignak_app.core.utils.config import settings, open_url
 from alignak_app.pyqt.dock.widgets.user import UserQWidget
 
 logger = getLogger(__name__)
@@ -41,7 +41,6 @@ class ButtonsQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(ButtonsQWidget, self).__init__(parent)
-        # self.setStyleSheet(app_css)
         # Fields
         self.user_widget = UserQWidget()
         self.update_timer = QTimer()
@@ -60,22 +59,22 @@ class ButtonsQWidget(QWidget):
         layout = QHBoxLayout()
         self.setLayout(layout)
 
-        self.host_btn.setIcon(QIcon(get_image('host')))
+        self.host_btn.setIcon(QIcon(settings.get_image('host')))
         self.host_btn.setFixedSize(40, 40)
         layout.addWidget(self.host_btn)
 
-        self.problems_btn.setIcon(QIcon(get_image('problem')))
+        self.problems_btn.setIcon(QIcon(settings.get_image('problem')))
         self.problems_btn.setFixedSize(40, 40)
         self.problems_btn.setToolTip(_('See current problems'))
         layout.addWidget(self.problems_btn)
 
         self.user_widget.initialize()
-        self.profile_btn.setIcon(QIcon(get_image('user')))
+        self.profile_btn.setIcon(QIcon(settings.get_image('user')))
         self.profile_btn.setFixedSize(40, 40)
         self.profile_btn.clicked.connect(self.open_user_widget)
         layout.addWidget(self.profile_btn)
 
-        self.webui_btn.setIcon(QIcon(get_image('web')))
+        self.webui_btn.setIcon(QIcon(settings.get_image('web')))
         self.webui_btn.setFixedSize(40, 40)
         self.webui_btn.clicked.connect(
             lambda: open_url('livestate')
@@ -84,7 +83,7 @@ class ButtonsQWidget(QWidget):
 
         self.update_widget()
 
-        update_buttons = int(get_app_config('Alignak-app', 'update_buttons')) * 1000
+        update_buttons = int(settings.get_config('Alignak-app', 'update_buttons')) * 1000
         self.update_timer.setInterval(update_buttons)
         self.update_timer.start()
         self.update_timer.timeout.connect(self.update_widget)
@@ -97,7 +96,7 @@ class ButtonsQWidget(QWidget):
 
         logger.info('Update Buttons QWidget...')
 
-        if get_app_config('Alignak', 'webui'):
+        if settings.get_config('Alignak', 'webui'):
             self.webui_btn.setEnabled(True)
             self.webui_btn.setToolTip(_("Open WebUI in browser"))
         else:

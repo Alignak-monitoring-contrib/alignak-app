@@ -32,7 +32,7 @@ from alignak_app.core.backend.client import app_backend
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.item import get_host_msg_and_event_type
 from alignak_app.core.models.item import get_icon_name, get_real_host_state_icon
-from alignak_app.core.utils.config import get_image, get_app_config
+from alignak_app.core.utils.config import settings
 from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
 
 from alignak_app.pyqt.common.actions import ActionsQWidget
@@ -86,7 +86,7 @@ class HostQWidget(QWidget):
 
         layout.addWidget(self.get_variables_widget())
 
-        update_host = int(get_app_config('Alignak-app', 'update_host')) * 1000
+        update_host = int(settings.get_config('Alignak-app', 'update_host')) * 1000
         self.refresh_timer.setInterval(update_host)
         self.refresh_timer.start()
         self.refresh_timer.timeout.connect(self.update_host)
@@ -146,7 +146,7 @@ class HostQWidget(QWidget):
         self.actions_widget.initialize(self.host_item)
         layout.addWidget(self.actions_widget)
 
-        self.history_btn.setIcon(QIcon(get_image('time')))
+        self.history_btn.setIcon(QIcon(settings.get_image('time')))
         self.history_btn.clicked.connect(self.show_history)
         layout.addWidget(self.history_btn)
 
@@ -274,7 +274,7 @@ class HostQWidget(QWidget):
 
         if self.host_item or hostname:
             icon_name = get_real_host_state_icon(self.service_items)
-            icon_pixmap = QPixmap(get_image(icon_name))
+            icon_pixmap = QPixmap(settings.get_image(icon_name))
 
             self.labels['host_icon'].setPixmap(QPixmap(icon_pixmap))
             self.labels['host_icon'].setToolTip(
@@ -292,7 +292,7 @@ class HostQWidget(QWidget):
                 self.host_item.data['passive_checks_enabled'] +
                 self.host_item.data['active_checks_enabled']
             )
-            pixmap_icon = QPixmap(get_image(icon_name))
+            pixmap_icon = QPixmap(settings.get_image(icon_name))
             final_icon = pixmap_icon.scaled(32, 32, Qt.KeepAspectRatio)
             self.labels['state_icon'].setPixmap(final_icon)
             self.labels['state_icon'].setToolTip(self.host_item.get_tooltip())

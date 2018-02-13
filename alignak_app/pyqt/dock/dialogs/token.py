@@ -28,7 +28,7 @@ from logging import getLogger
 from PyQt5.Qt import QPushButton, QLabel, QVBoxLayout, QWidget, QDialog, QIcon, Qt
 
 from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.utils.config import app_css, get_image
+from alignak_app.core.utils.config import settings
 from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget
 
 logger = getLogger(__name__)
@@ -42,8 +42,8 @@ class TokenQDialog(QDialog):
     def __init__(self, parent=None):
         super(TokenQDialog, self).__init__(parent)
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setStyleSheet(app_css)
-        self.setWindowIcon(QIcon(get_image('icon')))
+        self.setStyleSheet(settings.css_style)
+        self.setWindowIcon(QIcon(settings.get_image('icon')))
         self.setFixedSize(500, 200)
         self.setObjectName('dialog')
 

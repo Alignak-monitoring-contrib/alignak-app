@@ -37,7 +37,7 @@ from alignak_app.core.models.host import Host
 from alignak_app.core.models.livesynthesis import LiveSynthesis
 from alignak_app.core.models.service import Service
 from alignak_app.core.models.user import User
-from alignak_app.core.utils.config import get_app_config
+from alignak_app.core.utils.config import settings
 
 logger = getLogger(__name__)
 
@@ -70,12 +70,12 @@ class BackendClient(object):
             if data_manager.is_ready() == 'READY':
                 username = data_manager.database['user'].name
             else:
-                username = get_app_config('Alignak', 'username')
-                password = get_app_config('Alignak', 'password')
+                username = settings.get_config('Alignak', 'username')
+                password = settings.get_config('Alignak', 'password')
 
         # Create Backend object
-        backend_url = get_app_config('Alignak', 'backend')
-        processes = int(get_app_config('Alignak', 'processes'))
+        backend_url = settings.get_config('Alignak', 'backend')
+        processes = int(settings.get_config('Alignak', 'processes'))
 
         self.backend = Backend(backend_url, processes=processes)
 

@@ -26,7 +26,7 @@
 from PyQt5.Qt import QPushButton, QHBoxLayout, QApplication, QWidget, QIcon, QLabel
 from PyQt5.Qt import QStyleOption, QStyle, QPainter, Qt
 
-from alignak_app.core.utils.config import get_image, app_css
+from alignak_app.core.utils.config import settings
 
 
 class LogoQWidget(QWidget):
@@ -38,7 +38,7 @@ class LogoQWidget(QWidget):
         super(LogoQWidget, self).__init__()
         self.setFixedHeight(45)
         self.setObjectName('app_widget')
-        self.setStyleSheet(app_css)
+        self.setStyleSheet(settings.css_style)
         self.child_widget = None
         self.old_state = None
 
@@ -63,7 +63,7 @@ class LogoQWidget(QWidget):
         logo_layout.addWidget(logo_label, 0)
 
         minimize_btn = QPushButton()
-        minimize_btn.setIcon(QIcon(get_image('minimize')))
+        minimize_btn.setIcon(QIcon(settings.get_image('minimize')))
         minimize_btn.setFixedSize(24, 24)
         minimize_btn.setObjectName('app_widget')
         minimize_btn.clicked.connect(self.minimize)
@@ -71,14 +71,14 @@ class LogoQWidget(QWidget):
         logo_layout.addWidget(minimize_btn, 1)
 
         maximize_btn = QPushButton()
-        maximize_btn.setIcon(QIcon(get_image('maximize')))
+        maximize_btn.setIcon(QIcon(settings.get_image('maximize')))
         maximize_btn.setFixedSize(24, 24)
         maximize_btn.setObjectName('app_widget')
         maximize_btn.clicked.connect(self.minimize_maximize)
         logo_layout.addWidget(maximize_btn, 2)
 
         close_btn = QPushButton()
-        close_btn.setIcon(QIcon(get_image('exit')))
+        close_btn.setIcon(QIcon(settings.get_image('exit')))
         close_btn.setObjectName('app_widget')
         close_btn.setFixedSize(24, 24)
         close_btn.clicked.connect(child_widget.close)

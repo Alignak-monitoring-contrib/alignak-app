@@ -25,7 +25,7 @@
 
 from PyQt5.Qt import QPixmap
 
-from alignak_app.core.utils.config import get_image
+from alignak_app.core.utils.config import settings
 
 
 def get_icon_item(item_type, problem_nb):
@@ -55,7 +55,7 @@ def get_icon_item(item_type, problem_nb):
         else:
             icon_type = 'problem_ok'
 
-    icon = QPixmap(get_image(icon_type))
+    icon = QPixmap(settings.get_image(icon_type))
 
     return icon
 
@@ -80,6 +80,4 @@ def get_icon_pixmap(value, icons):
         False: icons[1]
     }
 
-    pixmap = QPixmap(get_image(available_icons[value]))
-
-    return pixmap
+    return QPixmap(settings.get_image(available_icons[value]))

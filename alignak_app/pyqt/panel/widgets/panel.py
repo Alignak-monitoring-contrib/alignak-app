@@ -29,7 +29,7 @@ from PyQt5.Qt import QPushButton, QCompleter, QLineEdit, QIcon, QHBoxLayout
 from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget, QTabWidget
 
 from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.utils.config import get_image
+from alignak_app.core.utils.config import settings
 from alignak_app.pyqt.common.frames import get_frame_separator
 from alignak_app.pyqt.dock.widgets.events import EventItem
 from alignak_app.pyqt.panel.widgets.dashboard import DashboardQWidget
@@ -144,7 +144,7 @@ class PanelQWidget(QWidget):
         self.line_search.cursorPositionChanged.connect(button.click)
         layout.addWidget(self.line_search)
 
-        self.spy_button.setIcon(QIcon(get_image('spy')))
+        self.spy_button.setIcon(QIcon(settings.get_image('spy')))
         self.spy_button.setObjectName('search')
         self.spy_button.setFixedHeight(25)
         self.spy_button.clicked.connect(self.spy_host)

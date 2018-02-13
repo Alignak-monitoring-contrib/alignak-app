@@ -29,8 +29,7 @@ from logging import getLogger
 from PyQt5.Qt import QGridLayout
 from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel, QVBoxLayout, QWidget, QDialog, QPushButton
 
-from alignak_app.core.utils.config import app_css, get_image
-from alignak_app.core.utils.config import get_app_config
+from alignak_app.core.utils.config import settings
 from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget
 
 logger = getLogger(__name__)
@@ -45,8 +44,8 @@ class ServerQDialog(QDialog):
         super(ServerQDialog, self).__init__(parent)
         self.setWindowTitle(_('Server Configuration'))
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setStyleSheet(app_css)
-        self.setWindowIcon(QIcon(get_image('icon')))
+        self.setStyleSheet(settings.css_style)
+        self.setWindowIcon(QIcon(settings.get_image('icon')))
         self.setObjectName('dialog')
         self.setFixedSize(300, 330)
         # Fields
@@ -84,14 +83,14 @@ class ServerQDialog(QDialog):
         server_layout.addWidget(QLabel(_('Server')), 1, 0, 1, 1)
 
         self.server_url.setPlaceholderText(_('alignak backend url'))
-        self.server_url.setText(get_app_config('Alignak', 'url'))
+        self.server_url.setText(settings.get_config('Alignak', 'url'))
         server_layout.addWidget(self.server_url, 1, 1, 1, 2)
 
         # Server Port
         server_layout.addWidget(QLabel(_('Port')), 2, 0, 1, 1)
 
         self.server_port.setPlaceholderText(_('alignak backend port'))
-        cur_port = get_app_config('Alignak', 'backend').split(':')[2]
+        cur_port = settings.get_config('Alignak', 'backend').split(':')[2]
         self.server_port.setText(cur_port)
         server_layout.addWidget(self.server_port, 2, 1, 1, 2)
 
@@ -101,7 +100,7 @@ class ServerQDialog(QDialog):
         if 'win32' in sys.platform:
             self.server_proc.setEnabled(False)
         self.server_proc.setPlaceholderText(_('alignak backend processes'))
-        cur_proc = get_app_config('Alignak', 'processes')
+        cur_proc = settings.get_config('Alignak', 'processes')
         self.server_proc.setText(cur_proc)
         server_layout.addWidget(self.server_proc, 3, 1, 1, 2)
 

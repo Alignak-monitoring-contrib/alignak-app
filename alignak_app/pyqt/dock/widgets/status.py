@@ -30,7 +30,7 @@ from PyQt5.Qt import QWidget, QHBoxLayout, QTimer, QPixmap, Qt
 
 from alignak_app.core.backend.client import app_backend
 from alignak_app.core.models.daemon import Daemon
-from alignak_app.core.utils.config import get_image, get_app_config
+from alignak_app.core.utils.config import settings
 
 from alignak_app.pyqt.dock.dialogs.status import StatusQDialog
 
@@ -77,7 +77,7 @@ class StatusQWidget(QWidget):
         # Status button
         self.status_dialog.initialize()
         status_btn = QPushButton()
-        status_btn.setIcon(QIcon(get_image('icon')))
+        status_btn.setIcon(QIcon(settings.get_image('icon')))
         status_btn.setFixedSize(32, 32)
         status_btn.clicked.connect(self.show_status_dialog)
         layout.addWidget(status_btn)
@@ -95,7 +95,7 @@ class StatusQWidget(QWidget):
         layout.addWidget(self.backend_connected)
         layout.setAlignment(self.backend_connected, Qt.AlignCenter)
 
-        update_status = int(get_app_config('Alignak-app', 'update_status')) * 1000
+        update_status = int(settings.get_config('Alignak-app', 'update_status')) * 1000
         self.refresh_timer.setInterval(update_status)
         self.refresh_timer.start()
         self.refresh_timer.timeout.connect(self.update_status)
@@ -117,10 +117,10 @@ class StatusQWidget(QWidget):
 
         logger.info("Update Status QWidget...")
         self.backend_connected.setPixmap(
-            QPixmap(get_image(app_backend.get_backend_status_icon()))
+            QPixmap(settings.get_image(app_backend.get_backend_status_icon()))
         )
         self.daemons_status.setPixmap(
-            QPixmap(get_image(Daemon.get_daemons_status_icon()))
+            QPixmap(settings.get_image(Daemon.get_daemons_status_icon()))
         )
 
     def paintEvent(self, _):

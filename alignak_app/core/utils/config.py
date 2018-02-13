@@ -20,7 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Config manage configurations of Alignak-app
+    Settings manage configurations of Alignak-app
 """
 
 import os
@@ -32,241 +32,191 @@ from logging import getLogger
 import configparser
 from configparser import NoOptionError, NoSectionError, DuplicateOptionError, DuplicateSectionError
 
-from alignak_app import __project_url__
-
 logger = getLogger(__name__)
 
 
-# Application Home
-def get_app_workdir():
+class Settings(object):
     """
-    Return user home.
-
-    :return: application workdir
-    :rtype: str
+        Class who read and create configuration for Alignak-app
     """
 
-    root_config = configparser.ConfigParser(os.environ)
-    try:
-        if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-            root_config.read('%s/.local/alignak_app/app_workdir.ini' % os.environ['HOME'])
-        elif 'win32' in sys.platform:  # pragma: no cover - not testable:
-            root_config.read('%s\\Alignak-app\\app_workdir.ini' % os.environ['PROGRAMFILES'])
+    # Default configurations
+    default_parameters = {
+        'Alignak': {
+            'username': '',
+            'password': '',
+            'backend': 'http://127.0.0.1:5000',
+            'url': 'http://127.0.0.1',
+            'webui': 'http://127.0.0.1:80',
+            'processes': '1'
+
+        },
+        'Alignak-app': {
+            'requests_interval': 30,
+            'notification_duration': 30,
+            'spy_interval': 30,
+            'update_status': 30,
+            'update_buttons': 30,
+            'update_livestate': 30,
+            'update_dashboard': 30,
+            'update_host': 30,
+            'update_service': 30,
+        },
+        'Log': {
+            'filename': 'alignakapp',
+            'debug': True
+        }
+    }
+    # Defines configuration files
+    config_dirs = [
+        '%s/.local/alignak_app' % os.environ['HOME'],
+        '/usr/local/alignak_app'
+    ]
+
+    def __init__(self):
+        self.app_config = configparser.ConfigParser(os.environ)
+        self.img_config = configparser.ConfigParser()
+        self.app_dir = None
+        self.settings = None
+        self.images = None
+        self.css_style = None
+
+    def init_config(self):
+        """
+        Initialize configurations
+
+        """
+
+        def read_config_file(cfg_parser, filename):
+            """
+            Read configuration file and assign it to configParser object
+
+            :param cfg_parser: configparser object
+            :type cfg_parser: configparser.ConfigParser
+            :param filename: name of file to read
+            :type filename: str
+            :return: corresponding filename if read is success
+            :rtype: str
+            """
+
+            try:
+                cfg_file = cfg_parser.read(filename)
+                if cfg_file:
+                    head, tail = os.path.split(filename)
+                    logger.info('- Configuration file [%s]: %s' % (tail, cfg_file))
+                    return cfg_file[0]
+            except (DuplicateOptionError, DuplicateSectionError) as d:  # pragma: no cover
+                logger.error('Duplicate Option/Section in file [%s] !', d)
+                sys.exit('Duplicate Option/Section in file [%s] !' % d)
+            except Exception as f:  # pragma: no cover - not testable
+                logger.error('Configuration file is missing in [%s] !', f)
+                sys.exit('Configuration file is missing in [%s] !' % f)
+
+        # Create available configurations files
+        available_cfg_files = {
+            'settings': [],
+            'images': []
+        }
+        for cfg_dir in self.config_dirs:
+            available_cfg_files['settings'].append('%s/settings.cfg' % cfg_dir)
+            available_cfg_files['images'].append('%s/images.ini' % cfg_dir)
+
+        # Read configuration files
+        logger.info('Reading configuration files...')
+        for f in available_cfg_files['settings']:
+            self.settings = read_config_file(self.app_config, f)
+            if self.settings:
+                self.app_dir = os.path.split(self.settings)[0]
+                break
+        for f in available_cfg_files['images']:
+            self.images = read_config_file(self.img_config, f)
+            if self.images:
+                break
+
+    def get_config(self, section, option, boolean=False):
+        """
+        Return global application configuration
+
+        """
+
+        if boolean:
+            try:
+                return self.app_config.getboolean(section, option)
+            except (NoOptionError, NoSectionError) as e:  # pragma: no cover - not testable
+                logger.error('%s', str(e))
+                logger.error('Replace by default %s: %s',
+                             section, self.default_parameters[section][option])
+                return self.default_parameters[section][option]
         else:
-            sys.exit('Your system seems not compatible. Please consult: %s' % __project_url__)
-    except (IOError, NoSectionError) as e:  # pragma: no cover
-        sys.exit(e)
+            try:
+                return self.app_config.get(section, option)
+            except (NoOptionError, NoSectionError) as e:  # pragma: no cover - not testable
+                logger.error('%s', str(e))
+                logger.error('Replace by default %s: %s',
+                             section, self.default_parameters[section][option])
+                return self.default_parameters[section][option]
 
-    app_workdir = root_config.get('app_workdir', 'workdir')
+    def edit_setting_value(self, section, option, new_value):
+        """
+        Set an option in configuration file
 
-    if not app_workdir:
-        logger.info('App Workdir is empty. Application use %s instead !', get_main_folder())
-        app_workdir = get_main_folder()
-    if app_workdir[:1] == '~':
-        logger.error('You can\'t use "tilde" in this file. Please use $HOME instead !')
-        logger.warning('App Workdir is not valid. Application use %s instead !', get_main_folder())
-        app_workdir = get_main_folder()
+        :param section: section to edit
+        :type section: str
+        :param option: option to edit, corresponding to the wanted section
+        :type option: str
+        :param new_value: new value to set in place of old
+        :type new_value: str
+        """
 
-    if app_workdir[len(app_workdir) - 1:] == '/':
-        app_workdir = app_workdir.rstrip('/')
-    if app_workdir[len(app_workdir) - 1:] == '\\':
-        app_workdir = app_workdir.rstrip('\\')
-
-    return app_workdir
-
-
-def get_main_folder():
-    """
-    Return the main folder of Application
-
-    :return: main path
-    :rtype: str
-    """
-
-    if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-        main_folder = '%s/.local/alignak_app' % os.environ['HOME']
-    elif 'win32' in sys.platform:  # pragma: no cover - not testable
-        main_folder = '%s\\Alignak-app' % os.environ['PROGRAMFILES']
-    else:
-        sys.exit('Your system seems not compatible. Please consult: %s' % __project_url__)
-
-    return main_folder
-
-
-# Application Configuration
-default_parameters = {
-    'notification_elapsed': 30,
-    'notification_duration': 30,
-    'spy_interval': 60,
-    'filename': 'alignakapp',
-    'debug': True,
-    'username': '',
-    'password': '',
-    'url': 'http://127.0.0.1',
-    'backend': 'http://127.0.0.1:5000',
-    'webui': 'http://127.0.0.1:5001',
-    'processes': '1',
-    'path': '/alignak_app',
-    'img': '/images',
-}
-
-# Global variables, access by function
-app_config = None
-app_images = None
-app_css = None
-error_config = 0
-
-
-def get_setting_file(filename):
-    """
-    Return wanted config file, depending platform
-
-    :param filename: name of the setting file
-    :type filename: str
-    :return: filenames str or list
-    :rtype: str|list
-    """
-
-    if 'linux' in sys.platform or 'sunos5' in sys.platform or 'bsd' in sys.platform:
-        config_file = '%s/%s' % (get_app_workdir(), filename)
-    elif 'win32' in sys.platform:  # pragma: no cover - not testable
-        config_file = '%s\\%s' % (get_app_workdir(), filename)
-    else:
-        sys.exit('Your system seems not compatible. Please consult: %s' % __project_url__)
-
-    return config_file
-
-
-def init_config():
-    """
-    Initialize configuration
-
-    """
-
-    # Define "app_config" and "app_images" as "global" to access it from anywhere
-    global app_config  # pylint: disable=global-statement
-    global app_images  # pylint: disable=global-statement
-
-    app_config = configparser.ConfigParser()
-    app_images = configparser.ConfigParser()
-
-    logger.info('Read configuration file...')
-    try:
-        app_config.read(get_setting_file('settings.cfg'))
-        app_images.read(get_setting_file('images.ini'))
-        logger.info('Configuration file is OK.')
-    except (DuplicateOptionError, DuplicateSectionError) as e:  # pragma: no cover - not testable
-        logger.error('Duplicate Option/Section in file [%s] !', e)
-        sys.exit('Duplicate Option/Section in file [%s] !' % e)
-    except Exception as f:  # pragma: no cover - not testable
-        logger.error('Configuration file is missing in [%s] !', f)
-        sys.exit('Configuration file is missing in [%s] !' % f)
-
-
-def get_app_config(section, option, boolean=False):
-    """
-    Return global application configuration
-
-    """
-
-    if boolean:
         try:
-            return app_config.getboolean(section, option)
-        except (NoOptionError, NoSectionError) as e:  # pragma: no cover - not testable
-            logger.error('Missing Option in configuration file : %s', str(e))
-            logger.error('Replace by > %s: %s', option, str(default_parameters[option]))
-            return default_parameters[option]
-    else:
+            # Read configuration file and store in list
+            with open(self.settings, 'r') as config_file:
+                data = config_file.readlines()
+                file_to_write = self.settings
+            # Update values
+            for d in data:
+                if option in d[0:len(option)]:
+                    data[data.index(d)] = option + ' = ' + new_value + '\n'
+            # Setting the current configuration
+            self.app_config.set(section, option, new_value)
+            with open(file_to_write, 'w') as new_config_file:
+                new_config_file.writelines(data)
+
+        except NoOptionError as e:  # pragma: no cover
+            logger.error('Can\'t set Option in configuration file : %s', e)
+
+    def get_image(self, name):
+        """
+        Return the path of wanted image
+
+        :param name: name of image
+        :type name: str
+        :return: full path of image
+        :rtype: str
+        """
+
         try:
-            return app_config.get(section, option)
-        except (NoOptionError, NoSectionError) as e:  # pragma: no cover - not testable
-            logger.error('Missing Option in configuration file : %s', str(e))
-            logger.error('Replace by > %s: %s', option, str(default_parameters[option]))
-            return default_parameters[option]
+            return '%s/images/%s' % (self.app_dir, self.img_config.get('Images', name))
+        except (NoOptionError, NoSectionError) as e:
+            logger.error('Image not found or not set in [images.ini] : %s', e)
+            return '%s/images/error.svg'
+
+    def init_css(self):
+        """
+        Init the css file and fill app_css
+
+        """
+
+        try:
+            css = open('%s/css/style.css' % self.app_dir)
+            self.css_style = css.read()
+        except (IOError, NoSectionError) as e:
+            logger.error('CSS File is missing : %s', str(e))
+            self.css_style = ""
 
 
-def edit_setting_value(section, option, new_value):
-    """
-    Set an option in configuration file
-
-    :param section: section to edit
-    :type section: str
-    :param option: option to edit, corresponding to the wanted section
-    :type option: str
-    :param new_value: new value to set in place of old
-    :type new_value: str
-    """
-
-    try:
-        # Read configuration file and store in list
-        with open(get_setting_file('settings.cfg'), 'r') as config_file:
-            data = config_file.readlines()
-            file_to_write = get_setting_file('settings.cfg')
-        # Update values
-        for d in data:
-            if option in d[0:len(option)]:
-                data[data.index(d)] = option + ' = ' + new_value + '\n'
-        # Setting the current configuration
-        app_config.set(section, option, new_value)
-        with open(file_to_write, 'w') as new_config_file:
-            new_config_file.writelines(data)
-
-    except NoOptionError as e:  # pragma: no cover
-        logger.error('Can\'t set Option in configuration file : %s', e)
-
-
-def get_image(name):
-    """
-    Return the path of wanted image
-
-    :param name: name of image
-    :type name: str
-    :return: full path of image
-    :rtype: str
-    """
-
-    global error_config  # pylint: disable=global-statement
-
-    img_path = get_main_folder()
-
-    try:
-        img = '%s/images/%s' % (img_path, app_images.get('Images', name))
-
-        return img
-    except (NoOptionError, NoSectionError) as e:
-        logger.error('Bad Option : %s', e)
-
-        error_config += 1
-        if error_config < 7:
-            return img_path + '/images/error.svg'
-        else:  # pragma: no cover - not testable
-            if img_path:
-                error_msg = 'Alignak has stop because too many error. We can\'t load files.\n' \
-                            ' Make sure that the settings file is present in the directory %s !' \
-                            % get_app_workdir()
-            else:
-                error_msg = 'Your system seems not compatible. Please consult: %s' % __project_url__
-            logger.error(error_msg)
-            sys.exit(error_msg)
-
-
-def init_css():
-    """
-    Init the css file and fill app_css
-
-    """
-
-    global app_css  # pylint: disable=global-statement
-
-    try:
-        css = open('%s/css/style.css' % (get_main_folder()))
-        app_css = css.read()
-    except (IOError, NoSectionError) as e:
-        logger.error('CSS File is missing : %s', str(e))
-        app_css = ""
-
-
-init_css()
+# Initialize Settings object
+settings = Settings()
 
 
 def open_url(endpoint='login'):  # pragma: no cover
@@ -277,9 +227,9 @@ def open_url(endpoint='login'):  # pragma: no cover
     :type endpoint: str
     """
 
-    if get_app_config('Alignak', 'webui'):
-        logger.debug('Open url : ' + get_app_config('Alignak', 'webui') + '/' + endpoint)
-        webbrowser.open(get_app_config('Alignak', 'webui') + '/' + endpoint)
+    if settings.get_config('Alignak', 'webui'):
+        logger.debug('Open url : ' + settings.get_config('Alignak', 'webui') + '/' + endpoint)
+        webbrowser.open(settings.get_config('Alignak', 'webui') + '/' + endpoint)
 
 
 def get_url_endpoint_from_icon_name(icon_name):

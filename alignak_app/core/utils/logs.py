@@ -29,7 +29,7 @@ from logging import Formatter
 from logging import getLogger
 from logging.handlers import TimedRotatingFileHandler
 
-from alignak_app.core.utils.config import get_app_workdir, get_app_config
+from alignak_app.core.utils.config import settings
 
 
 # Application Logger
@@ -47,8 +47,8 @@ def create_logger():  # pragma: no cover
         stdout_handler = root_logger.handlers[0]
 
     # Define path and file for "file_handler"
-    path = get_app_workdir()
-    filename = '%s.log' % get_app_config('Log', 'filename')
+    path = settings.app_dir
+    filename = '%s.log' % settings.get_config('Log', 'filename')
 
     if not os.path.isdir(path):
         # noinspection PyBroadException

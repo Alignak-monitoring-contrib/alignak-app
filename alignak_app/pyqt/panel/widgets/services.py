@@ -29,7 +29,7 @@ from operator import itemgetter
 from PyQt5.Qt import QTreeWidget, QTreeWidgetItem, QWidget, QIcon, QGridLayout, QSize
 
 from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.utils.config import get_image
+from alignak_app.core.utils.config import settings
 
 from alignak_app.pyqt.common.frames import get_frame_separator
 from alignak_app.pyqt.panel.widgets.service_tree_item import ServicesTreeItem
@@ -128,7 +128,7 @@ class ServicesQWidget(QWidget):
         for aggregation in aggregations:
             main_tree = QTreeWidgetItem()
             main_tree.setText(0, aggregation)
-            main_tree.setIcon(0, QIcon(get_image('tree')))
+            main_tree.setIcon(0, QIcon(settings.get_image('tree')))
             main_tree.setToolTip(0, aggregation)
             for service in self.service_items:
                 if service.data['aggregation'] == aggregation:

@@ -31,8 +31,7 @@ from PyQt5.Qt import QDialog, QMessageBox, QTimer, QProgressBar, Qt, pyqtSignal,
 
 from alignak_app.core.backend.client import app_backend
 from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.utils.config import get_image, get_main_folder, get_app_workdir
-from alignak_app.core.utils.config import init_config, get_app_config, app_css
+from alignak_app.core.utils.config import settings
 from alignak_app.core.utils.logs import create_logger
 
 from alignak_app.locales.locales import init_localization
@@ -44,7 +43,8 @@ from alignak_app.pyqt.systray.tray_icon import TrayIcon
 from alignak_app.pyqt.threads.thread_manager import thread_manager
 
 # Init App settings before importing QWidgets
-init_config()
+settings.init_config()
+settings.init_css()
 init_localization()
 logger = create_logger()
 
@@ -59,10 +59,10 @@ class AppProgressBar(QProgressBar):
         self.setRange(0, 0)
         self.setAlignment(Qt.AlignCenter)
         self._text = None
-        self.setWindowIcon(QIcon(get_image('icon')))
+        self.setWindowIcon(QIcon(settings.get_image('icon')))
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setFixedSize(250, 40)
-        self.setStyleSheet(app_css)
+        self.setStyleSheet(settings.css_style)
 
     def set_text(self, text):
         """
@@ -105,21 +105,20 @@ class AlignakApp(QObject):
 
         # Define level of logger
         logger.name = 'alignak_app.app'
-        if get_app_config('Log', 'debug', boolean=True):
+        if settings.get_config('Log', 'debug', boolean=True):
             logger.setLevel(DEBUG)
             logger.info('Logger Level is: DEBUG')
         else:
             logger.setLevel(INFO)
             logger.info('Logger Level is: INFO')
 
-        logger.info('App WorkDir = %s', get_app_workdir())
-        logger.info('App MainDir = %s', get_main_folder())
+        logger.info('App WorkDir = %s', settings.app_dir)
 
         # If not app_backend url, stop application
-        if get_app_config('Alignak', 'backend'):
+        if settings.get_config('Alignak', 'backend'):
             # If not username and password, create login form, else connect with config data.
-            if not get_app_config('Alignak', 'username') and \
-                    not get_app_config('Alignak', 'password'):  # pragma: no cover - Not testable
+            if not settings.get_config('Alignak', 'username') and \
+                    not settings.get_config('Alignak', 'password'):  # pragma: no cover - Not testable
                 login = LoginQDialog()
                 login.create_widget()
 
@@ -130,11 +129,11 @@ class AlignakApp(QObject):
                 else:
                     logger.info('Alignak-App closes...')
                     sys.exit(0)
-            elif get_app_config('Alignak', 'username') and \
-                    not get_app_config('Alignak', 'password'):
+            elif settings.get_config('Alignak', 'username') and \
+                    not settings.get_config('Alignak', 'password'):
                 self.run()
-            elif get_app_config('Alignak', 'username') and \
-                    get_app_config('Alignak', 'password'):
+            elif settings.get_config('Alignak', 'username') and \
+                    settings.get_config('Alignak', 'password'):
                 self.run()
             else:
                 self.display_error_msg()
@@ -222,7 +221,7 @@ class AlignakApp(QObject):
             progressbar.close()
             thread_manager.start()
             init_event_widget()
-            self.tray_icon = TrayIcon(QIcon(get_image('icon')))
+            self.tray_icon = TrayIcon(QIcon(settings.get_image('icon')))
             self.tray_icon.build_menu()
             self.tray_icon.show()
         else:

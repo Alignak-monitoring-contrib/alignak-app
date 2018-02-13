@@ -29,7 +29,7 @@ from PyQt5.Qt import QIcon, QTreeWidgetItem
 
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.item import get_icon_name
-from alignak_app.core.utils.config import get_image
+from alignak_app.core.utils.config import settings
 
 logger = getLogger(__name__)
 
@@ -65,7 +65,7 @@ class ServicesTreeItem(QTreeWidgetItem):  # pylint: disable=too-few-public-metho
             service_item.data['active_checks_enabled']
         )
 
-        self.setIcon(0, QIcon(get_image(icon_name)))
+        self.setIcon(0, QIcon(settings.get_image(icon_name)))
 
     def update_item(self):
         """
@@ -87,7 +87,7 @@ class ServicesTreeItem(QTreeWidgetItem):  # pylint: disable=too-few-public-metho
         )
 
         self.setData(0, 0, service.get_display_name())
-        self.setData(0, 1, QIcon(get_image(icon_name)))
+        self.setData(0, 1, QIcon(settings.get_image(icon_name)))
 
         self.service_item = service
 
