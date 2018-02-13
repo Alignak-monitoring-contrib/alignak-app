@@ -24,7 +24,7 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication
 
-from alignak_app.core.utils.config import init_config
+from alignak_app.core.utils.config import settings
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.host import Host
 from alignak_app.core.models.service import Service
@@ -38,7 +38,7 @@ class TestLoginQDialog(unittest2.TestCase):
         This file test the PanelQWidget class.
     """
 
-    init_config()
+    settings.init_config()
 
     # Host data test
     host_list = []

@@ -114,10 +114,8 @@ class AlignakApp(QObject):
             logger.info('- [Log Level]: INFO')
 
         logger.info('- [APPWORKDIR]: %s', settings.app_dir)
-        logger.info('- [%s]: %s' % (
-            os.path.split(settings.settings)[1], settings.settings))
-        logger.info(
-            '- [%s]: %s' % (os.path.split(settings.images)[1], settings.images))
+        logger.info('- [%s]: %s', os.path.split(settings.settings)[1], settings.settings)
+        logger.info('- [%s]: %s', os.path.split(settings.images)[1], settings.images)
 
         # If not app_backend url, stop application
         if settings.get_config('Alignak', 'backend'):

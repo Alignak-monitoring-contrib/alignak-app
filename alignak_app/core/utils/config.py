@@ -110,6 +110,8 @@ class Settings(object):
                 logger.error('Configuration file is missing in [%s] !', ex)
                 sys.exit('Configuration file is missing in [%s] !' % ex)
 
+            return None
+
         # Create available configurations files
         available_cfg_files = {
             'settings': [],

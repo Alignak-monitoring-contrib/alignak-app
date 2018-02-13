@@ -28,7 +28,7 @@ from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.host import Host
 from alignak_app.core.models.service import Service
 from alignak_app.core.models.user import User
-from alignak_app.core.utils.config import init_config
+from alignak_app.core.utils.config import settings
 
 app = QApplication(sys.argv)
 data_manager.database['user'] = User()
@@ -43,7 +43,7 @@ class TestHostQWidget(unittest2.TestCase):
     """
 
     # Create config for all methods.
-    init_config()
+    settings.init_config()
 
     @classmethod
     def setUpClass(cls):

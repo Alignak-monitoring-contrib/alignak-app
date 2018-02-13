@@ -141,7 +141,8 @@ class LoginQDialog(QDialog):
         if server_dialog.exec_() == QDialog.Accepted:
             backend_url = '%(url)s:' + str(server_dialog.server_port.text()).rstrip()
             settings.edit_setting_value('Alignak', 'backend', backend_url)
-            settings.edit_setting_value('Alignak', 'url', str(server_dialog.server_url.text()).rstrip())
+            settings.edit_setting_value(
+                'Alignak', 'url', str(server_dialog.server_url.text()).rstrip())
             settings.edit_setting_value(
                 'Alignak', 'processes', str(server_dialog.server_proc.text()).rstrip()
             )

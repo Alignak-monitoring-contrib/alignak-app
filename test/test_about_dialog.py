@@ -24,11 +24,11 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication, QLabel
 
-from alignak_app.core.utils.config import init_config
+from alignak_app.core.utils.config import settings
 from alignak_app.locales.locales import init_localization
 from alignak_app.pyqt.systray.dialogs.about import AboutQDialog
 
-init_config()
+settings.init_config()
 init_localization()
 
 

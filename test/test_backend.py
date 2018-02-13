@@ -24,7 +24,7 @@ import json
 import unittest2
 
 from alignak_app.core.backend.client import BackendClient
-from alignak_app.core.utils.config import init_config, get_app_config
+from alignak_app.core.utils.config import settings
 
 
 class TestAppBackend(unittest2.TestCase):
@@ -33,7 +33,7 @@ class TestAppBackend(unittest2.TestCase):
     """
 
     # Create config for all methods.
-    init_config()
+    settings.init_config()
     host_id = '59c4e40635d17b8e0c6accae'
     hostname = 'cogny'
 
@@ -47,7 +47,7 @@ class TestAppBackend(unittest2.TestCase):
         # Compare config url and app_backend
         self.assertEquals(
             under_test.backend.url_endpoint_root,
-            get_app_config('Alignak', 'backend')
+            settings.get_config('Alignak', 'backend')
         )
         self.assertTrue(under_test.connected)
         self.assertTrue(under_test.backend.authenticated)

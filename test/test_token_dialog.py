@@ -27,7 +27,7 @@ from PyQt5.Qt import QApplication, QWidget
 from alignak_app.core.backend.client import app_backend
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.user import User
-from alignak_app.core.utils.config import init_config
+from alignak_app.core.utils.config import settings
 from alignak_app.locales.locales import init_localization
 from alignak_app.pyqt.dock.dialogs.token import TokenQDialog
 
@@ -37,7 +37,7 @@ class TestTokenQDialog(unittest2.TestCase):
         This file test methods of TokenQDialog class object
     """
 
-    init_config()
+    settings.init_config()
     init_localization()
     app_backend.login()
 

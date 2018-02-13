@@ -24,7 +24,7 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication
 
-from alignak_app.core.utils.config import init_config
+from alignak_app.core.utils.config import settings
 from alignak_app.pyqt.login.dialogs.login import LoginQDialog
 
 
@@ -33,7 +33,7 @@ class TestLoginQDialog(unittest2.TestCase):
         This file test the LoginQDialog class.
     """
 
-    init_config()
+    settings.init_config()
 
     @classmethod
     def setUpClass(cls):
