@@ -23,6 +23,7 @@
     App manage Alignak-App
 """
 
+import os
 import sys
 import time
 from logging import DEBUG, INFO
@@ -107,18 +108,22 @@ class AlignakApp(QObject):
         logger.name = 'alignak_app.app'
         if settings.get_config('Log', 'debug', boolean=True):
             logger.setLevel(DEBUG)
-            logger.info('Logger Level is: DEBUG')
+            logger.info('- [Log Level]: DEBUG')
         else:
             logger.setLevel(INFO)
-            logger.info('Logger Level is: INFO')
+            logger.info('- [Log Level]: INFO')
 
-        logger.info('App WorkDir = %s', settings.app_dir)
+        logger.info('- [APPWORKDIR]: %s', settings.app_dir)
+        logger.info('- [%s]: %s' % (
+            os.path.split(settings.settings)[1], settings.settings))
+        logger.info(
+            '- [%s]: %s' % (os.path.split(settings.images)[1], settings.images))
 
         # If not app_backend url, stop application
         if settings.get_config('Alignak', 'backend'):
             # If not username and password, create login form, else connect with config data.
             if not settings.get_config('Alignak', 'username') and \
-                    not settings.get_config('Alignak', 'password'):  # pragma: no cover - Not testable
+                    not settings.get_config('Alignak', 'password'):  # pragma: no cover
                 login = LoginQDialog()
                 login.create_widget()
 

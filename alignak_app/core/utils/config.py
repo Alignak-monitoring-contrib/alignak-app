@@ -102,15 +102,13 @@ class Settings(object):
             try:
                 cfg_file = cfg_parser.read(filename)
                 if cfg_file:
-                    head, tail = os.path.split(filename)
-                    logger.info('- Configuration file [%s]: %s' % (tail, cfg_file))
                     return cfg_file[0]
             except (DuplicateOptionError, DuplicateSectionError) as d:  # pragma: no cover
                 logger.error('Duplicate Option/Section in file [%s] !', d)
                 sys.exit('Duplicate Option/Section in file [%s] !' % d)
-            except Exception as f:  # pragma: no cover - not testable
-                logger.error('Configuration file is missing in [%s] !', f)
-                sys.exit('Configuration file is missing in [%s] !' % f)
+            except Exception as ex:  # pragma: no cover - not testable
+                logger.error('Configuration file is missing in [%s] !', ex)
+                sys.exit('Configuration file is missing in [%s] !' % ex)
 
         # Create available configurations files
         available_cfg_files = {
@@ -121,12 +119,20 @@ class Settings(object):
             available_cfg_files['settings'].append('%s/settings.cfg' % cfg_dir)
             available_cfg_files['images'].append('%s/images.ini' % cfg_dir)
 
+        # try to set "app_dir" with environment variable
+        try:
+            self.app_dir = os.environ['APPWORKDIR']
+        except KeyError:
+            logger.info('Environment variable [APPWORKDIR] is not set.')
+
         # Read configuration files
         logger.info('Reading configuration files...')
         for f in available_cfg_files['settings']:
             self.settings = read_config_file(self.app_config, f)
             if self.settings:
-                self.app_dir = os.path.split(self.settings)[0]
+                # If "app_dir" is not set by "APPWORKDIR", define by "settings.cfg" location
+                if not self.app_dir:
+                    self.app_dir = os.path.split(self.settings)[0]
                 break
         for f in available_cfg_files['images']:
             self.images = read_config_file(self.img_config, f)
