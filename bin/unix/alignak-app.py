@@ -28,25 +28,24 @@ import os
 
 from alignak_app.app import AlignakApp
 
-from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtWidgets import QApplication
+
+
+if 'win32' not in sys.platform:
+    if 'SSH_CONNECTION' in os.environ:
+        if os.name == 'posix':
+            FAIL = '\033[91m'
+            ENDC = '\033[0m'
+        else:
+            FAIL = '# ! #\n'
+            ENDC = '\n# ! #'
+        sys.exit(
+            '%sAlignak-app can not be launched during an SSH connection '
+            'and requires an X server to be displayed.%s' % (FAIL, ENDC)
+        )
 
 app = QApplication(sys.argv)
 app.setQuitOnLastWindowClosed(False)
-
-if 'win32' not in sys.platform:
-    try:
-        os.environ['SSH_CONNECTION']
-    except KeyError as e:
-        print(
-            'Alignak-app can not be launched during an ssh connection '
-            'and requires an X server to be displayed.'
-        )
-        QMessageBox.critical(
-            None,
-            'Alignak-app can not be launched during an ssh connection '
-            'and requires an X server to be displayed.'
-        )
-        sys.exit()
 
 alignak_app = AlignakApp(app)
 alignak_app.start()
