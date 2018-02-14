@@ -26,8 +26,8 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QVBoxLayout
 from PyQt5.Qt import Qt, QIcon, QPixmap, QFrame, QHBoxLayout, QPushButton, QLabel, QWidget
+from PyQt5.Qt import QVBoxLayout
 
 from alignak_app.core.utils.config import settings
 from alignak_app.pyqt.common.widgets import center_widget
@@ -45,6 +45,7 @@ class AppQFrame(QFrame):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setWindowIcon(QIcon(settings.get_image('icon')))
         self.setStyleSheet(settings.css_style)
+        self.child_widget = None
         self.offset = None
 
     def initialize(self, title, logo=False):
@@ -119,14 +120,14 @@ class AppQFrame(QFrame):
         close_btn.setIcon(QIcon(settings.get_image('exit')))
         close_btn.setFixedSize(22, 22)
         close_btn.setObjectName('app_widget')
-        close_btn.clicked.connect(self.close)
+        close_btn.clicked.connect(self.close_widget)
         logo_layout.addWidget(close_btn)
 
         return logo_widget
 
     def minimize(self):  # pragma: no cover - not testable
         """
-        Minimize QWidget
+        Minimize QFrame
 
         """
 
@@ -137,7 +138,7 @@ class AppQFrame(QFrame):
 
     def minimize_maximize(self):  # pragma: no cover - not testable
         """
-        Minimize / Maximize QWidget
+        Minimize / Maximize QFrame
 
         """
 
@@ -146,25 +147,36 @@ class AppQFrame(QFrame):
         else:
             self.setWindowState(Qt.WindowMaximized)
 
+    def close_widget(self):
+        """
+        Close QFrame and child widget
+
+        """
+
+        self.child_widget.close()
+        self.close()
+
     def show_widget(self):  # pragma: no cover - not testable
         """
-        Show and center AppQWidget
+        Show and center QFrame and child widget
 
         """
 
         center_widget(self)
+        self.child_widget.show()
         self.show()
         QWidget.activateWindow(self)
 
     def add_widget(self, widget):  # pragma: no cover - not testable
         """
-        Add the main QWidget of AppQWidget
+        Add the child QWidget of AppQWidget
 
         :param widget: QWidget to add
         :type widget: QWidget
         """
 
-        self.layout().addWidget(widget, 2)
+        self.child_widget = widget
+        self.layout().addWidget(widget, 1)
 
     def mousePressEvent(self, event):  # pragma: no cover - not testable
         """ QWidget.mousePressEvent(QMouseEvent) """
@@ -188,6 +200,8 @@ def get_frame_separator(vertical=False):
     """
     Return a frame separator
 
+    :param vertical: define if separator is vertical or horizontal
+    :type vertical: bool
     :return: frame separator
     :rtype: QFrame
     """
