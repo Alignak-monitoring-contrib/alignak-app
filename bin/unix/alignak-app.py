@@ -35,17 +35,16 @@ app.setQuitOnLastWindowClosed(False)
 
 if 'win32' not in sys.platform:
     try:
-        os.environ['DESKTOP_SESSION']
+        os.environ['SSH_CONNECTION']
     except KeyError as e:
         print(
-            'You must be in [DESKTOP_SESSION] to launch Alignak-App !\n'
-            'Try to launch without ssh connection or set your [DESKTOP_SESSION] variable.'
+            'Alignak-app can not be launched during an ssh connection '
+            'and requires an X server to be displayed.'
         )
         QMessageBox.critical(
             None,
-            'No DESKTOP_SESSION found',
-            'You must be in [DESKTOP_SESSION] to launch Alignak-App !\n'
-            'Try to launch without ssh connection or set your [DESKTOP_SESSION] variable.'
+            'Alignak-app can not be launched during an ssh connection '
+            'and requires an X server to be displayed.'
         )
         sys.exit()
 
