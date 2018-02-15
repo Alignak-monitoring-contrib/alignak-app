@@ -87,7 +87,6 @@ for style in stylesheet:
 
 # Etc
 data_files.append((paths['app'], ['etc/settings.cfg']))
-data_files.append((paths['app'], ['etc/app_workdir.ini']))
 data_files.append((paths['app'], ['etc/images.ini']))
 
 # Bin for Unix
