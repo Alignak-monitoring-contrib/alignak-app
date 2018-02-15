@@ -128,7 +128,7 @@ setup(
     # metadata for upload to PyPI
     author=__author__,
     author_email="ttamalfor@gmail.com",
-    keywords="alignak applet notifier",
+    keywords="alignak application monitoring",
     url=__project_url__,
     description=__description__,
     long_description=open('README.rst').read(),
