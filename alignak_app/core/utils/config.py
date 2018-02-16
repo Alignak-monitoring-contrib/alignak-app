@@ -70,10 +70,16 @@ class Settings(object):
         }
     }
     # Defines configuration files
-    config_dirs = [
-        '%s/.local/alignak_app' % os.environ['HOME'],
-        '/usr/local/alignak_app'
-    ]
+    if not 'win32' in sys.platform:
+        config_dirs = [
+            '%s/.local/alignak_app' % os.environ['HOME'],
+            '/usr/local/alignak_app'
+        ]
+    else:
+        config_dirs = [
+            '%s\\Python\\alignak_app' % os.environ['APPDATA'],
+            '%s\\Alignak-app' % os.environ['PROGRAMFILES']
+        ]
 
     def __init__(self):
         self.app_config = configparser.ConfigParser(os.environ)
