@@ -8,9 +8,10 @@ During installation, Alignak-app creates a root folder that contains all the fil
 On Linux
 --------
 
-The ROOT folder of the application should be under::
+The ROOT folder of the application should be under one of the following folder::
 
     /home/$USER/.local/alignak_app/
+    /usr/local/alignak_app/
 
 On Windows
 ----------
@@ -30,34 +31,32 @@ The ROOT folder will be located under::
 
 This is to facilitate access to the configuration and respect Windows conventions.
 
-Alignak-app Workdir
-===================
+Alignak-app Variables
+=====================
 
-This folder is defined by the ``app_workdir.ini`` file located in the main application folder cited above.
+The application will normally automatically detect the folders used by the application and use environment variables for this purpose.
 
-The goal of this file is to define a directory where Alignak-app can write/read without problems to get settings and create log files.
-So make sure that you have the right to write and read.
+  * ``ALIGNAKAPP_USER_CFG``: this folder is used by application for read the ``settings.cfg`` file . By default, Alignak-app will log also in this directory.
+  * ``ALIGNAKAPP_APP_CFG``: this folder is used by application for read ``images.ini`` file, ``style.css`` and get images. This variable is normally equal to the ROOT folder described above. **Be careful if you define this variable yourself!**
+  * ``ALIGNAKAPP_LOG_DIR``: this folder is used to create the log file of Alignak-app.
 
-You must set an **absolute path** for this settings.
-
-Then only put/copy the ``settings.cfg`` in the folder you have defined.
-
-**Note:** If you have not set this option, application use the same directory than cited above. If you have no rights, application will crash.
+During Windows installation, if you used **Installer**, these variables are automatically filled. **If you install by pip, you will need to define them yourself !**
 
 Configuration Parameters
 ========================
 
 Before running application, **you must configure it**.
 
-You will find a file named ``settings.cfg`` located in the "ROOT" folder cited above.
+You will find a file named ``settings.cfg`` located in the "ROOT" folder cited above or inside ``ALIGNAKAPP_USER_CFG`` if defined.
+
 Otherwise, Alignak-app proposes to define your server Alignak and its port via the window login.
 
 This file contains Sections who are introduced by a ``[section_name]`` header. Then, it contains ``name = value`` entries.
 All parameters are also explained in file. For the boolean parameters, you can use the following values: on/off, true/false or 1/0.
 
-The most significant Section is **[Backend]**. You need set your backend url, ports and credentials.
+The most significant Section is **[Alignak]**. You'll need set your backend url and ports.
 
-.. [ToKnow] " Without connection on Backend of Alignak, App won't start ! "
+**To Know:** Without connection on Backend of Alignak, App won't start ! "
 
 Settings file
 -------------
@@ -69,7 +68,7 @@ Here is the full ``settings.cfg`` file. This file contains comments for each set
 Connection to Backend
 ---------------------
 
-Alignak-app have a login form by default, who let you to connect with the username and password define in backend.
+Alignak-app have a login form by default, who let you to connect with the username and password define in backend. You can also save your Alignak server in another window.
 
 You can also set connection information in settings file:
 
@@ -90,3 +89,4 @@ To obtain a token, open a python terminal and type the following commands::
     )
     print(r.text)
 
+You can also visit: `Alignak-backend : Get Token <http://docs.alignak.net/projects/alignak-backend/en/latest/api.html#get-the-authentication-token>`_

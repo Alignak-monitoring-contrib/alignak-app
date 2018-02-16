@@ -9,11 +9,10 @@ System Tray
 Once Alignak-app is started, you'll have an icon in your task bar (in bottow right under Windows, top right under Ubuntu for example).
 When you click on this icon, you'll have access to multiple menu like "dock", "about" or configurations.
 
-App Dock
---------
+App Dock (Right part)
+---------------------
 
-When App is launched, a "dock" will also appear right of your screen.
-This "dock" will contains different buttons and some container who will receive different notifications.
+When App is launched, the right part (called "dock") will contains different buttons and some container who will receive different notifications.
 
 Alignak part
 ~~~~~~~~~~~~
@@ -55,10 +54,10 @@ This is where you can find the list of hosts that you spy on.
   * You can spy on as many hosts as you want.
   * To stop spying on a host, just double click on it, host will be removed from list.
 
-App Panel
----------
+App Panel (Left part)
+---------------------
 
-When you click on **host** button in dock, a new window will appear, called **Hosts Synthesis View**. This where you can see your monitored hosts and services.
+The left part of application (called "Panel"), will display a **Hosts Synthesis View**. This is where you can see your monitored hosts and services.
 
 At the top of this window, you will find a summary of the number of items for each state (OK, CRITICAL, DOWN...).
 
@@ -68,6 +67,8 @@ When you select a host, its information and the list of its services will be dis
 You will then be able to perform various actions such as seeing the details of each of its services, acknowledging a problem or planning a downtime for an item (service or host).
 
 You will also have access to the host's history. It may take a while to be available. It depends on the number of hosts monitored in backend.
+
+Another tab called "Problems" is used to display the problems listed by the backend (like a DOWN host or a CRITICAL service).
 
 WebUI
 -----

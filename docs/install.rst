@@ -31,15 +31,13 @@ It is **recommended** that you use this installer to run Alignak-app on Windows.
 Linux Users
 -----------
 
-**IMPORTANT** Be sure to install this application with ``--user`` flags. Otherwise you may not be able to launch it !
-
 You can install with pip::
 
-    pip3 install alignak_app --user
+    pip3 install alignak_app
 
 The required Python modules are automatically installed if not present on your system.
 
-An installation for root will be available as soon as possible.
+If you install App as a root user (with ``sudo``), App wil automatically create a folder for user if you launch App with another user.
 
 From Sources
 ------------
@@ -61,7 +59,7 @@ To install from source, clone repos and install with pip ::
     git clone https://github.com/Alignak-monitoring-contrib/alignak-app
     cd alignak-app
     # If you're under Windows, use "pip" instead "pip3"
-    pip3 install . --user
+    pip3 install .
 
 Under Windows
 ~~~~~~~~~~~~~
@@ -79,7 +77,3 @@ Be sure also that you've install Python3 on your device.
 
 .. _alignak: http://alignak-monitoring.github.io/
 .. _alignak-backend: http://alignak-backend.readthedocs.io/en/latest/
-.. _alignak-webui: http://alignak-web-ui.readthedocs.io/en/latest/
-.. _alignak_backend_client: https://github.com/Alignak-monitoring-contrib/alignak-backend-client
-.. _PyQt4 Official Website: https://www.riverbankcomputing.com/software/pyqt/download
-.. _PyQt4 Official Tutorial: http://pyqt.sourceforge.net/Docs/PyQt4/installation.html
