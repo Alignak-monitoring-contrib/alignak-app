@@ -28,12 +28,8 @@ import sys
 import stat
 import subprocess
 
-from logging import getLogger
-
 from alignak_app import __alignak_url__, __doc_url__, __version__, __releasenotes__
 from alignak_app import __libname__, __application__
-
-logger = getLogger(__name__)
 
 
 def create_user_app_dir(cfg_file):
@@ -93,9 +89,6 @@ def install_alignak_app(bin_file):
     :param bin_file: python file "alignak-app.py" who have been launched
     :type bin_file: str
     """
-
-    print('----------- Install -----------')
-    print('Installation...')
 
     if not os.path.isdir('%s/bin' % os.environ['HOME']):
         try:
@@ -157,6 +150,7 @@ DAEMON=%s
 
 BIN_FILE=%s
 PYBIN=python3
+
 export ALIGNAKAPP_APP_CFG=%s
 export ALIGNAKAPP_USER_CFG=%s
 export ALIGNAKAPP_LOG_DIR=%s
@@ -242,7 +236,11 @@ exit 0
             __releasenotes__, __alignak_url__, __doc_url__,
         )
 
-        print('Create daemon file...')
+        print(
+            '----------- Install -----------\n'
+            'Installation...\n'
+            'Create daemon file...\n'
+        )
         filename = os.path.join(install_path, daemon_name)
         try:
             with open(filename, 'w') as daemon_file:

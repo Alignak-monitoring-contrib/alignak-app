@@ -17,11 +17,11 @@ During Windows installation, if you used **Installer**, these variables are auto
 On Linux
 --------
 
-The ``ALIGNAKAPP_USER_CFG`` folder of the application should be under the following folder::
+Alignak-app will try to create ``ALIGNAKAPP_USER_CFG`` for later configurations. By default this folder should be::
 
     /$HOME/.local/alignak_app/
 
-And the ``ALIGNAKAPP_APP_CFG`` should be under one of the following folders::
+The ``ALIGNAKAPP_APP_CFG`` should be under one of the following folders and is create by pip during installation::
 
     /$HOME/.local/alignak_app/
     /usr/local/alignak_app/
@@ -29,24 +29,22 @@ And the ``ALIGNAKAPP_APP_CFG`` should be under one of the following folders::
 On Windows
 ----------
 
-The ``ALIGNAKAPP_USER_CFG`` and ``ALIGNAKAPP_APP_CFG`` folder of the application should be under one of the following folder::
-
-If installed by pip::
-
-    C:\Users\user\AppData\Roaming\Python\alignak_app\
-
-If installed by **Installer** (see :ref:`install`) to respect Windows conventions::
+On Windows, use **Installer** is recommended (see :ref:`install`) to respect Windows conventions.
+``ALIGNAKAPP_USER_CFG`` and ``ALIGNAKAPP_APP_CFG`` variables are by default set to::
 
     C:\Program Files\Alignak-app\
 
-**If you install by pip under Windows, you may need to define these variables yourself !**
+If you install by ``pip`` under Windows, you may need to **define these variables yourself** !
+And ``ALIGNAKAPP_USER_CFG`` and ``ALIGNAKAPP_APP_CFG`` variables should be by default set to::
+
+    C:\Users\user\AppData\Roaming\Python\alignak_app\
 
 Configuration
 =============
 
 Before running application, **you must configure it**.
 
-You will find a file named ``settings.cfg`` located in the **ALIGNAKAPP_USER_CFG** folder cited above.
+You will find a ``settings.cfg`` file located in the ``ALIGNAKAPP_USER_CFG`` folder cited above.
 
 This file contains Sections who are introduced by a ``[section_name]`` header. Then, it contains ``name = value`` entries.
 All parameters are also explained in file. For the boolean parameters, you can use the following values: on/off, true/false or 1/0.

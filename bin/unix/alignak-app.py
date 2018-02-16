@@ -62,7 +62,7 @@ def main():  # pragma: no cover
     if 'win32' not in sys.platform:
         parser.add_argument(
             '-i', '--install',
-            help='Install or update %s daemon.' % __application__,
+            help='Install or update %s daemon, with your environment variables.' % __application__,
             dest='install', action="store_true", default=False
         )
 
