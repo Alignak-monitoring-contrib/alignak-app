@@ -26,6 +26,7 @@
 import os
 import sys
 import time
+
 from logging import DEBUG, INFO
 
 from PyQt5.Qt import QDialog, QMessageBox, QTimer, QProgressBar, Qt, pyqtSignal, QObject, QIcon
@@ -113,9 +114,13 @@ class AlignakApp(QObject):
             logger.setLevel(INFO)
             logger.info('- [Log Level]: INFO')
 
-        logger.info('- [APPWORKDIR]: %s', settings.app_dir)
-        logger.info('- [%s]: %s', os.path.split(settings.settings)[1], settings.settings)
-        logger.info('- [%s]: %s', os.path.split(settings.images)[1], settings.images)
+        logger.info('- [ALIGNAKAPP_LOG_DIR]: %s', os.environ['ALIGNAKAPP_LOG_DIR'])
+        logger.info('- [ALIGNAKAPP_USER_CFG]: %s', os.environ['ALIGNAKAPP_USER_CFG'])
+        logger.info('- [ALIGNAKAPP_APP_CFG]: %s', os.environ['ALIGNAKAPP_APP_CFG'])
+        logger.info('- [%s]: %s',
+                    os.path.split(settings.settings['settings'])[1], settings.settings['settings'])
+        logger.info('- [%s]: %s',
+                    os.path.split(settings.settings['images'])[1], settings.settings['images'])
 
         # If not app_backend url, stop application
         if settings.get_config('Alignak', 'backend'):

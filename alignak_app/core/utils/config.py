@@ -32,6 +32,8 @@ from logging import getLogger
 import configparser
 from configparser import NoOptionError, NoSectionError, DuplicateOptionError, DuplicateSectionError
 
+from alignak_app.core.utils.install import create_user_app_dir
+
 logger = getLogger(__name__)
 
 
@@ -76,9 +78,12 @@ class Settings(object):
     def __init__(self):
         self.app_config = configparser.ConfigParser(os.environ)
         self.img_config = configparser.ConfigParser()
-        self.app_dir = None
-        self.settings = None
-        self.images = None
+        self.user_cfg_dir = None
+        self.app_cfg_dir = None
+        self.settings = {
+            'settings': '',
+            'images': ''
+        }
         self.css_style = None
 
     def init_config(self):
@@ -121,25 +126,34 @@ class Settings(object):
             available_cfg_files['settings'].append('%s/settings.cfg' % cfg_dir)
             available_cfg_files['images'].append('%s/images.ini' % cfg_dir)
 
-        # try to set "app_dir" with environment variable
-        try:
-            self.app_dir = os.environ['APPWORKDIR']
-        except KeyError:
-            logger.info('Environment variable [APPWORKDIR] is not set.')
+        # Sets fields with environment variables if they exists
+        if 'ALIGNAKAPP_USER_CFG' in os.environ:
+            self.user_cfg_dir = os.environ['ALIGNAKAPP_USER_CFG']
+        if 'ALIGNAKAPP_APP_CFG' in os.environ:
+            self.app_cfg_dir = os.environ['ALIGNAKAPP_APP_CFG']
 
         # Read configuration files
         logger.info('Reading configuration files...')
         for f in available_cfg_files['settings']:
-            self.settings = read_config_file(self.app_config, f)
-            if self.settings:
-                # If "app_dir" is not set by "APPWORKDIR", define by "settings.cfg" location
-                if not self.app_dir:
-                    self.app_dir = os.path.split(self.settings)[0]
+            self.settings['settings'] = read_config_file(self.app_config, f)
+            if self.settings['settings']:
+                # Create a user directory and copy "settings.cfg" file if needed
+                self.settings['settings'] = create_user_app_dir(self.settings['settings'])
+                if not self.user_cfg_dir:
+                    self.user_cfg_dir = os.path.split(self.settings['settings'])[0]
                 break
         for f in available_cfg_files['images']:
-            self.images = read_config_file(self.img_config, f)
-            if self.images:
+            self.settings['images'] = read_config_file(self.img_config, f)
+            if self.settings['images']:
+                if not self.app_cfg_dir:
+                    self.app_cfg_dir = os.path.split(self.settings['images'])[0]
                 break
+
+        # Sets the environment variables to make them accessible by App
+        if 'ALIGNAKAPP_USER_CFG' not in os.environ:
+            os.environ['ALIGNAKAPP_USER_CFG'] = self.user_cfg_dir
+        if 'ALIGNAKAPP_APP_CFG' not in os.environ:
+            os.environ['ALIGNAKAPP_APP_CFG'] = self.app_cfg_dir
 
     def get_config(self, section, option, boolean=False):
         """
@@ -178,9 +192,9 @@ class Settings(object):
 
         try:
             # Read configuration file and store in list
-            with open(self.settings, 'r') as config_file:
+            with open(self.settings['settings'], 'r') as config_file:
                 data = config_file.readlines()
-                file_to_write = self.settings
+                file_to_write = self.settings['settings']
             # Update values
             for d in data:
                 if option in d[0:len(option)]:
@@ -204,10 +218,10 @@ class Settings(object):
         """
 
         try:
-            return '%s/images/%s' % (self.app_dir, self.img_config.get('Images', name))
+            return '%s/images/%s' % (self.app_cfg_dir, self.img_config.get('Images', name))
         except (NoOptionError, NoSectionError) as e:
             logger.error('Image not found or not set in [images.ini] : %s', e)
-            return '%s/images/error.svg' % self.app_dir
+            return '%s/images/error.svg' % self.app_cfg_dir
 
     def init_css(self):
         """
@@ -216,7 +230,7 @@ class Settings(object):
         """
 
         try:
-            css = open('%s/css/style.css' % self.app_dir)
+            css = open('%s/css/style.css' % self.app_cfg_dir)
             self.css_style = css.read()
         except IOError as e:
             logger.error('CSS File is missing : %s', str(e))

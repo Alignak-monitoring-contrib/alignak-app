@@ -24,12 +24,19 @@
 """
 
 import os
+import tempfile
+
 from logging import DEBUG
 from logging import Formatter
 from logging import getLogger
 from logging.handlers import TimedRotatingFileHandler
 
 from alignak_app.core.utils.config import settings
+
+try:
+    ALIGNAKAPP_LOG_DIR = os.environ['ALIGNAKAPP_LOG_DIR']
+except KeyError:
+    ALIGNAKAPP_LOG_DIR = ''
 
 
 # Application Logger
@@ -47,7 +54,19 @@ def create_logger():  # pragma: no cover
         stdout_handler = root_logger.handlers[0]
 
     # Define path and file for "file_handler"
-    path = settings.app_dir
+    if ALIGNAKAPP_LOG_DIR:
+        path = ALIGNAKAPP_LOG_DIR
+    elif settings.app_cfg_dir:
+        path = settings.user_cfg_dir
+    else:
+        path = tempfile.gettempdir()
+
+    if not os.access(path, os.W_OK):
+        print('Access denied for [%s], App will log in current directory !' % path)
+        path = '.'
+
+    os.environ['ALIGNAKAPP_LOG_DIR'] = path
+
     filename = '%s.log' % settings.get_config('Log', 'filename')
 
     if not os.path.isdir(path):
@@ -57,10 +76,6 @@ def create_logger():  # pragma: no cover
         except Exception:
             print('Can\'t create log file in [%s], App will log in current directory !' % path)
             path = '.'
-
-    if not os.access(path, os.W_OK):
-        print('Access denied for [%s], App will log in current directory !' % path)
-        path = '.'
 
     formatter = Formatter('[%(asctime)s]-%(name)-12s: [%(levelname)s] %(message)s')
 
