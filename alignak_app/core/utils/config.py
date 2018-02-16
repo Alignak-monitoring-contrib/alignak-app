@@ -70,7 +70,7 @@ class Settings(object):
         }
     }
     # Defines configuration files
-    if not 'win32' in sys.platform:
+    if 'win32' not in sys.platform:
         config_dirs = [
             '%s/.local/alignak_app' % os.environ['HOME'],
             '/usr/local/alignak_app'
