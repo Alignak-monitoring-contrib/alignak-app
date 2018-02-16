@@ -70,7 +70,7 @@ Source: "{#RootApp}\alignak-app\etc\settings.cfg"; DestDir: "{app}"; Flags: igno
 Source: "{#RootApp}\alignak-app\etc\images.ini"; DestDir: "{app}"; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
 Source: "{#RootApp}\alignak-app\bin\win\vc_redist.x64.exe"; DestDir: {tmp}; Flags: deleteafterinstall;
 Source: "{#RootApp}\alignak-app\bin\win\icon_64.ico"; DestDir: {app}; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
-Source: "{#RootApp}\alignak-app\alignak_app\locales\*"; DestDir: {app}\locales; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
+Source: "{#RootApp}\alignak-app\alignak_app\locales\LC_MESSAGES\*"; DestDir: {app}\locales; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
 
 [Registry]
 Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName: "ALIGNAKAPP_USER_CFG"; ValueData: "{app}"; Flags: uninsdeletekey preservestringtype
