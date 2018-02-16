@@ -37,6 +37,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
+ChangesEnvironment=yes
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableDirPage=yes
@@ -71,6 +72,10 @@ Source: "{#RootApp}\alignak-app\etc\app_workdir.ini"; DestDir: "{app}"; Flags: i
 Source: "{#RootApp}\alignak-app\bin\win\vc_redist.x64.exe"; DestDir: {tmp}; Flags: deleteafterinstall;
 Source: "{#RootApp}\alignak-app\bin\win\icon_64.ico"; DestDir: {app}; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
 Source: "{#RootApp}\alignak-app\alignak_app\locales\*"; DestDir: {app}\locales; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
+
+[Registry]
+Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName: "ALIGNAKAPP_USER_CFG"; ValueData: "{app}"; Flags: uninsdeletekey preservestringtype
+Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName: "ALIGNAKAPP_APP_CFG"; ValueData: "{app}"; Flags: uninsdeletekey preservestringtype
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon_64.ico";
