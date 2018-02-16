@@ -90,9 +90,7 @@ data_files.append((paths['app'], ['etc/settings.cfg']))
 data_files.append((paths['app'], ['etc/images.ini']))
 
 # Bin for Unix
-data_files.append((paths['bin'], ['bin/unix/alignak-app']))
 data_files.append((paths['bin'], ['bin/unix/alignak-app.py']))
-
 
 setup(
     name=__pkg_name__,

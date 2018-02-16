@@ -32,6 +32,7 @@
 # Application version and manifest
 VERSION = (1, 1, 1)
 __application__ = u"Alignak-App"
+__libname__ = u"alignak_app"
 __short_version__ = '.'.join((str(each) for each in VERSION[:2]))
 __version__ = '.'.join((str(each) for each in VERSION[:4]))
 __author__ = u"Estrada Matthieu"
