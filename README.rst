@@ -55,7 +55,9 @@ App use `PyQt5 <https://www.riverbankcomputing.com/software/pyqt/intro>`_, bindi
 Installation
 ------------
 
-To install Alignak-app::
+To install Alignak-app:
+
+.. code-block:: bash
 
     ##### WINDOWS USERS #####
     # An installer for Windows is available on this repository.
