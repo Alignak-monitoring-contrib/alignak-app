@@ -84,34 +84,7 @@ def create_user_app_dir(cfg_file):
         return cfg_file
 
 
-def install_alignak_app(bin_file):
-    """
-    Install an "alignak-app" daemon for user
-
-    :param bin_file: python file "alignak-app.py" who have been launched
-    :type bin_file: str
-    """
-
-    if not os.path.isdir('%s/bin' % os.environ['HOME']):
-        try:
-            os.mkdir('%s/bin' % os.environ['HOME'])
-        except IOError as e:
-            print('%s fail to create bin directory!' % __application__)
-            sys.exit(e)
-
-    possible_paths = [
-        '%s/bin' % os.environ['HOME'], '/usr/local/bin', 'usr/sbin'
-    ]
-
-    install_path = ''
-    for path in possible_paths:
-        if path in os.environ['PATH'] and os.access(path, os.W_OK):
-            install_path = path
-
-    if install_path:
-        # Create daemon bash file
-        daemon_name = 'alignak-app'
-        bash_file = """#!/usr/bin/env bash
+bash_file = """#!/usr/bin/env bash
 # -*- coding: utf-8 -*-
 
 # Copyright (c) 2015-2018:
@@ -142,14 +115,13 @@ def install_alignak_app(bin_file):
 # Description:       alignak-app is a notifier for Alignak suite.
 ### END INIT INFO
 
+# Variables
 END='\\x1b[0m'
 RED='\\x1b[31m'
 GREEN='\\x1b[32m'
 CYAN='\\x1b[36m'
 
-LIB_NAME=%s
 DAEMON=%s
-
 BIN_FILE=%s
 PYBIN=python3
 
@@ -157,19 +129,18 @@ export ALIGNAKAPP_APP_CFG=%s
 export ALIGNAKAPP_USER_CFG=%s
 export ALIGNAKAPP_LOG_DIR=%s
 
-# Get version and doc_url of alignak-app
-version="%s"
-release_notes="%s"
-project_url="%s"
-doc_url="%s"
+APP_VERSION="%s"
+APP_RELEASE_NOTES="%s"
+APP_PROJECT_URL="%s"
+APP_DOC_URL="%s"
 
 # Functions for alignak-app
 usage() {
     echo "------------------------------------------"
-    echo -e "$CYAN Alignak-app, Version $version $END \\n"
-    echo "  $release_notes"
-    echo "  For more help, visit $doc_url."
-    echo "  Please open any issue on $project_url."
+    echo -e "$CYAN Alignak-app, Version $APP_VERSION $END \\n"
+    echo "  $APP_RELEASE_NOTES"
+    echo "  For more help, visit $APP_DOC_URL."
+    echo "  Please open any issue on $APP_PROJECT_URL."
     echo "------------------------------------------"
     echo -e "$CYAN Alignak-app will use following variables: $END \\n"
     echo "ALIGNAKAPP_APP_CFG = $ALIGNAKAPP_APP_CFG"
@@ -180,32 +151,45 @@ usage() {
 
 
 do_start() {
-    echo "------------------------------------------"
-    echo -e "$GREEN Starting $DAEMON daemon $END..."
-    echo "------------------------------------------"
-
-    "$PYBIN" "$BIN_FILE" --start &
+    PID=`ps aux |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
+    if [ ! -z "$PID" ]; then
+        echo "--------------------------------------------------"
+        echo -e "$CYAN $DAEMON is not running ;) $END"
+        echo "--------------------------------------------------"
+    else
+        echo "--------------------------------------------------"
+        echo -e "$GREEN $DAEMON v$APP_VERSION already running. $END"
+        echo "--------------------------------------------------"
+        "$PYBIN" "$BIN_FILE" --start &
+    fi
 }
 
 do_stop() {
-    pid=`ps aux |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
-    if [ ! -z "$pid" ]; then
-        echo -e "$RED  Stop $DAEMON daemon... $END"
-        echo "Kill pid: $pid"
-        kill "$pid"
-        echo "...$DAEMON stop !"
+    PID=`ps aux |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
+    if [ ! -z "$PID" ]; then
+        echo "--------------------------------------------------"
+        echo -e "$RED $DAEMON is stopping... (Kill pid $PID) $END"
+        kill "$PID"
+        echo -e "...$DAEMON stop !"
+        echo "--------------------------------------------------"
     else
-        echo -e "$RED $DAEMON is not running ! $END"
+        echo "--------------------------------------------------"
+        echo -e "$CYAN $DAEMON is not running ;) $END"
+        echo "--------------------------------------------------"
     fi
 }
 
 do_status() {
-    pid=`ps fu |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
-    if [ ! -z "$pid" ]; then
-        echo -e "$DAEMON is $GREEN running $END... (pid $pid)"
+    PID=`ps fu |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
+    if [ ! -z "$PID" ]; then
+        echo "--------------------------------------------------"
+        echo -e "$GREEN $DAEMON is running...$END (pid $PID)"
+        echo "--------------------------------------------------"
     else
-        echo -e "$RED $DAEMON is not running ! $END"
-        echo "Run $DAEMON start"
+        echo "--------------------------------------------------"
+        echo -e "$CYAN $DAEMON is not running ! $END"
+        echo -e "Run $GREEN '$DAEMON start' $END to launch Alignak-app"
+        echo "--------------------------------------------------"
     fi
 
 }
@@ -232,8 +216,39 @@ case "$CMD" in
         exit 1
 esac
 exit 0
-        """ % (
-            __libname__, daemon_name, bin_file, os.environ['ALIGNAKAPP_APP_CFG'],
+"""
+
+
+def install_alignak_app(bin_file):
+    """
+    Install an "alignak-app" daemon for user
+
+    :param bin_file: python file "alignak-app.py" who have been launched
+    :type bin_file: str
+    """
+
+    if not os.path.isdir('%s/bin' % os.environ['HOME']):
+        try:
+            os.mkdir('%s/bin' % os.environ['HOME'])
+        except IOError as e:
+            print('%s fail to create bin directory!' % __application__)
+            sys.exit(e)
+
+    possible_paths = [
+        '%s/bin' % os.environ['HOME'], '/usr/local/bin', 'usr/sbin'
+    ]
+
+    install_path = ''
+    for path in possible_paths:
+        if path in os.environ['PATH'] and os.access(path, os.W_OK):
+            install_path = path
+
+    if install_path:
+        # Create daemon bash file
+        daemon_name = 'alignak-app'
+        filename = os.path.join(install_path, daemon_name)
+        bash_format = bash_file % (
+            daemon_name, bin_file, os.environ['ALIGNAKAPP_APP_CFG'],
             os.environ['ALIGNAKAPP_USER_CFG'], os.environ['ALIGNAKAPP_LOG_DIR'], __version__,
             __releasenotes__, __alignak_url__, __doc_url__,
         )
@@ -243,10 +258,9 @@ exit 0
             'Installation...\n'
             'Create daemon file...\n'
         )
-        filename = os.path.join(install_path, daemon_name)
         try:
             with open(filename, 'w') as daemon_file:
-                daemon_file.write(bash_file)
+                daemon_file.write(bash_format)
         except Exception as e:
             print('%s can\'t create daemon file: %s' % (__application__, filename))
             sys.exit(e)
