@@ -12,7 +12,7 @@ Alignak App
    :target: https://landscape.io/github/Alignak-monitoring-contrib/alignak-app/develop
    :alt: Development code static analysis
 
-.. image:: https://coveralls.io/repos/github/Alignak-monitoring-contrib/alignak-app/badge.svg?branch=develop&service=github
+.. image:: https://coveralls.io/repos/github/Alignak-monitoring-contrib/alignak-app/badge.svg?branch=develop
     :target: https://coveralls.io/github/Alignak-monitoring-contrib/alignak-app?branch=develop
     :alt: Development code coverage
 
@@ -64,10 +64,15 @@ To install Alignak-app::
 
     ##### LINUX USERS #####
     # Alignak App
-    pip3 install alignak_app --user -v
+    pip3 install alignak_app
 
     # First run
-    ~/.local/alignak_app/bin/alignak-app
+    # Installed as "user"
+    ~/.local/alignak_app/bin/alignak-app.py --start   # Run application in current shell
+    ~/.local/alignak_app/bin/alignak-app.py --install # Install a daemon file
+    # Installed as "root"
+    /usr/local/aligna_app/alignak-app.py --start   # Run application in current shell
+    /usr/local/aligna_app/alignak-app.py --install # Install a daemon file
 
     # If you've already run App, just do
     alignak-app start
@@ -77,7 +82,7 @@ To install Alignak-app::
     git clone https://github.com/Alignak-monitoring-contrib/alignak-app
     cd alignak-app
     pip3 install -r requirements.txt
-    pip3 install . --user -v
+    pip3 install . -v
 
 You can find more help in the documentation below.
 
@@ -86,7 +91,8 @@ Documentation
 
 Documentation for Alignak-app is available on `Read The Docs <http://alignak-app.readthedocs.io/en/develop/index.html>`_.
 You will find everything you need to install and configure the application.
-To learn more about Alignak, visit `http://www.alignak.net/ <http://www.alignak.net/>`_ website.
+
+To learn more about **Alignak**, please visit `http://www.alignak.net/ <http://www.alignak.net/>`_.
 
 Bugs / Enhancements
 -------------------
