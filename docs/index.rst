@@ -17,6 +17,7 @@ Documentation content:
     launch
     use
     setup
+    api
 
 
 Indices and tables
