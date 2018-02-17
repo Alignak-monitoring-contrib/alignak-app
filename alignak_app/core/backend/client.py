@@ -131,7 +131,7 @@ class BackendClient(object):
         :type projection: list|None
         :param all_items: make GET on all items
         :type all_items: bool
-        :return desired request of app_backend
+        :return: desired request of app_backend
         :rtype: dict
         """
 

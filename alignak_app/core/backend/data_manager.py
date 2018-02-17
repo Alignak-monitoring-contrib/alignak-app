@@ -224,7 +224,7 @@ class DataManager(object):
 
         :param host_field: field of wanted host: host_id | name
         :type host_field: str
-        :return dict with host data and its associated services
+        :return: dict with host data and its associated services
         :rtype: dict
         """
 

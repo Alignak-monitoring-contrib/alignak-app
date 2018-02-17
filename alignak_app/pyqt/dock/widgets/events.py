@@ -270,12 +270,15 @@ def send_event(event_type, msg, timer=False, spied_on=False, host=None):
     Access function to simplify code in rest of application
 
     :param event_type: type of event, define color of EventItem()
-    - 'green': ['OK', 'UP']
-    - 'blue': ['UNKNOWN', 'INFO']
-    - 'orange': ['WARNING', 'UNREACHABLE', 'WARN']
-    - 'red': ['DOWN', 'CRITICAL', 'ALERT']
-    - 'yellow': ['ACK']
-    - 'yellow': ['DOWNTIME']
+
+    * **green**: [``OK``, ``UP``]
+    * **blue**: [``UNKNOWN``, ``INFO``]
+    * **orange**: [``WARNING``, ``UNREACHABLE``, ``WARN``]
+    * **red'**: [``DOWN``, ``CRITICAL``, ``ALERT``]
+    * **yellow**: [``ACK``]
+    * **yellow**: [``DOWNTIME``]
+    * **yellow**: [``TODO``]
+
     :type event_type: str
     :param msg: message of event
     :type msg: str
