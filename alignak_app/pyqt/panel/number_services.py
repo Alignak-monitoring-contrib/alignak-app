@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Number Services QWidget manage display of number of services for a host
+    Number Services
+    +++++++++++++++
+    Number Services manage creation of QWidget to display number of host services, for each state
 """
 
 from logging import getLogger

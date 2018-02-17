@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    User Notes manage notes form
+    User Notes
+    ++++++++++
+    User Notes manage creation of QDialog for user notes
 """
 
 from logging import getLogger

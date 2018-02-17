@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Service QWidget manage display of service data
+    Service
+    +++++++
+    Service manage creation of QWidget to display service data
 """
 
 from logging import getLogger

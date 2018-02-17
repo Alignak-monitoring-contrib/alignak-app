@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Dock manage creation of Alignak-app Dock
+    Dock
+    ++++
+    Dock manage creation of QWidget for **Dock** (Right part)
 """
 
 from PyQt5.Qt import QWidget, QGridLayout, QLabel, Qt, QTimer

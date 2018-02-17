@@ -20,9 +20,10 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    ItemHistory manage creation of history item
+    History
+    +++++++
+    History manage creation of history item
 """
-
 
 from logging import getLogger
 

@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    DataManager manage alignak data provided by BackendQRunnable
+    Data Manager
+    ++++++++++++
+    DataManager manage alignak data provided by Client
 """
 
 import datetime

@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    About QDialog manage application about data
+    About
+    +++++
+    About manage creation of QDialog to display data about Alignak-app
 """
 
 

@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The Dock package contains classes who manage Dock UI
+    The Dock package contains classes who manage Dock UI (Right part)
 """

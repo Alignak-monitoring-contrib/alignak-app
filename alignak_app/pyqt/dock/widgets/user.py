@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    User manage QWidget who display User Profile.
+    User
+    ++++
+    User manage creation of QWidget who display user profile who use Alignak-app
 """
 
 from logging import getLogger

@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Services QWidget manage creation of QWidget services
+    Services
+    ++++++++
+    Services manage creation of QWidget to display the services
 """
 
 from logging import getLogger
@@ -32,9 +34,9 @@ from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.utils.config import settings
 
 from alignak_app.pyqt.common.frames import get_frame_separator
-from alignak_app.pyqt.panel.widgets.service_tree_item import ServicesTreeItem
-from alignak_app.pyqt.panel.widgets.number_services import NumberServicesQWidget
-from alignak_app.pyqt.panel.widgets.service import ServiceDataQWidget
+from alignak_app.pyqt.panel.service_tree_item import ServicesTreeItem
+from alignak_app.pyqt.panel.number_services import NumberServicesQWidget
+from alignak_app.pyqt.panel.service import ServiceDataQWidget
 
 logger = getLogger(__name__)
 

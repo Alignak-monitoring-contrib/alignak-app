@@ -20,6 +20,8 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
+    Client
+    ++++++
     Client manage connection and access to Alignak backend.
 """
 

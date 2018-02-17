@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    ItemDaemon manage creation of daemon item
+    Daemon
+    ++++++
+    Daemon manage creation of daemon item
 """
 
 

@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Common QFrames manage creation of QFrames for Alignak-app
+    Frames
+    ++++++
+    Frames manage global QFrames for Alignak-app
 """
 
 

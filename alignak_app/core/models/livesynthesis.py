@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    ItemLivesynthesis manage creation of livesynthesis item
+    Live Synthesis
+    ++++++++++++++
+    Livesynthesis manage creation of livesynthesis item
 """
 
 

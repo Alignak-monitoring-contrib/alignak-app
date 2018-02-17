@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Server QDialog manage creation of QDialogs and QWidgets for LoginQDialog
+    Server
+    ++++++
+    Server manage creation of QDialog for Alignak backend server settings
 """
 
 import sys

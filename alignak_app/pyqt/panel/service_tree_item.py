@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Service QTreeWidgetItem subclass to store Service item data
+    Service Tree Item
+    +++++++++++++++++
+    Service Tree Item manage creation of QTreeWidgetItem to store Service item data
 """
 
 from logging import getLogger

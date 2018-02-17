@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    ThreadManager manage QRunnables for each data
+    Thread Manager
+    ++++++++++++++
+    Thread Manager manage creation of QObject for launched threads
 """
 
 from logging import getLogger

@@ -25,7 +25,7 @@ import unittest2
 from PyQt5.QtWidgets import QApplication
 
 from alignak_app.core.utils.config import settings
-from alignak_app.pyqt.login.dialogs.login import LoginQDialog
+from alignak_app.pyqt.login.login import LoginQDialog
 
 
 class TestLoginQDialog(unittest2.TestCase):

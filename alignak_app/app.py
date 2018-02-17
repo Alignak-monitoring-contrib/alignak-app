@@ -20,7 +20,12 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    App manage Alignak-App
+    App
+    ~~~
+    App manages the creation of QObjects for the whole application:
+
+    * Creation of QObject for App Main (QMainWindow)
+    * Creation of QProgressbar until the Data Manager is ready
 """
 
 import os
@@ -40,7 +45,7 @@ from alignak_app.locales.locales import init_localization
 
 from alignak_app.pyqt.dock.widgets.events import init_event_widget
 from alignak_app.pyqt.common.widgets import center_widget
-from alignak_app.pyqt.login.dialogs.login import LoginQDialog
+from alignak_app.pyqt.login.login import LoginQDialog
 from alignak_app.pyqt.systray.tray_icon import TrayIcon
 from alignak_app.pyqt.threads.thread_manager import thread_manager
 

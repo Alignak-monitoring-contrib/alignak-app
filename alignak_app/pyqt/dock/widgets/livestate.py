@@ -20,7 +20,13 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Livestate QWidget manage resume of hosts, services and problems
+    Livestate
+    +++++++++
+    Livestate manage creation fo QWidget to resume number of:
+
+     * Number of hosts monitored and in problem
+     * Number of services monitored and in problem
+     * Number of item monitored and in problems
 """
 
 from logging import getLogger

@@ -20,7 +20,13 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Application logs
+    Logs
+    ++++
+    Logs manage application log directory and file
+
+    The following environment variables are managed in this file:
+
+    * ``ALIGNAKAPP_LOG_DIR``: folder that contains log files of Alignak-app
 """
 
 import os

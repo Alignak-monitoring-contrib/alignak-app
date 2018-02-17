@@ -29,7 +29,7 @@ from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.host import Host
 from alignak_app.core.models.service import Service
 
-from alignak_app.pyqt.panel.widgets.panel import PanelQWidget
+from alignak_app.pyqt.panel.panel import PanelQWidget
 from alignak_app.pyqt.dock.widgets.spy import SpyQWidget
 
 

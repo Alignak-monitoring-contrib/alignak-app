@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Common QLabel manage creation of QLabels or QPixmaps
+    Labels
+    ++++++
+    Labels manage global QLabels and QPixmaps
 """
 
 from PyQt5.Qt import QPixmap

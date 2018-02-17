@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    ItemService manage creation of service item
+    Service
+    +++++++
+    Service manage creation of service item
 """
 
 import json

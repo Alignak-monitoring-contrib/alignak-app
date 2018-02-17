@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    ItemUser manage creation of user item
+    User
+    ++++
+    User manage creation of user item
 """
 
 import json

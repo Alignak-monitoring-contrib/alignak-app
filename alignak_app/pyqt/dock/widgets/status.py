@@ -20,7 +20,13 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Status QWidget display alignak daemons and backend status
+    Status
+    ++++++
+    Status manage creation of QWidget for status of:
+
+    * Alignak daemons status
+    * Alignak backend status
+
 """
 
 from logging import getLogger

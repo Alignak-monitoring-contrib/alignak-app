@@ -20,7 +20,12 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Dashboard manage the creation of Hosts and Services resume QWidgets
+    Dashboard
+    +++++++++
+    Dashboard manage the creation of QWidgets to display number of:
+
+    * Each states of Hosts items
+    * Each states of Services items
 """
 
 from logging import getLogger
@@ -39,8 +44,11 @@ logger = getLogger(__name__)
 class DashboardQWidget(QWidget):
     """
         Class who manage Host and Services resume QWidgets with number of:
-        - hosts: UP, UNREACHABLE, DOWN, ACKNOWLEDGED, DOWNTIMED
-        - services: OK, WARNING, CRITICAL, UNKNWON, UNREACHABLE, ACKNOWLEDGED, DOWNTIMED
+
+        * Hosts: ``UP``, ``UNREACHABLE``, ``DOWN``
+        * Services: ``OK``, ``WARNING``, ``CRITICAL``, ``UNKNWON``, ``UNREACHABLE``
+        * Hosts and services: ``NOT_MONITORED``, ``ACKNOWLEDGED``, ``DOWNTIMED``
+
     """
 
     def __init__(self, parent=None):

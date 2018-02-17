@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Login manage login form
+    Login
+    +++++
+    Login manage creation of QDialog for user login
 """
 
 from logging import getLogger
@@ -31,7 +33,7 @@ from PyQt5.Qt import QWidget, QDialog, QPushButton, Qt, QIcon
 from alignak_app import __version__
 from alignak_app.core.utils.config import settings
 from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget
-from alignak_app.pyqt.login.dialogs.server import ServerQDialog
+from alignak_app.pyqt.login.server import ServerQDialog
 
 logger = getLogger(__name__)
 

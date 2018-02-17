@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    ItemModel manage creation of items
+    Item
+    ++++
+    Item is parent class for all models
 """
 
 

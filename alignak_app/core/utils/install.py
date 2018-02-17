@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Settings manage configurations of Alignak-app
+    Install
+    +++++++
+    Install manage installation folders and the daemon file creation
 """
 
 import os

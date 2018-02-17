@@ -20,9 +20,10 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
+    Event
+    +++++
     Event manage creation of notification item
 """
-
 
 import datetime
 import json

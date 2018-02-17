@@ -20,6 +20,8 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
+    Locales
+    +++++++
     Locales manage localization of Alignak-app
 """
 

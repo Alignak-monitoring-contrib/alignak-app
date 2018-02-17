@@ -34,7 +34,7 @@ app = QApplication(sys.argv)
 data_manager.database['user'] = User()
 data_manager.database['user'].create('_id', {}, 'name')
 
-from alignak_app.pyqt.panel.widgets.host import HostQWidget
+from alignak_app.pyqt.panel.host import HostQWidget
 
 
 class TestHostQWidget(unittest2.TestCase):

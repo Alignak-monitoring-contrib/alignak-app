@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Events QWidgets manage creation of events
+    Events
+    ++++++
+    Events manage creation QWidget for events
 """
 
 import time

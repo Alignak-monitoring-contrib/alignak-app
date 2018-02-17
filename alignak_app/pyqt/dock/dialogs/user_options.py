@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    User Options QDialog manage creation options QDialogs
+    User Options
+    ++++++++++++
+    User Options manage creation options of QDialogs for user notifications options
 """
 
 from logging import getLogger

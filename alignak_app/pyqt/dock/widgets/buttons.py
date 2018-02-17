@@ -20,8 +20,15 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Buttons QWidget manage the buttons for:
-     host, problems, user and webui
+    Buttons
+    +++++++
+    Buttons manage creation of QWidgets with QPush butttons for:
+
+    * Hosts Synthesys View
+    * Problems view
+    * User widget
+    * Webui to reach Alignak-Webui
+
 """
 
 from logging import getLogger

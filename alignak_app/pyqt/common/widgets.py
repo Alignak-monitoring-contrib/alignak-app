@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Utils QWidget manage global QWidgets used by Alignak-app
+    Widgets
+    +++++++
+    Widgets manage global QWidgets
 """
 
 from PyQt5.Qt import QPushButton, QHBoxLayout, QApplication, QWidget, QIcon, QLabel

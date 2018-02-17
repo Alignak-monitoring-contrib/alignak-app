@@ -3,15 +3,29 @@
 Alignak-app API
 ===============
 
-Alignak-app
------------
+.. automodule:: alignak_app
+    :members:
+    :show-inheritance:
+
+Alignak-App
+~~~~~~~~~~~
 
 .. automodule:: alignak_app.app
     :members:
     :show-inheritance:
 
-Core.Backend
-------------
+Core
+~~~~
+
+.. automodule:: alignak_app.core
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+Backend
+*******
+
+.. automodule:: alignak_app.core.backend
 
 .. automodule:: alignak_app.core.backend.client
     :members:
@@ -23,10 +37,12 @@ Core.Backend
     :inherited-members:
     :show-inheritance:
 
-Core.Models
------------
+Models
+******
 
 .. automodule:: alignak_app.core.models
+
+.. automodule:: alignak_app.core.models.item
     :members:
     :inherited-members:
     :show-inheritance:
@@ -51,11 +67,6 @@ Core.Models
     :inherited-members:
     :show-inheritance:
 
-.. automodule:: alignak_app.core.models.item
-    :members:
-    :inherited-members:
-    :show-inheritance:
-
 .. automodule:: alignak_app.core.models.livesynthesis
     :members:
     :inherited-members:
@@ -71,8 +82,10 @@ Core.Models
     :inherited-members:
     :show-inheritance:
 
-Core.Utils
-----------
+Utils
+*****
+
+.. automodule:: alignak_app.core.utils
 
 .. automodule:: alignak_app.core.utils.config
     :members:
@@ -98,7 +111,9 @@ Core.Utils
     :show-inheritance:
 
 Locales
--------
+~~~~~~~
+
+.. automodule:: alignak_app.locales
 
 .. automodule:: alignak_app.locales.locales
     :members:
@@ -106,18 +121,18 @@ Locales
     :show-inheritance:
 
 PyQt
-----
+~~~~
 
 .. automodule:: alignak_app.pyqt
-    :members:
-    :show-inheritance:
 
 .. automodule:: alignak_app.pyqt.app_main
     :members:
     :show-inheritance:
 
-PyQt.Common
------------
+Common
+******
+
+.. automodule:: alignak_app.pyqt.common
 
 .. automodule:: alignak_app.pyqt.common.actions
     :members:
@@ -135,11 +150,15 @@ PyQt.Common
     :members:
     :show-inheritance:
 
-PyQt.Dock
----------
+Dock (Rigt part)
+****************
 
-PyQt.Dock.Dialogs
-~~~~~~~~~~~~~~~~~
+.. automodule:: alignak_app.pyqt.dock
+
+Dock.Dialogs
+************
+
+.. automodule:: alignak_app.pyqt.dock.dialogs
 
 .. automodule:: alignak_app.pyqt.dock.dialogs.password
     :members:
@@ -161,8 +180,10 @@ PyQt.Dock.Dialogs
     :members:
     :show-inheritance:
 
-PyQt.Dock.Widgets
-~~~~~~~~~~~~~~~~~
+Dock.Widgets
+************
+
+.. automodule:: alignak_app.pyqt.dock.widgets
 
 .. automodule:: alignak_app.pyqt.dock.widgets.buttons
     :members:
@@ -192,64 +213,64 @@ PyQt.Dock.Widgets
     :members:
     :show-inheritance:
 
-PyQt.Login
-----------
+Login
+*****
 
-PyQt.Login.Dialogs
-~~~~~~~~~~~~~~~~~~
+.. automodule:: alignak_app.pyqt.login
 
-.. automodule:: alignak_app.pyqt.login.dialogs.login
+.. automodule:: alignak_app.pyqt.login.login
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.login.dialogs.server
+.. automodule:: alignak_app.pyqt.login.server
     :members:
     :show-inheritance:
 
-PyQt.Panel
-----------
+Panel (Left part)
+*****************
 
-PyQt.Panel.Widgets
-~~~~~~~~~~~~~~~~~~
+.. automodule:: alignak_app.pyqt.panel
 
-.. automodule:: alignak_app.pyqt.panel.widgets.dashboard
+.. automodule:: alignak_app.pyqt.panel.panel
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.panel.widgets.history
+.. automodule:: alignak_app.pyqt.panel.dashboard
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.panel.widgets.host
+.. automodule:: alignak_app.pyqt.panel.history
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.panel.widgets.number_services
+.. automodule:: alignak_app.pyqt.panel.host
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.panel.widgets.panel
+.. automodule:: alignak_app.pyqt.panel.number_services
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.panel.widgets.problems
+.. automodule:: alignak_app.pyqt.panel.problems
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.panel.widgets.service
+.. automodule:: alignak_app.pyqt.panel.service
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.panel.widgets.service_tree_item
+.. automodule:: alignak_app.pyqt.panel.service_tree_item
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.panel.widgets.services
+.. automodule:: alignak_app.pyqt.panel.services
     :members:
     :show-inheritance:
 
-PyQt.Systray
-------------
+Systray
+*******
+
+.. automodule:: alignak_app.pyqt.systray
 
 .. automodule:: alignak_app.pyqt.systray.qactions_factory
     :members:
@@ -259,15 +280,14 @@ PyQt.Systray
     :members:
     :show-inheritance:
 
-PyQt.Systray.Dialogs
-~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: alignak_app.pyqt.systray.dialogs.about
+.. automodule:: alignak_app.pyqt.systray.about
     :members:
     :show-inheritance:
 
-PyQt.Threads
-------------
+Threads
+*******
+
+.. automodule:: alignak_app.pyqt.threads
 
 .. automodule:: alignak_app.pyqt.threads.backend_thread
     :members:

@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    History QWidget display the history of a host
+    History
+    +++++++
+    History manage creation of QWidget to display history of a host
 """
 
 

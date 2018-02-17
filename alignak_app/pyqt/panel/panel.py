@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Panel QWidget manage the creation of Hosts and Services QWidgets
+    Panel
+    +++++
+    Panel manage creation of QWidget for Panel (Left part)
 """
 
 from logging import getLogger
@@ -32,10 +34,10 @@ from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.utils.config import settings
 from alignak_app.pyqt.common.frames import get_frame_separator
 from alignak_app.pyqt.dock.widgets.events import EventItem
-from alignak_app.pyqt.panel.widgets.dashboard import DashboardQWidget
-from alignak_app.pyqt.panel.widgets.host import HostQWidget
-from alignak_app.pyqt.panel.widgets.problems import ProblemsQWidget
-from alignak_app.pyqt.panel.widgets.services import ServicesQWidget
+from alignak_app.pyqt.panel.dashboard import DashboardQWidget
+from alignak_app.pyqt.panel.host import HostQWidget
+from alignak_app.pyqt.panel.problems import ProblemsQWidget
+from alignak_app.pyqt.panel.services import ServicesQWidget
 
 logger = getLogger(__name__)
 

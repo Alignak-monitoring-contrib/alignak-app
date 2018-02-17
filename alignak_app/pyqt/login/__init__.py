@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The Login package contains classes who manage App Login
+    The Login package contains classes who manage Alignak-app login
 """

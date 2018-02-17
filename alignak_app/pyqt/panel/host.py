@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Host QWidget manage display of host data
+    Host
+    ++++
+    Host manage creation of QWidget to display host data
 """
 
 from logging import getLogger
@@ -36,7 +38,7 @@ from alignak_app.core.utils.config import settings
 from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
 
 from alignak_app.pyqt.common.actions import ActionsQWidget
-from alignak_app.pyqt.panel.widgets.history import HistoryQWidget
+from alignak_app.pyqt.panel.history import HistoryQWidget
 from alignak_app.pyqt.threads.thread_manager import thread_manager
 
 logger = getLogger(__name__)

@@ -20,7 +20,12 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    App Main manage creation of Alignak-app Dock QMainWindow
+    App Main
+    ++++++++
+    App Main manage creation of QMainWindow for:
+
+    * Dock (Right part)
+    * Panel (Left part)
 """
 
 from logging import getLogger
@@ -32,7 +37,7 @@ from alignak_app.core.utils.config import settings
 from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget
 from alignak_app.pyqt.common.frames import get_frame_separator
 from alignak_app.pyqt.dock.widgets.dock import DockQWidget
-from alignak_app.pyqt.panel.widgets.panel import PanelQWidget
+from alignak_app.pyqt.panel.panel import PanelQWidget
 
 logger = getLogger(__name__)
 

@@ -20,7 +20,18 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
+    Settings
+    ++++++++
     Settings manage configurations of Alignak-app
+
+    * ``settings.cfg``: contains configurations of Alignak-app
+    * ``images.ini``: contains all images names
+    * ``style.css``: contains css of Alignak-app
+
+    The following environment variables are managed in this file:
+
+    * ``ALIGNAKAPP_USER_CFG``: folder that contains settings of user (settings.cfg)
+    * ``ALIGNAKAPP_APP_CFG``: folder that contains binaries of ALignak-app (images, css, languages)
 """
 
 import os

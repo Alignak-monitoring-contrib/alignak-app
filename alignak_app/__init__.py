@@ -20,12 +20,19 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Alignak App
+    This Python module is a desktop application, with a system tray icon, for Alignak solution.
 
-    This module is a desktop application, with a system tray icon, for Alignak solution.
+    Application notify you when you have changes in your monitoring.
+    You can trigger actions inside application, see status of monitored items, problems to solved
+    and many other things.
 
-    Application notify you when you have changes in your monitoring
-    You can trigger actions inside application, see status of monitored items
+    Alignak-app have the following architecture:
+
+    * The `Client <api.html#module-alignak_app.core.backend>`_ manage requests with backend.
+    * The `Thread Manager <api.html#thread-manager>`_ will launch request in client periodically.
+    * The `Data Manager <api.html#data-manager>`_ will store data provided by client.
+    * The `PyQt <api.html#module-alignak_app.pyqt>`_ display/update the data stored in data manager.
+
 """
 
 

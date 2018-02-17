@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Spy QWidgets manage host items who are spied
+    Spy
+    +++
+    Spy manage creation of QWidget for host items who are spied
 """
 
 from logging import getLogger

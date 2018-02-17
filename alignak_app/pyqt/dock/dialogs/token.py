@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Token Dialog manage display of user token
+    Token
+    +++++
+    Token manage creation of QDialog for user token
 """
 
 from logging import getLogger

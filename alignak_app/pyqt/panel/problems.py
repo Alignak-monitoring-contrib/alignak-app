@@ -20,7 +20,13 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Problems manage view of problems found in Alignak backend
+    Problems
+    ++++++++
+    Problems manage creation of QWidget to display problems found in Alignak backend:
+
+    * **Hosts**: ``DOWN``
+    * **Services**: ``WARNING``, ``CRITICAL``, ``UNKNOWN``
+
 """
 
 from logging import getLogger

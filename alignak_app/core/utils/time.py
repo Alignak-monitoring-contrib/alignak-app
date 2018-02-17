@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    App Time manage time and date
+    Time
+    ++++
+    Time manage time and date for Alignak-app
 """
 
 import time

@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Status manage QWidget who display Alignak Daemons status.
+    Status
+    ++++++
+    Status manage QDialog who display every Alignak daemons status.
 """
 
 from logging import getLogger

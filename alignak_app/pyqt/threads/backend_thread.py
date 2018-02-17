@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    BackendQThread manage backend threads and requests
+    Backend Thread
+    ++++++++++++++
+    Backend Thread manage creation of QThread for backend requests
 """
 
 from logging import getLogger

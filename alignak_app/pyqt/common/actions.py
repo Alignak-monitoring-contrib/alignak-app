@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Actions display QDialog's for actions : Acknowledge and Downtime
+    Actions
+    +++++++
+    Actions manage global QDialog's for actions : Acknowledge and Downtime
 """
 
 import datetime

@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Password manage password form
+    Password
+    ++++++++
+    Password manage Qdialog for user password
 """
 
 from logging import getLogger

@@ -20,6 +20,8 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
+    QActions Factory
+    ++++++++++++++++
     QAction Factory manage creation of QActions for TrayIcon.
 """
 
