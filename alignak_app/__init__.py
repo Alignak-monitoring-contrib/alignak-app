@@ -29,8 +29,10 @@
     Alignak-app have the following architecture:
 
     * The `Client <api.html#module-alignak_app.core.backend>`_ manage requests with backend.
-    * The `Thread Manager <api.html#thread-manager>`_ will launch request in client periodically.
-    * The `Data Manager <api.html#data-manager>`_ will store data provided by client.
+    * The `Thread Manager <api.html#module-alignak_app.pyqt.threads>`_ will launch request in
+      client periodically.
+    * The `Data Manager <api.html#module-alignak_app.core.backend>`_ will store data provided by
+      client.
     * The `PyQt <api.html#module-alignak_app.pyqt>`_ display/update the data stored in data manager.
 
 """
