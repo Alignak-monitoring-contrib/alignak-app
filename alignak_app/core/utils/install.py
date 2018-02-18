@@ -30,58 +30,7 @@ import sys
 import stat
 import subprocess
 
-from alignak_app import __alignak_url__, __doc_url__, __version__, __releasenotes__
-from alignak_app import __libname__, __application__
-
-
-def create_user_app_dir(cfg_file):
-    """
-    Create a user folder for App configuration file and log
-
-    :param cfg_file: file to copy if user has no rights
-    :type cfg_file: str
-    :return: return original file if user ha right, else the new file created
-    :rtype: str
-    """
-
-    if not os.access(cfg_file, os.W_OK):
-        # Create Folder for user if does not exist
-        user_app_dir = '%s/.local/alignak_app' % os.environ['HOME']
-        if not os.path.exists(user_app_dir):
-            try:
-                os.makedirs(user_app_dir)
-            except (PermissionError, FileExistsError) as e:
-                print(e)
-                sys.exit('Can\'t create App directory for user in [%s] !' % user_app_dir)
-
-        dest_file = os.path.join(user_app_dir, os.path.split(cfg_file)[1])
-        # If file does not exist, App create it
-        if not os.path.isfile(dest_file):
-            creation = subprocess.run(
-                ['cp', cfg_file, dest_file],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT
-            )
-            try:
-                assert creation.returncode == 0
-            except AssertionError:
-                print("Copy of user configuration file: ", creation.stdout.decode('UTF-8'))
-
-        return dest_file
-    else:
-        # If the file exists, App add a sample file
-        if not os.path.isfile(cfg_file + '.sample'):
-            creation = subprocess.run(
-                ['cp', cfg_file, cfg_file + '.sample'],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT
-            )
-            try:
-                assert creation.returncode == 0
-            except AssertionError:
-                print("User folder creation: ", creation.stdout.decode('UTF-8'))
-
-        return cfg_file
+from alignak_app import __alignak_url__, __doc_url__, __version__, __releasenotes__, __application__
 
 
 bash_file = """#!/usr/bin/env bash
@@ -210,12 +159,152 @@ case "$CMD" in
     status)
         do_status
     ;;
+    shortlist)
+      echo "start stop restart status"
+    ;;
     *)
         usage
         exit 1
 esac
 exit 0
 """
+
+bash_autocomplete = """_script()
+{
+  _script_commands=$(%s shortlist)
+
+  local cur
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  COMPREPLY=( $(compgen -W "${_script_commands}" -- ${cur}) )
+
+  return 0
+}
+complete -o bashdefault -o nospace -F _script %s
+"""
+
+
+def create_user_app_dir(cfg_file):
+    """
+    Create a user folder for App configuration file and log
+
+    :param cfg_file: file to copy if user has no rights
+    :type cfg_file: str
+    :return: return original file if user ha right, else the new file created
+    :rtype: str
+    """
+
+    if not os.access(cfg_file, os.W_OK):
+        # Create Folder for user if does not exist
+        user_app_dir = '%s/.local/alignak_app' % os.environ['HOME']
+        if not os.path.exists(user_app_dir):
+            try:
+                os.makedirs(user_app_dir)
+            except (PermissionError, FileExistsError) as e:
+                print(e)
+                sys.exit('Can\'t create App directory for user in [%s] !' % user_app_dir)
+
+        dest_file = os.path.join(user_app_dir, os.path.split(cfg_file)[1])
+        # If file does not exist, App create it
+        if not os.path.isfile(dest_file):
+            creation = subprocess.run(
+                ['cp', cfg_file, dest_file],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT
+            )
+            try:
+                assert creation.returncode == 0
+            except AssertionError:
+                print("Copy of user configuration file: ", creation.stdout.decode('UTF-8'))
+
+        return dest_file
+    else:
+        # If the file exists, App add a sample file
+        if not os.path.isfile(cfg_file + '.sample'):
+            creation = subprocess.run(
+                ['cp', cfg_file, cfg_file + '.sample'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT
+            )
+            try:
+                assert creation.returncode == 0
+            except AssertionError:
+                print("User folder creation: ", creation.stdout.decode('UTF-8'))
+
+        return cfg_file
+
+
+def write_file(install_path, filename, text, *args):
+    """
+    Write file in system, make it executbale or add autocompletion to "rc" user file
+
+    :param install_path: path where to write
+    :type install_path: str
+    :param filename: name of file to write
+    :type filename: str
+    :param text: text to write inside filename
+    :type text: str
+    :param args: argument who define if executable or autocomplete
+    :type args: tuple
+    :return: 0 if success, else return error string
+    :rtype: int | str
+    """
+
+    file_to_write = os.path.join(install_path, filename)
+    returncode = '%s can\'t create following file: %s' % (__application__, file_to_write)
+
+    try:
+        with open(file_to_write, 'w') as cur_file:
+            cur_file.write(text)
+
+        if 'exec' in args:
+            # Make file executable
+            try:
+                st = os.stat(file_to_write)
+                os.chmod(file_to_write, st.st_mode | stat.S_IEXEC)
+                returncode = 0
+            except Exception as e:
+                returncode = '%s can\'t set permissions on daemon file: %s\n%s' % (
+                    __application__, file_to_write, str(e))
+
+        if 'autocomplete' in args:
+            # Source file
+            autocompletion_text = '\n# Alignak-app completion:\n. %s' % file_to_write
+            user_rc = '%s/.bashrc' % os.environ['HOME']
+
+            try:
+                bashrc = open(user_rc, 'r')
+                if 'Alignak-app completion' not in bashrc.read():
+                    bashrc.close()
+                    with open(user_rc, 'a') as cur_file:
+                        cur_file.write(autocompletion_text)
+                else:
+                    bashrc.close()
+                returncode = 0
+            except Exception as w:
+                returncode = '%s can\'t add completion to your: %s\n%s' % (
+                    __application__, user_rc, str(w))
+    except Exception as w:
+        returncode = '%s can\'t create following file: %s\n%s' % (
+            __application__, file_to_write, str(w))
+
+    return returncode
+
+
+def check_return_code(returncode):
+    """
+    Check if returncode is equal to 0, else exit with error
+
+    :param returncode: returncode to check
+    :type returncode: int | str
+    :return: OK if code is equal to 0, else exit()
+    :rtype: str | None
+    """
+
+    if returncode == 0:
+        return 'OK'
+
+    return sys.exit('ERROR: %s' % returncode)
 
 
 def install_alignak_app(bin_file):
@@ -243,33 +332,32 @@ def install_alignak_app(bin_file):
             install_path = path
 
     if install_path:
+        # Start installation
+        print('----------- Install -----------\nInstallation start...\n')
+
         # Create daemon bash file
         daemon_name = 'alignak-app'
-        filename = os.path.join(install_path, daemon_name)
         bash_format = bash_file % (
             daemon_name, bin_file, os.environ['ALIGNAKAPP_APP_CFG'],
             os.environ['ALIGNAKAPP_USER_CFG'], os.environ['ALIGNAKAPP_LOG_DIR'], __version__,
             __releasenotes__, __alignak_url__, __doc_url__,
         )
-
-        print(
-            '----------- Install -----------\n'
-            'Installation...\n'
-            'Create daemon file...\n'
+        status = check_return_code(
+            write_file(install_path, daemon_name, bash_format, 'exec')
         )
-        try:
-            with open(filename, 'w') as daemon_file:
-                daemon_file.write(bash_format)
-        except Exception as e:
-            print('%s can\'t create daemon file: %s' % (__application__, filename))
-            sys.exit(e)
+        print('Create daemon file...%s\n' % status)
 
-        try:
-            st = os.stat(filename)
-            os.chmod(filename, st.st_mode | stat.S_IEXEC)
-        except Exception as e:
-            print('%s can\'t set permissions on daemon file: %s' % (__application__, daemon_name))
-            sys.exit(e)
+        # Create autocomplete file
+        autocomplete_name = '%s-autocomplete.sh' % daemon_name
+        autocomplete_format = bash_autocomplete % (
+            os.path.join(install_path, daemon_name), daemon_name
+        )
+        status = check_return_code(
+            write_file(install_path, autocomplete_name, autocomplete_format, 'autocomplete')
+        )
+        print('Add auto completion...%s\n' % status)
+
+        # Installation is done !
         print('Installation is done ! You can run "%s" command !' % daemon_name)
     else:
         print('Please restart this script with a "root" user.')
