@@ -154,11 +154,11 @@ do_start() {
     PID=`ps aux |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
     if [ ! -z "$PID" ]; then
         echo "--------------------------------------------------"
-        echo -e "$CYAN $DAEMON is not running ;) $END"
+        echo -e "$CYAN $DAEMON is already running ;) $END"
         echo "--------------------------------------------------"
     else
         echo "--------------------------------------------------"
-        echo -e "$GREEN $DAEMON v$APP_VERSION already running. $END"
+        echo -e "$GREEN $DAEMON v$APP_VERSION start... $END"
         echo "--------------------------------------------------"
         "$PYBIN" "$BIN_FILE" --start &
     fi
@@ -191,7 +191,6 @@ do_status() {
         echo -e "Run $GREEN '$DAEMON start' $END to launch Alignak-app"
         echo "--------------------------------------------------"
     fi
-
 }
 
 # Arguments
