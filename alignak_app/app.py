@@ -35,7 +35,9 @@ import time
 from logging import DEBUG, INFO
 
 from PyQt5.Qt import QDialog, QMessageBox, QTimer, QProgressBar, Qt, pyqtSignal, QObject, QIcon
+from PyQt5.Qt import QWidget, QVBoxLayout, QLabel
 
+from alignak_app import __application__, __version__
 from alignak_app.core.backend.client import app_backend
 from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.utils.config import settings
@@ -56,20 +58,46 @@ init_localization()
 logger = create_logger()
 
 
+class AppProgressQWidget(QWidget):
+    """
+        Class who create a small widget for App start progression
+    """
+
+    def __init__(self, parent=None):
+        super(AppProgressQWidget, self).__init__(parent)
+        self.setWindowIcon(QIcon(settings.get_image('icon')))
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setFixedSize(250, 80)
+        self.setStyleSheet(settings.css_style)
+        self.progress_bar = AppProgressBar()
+
+    def initialize(self):
+        """
+        Initialize the QWidget
+
+        """
+
+        title_lbl = QLabel('%s - %s' % (__application__, __version__))
+        title_lbl.setAlignment(Qt.AlignCenter)
+        title_lbl.setObjectName('start')
+        layout = QVBoxLayout(self)
+
+        layout.setAlignment(Qt.AlignCenter)
+        layout.addWidget(title_lbl)
+        layout.addWidget(self.progress_bar)
+
+
 class AppProgressBar(QProgressBar):
     """
         AppProgressBar in busy mode with text displayed at the center.
     """
 
     def __init__(self):
-        super().__init__()
+        super(QProgressBar, self).__init__()
         self.setRange(0, 0)
         self.setAlignment(Qt.AlignCenter)
         self._text = None
-        self.setWindowIcon(QIcon(settings.get_image('icon')))
-        self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setFixedSize(250, 40)
-        self.setStyleSheet(settings.css_style)
 
     def set_text(self, text):
         """
@@ -216,7 +244,8 @@ class AlignakApp(QObject):
                 app_backend.user['token'] = app_backend.backend.token
 
             # Create Progress Bar
-            progressbar = AppProgressBar()
+            progressbar = AppProgressQWidget()
+            progressbar.initialize()
             center_widget(progressbar)
 
             logger.info("Preparing DataManager...")
@@ -226,7 +255,7 @@ class AlignakApp(QObject):
                     t = time.time()
                     while time.time() < t + 0.01:
                         status = data_manager.is_ready()
-                        progressbar.set_text('%s' % status)
+                        progressbar.progress_bar.set_text('%s' % status)
                         self.parent().processEvents()
 
             # Launch other threads and run TrayIcon()
