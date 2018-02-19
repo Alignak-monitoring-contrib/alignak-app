@@ -107,6 +107,7 @@ def write_file(install_path, filename, text, *args):
             cur_file.write(text)
 
         if 'exec' in args:
+            print('Create/Update [%s]' % file_to_write)
             # Make file executable
             try:
                 st = os.stat(file_to_write)
@@ -117,9 +118,15 @@ def write_file(install_path, filename, text, *args):
                     __application__, file_to_write, str(e))
 
         if 'autocomplete' in args:
-            # Source file
+            # Add auto completion
+            autocomplete_files = ['.bashrc', '.zshrc']
+            user_rc = ''
+            for autocomplete_file in autocomplete_files:
+                if os.path.isfile('%s/%s' % (os.environ['HOME'], autocomplete_file)):
+                    user_rc = '%s/%s' % (os.environ['HOME'], autocomplete_file)
+                    print('Add autocompletion inside [%s]' % user_rc)
+                    break
             autocompletion_text = '\n# Alignak-app completion:\n. %s' % file_to_write
-            user_rc = '%s/.bashrc' % os.environ['HOME']
 
             try:
                 bashrc = open(user_rc, 'r')
@@ -217,7 +224,7 @@ def install_alignak_app(bin_file):
         status = check_return_code(
             write_file(install_path, daemon_name, bash_format, 'exec')
         )
-        print('Create daemon file...%s' % status)
+        print('Daemon file...%s' % status)
 
         # Create autocomplete file
         bash_auto_sample = \
@@ -230,7 +237,7 @@ def install_alignak_app(bin_file):
         status = check_return_code(
             write_file(install_path, auto_name, autocomplete_format, 'autocomplete')
         )
-        print('Add auto completion...%s\n' % status)
+        print('Auto completion...%s\n' % status)
 
         # Installation is done !
         print('Installation is done ! You can run "%s" command !' % daemon_name)

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # -*- coding: utf-8 -*-
 
 # Copyright (c) 2015-2018:

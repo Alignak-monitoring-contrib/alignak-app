@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # -*- coding: utf-8 -*-
 
 # Copyright (c) 2015-2018:
@@ -30,11 +30,6 @@
 ### END INIT INFO
 
 # Variables
-END='\x1b[0m'
-RED='\x1b[31m'
-GREEN='\x1b[32m'
-CYAN='\x1b[36m'
-
 DAEMON=%s
 BIN_FILE=%s
 PYBIN=python3
@@ -51,16 +46,16 @@ APP_DOC_URL="%s"
 # Functions for alignak-app
 usage() {
     echo "------------------------------------------"
-    echo -e "$CYAN Alignak-app, Version $APP_VERSION $END \n"
+    echo "Alignak-app, Version $APP_VERSION \n"
     echo "  $APP_RELEASE_NOTES"
     echo "  For more help, visit $APP_DOC_URL."
     echo "  Please open any issue on $APP_PROJECT_URL."
     echo "------------------------------------------"
-    echo -e "$CYAN Alignak-app will use following variables: $END \n"
+    echo "Alignak-app will use following variables: \n"
     echo "ALIGNAKAPP_APP_CFG = $ALIGNAKAPP_APP_CFG"
     echo "ALIGNAKAPP_USER_CFG = $ALIGNAKAPP_USER_CFG"
     echo "ALIGNAKAPP_LOG_DIR = $ALIGNAKAPP_LOG_DIR"
-    echo -e "\n Usage: $GREEN $DAEMON {start|stop|status|restart} $END \n"
+    echo "\n Usage: $DAEMON {start|stop|status|restart} \n"
 }
 
 
@@ -68,11 +63,11 @@ do_start() {
     PID=`ps aux |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
     if [ ! -z "$PID" ]; then
         echo "--------------------------------------------------"
-        echo -e "$CYAN $DAEMON is already running ;) $END"
+        echo " $DAEMON is already running ;) "
         echo "--------------------------------------------------"
     else
         echo "--------------------------------------------------"
-        echo -e "$GREEN $DAEMON v$APP_VERSION start... $END"
+        echo " $DAEMON v$APP_VERSION start... "
         echo "--------------------------------------------------"
         "$PYBIN" "$BIN_FILE" --start &
     fi
@@ -82,13 +77,13 @@ do_stop() {
     PID=`ps aux |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
     if [ ! -z "$PID" ]; then
         echo "--------------------------------------------------"
-        echo -e "$RED $DAEMON is stopping... (Kill pid $PID) $END"
+        echo " $DAEMON is stopping... (Kill pid $PID) "
         kill "$PID"
-        echo -e "...$DAEMON stop !"
+        echo "...$DAEMON stop !"
         echo "--------------------------------------------------"
     else
         echo "--------------------------------------------------"
-        echo -e "$CYAN $DAEMON is not running ;) $END"
+        echo " $DAEMON is not running ;) "
         echo "--------------------------------------------------"
     fi
 }
@@ -97,12 +92,12 @@ do_status() {
     PID=`ps fu |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
     if [ ! -z "$PID" ]; then
         echo "--------------------------------------------------"
-        echo -e "$GREEN $DAEMON is running...$END (pid $PID)"
+        echo " $DAEMON is running... (pid $PID)"
         echo "--------------------------------------------------"
     else
         echo "--------------------------------------------------"
-        echo -e "$CYAN $DAEMON is not running ! $END"
-        echo -e "Run $GREEN '$DAEMON start' $END to launch Alignak-app"
+        echo " $DAEMON is not running ! "
+        echo "Run '$DAEMON start' to launch Alignak-app"
         echo "--------------------------------------------------"
     fi
 }
