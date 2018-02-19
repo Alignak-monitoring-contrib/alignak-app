@@ -18,9 +18,10 @@
 ; along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 #define MyAppName "Alignak-app"
-#define ShortVersion "1.1"
-#define MinorVersion ".1"
-#define MyAppVersion ShortVersion + MinorVersion
+#define public MajorVersion ReadIni(SourcePath + "version.ini", "Version", "major")
+#define public MinorVersion ReadIni(SourcePath + "version.ini", "Version", "minor")
+#define public PatchVersion ReadIni(SourcePath + "version.ini", "Version", "patch")
+#define MyAppVersion MajorVersion + "." + MinorVersion + "." + PatchVersion
 #define MyAppPublisher "Alignak (Estrada Matthieu)"
 #define MyAppURL "https://github.com/Alignak-monitoring-contrib/alignak-app"
 #define MyAppExeName "alignak-app.exe"
