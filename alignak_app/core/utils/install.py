@@ -125,8 +125,8 @@ def write_file(install_path, filename, text, *args):
                 bashrc = open(user_rc, 'r')
                 if 'Alignak-app completion' not in bashrc.read():
                     bashrc.close()
-                    with open(user_rc, 'a') as cur_file:
-                        cur_file.write(autocompletion_text)
+                    with open(user_rc, 'a') as cur_rc_file:
+                        cur_rc_file.write(autocompletion_text)
                 else:
                     bashrc.close()
                 returncode = 0
@@ -156,6 +156,23 @@ def check_return_code(returncode):
     return sys.exit('ERROR: %s' % returncode)
 
 
+def display_app_env():
+    """
+    Display current environment variables used by App
+
+    """
+
+    app_env_var = ['ALIGNAKAPP_APP_CFG', 'ALIGNAKAPP_USER_CFG', 'ALIGNAKAPP_LOG_DIR']
+
+    print('Use following variables:')
+    for env_var in app_env_var:
+        try:
+            print('- [%s] = %s' % (env_var, os.environ[env_var]))
+        except KeyError:
+            print('- [%s] = None' % env_var)
+    print('')
+
+
 def install_alignak_app(bin_file):
     """
     Install an "alignak-app" daemon for user
@@ -164,7 +181,6 @@ def install_alignak_app(bin_file):
     :type bin_file: str
     """
 
-    # cur_dir = os.path.dirname(os.path.realpath(__file__))
     if not os.path.isdir('%s/bin' % os.environ['HOME']):
         try:
             os.mkdir('%s/bin' % os.environ['HOME'])
@@ -173,7 +189,7 @@ def install_alignak_app(bin_file):
             sys.exit(e)
 
     possible_paths = [
-        '%s/bin' % os.environ['HOME'], '/usr/local/bin', 'usr/sbin'
+        '%s/bin' % os.environ['HOME'], '/usr/local/bin', '/usr/sbin'
     ]
 
     install_path = ''
@@ -184,6 +200,7 @@ def install_alignak_app(bin_file):
     if install_path:
         # Start installation
         print('----------- Install -----------\nInstallation start...\n')
+        display_app_env()
         daemon_name = 'alignak-app'
         auto_name = 'alignak-app-auto'
 
@@ -200,7 +217,7 @@ def install_alignak_app(bin_file):
         status = check_return_code(
             write_file(install_path, daemon_name, bash_format, 'exec')
         )
-        print('Create daemon file...%s\n' % status)
+        print('Create daemon file...%s' % status)
 
         # Create autocomplete file
         bash_auto_sample = \
