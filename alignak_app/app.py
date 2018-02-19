@@ -94,7 +94,7 @@ class AppProgressBar(QProgressBar):
     """
 
     def __init__(self):
-        super(QProgressBar, self).__init__()
+        super(AppProgressBar, self).__init__()
         self.setRange(0, 0)
         self.setAlignment(Qt.AlignCenter)
         self._text = None
@@ -122,7 +122,7 @@ class AppProgressBar(QProgressBar):
 
 class AlignakApp(QObject):
     """
-        Class who build Alignak-app and initialize configuration, notifier and systray icon.
+        Class who build Alignak-app and initialize configurations and systray icon.
     """
 
     reconnecting = pyqtSignal(str, name='reconnecting')
@@ -138,8 +138,8 @@ class AlignakApp(QObject):
 
         """
 
-        # Define level of logger
-        logger.name = 'alignak_app.app'
+        # Define level of logger and log main informations
+        logger.name = 'alignak_app'
         if settings.get_config('Log', 'debug', boolean=True):
             logger.setLevel(DEBUG)
             logger.info('- [Log Level]: DEBUG')
@@ -155,32 +155,7 @@ class AlignakApp(QObject):
         logger.info('- [%s]: %s',
                     os.path.split(settings.settings['images'])[1], settings.settings['images'])
 
-        # If not app_backend url, stop application
-        if settings.get_config('Alignak', 'backend'):
-            # If not username and password, create login form, else connect with config data.
-            if not settings.get_config('Alignak', 'username') and \
-                    not settings.get_config('Alignak', 'password'):  # pragma: no cover
-                login = LoginQDialog()
-                login.create_widget()
-
-                if login.exec_() == QDialog.Accepted:
-                    username = str(login.username_line.text())
-                    password = str(login.password_line.text())
-                    self.run(username, password)
-                else:
-                    logger.info('Alignak-App closes...')
-                    sys.exit(0)
-            elif settings.get_config('Alignak', 'username') and \
-                    not settings.get_config('Alignak', 'password'):
-                self.run()
-            elif settings.get_config('Alignak', 'username') and \
-                    settings.get_config('Alignak', 'password'):
-                self.run()
-            else:
-                self.display_error_msg()
-
-        else:
-            self.display_error_msg()
+        self.run()
 
     def app_reconnecting_mode(self, error):  # pragma: no cover
         """
@@ -231,8 +206,8 @@ class AlignakApp(QObject):
         # Check if connected
         if app_backend.connected:
             # Start ThreadManager
-            for _ in range(0, 5):
-                # Launch 'alignakdaemon', 'history', 'service', 'host', 'user' threads
+            for i in range(0, 5):
+                # Launch 'alignakdaemon', 'service', 'host', 'user' threads
                 thread_manager.launch_threads()
 
             self.reconnecting.connect(self.app_reconnecting_mode)
@@ -244,23 +219,23 @@ class AlignakApp(QObject):
                 app_backend.user['token'] = app_backend.backend.token
 
             # Create Progress Bar
-            progressbar = AppProgressQWidget()
-            progressbar.initialize()
-            center_widget(progressbar)
+            app_progress = AppProgressQWidget()
+            app_progress.initialize()
+            center_widget(app_progress)
 
             logger.info("Preparing DataManager...")
             while data_manager.is_ready() != 'READY':
-                progressbar.show()
-                for _ in range(0, 100):
+                app_progress.show()
+                for i in range(0, 100):
                     t = time.time()
                     while time.time() < t + 0.01:
                         status = data_manager.is_ready()
-                        progressbar.progress_bar.set_text('%s' % status)
+                        app_progress.progress_bar.set_text('%s' % status)
                         self.parent().processEvents()
+            app_progress.close()
 
             # Launch other threads and run TrayIcon()
             logger.info("Datamanager is ready :)")
-            progressbar.close()
             thread_manager.start()
             init_event_widget()
             self.tray_icon = TrayIcon(QIcon(settings.get_image('icon')))
@@ -268,13 +243,8 @@ class AlignakApp(QObject):
             self.tray_icon.show()
         else:
             # In case of data provided in config file fails
-            logger.error(
-                'Fails to connect with the information provided in the configuration file !'
-            )
             login = LoginQDialog()
             login.create_widget()
-            login.connection_lbl.setText(_('Bad identifiers. Please try again'))
-            login.connection_lbl.setObjectName('error')
 
             if login.exec_() == QDialog.Accepted:
                 username = str(login.username_line.text())
