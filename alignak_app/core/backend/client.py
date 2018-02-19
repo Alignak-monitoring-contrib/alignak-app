@@ -479,16 +479,17 @@ class BackendClient(object):
                 request_data['projection'],
                 all_items=False
             )
-            if request:
-                host_history_events = History()
 
-                host_history_events.create(
+            if request:
+                host_history = History()
+
+                host_history.create(
                     host_id,
                     request['_items'],
                     hostname,
                 )
                 logger.debug('Add history for %s (%s)', hostname, host_id)
-                data_manager.database['history'].append(host_history_events)
+                data_manager.database['history'].append(host_history)
         else:  # pragma: no cover, too long to test
             history_list = []
             for history in data_manager.database['history']:
@@ -502,14 +503,14 @@ class BackendClient(object):
                     all_items=False
                 )
                 if request:
-                    host_history_events = History()
+                    host_history = History()
 
-                    host_history_events.create(
-                        host_id,
+                    host_history.create(
+                        history.item_id,
                         request['_items'],
                         history.name,
                     )
-                    history_list.append(history)
+                    history_list.append(host_history)
 
             if history_list:
                 data_manager.update_database('history', history_list)

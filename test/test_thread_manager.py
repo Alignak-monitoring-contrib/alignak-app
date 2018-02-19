@@ -45,7 +45,8 @@ class TestThreadManager(unittest2.TestCase):
         self.assertIsNotNone(under_test.timer)
         self.assertIsInstance(under_test.timer, QTimer)
         self.assertEqual(
-            ['notifications', 'history', 'livesynthesis', 'alignakdaemon', 'service', 'host', 'user'],
+            ['user', 'host', 'service', 'livesynthesis',
+             'alignakdaemon', 'notifications', 'history'],
             under_test.threads_to_launch
         )
 
@@ -59,7 +60,8 @@ class TestThreadManager(unittest2.TestCase):
         # If there is no current thread, all threads are added
         self.assertEqual([], thread_mgr_test.current_threads)
         self.assertEqual(
-            ['notifications', 'history', 'livesynthesis', 'alignakdaemon', 'service', 'host', 'user'],
+            ['user', 'host', 'service', 'livesynthesis',
+             'alignakdaemon', 'notifications', 'history'],
             under_test
         )
 

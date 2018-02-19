@@ -69,14 +69,12 @@ class ThreadManager(QObject):
         """
 
         threads_to_launch = []
-        available_threads = [
-            'notifications', 'history', 'livesynthesis', 'alignakdaemon', 'service', 'host', 'user'
-        ]
 
         # Add BackendQThread only if they are not already running
-        for available_thread in available_threads:
-            if not any(available_thread == thread.thread_name for thread in self.current_threads):
-                threads_to_launch.append(available_thread)
+        for cur_thread in ['user', 'host', 'service', 'livesynthesis',
+                           'alignakdaemon', 'notifications', 'history']:
+            if not any(cur_thread == thread.thread_name for thread in self.current_threads):
+                threads_to_launch.append(cur_thread)
 
         logger.debug('Get new threads to launch %s', threads_to_launch)
 
@@ -93,7 +91,7 @@ class ThreadManager(QObject):
 
         # In case of all threads are not running
         if self.threads_to_launch:
-            cur_thread = self.threads_to_launch.pop()
+            cur_thread = self.threads_to_launch.pop(0)
             backend_thread = BackendQThread(cur_thread)
             backend_thread.start()
 

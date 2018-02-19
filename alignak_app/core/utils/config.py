@@ -174,14 +174,22 @@ class Settings(object):
 
     def get_config(self, section, option, boolean=False):
         """
-        Return global application configuration
+        Return global application configuration values
 
+        :param section: wanted configuration section
+        :type section: str
+        :param option: wanted configuration option
+        :type option: str
+        :param boolean: define if velue is boolean or not
+        :type boolean: bool
+        :return: configuration value
+        :rtype: str | bool
         """
 
         if boolean:
             try:
                 if self.app_config.get(section, option):
-                    return self.app_config.get(section, option)
+                    return self.app_config.getboolean(section, option)
 
                 return self.default_parameters[section][option]
             except (NoOptionError, NoSectionError) as e:  # pragma: no cover - not testable

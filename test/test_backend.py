@@ -186,6 +186,17 @@ class TestAppBackend(unittest2.TestCase):
         under_test.query_history_data(self.hostname, self.host_id)
 
         self.assertIsNotNone(data_manager.database['history'])
+        old_database = data_manager.database['history']
+
+        under_test.query_history_data()
+
+        self.assertIsNotNone(data_manager.database['history'])
+
+        # Assert that old history item has the same properties that the new one
+        self.assertTrue(old_database != data_manager.database['history'])
+        self.assertEqual(old_database[0].name, data_manager.database['history'][0].name)
+        self.assertEqual(old_database[0].item_id, data_manager.database['history'][0].item_id)
+        self.assertEqual(old_database[0].item_id, self.host_id)
 
     def test_get_period_name(self):
         """Get Period Name"""
