@@ -3,8 +3,8 @@ include etc/settings.cfg
 include etc/images.ini
 include etc/app_workdir.ini
 include etc/css/*.css
-include bin/unix/alignak-app
-include bin/unix/alignak-app.py
+include bin/unix/*.sh
+include bin/unix/*.py
 recursive-include etc/images *.svg
 recursive-include etc/images *.png
 recursive-include alignak_app *.*

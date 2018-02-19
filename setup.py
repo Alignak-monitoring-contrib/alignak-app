@@ -56,16 +56,16 @@ if 'linux' in sys.platform or\
         'app': __pkg_name__,
         'images': __pkg_name__ + '/images',
         'css': __pkg_name__ + '/css',
-        'templates': __pkg_name__ + '/templates',
         'bin': __pkg_name__ + '/bin',
+        'binsample': __pkg_name__ + '/bin-samples',
     }
 elif 'win32' in sys.platform:
     paths = {
         'app': __pkg_name__,
         'images': __pkg_name__ + '/images',
         'css': __pkg_name__ + '/css',
-        'templates': __pkg_name__ + '/templates',
         'bin': __pkg_name__ + '/bin',
+        'binsample': __pkg_name__ + '/bin-samples',
     }
 else:
     print("Unsupported platform, sorry!")
@@ -81,9 +81,7 @@ for image in images:
     data_files.append((paths['images'], ['etc/images/' + image]))
 
 # StyleSheet
-stylesheet = os.listdir(dir_path + '/etc/css')
-for style in stylesheet:
-    data_files.append((paths['css'], ['etc/css/' + style]))
+data_files.append((paths['css'], ['etc/css/style.css']))
 
 # Etc
 data_files.append((paths['app'], ['etc/settings.cfg']))
@@ -91,6 +89,10 @@ data_files.append((paths['app'], ['etc/images.ini']))
 
 # Bin for Unix
 data_files.append((paths['bin'], ['bin/unix/alignak-app.py']))
+
+# Conigurations examples
+data_files.append((paths['binsample'], ['bin/unix/alignak-app.sample.sh']))
+data_files.append((paths['binsample'], ['bin/unix/alignak-app-auto.sample.sh']))
 
 setup(
     name=__pkg_name__,
