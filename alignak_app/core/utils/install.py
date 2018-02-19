@@ -119,9 +119,8 @@ def write_file(install_path, filename, text, *args):
 
         if 'autocomplete' in args:
             # Add auto completion
-            autocomplete_files = ['.bashrc', '.zshrc']
             user_rc = ''
-            for autocomplete_file in autocomplete_files:
+            for autocomplete_file in ['.bashrc', '.zshrc']:
                 if os.path.isfile('%s/%s' % (os.environ['HOME'], autocomplete_file)):
                     user_rc = '%s/%s' % (os.environ['HOME'], autocomplete_file)
                     print('Add autocompletion inside [%s]' % user_rc)

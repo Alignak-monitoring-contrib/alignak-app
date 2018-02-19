@@ -182,8 +182,8 @@ class Settings(object):
             try:
                 if self.app_config.get(section, option):
                     return self.app_config.get(section, option)
-                else:
-                    return self.default_parameters[section][option]
+
+                return self.default_parameters[section][option]
             except (NoOptionError, NoSectionError) as e:  # pragma: no cover - not testable
                 logger.error('%s', str(e))
                 logger.error('Replace by default %s: %s',
@@ -193,8 +193,8 @@ class Settings(object):
             try:
                 if self.app_config.get(section, option):
                     return self.app_config.get(section, option)
-                else:
-                    return self.default_parameters[section][option]
+
+                return self.default_parameters[section][option]
             except (NoOptionError, NoSectionError) as e:  # pragma: no cover - not testable
                 print("failed section")
                 logger.error('%s', str(e))

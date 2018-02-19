@@ -206,8 +206,7 @@ class AlignakApp(QObject):
         # Check if connected
         if app_backend.connected:
             # Start ThreadManager
-            for i in range(0, 5):
-                # Launch 'alignakdaemon', 'service', 'host', 'user' threads
+            for _ in range(0, 5):
                 thread_manager.launch_threads()
 
             self.reconnecting.connect(self.app_reconnecting_mode)
@@ -226,7 +225,7 @@ class AlignakApp(QObject):
             logger.info("Preparing DataManager...")
             while data_manager.is_ready() != 'READY':
                 app_progress.show()
-                for i in range(0, 100):
+                for _ in range(0, 100):
                     t = time.time()
                     while time.time() < t + 0.01:
                         status = data_manager.is_ready()
