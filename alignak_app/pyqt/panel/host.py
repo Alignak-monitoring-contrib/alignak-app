@@ -323,7 +323,7 @@ class HostQWidget(QWidget):
             else:
                 self.history_btn.setToolTip(_('History is not available, please wait...'))
                 thread_manager.add_thread(
-                    'newhistory',
+                    'history',
                     {'hostname': self.host_item.name, 'host_id': self.host_item.item_id}
                 )
                 self.history_btn.setEnabled(False)

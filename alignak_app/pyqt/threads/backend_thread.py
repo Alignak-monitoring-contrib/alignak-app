@@ -67,9 +67,10 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
         elif 'livesynthesis' in self.thread_name:
             app_backend.query_livesynthesis_data()
         elif self.thread_name == 'history':
-            app_backend.query_history_data()
-        elif self.thread_name == 'newhistory':
-            app_backend.query_history_data(self.data['hostname'], self.data['host_id'])
+            if self.data:
+                app_backend.query_history_data(self.data['hostname'], self.data['host_id'])
+            else:
+                app_backend.query_history_data()
         elif 'notifications' in self.thread_name:
             app_backend.query_notifications_data()
         else:
