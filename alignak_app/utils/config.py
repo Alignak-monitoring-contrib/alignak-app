@@ -290,8 +290,8 @@ def get_url_endpoint_from_icon_name(icon_name):
     """
     Return endpoint depending of "icon_name"
 
-    :param icon_name: icon name: hosts_up, services_ok, acknowledge
-    :return:
+    :param icon_name: naem of icon
+    :type icon_name: str
     """
 
     available_endpoints = {
