@@ -105,17 +105,16 @@ class DataManager(object):
 
         items = self.database[item_type]
 
-        for item in items:
-            if value:
-                if item.data[key] == value:
-                    return item
-            else:
-                if item.name == key:
-                    return item
-                if item.item_id == key:
-                    return item
+        if value:
+            wanted_item = next((item for item in items if item.data[key] == value), None)
+            return wanted_item
 
-        return None
+        wanted_item = next((item for item in items if item.item_id == key), None)
+
+        if not wanted_item:
+            wanted_item = next((item for item in items if item.name == key), None)
+
+        return wanted_item
 
     def update_item_data(self, item_type, item_id, data):
         """

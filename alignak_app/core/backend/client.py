@@ -115,7 +115,7 @@ class BackendClient(object):
         else:
             # Else exit
             logger.error(
-                'Connection to Backend has failed.\nCheck [Backend] section in configuration file.'
+                'Connection to Backend has failed.\nCheck [Alignak] section in configuration file.'
             )
             return False
 
