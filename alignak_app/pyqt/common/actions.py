@@ -37,6 +37,7 @@ from alignak_app.core.backend.data_manager import data_manager
 
 from alignak_app.pyqt.dock.widgets.events import send_event
 from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget
+from alignak_app.pyqt.common.buttons import ToggleQWidgetButton
 
 logger = getLogger(__name__)
 
@@ -96,8 +97,8 @@ class ActionsQWidget(QWidget):
         ack_dialog.initialize(self.item.item_type, self.item.get_display_name(), comment)
 
         if ack_dialog.exec_() == AckQDialog.Accepted:
-            sticky = ack_dialog.sticky
-            notify = ack_dialog.notify
+            sticky = ack_dialog.sticky_toggle_btn.get_btn_state()
+            notify = ack_dialog.notify_toggle_btn.get_btn_state()
             comment = str(ack_dialog.ack_comment_edit.toPlainText())
 
             data = {
@@ -148,7 +149,7 @@ class ActionsQWidget(QWidget):
         downtime_dialog.initialize(self.item.item_type, self.item.get_display_name(), comment)
 
         if downtime_dialog.exec_() == DownQDialog.Accepted:
-            fixed = downtime_dialog.fixed
+            fixed = downtime_dialog.fixed_toggle_btn.get_btn_state()
             duration = downtime_dialog.duration_to_seconds()
             start_stamp = downtime_dialog.start_time.dateTime().toTime_t()
             end_stamp = downtime_dialog.end_time.dateTime().toTime_t()
@@ -226,7 +227,9 @@ class AckQDialog(QDialog):
         self.setObjectName('dialog')
         # Fields
         self.sticky = True
+        self.sticky_toggle_btn = ToggleQWidgetButton()
         self.notify = False
+        self.notify_toggle_btn = ToggleQWidgetButton()
         self.ack_comment_edit = None
         self.offset = None
 
@@ -266,11 +269,9 @@ class AckQDialog(QDialog):
         sticky_label.setObjectName('subtitle')
         ack_layout.addWidget(sticky_label, 2, 0, 1, 1)
 
-        sticky_checkbox = QCheckBox()
-        sticky_checkbox.setObjectName('actions')
-        sticky_checkbox.setChecked(self.sticky)
-        sticky_checkbox.setFixedSize(18, 16)
-        ack_layout.addWidget(sticky_checkbox, 2, 1, 1, 1)
+        self.sticky_toggle_btn.initialize()
+        self.sticky_toggle_btn.update_btn_state(self.sticky)
+        ack_layout.addWidget(self.sticky_toggle_btn, 2, 1, 1, 1)
 
         sticky_info = QLabel(
             _(
@@ -285,11 +286,9 @@ class AckQDialog(QDialog):
         notify_label.setObjectName('subtitle')
         ack_layout.addWidget(notify_label, 4, 0, 1, 1)
 
-        notify_checkbox = QCheckBox()
-        notify_checkbox.setObjectName('actions')
-        notify_checkbox.setChecked(self.notify)
-        notify_checkbox.setFixedSize(18, 16)
-        ack_layout.addWidget(notify_checkbox, 4, 1, 1, 1)
+        self.notify_toggle_btn.initialize()
+        self.notify_toggle_btn.update_btn_state(self.notify)
+        ack_layout.addWidget(self.notify_toggle_btn, 4, 1, 1, 1)
 
         notify_info = QLabel(
             _('If checked, a notification will be sent out to the concerned contacts.')
@@ -348,6 +347,7 @@ class DownQDialog(QDialog):
         self.setObjectName('dialog')
         # Fields
         self.fixed = True
+        self.fixed_toggle_btn = ToggleQWidgetButton()
         self.duration = QTimeEdit()
         self.start_time = QDateTimeEdit()
         self.end_time = QDateTimeEdit()
@@ -390,11 +390,9 @@ class DownQDialog(QDialog):
         options_label.setObjectName('subtitle')
         downtime_layout.addWidget(options_label, 2, 0, 1, 1)
 
-        fixed_checkbox = QCheckBox()
-        fixed_checkbox.setObjectName('actions')
-        fixed_checkbox.setChecked(self.fixed)
-        fixed_checkbox.setFixedSize(18, 16)
-        downtime_layout.addWidget(fixed_checkbox, 2, 1, 1, 1)
+        self.fixed_toggle_btn.initialize()
+        self.fixed_toggle_btn.update_btn_state(self.fixed)
+        downtime_layout.addWidget(self.fixed_toggle_btn, 2, 1, 1, 1)
 
         fixed_label = QLabel(_('Fixed'))
         fixed_label.setObjectName('actions')
