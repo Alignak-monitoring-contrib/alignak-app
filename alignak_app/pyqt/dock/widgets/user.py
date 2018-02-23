@@ -27,7 +27,7 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QGridLayout, QVBoxLayout, QIcon, Qt, QLabel, QWidget, QPushButton, QCheckBox
+from PyQt5.Qt import QGridLayout, QVBoxLayout, QIcon, Qt, QLabel, QWidget, QPushButton
 
 from alignak_app.core.backend.client import app_backend
 from alignak_app.core.backend.data_manager import data_manager
@@ -35,6 +35,7 @@ from alignak_app.core.utils.config import settings
 
 from alignak_app.pyqt.common.frames import AppQFrame, get_frame_separator
 from alignak_app.pyqt.common.labels import get_icon_pixmap
+from alignak_app.pyqt.common.buttons import ToggleQWidgetButton
 from alignak_app.pyqt.dock.widgets.events import send_event
 from alignak_app.pyqt.dock.dialogs.password import PasswordQDialog
 from alignak_app.pyqt.dock.dialogs.token import TokenQDialog
@@ -46,12 +47,11 @@ logger = getLogger(__name__)
 
 class UserQWidget(QWidget):
     """
-        Class who create QWidget for User Profile.
+        Class who create QWidget for User profile.
     """
 
     def __init__(self, parent=None):
         super(UserQWidget, self).__init__(parent)
-        # self.setStyleSheet(app_css)
         # Fields
         self.labels = {
             'realm': QLabel(),
@@ -67,8 +67,8 @@ class UserQWidget(QWidget):
             'service_notification_period': QLabel(),
         }
         self.app_widget = None
-        self.host_notif_state = None
-        self.service_notif_state = None
+        self.hostnotif_toggle_btn = None
+        self.servicenotif_toggle_btn = None
         self.password_btn = QPushButton()
         self.token_btn = QPushButton()
         self.notes_btn = QPushButton()
@@ -303,14 +303,16 @@ class UserQWidget(QWidget):
         state_title = QLabel(_("<h5>Notification enabled:</h5>"))
         state_title.setObjectName("subtitle")
         host_notif_layout.addWidget(state_title, 2, 0, 1, 1)
-        self.host_notif_state = QCheckBox()
-        self.host_notif_state.setFixedSize(18, 16)
-        self.host_notif_state.setChecked(
+        self.hostnotif_toggle_btn = ToggleQWidgetButton()
+        self.hostnotif_toggle_btn.initialize()
+        self.hostnotif_toggle_btn.update_btn_state(
             data_manager.database['user'].data['host_notifications_enabled']
         )
-        self.host_notif_state.stateChanged.connect(self.enable_notifications)
-        self.host_notif_state.setObjectName('host_notifications_enabled')
-        host_notif_layout.addWidget(self.host_notif_state, 2, 1, 1, 1)
+        self.hostnotif_toggle_btn.toggle_btn.clicked.connect(lambda: self.enable_notifications(
+            'host_notifications_enabled', self.hostnotif_toggle_btn.get_btn_state()
+        ))
+        self.hostnotif_toggle_btn.setObjectName('host_notifications_enabled')
+        host_notif_layout.addWidget(self.hostnotif_toggle_btn, 2, 1, 1, 1)
 
         period_title = QLabel(_("<h5>Notification period:</h5>"))
         period_title.setObjectName("subtitle")
@@ -355,14 +357,15 @@ class UserQWidget(QWidget):
         state_title = QLabel(_("<h5>Notification enabled:</h5>"))
         state_title.setObjectName("subtitle")
         service_notif_layout.addWidget(state_title, 2, 0, 1, 1)
-        self.service_notif_state = QCheckBox()
-        self.service_notif_state.setObjectName('service_notifications_enabled')
-        self.service_notif_state.setFixedSize(18, 16)
-        self.service_notif_state.setChecked(
+        self.servicenotif_toggle_btn = ToggleQWidgetButton()
+        self.servicenotif_toggle_btn.initialize()
+        self.servicenotif_toggle_btn.update_btn_state(
             data_manager.database['user'].data['service_notifications_enabled']
         )
-        self.service_notif_state.stateChanged.connect(self.enable_notifications)
-        service_notif_layout.addWidget(self.service_notif_state, 2, 1, 1, 1)
+        self.servicenotif_toggle_btn.toggle_btn.clicked.connect(lambda: self.enable_notifications(
+            'service_notifications_enabled', self.servicenotif_toggle_btn.get_btn_state()
+        ))
+        service_notif_layout.addWidget(self.servicenotif_toggle_btn, 2, 1, 1, 1)
 
         period_title = QLabel(_("<h5>Notification period:</h5>"))
         period_title.setObjectName("subtitle")
@@ -387,15 +390,13 @@ class UserQWidget(QWidget):
 
         return service_notif_widget
 
-    def enable_notifications(self):  # pragma: no cover
+    def enable_notifications(self, notification_type, btn_state):  # pragma: no cover
         """
         Enable notification for the wanted type: hosts or services
 
         """
 
-        # btn.checkState() equal to 0 or 2
-        notification_enabled = bool(self.sender().checkState())
-        notification_type = self.sender().objectName()
+        notification_enabled = btn_state
 
         data = {notification_type: notification_enabled}
         headers = {'If-Match': data_manager.database['user'].data['_etag']}
@@ -407,9 +408,13 @@ class UserQWidget(QWidget):
             data_manager.database['user'].update_data(notification_type, notification_enabled)
             enabled = 'enabled' if notification_enabled else 'disabled'
             message = _("Notifications for %ss are %s") % (
-                self.sender().objectName().replace('_notifications_enabled', ''),
+                notification_type.replace('_notifications_enabled', ''),
                 enabled
             )
+            if 'host' in notification_type:
+                self.hostnotif_toggle_btn.update_btn_state(btn_state)
+            else:
+                self.servicenotif_toggle_btn.update_btn_state(btn_state)
             send_event('INFO', message)
         else:
             send_event(

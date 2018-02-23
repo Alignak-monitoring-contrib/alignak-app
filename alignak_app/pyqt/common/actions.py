@@ -28,8 +28,8 @@
 import datetime
 from logging import getLogger
 
-from PyQt5.Qt import QDialog, QWidget, QTime, QVBoxLayout, Qt, QGridLayout, QTimeEdit, QDateTimeEdit
-from PyQt5.Qt import QPixmap, QCheckBox, QPushButton, QLabel, QTextEdit, QIcon, QHBoxLayout
+from PyQt5.Qt import QDialog, QWidget, QTime, QVBoxLayout, Qt, QTimeEdit, QDateTimeEdit
+from PyQt5.Qt import QPixmap, QPushButton, QLabel, QTextEdit, QIcon, QHBoxLayout, QGridLayout
 
 from alignak_app.core.utils.config import settings
 from alignak_app.core.backend.client import app_backend

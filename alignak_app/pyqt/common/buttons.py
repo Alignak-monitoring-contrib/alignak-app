@@ -76,8 +76,10 @@ class ToggleQWidgetButton(QWidget):
 
     def get_btn_state(self):
         """
-        TODO
-        :return:
+        Return "toggle_btn" state
+
+        :return: QPushButton state
+        :rtype: bool
         """
 
         return self.toggle_btn.isChecked()
