@@ -164,7 +164,7 @@ class TrayIcon(QSystemTrayIcon):
         sys.exit(0)
 
     @staticmethod
-    def reload_configuration():
+    def reload_configuration():  # pragma: no cover
         """
         Reload configuration
 

@@ -74,7 +74,7 @@ class TestTrayIcon(unittest2.TestCase):
 
     def test_tray_icon(self):
         """Init TrayIcon and QMenu"""
-        init_event_widget()
+
         under_test = TrayIcon(TestTrayIcon.icon)
 
         self.assertIsInstance(under_test.menu, QMenu)

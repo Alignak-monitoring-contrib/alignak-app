@@ -107,12 +107,12 @@ class TestUtils(unittest2.TestCase):
 
         test_icon = under_test.get_image('icon')
 
-        self.assertEqual('%s/.local/alignak_app/images/icon.svg' % os.environ['HOME'], test_icon)
+        self.assertEqual('%s/images/icon.svg' % under_test.app_cfg_dir, test_icon)
 
         test_icon_error = under_test.get_image('NONE')
 
         self.assertEqual(
-            '%s/.local/alignak_app/images/error.svg' % os.environ['HOME'], test_icon_error
+            '%s/images/error.svg' % under_test.app_cfg_dir, test_icon_error
         )
 
     def test_init_css(self):
