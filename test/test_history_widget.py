@@ -85,7 +85,7 @@ class TestHistoryQWidget(unittest2.TestCase):
         self.assertIsInstance(under_test.app_widget, AppQFrame)
 
         data_manager.database['history'].append(self.history_test)
-        under_test.initialize('charnay', 'hostname')
+        under_test.initialize('charnay', self.history_test)
 
         self.assertIsNotNone(under_test.layout())
         self.assertEqual(under_test.app_widget.windowTitle(), "History of Charnay")

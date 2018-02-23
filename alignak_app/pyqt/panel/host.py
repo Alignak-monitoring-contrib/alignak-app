@@ -72,6 +72,7 @@ class HostQWidget(QWidget):
         self.passivecheck_btn = ToggleQWidgetButton()
         self.history_btn = QPushButton()
         self.history_widget = None
+        self.host_history = None
         self.refresh_timer = QTimer()
 
     def initialize(self):
@@ -188,7 +189,7 @@ class HostQWidget(QWidget):
         """
 
         self.history_widget = HistoryQWidget(self)
-        self.history_widget.initialize(self.host_item.name, self.host_item.item_id)
+        self.history_widget.initialize(self.host_item.name, self.host_history)
         self.history_widget.app_widget.show()
 
     def patch_host_checks(self, check_type, state):  # pragma: no cover
@@ -375,9 +376,8 @@ class HostQWidget(QWidget):
             self.activecheck_btn.update_btn_state(self.host_item.data['active_checks_enabled'])
             self.passivecheck_btn.update_btn_state(self.host_item.data['passive_checks_enabled'])
 
-            if any(
-                    history_item.item_id == self.host_item.item_id for
-                    history_item in data_manager.database['history']):
+            self.host_history = data_manager.get_item('history', self.host_item.item_id)
+            if self.host_history:
                 self.history_btn.setEnabled(True)
                 self.history_btn.setToolTip(_('History is available'))
             else:

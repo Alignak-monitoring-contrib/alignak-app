@@ -30,7 +30,6 @@ from logging import getLogger
 
 from PyQt5.Qt import QWidget, QScrollArea, QLabel, QPixmap, Qt, QGridLayout
 
-from alignak_app.core.backend.data_manager import data_manager
 from alignak_app.core.models.history import History
 from alignak_app.core.utils.config import settings
 
@@ -51,14 +50,14 @@ class HistoryQWidget(QWidget):
         # Fields
         self.app_widget = AppQFrame()
 
-    def initialize(self, hostname, host_id):
+    def initialize(self, hostname, host_history):
         """
         Initialize History QWidget
 
         :param hostname: name of the host
         :type hostname: str
-        :param host_id: Id of Host
-        :type host_id: str
+        :param host_history: history of host
+        :type host_history: History
         """
 
         logger.debug('Open History for %s', hostname)
@@ -83,10 +82,9 @@ class HistoryQWidget(QWidget):
         layout.setAlignment(event_desc, Qt.AlignCenter)
 
         # History QWidgets
-        host_history_events = data_manager.get_item('history', host_id)
         line = 1
 
-        for history_event in host_history_events.data:
+        for history_event in host_history.data:
             history_widget = self.get_history_widget_model(history_event, hostname)
 
             layout.addWidget(history_widget, line, 0, 2, 2)
