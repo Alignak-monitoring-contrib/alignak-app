@@ -138,6 +138,10 @@ Common
     :members:
     :show-inheritance:
 
+.. automodule:: alignak_app.pyqt.common.buttons
+    :members:
+    :show-inheritance:
+
 .. automodule:: alignak_app.pyqt.common.frames
     :members:
     :show-inheritance:
