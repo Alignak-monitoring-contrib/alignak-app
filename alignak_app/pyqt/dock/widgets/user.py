@@ -415,7 +415,7 @@ class UserQWidget(QWidget):
                 self.hostnotif_toggle_btn.update_btn_state(btn_state)
             else:
                 self.servicenotif_toggle_btn.update_btn_state(btn_state)
-            send_event('INFO', message)
+            send_event('INFO', message, timer=True)
         else:
             send_event(
                 'ERROR',

@@ -38,6 +38,8 @@ from alignak_app.core.utils.config import settings
 from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
 
 from alignak_app.pyqt.common.actions import ActionsQWidget
+from alignak_app.pyqt.common.buttons import ToggleQWidgetButton
+from alignak_app.pyqt.dock.widgets.events import send_event
 from alignak_app.pyqt.panel.history import HistoryQWidget
 from alignak_app.pyqt.threads.thread_manager import thread_manager
 
@@ -51,8 +53,8 @@ class HostQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(HostQWidget, self).__init__(parent)
-        self.actions_widget = ActionsQWidget()
         # Fields
+        self.actions_widget = ActionsQWidget()
         self.host_item = None
         self.service_items = None
         self.labels = {
@@ -66,6 +68,8 @@ class HostQWidget(QWidget):
             'business_impact': QLabel(),
             'notes': QLabel()
         }
+        self.activecheck_btn = ToggleQWidgetButton()
+        self.passivecheck_btn = ToggleQWidgetButton()
         self.history_btn = QPushButton()
         self.history_widget = None
         self.refresh_timer = QTimer()
@@ -148,9 +152,30 @@ class HostQWidget(QWidget):
         self.actions_widget.initialize(self.host_item)
         layout.addWidget(self.actions_widget)
 
+        hist_lbl = QLabel(_('Timeline:'))
+        hist_lbl.setObjectName('subtitle')
+        layout.addWidget(hist_lbl)
         self.history_btn.setIcon(QIcon(settings.get_image('time')))
         self.history_btn.clicked.connect(self.show_history)
         layout.addWidget(self.history_btn)
+
+        activecheck_lbl = QLabel(_('Active checks:'))
+        activecheck_lbl.setObjectName('subtitle')
+        layout.addWidget(activecheck_lbl)
+        self.activecheck_btn.initialize()
+        self.activecheck_btn.toggle_btn.clicked.connect(lambda: self.patch_host_checks(
+            'active_checks_enabled', self.activecheck_btn.get_btn_state()
+        ))
+        layout.addWidget(self.activecheck_btn)
+
+        passivecheck_lbl = QLabel(_('Passive checks:'))
+        passivecheck_lbl.setObjectName('subtitle')
+        layout.addWidget(passivecheck_lbl)
+        self.passivecheck_btn.initialize()
+        self.passivecheck_btn.toggle_btn.clicked.connect(lambda: self.patch_host_checks(
+            'passive_checks_enabled', self.passivecheck_btn.get_btn_state()
+        ))
+        layout.addWidget(self.passivecheck_btn)
 
         layout.setAlignment(Qt.AlignCenter)
 
@@ -165,6 +190,38 @@ class HostQWidget(QWidget):
         self.history_widget = HistoryQWidget(self)
         self.history_widget.initialize(self.host_item.name, self.host_item.item_id)
         self.history_widget.app_widget.show()
+
+    def patch_host_checks(self, check_type, state):  # pragma: no cover
+        """
+        Patch the host check: 'active_checks_enabled' | 'passive_checks_enabled'
+
+        :param check_type: type of check: 'active_checks_enabled' | 'passive_checks_enabled'
+        :type check_type: str
+        :param state: state of Toggle button
+        :type state: bool
+        """
+
+        data = {check_type: state}
+        headers = {'If-Match': self.host_item.data['_etag']}
+        endpoint = '/'.join([self.host_item.item_type, self.host_item.item_id])
+
+        patched = app_backend.patch(endpoint, data, headers)
+
+        if patched:
+            self.host_item.data[check_type] = state
+            data_manager.update_item_data(
+                self.host_item.item_type, self.host_item.item_id, self.host_item.data
+            )
+            enabled = _('enabled') if state else _('disabled')
+            message = _(
+                _("[%s] %s for %s" % (check_type, enabled, self.host_item.get_display_name()))
+            )
+            send_event('INFO', message, timer=True)
+        else:
+            send_event(
+                'ERROR',
+                _("Backend PATCH failed, please check your logs !")
+            )
 
     def get_last_check_widget(self):
         """
@@ -314,6 +371,9 @@ class HostQWidget(QWidget):
 
             self.actions_widget.item = self.host_item
             self.actions_widget.update_widget()
+
+            self.activecheck_btn.update_btn_state(self.host_item.data['active_checks_enabled'])
+            self.passivecheck_btn.update_btn_state(self.host_item.data['passive_checks_enabled'])
 
             if any(
                     history_item.item_id == self.host_item.item_id for
