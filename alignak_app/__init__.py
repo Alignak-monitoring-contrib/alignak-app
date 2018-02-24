@@ -34,9 +34,12 @@
       launch :class:`BackendQThread(s) <alignak_app.qthreads.thread.BackendQThread>` to
       trigger requests in :class:`BackendClient <alignak_app.backend.backend.BackendClient>`.
     * The :class:`DataManager <alignak_app.backend.datamanager.DataManager>` will store data
-      provided by :class:`BackendClient <alignak_app.backend.backend.BackendClient>`.
-    * The :class:`PyQt <alignak_app.pyqt>` package display/update the data stored in
+      provided by :class:`BackendClient <alignak_app.backend.backend.BackendClient>` in
+      :class:`Items <alignak_app.items>`.
+    * The :class:`QObjects <alignak_app.qobjects>` package display/update the data stored in
       :class:`DataManager <alignak_app.backend.datamanager.DataManager>`.
+    * The :class:`Utils <alignak_app.utils>` package contains settings, logs, installation,...
+    * The :class:`Locales <alignak_app.locales>` package contains translations.
 
 """
 
