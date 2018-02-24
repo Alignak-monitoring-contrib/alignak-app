@@ -26,7 +26,7 @@ from PyQt5.QtWidgets import QApplication
 
 from alignak_app.utils.config import settings
 
-from alignak_app.pyqt.common.frames import AppQFrame
+from alignak_app.qobjects.common.frames import AppQFrame
 
 
 class TestAppQFrame(unittest2.TestCase):

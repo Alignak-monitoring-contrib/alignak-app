@@ -29,8 +29,8 @@ from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.host import Host
 from alignak_app.items.service import Service
 
-from alignak_app.pyqt.panel.panel import PanelQWidget
-from alignak_app.pyqt.dock.widgets.spy import SpyQWidget
+from alignak_app.qobjects.panel.panel import PanelQWidget
+from alignak_app.qobjects.dock.widgets.spy import SpyQWidget
 
 
 class TestLoginQDialog(unittest2.TestCase):

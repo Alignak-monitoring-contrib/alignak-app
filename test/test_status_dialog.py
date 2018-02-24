@@ -28,7 +28,7 @@ from alignak_app.backend.backend import app_backend
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.pyqt.dock.dialogs.status import StatusQDialog
+from alignak_app.qobjects.dock.dialogs.status import StatusQDialog
 
 
 class TestStatusQDialog(unittest2.TestCase):

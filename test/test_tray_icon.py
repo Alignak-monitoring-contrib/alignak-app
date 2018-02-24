@@ -33,8 +33,8 @@ from alignak_app.items.user import User
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.pyqt.dock.widgets.events import init_event_widget
-from alignak_app.pyqt.systray.tray_icon import TrayIcon
+from alignak_app.qobjects.dock.widgets.events import init_event_widget
+from alignak_app.qobjects.systray.tray_icon import TrayIcon
 
 
 class TestTrayIcon(unittest2.TestCase):

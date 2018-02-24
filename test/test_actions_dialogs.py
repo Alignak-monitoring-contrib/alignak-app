@@ -27,7 +27,7 @@ from PyQt5.QtWidgets import QApplication, QTimeEdit, QDateTimeEdit
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.pyqt.common.actions import AckQDialog, DownQDialog
+from alignak_app.qobjects.common.actions import AckQDialog, DownQDialog
 
 settings.init_config()
 init_localization()

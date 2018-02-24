@@ -25,7 +25,7 @@ import unittest2
 
 from PyQt5.Qt import QApplication
 
-from alignak_app.pyqt.dock.widgets.spy import SpyQWidget, SpyQListWidget, EventItem
+from alignak_app.qobjects.dock.widgets.spy import SpyQWidget, SpyQListWidget, EventItem
 
 
 class TestDataManager(unittest2.TestCase):

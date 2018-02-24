@@ -27,7 +27,7 @@ from PyQt5.Qt import QApplication, QWidget
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget, LogoQWidget
+from alignak_app.qobjects.common.widgets import get_logo_widget, center_widget, LogoQWidget
 
 settings.init_config()
 init_localization()

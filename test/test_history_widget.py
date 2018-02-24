@@ -29,7 +29,7 @@ from alignak_app.items.history import History
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.pyqt.panel.history import HistoryQWidget, AppQFrame
+from alignak_app.qobjects.panel.history import HistoryQWidget, AppQFrame
 
 settings.init_config()
 init_localization()
