@@ -28,12 +28,15 @@
 
     Alignak-app have the following architecture:
 
-    * The `Client <api.html#module-alignak_app.backend>`_ manage requests with backend.
-    * The `Thread Manager <api.html#module-alignak_app.pyqt.threads>`_ will launch request in
-      client periodically.
-    * The `Data Manager <api.html#module-alignak_app.backend>`_ will store data provided by
-      client.
-    * The `PyQt <api.html#module-alignak_app.pyqt>`_ display/update the data stored in data manager.
+    * The :class:`BackendClient <alignak_app.backend.backend.BackendClient>` manage requests with
+      Alignak backend.
+    * The :class:`ThreadManager <alignak_app.qthreads.threadmanager.ThreadManager>` will
+      launch :class:`BackendQThread(s) <alignak_app.qthreads.thread.BackendQThread>` to
+      trigger requests in :class:`BackendClient <alignak_app.backend.backend.BackendClient>`.
+    * The :class:`DataManager <alignak_app.backend.datamanager.DataManager>` will store data
+      provided by :class:`BackendClient <alignak_app.backend.backend.BackendClient>`.
+    * The :class:`PyQt <alignak_app.pyqt>` package display/update the data stored in
+      :class:`DataManager <alignak_app.backend.datamanager.DataManager>`.
 
 """
 

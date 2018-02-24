@@ -49,7 +49,8 @@ from alignak_app.pyqt.dock.widgets.events import init_event_widget
 from alignak_app.pyqt.common.widgets import center_widget
 from alignak_app.pyqt.login.login import LoginQDialog
 from alignak_app.pyqt.systray.tray_icon import TrayIcon
-from alignak_app.pyqt.threads.thread_manager import thread_manager
+
+from alignak_app.qthreads.threadmanager import thread_manager
 
 # Init App settings before importing QWidgets
 settings.init_config()

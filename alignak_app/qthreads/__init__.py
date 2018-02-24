@@ -19,26 +19,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-import unittest2
-
-from alignak_app.backend.backend import app_backend
-from alignak_app.utils.config import settings
-from alignak_app.locales.locales import init_localization
-from alignak_app.pyqt.threads.backend_thread import BackendQThread
-
-settings.init_config()
-init_localization()
-app_backend.login()
-
-
-class TestBackendQThread(unittest2.TestCase):
-    """
-        This file test the BackendQThread classes.
-    """
-
-    def test_initialize_backend_thread(self):
-        """Initialize BackendQThread"""
-
-        under_test = BackendQThread('user')
-
-        self.assertEqual('user', under_test.thread_name)
+"""
+    The QThreads package contains classes who manage application threads
+"""

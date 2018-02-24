@@ -280,15 +280,15 @@ Systray
     :members:
     :show-inheritance:
 
-Threads
-*******
+QThreads
+~~~~~~~~
 
-.. automodule:: alignak_app.pyqt.threads
+.. automodule:: alignak_app.qthreads
 
-.. automodule:: alignak_app.pyqt.threads.backend_thread
+.. automodule:: alignak_app.qthreads.thread
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.threads.thread_manager
+.. automodule:: alignak_app.qthreads.threadmanager
     :members:
     :show-inheritance:

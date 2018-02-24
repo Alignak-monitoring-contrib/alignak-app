@@ -31,7 +31,7 @@ from PyQt5.Qt import QTimer, QObject
 
 from alignak_app.utils.config import settings
 
-from alignak_app.pyqt.threads.backend_thread import BackendQThread
+from alignak_app.qthreads.thread import BackendQThread
 
 logger = getLogger(__name__)
 

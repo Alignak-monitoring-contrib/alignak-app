@@ -41,7 +41,8 @@ from alignak_app.pyqt.common.actions import ActionsQWidget
 from alignak_app.pyqt.common.buttons import ToggleQWidgetButton
 from alignak_app.pyqt.dock.widgets.events import send_event
 from alignak_app.pyqt.panel.history import HistoryQWidget
-from alignak_app.pyqt.threads.thread_manager import thread_manager
+
+from alignak_app.qthreads.threadmanager import thread_manager
 
 logger = getLogger(__name__)
 

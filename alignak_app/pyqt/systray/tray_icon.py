@@ -35,8 +35,9 @@ from alignak_app.utils.config import settings
 from alignak_app.pyqt.app_main import AppMain
 from alignak_app.pyqt.systray.about import AboutQDialog
 from alignak_app.pyqt.systray.qactions_factory import QActionFactory
-from alignak_app.pyqt.threads.thread_manager import thread_manager
 from alignak_app.pyqt.dock.widgets.events import send_event
+
+from alignak_app.qthreads.threadmanager import thread_manager
 
 
 logger = getLogger(__name__)
