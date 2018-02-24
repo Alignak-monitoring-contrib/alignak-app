@@ -28,12 +28,12 @@
 import json
 from logging import getLogger
 
-from alignak_app.items.item import ItemModel
+from alignak_app.items.item import Item
 
 logger = getLogger(__name__)
 
 
-class Service(ItemModel):
+class Service(Item):
     """
         Class who create a service item
     """

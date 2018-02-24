@@ -29,12 +29,12 @@
 from logging import getLogger
 
 from alignak_app.backend.datamanager import data_manager
-from alignak_app.items.item import ItemModel
+from alignak_app.items.item import Item
 
 logger = getLogger(__name__)
 
 
-class Daemon(ItemModel):
+class Daemon(Item):
     """
         Class who create a daemon item
     """

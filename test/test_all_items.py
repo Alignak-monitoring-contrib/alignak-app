@@ -89,7 +89,7 @@ class TestAllItems(unittest2.TestCase):
     def test_item_model(self):
         """Create ItemModel"""
 
-        under_test = ItemModel()
+        under_test = Item()
 
         under_test.create('_id', {'ls_state': 'DOWN'}, 'name')
 
@@ -101,7 +101,7 @@ class TestAllItems(unittest2.TestCase):
     def test_item_model_get_data(self):
         """Get Data ItemModel"""
 
-        under_test = ItemModel()
+        under_test = Item()
 
         under_test.create('_id', {'ls_state': 'DOWN', 'ls_acknowledged': True}, 'name')
 
@@ -112,7 +112,7 @@ class TestAllItems(unittest2.TestCase):
     def test_item_model_update_data(self):
         """Update Data ItemModel"""
 
-        under_test = ItemModel()
+        under_test = Item()
 
         under_test.create('_id', {'ls_state': 'DOWN', 'ls_acknowledged': True}, 'name')
 

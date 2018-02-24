@@ -34,12 +34,12 @@ from logging import getLogger
 
 from alignak_app.utils.config import settings
 
-from alignak_app.items.item import ItemModel
+from alignak_app.items.item import Item
 
 logger = getLogger(__name__)
 
 
-class Event(ItemModel):
+class Event(Item):
     """
         Class who create an event item
     """

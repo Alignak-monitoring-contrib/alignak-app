@@ -27,12 +27,12 @@
 
 from logging import getLogger
 
-from alignak_app.items.item import ItemModel
+from alignak_app.items.item import Item
 
 logger = getLogger(__name__)
 
 
-class History(ItemModel):
+class History(Item):
     """
         Class who create a history item
     """

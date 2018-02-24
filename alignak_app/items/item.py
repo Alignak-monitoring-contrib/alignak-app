@@ -31,7 +31,7 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
-class ItemModel(object):
+class Item(object):
     """
         Class who create item
     """

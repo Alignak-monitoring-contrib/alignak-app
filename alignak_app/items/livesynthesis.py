@@ -28,12 +28,12 @@
 
 from logging import getLogger
 
-from alignak_app.items.item import ItemModel
+from alignak_app.items.item import Item
 
 logger = getLogger(__name__)
 
 
-class LiveSynthesis(ItemModel):
+class LiveSynthesis(Item):
     """
         Class who create livesynthesis item
     """
