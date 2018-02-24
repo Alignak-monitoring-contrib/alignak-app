@@ -162,29 +162,16 @@ class BackendClient(object):
                         endpoint,
                         params
                     )
-                logger.debug('GET: %s', endpoint)
-                logger.debug('..with params: %s', str(params))
-                logger.debug('...Response > %s', str(request['_status']))
+                logger.info('GET on [%s] backend > %s', endpoint, str(request['_status']))
+                logger.debug('- params: [%s]', str(params))
+                logger.debug('- projection: [%s]', str(projection))
             except (BackendException, json.decoder.JSONDecodeError) as e:
-                logger.warning('First GET failed: %s', str(e))
-                logger.warning('...Request: %s', str(request))
-                try:
-                    request = self.backend.get(
-                        endpoint,
-                        params
-                    )
-                    logger.debug('GET (Retry): %s', endpoint)
-                    logger.debug('..with params: %s', str(params))
-                    logger.debug('...Response > %s', str(request['_status']))
-                except (BackendException, json.decoder.JSONDecodeError) as e:  # pragma: no cover
-                    logger.error('GET failed: %s', str(e))
-                    logger.error('...Request: %s', str(request))
-                    logger.warning('Application checks the connection with the Backend...')
-                    self.connected = False
-                    if self.app:
-                        if not self.app.reconnect_mode:
-                            self.app.reconnecting.emit(str(e))
-                    return request
+                error = 'GET on [%s] backend failed: %s', endpoint, str(e)
+                self.connected = False
+                if self.app:
+                    if not self.app.reconnect_mode:
+                        self.app.reconnecting.emit(error)
+                return request
 
         return request
 
@@ -207,15 +194,15 @@ class BackendClient(object):
         if self.connected:
             try:
                 request = self.backend.post(endpoint, data, headers=headers)
-                logger.debug('POST on %s', endpoint)
-                logger.debug('..with data: %s', str(data))
-                logger.debug('...Response > %s', str(request['_status']))
-            except BackendException as e:
-                logger.error('POST failed: %s', str(e))
-                logger.warning('Application checks the connection with the Backend...')
+                logger.info('POST on [%s] backend > %s', endpoint, str(request['_status']))
+                logger.debug('- data: [%s]', str(data))
+                logger.debug('- headers: [%s]', str(headers))
+            except (BackendException, json.decoder.JSONDecodeError) as e:
+                error = 'POST on [%s] backend failed: %s', endpoint, str(e)
                 self.connected = False
-                if not self.app.reconnect_mode:
-                    self.app.reconnecting.emit(str(e))
+                if self.app:
+                    if not self.app.reconnect_mode:
+                        self.app.reconnecting.emit(error)
                 return request
 
         return request
@@ -239,17 +226,16 @@ class BackendClient(object):
         if self.connected:
             try:
                 request = self.backend.patch(endpoint, data, headers=headers, inception=True)
-                logger.debug('PATCH on %s', endpoint)
-                logger.debug('..with data: %s', str(data))
-                logger.debug('...with headers: %s', str(headers))
-                logger.debug('....Response > %s', str(request['_status']))
-            except BackendException as e:  # pragma: no cover
-                logger.error('PATCH failed: %s', str(e))
-                logger.warning('Application checks the connection with the Backend...')
+                logger.info('PATCH on [%s] backend > %s', endpoint, str(request['_status']))
+                logger.debug('- data: [%s]', str(data))
+                logger.debug('- headers: [%s]', str(headers))
+            except (BackendException, json.decoder.JSONDecodeError) as e:
+                error = 'PATCH on [%s] backend failed: %s', endpoint, str(e)
                 self.connected = False
-                if not self.app.reconnect_mode:
-                    self.app.reconnecting.emit(str(e))
-                return False
+                if self.app:
+                    if not self.app.reconnect_mode:
+                        self.app.reconnecting.emit(error)
+                return request
 
         return request
 

@@ -167,11 +167,12 @@ class AlignakApp(QObject):
         """
 
         self.reconnect_mode = True
-        logger.warning('Application reconnecting MODE: %s', self.reconnecting)
-        logger.error('... caused by %s', error)
         timer = QTimer(self)
 
+        logger.error('Connection Error: %s', error)
+
         # Stop thread_name manager
+        logger.warning('Application reconnecting MODE: %s', self.reconnect_mode)
         thread_manager.stop_threads()
 
         def connect_to_backend():
