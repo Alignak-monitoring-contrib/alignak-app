@@ -38,10 +38,10 @@ from PyQt5.Qt import QDialog, QMessageBox, QTimer, QProgressBar, Qt, pyqtSignal,
 from PyQt5.Qt import QWidget, QVBoxLayout, QLabel
 
 from alignak_app import __application__, __version__
-from alignak_app.core.backend.client import app_backend
-from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.utils.config import settings
-from alignak_app.core.utils.logs import create_logger
+from alignak_app.backend.client import app_backend
+from alignak_app.backend.data_manager import data_manager
+from alignak_app.utils.config import settings
+from alignak_app.utils.logs import create_logger
 
 from alignak_app.locales.locales import init_localization
 

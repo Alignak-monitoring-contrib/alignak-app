@@ -30,7 +30,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QMenu, QSystemTrayIcon
 
-from alignak_app.core.utils.config import settings
+from alignak_app.utils.config import settings
 
 from alignak_app.pyqt.app_main import AppMain
 from alignak_app.pyqt.systray.about import AboutQDialog

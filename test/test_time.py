@@ -22,7 +22,7 @@
 
 import unittest2
 
-from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
+from alignak_app.utils.time import get_time_diff_since_last_timestamp
 
 
 class TestTime(unittest2.TestCase):

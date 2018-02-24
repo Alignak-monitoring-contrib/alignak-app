@@ -29,10 +29,10 @@ from logging import getLogger
 
 from PyQt5.Qt import QLabel, QWidget, Qt, QPushButton, QPixmap, QVBoxLayout, QGridLayout, QTimer
 
-from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.models.item import get_icon_name
-from alignak_app.core.utils.config import settings
-from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
+from alignak_app.backend.data_manager import data_manager
+from alignak_app.items.item import get_icon_name
+from alignak_app.utils.config import settings
+from alignak_app.utils.time import get_time_diff_since_last_timestamp
 
 from alignak_app.pyqt.common.actions import ActionsQWidget
 

@@ -27,11 +27,12 @@ from PyQt5.QtWidgets import QAction
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMenu
 
-from alignak_app.core.backend.client import BackendClient
-from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.models.user import User
-from alignak_app.core.utils.config import settings
+from alignak_app.backend.client import BackendClient
+from alignak_app.backend.data_manager import data_manager
+from alignak_app.items.user import User
+from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
+
 from alignak_app.pyqt.dock.widgets.events import init_event_widget
 from alignak_app.pyqt.systray.tray_icon import TrayIcon
 

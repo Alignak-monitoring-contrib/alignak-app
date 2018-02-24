@@ -35,7 +35,8 @@ from logging import getLogger
 
 from PyQt5.Qt import QPushButton, QWidget, QIcon, QHBoxLayout, QTimer
 
-from alignak_app.core.utils.config import settings, open_url
+from alignak_app.utils.config import settings, open_url
+
 from alignak_app.pyqt.dock.widgets.user import UserQWidget
 
 logger = getLogger(__name__)

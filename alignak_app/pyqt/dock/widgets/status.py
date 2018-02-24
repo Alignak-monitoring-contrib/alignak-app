@@ -34,9 +34,9 @@ from logging import getLogger
 from PyQt5.Qt import QLabel, QPushButton, QIcon, QStyleOption, QPainter, QStyle
 from PyQt5.Qt import QWidget, QHBoxLayout, QTimer, QPixmap, Qt
 
-from alignak_app.core.backend.client import app_backend
-from alignak_app.core.models.daemon import Daemon
-from alignak_app.core.utils.config import settings
+from alignak_app.backend.client import app_backend
+from alignak_app.items.daemon import Daemon
+from alignak_app.utils.config import settings
 
 from alignak_app.pyqt.dock.dialogs.status import StatusQDialog
 

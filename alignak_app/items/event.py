@@ -32,8 +32,9 @@ import sys
 
 from logging import getLogger
 
-from alignak_app.core.utils.config import settings
-from alignak_app.core.models.item import ItemModel
+from alignak_app.utils.config import settings
+
+from alignak_app.items.item import ItemModel
 
 logger = getLogger(__name__)
 

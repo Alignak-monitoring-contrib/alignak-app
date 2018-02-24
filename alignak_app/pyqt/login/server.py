@@ -31,7 +31,8 @@ from logging import getLogger
 from PyQt5.Qt import QGridLayout
 from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel, QVBoxLayout, QWidget, QDialog, QPushButton
 
-from alignak_app.core.utils.config import settings
+from alignak_app.utils.config import settings
+
 from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget
 
 logger = getLogger(__name__)

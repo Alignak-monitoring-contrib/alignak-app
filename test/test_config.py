@@ -23,7 +23,7 @@ import os
 import unittest2
 import configparser
 
-from alignak_app.core.utils.config import get_url_endpoint_from_icon_name, Settings
+from alignak_app.utils.config import get_url_endpoint_from_icon_name, Settings
 
 
 class TestUtils(unittest2.TestCase):

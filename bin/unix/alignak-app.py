@@ -28,8 +28,8 @@ import os
 
 import argparse
 
-from alignak_app.core.utils.install import install_alignak_app
-from alignak_app.core.utils.config import settings
+from alignak_app.utils.install import install_alignak_app
+from alignak_app.utils.config import settings
 from alignak_app.app import AlignakApp
 from alignak_app import __application__
 

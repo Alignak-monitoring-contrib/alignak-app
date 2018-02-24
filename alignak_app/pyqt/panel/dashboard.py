@@ -32,11 +32,11 @@ from logging import getLogger
 
 from PyQt5.Qt import QGridLayout, QLabel, Qt, QWidget, QTimer, QPushButton, QIcon
 
-from alignak_app.core.utils.config import settings
-from alignak_app.core.utils.config import open_url, get_url_endpoint_from_icon_name
-from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.models.host import Host
-from alignak_app.core.models.service import Service
+from alignak_app.utils.config import settings
+from alignak_app.utils.config import open_url, get_url_endpoint_from_icon_name
+from alignak_app.backend.data_manager import data_manager
+from alignak_app.items.host import Host
+from alignak_app.items.service import Service
 
 logger = getLogger(__name__)
 

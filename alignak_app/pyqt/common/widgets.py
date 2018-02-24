@@ -28,7 +28,7 @@
 from PyQt5.Qt import QPushButton, QHBoxLayout, QApplication, QWidget, QIcon, QLabel
 from PyQt5.Qt import QStyleOption, QStyle, QPainter, Qt
 
-from alignak_app.core.utils.config import settings
+from alignak_app.utils.config import settings
 
 
 class LogoQWidget(QWidget):

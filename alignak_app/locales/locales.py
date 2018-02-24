@@ -30,7 +30,7 @@ import sys
 from gettext import GNUTranslations, NullTranslations
 from logging import getLogger
 
-from alignak_app.core.utils.config import settings
+from alignak_app.utils.config import settings
 
 logger = getLogger(__name__)
 

@@ -32,7 +32,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QMainWindow, QWidget, QGridLayout, QIcon, Qt
 
-from alignak_app.core.utils.config import settings
+from alignak_app.utils.config import settings
 
 from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget
 from alignak_app.pyqt.common.frames import get_frame_separator

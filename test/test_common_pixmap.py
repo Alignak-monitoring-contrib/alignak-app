@@ -24,7 +24,8 @@ import sys
 import unittest2
 from PyQt5.Qt import QApplication, QPixmap
 
-from alignak_app.core.utils.config import settings
+from alignak_app.utils.config import settings
+
 from alignak_app.pyqt.common.labels import get_icon_pixmap, get_icon_item
 
 settings.init_config()

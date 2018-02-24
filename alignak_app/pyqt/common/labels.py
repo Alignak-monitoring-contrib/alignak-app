@@ -27,7 +27,7 @@
 
 from PyQt5.Qt import QPixmap
 
-from alignak_app.core.utils.config import settings
+from alignak_app.utils.config import settings
 
 
 def get_icon_item(item_type, problem_nb):

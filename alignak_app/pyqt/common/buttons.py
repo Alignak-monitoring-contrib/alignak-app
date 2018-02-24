@@ -27,7 +27,7 @@
 
 from PyQt5.Qt import QWidget, QPushButton, QHBoxLayout
 
-from alignak_app.core.utils.config import settings
+from alignak_app.utils.config import settings
 
 
 class ToggleQWidgetButton(QWidget):

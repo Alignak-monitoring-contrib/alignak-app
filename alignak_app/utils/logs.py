@@ -37,11 +37,11 @@ from logging import Formatter
 from logging import getLogger
 from logging.handlers import TimedRotatingFileHandler
 
-from alignak_app.core.utils.config import settings
+from alignak_app.utils.config import settings
 
-try:
+if 'ALIGNAKAPP_LOG_DIR' in os.environ:
     ALIGNAKAPP_LOG_DIR = os.environ['ALIGNAKAPP_LOG_DIR']
-except KeyError:
+else:
     ALIGNAKAPP_LOG_DIR = ''
 
 

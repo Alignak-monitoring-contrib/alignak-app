@@ -21,20 +21,20 @@
 
 import unittest2
 
-from alignak_app.core.utils.config import settings
+from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.core.backend.client import app_backend
-from alignak_app.core.backend.data_manager import data_manager
+from alignak_app.backend.client import app_backend
+from alignak_app.backend.data_manager import data_manager
 
-from alignak_app.core.models.daemon import Daemon
-from alignak_app.core.models.event import Event
-from alignak_app.core.models.history import History
-from alignak_app.core.models.host import Host
-from alignak_app.core.models.item import *
-from alignak_app.core.models.livesynthesis import LiveSynthesis
-from alignak_app.core.models.service import Service
-from alignak_app.core.models.user import User
+from alignak_app.items.daemon import Daemon
+from alignak_app.items.event import Event
+from alignak_app.items.history import History
+from alignak_app.items.host import Host
+from alignak_app.items.item import *
+from alignak_app.items.livesynthesis import LiveSynthesis
+from alignak_app.items.service import Service
+from alignak_app.items.user import User
 
 
 class TestAllItems(unittest2.TestCase):

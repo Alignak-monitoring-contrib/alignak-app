@@ -29,9 +29,9 @@ from logging import getLogger
 
 from PyQt5.Qt import QDialog, QLabel, QWidget, Qt, QPushButton, QGridLayout, QHBoxLayout
 
-from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.utils.config import settings
-from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
+from alignak_app.backend.data_manager import data_manager
+from alignak_app.utils.config import settings
+from alignak_app.utils.time import get_time_diff_since_last_timestamp
 
 from alignak_app.pyqt.common.widgets import center_widget
 from alignak_app.pyqt.common.frames import AppQFrame

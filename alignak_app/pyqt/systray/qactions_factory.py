@@ -29,7 +29,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QAction, QIcon
 
-from alignak_app.core.utils.config import settings
+from alignak_app.utils.config import settings
 
 logger = getLogger(__name__)
 

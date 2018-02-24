@@ -30,8 +30,8 @@ from logging import getLogger
 
 from PyQt5.Qt import QWidget, QScrollArea, QLabel, QPixmap, Qt, QGridLayout
 
-from alignak_app.core.models.history import History
-from alignak_app.core.utils.config import settings
+from alignak_app.items.history import History
+from alignak_app.utils.config import settings
 
 from alignak_app.pyqt.common.frames import AppQFrame, get_frame_separator
 from alignak_app.pyqt.common.widgets import center_widget

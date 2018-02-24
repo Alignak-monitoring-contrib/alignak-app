@@ -29,9 +29,9 @@ from logging import getLogger
 
 from PyQt5.Qt import QLabel, QWidget, Qt, QPixmap, QHBoxLayout
 
-from alignak_app.core.models.item import get_icon_name_from_state
-from alignak_app.core.models.service import Service
-from alignak_app.core.utils.config import settings
+from alignak_app.items.item import get_icon_name_from_state
+from alignak_app.items.service import Service
+from alignak_app.utils.config import settings
 
 logger = getLogger(__name__)
 

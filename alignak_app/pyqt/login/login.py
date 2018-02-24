@@ -31,7 +31,8 @@ from PyQt5.Qt import QLabel, QVBoxLayout, QGridLayout, QLineEdit
 from PyQt5.Qt import QWidget, QDialog, QPushButton, Qt, QIcon
 
 from alignak_app import __version__
-from alignak_app.core.utils.config import settings
+from alignak_app.utils.config import settings
+
 from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget
 from alignak_app.pyqt.login.server import ServerQDialog
 

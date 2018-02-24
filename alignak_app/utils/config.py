@@ -43,7 +43,7 @@ from logging import getLogger
 import configparser
 from configparser import NoOptionError, NoSectionError, DuplicateOptionError, DuplicateSectionError
 
-from alignak_app.core.utils.install import create_user_app_dir
+from alignak_app.utils.install import create_user_app_dir
 
 logger = getLogger(__name__)
 
