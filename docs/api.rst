@@ -151,61 +151,47 @@ Dock (Rigt part)
 
 .. automodule:: alignak_app.qobjects.dock
 
-Dock.Dialogs
-************
-
-.. automodule:: alignak_app.qobjects.dock.dialogs
-
-.. automodule:: alignak_app.qobjects.dock.dialogs.password
+.. automodule:: alignak_app.qobjects.dock.password
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.dock.dialogs.status
+.. automodule:: alignak_app.qobjects.dock.status
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.dock.dialogs.token
+.. automodule:: alignak_app.qobjects.dock.token
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.dock.dialogs.user_notes
+.. automodule:: alignak_app.qobjects.dock.user_notes
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.dock.dialogs.user_options
+.. automodule:: alignak_app.qobjects.dock.user_options
     :members:
     :show-inheritance:
 
-Dock.Widgets
-************
-
-.. automodule:: alignak_app.qobjects.dock.widgets
-
-.. automodule:: alignak_app.qobjects.dock.widgets.buttons
+.. automodule:: alignak_app.qobjects.dock.buttons
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.dock.widgets.dock
+.. automodule:: alignak_app.qobjects.dock.dock
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.dock.widgets.events
+.. automodule:: alignak_app.qobjects.dock.events
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.dock.widgets.livestate
+.. automodule:: alignak_app.qobjects.dock.livestate
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.dock.widgets.spy
+.. automodule:: alignak_app.qobjects.dock.spy
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.dock.widgets.status
-    :members:
-    :show-inheritance:
-
-.. automodule:: alignak_app.qobjects.dock.widgets.user
+.. automodule:: alignak_app.qobjects.dock.user
     :members:
     :show-inheritance:
 

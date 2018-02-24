@@ -35,7 +35,7 @@ from alignak_app.utils.config import settings
 from alignak_app.backend.backend import app_backend
 from alignak_app.backend.datamanager import data_manager
 
-from alignak_app.qobjects.dock.widgets.events import send_event
+from alignak_app.qobjects.dock.events import send_event
 from alignak_app.qobjects.common.widgets import get_logo_widget, center_widget
 from alignak_app.qobjects.common.buttons import ToggleQWidgetButton
 

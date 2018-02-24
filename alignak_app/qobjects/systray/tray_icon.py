@@ -35,7 +35,7 @@ from alignak_app.utils.config import settings
 from alignak_app.qobjects.app_main import AppQMainWindow
 from alignak_app.qobjects.systray.about import AboutQDialog
 from alignak_app.qobjects.systray.qactions_factory import QActionFactory
-from alignak_app.qobjects.dock.widgets.events import send_event
+from alignak_app.qobjects.dock.events import send_event
 
 from alignak_app.qthreads.threadmanager import thread_manager
 

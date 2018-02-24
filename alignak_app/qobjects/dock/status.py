@@ -22,14 +22,21 @@
 """
     Status
     ++++++
-    Status manage QDialog who display every Alignak daemons status.
+    Status manage creation of QWidget and QDialog for Alignak status:
+
+    * Alignak daemons status: status of each daemons
+    * Alignak backend status: status of backend connection
+
 """
 
 from logging import getLogger
 
-from PyQt5.Qt import QDialog, QLabel, QWidget, Qt, QPushButton, QGridLayout, QHBoxLayout
+from PyQt5.Qt import QLabel, QPushButton, QIcon, QStyleOption, QPainter, QStyle, QDialog
+from PyQt5.Qt import QWidget, QHBoxLayout, QTimer, QPixmap, Qt, QGridLayout
 
+from alignak_app.backend.backend import app_backend
 from alignak_app.backend.datamanager import data_manager
+from alignak_app.items.daemon import Daemon
 from alignak_app.utils.config import settings
 from alignak_app.utils.time import get_time_diff_since_last_timestamp
 
@@ -237,3 +244,98 @@ class StatusQDialog(QDialog):
             )
             last_check = get_time_diff_since_last_timestamp(daemon_item.data['last_check'])
             self.labels[daemon_item.name]['last_check'].setText(last_check)
+
+
+class StatusQWidget(QWidget):
+    """
+        Class who display daemons and backend status
+    """
+
+    def __init__(self):
+        super(StatusQWidget, self).__init__()
+        self.setObjectName('bordered')
+        # Fields
+        self.daemons_status = QLabel('pending...')
+        self.backend_connected = QLabel('pending...')
+        self.status_dialog = StatusQDialog()
+        self.refresh_timer = QTimer()
+
+    def initialize(self):
+        """
+        Initialize QWidget
+
+        """
+
+        self.update_status()
+
+        layout = QHBoxLayout()
+        self.setLayout(layout)
+
+        # Daemons
+        daemons_title = QLabel(_('Status:'))
+        daemons_title.setObjectName('borderedtitle')
+        layout.addWidget(daemons_title)
+        layout.setAlignment(daemons_title, Qt.AlignCenter)
+
+        self.daemons_status.setFixedSize(16, 16)
+        self.daemons_status.setScaledContents(True)
+        self.daemons_status.setObjectName('borderedtitle')
+        layout.addWidget(self.daemons_status)
+        layout.setAlignment(self.daemons_status, Qt.AlignCenter)
+
+        # Status button
+        self.status_dialog.initialize()
+        status_btn = QPushButton()
+        status_btn.setIcon(QIcon(settings.get_image('icon')))
+        status_btn.setFixedSize(32, 32)
+        status_btn.clicked.connect(self.show_status_dialog)
+        layout.addWidget(status_btn)
+        layout.setAlignment(status_btn, Qt.AlignCenter)
+
+        # Backend state
+        connected_title = QLabel(_('Backend:'))
+        connected_title.setObjectName('borderedtitle')
+        layout.addWidget(connected_title)
+        layout.setAlignment(connected_title, Qt.AlignCenter)
+
+        self.backend_connected.setFixedSize(16, 16)
+        self.backend_connected.setScaledContents(True)
+        self.backend_connected.setObjectName('borderedtitle')
+        layout.addWidget(self.backend_connected)
+        layout.setAlignment(self.backend_connected, Qt.AlignCenter)
+
+        update_status = int(settings.get_config('Alignak-app', 'update_status')) * 1000
+        self.refresh_timer.setInterval(update_status)
+        self.refresh_timer.start()
+        self.refresh_timer.timeout.connect(self.update_status)
+
+    def show_status_dialog(self):
+        """
+        Update and show StatusQDialog
+
+        """
+
+        self.status_dialog.update_dialog()
+        self.status_dialog.app_widget.show()
+
+    def update_status(self):
+        """
+        Update dameons and backend status
+
+        """
+
+        logger.info("Update Status QWidget...")
+        self.backend_connected.setPixmap(
+            QPixmap(settings.get_image(app_backend.get_backend_status_icon()))
+        )
+        self.daemons_status.setPixmap(
+            QPixmap(settings.get_image(Daemon.get_daemons_status_icon()))
+        )
+
+    def paintEvent(self, _):
+        """Override to paint background"""
+
+        opt = QStyleOption()
+        opt.initFrom(self)
+        painter = QPainter(self)
+        self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)

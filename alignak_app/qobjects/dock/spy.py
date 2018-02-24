@@ -31,7 +31,7 @@ from PyQt5.Qt import QVBoxLayout, Qt, QWidget, QAbstractItemView, QListWidget, p
 
 from alignak_app.backend.datamanager import data_manager
 
-from alignak_app.qobjects.dock.widgets.events import EventItem
+from alignak_app.qobjects.dock.events import EventItem
 
 logger = getLogger(__name__)
 

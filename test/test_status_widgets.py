@@ -28,10 +28,10 @@ from alignak_app.backend.backend import app_backend
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.qobjects.dock.dialogs.status import StatusQDialog
+from alignak_app.qobjects.dock.status import StatusQDialog, StatusQWidget
 
 
-class TestStatusQDialog(unittest2.TestCase):
+class TestStatus(unittest2.TestCase):
     """
         This file test methods of StatusQDialog class object
     """
@@ -48,8 +48,8 @@ class TestStatusQDialog(unittest2.TestCase):
         except:
             pass
 
-    def test_initialize(self):
-        """Iniatialize StatusQDialog"""
+    def test_initialize_status_qdialog(self):
+        """Initialize StatusQDialog"""
 
         under_test = StatusQDialog()
 
@@ -60,10 +60,33 @@ class TestStatusQDialog(unittest2.TestCase):
         under_test.initialize()
 
     def test_get_buttons_widget(self):
-        """Get Buttons Status"""
+        """Get Buttons Status from StatusQDialog"""
 
         status_dialog_test = StatusQDialog()
 
         under_test = status_dialog_test.get_buttons_widget()
 
         self.assertIsInstance(under_test, QWidget)
+
+    def test_initialize_status_qwidget(self):
+        """Initialize StatusQWidget"""
+
+        under_test = StatusQWidget()
+
+        self.assertIsNotNone(under_test.backend_connected)
+        self.assertFalse('borderedtitle' in under_test.backend_connected.objectName())
+
+        self.assertIsNotNone(under_test.daemons_status)
+        self.assertFalse('borderedtitle' in under_test.daemons_status.objectName())
+
+        self.assertIsNotNone(under_test.refresh_timer)
+        self.assertFalse(under_test.refresh_timer.isActive())
+        self.assertIsNotNone(under_test.status_dialog)
+
+        self.assertIsInstance(under_test.status_dialog, StatusQDialog)
+
+        under_test.initialize()
+
+        self.assertTrue('borderedtitle' in under_test.backend_connected.objectName())
+        self.assertTrue('borderedtitle' in under_test.daemons_status.objectName())
+        self.assertTrue(under_test.refresh_timer.isActive())

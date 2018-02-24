@@ -32,11 +32,11 @@ from alignak_app.utils.config import settings
 from alignak_app.items.item import get_host_msg_and_event_type
 
 from alignak_app.qobjects.common.frames import get_frame_separator
-from alignak_app.qobjects.dock.widgets.status import StatusQWidget
-from alignak_app.qobjects.dock.widgets.buttons import ButtonsQWidget
-from alignak_app.qobjects.dock.widgets.events import get_events_widget
-from alignak_app.qobjects.dock.widgets.livestate import LivestateQWidget
-from alignak_app.qobjects.dock.widgets.spy import SpyQWidget
+from alignak_app.qobjects.dock.status import StatusQWidget
+from alignak_app.qobjects.dock.buttons import ButtonsQWidget
+from alignak_app.qobjects.dock.events import get_events_widget
+from alignak_app.qobjects.dock.livestate import LivestateQWidget
+from alignak_app.qobjects.dock.spy import SpyQWidget
 
 
 class DockQWidget(QWidget):

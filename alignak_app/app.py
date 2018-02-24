@@ -45,7 +45,7 @@ from alignak_app.utils.logs import create_logger
 
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.qobjects.dock.widgets.events import init_event_widget
+from alignak_app.qobjects.dock.events import init_event_widget
 from alignak_app.qobjects.common.widgets import center_widget
 from alignak_app.qobjects.login.login import LoginQDialog
 from alignak_app.qobjects.systray.tray_icon import TrayIcon

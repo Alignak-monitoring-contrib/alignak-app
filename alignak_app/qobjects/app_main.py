@@ -36,7 +36,7 @@ from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.widgets import get_logo_widget, center_widget
 from alignak_app.qobjects.common.frames import get_frame_separator
-from alignak_app.qobjects.dock.widgets.dock import DockQWidget
+from alignak_app.qobjects.dock.dock import DockQWidget
 from alignak_app.qobjects.panel.panel import PanelQWidget
 
 logger = getLogger(__name__)
