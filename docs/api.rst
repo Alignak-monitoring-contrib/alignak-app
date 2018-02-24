@@ -112,171 +112,171 @@ Locales
     :inherited-members:
     :show-inheritance:
 
-PyQt
-~~~~
+QObjects
+~~~~~~~~
 
-.. automodule:: alignak_app.pyqt
+.. automodule:: alignak_app.qobjects
 
-.. automodule:: alignak_app.pyqt.app_main
+.. automodule:: alignak_app.qobjects.app_main
     :members:
     :show-inheritance:
 
 Common
 ******
 
-.. automodule:: alignak_app.pyqt.common
+.. automodule:: alignak_app.qobjects.common
 
-.. automodule:: alignak_app.pyqt.common.actions
+.. automodule:: alignak_app.qobjects.common.actions
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.common.buttons
+.. automodule:: alignak_app.qobjects.common.buttons
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.common.frames
+.. automodule:: alignak_app.qobjects.common.frames
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.common.labels
+.. automodule:: alignak_app.qobjects.common.labels
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.common.widgets
+.. automodule:: alignak_app.qobjects.common.widgets
     :members:
     :show-inheritance:
 
 Dock (Rigt part)
 ****************
 
-.. automodule:: alignak_app.pyqt.dock
+.. automodule:: alignak_app.qobjects.dock
 
 Dock.Dialogs
 ************
 
-.. automodule:: alignak_app.pyqt.dock.dialogs
+.. automodule:: alignak_app.qobjects.dock.dialogs
 
-.. automodule:: alignak_app.pyqt.dock.dialogs.password
+.. automodule:: alignak_app.qobjects.dock.dialogs.password
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.dock.dialogs.status
+.. automodule:: alignak_app.qobjects.dock.dialogs.status
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.dock.dialogs.token
+.. automodule:: alignak_app.qobjects.dock.dialogs.token
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.dock.dialogs.user_notes
+.. automodule:: alignak_app.qobjects.dock.dialogs.user_notes
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.dock.dialogs.user_options
+.. automodule:: alignak_app.qobjects.dock.dialogs.user_options
     :members:
     :show-inheritance:
 
 Dock.Widgets
 ************
 
-.. automodule:: alignak_app.pyqt.dock.widgets
+.. automodule:: alignak_app.qobjects.dock.widgets
 
-.. automodule:: alignak_app.pyqt.dock.widgets.buttons
+.. automodule:: alignak_app.qobjects.dock.widgets.buttons
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.dock.widgets.dock
+.. automodule:: alignak_app.qobjects.dock.widgets.dock
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.dock.widgets.events
+.. automodule:: alignak_app.qobjects.dock.widgets.events
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.dock.widgets.livestate
+.. automodule:: alignak_app.qobjects.dock.widgets.livestate
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.dock.widgets.spy
+.. automodule:: alignak_app.qobjects.dock.widgets.spy
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.dock.widgets.status
+.. automodule:: alignak_app.qobjects.dock.widgets.status
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.dock.widgets.user
+.. automodule:: alignak_app.qobjects.dock.widgets.user
     :members:
     :show-inheritance:
 
 Login
 *****
 
-.. automodule:: alignak_app.pyqt.login
+.. automodule:: alignak_app.qobjects.login
 
-.. automodule:: alignak_app.pyqt.login.login
+.. automodule:: alignak_app.qobjects.login.login
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.login.server
+.. automodule:: alignak_app.qobjects.login.server
     :members:
     :show-inheritance:
 
 Panel (Left part)
 *****************
 
-.. automodule:: alignak_app.pyqt.panel
+.. automodule:: alignak_app.qobjects.panel
 
-.. automodule:: alignak_app.pyqt.panel.panel
+.. automodule:: alignak_app.qobjects.panel.panel
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.panel.dashboard
+.. automodule:: alignak_app.qobjects.panel.dashboard
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.panel.history
+.. automodule:: alignak_app.qobjects.panel.history
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.panel.host
+.. automodule:: alignak_app.qobjects.panel.host
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.panel.number_services
+.. automodule:: alignak_app.qobjects.panel.number_services
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.panel.problems
+.. automodule:: alignak_app.qobjects.panel.problems
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.panel.service
+.. automodule:: alignak_app.qobjects.panel.service
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.panel.service_tree_item
+.. automodule:: alignak_app.qobjects.panel.service_tree_item
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.panel.services
+.. automodule:: alignak_app.qobjects.panel.services
     :members:
     :show-inheritance:
 
 Systray
 *******
 
-.. automodule:: alignak_app.pyqt.systray
+.. automodule:: alignak_app.qobjects.systray
 
-.. automodule:: alignak_app.pyqt.systray.qactions_factory
+.. automodule:: alignak_app.qobjects.systray.qactions_factory
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.systray.tray_icon
+.. automodule:: alignak_app.qobjects.systray.tray_icon
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.pyqt.systray.about
+.. automodule:: alignak_app.qobjects.systray.about
     :members:
     :show-inheritance:
 

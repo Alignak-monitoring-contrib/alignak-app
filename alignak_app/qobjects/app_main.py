@@ -42,13 +42,13 @@ from alignak_app.qobjects.panel.panel import PanelQWidget
 logger = getLogger(__name__)
 
 
-class AppMain(QMainWindow):
+class AppQMainWindow(QMainWindow):
     """
         Class who create QMainWindow of Alignak-app
     """
 
     def __init__(self, parent=None):
-        super(AppMain, self).__init__(parent)
+        super(AppQMainWindow, self).__init__(parent)
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(settings.css_style)
         self.setWindowIcon(QIcon(settings.get_image('icon')))

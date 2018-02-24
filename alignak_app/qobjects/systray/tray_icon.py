@@ -32,7 +32,7 @@ from PyQt5.Qt import QMenu, QSystemTrayIcon
 
 from alignak_app.utils.config import settings
 
-from alignak_app.qobjects.app_main import AppMain
+from alignak_app.qobjects.app_main import AppQMainWindow
 from alignak_app.qobjects.systray.about import AboutQDialog
 from alignak_app.qobjects.systray.qactions_factory import QActionFactory
 from alignak_app.qobjects.dock.widgets.events import send_event
@@ -54,7 +54,7 @@ class TrayIcon(QSystemTrayIcon):
         self.menu = QMenu(parent)
         self.qaction_factory = QActionFactory()
         self.app_about = None
-        self.app_main = AppMain()
+        self.app_main = AppQMainWindow()
 
     def build_menu(self):
         """

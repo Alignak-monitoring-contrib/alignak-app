@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The PyQt package contains PyQt5 classes of Alignak-app
+    The QObjects package contains PyQt5 classes of Alignak-app
 """
