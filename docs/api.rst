@@ -19,7 +19,7 @@ Backend
 
 .. automodule:: alignak_app.backend
 
-.. automodule:: alignak_app.backend.client
+.. automodule:: alignak_app.backend.backend
     :members:
     :inherited-members:
     :show-inheritance:

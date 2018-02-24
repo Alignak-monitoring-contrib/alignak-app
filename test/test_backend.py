@@ -23,7 +23,7 @@ import json
 
 import unittest2
 
-from alignak_app.backend.client import BackendClient
+from alignak_app.backend.backend import BackendClient
 from alignak_app.utils.config import settings
 
 

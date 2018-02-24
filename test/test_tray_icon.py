@@ -27,7 +27,7 @@ from PyQt5.QtWidgets import QAction
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMenu
 
-from alignak_app.backend.client import BackendClient
+from alignak_app.backend.backend import BackendClient
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.user import User
 from alignak_app.utils.config import settings

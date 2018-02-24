@@ -29,7 +29,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QThread, pyqtSignal
 
-from alignak_app.backend.client import app_backend
+from alignak_app.backend.backend import app_backend
 
 logger = getLogger(__name__)
 

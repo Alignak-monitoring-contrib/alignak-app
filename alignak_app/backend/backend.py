@@ -20,9 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Client
-    ++++++
-    Client manage connection and access to Alignak backend.
+    Backend
+    +++++++
+    Backend manage connection and access to Alignak backend.
 """
 
 import json
