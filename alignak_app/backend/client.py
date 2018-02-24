@@ -31,7 +31,7 @@ from logging import getLogger
 
 from alignak_backend_client.client import Backend, BackendException
 
-from alignak_app.backend.data_manager import data_manager
+from alignak_app.backend.datamanager import data_manager
 
 from alignak_app.items.daemon import Daemon
 from alignak_app.items.event import Event

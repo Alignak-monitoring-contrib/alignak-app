@@ -28,7 +28,7 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMenu
 
 from alignak_app.backend.client import BackendClient
-from alignak_app.backend.data_manager import data_manager
+from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.user import User
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization

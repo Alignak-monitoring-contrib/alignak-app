@@ -29,7 +29,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QDialog, QLabel, QWidget, Qt, QPushButton, QGridLayout, QHBoxLayout
 
-from alignak_app.backend.data_manager import data_manager
+from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
 from alignak_app.utils.time import get_time_diff_since_last_timestamp
 

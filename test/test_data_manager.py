@@ -21,7 +21,7 @@
 
 import unittest2
 
-from alignak_app.backend.data_manager import DataManager
+from alignak_app.backend.datamanager import DataManager
 from alignak_app.items.event import Event
 from alignak_app.items.host import Host
 from alignak_app.items.livesynthesis import LiveSynthesis

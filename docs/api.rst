@@ -24,7 +24,7 @@ Backend
     :inherited-members:
     :show-inheritance:
 
-.. automodule:: alignak_app.backend.data_manager
+.. automodule:: alignak_app.backend.datamanager
     :members:
     :inherited-members:
     :show-inheritance:

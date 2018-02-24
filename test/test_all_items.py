@@ -25,7 +25,7 @@ from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
 from alignak_app.backend.client import app_backend
-from alignak_app.backend.data_manager import data_manager
+from alignak_app.backend.datamanager import data_manager
 
 from alignak_app.items.daemon import Daemon
 from alignak_app.items.event import Event

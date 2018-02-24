@@ -31,7 +31,7 @@ from PyQt5.Qt import QLabel, QWidget, QGridLayout, Qt, QPixmap, QVBoxLayout, QHB
 from PyQt5.Qt import QPushButton, QIcon, QTimer
 
 from alignak_app.backend.client import app_backend
-from alignak_app.backend.data_manager import data_manager
+from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.item import get_host_msg_and_event_type
 from alignak_app.items.item import get_icon_name, get_real_host_state_icon
 from alignak_app.utils.config import settings

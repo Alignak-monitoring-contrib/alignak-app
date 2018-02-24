@@ -31,7 +31,7 @@ settings.init_config()
 init_localization()
 app = QApplication(sys.argv)
 
-from alignak_app.backend.data_manager import data_manager
+from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.user import User
 
 from alignak_app.pyqt.dock.widgets.user import UserQWidget

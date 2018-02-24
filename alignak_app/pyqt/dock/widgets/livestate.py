@@ -34,7 +34,7 @@ from logging import getLogger
 from PyQt5.Qt import QLabel, QTimer
 from PyQt5.Qt import QWidget, QVBoxLayout, QHBoxLayout, Qt, QStyleOption, QPainter, QStyle
 
-from alignak_app.backend.data_manager import data_manager
+from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
 
 from alignak_app.pyqt.common.labels import get_icon_item

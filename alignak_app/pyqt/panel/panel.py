@@ -30,7 +30,7 @@ from logging import getLogger
 from PyQt5.Qt import QPushButton, QCompleter, QLineEdit, QIcon, QHBoxLayout
 from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget, QTabWidget
 
-from alignak_app.backend.data_manager import data_manager
+from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
 
 from alignak_app.pyqt.common.frames import get_frame_separator

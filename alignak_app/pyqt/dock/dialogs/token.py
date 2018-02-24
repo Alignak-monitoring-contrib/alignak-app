@@ -29,7 +29,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QPushButton, QLabel, QVBoxLayout, QWidget, QDialog, QIcon, Qt
 
-from alignak_app.backend.data_manager import data_manager
+from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
 
 from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget
