@@ -83,7 +83,10 @@ def create_logger():  # pragma: no cover
             print('Can\'t create log file in [%s], App will log in current directory !' % path)
             path = '.'
 
-    formatter = Formatter('[%(asctime)s]-%(name)-12s: [%(levelname)s] %(message)s')
+    formatter = Formatter(
+        fmt='[%(asctime)s]-%(name)12s: [%(levelname)s] %(message)s',
+        datefmt='%Y-%m-%d,%H:%M:%S'
+    )
 
     # Create "file_handler"
     file_handler = TimedRotatingFileHandler(
