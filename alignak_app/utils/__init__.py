@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The Core.Utils package contains classes and functions configurations
+    The Utils package contains classes and functions configurations
 """

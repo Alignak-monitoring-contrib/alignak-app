@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The Core.Backend package contains classes to manage alignak data
+    The Backend package contains classes to manage alignak data
 """

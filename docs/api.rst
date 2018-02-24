@@ -14,98 +14,90 @@ Alignak-App
     :members:
     :show-inheritance:
 
-Core
-~~~~
-
-.. automodule:: alignak_app.core
-    :members:
-    :inherited-members:
-    :show-inheritance:
-
 Backend
-*******
+~~~~~~~
 
-.. automodule:: alignak_app.core.backend
+.. automodule:: alignak_app.backend
 
-.. automodule:: alignak_app.core.backend.client
+.. automodule:: alignak_app.backend.client
     :members:
     :inherited-members:
     :show-inheritance:
 
-.. automodule:: alignak_app.core.backend.data_manager
+.. automodule:: alignak_app.backend.data_manager
     :members:
     :inherited-members:
     :show-inheritance:
 
-Models
-******
+Items
+~~~~~
 
-.. automodule:: alignak_app.core.models
+.. automodule:: alignak_app.items
 
-.. automodule:: alignak_app.core.models.item
+.. automodule:: alignak_app.items.item
     :members:
     :inherited-members:
     :show-inheritance:
 
-.. automodule:: alignak_app.core.models.daemon
+.. automodule:: alignak_app.items.daemon
     :members:
     :inherited-members:
     :show-inheritance:
 
-.. automodule:: alignak_app.core.models.event
+.. automodule:: alignak_app.items.event
     :members:
     :inherited-members:
     :show-inheritance:
 
-.. automodule:: alignak_app.core.models.history
+.. automodule:: alignak_app.items.history
     :members:
     :inherited-members:
     :show-inheritance:
 
-.. automodule:: alignak_app.core.models.host
+.. automodule:: alignak_app.items.host
     :members:
     :inherited-members:
     :show-inheritance:
 
-.. automodule:: alignak_app.core.models.livesynthesis
+.. automodule:: alignak_app.items.livesynthesis
     :members:
     :inherited-members:
     :show-inheritance:
 
-.. automodule:: alignak_app.core.models.service
+.. automodule:: alignak_app.items.service
     :members:
     :inherited-members:
     :show-inheritance:
 
-.. automodule:: alignak_app.core.models.user
+.. automodule:: alignak_app.items.user
     :members:
     :inherited-members:
     :show-inheritance:
 
 Utils
-*****
+~~~~~
 
-.. automodule:: alignak_app.core.utils
+.. automodule:: alignak_app.utils
 
-.. automodule:: alignak_app.core.utils.config
+.. automodule:: alignak_app.utils.config
     :members:
     :inherited-members:
     :show-inheritance:
 
 
-.. automodule:: alignak_app.core.utils.install
+.. automodule:: alignak_app.utils.install
     :members:
     :inherited-members:
     :show-inheritance:
 
 
-.. automodule:: alignak_app.core.utils.logs
+.. automodule:: alignak_app.utils.logs
     :members:
     :inherited-members:
     :show-inheritance:
 
 
-.. automodule:: alignak_app.core.utils.time
+.. automodule:: alignak_app.utils.time
     :members:
     :inherited-members:
     :show-inheritance:
