@@ -85,7 +85,7 @@ class Host(Item):
         :rtype: str
         """
 
-        if self.data['alias']:
+        if 'alias' in self.data:
             return self.data['alias'].capitalize()
 
         return self.data['name'].capitalize()
