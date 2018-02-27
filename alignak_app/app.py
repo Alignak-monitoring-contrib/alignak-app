@@ -130,12 +130,13 @@ class AlignakApp(QObject):  # pragma: no cover
         self.tray_icon = None
         self.threadmanager_timer = QTimer()
 
-    def start(self):
+    def start(self, username=None, password=None):
         """
         Start Alignak-app
 
         """
 
+        # Logger
         logger.name = 'alignak_app'
         if settings.get_config('Log', 'debug', boolean=True):
             logger.setLevel(DEBUG)
@@ -147,24 +148,28 @@ class AlignakApp(QObject):  # pragma: no cover
         app = QApplication(sys.argv)
         app.setQuitOnLastWindowClosed(False)
 
-        username = None
-        password = None
-        if settings.get_config('Alignak', 'username'):
+        # Connection to Backend
+        if settings.get_config('Alignak', 'username') and not username and not password:
             username = settings.get_config('Alignak', 'username')
             password = settings.get_config('Alignak', 'password')
 
-        while not app_backend.login(username, password):
+        if not app_backend.login(username, password):
             login = LoginQDialog()
             login.create_widget()
 
             if login.exec_() == login.Accepted:
                 username = str(login.username_line.text())
                 password = str(login.password_line.text())
+                self.start(username, password)
+            else:
+                logger.info('The application is closed.')
+                sys.exit(0)
 
+        # Launch start threads
         thread_to_launch = thread_manager.get_threads_to_launch()
-        logger.info("Filling the database [%s]", thread_to_launch)
         thread_to_launch.remove('history')
         thread_to_launch.remove('notifications')
+        logger.info("Filling the database: %s", thread_to_launch)
 
         launched_threads = []
         for thread in thread_to_launch:
@@ -210,11 +215,12 @@ class AlignakApp(QObject):  # pragma: no cover
 
         sys.exit(app.exec_())
 
-    def quit_launched_threads(self, launched_threads):
+    @staticmethod
+    def quit_launched_threads(launched_threads):
         """
         Exit the threads that were started when the application started
 
-        :param launch_threads: list of threads that have been launched
+        :param launched_threads: list of threads that have been launched
         :type launched_threads: list
         :return: empty list if all the threads have been left or current list
         :rtype: list
@@ -223,6 +229,7 @@ class AlignakApp(QObject):  # pragma: no cover
         for old_thread in launched_threads:
             if old_thread.isFinished():
                 old_thread.quit()
+                old_thread.wait()
                 launched_threads.remove(old_thread)
 
         return launched_threads
@@ -242,9 +249,10 @@ class AlignakApp(QObject):  # pragma: no cover
             if thread_manager.threads_to_launch and not thread_manager.current_thread:
                 cur_thread = thread_manager.threads_to_launch.pop(0)
                 backend_thread = BackendQThread(cur_thread)
-                backend_thread.start()
 
-                thread_manager.current_thread = backend_thread
+                if app_backend.connected:
+                    backend_thread.start()
+                    thread_manager.current_thread = backend_thread
 
             # Cleaning threads who are finished
             if thread_manager.current_thread:
@@ -252,15 +260,8 @@ class AlignakApp(QObject):  # pragma: no cover
                     logger.debug('Remove finished thread: %s',
                                  thread_manager.current_thread.thread_name)
                     thread_manager.current_thread.quit()
-                    thread_manager.current_thread.wait()
 
                     thread_manager.current_thread = None
         else:
-            logger.info('App is not connected %s', str(app_backend.connected))
+            logger.info('Can\'t launch thread, App is not connected to backend !')
             thread_manager.stop_threads()
-
-
-if __name__ == '__main__':
-    apptest = AlignakApp()
-
-    apptest.start()

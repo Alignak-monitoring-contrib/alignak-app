@@ -28,9 +28,10 @@
 import sys
 from logging import getLogger
 
-from PyQt5.Qt import QMenu, QSystemTrayIcon
+from PyQt5.Qt import QMenu, QSystemTrayIcon, QTimer
 
 from alignak_app.utils.config import settings
+from alignak_app.backend.backend import app_backend
 
 from alignak_app.qobjects.app_main import AppQMainWindow
 from alignak_app.qobjects.systray.about import AboutQDialog
@@ -55,6 +56,8 @@ class TrayIcon(QSystemTrayIcon):
         self.qaction_factory = QActionFactory()
         self.app_about = None
         self.app_main = AppQMainWindow()
+        self.connection_timer = QTimer()
+        self.connection_nb = 3
 
     def build_menu(self):
         """
@@ -63,13 +66,18 @@ class TrayIcon(QSystemTrayIcon):
         """
 
         logger.info("Start TrayIcon...")
+
+        self.connection_timer.setInterval(10000)
+        self.connection_timer.start()
+        self.connection_timer.timeout.connect(self.check_connection)
+
         # Create actions
-        self.create_dock_action()
+        self.add_alignak_menu()
 
         self.menu.addSeparator()
 
-        self.create_reload_configuration()
-        self.create_about_action()
+        self.add_reload_menu()
+        self.add_about_menu()
 
         self.menu.addSeparator()
 
@@ -77,13 +85,30 @@ class TrayIcon(QSystemTrayIcon):
 
         self.setContextMenu(self.menu)
 
-    def create_dock_action(self):
+    def check_connection(self):
+        """
+        Check periodically connection for App
+
+        """
+
+        if app_backend.connected:
+            connect = app_backend.login()
+            logger.info('App check connection: %s', app_backend.connection_status[connect])
+        elif not app_backend.connected and self.connection_nb < 1:
+            connect = app_backend.login()
+            logger.warning('App check connection: %s', app_backend.connection_status[connect])
+            self.connection_nb = 3
+        elif not app_backend.connected:
+            logger.warning('App check connection in %d0s', self.connection_nb)
+            self.connection_nb -= 1
+        else:
+            pass
+
+    def add_alignak_menu(self):
         """
         Create "dock" action
 
         """
-
-        logger.debug('Create Alignak-app Action')
 
         self.qaction_factory.create(
             'icon',
@@ -96,13 +121,11 @@ class TrayIcon(QSystemTrayIcon):
 
         self.menu.addAction(self.qaction_factory.get_action('icon'))
 
-    def create_reload_configuration(self):
+    def add_reload_menu(self):
         """
         Create "reload" action
 
         """
-
-        logger.debug('Create Reload Action')
 
         self.qaction_factory.create(
             'refresh',
@@ -114,13 +137,11 @@ class TrayIcon(QSystemTrayIcon):
 
         self.menu.addAction(self.qaction_factory.get_action('refresh'))
 
-    def create_about_action(self):
+    def add_about_menu(self):
         """
         Create AppAbout QWidget and "about" action.
 
         """
-
-        logger.debug('Create About Action')
 
         self.app_about = AboutQDialog()
         self.app_about.initialize()
@@ -161,7 +182,7 @@ class TrayIcon(QSystemTrayIcon):
         """
 
         thread_manager.stop_threads()
-
+        logger.info('The application is closed.')
         sys.exit(0)
 
     @staticmethod

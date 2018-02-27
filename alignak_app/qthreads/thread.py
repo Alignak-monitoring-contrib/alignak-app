@@ -73,3 +73,4 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
                 logger.error("Thread is unknown: %s", self.thread_name)
         else:
             logger.warning('The app is offline, the threads can not be launched !')
+            self.quit()

@@ -64,6 +64,7 @@ class TestAppBackend(unittest2.TestCase):
         backend_test = BackendClient()
 
         backend_test.login()
+        print(backend_test.connected)
 
         # Get hosts states
         test_projection = [

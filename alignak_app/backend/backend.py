@@ -51,7 +51,13 @@ class BackendClient(object):
         Class who collect informations with Backend-Client and returns data for Alignak-App.
     """
 
+    connection_status = {
+        True: 'Success',
+        False: 'Failure'
+    }
+
     def __init__(self):
+        self.start = False
         self.backend = None
         self.connected = False
         self.user = {}
@@ -70,11 +76,8 @@ class BackendClient(object):
 
         # Credentials
         if not username and not password:
-            if data_manager.is_ready() == 'READY':
-                username = data_manager.database['user'].name
-            else:
-                username = settings.get_config('Alignak', 'username')
-                password = settings.get_config('Alignak', 'password')
+            if 'token' in self.user:
+                username = self.user['token']
 
         # Create Backend object
         backend_url = settings.get_config('Alignak', 'backend')
@@ -86,19 +89,19 @@ class BackendClient(object):
         logger.info('Try to connect to app_backend...')
 
         if username and password:
-            # Username & password : not recommended, without "login.form.py" form.
+            # Username & password : not recommended, without login QDialog
             try:
                 self.connected = self.backend.login(username, password)
                 if self.connected:
                     self.user['username'] = username
                     self.user['token'] = self.backend.token
-                logger.info('Connection by password: %s', str(self.connected))
+                logger.info('Connection by password: %s', self.connection_status[self.connected])
             except BackendException:  # pragma: no cover
                 logger.error('Connection to Backend has failed !')
         elif username and not password:  # pragma: no cover
             # Username as token : recommended
             self.backend.authenticated = True
-            if self.user:
+            if 'token' in self.user:
                 self.backend.token = self.user['token']
             else:
                 self.backend.token = username
@@ -109,11 +112,11 @@ class BackendClient(object):
             connection_test = self.get('livesynthesis')
 
             self.connected = bool(connection_test)
-            logger.info('Connection by token: %s', str(self.connected))
-
+            logger.info('Connection by token: %s', self.connection_status[self.connected])
         else:
-            logger.error(
-                'Connection to Backend has failed.\nCheck [Alignak] section in configuration file.'
+            logger.warning(
+                'Connection to Backend has failed.\nCheck [Alignak] section in configuration file '
+                'or use login window of application.'
             )
 
         return self.connected
@@ -136,15 +139,14 @@ class BackendClient(object):
 
         request = None
 
-        if params is None:
-            params = {'max_results': 50}
-        if projection is not None:
-            generate_proj = {}
-            for field in projection:
-                generate_proj[field] = 1
-            params['projection'] = json.dumps(generate_proj)
-
         if self.connected:
+            if params is None:
+                params = {'max_results': 50}
+            if projection is not None:
+                generate_proj = {}
+                for field in projection:
+                    generate_proj[field] = 1
+                params['projection'] = json.dumps(generate_proj)
             # Request
             try:
                 if not all_items:
@@ -159,12 +161,10 @@ class BackendClient(object):
                     )
                 logger.info('GET on [%s] backend > %s', endpoint, str(request['_status']))
                 logger.debug('- params: [%s]', str(params))
-            except BackendException as e:
-                logger.error(e)
+            except BackendException:
                 self.connected = False
         else:
             logger.info('App is not connected to backend !')
-            self.login()
 
         return request
 
@@ -190,8 +190,7 @@ class BackendClient(object):
                 logger.info('POST on [%s] backend > %s', endpoint, str(request['_status']))
                 logger.debug('- data: [%s]', str(data))
                 logger.debug('- headers: [%s]', str(headers))
-            except BackendException as e:
-                logger.error(e)
+            except BackendException:
                 self.connected = False
         else:
             logger.info('App is not connected to backend !')
@@ -220,8 +219,7 @@ class BackendClient(object):
                 logger.info('PATCH on [%s] backend > %s', endpoint, str(request['_status']))
                 logger.debug('- data: [%s]', str(data))
                 logger.debug('- headers: [%s]', str(headers))
-            except BackendException as e:
-                logger.error(e)
+            except BackendException:
                 self.connected = False
         else:
             logger.info('App is not connected to backend !')
@@ -328,8 +326,8 @@ class BackendClient(object):
             all_items=True
         )
 
-        hosts_list = []
         if request:
+            hosts_list = []
             for item in request['_items']:
                 host = Host()
 
@@ -480,6 +478,7 @@ class BackendClient(object):
                     request_data['projection'],
                     all_items=False
                 )
+
                 if request:
                     host_history = History()
 
