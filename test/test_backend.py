@@ -42,7 +42,10 @@ class TestAppBackend(unittest2.TestCase):
 
         under_test = BackendClient()
 
-        connect = under_test.login()
+        connect = under_test.login(
+            settings.get_config('Alignak', 'username'),
+            settings.get_config('Alignak', 'password')
+        )
 
         # Compare config url and app_backend
         self.assertEquals(
@@ -53,9 +56,8 @@ class TestAppBackend(unittest2.TestCase):
         self.assertTrue(under_test.backend.authenticated)
         self.assertTrue(connect)
 
-        second_test = BackendClient()
-
-        connect = second_test.login('admin', 'admin')
+        # Assert on second connection, backend use token !
+        connect = under_test.login()
         self.assertTrue(connect)
 
     def test_get_endpoint_with_params_and_projection(self):
@@ -63,8 +65,10 @@ class TestAppBackend(unittest2.TestCase):
 
         backend_test = BackendClient()
 
-        backend_test.login()
-        print(backend_test.connected)
+        backend_test.login(
+            settings.get_config('Alignak', 'username'),
+            settings.get_config('Alignak', 'password')
+        )
 
         # Get hosts states
         test_projection = [
@@ -84,7 +88,10 @@ class TestAppBackend(unittest2.TestCase):
         """PATCH User Notes"""
 
         under_test = BackendClient()
-        under_test.login()
+        under_test.login(
+            settings.get_config('Alignak', 'username'),
+            settings.get_config('Alignak', 'password')
+        )
 
         users = under_test.get('user')
         user = users['_items'][0]
@@ -113,12 +120,18 @@ class TestAppBackend(unittest2.TestCase):
         """Get User Realm Name"""
 
         backend_test = BackendClient()
-        backend_test.login()
+        backend_test.login(
+            settings.get_config('Alignak', 'username'),
+            settings.get_config('Alignak', 'password')
+        )
 
         under_test = backend_test.get_realm_name('false_id')
         self.assertEqual('n/a', under_test)
 
-        backend_test.login()
+        backend_test.login(
+            settings.get_config('Alignak', 'username'),
+            settings.get_config('Alignak', 'password')
+        )
         under_test2 = backend_test.get_realm_name('59c4e38535d17b8dcb0bed42')
         self.assertEqual('All', under_test2)
 
@@ -181,7 +194,10 @@ class TestAppBackend(unittest2.TestCase):
         """Query History Data"""
 
         under_test = BackendClient()
-        under_test.login()
+        under_test.login(
+            settings.get_config('Alignak', 'username'),
+            settings.get_config('Alignak', 'password')
+        )
 
         from alignak_app.backend.datamanager import data_manager
         under_test.query_history_data(self.hostname, self.host_id)
@@ -221,7 +237,10 @@ class TestAppBackend(unittest2.TestCase):
         under_test = backend_test.get_backend_status_icon()
         self.assertEqual('disconnected', under_test)
 
-        backend_test.login()
+        backend_test.login(
+            settings.get_config('Alignak', 'username'),
+            settings.get_config('Alignak', 'password')
+        )
 
         under_test = backend_test.get_backend_status_icon()
         self.assertEqual('connected', under_test)
