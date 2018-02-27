@@ -45,11 +45,9 @@ class TestThreadManager(unittest2.TestCase):
         self.assertFalse(under_test.current_thread)
         self.assertIsNotNone(under_test.timer)
         self.assertIsInstance(under_test.timer, QTimer)
-        self.assertEqual(
-            ['user', 'host', 'service', 'livesynthesis',
-             'alignakdaemon', 'notifications', 'history'],
-            under_test.threads_to_launch
-        )
+        for thread in ['livesynthesis', 'host', 'service', 'user',
+                       'alignakdaemon', 'notifications', 'history']:
+            self.assertTrue(thread in under_test.threads_to_launch)
 
     def test_get_threads_to_launch(self):
         """Get QThreads to Launch"""
@@ -59,19 +57,16 @@ class TestThreadManager(unittest2.TestCase):
         under_test = thread_mgr_test.get_threads_to_launch()
 
         # If there is no current thread, all threads are added
-        self.assertEqual([], thread_mgr_test.current_thread)
-        self.assertEqual(
-            ['user', 'host', 'service', 'livesynthesis',
-             'alignakdaemon', 'notifications', 'history'],
-            under_test
-        )
+        self.assertIsNone(thread_mgr_test.current_thread)
+        for thread in ['livesynthesis', 'host', 'service', 'user', 'alignakdaemon',
+                       'notifications', 'history']:
+            self.assertTrue(thread in under_test)
 
-        thread_mgr_test.current_thread = [BackendQThread('user'), BackendQThread('host')]
+        thread_mgr_test.current_thread = BackendQThread('user')
 
         under_test = thread_mgr_test.get_threads_to_launch()
 
         # If there is current thread, ThreadManager add only threads who are necessary
         self.assertNotEqual([], thread_mgr_test.current_thread)
         self.assertTrue('user' not in under_test)
-        self.assertTrue('host' not in under_test)
 

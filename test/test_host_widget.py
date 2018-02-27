@@ -29,12 +29,26 @@ from alignak_app.items.host import Host
 from alignak_app.items.service import Service
 from alignak_app.items.user import User
 from alignak_app.utils.config import settings
+from alignak_app.locales.locales import init_localization
+from alignak_app.qobjects.panel.host import HostQWidget
 
-app = QApplication(sys.argv)
+# app = QApplication(sys.argv)
+init_localization()
 data_manager.database['user'] = User()
 data_manager.database['user'].create('_id', {}, 'name')
 
-from alignak_app.qobjects.panel.host import HostQWidget
+host = Host()
+host.create(
+    '_id1',
+    {
+        'name': 'localhost',
+        'ls_state': 'DOWN',
+        'ls_acknowledged': False,
+        'ls_downtimed': False,
+     },
+    'localhost'
+)
+data_manager.database['host'] = [host]
 
 
 class TestHostQWidget(unittest2.TestCase):

@@ -324,6 +324,10 @@ class TestDataManager(unittest2.TestCase):
         under_test.update_database('host', {'data': 'test'})
         self.assertNotEqual('READY', under_test.is_ready())
         under_test.update_database('service', {'data': 'test'})
+        self.assertNotEqual('READY', under_test.is_ready())
+        under_test.update_database('user', {'data': 'test'})
+        self.assertNotEqual('READY', under_test.is_ready())
+        under_test.update_database('alignakdaemon', {'data': 'test'})
 
         self.assertEqual('READY', under_test.is_ready())
 
