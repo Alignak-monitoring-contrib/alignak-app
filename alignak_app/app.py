@@ -156,7 +156,8 @@ class AlignakApp(QObject):
         logger.info('- [%s]: %s',
                     os.path.split(settings.settings['images'])[1], settings.settings['images'])
 
-        self.run()
+        self.reconnecting.connect(self.app_reconnecting_mode)
+        self.run(app_backend.login())
 
     def app_reconnecting_mode(self, error):  # pragma: no cover
         """
@@ -194,24 +195,17 @@ class AlignakApp(QObject):
             timer.start(5000)
             timer.timeout.connect(connect_to_backend)
 
-    def run(self, username=None, password=None):  # pragma: no cover
+    def run(self, connected):  # pragma: no cover
         """
         Start all Alignak-app processes and create AppBackend if connection by config file.
 
         """
 
-        if username and password:
-            app_backend.login(username, password)
-        else:
-            app_backend.login()
-
         # Check if connected
-        if app_backend.connected:
+        if connected:
             # Start ThreadManager
             for _ in range(0, 5):
                 thread_manager.launch_threads()
-
-            self.reconnecting.connect(self.app_reconnecting_mode)
 
             # Give AlignakApp for AppBackend reconnecting mode
             app_backend.app = self
@@ -242,18 +236,6 @@ class AlignakApp(QObject):
             self.tray_icon = TrayIcon(QIcon(settings.get_image('icon')))
             self.tray_icon.build_menu()
             self.tray_icon.show()
-        else:
-            # In case of data provided in config file fails
-            login = LoginQDialog()
-            login.create_widget()
-
-            if login.exec_() == QDialog.Accepted:
-                username = str(login.username_line.text())
-                password = str(login.password_line.text())
-                self.run(username, password)
-            else:
-                logger.info('Alignak-App closes...')
-                sys.exit(0)
 
     @staticmethod
     def display_error_msg():  # pragma: no cover

@@ -42,7 +42,7 @@ class TestThreadManager(unittest2.TestCase):
 
         under_test = ThreadManager()
 
-        self.assertFalse(under_test.current_threads)
+        self.assertFalse(under_test.current_thread)
         self.assertIsNotNone(under_test.timer)
         self.assertIsInstance(under_test.timer, QTimer)
         self.assertEqual(
@@ -59,19 +59,19 @@ class TestThreadManager(unittest2.TestCase):
         under_test = thread_mgr_test.get_threads_to_launch()
 
         # If there is no current thread, all threads are added
-        self.assertEqual([], thread_mgr_test.current_threads)
+        self.assertEqual([], thread_mgr_test.current_thread)
         self.assertEqual(
             ['user', 'host', 'service', 'livesynthesis',
              'alignakdaemon', 'notifications', 'history'],
             under_test
         )
 
-        thread_mgr_test.current_threads = [BackendQThread('user'), BackendQThread('host')]
+        thread_mgr_test.current_thread = [BackendQThread('user'), BackendQThread('host')]
 
         under_test = thread_mgr_test.get_threads_to_launch()
 
         # If there is current thread, ThreadManager add only threads who are necessary
-        self.assertNotEqual([], thread_mgr_test.current_threads)
+        self.assertNotEqual([], thread_mgr_test.current_thread)
         self.assertTrue('user' not in under_test)
         self.assertTrue('host' not in under_test)
 

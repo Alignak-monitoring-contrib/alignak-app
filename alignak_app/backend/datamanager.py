@@ -59,19 +59,29 @@ class DataManager(object):
         :rtype: str
         """
 
+        cur_collected = ''
         if self.database['host'] and \
                 self.database['service'] and \
-                self.database['livesynthesis']:
-            return 'READY'
+                self.database['livesynthesis'] and \
+                self.database['alignakdaemon'] and \
+                self.database['user']:
+            cur_collected = 'READY'
 
-        if not self.database['livesynthesis']:
-            return 'Collecting livesynthesis...'
-        if not self.database['host']:
-            return 'Collecting hosts...'
-        if not self.database['service']:
-            return 'Collecting services...'
+        if not self.database['livesynthesis'] and not cur_collected:
+            cur_collected = 'Collecting livesynthesis...'
+        if not self.database['host'] and not cur_collected:
+            cur_collected = 'Collecting hosts...'
+        if not self.database['service'] and not cur_collected:
+            cur_collected = 'Collecting services...'
+        if not self.database['alignakdaemon'] and not cur_collected:
+            cur_collected = 'Collecting alignak daemons...'
+        if not self.database['user'] and not cur_collected:
+            cur_collected = 'Collecting user...'
 
-        return 'Please wait...'
+        if not cur_collected:
+            cur_collected = 'Please wait'
+
+        return cur_collected
 
     def update_database(self, item_type, items_list):
         """

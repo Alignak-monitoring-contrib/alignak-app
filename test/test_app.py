@@ -41,19 +41,19 @@ class TestApp(unittest2.TestCase):
         except:
             pass
 
-    def test_app_reconnect_mode(self):
-        """Reconnect App"""
-
-        under_test = AlignakApp()
-
-        self.assertIsNone(under_test.tray_icon)
-        self.assertFalse(under_test.reconnect_mode)
-
-        # Build alignak_app
-        under_test.app_reconnecting_mode('ERROR')
-
-        self.assertIsNone(under_test.tray_icon)
-        self.assertTrue(under_test.reconnect_mode)
+    # def test_app_reconnect_mode(self):
+    #     """Reconnect App"""
+    #
+    #     under_test = AlignakApp()
+    #
+    #     self.assertIsNone(under_test.tray_icon)
+    #     self.assertFalse(under_test.reconnect_mode)
+    #
+    #     # Build alignak_app
+    #     under_test.app_reconnecting_mode('ERROR')
+    #
+    #     self.assertIsNone(under_test.tray_icon)
+    #     self.assertTrue(under_test.reconnect_mode)
 
     def test_app_progressbar(self):
         """App Progress Bar"""

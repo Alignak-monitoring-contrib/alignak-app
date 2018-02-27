@@ -53,9 +53,8 @@ class BackendClient(object):
 
     def __init__(self):
         self.backend = None
-        self.user = {}
         self.connected = False
-        self.app = None
+        self.user = {}
 
     def login(self, username=None, password=None):
         """
@@ -94,8 +93,8 @@ class BackendClient(object):
                     self.user['username'] = username
                     self.user['token'] = self.backend.token
                 logger.info('Connection by password: %s', str(self.connected))
-            except BackendException as e:  # pragma: no cover
-                logger.error('Connection to Backend has failed: %s', str(e))
+            except BackendException:  # pragma: no cover
+                logger.error('Connection to Backend has failed !')
         elif username and not password:  # pragma: no cover
             # Username as token : recommended
             self.backend.authenticated = True
@@ -112,14 +111,10 @@ class BackendClient(object):
             self.connected = bool(connection_test)
             logger.info('Connection by token: %s', str(self.connected))
 
-            if not self.connected:
-                return False
         else:
-            # Else exit
             logger.error(
                 'Connection to Backend has failed.\nCheck [Alignak] section in configuration file.'
             )
-            return False
 
         return self.connected
 
@@ -164,14 +159,12 @@ class BackendClient(object):
                     )
                 logger.info('GET on [%s] backend > %s', endpoint, str(request['_status']))
                 logger.debug('- params: [%s]', str(params))
-                logger.debug('- projection: [%s]', str(projection))
-            except (BackendException, json.decoder.JSONDecodeError) as e:
-                error = 'GET on [%s] backend failed: %s', endpoint, str(e)
+            except BackendException as e:
+                logger.error(e)
                 self.connected = False
-                if self.app:
-                    if not self.app.reconnect_mode:
-                        self.app.reconnecting.emit(error)
-                return request
+        else:
+            logger.info('App is not connected to backend !')
+            self.login()
 
         return request
 
@@ -197,13 +190,11 @@ class BackendClient(object):
                 logger.info('POST on [%s] backend > %s', endpoint, str(request['_status']))
                 logger.debug('- data: [%s]', str(data))
                 logger.debug('- headers: [%s]', str(headers))
-            except (BackendException, json.decoder.JSONDecodeError) as e:
-                error = 'POST on [%s] backend failed: %s', endpoint, str(e)
+            except BackendException as e:
+                logger.error(e)
                 self.connected = False
-                if self.app:
-                    if not self.app.reconnect_mode:
-                        self.app.reconnecting.emit(error)
-                return request
+        else:
+            logger.info('App is not connected to backend !')
 
         return request
 
@@ -229,13 +220,11 @@ class BackendClient(object):
                 logger.info('PATCH on [%s] backend > %s', endpoint, str(request['_status']))
                 logger.debug('- data: [%s]', str(data))
                 logger.debug('- headers: [%s]', str(headers))
-            except (BackendException, json.decoder.JSONDecodeError) as e:
-                error = 'PATCH on [%s] backend failed: %s', endpoint, str(e)
+            except BackendException as e:
+                logger.error(e)
                 self.connected = False
-                if self.app:
-                    if not self.app.reconnect_mode:
-                        self.app.reconnecting.emit(error)
-                return request
+        else:
+            logger.info('App is not connected to backend !')
 
         return request
 
@@ -260,10 +249,10 @@ class BackendClient(object):
         realm = self.get(endpoint, projection=projection)
 
         if realm:
-            if realm['alias']:
+            if 'alias' in realm:
                 return realm['alias']
-
-            return realm['name']
+            if 'name' in realm:
+                return realm['name']
 
         return 'n/a'
 
@@ -294,8 +283,8 @@ class BackendClient(object):
 
             if 'alias' in period_items:
                 return period_items['alias']
-
-            return period_items['name']
+            if 'name' in period_items:
+                return period_items['name']
 
         return 'n/a'
 
@@ -305,9 +294,7 @@ class BackendClient(object):
 
         """
 
-        user = User()
-
-        request_data = user.get_request_model(self.backend.token)
+        request_data = User.get_request_model(self.backend.token)
 
         request = self.get(
             request_data['endpoint'],
@@ -316,11 +303,14 @@ class BackendClient(object):
         )
 
         if request:
+            user = User()
+
             user.create(
                 request['_items'][0]['_id'],
                 request['_items'][0],
                 request['_items'][0]['name']
             )
+
             data_manager.update_database('user', user)
 
     def query_hosts_data(self):
