@@ -178,7 +178,7 @@ class TrayIcon(QSystemTrayIcon):
         """
 
         thread_manager.stop_threads()
-        logger.info('The application is closed.')
+        logger.info('----- Alignak-App STOP -----')
         sys.exit(0)
 
     @staticmethod

@@ -203,7 +203,7 @@ class DashboardQWidget(QWidget):
             percent = 0.0
             try:
                 percent = float(host_nb) * 100.0 / float(hosts_sum)
-            except ZeroDivisionError as e:
+            except ZeroDivisionError:
                 pass
             item_text = '%d (%.02f%%)' % (host_nb, percent)
             self.hosts_labels[icon].setText(item_text)
@@ -215,7 +215,7 @@ class DashboardQWidget(QWidget):
             percent = 0.0
             try:
                 percent = float(service_nb) * 100.0 / float(services_sum)
-            except ZeroDivisionError as e:
+            except ZeroDivisionError:
                 pass
             item_text = '%d (%.01f%%)' % (service_nb, percent)
             self.services_labels[icon].setText(item_text)

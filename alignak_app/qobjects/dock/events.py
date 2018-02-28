@@ -199,9 +199,8 @@ class EventsQWidget(QWidget):
         :type host: str
         """
 
-        logger.debug('Add Event [%s]')
         logger.debug(
-            '... with msg: %s, timer: %s, spied_on: %s, host: %s', msg, timer, spied_on, host
+            'Add Event: msg: %s, timer: %s, spied_on: %s, host: %s', msg, timer, spied_on, host
         )
         event = EventItem()
         event.initialize(event_type, msg, timer=timer, spied_on=spied_on, host=host)
@@ -222,7 +221,7 @@ class EventsQWidget(QWidget):
         :type event: EventItem
         """
 
-        logger.debug('Remove Event from timer: %s', event)
+        logger.debug('Remove Timer Event: %s', event.text())
         self.events_list.takeItem(self.events_list.row(event))
 
     def remove_event(self, item=None):
@@ -233,12 +232,12 @@ class EventsQWidget(QWidget):
         :type item: EventItem
         """
 
+        logger.debug('Remove Event: %s', item.text())
+
         if isinstance(item, EventItem):
-            logger.debug('Remove Event: %s', item)
             row = self.events_list.row(item)
             self.events_list.takeItem(row)
         else:
-            logger.debug('Remove Event: %s', item)
             self.events_list.takeItem(self.events_list.currentRow())
 
 

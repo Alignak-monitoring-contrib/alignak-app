@@ -133,7 +133,7 @@ class DataManager(object):
 
         logger.debug('Update item data in database[%s]:', item_type)
         logger.debug('\t_id: %s', item_id)
-        logger.debug('\tdata: %s, %s', data)
+        logger.debug('\tdata: %s', data)
 
         for item in self.database[item_type]:
             if item.item_id == item_id:
