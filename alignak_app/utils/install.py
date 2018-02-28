@@ -168,7 +168,7 @@ def display_app_env():
 
     """
 
-    app_env_var = ['ALIGNAKAPP_APP_CFG', 'ALIGNAKAPP_USER_CFG', 'ALIGNAKAPP_LOG_DIR']
+    app_env_var = ['ALIGNAKAPP_APP_CFG', 'ALIGNAKAPP_USR_CFG', 'ALIGNAKAPP_LOG_DIR']
 
     print('Use following variables:')
     for env_var in app_env_var:
@@ -216,7 +216,7 @@ def install_alignak_app(bin_file):
         bash_file = open(bash_sample)
         bash_format = bash_file.read() % (
             daemon_name, bin_file, os.environ['ALIGNAKAPP_APP_CFG'],
-            os.environ['ALIGNAKAPP_USER_CFG'], os.environ['ALIGNAKAPP_LOG_DIR'], __version__,
+            os.environ['ALIGNAKAPP_USR_CFG'], os.environ['ALIGNAKAPP_LOG_DIR'], __version__,
             __releasenotes__, __alignak_url__, __doc_url__,
         )
         bash_file.close()

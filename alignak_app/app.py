@@ -147,7 +147,7 @@ class AlignakApp(QObject):  # pragma: no cover
         logger.info('----- Alignak-App START -----')
         logger.info('- Environment variables:')
         logger.info('[ALIGNAKAPP_LOG_DIR] = "%s"', os.environ['ALIGNAKAPP_LOG_DIR'])
-        logger.info('[ALIGNAKAPP_USR_CFG] = "%s"', os.environ['ALIGNAKAPP_USER_CFG'])
+        logger.info('[ALIGNAKAPP_USR_CFG] = "%s"', os.environ['ALIGNAKAPP_USR_CFG'])
         logger.info('[ALIGNAKAPP_APP_CFG] = "%s"', os.environ['ALIGNAKAPP_APP_CFG'])
         logger.info('- App logging debug: %s', settings.get_config('Log', 'debug', boolean=True))
         logger.info('- Alignak Backend  : %s', settings.get_config('Alignak', 'backend'))

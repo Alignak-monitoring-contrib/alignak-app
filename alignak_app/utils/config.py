@@ -30,7 +30,7 @@
 
     The following environment variables are managed in this file:
 
-    * ``ALIGNAKAPP_USER_CFG``: folder that contains settings of user (settings.cfg)
+    * ``ALIGNAKAPP_USR_CFG``: folder that contains settings of user (settings.cfg)
     * ``ALIGNAKAPP_APP_CFG``: folder that contains binaries of ALignak-app (images, css, languages)
 """
 
@@ -144,8 +144,8 @@ class Settings(object):
             available_cfg_files['images'].append('%s/images.ini' % cfg_dir)
 
         # Sets fields with environment variables if they exists
-        if 'ALIGNAKAPP_USER_CFG' in os.environ:
-            self.user_cfg_dir = os.environ['ALIGNAKAPP_USER_CFG']
+        if 'ALIGNAKAPP_USR_CFG' in os.environ:
+            self.user_cfg_dir = os.environ['ALIGNAKAPP_USR_CFG']
         if 'ALIGNAKAPP_APP_CFG' in os.environ:
             self.app_cfg_dir = os.environ['ALIGNAKAPP_APP_CFG']
 
@@ -167,8 +167,8 @@ class Settings(object):
                 break
 
         # Sets the environment variables to make them accessible by App
-        if 'ALIGNAKAPP_USER_CFG' not in os.environ:
-            os.environ['ALIGNAKAPP_USER_CFG'] = self.user_cfg_dir
+        if 'ALIGNAKAPP_USR_CFG' not in os.environ:
+            os.environ['ALIGNAKAPP_USR_CFG'] = self.user_cfg_dir
         if 'ALIGNAKAPP_APP_CFG' not in os.environ:
             os.environ['ALIGNAKAPP_APP_CFG'] = self.app_cfg_dir
 
