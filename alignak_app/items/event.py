@@ -22,7 +22,7 @@
 """
     Event
     +++++
-    Event manage creation of notification item
+    Event manage creation of event item (Notifications collected from ``history`` endpoint)
 """
 
 import datetime

@@ -22,7 +22,7 @@
 """
     Item
     ++++
-    Item is parent class for all models
+    Item is parent class for all items objects
 """
 
 
@@ -33,7 +33,7 @@ logger = getLogger(__name__)
 
 class Item(object):
     """
-        Class who create item
+        Class who create an item
     """
 
     def __init__(self):

@@ -22,7 +22,7 @@
 """
     Service
     +++++++
-    Service manage creation of service item
+    Service manage creation of service item for backend ``service`` endpoint
 """
 
 import json

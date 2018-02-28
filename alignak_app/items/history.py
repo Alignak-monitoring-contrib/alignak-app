@@ -22,7 +22,7 @@
 """
     History
     +++++++
-    History manage creation of history item
+    History manage creation of history item for backend ``history`` endpoint
 """
 
 from logging import getLogger

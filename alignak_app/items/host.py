@@ -22,7 +22,7 @@
 """
     Host
     ++++
-    Host manage creation of host item
+    Host manage creation of host item for backend ``host`` endpoint
 """
 
 import json

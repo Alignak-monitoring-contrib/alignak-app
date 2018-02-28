@@ -20,9 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Realm
-    +++++
-    Realm manage creation of realm item for backend ``realm`` endpoint
+    Period
+    ++++++
+    Period manage creation of period item for backend ``timeperiod`` endpoint
 """
 
 
@@ -33,14 +33,14 @@ from alignak_app.items.item import Item
 logger = getLogger(__name__)
 
 
-class Realm(Item):
+class Period(Item):
     """
-        Class who create a realm item
+        Class who create a period item
     """
 
     def __init__(self):
-        super(Realm, self).__init__()
-        self.item_type = 'realm'
+        super(Period, self).__init__()
+        self.item_type = 'timeperiod'
 
     @staticmethod
     def get_request_model():
@@ -56,7 +56,7 @@ class Realm(Item):
         ]
 
         request_model = {
-            'endpoint': 'realm',
+            'endpoint': 'timeperiod',
             'params': None,
             'projection': realms_projection
         }

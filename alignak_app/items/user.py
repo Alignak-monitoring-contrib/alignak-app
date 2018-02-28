@@ -35,7 +35,7 @@ logger = getLogger(__name__)
 
 class User(Item):
     """
-        Class who create user item
+        Class who create user item for backend ``user`` endpoint
     """
 
     def __init__(self):
