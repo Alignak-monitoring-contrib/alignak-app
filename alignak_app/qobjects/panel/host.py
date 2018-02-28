@@ -365,7 +365,7 @@ class HostQWidget(QWidget):
             self.labels['ls_output'].setText(self.host_item.data['ls_output'])
 
             self.labels['realm'].setText(
-                app_backend.get_realm_name(self.host_item.data['_realm'])
+                data_manager.get_realm_name(self.host_item.data['_realm'])
             )
             self.labels['address'].setText(self.host_item.data['address'])
             self.labels['business_impact'].setText(str(self.host_item.data['business_impact']))

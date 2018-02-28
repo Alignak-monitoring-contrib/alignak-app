@@ -227,34 +227,6 @@ class BackendClient(object):
 
         return request
 
-    def get_realm_name(self, endpoint_id):
-        """
-        Return realm name or alias
-
-        :param endpoint_id: id of endpoint
-        :type endpoint_id: str
-        :return: realm name or alias
-        :rtype: str
-        """
-
-        endpoint = '/'.join(
-            ['realm', endpoint_id]
-        )
-        projection = [
-            'name',
-            'alias'
-        ]
-
-        realm = self.get(endpoint, projection=projection)
-
-        if realm:
-            if 'alias' in realm:
-                return realm['alias']
-            if 'name' in realm:
-                return realm['name']
-
-        return 'n/a'
-
     def get_period_name(self, endpoint_id):
         """
         Get the period name or alias

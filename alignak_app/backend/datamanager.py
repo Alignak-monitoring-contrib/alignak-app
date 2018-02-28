@@ -100,7 +100,7 @@ class DataManager(object):
         :param value: value of the key if needed
         :type value: str
         :return: wanted item
-        :rtype: alignak_app.core.models.item.ItemModel
+        :rtype: alignak_app.items.item.Item
         """
 
         logger.debug('Get database Item [%s] : %s, %s', item_type, key, value)
@@ -134,6 +134,23 @@ class DataManager(object):
             if item.item_id == item_id:
                 for key in data:
                     item.data[key] = data[key]
+
+    def get_realm_name(self, realm):
+        """
+        TODO
+        :param realm:
+        :return:
+        """
+
+        if self.database['realm']:
+            wanted_realm = self.get_item('realm', realm)
+
+            if 'alias' in wanted_realm.data:
+                return wanted_realm.data['alias']
+
+            return wanted_realm.data['name']
+
+        return 'n/a'
 
     def get_synthesis_count(self):
         """

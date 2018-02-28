@@ -430,7 +430,7 @@ class UserQWidget(QWidget):
 
         # Realm, Role, Email
         self.labels['realm'].setText(
-            app_backend.get_realm_name(data_manager.database['user'].data['_realm'])
+            data_manager.get_realm_name(data_manager.database['user'].data['_realm'])
         )
         self.labels['role'].setText(data_manager.database['user'].get_role().capitalize())
         self.labels['email'].setText(data_manager.database['user'].data['email'])

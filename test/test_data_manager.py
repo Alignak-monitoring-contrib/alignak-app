@@ -27,6 +27,7 @@ from alignak_app.items.host import Host
 from alignak_app.items.livesynthesis import LiveSynthesis
 from alignak_app.items.service import Service
 from alignak_app.items.user import User
+from alignak_app.items.realm import Realm
 
 
 class TestDataManager(unittest2.TestCase):
@@ -151,6 +152,28 @@ class TestDataManager(unittest2.TestCase):
         event.create(data['_id'], data)
         event_list.append(event)
 
+    realm_list = []
+    for i in range(0, 10):
+        realm = Realm()
+        realm.create(
+            '_id%d' % i,
+            {
+                'name': 'realm%d' % i,
+                'alias': 'My Realm %d' % i,
+            },
+            'realm%d' % i
+        )
+        realm_list.append(realm)
+    realm_noalias = Realm()
+    realm_noalias.create(
+        '_id',
+        {
+            'name': 'realm',
+        },
+        'realm'
+    )
+    realm_list.append(realm_noalias)
+
     def test_initialize(self):
         """Initialize DataManager"""
 
@@ -210,6 +233,25 @@ class TestDataManager(unittest2.TestCase):
         item3 = under_test.get_item('service', 'service10')
 
         self.assertIsNone(item3)
+
+    def test_get_realm_name(self):
+        """Get Realm in db"""
+
+        under_test = DataManager()
+
+        self.assertFalse(under_test.database['realm'])
+
+        under_test.update_database('realm', self.realm_list)
+
+        self.assertTrue(under_test.database['realm'])
+
+        realm_test = under_test.get_realm_name('_id2')
+
+        self.assertEqual('My Realm 2', realm_test)
+
+        noalias_realm_test = under_test.get_realm_name('_id')
+
+        self.assertEqual('realm', noalias_realm_test)
 
     def test_get_livesynthesis(self):
         """Get Livesynthesis in db"""

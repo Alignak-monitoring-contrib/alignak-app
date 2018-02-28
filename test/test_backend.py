@@ -116,24 +116,16 @@ class TestAppBackend(unittest2.TestCase):
         self.assertNotEqual(user_modified['notes'], notes)
         self.assertEqual(user_modified['notes'], '')
 
-    def test_get_realm_name(self):
-        """Get User Realm Name"""
+    def test_query_realms_data(self):
+        """Query Realms Data"""
 
-        backend_test = BackendClient()
-        backend_test.login(
-            settings.get_config('Alignak', 'username'),
-            settings.get_config('Alignak', 'password')
-        )
+        under_test = BackendClient()
+        under_test.login()
 
-        under_test = backend_test.get_realm_name('false_id')
-        self.assertEqual('n/a', under_test)
+        from alignak_app.backend.datamanager import data_manager
+        under_test.query_realms_data()
 
-        backend_test.login(
-            settings.get_config('Alignak', 'username'),
-            settings.get_config('Alignak', 'password')
-        )
-        under_test2 = backend_test.get_realm_name('59c4e38535d17b8dcb0bed42')
-        self.assertEqual('All', under_test2)
+        self.assertIsNotNone(data_manager.database['realm'])
 
     def test_query_user_data(self):
         """Query User Data"""
