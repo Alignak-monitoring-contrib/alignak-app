@@ -51,7 +51,7 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
         """
 
         if app_backend.connected:
-            logger.debug('THREAD: launch a new thread for %s', self.thread_name)
+            logger.debug('Launch a new thread request for backend: %s', self.thread_name)
             if 'user' in self.thread_name:
                 app_backend.query_user_data()
             elif 'host' in self.thread_name:

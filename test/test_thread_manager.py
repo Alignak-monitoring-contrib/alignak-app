@@ -20,7 +20,6 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest2
-from PyQt5.Qt import QTimer
 
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
@@ -43,8 +42,7 @@ class TestThreadManager(unittest2.TestCase):
         under_test = ThreadManager()
 
         self.assertFalse(under_test.current_thread)
-        self.assertIsNotNone(under_test.timer)
-        self.assertIsInstance(under_test.timer, QTimer)
+        self.assertFalse(under_test.priority_threads)
         for thread in ['livesynthesis', 'host', 'service', 'user',
                        'alignakdaemon', 'notifications', 'history']:
             self.assertTrue(thread in under_test.threads_to_launch)
@@ -70,3 +68,14 @@ class TestThreadManager(unittest2.TestCase):
         self.assertNotEqual([], thread_mgr_test.current_thread)
         self.assertTrue('user' not in under_test)
 
+    def test_priority_threads(self):
+        """Remove Priority Threads"""
+
+        under_test = ThreadManager()
+        under_test.priority_threads.append(BackendQThread('user'))
+
+        self.assertTrue(under_test.priority_threads)
+
+        under_test.stop_priority_threads()
+
+        self.assertFalse(under_test.priority_threads)

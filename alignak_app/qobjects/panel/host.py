@@ -386,7 +386,10 @@ class HostQWidget(QWidget):
                 self.history_btn.setEnabled(False)
 
                 if app_backend.connected:
-                    thread_manager.add_thread(
+                    thread_manager.add_priority_thread(
                         'history',
                         {'hostname': self.host_item.name, 'host_id': self.host_item.item_id}
                     )
+                else:
+                    logger.info('Can\'t launch thread, App is not connected to backend !')
+                    thread_manager.stop_threads()

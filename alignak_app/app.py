@@ -204,7 +204,7 @@ class AlignakApp(QObject):  # pragma: no cover
         requests_interval = int(settings.get_config('Alignak-app', 'requests_interval')) * 1000
         self.threadmanager_timer.setInterval(requests_interval)
         self.threadmanager_timer.start()
-        self.threadmanager_timer.timeout.connect(self.launch_threads)
+        self.threadmanager_timer.timeout.connect(self.check_threads)
 
         self.tray_icon = TrayIcon(QIcon(settings.get_image('icon')))
         self.tray_icon.build_menu()
@@ -235,33 +235,18 @@ class AlignakApp(QObject):  # pragma: no cover
         return launched_threads
 
     @staticmethod
-    def launch_threads():
+    def check_threads():
         """
         Launch periodically threads
 
         """
 
+        # Cleaning threads who are finished
+        thread_manager.clean_threads()
+
+        # Launch or stop threads
         if app_backend.connected:
-            if not thread_manager.threads_to_launch:
-                thread_manager.threads_to_launch = thread_manager.get_threads_to_launch()
-
-            # In case there is no thread running
-            if thread_manager.threads_to_launch and not thread_manager.current_thread:
-                cur_thread = thread_manager.threads_to_launch.pop(0)
-                backend_thread = BackendQThread(cur_thread)
-
-                if app_backend.connected:
-                    backend_thread.start()
-                    thread_manager.current_thread = backend_thread
-
-            # Cleaning threads who are finished
-            if thread_manager.current_thread:
-                if thread_manager.current_thread.isFinished():
-                    logger.debug('Remove finished thread: %s',
-                                 thread_manager.current_thread.thread_name)
-                    thread_manager.current_thread.quit()
-
-                    thread_manager.current_thread = None
+            thread_manager.launch_threads()
         else:
             logger.info('Can\'t launch thread, App is not connected to backend !')
             thread_manager.stop_threads()

@@ -27,7 +27,7 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QTimer, QObject
+from PyQt5.Qt import QObject
 
 from alignak_app.qthreads.thread import BackendQThread
 
@@ -42,8 +42,8 @@ class ThreadManager(QObject):
     def __init__(self, parent=None):
         super(ThreadManager, self).__init__(parent)
         self.current_thread = None
+        self.priority_threads = []
         self.threads_to_launch = self.get_threads_to_launch()
-        self.timer = QTimer()
 
     def get_threads_to_launch(self):
         """
@@ -68,20 +68,56 @@ class ThreadManager(QObject):
 
         return threads_to_launch
 
-    def add_thread(self, thread_name, data):
+    def launch_threads(self):
         """
-        Add a thread, actually used for new history
+        Launch periodically threads
 
-        :param thread_name: name of thread
+        """
+
+        if not thread_manager.threads_to_launch:
+            self.threads_to_launch = self.get_threads_to_launch()
+
+        # In case there is no thread running
+        if self.threads_to_launch and not self.current_thread:
+            cur_thread = self.threads_to_launch.pop(0)
+            backend_thread = BackendQThread(cur_thread)
+            backend_thread.start()
+
+            self.current_thread = backend_thread
+
+    def clean_threads(self):
+        """
+        TODO
+        :return:
+        """
+
+        if self.current_thread:
+            if self.current_thread.isFinished():
+                logger.debug('Remove finished thread: %s', self.current_thread.thread_name)
+                self.current_thread.quit()
+                self.current_thread = None
+
+        if self.priority_threads:
+            for thread in self.priority_threads:
+                if thread.isFinished():
+                    thread.quit()
+                    self.priority_threads.remove(thread)
+                    logger.debug('Remove finished thread: %s', thread.thread_name)
+
+    def add_priority_thread(self, thread_name, data):  # pragma: no cover
+        """
+        Launch a thread with higher priority (doesn't wait launch_threads() function)
+
+        :param thread_name: name of priority thread
         :type thread_name: str
         :param data: data to give to thread for request
         :type data: dict
         """
 
-        if not self.current_thread:
-            backend_thread = BackendQThread(thread_name, data)
-            backend_thread.start()
-            self.current_thread = backend_thread
+        backend_thread = BackendQThread(thread_name, data)
+        backend_thread.start()
+
+        self.priority_threads.append(backend_thread)
 
     def stop_threads(self):
         """
@@ -89,14 +125,27 @@ class ThreadManager(QObject):
 
         """
 
-        self.timer.stop()
-
         if self.current_thread:
             logger.debug('Try to quit current thread: %s', self.current_thread.thread_name)
             self.current_thread.quit()
-            # del self.current_thread
             self.current_thread = None
-            logger.info("The backend threads were stopped !")
+
+        if self.priority_threads:
+            self.stop_priority_threads()
+
+        logger.debug("Finished backend threads have been stopped !")
+
+    def stop_priority_threads(self):
+        """
+        Stop priority threads
+
+        """
+
+        for thread in self.priority_threads:
+            logger.debug('Try to quit current priority thread: %s', thread.thread_name)
+            thread.quit()
+
+            self.priority_threads.remove(thread)
 
 
 thread_manager = ThreadManager()
