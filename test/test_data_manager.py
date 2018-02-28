@@ -251,7 +251,11 @@ class TestDataManager(unittest2.TestCase):
 
         noalias_realm_test = under_test.get_realm_name('_id')
 
-        self.assertEqual('realm', noalias_realm_test)
+        self.assertEqual('Realm', noalias_realm_test)
+
+        no_realm_test = under_test.get_realm_name('no_realm')
+
+        self.assertEqual('n/a', no_realm_test)
 
     def test_get_livesynthesis(self):
         """Get Livesynthesis in db"""

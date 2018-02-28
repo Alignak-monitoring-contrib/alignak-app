@@ -86,6 +86,6 @@ class Host(Item):
         """
 
         if 'alias' in self.data:
-            return self.data['alias'].capitalize()
+            return self.data['alias'].title()
 
-        return self.data['name'].capitalize()
+        return self.data['name'].title()

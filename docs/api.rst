@@ -64,6 +64,11 @@ Items
     :inherited-members:
     :show-inheritance:
 
+.. automodule:: alignak_app.items.realm
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
 .. automodule:: alignak_app.items.service
     :members:
     :inherited-members:

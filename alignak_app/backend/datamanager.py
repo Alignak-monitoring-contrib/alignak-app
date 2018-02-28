@@ -100,7 +100,7 @@ class DataManager(object):
         :param value: value of the key if needed
         :type value: str
         :return: wanted item
-        :rtype: alignak_app.items.item.Item
+        :rtype: alignak_app.items.item.*
         """
 
         logger.debug('Get database Item [%s] : %s, %s', item_type, key, value)
@@ -137,18 +137,19 @@ class DataManager(object):
 
     def get_realm_name(self, realm):
         """
-        TODO
-        :param realm:
-        :return:
+        Return the realm name or alias
+
+        :param realm: wanted realm ``_id``
+        :type realm: str
+        :return: the wanted realm alias or name if available
+        :rtype: str
         """
 
         if self.database['realm']:
             wanted_realm = self.get_item('realm', realm)
 
-            if 'alias' in wanted_realm.data:
-                return wanted_realm.data['alias']
-
-            return wanted_realm.data['name']
+            if wanted_realm:
+                return wanted_realm.get_display_name()
 
         return 'n/a'
 
