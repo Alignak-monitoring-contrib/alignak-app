@@ -355,6 +355,8 @@ class DataManager(object):
             hosts_total += synth.data['hosts_total']
             hosts_problems += synth.data['hosts_down_soft']
             hosts_problems += synth.data['hosts_down_hard']
+            hosts_problems += synth.data['hosts_unreachable_soft']
+            hosts_problems += synth.data['hosts_unreachable_hard']
             if 'hosts_not_monitored' in synth.data:
                 hosts_not_monitored += synth.data['hosts_not_monitored']
 
@@ -400,6 +402,11 @@ class DataManager(object):
         if self.database['host']:
             for host in self.database['host']:
                 if host.data['ls_state'] == 'DOWN' and not \
+                        host.data['ls_acknowledged'] and not \
+                        host.data['ls_downtimed']:
+                    problems.append(host)
+                    hosts_nb += 1
+                if host.data['ls_state'] == 'UNREACHABLE' and not \
                         host.data['ls_acknowledged'] and not \
                         host.data['ls_downtimed']:
                     problems.append(host)

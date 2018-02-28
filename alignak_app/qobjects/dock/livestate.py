@@ -143,6 +143,15 @@ class LivestateQWidget(QWidget):
         items_and_problems = data_manager.get_items_and_problems()
 
         for item_type in self.labels:
+            if items_and_problems[item_type]['problem'] < 1:
+                self.labels[item_type]['problem'].setObjectName('ok')
+            else:
+                self.labels[item_type]['problem'].setObjectName('ko')
+
+            self.labels[item_type]['problem'].style().unpolish(self.labels[item_type]['problem'])
+            self.labels[item_type]['problem'].style().polish(self.labels[item_type]['problem'])
+            self.labels[item_type]['problem'].update()
+
             self.labels[item_type]['problem'].setText(
                 '%s' % str(items_and_problems[item_type]['problem'])
             )
