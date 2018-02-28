@@ -326,8 +326,6 @@ class HostQWidget(QWidget):
         :type hostname: str
         """
 
-        logger.info('Update Host QWidget...')
-
         if self.host_item and not hostname:
             self.set_data(self.host_item.name)
         if hostname:
@@ -391,5 +389,4 @@ class HostQWidget(QWidget):
                         {'hostname': self.host_item.name, 'host_id': self.host_item.item_id}
                     )
                 else:
-                    logger.info('Can\'t launch thread, App is not connected to backend !')
                     thread_manager.stop_threads()

@@ -125,6 +125,11 @@ class ThreadManager(QObject):
 
         """
 
+        if self.priority_threads or self.current_thread:
+            logger.debug("Finished backend threads have been stopped !")
+        else:
+            logger.debug('No thread to stop.')
+
         if self.current_thread:
             logger.debug('Try to quit current thread: %s', self.current_thread.thread_name)
             self.current_thread.quit()
@@ -132,8 +137,6 @@ class ThreadManager(QObject):
 
         if self.priority_threads:
             self.stop_priority_threads()
-
-        logger.debug("Finished backend threads have been stopped !")
 
     def stop_priority_threads(self):
         """

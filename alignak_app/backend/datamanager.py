@@ -63,7 +63,7 @@ class DataManager(object):
 
         cur_collected = ''
         db_names = [
-            'livesynthesis', 'host', 'alignakdaemon', 'user', 'realm', 'timeperiod', 'service'
+            'livesynthesis', 'user', 'realm', 'timeperiod', 'host', 'service'
         ]
         for db_name in db_names:
             try:
@@ -88,7 +88,7 @@ class DataManager(object):
         :type items_list: list | dict
         """
 
-        logger.info("Update database: %s", item_type)
+        logger.info("Update database[%s]...", item_type)
 
         self.database[item_type] = items_list
 
@@ -106,7 +106,7 @@ class DataManager(object):
         :rtype: alignak_app.items.item.*
         """
 
-        logger.debug('Get database Item [%s] : %s, %s', item_type, key, value)
+        logger.debug('Get item in database[%s]: %s, %s', item_type, key, value)
 
         items = self.database[item_type]
 
@@ -131,7 +131,9 @@ class DataManager(object):
         :return:
         """
 
-        logger.debug('Update database Item [%s] : %s, %s', item_type, item_id, data)
+        logger.debug('Update item data in database[%s]:', item_type)
+        logger.debug('\t_id: %s', item_id)
+        logger.debug('\tdata: %s, %s', data)
 
         for item in self.database[item_type]:
             if item.item_id == item_id:
@@ -430,9 +432,8 @@ class DataManager(object):
             'problems': problems
         }
 
-        logger.debug('Host problems found: %s', problems_data['hosts_nb'])
+        logger.debug('Host problems found   : %s', problems_data['hosts_nb'])
         logger.debug('Service problems found: %s', problems_data['services_nb'])
-        logger.debug('Problems found: %s', problems_data['problems'])
 
         return problems_data
 

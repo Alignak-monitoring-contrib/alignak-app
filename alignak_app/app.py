@@ -137,13 +137,16 @@ class AlignakApp(QObject):  # pragma: no cover
         """
 
         # Logger
-        logger.name = 'alignak_app'
+        logger.name = 'alignak_app.app'
         if settings.get_config('Log', 'debug', boolean=True):
             logger.setLevel(DEBUG)
             logger.info('- [Log Level]: DEBUG')
         else:
             logger.setLevel(INFO)
             logger.info('- [Log Level]: INFO')
+        logger.info('- [ALIGNAKAPP_LOG_DIR]: %s', os.environ['ALIGNAKAPP_LOG_DIR'])
+        logger.info('- [ALIGNAKAPP_USER_CFG]: %s', os.environ['ALIGNAKAPP_USER_CFG'])
+        logger.info('- [ALIGNAKAPP_APP_CFG]: %s', os.environ['ALIGNAKAPP_APP_CFG'])
 
         app = QApplication(sys.argv)
         app.setQuitOnLastWindowClosed(False)
@@ -169,7 +172,7 @@ class AlignakApp(QObject):  # pragma: no cover
         thread_to_launch = thread_manager.get_threads_to_launch()
         thread_to_launch.remove('history')
         thread_to_launch.remove('notifications')
-        logger.info("Filling the database: %s", thread_to_launch)
+        logger.info("Filling the local database: %s", thread_to_launch)
 
         launched_threads = []
         for thread in thread_to_launch:
@@ -195,12 +198,7 @@ class AlignakApp(QObject):  # pragma: no cover
 
         app_progress.close()
 
-        logger.info('- [ALIGNAKAPP_LOG_DIR]: %s', os.environ['ALIGNAKAPP_LOG_DIR'])
-        logger.info('- [ALIGNAKAPP_USER_CFG]: %s', os.environ['ALIGNAKAPP_USER_CFG'])
-        logger.info('- [ALIGNAKAPP_APP_CFG]: %s', os.environ['ALIGNAKAPP_APP_CFG'])
-
         init_event_widget()
-
         requests_interval = int(settings.get_config('Alignak-app', 'requests_interval')) * 1000
         self.threadmanager_timer.setInterval(requests_interval)
         self.threadmanager_timer.start()
@@ -248,5 +246,8 @@ class AlignakApp(QObject):  # pragma: no cover
         if app_backend.connected:
             thread_manager.launch_threads()
         else:
-            logger.info('Can\'t launch thread, App is not connected to backend !')
+            logger.debug(
+                'Can\'t launch Request threads, App is not connected to backend [%s] !',
+                settings.get_config('Alignak', 'backend')
+            )
             thread_manager.stop_threads()

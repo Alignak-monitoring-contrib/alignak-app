@@ -98,8 +98,6 @@ class NumberServicesQWidget(QWidget):
         :type host_name: str
         """
 
-        logger.info('Update Number Services QWidget...')
-
         services_data = Service.get_service_states_nb()
 
         services_total = 0

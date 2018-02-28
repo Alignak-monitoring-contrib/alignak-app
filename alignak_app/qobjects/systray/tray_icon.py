@@ -73,14 +73,10 @@ class TrayIcon(QSystemTrayIcon):
 
         # Create actions
         self.add_alignak_menu()
-
         self.menu.addSeparator()
-
         self.add_reload_menu()
         self.add_about_menu()
-
         self.menu.addSeparator()
-
         self.create_quit_action()
 
         self.setContextMenu(self.menu)
@@ -92,10 +88,10 @@ class TrayIcon(QSystemTrayIcon):
         """
 
         if app_backend.connected:
-            connect = app_backend.login()
+            connect = app_backend.login(check=True)
             logger.info('App check connection: %s', app_backend.connection_status[connect])
         elif not app_backend.connected and self.connection_nb < 1:
-            connect = app_backend.login()
+            connect = app_backend.login(check=True)
             logger.warning('App check connection: %s', app_backend.connection_status[connect])
             self.connection_nb = 3
         elif not app_backend.connected:
@@ -103,6 +99,8 @@ class TrayIcon(QSystemTrayIcon):
             self.connection_nb -= 1
         else:
             pass
+
+        self.app_main.dock.status_widget.update_status()
 
     def add_alignak_menu(self):
         """
@@ -161,8 +159,6 @@ class TrayIcon(QSystemTrayIcon):
         Create quit action.
 
         """
-
-        logger.debug('Create Quit Action')
 
         self.qaction_factory.create(
             'exit',

@@ -62,7 +62,7 @@ class AppQMainWindow(QMainWindow):
 
         """
 
-        logger.info('Create Main Window...')
+        logger.info('Display Alignak-App...')
 
         app_widget = QWidget()
         app_widget.setObjectName('dialog')

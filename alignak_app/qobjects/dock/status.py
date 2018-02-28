@@ -190,7 +190,6 @@ class StatusQDialog(QDialog):
         self.layout.setAlignment(self.labels[daemon_item.name]['alive'], Qt.AlignCenter)
 
         # Name
-
         self.layout.addWidget(self.labels[daemon_item.name]['name'], line, 1, 1, 1)
 
         # Address
@@ -320,11 +319,10 @@ class StatusQWidget(QWidget):
 
     def update_status(self):
         """
-        Update dameons and backend status
+        Update daemons and backend status
 
         """
 
-        logger.info("Update Status QWidget...")
         self.backend_connected.setPixmap(
             QPixmap(settings.get_image(app_backend.get_backend_status_icon()))
         )

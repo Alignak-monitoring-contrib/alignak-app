@@ -64,7 +64,7 @@ class BackendClient(object):
         self.connected = False
         self.user = {}
 
-    def login(self, username=None, password=None):
+    def login(self, username=None, password=None, check=False):
         """
         Connect to alignak backend
 
@@ -72,6 +72,8 @@ class BackendClient(object):
         :type username: str
         :param password: password of user. If token given, this parameter is useless
         :type password: str
+        :param check: define if login is a check or a first login
+        :type check: bool
         :return: True if connected or False if not
         :rtype: bool
         """
@@ -88,7 +90,8 @@ class BackendClient(object):
         self.backend = Backend(backend_url, processes=processes)
 
         logger.debug('Backend URL : %s', backend_url)
-        logger.info('Try to connect to app_backend...')
+        if not check:
+            logger.info('Try to connect to the Alignak backend...')
 
         if username and password:
             # Username & password : not recommended, without login QDialog
@@ -100,7 +103,7 @@ class BackendClient(object):
                 logger.info('Connection by password: %s', self.connection_status[self.connected])
             except BackendException:  # pragma: no cover
                 logger.error('Connection to Backend has failed !')
-        elif username and not password:  # pragma: no cover
+        elif username and not password:
             # Username as token : recommended
             self.backend.authenticated = True
             if 'token' in self.user:
@@ -111,14 +114,15 @@ class BackendClient(object):
 
             # Make backend connected to test token
             self.connected = True
-            connection_test = self.get('livesynthesis')
+            connection_test = self.get('alignak')
 
             self.connected = bool(connection_test)
-            logger.info('Connection by token: %s', self.connection_status[self.connected])
+            if not check:
+                logger.info('Connection by token: %s', self.connection_status[self.connected])
         else:
             logger.warning(
-                'Connection to Backend has failed.\nCheck [Alignak] section in configuration file '
-                'or use login window of application.'
+                'Connection to Backend has failed.\n'
+                'Check [Alignak] section in configuration file or use login window of application.'
             )
 
         return self.connected
@@ -162,7 +166,7 @@ class BackendClient(object):
                         params
                     )
                 logger.info('GET on [%s] backend > %s', endpoint, str(request['_status']))
-                logger.debug('- params: [%s]', str(params))
+                logger.debug('\tparams: [%s]', str(params))
             except BackendException:
                 self.connected = False
         else:
@@ -190,8 +194,8 @@ class BackendClient(object):
             try:
                 request = self.backend.post(endpoint, data, headers=headers)
                 logger.info('POST on [%s] backend > %s', endpoint, str(request['_status']))
-                logger.debug('- data: [%s]', str(data))
-                logger.debug('- headers: [%s]', str(headers))
+                logger.debug('\tdata: [%s]', str(data))
+                logger.debug('\theaders: [%s]', str(headers))
             except BackendException:
                 self.connected = False
         else:
@@ -219,8 +223,8 @@ class BackendClient(object):
             try:
                 request = self.backend.patch(endpoint, data, headers=headers, inception=True)
                 logger.info('PATCH on [%s] backend > %s', endpoint, str(request['_status']))
-                logger.debug('- data: [%s]', str(data))
-                logger.debug('- headers: [%s]', str(headers))
+                logger.debug('\tdata: [%s]', str(data))
+                logger.debug('\theaders: [%s]', str(headers))
             except BackendException:
                 self.connected = False
         else:

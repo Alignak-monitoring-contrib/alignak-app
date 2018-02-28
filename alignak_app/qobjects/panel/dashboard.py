@@ -189,8 +189,6 @@ class DashboardQWidget(QWidget):
 
         synthesis = data_manager.get_synthesis_count()
 
-        logger.info('Update Dashboard QWidget...')
-
         hosts_sum = 0
         for item in synthesis['hosts']:
             hosts_sum += synthesis['hosts'][item]
@@ -198,6 +196,7 @@ class DashboardQWidget(QWidget):
         for item in synthesis['services']:
             services_sum += synthesis['services'][item]
 
+        # Hosts percentages
         self.items_nb['hosts_nb'].setText("%d hosts" % hosts_sum)
         for icon in Host.get_available_icons():
             host_nb = synthesis['hosts'][icon.replace('hosts_', '')]
@@ -205,10 +204,11 @@ class DashboardQWidget(QWidget):
             try:
                 percent = float(host_nb) * 100.0 / float(hosts_sum)
             except ZeroDivisionError as e:
-                logger.error(e)
+                pass
             item_text = '%d (%.02f%%)' % (host_nb, percent)
             self.hosts_labels[icon].setText(item_text)
 
+        # Services percentage
         self.items_nb['services_nb'].setText("%d services" % services_sum)
         for icon in Service.get_available_icons():
             service_nb = synthesis['services'][icon.replace('services_', '')]
@@ -216,7 +216,7 @@ class DashboardQWidget(QWidget):
             try:
                 percent = float(service_nb) * 100.0 / float(services_sum)
             except ZeroDivisionError as e:
-                logger.error(e)
+                pass
             item_text = '%d (%.01f%%)' % (service_nb, percent)
             self.services_labels[icon].setText(item_text)
 

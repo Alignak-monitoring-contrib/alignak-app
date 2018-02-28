@@ -136,11 +136,10 @@ class LivestateQWidget(QWidget):
 
     def update_labels(self):
         """
-        Update Qlabels of widget
+        Update QLabels of QWidget
 
         """
 
-        logger.info('Update Livestate...')
         items_and_problems = data_manager.get_items_and_problems()
 
         for item_type in self.labels:
@@ -155,7 +154,7 @@ class LivestateQWidget(QWidget):
             )
 
     def paintEvent(self, _):
-        """Override to paint background"""
+        """Override paintEvent to paint background"""
 
         opt = QStyleOption()
         opt.initFrom(self)

@@ -416,12 +416,6 @@ class TestDataManager(unittest2.TestCase):
         self.assertEqual('Collecting livesynthesis...', under_test.is_ready())
         under_test.update_database('livesynthesis', {'data': 'test'})
 
-        self.assertEqual('Collecting host...', under_test.is_ready())
-        under_test.update_database('host', {'data': 'test'})
-
-        self.assertEqual('Collecting alignakdaemon...', under_test.is_ready())
-        under_test.update_database('alignakdaemon', {'data': 'test'})
-
         self.assertEqual('Collecting user...', under_test.is_ready())
         under_test.update_database('user', {'data': 'test'})
 
@@ -430,6 +424,9 @@ class TestDataManager(unittest2.TestCase):
 
         self.assertEqual('Collecting timeperiod...', under_test.is_ready())
         under_test.update_database('timeperiod', {'data': 'test'})
+
+        self.assertEqual('Collecting host...', under_test.is_ready())
+        under_test.update_database('host', {'data': 'test'})
 
         self.assertEqual('Collecting service...', under_test.is_ready())
         under_test.update_database('service', {'data': 'test'})

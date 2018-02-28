@@ -102,8 +102,6 @@ class ButtonsQWidget(QWidget):
 
         """
 
-        logger.info('Update Buttons QWidget...')
-
         if settings.get_config('Alignak', 'webui'):
             self.webui_btn.setEnabled(True)
             self.webui_btn.setToolTip(_("Open WebUI in browser"))
