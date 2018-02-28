@@ -97,7 +97,8 @@ class Daemon(Item):
         states = {
             'ok': 'connected',
             'flapping': 'flapping',
-            'ko': 'disconnected'
+            'ko': 'disconnected',
+            'not_connect': 'not_connect',
         }
 
         return states[status]
@@ -126,5 +127,8 @@ class Daemon(Item):
             status = 'flapping'
         else:
             status = 'ok'
+
+        if daemons_nb == 0:
+            status = 'not_connect'
 
         return Daemon.get_states(status)

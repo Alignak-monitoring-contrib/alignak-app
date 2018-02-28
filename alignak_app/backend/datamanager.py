@@ -51,6 +51,15 @@ class DataManager(object):
             'realm': [],
             'timeperiod': [],
         }
+        self.databases_ready = {
+            'livesynthesis': False,
+            'alignakdaemon': False,
+            'host': False,
+            'service': False,
+            'user': False,
+            'realm': False,
+            'timeperiod': False,
+        }
         self.old_notifications = []
 
     def is_ready(self):
@@ -62,12 +71,9 @@ class DataManager(object):
         """
 
         cur_collected = ''
-        db_names = [
-            'livesynthesis', 'user', 'realm', 'timeperiod', 'host', 'service'
-        ]
-        for db_name in db_names:
+        for db_name in self.databases_ready:
             try:
-                assert bool(self.database[db_name])
+                assert self.databases_ready[db_name]
                 cur_collected = 'READY'
             except AssertionError:
                 cur_collected = 'Collecting %s...' % db_name

@@ -59,6 +59,7 @@ class StatusQDialog(QDialog):
         self.app_widget = AppQFrame()
         self.layout = QGridLayout()
         self.labels = {}
+        self.no_status_lbl = QLabel()
 
     def initialize(self):
         """
@@ -254,6 +255,7 @@ class StatusQWidget(QWidget):
         super(StatusQWidget, self).__init__()
         self.setObjectName('bordered')
         # Fields
+        self.status_btn = QPushButton()
         self.daemons_status = QLabel('pending...')
         self.backend_connected = QLabel('pending...')
         self.status_dialog = StatusQDialog()
@@ -284,12 +286,11 @@ class StatusQWidget(QWidget):
 
         # Status button
         self.status_dialog.initialize()
-        status_btn = QPushButton()
-        status_btn.setIcon(QIcon(settings.get_image('icon')))
-        status_btn.setFixedSize(32, 32)
-        status_btn.clicked.connect(self.show_status_dialog)
-        layout.addWidget(status_btn)
-        layout.setAlignment(status_btn, Qt.AlignCenter)
+        self.status_btn.setIcon(QIcon(settings.get_image('icon')))
+        self.status_btn.setFixedSize(32, 32)
+        self.status_btn.clicked.connect(self.show_status_dialog)
+        layout.addWidget(self.status_btn)
+        layout.setAlignment(self.status_btn, Qt.AlignCenter)
 
         # Backend state
         connected_title = QLabel(_('Backend:'))
@@ -326,6 +327,9 @@ class StatusQWidget(QWidget):
         self.backend_connected.setPixmap(
             QPixmap(settings.get_image(app_backend.get_backend_status_icon()))
         )
+
+        self.status_btn.setEnabled(bool(data_manager.database['alignakdaemon']))
+
         self.daemons_status.setPixmap(
             QPixmap(settings.get_image(Daemon.get_daemons_status_icon()))
         )

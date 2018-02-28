@@ -260,6 +260,8 @@ class BackendClient(object):
 
             if realms_list:
                 data_manager.update_database('realm', realms_list)
+            if 'OK' in request['_status']:
+                data_manager.databases_ready[request_data['endpoint']] = True
 
     def query_period_data(self):
         """
@@ -289,6 +291,8 @@ class BackendClient(object):
 
             if periods_list:
                 data_manager.update_database('timeperiod', periods_list)
+            if 'OK' in request['_status']:
+                data_manager.databases_ready[request_data['endpoint']] = True
 
     def query_user_data(self):
         """
@@ -314,6 +318,9 @@ class BackendClient(object):
             )
 
             data_manager.update_database('user', user)
+
+            if 'OK' in request['_status']:
+                data_manager.databases_ready[request_data['endpoint']] = True
 
     def query_hosts_data(self):
         """
@@ -344,6 +351,8 @@ class BackendClient(object):
 
             if hosts_list:
                 data_manager.update_database('host', hosts_list)
+            if 'OK' in request['_status']:
+                data_manager.databases_ready[request_data['endpoint']] = True
 
     def query_services_data(self):
         """
@@ -375,6 +384,8 @@ class BackendClient(object):
 
             if services_list:
                 data_manager.update_database('service', services_list)
+            if 'OK' in request['_status']:
+                data_manager.databases_ready[request_data['endpoint']] = True
 
     def query_daemons_data(self):
         """
@@ -406,6 +417,8 @@ class BackendClient(object):
 
             if daemons_list:
                 data_manager.update_database('alignakdaemon', daemons_list)
+            if 'OK' in request['_status']:
+                data_manager.databases_ready[request_data['endpoint']] = True
 
     def query_livesynthesis_data(self):
         """
@@ -436,6 +449,8 @@ class BackendClient(object):
 
             if livesynthesis:
                 data_manager.update_database('livesynthesis', livesynthesis)
+            if 'OK' in request['_status']:
+                data_manager.databases_ready[request_data['endpoint']] = True
 
     def query_history_data(self, hostname=None, host_id=None):
         """
