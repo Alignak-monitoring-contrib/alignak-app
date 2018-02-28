@@ -317,17 +317,23 @@ class TestDataManager(unittest2.TestCase):
 
         under_test = DataManager()
 
-        self.assertNotEqual('READY', under_test.is_ready())
-
+        self.assertEqual('Collecting livesynthesis...', under_test.is_ready())
         under_test.update_database('livesynthesis', {'data': 'test'})
-        self.assertNotEqual('READY', under_test.is_ready())
+
+        self.assertEqual('Collecting host...', under_test.is_ready())
         under_test.update_database('host', {'data': 'test'})
-        self.assertNotEqual('READY', under_test.is_ready())
-        under_test.update_database('service', {'data': 'test'})
-        self.assertNotEqual('READY', under_test.is_ready())
-        under_test.update_database('user', {'data': 'test'})
-        self.assertNotEqual('READY', under_test.is_ready())
+
+        self.assertEqual('Collecting alignakdaemon...', under_test.is_ready())
         under_test.update_database('alignakdaemon', {'data': 'test'})
+
+        self.assertEqual('Collecting user...', under_test.is_ready())
+        under_test.update_database('user', {'data': 'test'})
+
+        self.assertEqual('Collecting service...', under_test.is_ready())
+        under_test.update_database('service', {'data': 'test'})
+
+        self.assertEqual('Collecting realm...', under_test.is_ready())
+        under_test.update_database('realm', {'data': 'test'})
 
         self.assertEqual('READY', under_test.is_ready())
 
