@@ -413,23 +413,26 @@ class TestDataManager(unittest2.TestCase):
 
         under_test = DataManager()
 
-        self.assertEqual('Collecting livesynthesis...', under_test.is_ready())
-        under_test.update_database('livesynthesis', {'data': 'test'})
+        self.assertTrue('Collecting' in under_test.is_ready())
+        under_test.databases_ready['livesynthesis'] = True
 
-        self.assertEqual('Collecting user...', under_test.is_ready())
-        under_test.update_database('user', {'data': 'test'})
+        self.assertTrue('Collecting' in under_test.is_ready())
+        under_test.databases_ready['user'] = True
 
-        self.assertEqual('Collecting realm...', under_test.is_ready())
-        under_test.update_database('realm', {'data': 'test'})
+        self.assertTrue('Collecting' in under_test.is_ready())
+        under_test.databases_ready['realm'] = True
 
-        self.assertEqual('Collecting timeperiod...', under_test.is_ready())
-        under_test.update_database('timeperiod', {'data': 'test'})
+        self.assertTrue('Collecting' in under_test.is_ready())
+        under_test.databases_ready['timeperiod'] = True
 
-        self.assertEqual('Collecting host...', under_test.is_ready())
-        under_test.update_database('host', {'data': 'test'})
+        self.assertTrue('Collecting' in under_test.is_ready())
+        under_test.databases_ready['host'] = True
 
-        self.assertEqual('Collecting service...', under_test.is_ready())
-        under_test.update_database('service', {'data': 'test'})
+        self.assertTrue('Collecting' in under_test.is_ready())
+        under_test.databases_ready['service'] = True
+
+        self.assertTrue('Collecting' in under_test.is_ready())
+        under_test.databases_ready['alignakdaemon'] = True
 
         self.assertEqual('READY', under_test.is_ready())
 
