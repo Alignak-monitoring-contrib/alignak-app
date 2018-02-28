@@ -64,6 +64,8 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
                 app_backend.query_livesynthesis_data()
             elif 'realm' in self.thread_name:
                 app_backend.query_realms_data()
+            elif 'timeperiod' in self.thread_name:
+                app_backend.query_period_data()
             elif self.thread_name == 'history':
                 if self.data:
                     app_backend.query_history_data(self.data['hostname'], self.data['host_id'])

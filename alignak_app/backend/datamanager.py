@@ -49,6 +49,7 @@ class DataManager(object):
             'service': [],
             'user': [],
             'realm': [],
+            'timeperiod': [],
         }
         self.old_notifications = []
 
@@ -61,7 +62,9 @@ class DataManager(object):
         """
 
         cur_collected = ''
-        db_names = ['livesynthesis', 'host', 'alignakdaemon', 'user', 'service', 'realm']
+        db_names = [
+            'livesynthesis', 'host', 'alignakdaemon', 'user', 'realm', 'timeperiod', 'service'
+        ]
         for db_name in db_names:
             try:
                 assert bool(self.database[db_name])
@@ -150,6 +153,24 @@ class DataManager(object):
 
             if wanted_realm:
                 return wanted_realm.get_display_name()
+
+        return 'n/a'
+
+    def get_period_name(self, period):
+        """
+        Return the period name or alias
+
+        :param period: wanted period ``_id``
+        :type period: str
+        :return: the wanted realm alias or name if available
+        :rtype: str
+        """
+
+        if self.database['timeperiod']:
+            wanted_period = self.get_item('timeperiod', period)
+
+            if wanted_period:
+                return wanted_period.get_display_name()
 
         return 'n/a'
 

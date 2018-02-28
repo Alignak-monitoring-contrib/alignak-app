@@ -28,6 +28,7 @@ from alignak_app.items.livesynthesis import LiveSynthesis
 from alignak_app.items.service import Service
 from alignak_app.items.user import User
 from alignak_app.items.realm import Realm
+from alignak_app.items.period import Period
 
 
 class TestDataManager(unittest2.TestCase):
@@ -152,6 +153,7 @@ class TestDataManager(unittest2.TestCase):
         event.create(data['_id'], data)
         event_list.append(event)
 
+    # Realm data test
     realm_list = []
     for i in range(0, 10):
         realm = Realm()
@@ -164,6 +166,7 @@ class TestDataManager(unittest2.TestCase):
             'realm%d' % i
         )
         realm_list.append(realm)
+
     realm_noalias = Realm()
     realm_noalias.create(
         '_id',
@@ -173,6 +176,30 @@ class TestDataManager(unittest2.TestCase):
         'realm'
     )
     realm_list.append(realm_noalias)
+
+    # TimePeriod data test
+    period_list = []
+    for i in range(0, 10):
+        period = Realm()
+        period.create(
+            '_id%d' % i,
+            {
+                'name': 'period%d' % i,
+                'alias': 'My Time Period %d' % i,
+            },
+            'period%d' % i
+        )
+        period_list.append(period)
+
+    period_noalias = Period()
+    period_noalias.create(
+        '_id',
+        {
+            'name': 'period',
+        },
+        'period'
+    )
+    period_list.append(period_noalias)
 
     def test_initialize(self):
         """Initialize DataManager"""
@@ -256,6 +283,29 @@ class TestDataManager(unittest2.TestCase):
         no_realm_test = under_test.get_realm_name('no_realm')
 
         self.assertEqual('n/a', no_realm_test)
+
+    def test_get_period_name(self):
+        """Get Time Period in db"""
+
+        under_test = DataManager()
+
+        self.assertFalse(under_test.database['timeperiod'])
+
+        under_test.update_database('timeperiod', self.period_list)
+
+        self.assertTrue(under_test.database['timeperiod'])
+
+        period_test = under_test.get_period_name('_id4')
+
+        self.assertEqual('My Time Period 4', period_test)
+
+        noalias_period_test = under_test.get_period_name('_id')
+
+        self.assertEqual('Period', noalias_period_test)
+
+        no_period_test = under_test.get_period_name('no_period')
+
+        self.assertEqual('n/a', no_period_test)
 
     def test_get_livesynthesis(self):
         """Get Livesynthesis in db"""

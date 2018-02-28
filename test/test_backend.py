@@ -127,6 +127,17 @@ class TestAppBackend(unittest2.TestCase):
 
         self.assertIsNotNone(data_manager.database['realm'])
 
+    def test_query_period_data(self):
+        """Query TimePeriod Data"""
+
+        under_test = BackendClient()
+        under_test.login()
+
+        from alignak_app.backend.datamanager import data_manager
+        under_test.query_period_data()
+
+        self.assertIsNotNone(data_manager.database['timeperiod'])
+
     def test_query_user_data(self):
         """Query User Data"""
 
@@ -206,20 +217,6 @@ class TestAppBackend(unittest2.TestCase):
         self.assertEqual(old_database[0].name, data_manager.database['history'][0].name)
         self.assertEqual(old_database[0].item_id, data_manager.database['history'][0].item_id)
         self.assertEqual(old_database[0].item_id, self.host_id)
-
-    def test_get_period_name(self):
-        """Get Period Name"""
-
-        backend_test = BackendClient()
-        backend_test.login()
-
-        under_test = backend_test.get_period_name('host')
-
-        self.assertEqual('n/a', under_test)
-
-        under_test = backend_test.get_period_name('service')
-
-        self.assertEqual('n/a', under_test)
 
     def test_get_backend_status_icon(self):
         """Get Backend Status Icon Name"""

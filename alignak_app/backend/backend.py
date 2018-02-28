@@ -41,6 +41,7 @@ from alignak_app.items.livesynthesis import LiveSynthesis
 from alignak_app.items.service import Service
 from alignak_app.items.user import User
 from alignak_app.items.realm import Realm
+from alignak_app.items.period import Period
 
 from alignak_app.utils.config import settings
 
@@ -227,38 +228,6 @@ class BackendClient(object):
 
         return request
 
-    def get_period_name(self, endpoint_id):
-        """
-        Get the period name or alias
-
-        :param endpoint_id: id of endpoint
-        :type endpoint_id: str
-        :return: name or alias of timeperiod
-        :rtype: str
-        """
-
-        projection = [
-            'name',
-            'alias'
-        ]
-
-        endpoint = '/'.join(['timeperiod', endpoint_id])
-
-        period = self.get(endpoint, projection=projection)
-
-        if period:
-            if 'host' in endpoint or 'service' in endpoint:
-                period_items = period['_items'][0]
-            else:
-                period_items = period
-
-            if 'alias' in period_items:
-                return period_items['alias']
-            if 'name' in period_items:
-                return period_items['name']
-
-        return 'n/a'
-
     def query_realms_data(self):
         """
         Launch a request on ``realm`` endpoint
@@ -287,6 +256,35 @@ class BackendClient(object):
 
             if realms_list:
                 data_manager.update_database('realm', realms_list)
+
+    def query_period_data(self):
+        """
+        Launch a request on ``timeperiod`` endpoint
+
+        """
+
+        request_data = Period.get_request_model()
+
+        request = self.get(
+            request_data['endpoint'],
+            request_data['params'],
+            request_data['projection']
+        )
+
+        if request:
+            periods_list = []
+            for item in request['_items']:
+                period = Period()
+
+                period.create(
+                    item['_id'],
+                    item,
+                    item['name'],
+                )
+                periods_list.append(period)
+
+            if periods_list:
+                data_manager.update_database('timeperiod', periods_list)
 
     def query_user_data(self):
         """

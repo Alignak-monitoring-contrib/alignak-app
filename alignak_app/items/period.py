@@ -45,9 +45,9 @@ class Period(Item):
     @staticmethod
     def get_request_model():
         """
-        Return the request model for alignakdaemon requests
+        Return the request model for timeperiod requests
 
-        :return: request model for alignakdaemon endpoint
+        :return: request model for timeperiod endpoint
         :rtype: dict
         """
 

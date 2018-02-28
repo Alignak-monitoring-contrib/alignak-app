@@ -318,7 +318,7 @@ class UserQWidget(QWidget):
         period_title.setObjectName("subtitle")
         host_notif_layout.addWidget(period_title, 3, 0, 1, 1)
         self.labels['host_notification_period'].setText(
-            app_backend.get_period_name(
+            data_manager.get_period_name(
                 data_manager.database['user'].data['host_notification_period']
             )
         )
@@ -371,7 +371,7 @@ class UserQWidget(QWidget):
         period_title.setObjectName("subtitle")
         service_notif_layout.addWidget(period_title, 3, 0, 1, 1)
         self.labels['service_notification_period'].setText(
-            app_backend.get_period_name(
+            data_manager.get_period_name(
                 data_manager.database['user'].data['service_notification_period']
             )
         )
