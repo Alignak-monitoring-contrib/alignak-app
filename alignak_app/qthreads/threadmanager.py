@@ -87,8 +87,8 @@ class ThreadManager(QObject):
 
     def clean_threads(self):
         """
-        TODO
-        :return:
+        Clean current BackendQThreads
+
         """
 
         if self.current_thread:
