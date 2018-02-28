@@ -40,6 +40,7 @@ from alignak_app.items.host import Host
 from alignak_app.items.livesynthesis import LiveSynthesis
 from alignak_app.items.service import Service
 from alignak_app.items.user import User
+from alignak_app.items.realm import Realm
 
 from alignak_app.utils.config import settings
 
@@ -285,6 +286,35 @@ class BackendClient(object):
                 return period_items['name']
 
         return 'n/a'
+
+    def query_realms_data(self):
+        """
+        Launch a request on ``realm`` endpoint
+
+        """
+
+        request_data = Realm.get_request_model()
+
+        request = self.get(
+            request_data['endpoint'],
+            request_data['params'],
+            request_data['projection']
+        )
+
+        if request:
+            realms_list = []
+            for item in request['_items']:
+                realm = Realm()
+
+                realm.create(
+                    item['_id'],
+                    item,
+                    item['name'],
+                )
+                realms_list.append(realm)
+
+            if realms_list:
+                data_manager.update_database('realm', realms_list)
 
     def query_user_data(self):
         """

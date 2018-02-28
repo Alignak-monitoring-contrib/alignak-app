@@ -56,7 +56,7 @@ class ThreadManager(QObject):
         threads_to_launch = []
 
         # Add BackendQThread only if they are not already running
-        for cur_thread in ['livesynthesis', 'host', 'service', 'user',
+        for cur_thread in ['livesynthesis', 'host', 'service', 'user', 'realm',
                            'alignakdaemon', 'notifications', 'history']:
             if self.current_thread:
                 if cur_thread != self.current_thread.thread_name:
