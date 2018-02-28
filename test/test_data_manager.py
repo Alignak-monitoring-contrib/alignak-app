@@ -425,11 +425,14 @@ class TestDataManager(unittest2.TestCase):
         self.assertEqual('Collecting user...', under_test.is_ready())
         under_test.update_database('user', {'data': 'test'})
 
-        self.assertEqual('Collecting service...', under_test.is_ready())
-        under_test.update_database('service', {'data': 'test'})
-
         self.assertEqual('Collecting realm...', under_test.is_ready())
         under_test.update_database('realm', {'data': 'test'})
+
+        self.assertEqual('Collecting timeperiod...', under_test.is_ready())
+        under_test.update_database('timeperiod', {'data': 'test'})
+
+        self.assertEqual('Collecting service...', under_test.is_ready())
+        under_test.update_database('service', {'data': 'test'})
 
         self.assertEqual('READY', under_test.is_ready())
 
