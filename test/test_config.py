@@ -62,7 +62,7 @@ class TestUtils(unittest2.TestCase):
 
         self.assertEqual('%s/.local/alignak_app' % os.environ['HOME'], under_test.user_cfg_dir)
 
-        os.environ['ALIGNAKAPP_USER_CFG'] = '/tmp/alignak_app'
+        os.environ['ALIGNAKAPP_USR_CFG'] = '/tmp/alignak_app'
         os.environ['ALIGNAKAPP_APP_CFG'] = '/tmp/alignak_app/settings'
 
         under_test.init_config()
@@ -71,7 +71,7 @@ class TestUtils(unittest2.TestCase):
         self.assertEqual('/tmp/alignak_app/settings', under_test.app_cfg_dir)
 
         # Reset env var for other tests
-        os.environ['ALIGNAKAPP_USER_CFG'] = ''
+        os.environ['ALIGNAKAPP_USR_CFG'] = ''
         os.environ['ALIGNAKAPP_APP_CFG'] = ''
 
     def test_set_app_config(self):
