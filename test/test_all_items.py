@@ -35,6 +35,7 @@ from alignak_app.items.item import *
 from alignak_app.items.livesynthesis import LiveSynthesis
 from alignak_app.items.service import Service
 from alignak_app.items.user import User
+from alignak_app.items.realm import Realm
 
 
 class TestAllItems(unittest2.TestCase):
@@ -105,7 +106,7 @@ class TestAllItems(unittest2.TestCase):
 
         under_test.create('_id', {'ls_state': 'DOWN', 'ls_acknowledged': True}, 'name')
 
-        data_test = under_test.get_data('ls_state')
+        data_test = under_test.data['ls_state']
 
         self.assertTrue('DOWN' == data_test)
 
@@ -118,29 +119,35 @@ class TestAllItems(unittest2.TestCase):
 
         under_test.update_data('ls_acknowledged', False)
 
-        data_test = under_test.get_data('ls_acknowledged')
+        data_test = under_test.data['ls_acknowledged']
 
         self.assertTrue(data_test is False)
 
     def test_get_icon_name(self):
         """Get Icon Name"""
 
-        under_test = get_icon_name('host', 'UP', acknowledge=False, downtime=False, monitored=1)
+        under_test = get_icon_name(
+            'host', 'UP', acknowledge=False, downtime=False, monitored=1)
         self.assertEqual('hosts_up', under_test)
 
-        under_test = get_icon_name('service', 'WARNING', acknowledge=False, downtime=False, monitored=1)
+        under_test = get_icon_name(
+            'service', 'WARNING', acknowledge=False, downtime=False, monitored=1)
         self.assertEqual('services_warning', under_test)
 
-        under_test = get_icon_name('host', 'DOWN', acknowledge=True, downtime=False, monitored=1)
+        under_test = get_icon_name(
+            'host', 'DOWN', acknowledge=True, downtime=False, monitored=1)
         self.assertEqual('acknowledge', under_test)
 
-        under_test = get_icon_name('service', 'UNREACHABLE', acknowledge=True, downtime=True, monitored=2)
+        under_test = get_icon_name(
+            'service', 'UNREACHABLE', acknowledge=True, downtime=True, monitored=2)
         self.assertEqual('downtime', under_test)
 
-        under_test = get_icon_name('host', 'OK', acknowledge=False, downtime=False, monitored=1)
+        under_test = get_icon_name(
+            'host', 'WRONG_STATUS', acknowledge=False, downtime=False, monitored=1)
         self.assertEqual('error', under_test)
 
-        under_test = get_icon_name('host', 'OK', acknowledge=False, downtime=False, monitored=False + False)
+        under_test = get_icon_name(
+            'host', 'UP', acknowledge=False, downtime=False, monitored=False + False)
         self.assertEqual('hosts_not_monitored', under_test)
 
     def test_get_icon_name_from_state(self):
@@ -196,7 +203,8 @@ class TestAllItems(unittest2.TestCase):
         under_test = get_host_msg_and_event_type(host_and_services)
 
         self.assertEqual(
-            'Host1 is UNKNOWN and acknowledged, some services may be in critical condition or unreachable !',
+            'Host1 is UNKNOWN and acknowledged, '
+            'some services may be in critical condition or unreachable !',
             under_test['message']
         )
         self.assertEqual(under_test['event_type'], 'DOWN')
@@ -342,11 +350,21 @@ class TestAllItems(unittest2.TestCase):
         self.assertTrue('projection' in under_test)
 
     def test_get_request_livesynthesis_model(self):
-        """Get Event Request Model"""
+        """Get LiveSynthesis Request Model"""
 
         under_test = LiveSynthesis.get_request_model()
 
         self.assertTrue('endpoint' in under_test)
         self.assertEqual('livesynthesis', under_test['endpoint'])
+        self.assertTrue('params' in under_test)
+        self.assertTrue('projection' in under_test)
+
+    def get_request_realm_model(self):
+        """get Realm Request Model"""
+
+        under_test = Realm.get_request_model()
+
+        self.assertTrue('endpoint' in under_test)
+        self.assertEqual('realm', under_test['endpoint'])
         self.assertTrue('params' in under_test)
         self.assertTrue('projection' in under_test)

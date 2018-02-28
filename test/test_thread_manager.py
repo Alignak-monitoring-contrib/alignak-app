@@ -20,7 +20,6 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest2
-from PyQt5.Qt import QTimer
 
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
@@ -42,14 +41,11 @@ class TestThreadManager(unittest2.TestCase):
 
         under_test = ThreadManager()
 
-        self.assertFalse(under_test.current_threads)
-        self.assertIsNotNone(under_test.timer)
-        self.assertIsInstance(under_test.timer, QTimer)
-        self.assertEqual(
-            ['user', 'host', 'service', 'livesynthesis',
-             'alignakdaemon', 'notifications', 'history'],
-            under_test.threads_to_launch
-        )
+        self.assertFalse(under_test.current_thread)
+        self.assertFalse(under_test.priority_threads)
+        for thread in ['livesynthesis', 'host', 'service', 'user',
+                       'alignakdaemon', 'notifications', 'history']:
+            self.assertTrue(thread in under_test.threads_to_launch)
 
     def test_get_threads_to_launch(self):
         """Get QThreads to Launch"""
@@ -59,19 +55,27 @@ class TestThreadManager(unittest2.TestCase):
         under_test = thread_mgr_test.get_threads_to_launch()
 
         # If there is no current thread, all threads are added
-        self.assertEqual([], thread_mgr_test.current_threads)
-        self.assertEqual(
-            ['user', 'host', 'service', 'livesynthesis',
-             'alignakdaemon', 'notifications', 'history'],
-            under_test
-        )
+        self.assertIsNone(thread_mgr_test.current_thread)
+        for thread in ['livesynthesis', 'host', 'service', 'user', 'alignakdaemon',
+                       'notifications', 'history']:
+            self.assertTrue(thread in under_test)
 
-        thread_mgr_test.current_threads = [BackendQThread('user'), BackendQThread('host')]
+        thread_mgr_test.current_thread = BackendQThread('user')
 
         under_test = thread_mgr_test.get_threads_to_launch()
 
         # If there is current thread, ThreadManager add only threads who are necessary
-        self.assertNotEqual([], thread_mgr_test.current_threads)
+        self.assertNotEqual([], thread_mgr_test.current_thread)
         self.assertTrue('user' not in under_test)
-        self.assertTrue('host' not in under_test)
 
+    def test_priority_threads(self):
+        """Remove Priority Threads"""
+
+        under_test = ThreadManager()
+        under_test.priority_threads.append(BackendQThread('user'))
+
+        self.assertTrue(under_test.priority_threads)
+
+        under_test.stop_priority_threads()
+
+        self.assertFalse(under_test.priority_threads)

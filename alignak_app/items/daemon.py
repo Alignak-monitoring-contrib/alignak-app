@@ -22,7 +22,7 @@
 """
     Daemon
     ++++++
-    Daemon manage creation of daemon item
+    Daemon manage creation of daemon item for backend ``alignakdaemon`` endpoint
 """
 
 

@@ -40,6 +40,8 @@ from alignak_app.items.host import Host
 from alignak_app.items.livesynthesis import LiveSynthesis
 from alignak_app.items.service import Service
 from alignak_app.items.user import User
+from alignak_app.items.realm import Realm
+from alignak_app.items.period import Period
 
 from alignak_app.utils.config import settings
 
@@ -51,11 +53,16 @@ class BackendClient(object):
         Class who collect informations with Backend-Client and returns data for Alignak-App.
     """
 
+    connection_status = {
+        True: 'Success',
+        False: 'Failure'
+    }
+
     def __init__(self):
+        self.start = False
         self.backend = None
-        self.user = {}
         self.connected = False
-        self.app = None
+        self.user = {}
 
     def login(self, username=None, password=None):
         """
@@ -71,11 +78,8 @@ class BackendClient(object):
 
         # Credentials
         if not username and not password:
-            if data_manager.is_ready() == 'READY':
-                username = data_manager.database['user'].name
-            else:
-                username = settings.get_config('Alignak', 'username')
-                password = settings.get_config('Alignak', 'password')
+            if 'token' in self.user:
+                username = self.user['token']
 
         # Create Backend object
         backend_url = settings.get_config('Alignak', 'backend')
@@ -87,19 +91,19 @@ class BackendClient(object):
         logger.info('Try to connect to app_backend...')
 
         if username and password:
-            # Username & password : not recommended, without "login.form.py" form.
+            # Username & password : not recommended, without login QDialog
             try:
                 self.connected = self.backend.login(username, password)
                 if self.connected:
                     self.user['username'] = username
                     self.user['token'] = self.backend.token
-                logger.info('Connection by password: %s', str(self.connected))
-            except BackendException as e:  # pragma: no cover
-                logger.error('Connection to Backend has failed: %s', str(e))
+                logger.info('Connection by password: %s', self.connection_status[self.connected])
+            except BackendException:  # pragma: no cover
+                logger.error('Connection to Backend has failed !')
         elif username and not password:  # pragma: no cover
             # Username as token : recommended
             self.backend.authenticated = True
-            if self.user:
+            if 'token' in self.user:
                 self.backend.token = self.user['token']
             else:
                 self.backend.token = username
@@ -110,16 +114,12 @@ class BackendClient(object):
             connection_test = self.get('livesynthesis')
 
             self.connected = bool(connection_test)
-            logger.info('Connection by token: %s', str(self.connected))
-
-            if not self.connected:
-                return False
+            logger.info('Connection by token: %s', self.connection_status[self.connected])
         else:
-            # Else exit
-            logger.error(
-                'Connection to Backend has failed.\nCheck [Alignak] section in configuration file.'
+            logger.warning(
+                'Connection to Backend has failed.\nCheck [Alignak] section in configuration file '
+                'or use login window of application.'
             )
-            return False
 
         return self.connected
 
@@ -141,15 +141,14 @@ class BackendClient(object):
 
         request = None
 
-        if params is None:
-            params = {'max_results': 50}
-        if projection is not None:
-            generate_proj = {}
-            for field in projection:
-                generate_proj[field] = 1
-            params['projection'] = json.dumps(generate_proj)
-
         if self.connected:
+            if params is None:
+                params = {'max_results': 50}
+            if projection is not None:
+                generate_proj = {}
+                for field in projection:
+                    generate_proj[field] = 1
+                params['projection'] = json.dumps(generate_proj)
             # Request
             try:
                 if not all_items:
@@ -162,29 +161,12 @@ class BackendClient(object):
                         endpoint,
                         params
                     )
-                logger.debug('GET: %s', endpoint)
-                logger.debug('..with params: %s', str(params))
-                logger.debug('...Response > %s', str(request['_status']))
-            except (BackendException, json.decoder.JSONDecodeError) as e:
-                logger.warning('First GET failed: %s', str(e))
-                logger.warning('...Request: %s', str(request))
-                try:
-                    request = self.backend.get(
-                        endpoint,
-                        params
-                    )
-                    logger.debug('GET (Retry): %s', endpoint)
-                    logger.debug('..with params: %s', str(params))
-                    logger.debug('...Response > %s', str(request['_status']))
-                except (BackendException, json.decoder.JSONDecodeError) as e:  # pragma: no cover
-                    logger.error('GET failed: %s', str(e))
-                    logger.error('...Request: %s', str(request))
-                    logger.warning('Application checks the connection with the Backend...')
-                    self.connected = False
-                    if self.app:
-                        if not self.app.reconnect_mode:
-                            self.app.reconnecting.emit(str(e))
-                    return request
+                logger.info('GET on [%s] backend > %s', endpoint, str(request['_status']))
+                logger.debug('- params: [%s]', str(params))
+            except BackendException:
+                self.connected = False
+        else:
+            logger.info('App is not connected to backend !')
 
         return request
 
@@ -207,16 +189,13 @@ class BackendClient(object):
         if self.connected:
             try:
                 request = self.backend.post(endpoint, data, headers=headers)
-                logger.debug('POST on %s', endpoint)
-                logger.debug('..with data: %s', str(data))
-                logger.debug('...Response > %s', str(request['_status']))
-            except BackendException as e:
-                logger.error('POST failed: %s', str(e))
-                logger.warning('Application checks the connection with the Backend...')
+                logger.info('POST on [%s] backend > %s', endpoint, str(request['_status']))
+                logger.debug('- data: [%s]', str(data))
+                logger.debug('- headers: [%s]', str(headers))
+            except BackendException:
                 self.connected = False
-                if not self.app.reconnect_mode:
-                    self.app.reconnecting.emit(str(e))
-                return request
+        else:
+            logger.info('App is not connected to backend !')
 
         return request
 
@@ -239,89 +218,23 @@ class BackendClient(object):
         if self.connected:
             try:
                 request = self.backend.patch(endpoint, data, headers=headers, inception=True)
-                logger.debug('PATCH on %s', endpoint)
-                logger.debug('..with data: %s', str(data))
-                logger.debug('...with headers: %s', str(headers))
-                logger.debug('....Response > %s', str(request['_status']))
-            except BackendException as e:  # pragma: no cover
-                logger.error('PATCH failed: %s', str(e))
-                logger.warning('Application checks the connection with the Backend...')
+                logger.info('PATCH on [%s] backend > %s', endpoint, str(request['_status']))
+                logger.debug('- data: [%s]', str(data))
+                logger.debug('- headers: [%s]', str(headers))
+            except BackendException:
                 self.connected = False
-                if not self.app.reconnect_mode:
-                    self.app.reconnecting.emit(str(e))
-                return False
+        else:
+            logger.info('App is not connected to backend !')
 
         return request
 
-    def get_realm_name(self, endpoint_id):
+    def query_realms_data(self):
         """
-        Return realm name or alias
-
-        :param endpoint_id: id of endpoint
-        :type endpoint_id: str
-        :return: realm name or alias
-        :rtype: str
-        """
-
-        endpoint = '/'.join(
-            ['realm', endpoint_id]
-        )
-        projection = [
-            'name',
-            'alias'
-        ]
-
-        realm = self.get(endpoint, projection=projection)
-
-        if realm:
-            if realm['alias']:
-                return realm['alias']
-
-            return realm['name']
-
-        return 'n/a'
-
-    def get_period_name(self, endpoint_id):
-        """
-        Get the period name or alias
-
-        :param endpoint_id: id of endpoint
-        :type endpoint_id: str
-        :return: name or alias of timeperiod
-        :rtype: str
-        """
-
-        projection = [
-            'name',
-            'alias'
-        ]
-
-        endpoint = '/'.join(['timeperiod', endpoint_id])
-
-        period = self.get(endpoint, projection=projection)
-
-        if period:
-            if 'host' in endpoint or 'service' in endpoint:
-                period_items = period['_items'][0]
-            else:
-                period_items = period
-
-            if 'alias' in period_items:
-                return period_items['alias']
-
-            return period_items['name']
-
-        return 'n/a'
-
-    def query_user_data(self):
-        """
-        Launch request for "user" endpoint
+        Launch a request on ``realm`` endpoint
 
         """
 
-        user = User()
-
-        request_data = user.get_request_model(self.backend.token)
+        request_data = Realm.get_request_model()
 
         request = self.get(
             request_data['endpoint'],
@@ -330,11 +243,72 @@ class BackendClient(object):
         )
 
         if request:
+            realms_list = []
+            for item in request['_items']:
+                realm = Realm()
+
+                realm.create(
+                    item['_id'],
+                    item,
+                    item['name'],
+                )
+                realms_list.append(realm)
+
+            if realms_list:
+                data_manager.update_database('realm', realms_list)
+
+    def query_period_data(self):
+        """
+        Launch a request on ``timeperiod`` endpoint
+
+        """
+
+        request_data = Period.get_request_model()
+
+        request = self.get(
+            request_data['endpoint'],
+            request_data['params'],
+            request_data['projection']
+        )
+
+        if request:
+            periods_list = []
+            for item in request['_items']:
+                period = Period()
+
+                period.create(
+                    item['_id'],
+                    item,
+                    item['name'],
+                )
+                periods_list.append(period)
+
+            if periods_list:
+                data_manager.update_database('timeperiod', periods_list)
+
+    def query_user_data(self):
+        """
+        Launch request for "user" endpoint
+
+        """
+
+        request_data = User.get_request_model(self.backend.token)
+
+        request = self.get(
+            request_data['endpoint'],
+            request_data['params'],
+            request_data['projection']
+        )
+
+        if request:
+            user = User()
+
             user.create(
                 request['_items'][0]['_id'],
                 request['_items'][0],
                 request['_items'][0]['name']
             )
+
             data_manager.update_database('user', user)
 
     def query_hosts_data(self):
@@ -352,8 +326,8 @@ class BackendClient(object):
             all_items=True
         )
 
-        hosts_list = []
         if request:
+            hosts_list = []
             for item in request['_items']:
                 host = Host()
 
@@ -504,6 +478,7 @@ class BackendClient(object):
                     request_data['projection'],
                     all_items=False
                 )
+
                 if request:
                     host_history = History()
 

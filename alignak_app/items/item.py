@@ -22,7 +22,7 @@
 """
     Item
     ++++
-    Item is parent class for all models
+    Item is parent class for all items objects
 """
 
 
@@ -33,7 +33,7 @@ logger = getLogger(__name__)
 
 class Item(object):
     """
-        Class who create item
+        Class who create an item
     """
 
     def __init__(self):
@@ -59,17 +59,6 @@ class Item(object):
 
         if name:
             self.name = name
-
-    def get_data(self, key):
-        """
-        Return key data of item
-
-        :param key: the key who contain the wanted data
-        :type key: str
-        :return: the wanted data
-        """
-
-        return self.data[key]
 
     def update_data(self, key, new_value):
         """
@@ -149,7 +138,7 @@ def get_icon_name(item_type, state, acknowledge, downtime, monitored):
     try:
         return available_icons[item_type][state]
     except KeyError as e:
-        logger.error('Wrong KEY for get_icon(): %s', e)
+        logger.error('Wrong KEY for get_icon_name(): %s', e)
         return 'error'
 
 

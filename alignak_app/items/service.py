@@ -22,7 +22,7 @@
 """
     Service
     +++++++
-    Service manage creation of service item
+    Service manage creation of service item for backend ``service`` endpoint
 """
 
 import json
@@ -107,7 +107,7 @@ class Service(Item):
         :rtype: str
         """
 
-        if self.data['alias']:
-            return self.data['alias'].capitalize()
+        if 'alias' in self.data:
+            return self.data['alias'].title()
 
-        return self.data['name'].capitalize()
+        return self.data['name'].title()

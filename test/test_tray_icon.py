@@ -86,7 +86,7 @@ class TestTrayIcon(unittest2.TestCase):
 
         self.assertFalse(under_test.qaction_factory.actions)
 
-        under_test.create_about_action()
+        under_test.add_about_menu()
 
         self.assertIsNotNone(under_test.qaction_factory)
         self.assertIsInstance(under_test.qaction_factory.get_action('about'), QAction)

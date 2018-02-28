@@ -33,8 +33,6 @@ from alignak_app.utils.config import settings
 from alignak_app.app import AlignakApp
 from alignak_app import __application__
 
-from PyQt5.QtWidgets import QApplication
-
 
 def main():  # pragma: no cover
     """
@@ -78,13 +76,9 @@ def main():  # pragma: no cover
                 'and requires an X server to be displayed.%s' % (fail, endc)
             )
 
-        app = QApplication(sys.argv)
-        app.setQuitOnLastWindowClosed(False)
-
-        alignak_app = AlignakApp(app)
+        alignak_app = AlignakApp()
         alignak_app.start()
 
-        sys.exit(app.exec_())
     elif args.install and 'win32' not in sys.platform:
         # ONLY FOR LINUX PLATFORM
         bin_file = '%s/bin/%s' % (settings.app_cfg_dir, os.path.split(__file__)[1])

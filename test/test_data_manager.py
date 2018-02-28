@@ -27,6 +27,8 @@ from alignak_app.items.host import Host
 from alignak_app.items.livesynthesis import LiveSynthesis
 from alignak_app.items.service import Service
 from alignak_app.items.user import User
+from alignak_app.items.realm import Realm
+from alignak_app.items.period import Period
 
 
 class TestDataManager(unittest2.TestCase):
@@ -151,6 +153,54 @@ class TestDataManager(unittest2.TestCase):
         event.create(data['_id'], data)
         event_list.append(event)
 
+    # Realm data test
+    realm_list = []
+    for i in range(0, 10):
+        realm = Realm()
+        realm.create(
+            '_id%d' % i,
+            {
+                'name': 'realm%d' % i,
+                'alias': 'My Realm %d' % i,
+            },
+            'realm%d' % i
+        )
+        realm_list.append(realm)
+
+    realm_noalias = Realm()
+    realm_noalias.create(
+        '_id',
+        {
+            'name': 'realm',
+        },
+        'realm'
+    )
+    realm_list.append(realm_noalias)
+
+    # TimePeriod data test
+    period_list = []
+    for i in range(0, 10):
+        period = Realm()
+        period.create(
+            '_id%d' % i,
+            {
+                'name': 'period%d' % i,
+                'alias': 'My Time Period %d' % i,
+            },
+            'period%d' % i
+        )
+        period_list.append(period)
+
+    period_noalias = Period()
+    period_noalias.create(
+        '_id',
+        {
+            'name': 'period',
+        },
+        'period'
+    )
+    period_list.append(period_noalias)
+
     def test_initialize(self):
         """Initialize DataManager"""
 
@@ -210,6 +260,52 @@ class TestDataManager(unittest2.TestCase):
         item3 = under_test.get_item('service', 'service10')
 
         self.assertIsNone(item3)
+
+    def test_get_realm_name(self):
+        """Get Realm in db"""
+
+        under_test = DataManager()
+
+        self.assertFalse(under_test.database['realm'])
+
+        under_test.update_database('realm', self.realm_list)
+
+        self.assertTrue(under_test.database['realm'])
+
+        realm_test = under_test.get_realm_name('_id2')
+
+        self.assertEqual('My Realm 2', realm_test)
+
+        noalias_realm_test = under_test.get_realm_name('_id')
+
+        self.assertEqual('Realm', noalias_realm_test)
+
+        no_realm_test = under_test.get_realm_name('no_realm')
+
+        self.assertEqual('n/a', no_realm_test)
+
+    def test_get_period_name(self):
+        """Get Time Period in db"""
+
+        under_test = DataManager()
+
+        self.assertFalse(under_test.database['timeperiod'])
+
+        under_test.update_database('timeperiod', self.period_list)
+
+        self.assertTrue(under_test.database['timeperiod'])
+
+        period_test = under_test.get_period_name('_id4')
+
+        self.assertEqual('My Time Period 4', period_test)
+
+        noalias_period_test = under_test.get_period_name('_id')
+
+        self.assertEqual('Period', noalias_period_test)
+
+        no_period_test = under_test.get_period_name('no_period')
+
+        self.assertEqual('n/a', no_period_test)
 
     def test_get_livesynthesis(self):
         """Get Livesynthesis in db"""
@@ -317,12 +413,25 @@ class TestDataManager(unittest2.TestCase):
 
         under_test = DataManager()
 
-        self.assertNotEqual('READY', under_test.is_ready())
-
+        self.assertEqual('Collecting livesynthesis...', under_test.is_ready())
         under_test.update_database('livesynthesis', {'data': 'test'})
-        self.assertNotEqual('READY', under_test.is_ready())
+
+        self.assertEqual('Collecting host...', under_test.is_ready())
         under_test.update_database('host', {'data': 'test'})
-        self.assertNotEqual('READY', under_test.is_ready())
+
+        self.assertEqual('Collecting alignakdaemon...', under_test.is_ready())
+        under_test.update_database('alignakdaemon', {'data': 'test'})
+
+        self.assertEqual('Collecting user...', under_test.is_ready())
+        under_test.update_database('user', {'data': 'test'})
+
+        self.assertEqual('Collecting realm...', under_test.is_ready())
+        under_test.update_database('realm', {'data': 'test'})
+
+        self.assertEqual('Collecting timeperiod...', under_test.is_ready())
+        under_test.update_database('timeperiod', {'data': 'test'})
+
+        self.assertEqual('Collecting service...', under_test.is_ready())
         under_test.update_database('service', {'data': 'test'})
 
         self.assertEqual('READY', under_test.is_ready())

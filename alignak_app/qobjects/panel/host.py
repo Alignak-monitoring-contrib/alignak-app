@@ -365,7 +365,7 @@ class HostQWidget(QWidget):
             self.labels['ls_output'].setText(self.host_item.data['ls_output'])
 
             self.labels['realm'].setText(
-                app_backend.get_realm_name(self.host_item.data['_realm'])
+                data_manager.get_realm_name(self.host_item.data['_realm'])
             )
             self.labels['address'].setText(self.host_item.data['address'])
             self.labels['business_impact'].setText(str(self.host_item.data['business_impact']))
@@ -383,8 +383,13 @@ class HostQWidget(QWidget):
                 self.history_btn.setToolTip(_('History is available'))
             else:
                 self.history_btn.setToolTip(_('History is not available, please wait...'))
-                thread_manager.add_thread(
-                    'history',
-                    {'hostname': self.host_item.name, 'host_id': self.host_item.item_id}
-                )
                 self.history_btn.setEnabled(False)
+
+                if app_backend.connected:
+                    thread_manager.add_priority_thread(
+                        'history',
+                        {'hostname': self.host_item.name, 'host_id': self.host_item.item_id}
+                    )
+                else:
+                    logger.info('Can\'t launch thread, App is not connected to backend !')
+                    thread_manager.stop_threads()

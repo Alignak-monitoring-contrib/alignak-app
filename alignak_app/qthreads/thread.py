@@ -27,7 +27,7 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QThread, pyqtSignal
+from PyQt5.Qt import QThread
 
 from alignak_app.backend.backend import app_backend
 
@@ -38,8 +38,6 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
     """
         Class who create a QThread to trigger requests
     """
-
-    quit_thread = pyqtSignal(name='close_thread')
 
     def __init__(self, thread, data=None):
         super(BackendQThread, self).__init__()
@@ -52,26 +50,31 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
 
         """
 
-        self.quit_thread.connect(self.quit)
-        logger.debug('THREAD: launch a new thread for %s', self.thread_name)
-        logger.debug('... with data: %s', self.data)
-
-        if 'user' in self.thread_name:
-            app_backend.query_user_data()
-        elif 'host' in self.thread_name:
-            app_backend.query_hosts_data()
-        elif 'service' in self.thread_name:
-            app_backend.query_services_data()
-        elif 'alignakdaemon' in self.thread_name:
-            app_backend.query_daemons_data()
-        elif 'livesynthesis' in self.thread_name:
-            app_backend.query_livesynthesis_data()
-        elif self.thread_name == 'history':
-            if self.data:
-                app_backend.query_history_data(self.data['hostname'], self.data['host_id'])
+        if app_backend.connected:
+            logger.debug('Launch a new thread request for backend: %s', self.thread_name)
+            if 'user' in self.thread_name:
+                app_backend.query_user_data()
+            elif 'host' in self.thread_name:
+                app_backend.query_hosts_data()
+            elif 'service' in self.thread_name:
+                app_backend.query_services_data()
+            elif 'alignakdaemon' in self.thread_name:
+                app_backend.query_daemons_data()
+            elif 'livesynthesis' in self.thread_name:
+                app_backend.query_livesynthesis_data()
+            elif 'realm' in self.thread_name:
+                app_backend.query_realms_data()
+            elif 'timeperiod' in self.thread_name:
+                app_backend.query_period_data()
+            elif self.thread_name == 'history':
+                if self.data:
+                    app_backend.query_history_data(self.data['hostname'], self.data['host_id'])
+                else:
+                    app_backend.query_history_data()
+            elif 'notifications' in self.thread_name:
+                app_backend.query_notifications_data()
             else:
-                app_backend.query_history_data()
-        elif 'notifications' in self.thread_name:
-            app_backend.query_notifications_data()
+                logger.error("Thread is unknown: %s", self.thread_name)
         else:
-            logger.error("Thread is unknown: %s", self.thread_name)
+            logger.warning('The app is offline, the threads can not be launched !')
+            self.quit()

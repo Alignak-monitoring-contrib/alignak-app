@@ -48,6 +48,8 @@ class DataManager(object):
             'host': [],
             'service': [],
             'user': [],
+            'realm': [],
+            'timeperiod': [],
         }
         self.old_notifications = []
 
@@ -59,19 +61,22 @@ class DataManager(object):
         :rtype: str
         """
 
-        if self.database['host'] and \
-                self.database['service'] and \
-                self.database['livesynthesis']:
-            return 'READY'
+        cur_collected = ''
+        db_names = [
+            'livesynthesis', 'host', 'alignakdaemon', 'user', 'realm', 'timeperiod', 'service'
+        ]
+        for db_name in db_names:
+            try:
+                assert bool(self.database[db_name])
+                cur_collected = 'READY'
+            except AssertionError:
+                cur_collected = 'Collecting %s...' % db_name
+                break
 
-        if not self.database['livesynthesis']:
-            return 'Collecting livesynthesis...'
-        if not self.database['host']:
-            return 'Collecting hosts...'
-        if not self.database['service']:
-            return 'Collecting services...'
+        if not cur_collected:
+            cur_collected = 'Please wait'
 
-        return 'Please wait...'
+        return cur_collected
 
     def update_database(self, item_type, items_list):
         """
@@ -98,7 +103,7 @@ class DataManager(object):
         :param value: value of the key if needed
         :type value: str
         :return: wanted item
-        :rtype: alignak_app.core.models.item.ItemModel
+        :rtype: alignak_app.items.item.*
         """
 
         logger.debug('Get database Item [%s] : %s, %s', item_type, key, value)
@@ -132,6 +137,42 @@ class DataManager(object):
             if item.item_id == item_id:
                 for key in data:
                     item.data[key] = data[key]
+
+    def get_realm_name(self, realm):
+        """
+        Return the realm name or alias
+
+        :param realm: wanted realm ``_id``
+        :type realm: str
+        :return: the wanted realm alias or name if available
+        :rtype: str
+        """
+
+        if self.database['realm']:
+            wanted_realm = self.get_item('realm', realm)
+
+            if wanted_realm:
+                return wanted_realm.get_display_name()
+
+        return 'n/a'
+
+    def get_period_name(self, period):
+        """
+        Return the period name or alias
+
+        :param period: wanted period ``_id``
+        :type period: str
+        :return: the wanted realm alias or name if available
+        :rtype: str
+        """
+
+        if self.database['timeperiod']:
+            wanted_period = self.get_item('timeperiod', period)
+
+            if wanted_period:
+                return wanted_period.get_display_name()
+
+        return 'n/a'
 
     def get_synthesis_count(self):
         """

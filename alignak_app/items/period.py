@@ -20,12 +20,12 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Host
-    ++++
-    Host manage creation of host item for backend ``host`` endpoint
+    Period
+    ++++++
+    Period manage creation of period item for backend ``timeperiod`` endpoint
 """
 
-import json
+
 from logging import getLogger
 
 from alignak_app.items.item import Item
@@ -33,49 +33,35 @@ from alignak_app.items.item import Item
 logger = getLogger(__name__)
 
 
-class Host(Item):
+class Period(Item):
     """
-        Class who create a host item
+        Class who create a period item
     """
 
     def __init__(self):
-        super(Host, self).__init__()
-        self.item_type = 'host'
+        super(Period, self).__init__()
+        self.item_type = 'timeperiod'
 
     @staticmethod
     def get_request_model():
         """
-        Return the request model for host requests
+        Return the request model for timeperiod requests
 
-        :return: request model for host endpoint
+        :return: request model for timeperiod endpoint
         :rtype: dict
         """
 
-        hosts_projection = [
-            'name', 'alias', 'ls_state', '_id', 'ls_acknowledged', 'ls_downtimed', 'ls_last_check',
-            'ls_output', 'address', 'business_impact', 'parents', 'notes', '_realm',
-            'passive_checks_enabled', 'active_checks_enabled'
+        realms_projection = [
+            'name', 'alias'
         ]
 
-        request = {
-            'endpoint': 'host',
-            'params': {'where': json.dumps({'_is_template': False})},
-            'projection': hosts_projection
+        request_model = {
+            'endpoint': 'timeperiod',
+            'params': None,
+            'projection': realms_projection
         }
 
-        return request
-
-    @staticmethod
-    def get_available_icons():
-        """
-        Return list of available icons for a Host item
-
-        :return: list of available icons for Host
-        :rtype: list
-        """
-
-        return ['hosts_up', 'hosts_unreachable', 'hosts_down', 'acknowledge',
-                'downtime', 'hosts_not_monitored']
+        return request_model
 
     def get_display_name(self):
         """
