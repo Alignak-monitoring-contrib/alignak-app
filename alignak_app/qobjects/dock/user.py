@@ -154,14 +154,7 @@ class UserQWidget(QWidget):
         info_layout.setAlignment(self.labels['can_submit_commands'], Qt.AlignCenter)
 
         # Create QLabel for notes
-        self.labels['notes'].setText(data_manager.database['user'].data['notes'])
-        self.labels['notes'].setWordWrap(True)
-        self.labels['notes'].setTextInteractionFlags(Qt.TextSelectableByMouse)
-        notes_scrollarea = QScrollArea()
-        notes_scrollarea.setWidget(self.labels['notes'])
-        notes_scrollarea.setWidgetResizable(True)
-        notes_scrollarea.setObjectName('notes')
-        info_layout.addWidget(notes_scrollarea, line, 4, 3, 2)
+        info_layout.addWidget(self.get_notes_scrollarea(), line, 4, 3, 2)
         info_layout.setAlignment(Qt.AlignTop)
         line += 1
 
@@ -199,6 +192,25 @@ class UserQWidget(QWidget):
         info_layout.addWidget(self.token_btn, line, 3, 1, 1)
 
         return information_widget
+
+    def get_notes_scrollarea(self):
+        """
+        Return QScrollArea widget for user notes
+
+        :return: user notes QScrollArea
+        :rtype: QScrollArea
+        """
+
+        # Create QLabel for notes
+        self.labels['notes'].setText(data_manager.database['user'].data['notes'])
+        self.labels['notes'].setWordWrap(True)
+        self.labels['notes'].setTextInteractionFlags(Qt.TextSelectableByMouse)
+        notes_scrollarea = QScrollArea()
+        notes_scrollarea.setWidget(self.labels['notes'])
+        notes_scrollarea.setWidgetResizable(True)
+        notes_scrollarea.setObjectName('notes')
+
+        return notes_scrollarea
 
     @staticmethod
     def show_token_dialog():
