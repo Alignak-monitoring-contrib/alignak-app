@@ -100,7 +100,7 @@ class LivestateQWidget(QWidget):
         widget.setObjectName('bordered')
 
         problem_label = QLabel('%d' % problem_nb)
-        problem_label.setObjectName('ko')
+        problem_label.setObjectName('ok')
         problem_label.setToolTip(
             _('Number of unhandled %s problems') % (
                 item_type if 'problem' not in item_type else ''

@@ -25,7 +25,7 @@ import unittest2
 from PyQt5.Qt import QApplication, QTimer
 
 from alignak_app.utils.config import settings
-from alignak_app.backend.datamanager import data_manager
+# from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.livesynthesis import LiveSynthesis
 
 from alignak_app.locales.locales import init_localization
@@ -112,11 +112,13 @@ class TestLivestateQWidget(unittest2.TestCase):
     def test_update_livestate_labels(self):
         """Update LivestateQWidget QLabels"""
 
+        # No problems in datamanager
+        from alignak_app.backend.datamanager import data_manager
+        data_manager.database['livesynthesis'] = []
+        self.assertFalse(data_manager.database['livesynthesis'])
+
         under_test = LivestateQWidget()
         under_test.initialize()
-
-        # No problems in datamanager
-        self.assertFalse(data_manager.database['livesynthesis'])
 
         for label_grp in under_test.labels:
             self.assertEqual('ok', under_test.labels[label_grp]['problem'].objectName())

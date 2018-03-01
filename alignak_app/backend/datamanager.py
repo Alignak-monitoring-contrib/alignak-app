@@ -391,6 +391,8 @@ class DataManager(object):
             }
         }
 
+        logger.debug("Collected problems for livestate: [%s]", items_and_problems)
+
         return items_and_problems
 
     def get_problems(self):

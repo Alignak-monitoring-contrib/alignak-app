@@ -69,6 +69,7 @@ class AppProgressQWidget(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setFixedSize(250, 80)
         self.setStyleSheet(settings.css_style)
+        # Fields
         self.progress_bar = AppProgressBar()
 
     def initialize(self):

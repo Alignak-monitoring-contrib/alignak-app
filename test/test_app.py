@@ -24,7 +24,7 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication
 
-from alignak_app.app import AppProgressBar
+from alignak_app.app import AppProgressBar, AppProgressQWidget
 
 
 class TestApp(unittest2.TestCase):
@@ -52,3 +52,16 @@ class TestApp(unittest2.TestCase):
         under_test.set_text('test')
 
         self.assertEqual('test', under_test.text())
+
+    def test_app_progress_Widget(self):
+        """App Progress QWidget"""
+
+        under_test = AppProgressQWidget()
+
+        self.assertTrue(under_test.progress_bar)
+        self.assertIsInstance(under_test.progress_bar, AppProgressBar)
+
+        under_test.initialize()
+
+        self.assertTrue(under_test.progress_bar)
+        self.assertIsInstance(under_test.progress_bar, AppProgressBar)

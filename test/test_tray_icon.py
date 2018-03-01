@@ -126,7 +126,7 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertIsNotNone(under_test.qaction_factory)
 
     def test_check_connection(self):
-        """check_connection"""
+        """Tray Icon Check Connection"""
 
         under_test = TrayIcon(self.icon)
         from alignak_app.backend.backend import app_backend
