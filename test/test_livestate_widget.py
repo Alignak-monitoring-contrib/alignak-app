@@ -25,7 +25,6 @@ import unittest2
 from PyQt5.Qt import QApplication, QTimer
 
 from alignak_app.utils.config import settings
-# from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.livesynthesis import LiveSynthesis
 
 from alignak_app.locales.locales import init_localization

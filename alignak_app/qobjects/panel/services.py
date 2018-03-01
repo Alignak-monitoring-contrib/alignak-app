@@ -34,7 +34,7 @@ from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.frames import get_frame_separator
-from alignak_app.qobjects.panel.service_tree_item import ServicesTreeItem
+from alignak_app.qobjects.panel.service_tree_item import ServiceTreeItem
 from alignak_app.qobjects.panel.number_services import NumberServicesQWidget
 from alignak_app.qobjects.panel.service import ServiceDataQWidget
 
@@ -134,7 +134,7 @@ class ServicesQWidget(QWidget):
             main_tree.setToolTip(0, aggregation)
             for service in self.service_items:
                 if service.data['aggregation'] == aggregation:
-                    service_tree = ServicesTreeItem()
+                    service_tree = ServiceTreeItem()
                     service_tree.initialize(service)
                     service_tree.setToolTip(0, service.get_tooltip())
                     self.services_tree_widget.clicked.connect(self.update_service_data)
@@ -150,7 +150,7 @@ class ServicesQWidget(QWidget):
 
         service_tree_item = self.services_tree_widget.currentItem()
 
-        if isinstance(service_tree_item, ServicesTreeItem):
+        if isinstance(service_tree_item, ServiceTreeItem):
             service = data_manager.get_item('service', '_id', service_tree_item.service_id)
 
             self.services_tree_widget.setMaximumWidth(self.width() * 0.5)

@@ -22,7 +22,7 @@
 """
     Service Tree Item
     +++++++++++++++++
-    Service Tree Item manage creation of QTreeWidgetItem to store Service item data
+    Service Tree Item manage creation of QTreeWidgetItem(s) to store  and display Service item data
 """
 
 from logging import getLogger
@@ -36,13 +36,13 @@ from alignak_app.utils.config import settings
 logger = getLogger(__name__)
 
 
-class ServicesTreeItem(QTreeWidgetItem):  # pylint: disable=too-few-public-methods
+class ServiceTreeItem(QTreeWidgetItem):  # pylint: disable=too-few-public-methods
     """
         Class who create QTreeWidgetItem with service data
     """
 
     def __init__(self, parent=None):
-        super(ServicesTreeItem, self).__init__(parent)
+        super(ServiceTreeItem, self).__init__(parent)
         self.service_item = None
         self.service_id = None
 
