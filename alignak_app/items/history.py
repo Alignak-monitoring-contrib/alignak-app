@@ -65,6 +65,10 @@ class History(Item):
         """
         Return icon name related to message or event type
 
+        :param message: message of an history event
+        :type message: str
+        :param event_type: type of history event
+        :type event_type: str
         :return: icon name
         :rtype: str
         """
@@ -73,6 +77,8 @@ class History(Item):
             icon_name = 'acknowledge'
         elif 'downtime' in event_type:
             icon_name = 'downtime'
+        elif 'comment' in event_type:
+            icon_name = 'edit'
         else:
             if 'UP' in message:
                 icon_name = 'hosts_up'

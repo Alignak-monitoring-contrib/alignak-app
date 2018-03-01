@@ -302,6 +302,11 @@ QLabel#downtime {
     font: 10pt;
 }
 
+QLabel#edit {
+    color: #1fb4e4;
+    font: 10pt;
+}
+
 /****** ITEMS (HOSTS and SERVICES) ******/
 QLabel#itemtitle {
     background-color: #607d8b; 

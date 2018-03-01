@@ -92,15 +92,16 @@ class HistoryQWidget(QWidget):
 
             line += 3
 
+        layout.setAlignment(Qt.AlignTop)
         center_widget(self.app_widget)
 
     @staticmethod
-    def get_history_widget_model(event, hostname):
+    def get_history_widget_model(history_event, hostname):
         """
         Create and return event QWidgets
 
-        :param event: event of history given by backend
-        :type event: dict
+        :param history_event: event of history given by backend
+        :type history_event: dict
         :param hostname: name of host
         :type hostname: str
         :return: history Qwidget model with data
@@ -108,29 +109,33 @@ class HistoryQWidget(QWidget):
         """
 
         history_widget_model = QWidget()
-        history_widget_model.setToolTip(event['type'])
-        history_widget_model.setObjectName("event")
+        history_widget_model.setToolTip(history_event['type'])
+        history_widget_model.setObjectName("history_event")
 
         event_layout = QGridLayout()
         history_widget_model.setLayout(event_layout)
 
-        if event['service_name']:
-            event_name = event['service_name'].capitalize()
-        else:
+        event_name = ''
+        if 'service_name' in history_event:
+            if history_event['service_name']:
+                event_name = history_event['service_name'].capitalize()
+        if not event_name:
             event_name = hostname.capitalize()
 
-        icon_name = History.get_history_icon_name_from_message(event['message'], event['type'])
+        icon_name = History.get_history_icon_name_from_message(
+            history_event['message'], history_event['type']
+        )
         event_label = QLabel(event_name)
         event_label.setObjectName(icon_name)
         event_layout.addWidget(event_label, 0, 0, 1, 1)
 
-        message_label = QLabel('%s' % event['message'])
+        message_label = QLabel('%s' % history_event['message'])
         message_label.setWordWrap(True)
         event_layout.addWidget(message_label, 1, 0, 1, 1)
 
         icon = QPixmap(settings.get_image(icon_name))
         icon_label = QLabel()
-        icon_label.setToolTip(event['type'])
+        icon_label.setToolTip(history_event['type'])
         icon_label.setFixedSize(32, 32)
         icon_label.setPixmap(icon)
         icon_label.setScaledContents(True)
