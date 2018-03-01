@@ -118,8 +118,8 @@ class TestServiceDataQWidget(unittest2.TestCase):
         under_test = ServiceDataQWidget()
 
         self.assertIsNone(under_test.service_item)
-        self.assertIsNone(under_test.host_id)
         self.assertIsNotNone(under_test.labels)
+
         for label in under_test.labels:
             self.assertIsInstance(under_test.labels[label], QLabel)
         self.assertIsNotNone(under_test.buttons)
@@ -129,14 +129,14 @@ class TestServiceDataQWidget(unittest2.TestCase):
         under_test.initialize()
 
         self.assertIsNone(under_test.service_item)
-        self.assertIsNone(under_test.host_id)
         self.assertIsNotNone(under_test.labels)
-        self.assertIsNotNone(under_test.buttons)
+
         for label in under_test.labels:
             self.assertIsInstance(under_test.labels[label], QLabel)
         self.assertIsNotNone(under_test.buttons)
         for button in under_test.buttons:
             self.assertIsInstance(under_test.buttons[button], QPushButton)
+
         # Assert QWidget is Hidden for first display
         self.assertTrue(under_test.isHidden())
 
@@ -164,7 +164,7 @@ class TestServiceDataQWidget(unittest2.TestCase):
         data_manager.database['user'].data['can_submit_commands'] = True
         data_manager.update_database('service', self.service_list)
 
-        under_test.update_widget(self.service_list[0], '_id1')
+        under_test.update_widget(self.service_list[0])
 
         new_labels = under_test.labels
 
