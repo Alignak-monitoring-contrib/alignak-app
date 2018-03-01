@@ -68,7 +68,7 @@ class ThreadManager(QObject):
 
         return threads_to_launch
 
-    def launch_threads(self):
+    def launch_threads(self):  # pragma: no cover
         """
         Launch periodically threads
 
@@ -85,7 +85,7 @@ class ThreadManager(QObject):
 
             self.current_thread = backend_thread
 
-    def clean_threads(self):
+    def clean_threads(self):  # pragma: no cover
         """
         Clean current BackendQThreads
 

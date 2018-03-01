@@ -79,3 +79,19 @@ class TestThreadManager(unittest2.TestCase):
         under_test.stop_priority_threads()
 
         self.assertFalse(under_test.priority_threads)
+
+    def test_stop_threads(self):
+        """Stop All Threads"""
+
+        under_test = ThreadManager()
+
+        under_test.priority_threads.append(BackendQThread(''))
+        under_test.current_thread = BackendQThread('')
+
+        self.assertTrue(under_test.priority_threads)
+        self.assertTrue(under_test.current_thread)
+
+        under_test.stop_threads()
+
+        self.assertFalse(under_test.priority_threads)
+        self.assertFalse(under_test.current_thread)

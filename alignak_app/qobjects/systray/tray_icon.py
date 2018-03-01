@@ -90,6 +90,7 @@ class TrayIcon(QSystemTrayIcon):
         if app_backend.connected:
             connect = app_backend.login(check=True)
             logger.info('App check connection: %s', app_backend.connection_status[connect])
+            self.connection_nb = 3
         elif not app_backend.connected and self.connection_nb < 1:
             connect = app_backend.login(check=True)
             logger.warning('App check connection: %s', app_backend.connection_status[connect])

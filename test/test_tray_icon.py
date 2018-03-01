@@ -27,7 +27,6 @@ from PyQt5.QtWidgets import QAction
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMenu
 
-from alignak_app.backend.backend import BackendClient
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.user import User
 from alignak_app.utils.config import settings
@@ -46,9 +45,6 @@ class TestTrayIcon(unittest2.TestCase):
     init_localization()
 
     icon = QIcon(settings.get_image('icon'))
-
-    backend = BackendClient()
-    backend.login()
 
     data_manager.database['user'] = User()
     data_manager.database['user'].data = {}
@@ -76,13 +72,13 @@ class TestTrayIcon(unittest2.TestCase):
     def test_tray_icon(self):
         """Init TrayIcon and QMenu"""
 
-        under_test = TrayIcon(TestTrayIcon.icon)
+        under_test = TrayIcon(self.icon)
 
         self.assertIsInstance(under_test.menu, QMenu)
 
     def test_about_action(self):
         """About QAction is created"""
-        under_test = TrayIcon(TestTrayIcon.icon)
+        under_test = TrayIcon(self.icon)
 
         self.assertFalse(under_test.qaction_factory.actions)
 
@@ -93,7 +89,7 @@ class TestTrayIcon(unittest2.TestCase):
 
     def test_quit_action(self):
         """Quit QAction is created"""
-        under_test = TrayIcon(TestTrayIcon.icon)
+        under_test = TrayIcon(self.icon)
 
         self.assertFalse(under_test.qaction_factory.actions)
 
@@ -115,7 +111,7 @@ class TestTrayIcon(unittest2.TestCase):
             else:
                 data_manager.database['user'].data[key] = 'nothing'
 
-        under_test = TrayIcon(TestTrayIcon.icon)
+        under_test = TrayIcon(self.icon)
 
         # Assert no actions in Menu
         self.assertFalse(under_test.menu.actions())
@@ -128,3 +124,37 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertTrue(under_test.menu.actions())
         self.assertIsNotNone(under_test.app_about)
         self.assertIsNotNone(under_test.qaction_factory)
+
+    def test_check_connection(self):
+        """check_connection"""
+
+        under_test = TrayIcon(self.icon)
+        from alignak_app.backend.backend import app_backend
+
+        self.assertEqual(3, under_test.connection_nb)
+
+        app_backend.connected = False
+
+        # If App backend is not connected, "connection_nb" decrease
+        under_test.check_connection()
+        self.assertEqual(2, under_test.connection_nb)
+
+        under_test.check_connection()
+        self.assertEqual(1, under_test.connection_nb)
+
+        under_test.check_connection()
+        self.assertEqual(0, under_test.connection_nb)
+
+        # If App still not connected, "connection_nb" is reset to 3
+        under_test.check_connection()
+        self.assertEqual(3, under_test.connection_nb)
+
+        # If App backend back to connected, "connection_nb" is reset to 3
+        under_test.connection_nb = 0
+        app_backend.connected = True
+        under_test.check_connection()
+        self.assertEqual(3, under_test.connection_nb)
+
+        # If App backend is connected, "connection_nb stay" at 3
+        under_test.check_connection()
+        self.assertEqual(3, under_test.connection_nb)
