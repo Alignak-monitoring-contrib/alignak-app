@@ -66,7 +66,7 @@ class HistoryQWidget(QWidget):
         scroll = QScrollArea()
         scroll.setWidget(self)
         scroll.setWidgetResizable(True)
-        scroll.setMinimumSize(1000, 800)
+        scroll.setMinimumWidth(800)
 
         self.app_widget.initialize(_('History of %s') % hostname.capitalize())
         self.app_widget.layout().setSpacing(0)

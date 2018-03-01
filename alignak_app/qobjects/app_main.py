@@ -82,7 +82,7 @@ class AppQMainWindow(QMainWindow):
         self.connect_dock_buttons()
 
         self.setCentralWidget(app_widget)
-        self.setMinimumSize(1300, 800)
+        self.setMinimumSize(1440, 900)
         center_widget(self)
 
         display = settings.get_config('Alignak-app', 'display')
