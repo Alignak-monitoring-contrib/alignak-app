@@ -157,14 +157,9 @@ class ServicesQWidget(QWidget):
             self.service_data_widget.setMaximumWidth(self.width() * 0.5)
 
             if service:
-                self.service_data_widget.update_widget(
-                    service,
-                    self.host_item.item_id
-                )
+                self.service_data_widget.update_widget(service)
             else:
-                self.service_data_widget.update_widget(
-                    self.service_data_widget.service_item,
-                    self.service_data_widget.host_id
-                )
+                self.service_data_widget.update_widget(self.service_data_widget.service_item)
+
             self.service_data_widget.show()
             service_tree_item.update_item()

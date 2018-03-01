@@ -315,11 +315,24 @@ QLabel#itemtitle {
     border-radius: 3px;
 }
 
-QLabel#output {
+QScrollArea#output {
     color: #c7254e;
     background-color: #f9f2f4;
-    margin-left: 0.5em;
-    margin-right: 0.5em;
+}
+
+QScrollArea#output QWidget {
+    color: #c7254e;
+    background-color: #f9f2f4;
+}
+
+QScrollArea#notes {
+    color: #2581c7;
+    background-color: #e6f4ff;
+}
+
+QScrollArea#notes QWidget {
+    color: #2581c7;
+    background-color: #e6f4ff;
 }
 
 QLabel#itemname {
@@ -382,9 +395,3 @@ QLabel#userTrue {
 QLabel#userFalse {
     color: #f44336;
 }
-QLabel#notes {
-    color: #2581c7;
-    background-color: #f9f2f4;
-    border-radius: 3px;
-}
-

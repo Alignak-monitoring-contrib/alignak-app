@@ -28,6 +28,7 @@
 from logging import getLogger
 
 from PyQt5.Qt import QLabel, QWidget, Qt, QPushButton, QPixmap, QVBoxLayout, QGridLayout, QTimer
+from PyQt5.Qt import QScrollArea
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.item import get_icon_name
@@ -46,11 +47,10 @@ class ServiceDataQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(ServiceDataQWidget, self).__init__(parent)
-        self.setFixedWidth(200)
+        self.setMinimumSize(460, 230)
         # Fields
         self.refresh_timer = QTimer()
         self.service_item = None
-        self.host_id = None
         self.labels = {
             'service_icon': QLabel(),
             'service_name': QLabel(),
@@ -137,10 +137,13 @@ class ServiceDataQWidget(QWidget):
         output_title.setObjectName('title')
         layout.addWidget(output_title, 3, 0, 1, 1)
 
-        self.labels['ls_output'].setObjectName('output')
         self.labels['ls_output'].setWordWrap(True)
         self.labels['ls_output'].setTextInteractionFlags(Qt.TextSelectableByMouse)
-        layout.addWidget(self.labels['ls_output'], 3, 1, 1, 1)
+        output_scrollarea = QScrollArea()
+        output_scrollarea.setWidget(self.labels['ls_output'])
+        output_scrollarea.setWidgetResizable(True)
+        output_scrollarea.setObjectName('output')
+        layout.addWidget(output_scrollarea, 3, 1, 1, 1)
 
         return widget
 
@@ -167,19 +170,16 @@ class ServiceDataQWidget(QWidget):
 
         return widget
 
-    def update_widget(self, service=None, host_id=None):
+    def update_widget(self, service=None):
         """
         Update ServiceDataQWidget
 
         :param service: Service item with its data
         :type service: alignak_app.core.models.service.Service
-        :param host_id: id of attached host
-        :type host_id: str
         """
 
-        if service and host_id:
+        if service:
             self.service_item = service
-            self.host_id = host_id
 
         icon_name = get_icon_name(
             'service',
@@ -196,7 +196,7 @@ class ServiceDataQWidget(QWidget):
         self.labels['service_icon'].setScaledContents(True)
         self.labels['service_icon'].setFixedSize(48, 48)
         self.labels['service_icon'].setToolTip(self.service_item.get_tooltip())
-        self.labels['service_name'].setText('%s' % self.service_item.get_display_name())
+        self.labels['service_name'].setText(self.service_item.get_display_name())
 
         since_last_check = get_time_diff_since_last_timestamp(
             self.service_item.data['ls_last_check']
@@ -215,7 +215,7 @@ class ServiceDataQWidget(QWidget):
 
         """
 
-        if self.service_item and self.host_id:
+        if self.service_item:
             updated_service = data_manager.get_item('service', '_id', self.service_item.item_id)
             if updated_service:
                 self.service_item = updated_service

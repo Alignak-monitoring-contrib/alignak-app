@@ -28,7 +28,7 @@
 from logging import getLogger
 
 from PyQt5.Qt import QLabel, QWidget, QGridLayout, Qt, QPixmap, QVBoxLayout, QHBoxLayout
-from PyQt5.Qt import QPushButton, QIcon, QTimer
+from PyQt5.Qt import QPushButton, QIcon, QTimer, QScrollArea
 
 from alignak_app.backend.backend import app_backend
 from alignak_app.backend.datamanager import data_manager
@@ -260,12 +260,15 @@ class HostQWidget(QWidget):
         # Output
         output_title = QLabel(_("Output"))
         output_title.setObjectName('title')
-        layout.addWidget(output_title, 3, 0, 1, 1)
+        layout.addWidget(output_title, 3, 0, 1, 2)
 
-        self.labels['ls_output'].setObjectName('output')
         self.labels['ls_output'].setWordWrap(True)
         self.labels['ls_output'].setTextInteractionFlags(Qt.TextSelectableByMouse)
-        layout.addWidget(self.labels['ls_output'], 3, 1, 1, 1)
+        output_scrollarea = QScrollArea()
+        output_scrollarea.setWidget(self.labels['ls_output'])
+        output_scrollarea.setWidgetResizable(True)
+        output_scrollarea.setObjectName('output')
+        layout.addWidget(output_scrollarea, 4, 0, 1, 2)
 
         return widget
 
@@ -302,19 +305,24 @@ class HostQWidget(QWidget):
         layout.addWidget(self.labels['address'], 2, 1, 1, 1)
 
         # Business impact
-        address_title = QLabel(_("Business impact:"))
-        address_title.setObjectName('title')
-        layout.addWidget(address_title, 3, 0, 1, 1)
+        business_title = QLabel(_("Business impact:"))
+        business_title.setObjectName('title')
+        layout.addWidget(business_title, 3, 0, 1, 1)
 
         layout.addWidget(self.labels['business_impact'], 3, 1, 1, 1)
 
         # Notes
         notes_title = QLabel(_("Notes:"))
         notes_title.setObjectName('title')
-        layout.addWidget(notes_title, 4, 0, 1, 1)
+        layout.addWidget(notes_title, 4, 0, 1, 2)
 
         self.labels['notes'].setWordWrap(True)
-        layout.addWidget(self.labels['notes'], 4, 1, 1, 1)
+        self.labels['notes'].setTextInteractionFlags(Qt.TextSelectableByMouse)
+        notes_scrollarea = QScrollArea()
+        notes_scrollarea.setWidget(self.labels['notes'])
+        notes_scrollarea.setWidgetResizable(True)
+        notes_scrollarea.setObjectName('notes')
+        layout.addWidget(notes_scrollarea, 5, 0, 1, 2)
 
         return widget
 
