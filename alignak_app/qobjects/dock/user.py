@@ -27,7 +27,7 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QGridLayout, QVBoxLayout, QIcon, Qt, QLabel, QWidget, QPushButton
+from PyQt5.Qt import QGridLayout, QVBoxLayout, QIcon, Qt, QLabel, QWidget, QPushButton, QScrollArea
 
 from alignak_app.backend.backend import app_backend
 from alignak_app.backend.datamanager import data_manager
@@ -156,8 +156,12 @@ class UserQWidget(QWidget):
         # Create QLabel for notes
         self.labels['notes'].setText(data_manager.database['user'].data['notes'])
         self.labels['notes'].setWordWrap(True)
-        self.labels['notes'].setObjectName('notes')
-        info_layout.addWidget(self.labels['notes'], line, 4, 1, 2)
+        self.labels['notes'].setTextInteractionFlags(Qt.TextSelectableByMouse)
+        notes_scrollarea = QScrollArea()
+        notes_scrollarea.setWidget(self.labels['notes'])
+        notes_scrollarea.setWidgetResizable(True)
+        notes_scrollarea.setObjectName('notes')
+        info_layout.addWidget(notes_scrollarea, line, 4, 3, 2)
         info_layout.setAlignment(Qt.AlignTop)
         line += 1
 
