@@ -43,12 +43,16 @@ Alignak-App is a desktop application, residing in the system tray, for the Align
 
 This application is useful for people with an Alignak installation in their business and who want to keep an eye on their supervision constantly.
 
-It is used to :
+Features:
+^^^^^^^^^
 
-* Get Alignak daemons status, number of hosts and services per state
-* Be notified when problems are raised by Alignak
-* View, in real time, an host synthesis (host and its services state)
-* Acknowledge problems or schedule downtimes on your Hosts / Services
+* *See Alignak daemons status (if activate in backend), number, states, informations of hosts and services*
+* *Be notified for: problems, actions, changes*
+* *View a synthesis view of a host and its services (states, output, checks)*
+* *Acknowledge problems, schedule downtimes on your Hosts / Services*
+* *Spy hosts*
+
+And other features to come...
 
 App use `PyQt5 <https://www.riverbankcomputing.com/software/pyqt/intro>`_, bindings of Qt application framework.
 
@@ -64,6 +68,8 @@ To install Alignak-app:
     # An installer for Windows is available on this repository.
     # To keep it free, installer is not signed, so Windows Defender SmartScreen will warn you about that.
     # Just click on "More Informations" and on "Execute anyway" to run installer.
+
+    # You can generate your own setup. Please, follow the documentation link below.
 
 * **Linux Users:**
 
@@ -103,12 +109,12 @@ Documentation
 Documentation for Alignak-app is available on `Read The Docs <http://alignak-app.readthedocs.io/en/develop/index.html>`_.
 You will find everything you need to install and configure the application.
 
-To learn more about **Alignak**, please visit `http://www.alignak.net/ <http://www.alignak.net/>`_.
+To learn more about **Alignak** project, please visit `http://www.alignak.net/ <http://www.alignak.net/>`_.
 
 Release strategy
 ----------------
 
-Alignak-app will follow the `Alignak-Backend <https://github.com/Alignak-monitoring-contrib/alignak-backend>`_ version.
+Alignak-app will *try* to follow the `Alignak-Backend <https://github.com/Alignak-monitoring-contrib/alignak-backend>`_ version.
 As of it, take care to install the same minor version on your system to ensure compatibility between all the packages.
 If your Backend is **1.1.0**, use Alignak-app **1.1.x**.
 
