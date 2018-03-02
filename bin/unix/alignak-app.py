@@ -53,31 +53,39 @@ def main():  # pragma: no cover
     )
 
     parser.add_argument(
+        '-i', '--install',
+        help='Check installation and install folders for each user. '
+             'If you installed %s as sudo, run this command first.' % __application__,
+        dest='install', action="store_true", default=False
+    )
+
+    parser.add_argument(
         '-s', '--start',
         help='Start %s in your shell.' % __application__,
         dest='start', action="store_true", default=False
     )
 
     args = parser.parse_args()
-
     installer = Installer()
-    installer.check_installation()
-    installer.install()
 
     if args.start:
+        # Check installation
+        installer.check_installation()
+
         from alignak_app.app import AlignakApp
 
         if 'SSH_CONNECTION' in os.environ:
-            fail = '\033[91m'
-            endc = '\033[0m'
-
             sys.exit(
-                '%sAlignak-app can not be launched during an SSH connection '
-                'and requires an X server to be displayed.%s' % (fail, endc)
+                'Alignak-app can not be launched during an SSH connection '
+                'and requires an X server to be displayed.'
             )
 
         alignak_app = AlignakApp()
         alignak_app.start()
+    elif args.install:
+        # Check installation and install
+        installer.check_installation(mode='install')
+        installer.install()
     else:
         parser.print_help()
 

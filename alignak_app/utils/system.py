@@ -105,6 +105,11 @@ def write_file(origin_dir, dest_dir, filename, formatted_var=None):
     origin_file = os.path.join(origin_dir, filename)
     dest_file = os.path.join(dest_dir, filename.replace('.sample.sh', ''))
 
+    if os.path.isfile(dest_file):
+        print('\t[%s] file has been updated.' % os.path.split(dest_file)[1])
+    else:
+        print('\t[%s] file has been updated.' % os.path.split(dest_file)[1])
+
     orig_read_file = open(origin_file)
     if formatted_var:
         orig_format_file = orig_read_file.read() % formatted_var
@@ -114,6 +119,14 @@ def write_file(origin_dir, dest_dir, filename, formatted_var=None):
     with open(dest_file, 'w') as bin_file:
         for line in orig_format_file:
             bin_file.write(line)
+
+
+autocompletion_text = """
+# Alignak-app completion:
+if [ -f %s ]; then
+\t. %s
+fi\n
+"""
 
 
 def write_rc_file(filename):
@@ -131,15 +144,16 @@ def write_rc_file(filename):
             user_rc = '%s/%s' % (os.environ['HOME'], autocomplete_file)
 
             break
-    autocompletion_text = '\n# Alignak-app completion:\n. %s' % filename
+
+    full_autocompletion_text = autocompletion_text % (filename, filename)
 
     try:
         bashrc = open(user_rc, 'r')
-        if 'Alignak-app completion' not in bashrc.read():
+        if full_autocompletion_text not in bashrc.read():
             print('- Add autocompletion inside [%s]' % user_rc)
             bashrc.close()
             with open(user_rc, 'a') as cur_rc_file:
-                cur_rc_file.write(autocompletion_text)
+                cur_rc_file.write(full_autocompletion_text)
         else:
             print('- Autocompletion already available.')
             bashrc.close()

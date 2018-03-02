@@ -29,6 +29,12 @@
 # Description:       alignak-app is a desktop application for Alignak solution.
 ### END INIT INFO
 
+#############################################################################
+#                                                                           #
+#                           DAEMON ALIGNAK-APP                              #
+#                                                                           #
+#############################################################################
+
 # Variables
 DAEMON=%s
 BIN_FILE=%s
