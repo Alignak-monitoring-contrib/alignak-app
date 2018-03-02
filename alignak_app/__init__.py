@@ -41,6 +41,15 @@
     * The :class:`Utils <alignak_app.utils>` package contains settings, logs, installation,...
     * The :class:`Locales <alignak_app.locales>` package contains translations.
 
+    Alignak-app will use a system of :class:`Installer <alignak_app.utils.installer.Installer>`
+    who use **environment variables** to run:
+
+    * ``ALIGNAKAPP_USR_DIR``: contains settings of user (**write rights**)
+    * ``ALIGNAKAPP_LOG_DIR``: contains log files of App (**write rights**)
+    * ``ALIGNAKAPP_APP_DIR``: contains binaries of App (images, css, languages) (**read rights**)
+
+    The :class:`Login <alignak_app.qobjects.login.login.LoginQDialog>` manage user login if needed.
+
 """
 
 

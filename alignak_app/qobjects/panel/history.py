@@ -118,9 +118,9 @@ class HistoryQWidget(QWidget):
         event_name = ''
         if 'service_name' in history_event:
             if history_event['service_name']:
-                event_name = history_event['service_name'].capitalize()
+                event_name = _('Service: %s') % history_event['service_name'].capitalize()
         if not event_name:
-            event_name = hostname.capitalize()
+            event_name = _('Host: %s') % hostname.capitalize()
 
         icon_name = History.get_history_icon_name_from_message(
             history_event['message'], history_event['type']

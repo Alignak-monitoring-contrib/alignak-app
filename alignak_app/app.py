@@ -24,8 +24,10 @@
     ~~~
     App manages the creation of QObjects for the whole application:
 
-    * Creation of QObject for App Main (QMainWindow)
-    * Creation of QProgressbar until the Data Manager is ready
+    * Creation of :class:`AppProgressBar <alignak_app.app.AppProgressBar>` until the Data Manager is
+      ready
+    * Creation of :class:`AppQMainWindow <alignak_app.qobjects.app_main.AppQMainWindow>`
+    * Creation of standard python objects (settings, css, localization)
 """
 
 import os
@@ -146,12 +148,14 @@ class AlignakApp(QObject):  # pragma: no cover
 
         logger.info('\n')
         logger.info('----- Alignak-App START -----')
-        logger.info('- Environment variables:')
-        logger.info('[ALIGNAKAPP_LOG_DIR] = "%s"', os.environ['ALIGNAKAPP_LOG_DIR'])
-        logger.info('[ALIGNAKAPP_USR_CFG] = "%s"', os.environ['ALIGNAKAPP_USR_CFG'])
-        logger.info('[ALIGNAKAPP_APP_CFG] = "%s"', os.environ['ALIGNAKAPP_APP_CFG'])
-        logger.info('- App logging debug: %s', settings.get_config('Log', 'debug', boolean=True))
-        logger.info('- Alignak Backend  : %s', settings.get_config('Alignak', 'backend'))
+        logger.info('- Running Version : "%s"', __version__)
+        logger.info('- Alignak-App Env :')
+        logger.info('[ALIGNAKAPP_APP_DIR] = %s', os.environ['ALIGNAKAPP_APP_DIR'])
+        logger.info('[ALIGNAKAPP_USR_DIR] = %s', os.environ['ALIGNAKAPP_USR_DIR'])
+        logger.info('[ALIGNAKAPP_LOG_DIR] = %s', os.environ['ALIGNAKAPP_LOG_DIR'])
+        logger.info('- Config File     : %s', settings.settings['settings'])
+        logger.info('- Debug Activate  : %s', settings.get_config('Log', 'debug', boolean=True))
+        logger.info('- Alignak Backend : %s', settings.get_config('Alignak', 'backend'))
 
         app = QApplication(sys.argv)
         app.setQuitOnLastWindowClosed(False)

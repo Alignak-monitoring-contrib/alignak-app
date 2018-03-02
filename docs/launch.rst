@@ -20,11 +20,11 @@ To launch application use ``--start``::
 
     /usr/local/alignak_app/bin/alignak-app.py --start
 
+If you have set environment variables for application, they will be added to the generated daemon script (see :ref:`config`).
+
 To generate an Alignak-app daemon file, use ``--install``::
 
     /usr/local/alignak_app/bin/alignak-app.py --install
-
-If you have set environment variables for application, they will be added to the generated script (see :ref:`config`).
 
 Launch daemon
 *************
@@ -39,7 +39,7 @@ Here is the available commands::
 
 With no parameters, this will display help and your environment variables configuration.
 
-**Note:** To generate a new daemon file with other environment variable, just run ``alignak-app.py --install`` again.
+**Note:** To generate a new daemon file with other environment, just run ``alignak-app.py --start`` again with your new environment variables.
 
 On Windows
 ~~~~~~~~~~
@@ -65,8 +65,11 @@ Solve Problems
 
 If you're having trouble getting started and running the app, here are some things to check:
 
-1. Be sure you have correctly set your configuration file (see above) and that you can join your backend.
-2. The application generates a log file in its root folder (see :ref:`config`). Search for ``ERROR`` messages.
-3. If you have installed Alignak-app with pip, be sure to add the flag *--user* (see :ref:`install`).
+1. Be sure you have correctly:
 
+  * Install application: see :ref:`installer`.
+  * Set your configuration file: see :ref:`config`.
 
+2. The application generates a log file in folder defined in ``ALIGNAKAPP_LOG_DIR`` (see :ref:`config`). Search for ``ERROR`` messages in this file.
+3. For more help you can set ``debug`` to **yes** to have more informations.
+4. That your backend is reachable from your computer.

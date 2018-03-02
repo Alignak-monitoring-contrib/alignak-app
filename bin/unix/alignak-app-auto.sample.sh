@@ -19,6 +19,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
+#############################################################################
+#                                                                           #
+#                     ALIGNAK-APP AUTOCOMPLETION                            #
+#                                                                           #
+#############################################################################
+
 _script()
 {
     _script_commands=$(%s shortlist)
