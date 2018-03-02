@@ -20,7 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Launch Alignak-app
+    Alignak App
+    +++++++++++
+    Alignak App launch or install Alignak-app
 """
 
 import sys
@@ -28,15 +30,14 @@ import os
 
 import argparse
 
-from alignak_app.utils.install import install_alignak_app
-from alignak_app.utils.config import settings
-from alignak_app.app import AlignakApp
+from alignak_app.utils.installer import Installer
+
 from alignak_app import __application__
 
 
 def main():  # pragma: no cover
     """
-    Define arguments and send to DataConverter()
+        Launch or install Alignak-app
     """
 
     usage = u"./alignak-app.py [--start | --install]"
@@ -57,16 +58,15 @@ def main():  # pragma: no cover
         dest='start', action="store_true", default=False
     )
 
-    if 'win32' not in sys.platform:
-        parser.add_argument(
-            '-i', '--install',
-            help='Install or update %s daemon, with your environment variables.' % __application__,
-            dest='install', action="store_true", default=False
-        )
-
     args = parser.parse_args()
 
+    installer = Installer()
+    installer.check_installation()
+    installer.install()
+
     if args.start:
+        from alignak_app.app import AlignakApp
+
         if 'SSH_CONNECTION' in os.environ:
             fail = '\033[91m'
             endc = '\033[0m'
@@ -78,11 +78,6 @@ def main():  # pragma: no cover
 
         alignak_app = AlignakApp()
         alignak_app.start()
-
-    elif args.install and 'win32' not in sys.platform:
-        # ONLY FOR LINUX PLATFORM
-        bin_file = '%s/bin/%s' % (settings.app_cfg_dir, os.path.split(__file__)[1])
-        install_alignak_app(bin_file)
     else:
         parser.print_help()
 

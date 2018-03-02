@@ -34,8 +34,8 @@ DAEMON=%s
 BIN_FILE=%s
 PYBIN=python3
 
-export ALIGNAKAPP_APP_CFG=%s
-export ALIGNAKAPP_USER_CFG=%s
+export ALIGNAKAPP_APP_DIR=%s
+export ALIGNAKAPP_USR_DIR=%s
 export ALIGNAKAPP_LOG_DIR=%s
 
 APP_VERSION="%s"
@@ -47,14 +47,14 @@ APP_DOC_URL="%s"
 usage() {
     echo "------------------------------------------"
     echo "Alignak-app, Version $APP_VERSION \n"
-    echo "  $APP_RELEASE_NOTES"
-    echo "  For more help, visit $APP_DOC_URL."
-    echo "  Please open any issue on $APP_PROJECT_URL."
+    echo "\t$APP_RELEASE_NOTES"
+    echo "\tFor more help, visit $APP_DOC_URL."
+    echo "\tPlease open any issue on $APP_PROJECT_URL."
     echo "------------------------------------------"
-    echo "Alignak-app will use following variables: \n"
-    echo "ALIGNAKAPP_APP_CFG = $ALIGNAKAPP_APP_CFG"
-    echo "ALIGNAKAPP_USER_CFG = $ALIGNAKAPP_USER_CFG"
-    echo "ALIGNAKAPP_LOG_DIR = $ALIGNAKAPP_LOG_DIR"
+    echo "Alignak-App Environment: \n"
+    echo "\tALIGNAKAPP_APP_DIR = $ALIGNAKAPP_APP_DIR"
+    echo "\tALIGNAKAPP_USR_DIR = $ALIGNAKAPP_USR_DIR"
+    echo "\tALIGNAKAPP_LOG_DIR = $ALIGNAKAPP_LOG_DIR"
     echo "\n Usage: $DAEMON {start|stop|status|restart} \n"
 }
 
