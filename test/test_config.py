@@ -23,6 +23,7 @@ import os
 import unittest2
 import configparser
 
+from alignak_app.utils.installer import Installer
 from alignak_app.utils.config import get_url_endpoint_from_icon_name, Settings
 
 
@@ -30,6 +31,9 @@ class TestUtils(unittest2.TestCase):
     """
         This file test methods of `utils.py` file.
     """
+
+    installer = Installer()
+    installer.check_installation()
 
     def test_init_config(self):
         """Init Settings"""
@@ -40,9 +44,7 @@ class TestUtils(unittest2.TestCase):
         self.assertIsInstance(under_test.img_config, configparser.ConfigParser)
         self.assertTrue('settings' in under_test.settings)
         self.assertTrue('images' in under_test.settings)
-        self.assertIsNone(under_test.app_cfg_dir)
-        self.assertIsNone(under_test.user_cfg_dir)
-        self.assertIsNone(under_test.css_style)
+        self.assertFalse(under_test.css_style)
 
         under_test.init_config()
 
@@ -50,29 +52,7 @@ class TestUtils(unittest2.TestCase):
         self.assertIsInstance(under_test.img_config, configparser.ConfigParser)
         self.assertTrue('settings' in under_test.settings)
         self.assertTrue('images' in under_test.settings)
-        self.assertIsNotNone(under_test.app_cfg_dir)
-        self.assertIsNotNone(under_test.user_cfg_dir)
-        self.assertIsNone(under_test.css_style)
-
-    def test_app_dir_from_env(self):
-        """App Workdir from Env"""
-
-        under_test = Settings()
-        under_test.init_config()
-
-        self.assertEqual('%s/.local/alignak_app' % os.environ['HOME'], under_test.user_cfg_dir)
-
-        os.environ['ALIGNAKAPP_USR_CFG'] = '/tmp/alignak_app'
-        os.environ['ALIGNAKAPP_APP_CFG'] = '/tmp/alignak_app/settings'
-
-        under_test.init_config()
-
-        self.assertEqual('/tmp/alignak_app', under_test.user_cfg_dir)
-        self.assertEqual('/tmp/alignak_app/settings', under_test.app_cfg_dir)
-
-        # Reset env var for other tests
-        os.environ['ALIGNAKAPP_USR_CFG'] = ''
-        os.environ['ALIGNAKAPP_APP_CFG'] = ''
+        self.assertFalse(under_test.css_style)
 
     def test_set_app_config(self):
         """Set and Get app_config"""
@@ -107,12 +87,12 @@ class TestUtils(unittest2.TestCase):
 
         test_icon = under_test.get_image('icon')
 
-        self.assertEqual('%s/images/icon.svg' % under_test.app_cfg_dir, test_icon)
+        self.assertEqual('%s/images/icon.svg' % os.environ['ALIGNAKAPP_APP_DIR'], test_icon)
 
         test_icon_error = under_test.get_image('NONE')
 
         self.assertEqual(
-            '%s/images/error.svg' % under_test.app_cfg_dir, test_icon_error
+            '%s/images/error.svg' % os.environ['ALIGNAKAPP_APP_DIR'], test_icon_error
         )
 
     def test_init_css(self):
@@ -121,15 +101,15 @@ class TestUtils(unittest2.TestCase):
         under_test = Settings()
         under_test.init_config()
 
-        self.assertIsNone(under_test.css_style)
+        self.assertFalse(under_test.css_style)
 
         under_test.init_css()
 
-        self.assertIsNotNone(under_test.css_style)
+        self.assertTrue(under_test.css_style)
         self.assertIsInstance(under_test.css_style, str)
 
-        # Set 'ALIGNAKAPP_APP_CFG' and init again config
-        os.environ['ALIGNAKAPP_APP_CFG'] = '/tmp/alignak_app'
+        # Set 'ALIGNAKAPP_APP_DIR' and init again config
+        os.environ['ALIGNAKAPP_APP_DIR'] = '/tmp/alignak_app'
         under_test.init_config()
 
         under_test.init_css()
@@ -137,7 +117,7 @@ class TestUtils(unittest2.TestCase):
         self.assertEqual('', under_test.css_style)
 
         # Reset env var for other tests
-        os.environ['ALIGNAKAPP_APP_CFG'] = ''
+        os.environ['ALIGNAKAPP_APP_DIR'] = ''
 
     def test_get_url_endpoint_from_icon_name(self):
         """Get Url Endpoint from Icon Name"""
