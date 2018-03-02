@@ -74,8 +74,9 @@ Source: "{#RootApp}\alignak-app\bin\win\icon_64.ico"; DestDir: {app}; Flags: ign
 Source: "{#RootApp}\alignak-app\alignak_app\locales\LC_MESSAGES\*"; DestDir: {app}\locales; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
 
 [Registry]
-Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName: "ALIGNAKAPP_USER_CFG"; ValueData: "{app}"; Flags: uninsdeletekey preservestringtype
-Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName: "ALIGNAKAPP_APP_CFG"; ValueData: "{app}"; Flags: uninsdeletekey preservestringtype
+Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName: "ALIGNAKAPP_USR_DIR"; ValueData: "{app}"; Flags: uninsdeletekey preservestringtype
+Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName: "ALIGNAKAPP_APP_DIR"; ValueData: "{app}"; Flags: uninsdeletekey preservestringtype
+Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName: "ALIGNAKAPP_LOG_DIR"; ValueData: "{app}"; Flags: uninsdeletekey preservestringtype
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon_64.ico";
