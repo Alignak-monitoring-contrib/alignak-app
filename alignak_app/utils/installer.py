@@ -34,7 +34,7 @@ import sys
 
 from alignak_app import __project_url__, __doc_url__, __version__, __releasenotes__, __application__
 
-from alignak_app.utils.system import install_file, write_file, write_rc_file, mkdir
+from alignak_app.utils.system import install_file, write_file, write_rc_file, mkdir, file_executable
 
 
 class Installer(object):
@@ -75,15 +75,17 @@ class Installer(object):
         self.init_environment()
 
         check_folder = self.check_install_folders()
-        print('- Check installation folders: %s' % self.states[check_folder])
+        if 'install' in mode:
+            print('- Check installation folders: %s' % self.states[check_folder])
 
-        self.check_environment()
+        self.check_environment(mode)
 
         if 'start' in mode:
             self.check_user_installation()
 
         check_files = self.check_install_files()
-        print('- Check installation files: %s' % self.states[check_files])
+        if 'install' in mode:
+            print('- Check installation files: %s' % self.states[check_files])
 
     def check_install_folders(self):
         """
@@ -178,7 +180,7 @@ class Installer(object):
         if 'ALIGNAKAPP_LOG_DIR' in os.environ:
             self.log_dir = os.environ['ALIGNAKAPP_LOG_DIR']
 
-    def check_environment(self):
+    def check_environment(self, mode='start'):
         """
         Assign fields to environment variables if they don't exist
 
@@ -207,10 +209,11 @@ class Installer(object):
                     print('[!] User don\'t have permission on %s !' % os.environ[env_var])
                     sys.exit(1)
 
-        print('- Default %s Environment:' % __application__)
-        print('\t[ALIGNAKAPP_APP_DIR] = %s' % os.environ['ALIGNAKAPP_APP_DIR'])
-        print('\t[ALIGNAKAPP_USR_DIR] = %s' % os.environ['ALIGNAKAPP_USR_DIR'])
-        print('\t[ALIGNAKAPP_LOG_DIR] = %s' % os.environ['ALIGNAKAPP_LOG_DIR'])
+        if 'install' in mode:
+            print('- Default %s Environment:' % __application__)
+            print('\t[ALIGNAKAPP_APP_DIR] = %s' % os.environ['ALIGNAKAPP_APP_DIR'])
+            print('\t[ALIGNAKAPP_USR_DIR] = %s' % os.environ['ALIGNAKAPP_USR_DIR'])
+            print('\t[ALIGNAKAPP_LOG_DIR] = %s' % os.environ['ALIGNAKAPP_LOG_DIR'])
 
     def check_user_installation(self):
         """
@@ -218,7 +221,7 @@ class Installer(object):
 
         """
 
-        usr_cfg_file = os.path.join( os.environ['ALIGNAKAPP_USR_DIR'], 'settings.cfg')
+        usr_cfg_file = os.path.join(os.environ['ALIGNAKAPP_USR_DIR'], 'settings.cfg')
         try:
             assert os.path.isfile(usr_cfg_file)
         except AssertionError as e:
@@ -256,10 +259,17 @@ class Installer(object):
                     __project_url__, __doc_url__,
                 )
             )
+            file_executable(
+                os.path.join(bin_folder, self.daemon_name)
+            )
             write_file(
                 os.path.join(os.environ['ALIGNAKAPP_APP_DIR'], 'bin-samples'),
                 bin_folder,
-                '%s-auto.sample.sh' % self.daemon_name
+                '%s-auto.sample.sh' % self.daemon_name,
+                (
+                    os.path.join(bin_folder, self.daemon_name),
+                    self.daemon_name
+                )
             )
             write_rc_file(os.path.join(bin_folder, '%s-auto' % self.daemon_name))
 

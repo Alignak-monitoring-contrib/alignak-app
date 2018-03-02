@@ -27,6 +27,7 @@
 
 import os
 import sys
+import stat
 
 import configparser
 from configparser import DuplicateOptionError, DuplicateSectionError
@@ -70,7 +71,7 @@ def install_file(origin_dir, dest_dir, filename):
     output_msg = ''
 
     if not os.path.isfile(dest_file):
-        output_msg += '\tAdd user configuration file [%s]' % filename
+        output_msg += '\t[%s] has been added.' % filename
         try:
             copyfile(origin_file, dest_file)
         except IOError as e:
@@ -78,7 +79,7 @@ def install_file(origin_dir, dest_dir, filename):
     else:
         output_msg += '\t[%s] already exist.' % filename
 
-    output_msg += ' (Sample file added in "%s")' % dest_dir
+    output_msg += '\n\t  - Example file added in "%s"' % dest_dir
     dest_file = dest_file + '.sample'
     try:
         copyfile(origin_file, dest_file)
@@ -108,7 +109,7 @@ def write_file(origin_dir, dest_dir, filename, formatted_var=None):
     if os.path.isfile(dest_file):
         print('\t[%s] file has been updated.' % os.path.split(dest_file)[1])
     else:
-        print('\t[%s] file has been updated.' % os.path.split(dest_file)[1])
+        print('\t[%s] file has been created.' % os.path.split(dest_file)[1])
 
     orig_read_file = open(origin_file)
     if formatted_var:
@@ -124,7 +125,7 @@ def write_file(origin_dir, dest_dir, filename, formatted_var=None):
 autocompletion_text = """
 # Alignak-app completion:
 if [ -f %s ]; then
-\t. %s
+    . %s
 fi\n
 """
 
@@ -185,3 +186,20 @@ def read_config_file(cfg_parser, filename):
         sys.exit(ex)
 
     return None
+
+
+def file_executable(filename):
+    """
+    Make filename executable
+
+    :param filename: file to make executable
+    :type filename: str
+    """
+
+    try:
+        st = os.stat(filename)
+        os.chmod(filename, st.st_mode | stat.S_IEXEC)
+    except PermissionError as e:
+        print(e)
+        print('Can\'t make file executable: %s' % filename)
+        sys.exit(1)
