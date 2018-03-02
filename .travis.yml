@@ -8,16 +8,14 @@ before_script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - sleep 3
+  # Export ALIGNAKAPP_APP_DIR, only needed for Travis.
   - export ALIGNAKAPP_APP_DIR=$HOME/.local/alignak_app
-  - echo $HOME
 
 install:
   - ./test/setup_test.sh
 
 script:
   # so to help eventual debug: knowing what exact versions are in use can be rather useful.
-  - sudo updatedb
-  - sudo locate settings.cfg
   - pip freeze
   # Code static analysis
   - pycodestyle --max-line-length=100 --exclude='*.pyc, *.cfg, *.log' --ignore='E402' alignak_app/*
