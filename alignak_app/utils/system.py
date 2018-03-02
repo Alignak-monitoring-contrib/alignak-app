@@ -22,7 +22,7 @@
 """
     System
     ++++++
-    System manage creation of folders and files for Alignak-app
+    System manage interactions with folders and files for Alignak-app
 """
 
 import os

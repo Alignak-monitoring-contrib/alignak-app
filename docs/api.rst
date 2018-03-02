@@ -1,14 +1,17 @@
 .. _api:
 
-Alignak-app API
-===============
+Alignak-app Architecture
+========================
 
 .. automodule:: alignak_app
     :members:
     :show-inheritance:
 
 Alignak-App
-~~~~~~~~~~~
+===========
+
+Main Class
+~~~~~~~~~~
 
 .. automodule:: alignak_app.app
     :members:
@@ -95,7 +98,12 @@ Utils
     :show-inheritance:
 
 
-.. automodule:: alignak_app.utils.install
+.. automodule:: alignak_app.utils.installer
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+.. automodule:: alignak_app.utils.system
     :members:
     :inherited-members:
     :show-inheritance:

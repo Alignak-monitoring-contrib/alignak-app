@@ -24,8 +24,10 @@
     ~~~
     App manages the creation of QObjects for the whole application:
 
-    * Creation of QObject for App Main (QMainWindow)
-    * Creation of QProgressbar until the Data Manager is ready
+    * Creation of :class:`AppProgressBar <alignak_app.app.AppProgressBar>` until the Data Manager is
+      ready
+    * Creation of :class:`AppQMainWindow <alignak_app.qobjects.app_main.AppQMainWindow>`
+    * Creation of standard python objects (settings, css, localization)
 """
 
 import os

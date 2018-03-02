@@ -24,11 +24,9 @@
     +++++++++
     Installer check and manage installation of Alignak-app
 
-    The following environment variables are managed in this file:
-
-    * ``ALIGNAKAPP_USR_DIR``: folder that contains settings of user (settings.cfg)
-    * ``ALIGNAKAPP_APP_DIR``: folder that contains binaries of Alignak-app (images, css, languages)
-    * ``ALIGNAKAPP_LOG_DIR``: folder that contains log files of Alignak-app
+    * Check ``ALIGNAKAPP_APP_DIR``, ``ALIGNAKAPP_USR_DIR`` and ``ALIGNAKAPP_LOG_DIR``
+    * Check required files for application and user
+    * Install configuration and daemon files for user
 """
 
 import os

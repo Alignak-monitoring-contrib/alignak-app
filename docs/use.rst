@@ -3,11 +3,34 @@
 Alignak-app Interface
 =====================
 
-System Tray
------------
+Login Window
+------------
 
-Once Alignak-app is started, you'll have an icon in your task bar (in bottow right under Windows, top right under Ubuntu for example).
-When you click on this icon, you'll have access to multiple menu like "dock", "about" or configurations.
+If you have not set your configuration file, Alignak-app will display a login window by default.
+In this window, you'll be able to:
+
+* Configure your Alignak server (by clicking on **server** icon).
+* Type your **username** and **password** to login.
+
+Start
+-----
+
+Once you're connected, Alignak-app will start and show you a progress bar. Time to start will depend on your installation (a backend with a lot of host and services will take more time).
+
+When Alignak-app has started, you'll have:
+
+* The **Main Window** of App, separated into two parts:
+
+  * The "App Dock" (Right part)
+  * The "App Panel" (Left part)
+
+* A **Tray Icon** in your task bar. This icon gives you access to a menu with:
+
+  * Alignak-app menu, to view the app if it has been reduced
+  * About menu, to show informations of Alignak-app
+  * Reload menu, to reload your configuration.
+
+Other menu will come in future versions.
 
 App Dock (Right part)
 ---------------------
@@ -59,18 +82,43 @@ App Panel (Left part)
 
 The left part of application (called "Panel"), will display a **Hosts Synthesis View**. This is where you can see your monitored hosts and services.
 
-At the top of this window, you will find a summary of the number of items for each state (OK, CRITICAL, DOWN...).
+Host Synthesis
+~~~~~~~~~~~~~~
+
+**Dashboard:**
+
+At the top of this window, you will find a dashboard with the number of items, for each state (OK, CRITICAL, DOWN...).
+
+**Host View:**
 
 Start typing the name of a host in the search bar and App will propose to you different corresponding names.
 When you select a host, its information and the list of its services will be displayed.
 
+*Services:*
+
+When a host is displayed, you will have the list of services, classified by aggregation. Click on one of them to display them.
+
+If you click on a service, a summary of its status will be displayed on the right.
+
+**Actions:**
 You will then be able to perform various actions such as seeing the details of each of its services, acknowledging a problem or planning a downtime for an item (service or host).
 
-You will also have access to the host's history. It may take a while to be available. It depends on the number of hosts monitored in backend.
+You will also have access to the host's history. It may take a while to be available.
 
 Another tab called "Problems" is used to display the problems listed by the backend (like a DOWN host or a CRITICAL service).
 
-WebUI
------
+Problems
+~~~~~~~~
+
+Other tab will display problems found by Alignak-app in backend.
+
+This will bring together down hosts, critical services or any other worries, such as an unreachable host.
+
+You'll be able to acknowledge problems or trigger downtimes.
+
+WebUI Integration
+-----------------
 
 App also have lot of buttons which bring you to WebUI. You've to set WebUI url in configuration file to make this buttons available.
+
+App will be aware also on events trigger in WebUI in host history.

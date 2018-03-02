@@ -29,7 +29,7 @@ The ``ALIGNAKAPP_APP_DIR`` should be under one of the following folders and is c
 On Windows
 ----------
 
-On Windows, use **Installer** is recommended (see :ref:`install`) to respect Windows conventions.
+On Windows, use **Installer** is recommended (see :ref:`installer`) to respect Windows conventions.
 ``ALIGNAKAPP_USR_DIR`` and ``ALIGNAKAPP_APP_DIR`` variables are by default set to::
 
     C:\Program Files\Alignak-app\

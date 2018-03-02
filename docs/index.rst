@@ -12,7 +12,7 @@ Documentation content:
     :maxdepth: 3
 
     intro
-    install
+    installer
     config
     launch
     use
@@ -26,4 +26,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
