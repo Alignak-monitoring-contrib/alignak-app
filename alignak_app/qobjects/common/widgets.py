@@ -61,7 +61,7 @@ class LogoQWidget(QWidget):
 
         logo_label = QLabel()
         logo_label.setObjectName('widget_title')
-        logo_label.setText('<h4>%s</h4>' % title)
+        logo_label.setText('<h3>%s</h3>' % title)
         logo_layout.addWidget(logo_label, 0)
 
         minimize_btn = QPushButton()
