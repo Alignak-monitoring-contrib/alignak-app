@@ -114,10 +114,13 @@ class ThreadManager(QObject):
         :type data: dict
         """
 
-        backend_thread = BackendQThread(thread_name, data)
-        backend_thread.start()
+        if len(self.priority_threads) < 3:
+            backend_thread = BackendQThread(thread_name, data)
+            backend_thread.start()
 
-        self.priority_threads.append(backend_thread)
+            self.priority_threads.append(backend_thread)
+        else:
+            logger.debug('Too many priority thread for the moment...')
 
     def stop_threads(self):
         """
