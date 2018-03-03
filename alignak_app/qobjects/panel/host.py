@@ -82,17 +82,19 @@ class HostQWidget(QWidget):
 
         """
 
-        layout = QHBoxLayout()
+        layout = QGridLayout()
         self.setLayout(layout)
 
         # Add Qwidgets
-        layout.addWidget(self.get_host_icon_widget())
+        layout.addWidget(self.get_host_icon_widget(), 0, 0, 2, 1)
 
-        layout.addWidget(self.get_actions_widget())
+        layout.addWidget(self.get_actions_widget(), 0, 1, 2, 1)
 
-        layout.addWidget(self.get_last_check_widget())
+        layout.addWidget(self.get_last_check_widget(), 0, 2, 1, 1)
 
-        layout.addWidget(self.get_variables_widget())
+        layout.addWidget(self.get_variables_widget(), 0, 3, 1, 1)
+
+        layout.addWidget(self.get_notes_output_widget(), 1, 2, 1, 2)
 
         update_host = int(settings.get_config('Alignak-app', 'update_host')) * 1000
         self.refresh_timer.setInterval(update_host)
@@ -147,9 +149,14 @@ class HostQWidget(QWidget):
         layout = QVBoxLayout()
         widget.setLayout(layout)
 
-        action_title = QLabel(_('Actions:'))
-        action_title.setObjectName('title')
+        action_title = QLabel(_('Host actions'))
+        action_title.setObjectName('itemtitle')
+        action_title.setFixedHeight(30)
         layout.addWidget(action_title)
+
+        ack_down_lbl = QLabel(_('Actions:'))
+        ack_down_lbl.setObjectName('subtitle')
+        layout.addWidget(ack_down_lbl)
 
         self.actions_widget.initialize(self.host_item)
         layout.addWidget(self.actions_widget)
@@ -245,30 +252,17 @@ class HostQWidget(QWidget):
 
         # State
         state_title = QLabel(_("State:"))
-        state_title.setObjectName('title')
+        state_title.setObjectName('subtitle')
         layout.addWidget(state_title, 1, 0, 1, 1)
 
         layout.addWidget(self.labels['state_icon'], 1, 1, 1, 1)
 
         # When last check
         when_title = QLabel(_("When:"))
-        when_title.setObjectName('title')
+        when_title.setObjectName('subtitle')
         layout.addWidget(when_title, 2, 0, 1, 1)
 
         layout.addWidget(self.labels['ls_last_check'], 2, 1, 1, 1)
-
-        # Output
-        output_title = QLabel(_("Output"))
-        output_title.setObjectName('title')
-        layout.addWidget(output_title, 3, 0, 1, 2)
-
-        self.labels['ls_output'].setWordWrap(True)
-        self.labels['ls_output'].setTextInteractionFlags(Qt.TextSelectableByMouse)
-        output_scrollarea = QScrollArea()
-        output_scrollarea.setWidget(self.labels['ls_output'])
-        output_scrollarea.setWidgetResizable(True)
-        output_scrollarea.setObjectName('output')
-        layout.addWidget(output_scrollarea, 4, 0, 1, 2)
 
         return widget
 
@@ -292,29 +286,56 @@ class HostQWidget(QWidget):
 
         # Realm
         realm_title = QLabel(_("Realm:"))
-        realm_title.setObjectName('title')
+        realm_title.setObjectName('subtitle')
         layout.addWidget(realm_title, 1, 0, 1, 1)
 
         layout.addWidget(self.labels['realm'], 1, 1, 1, 1)
 
         # Address
         address_title = QLabel(_("Host address:"))
-        address_title.setObjectName('title')
+        address_title.setObjectName('subtitle')
         layout.addWidget(address_title, 2, 0, 1, 1)
 
         layout.addWidget(self.labels['address'], 2, 1, 1, 1)
 
         # Business impact
         business_title = QLabel(_("Business impact:"))
-        business_title.setObjectName('title')
+        business_title.setObjectName('subtitle')
         layout.addWidget(business_title, 3, 0, 1, 1)
 
         layout.addWidget(self.labels['business_impact'], 3, 1, 1, 1)
 
+        return widget
+
+    def get_notes_output_widget(self):
+        """
+        Return QWidget with output and notes data
+
+        :return: widget with host output and notes
+        :rtype: QWidget
+        """
+
+        widget = QWidget()
+        layout = QGridLayout()
+        widget.setLayout(layout)
+
+        # Output
+        output_title = QLabel(_("Output"))
+        output_title.setObjectName('title')
+        layout.addWidget(output_title, 0, 0, 1, 1)
+
+        self.labels['ls_output'].setWordWrap(True)
+        self.labels['ls_output'].setTextInteractionFlags(Qt.TextSelectableByMouse)
+        output_scrollarea = QScrollArea()
+        output_scrollarea.setWidget(self.labels['ls_output'])
+        output_scrollarea.setWidgetResizable(True)
+        output_scrollarea.setObjectName('output')
+        layout.addWidget(output_scrollarea, 1, 0, 1, 1)
+
         # Notes
         notes_title = QLabel(_("Notes:"))
         notes_title.setObjectName('title')
-        layout.addWidget(notes_title, 4, 0, 1, 2)
+        layout.addWidget(notes_title, 0, 1, 1, 1)
 
         self.labels['notes'].setWordWrap(True)
         self.labels['notes'].setTextInteractionFlags(Qt.TextSelectableByMouse)
@@ -322,7 +343,7 @@ class HostQWidget(QWidget):
         notes_scrollarea.setWidget(self.labels['notes'])
         notes_scrollarea.setWidgetResizable(True)
         notes_scrollarea.setObjectName('notes')
-        layout.addWidget(notes_scrollarea, 5, 0, 1, 2)
+        layout.addWidget(notes_scrollarea, 1, 1, 1, 1)
 
         return widget
 
