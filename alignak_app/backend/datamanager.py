@@ -22,7 +22,8 @@
 """
     Data Manager
     ++++++++++++
-    DataManager manage alignak data provided by Client
+    DataManager manage alignak data provided by
+    :class:`Client <alignak_app.backend.backend.BackendClient>`.
 """
 
 import datetime

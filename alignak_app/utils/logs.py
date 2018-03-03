@@ -22,7 +22,7 @@
 """
     Logs
     ++++
-    Logs manage application log directory and file
+    Logs manage application logs directory and file who are created inside ``ALIGNAKAPP_LOG_DIR``.
 """
 
 import os
@@ -46,6 +46,8 @@ def create_logger():  # pragma: no cover
     """
     Create the logger for Alignak-App
 
+    :return: the RootLogger of App
+    :rtype: logging.RootLogger
     """
 
     root_logger = getLogger()

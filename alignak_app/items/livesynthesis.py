@@ -22,7 +22,7 @@
 """
     Live Synthesis
     ++++++++++++++
-    Livesynthesis manage creation of livesynthesis item for backend ``livesynthesis`` endpoint
+    Live Synthesis manage creation of livesynthesis item for backend ``livesynthesis`` endpoint
 """
 
 

@@ -24,8 +24,8 @@
     ++++++++
     App Main manage creation of QMainWindow for:
 
-    * Dock (Right part)
-    * Panel (Left part)
+    * :class:`Dock <alignak_app.qobjects.dock.dock.DockQWidget>` (Right part)
+    * :class:`Panel <alignak_app.qobjects.panel.panel.PanelQWidget>` (Left part)
 """
 
 from logging import getLogger

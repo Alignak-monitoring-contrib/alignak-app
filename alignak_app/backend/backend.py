@@ -22,7 +22,8 @@
 """
     Backend
     +++++++
-    Backend manage connection and access to Alignak backend.
+    Backend manage connection and access to Alignak backend. It also fill
+    :class:`DataManager <alignak_app.backend.datamanager.DataManager>`.
 """
 
 import json

@@ -24,9 +24,9 @@
     ++++++++
     Settings manage configurations of Alignak-app
 
-    * ``settings.cfg``: contains configurations of Alignak-app
-    * ``images.ini``: contains all images names
-    * ``style.css``: contains css of Alignak-app
+    * ``settings.cfg``: contains configurations of Alignak-app (stored in ``ALIGNAKAPP_USR_DIR``)
+    * ``images.ini``: contains all images names (stored in ``ALIGNAKAPP_APP_DIR``)
+    * ``style.css``: contains css of Alignak-app (stored in ``ALIGNAKAPP_APP_DIR``)
 """
 
 import os

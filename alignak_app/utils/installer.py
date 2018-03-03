@@ -24,7 +24,7 @@
     +++++++++
     Installer check and manage installation of Alignak-app
 
-    * Check ``ALIGNAKAPP_APP_DIR``, ``ALIGNAKAPP_USR_DIR`` and ``ALIGNAKAPP_LOG_DIR``
+    * Check ``ALIGNAKAPP_APP_DIR``, ``ALIGNAKAPP_USR_DIR`` and ``ALIGNAKAPP_LOG_DIR`` folders
     * Check required files for application and user
     * Install configuration and daemon files for user
 """

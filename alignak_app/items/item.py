@@ -22,7 +22,17 @@
 """
     Item
     ++++
-    Item is parent class for all items objects
+    Item is parent class for all items objects:
+
+    * :class:`Daemon <alignak_app.items.daemon.Daemon>`,
+    * :class:`Event <alignak_app.items.event.Event>`,
+    * :class:`History <alignak_app.items.history.History>`,
+    * :class:`Host <alignak_app.items.host.Host>`,
+    * :class:`LiveSynthesis <alignak_app.items.livesynthesis.LiveSynthesis>`,
+    * :class:`Period <alignak_app.items.period.Period>`,
+    * :class:`Realm <alignak_app.items.realm.Realm>`,
+    * :class:`Service <alignak_app.items.service.Service>`,
+    * :class:`User <alignak_app.items.user.User>`,
 """
 
 

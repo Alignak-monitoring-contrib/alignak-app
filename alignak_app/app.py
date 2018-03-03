@@ -22,7 +22,7 @@
 """
     App
     ~~~
-    App manages the creation of QObjects for the whole application:
+    App manages the creation of all objects and QObjects for the whole application:
 
     * Creation of :class:`AppProgressBar <alignak_app.app.AppProgressBar>` until the Data Manager is
       ready
