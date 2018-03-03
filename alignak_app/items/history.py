@@ -79,6 +79,8 @@ class History(Item):
             icon_name = 'downtime'
         elif 'comment' in event_type:
             icon_name = 'edit'
+        elif 'request' in event_type:
+            icon_name = 'checked'
         else:
             if 'UP' in message:
                 icon_name = 'hosts_up'

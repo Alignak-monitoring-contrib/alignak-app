@@ -307,6 +307,11 @@ QLabel#edit {
     font: 10pt;
 }
 
+QLabel#checked {
+    color: #2581c7;
+    font: 10pt;
+}
+
 /****** ITEMS (HOSTS and SERVICES) ******/
 QLabel#itemtitle {
     background-color: #607d8b; 
