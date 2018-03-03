@@ -27,7 +27,7 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QPushButton, QCompleter, QLineEdit, QIcon, QHBoxLayout
+from PyQt5.Qt import QPushButton, QCompleter, QLineEdit, QIcon, QHBoxLayout, QLabel
 from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget, QTabWidget
 
 from alignak_app.backend.datamanager import data_manager
@@ -48,6 +48,11 @@ class PanelQWidget(QWidget):
         Class who manage Panel with Host and Services QWidgets
     """
 
+    spy_icons = {
+        True: 'spy',
+        False: 'spy_ok',
+    }
+
     def __init__(self, parent=None):
         super(PanelQWidget, self).__init__(parent)
         self.setAcceptDrops(True)
@@ -60,8 +65,12 @@ class PanelQWidget(QWidget):
         self.dashboard_widget = DashboardQWidget()
         self.host_widget = HostQWidget()
         self.services_widget = ServicesQWidget()
-        self.spy_button = QPushButton(_("Spy Host"))
         self.spy_widget = None
+        self.spy_text = {
+            True: _("Spy Host"),
+            False: _("Host spied!")
+        }
+        self.spy_button = QPushButton(self.spy_text[True])
 
     def initialize(self, spy_widget):
         """
@@ -132,24 +141,25 @@ class PanelQWidget(QWidget):
 
         widget = QWidget()
         layout = QHBoxLayout()
+        layout.setSpacing(0)
         widget.setLayout(layout)
 
-        # Search button
-        button = QPushButton(_('Search Host'), self)
-        button.setObjectName('search')
-        button.setFixedHeight(25)
-        button.setToolTip(_('Search Host'))
-        button.clicked.connect(self.display_host)
-        layout.addWidget(button)
+        # Search label
+        search_lbl = QLabel(_('Search Host'))
+        search_lbl.setObjectName('search')
+        search_lbl.setFixedHeight(25)
+        search_lbl.setToolTip(_('Search Host'))
+        layout.addWidget(search_lbl)
 
-        self.line_search.setFixedHeight(button.height())
-        self.line_search.returnPressed.connect(button.click)
-        self.line_search.cursorPositionChanged.connect(button.click)
+        # QLineEdit
+        self.line_search.setFixedHeight(search_lbl.height())
+        self.line_search.returnPressed.connect(self.display_host)
+        self.line_search.cursorPositionChanged.connect(self.display_host)
         layout.addWidget(self.line_search)
 
         self.spy_button.setIcon(QIcon(settings.get_image('spy')))
         self.spy_button.setObjectName('search')
-        self.spy_button.setFixedHeight(25)
+        self.spy_button.setFixedSize(110, 25)
         self.spy_button.clicked.connect(self.spy_host)
         layout.addWidget(self.spy_button)
 
@@ -167,6 +177,11 @@ class PanelQWidget(QWidget):
             host = data_manager.get_item('host', 'name', self.line_search.text())
             self.spy_widget.spy_list_widget.host_spied.emit(host.item_id)
             self.spy_button.setEnabled(False)
+
+            self.spy_button.setIcon(
+                QIcon(settings.get_image(self.spy_icons[False]))
+            )
+            self.spy_button.setText(self.spy_text[False])
 
     def create_line_search(self, hostnames_list=None):
         """
@@ -192,6 +207,7 @@ class PanelQWidget(QWidget):
         self.completer.setFilterMode(Qt.MatchContains)
         self.completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.completer.setModel(model)
+        self.completer.popup().setObjectName('popup')
 
         # Add completer to QLineEdit
         self.line_search.setCompleter(self.completer)
@@ -216,6 +232,12 @@ class PanelQWidget(QWidget):
                 self.spy_widget.spy_list_widget.spied_hosts
             )
             self.spy_button.setEnabled(is_spied)
+            self.spy_button.setIcon(
+                QIcon(settings.get_image(self.spy_icons[is_spied]))
+            )
+            self.spy_button.setText(self.spy_text[is_spied])
+            self.spy_button.style().unpolish(self.spy_button)
+            self.spy_button.style().polish(self.spy_button)
 
             # Update QWidgets
             self.dashboard_widget.update_dashboard()
@@ -228,6 +250,14 @@ class PanelQWidget(QWidget):
         else:
             self.host_widget.hide()
             self.services_widget.hide()
+
+            self.spy_button.setEnabled(True)
+            self.spy_button.setIcon(
+                QIcon(settings.get_image(self.spy_icons[True]))
+            )
+            self.spy_button.setText(self.spy_text[True])
+            self.spy_button.style().unpolish(self.spy_button)
+            self.spy_button.style().polish(self.spy_button)
 
     def dragMoveEvent(self, event):  # pragma: no cover
         """

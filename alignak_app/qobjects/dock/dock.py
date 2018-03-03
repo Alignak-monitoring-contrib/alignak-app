@@ -70,10 +70,10 @@ class DockQWidget(QWidget):
 
         # Add Alignak status
         status = QLabel(_('Alignak'))
-        status.setObjectName('title')
+        status.setObjectName('itemtitle')
         layout.addWidget(status)
         layout.setAlignment(status, Qt.AlignCenter)
-        layout.addWidget(get_frame_separator())
+        # layout.addWidget(get_frame_separator())
         self.status_widget.initialize()
         layout.addWidget(self.status_widget)
 
@@ -82,27 +82,27 @@ class DockQWidget(QWidget):
 
         # Livestate
         livestate = QLabel(_('Livestate'))
-        livestate.setObjectName('title')
+        livestate.setObjectName('itemtitle')
         layout.addWidget(livestate)
         layout.setAlignment(livestate, Qt.AlignCenter)
-        layout.addWidget(get_frame_separator())
+        # layout.addWidget(get_frame_separator())
         self.livestate_widget.initialize()
         layout.addWidget(self.livestate_widget)
 
         # Last Events
         last_event_label = QLabel(_('Last Events'))
-        last_event_label.setObjectName('title')
+        last_event_label.setObjectName('itemtitle')
         layout.addWidget(last_event_label)
         layout.setAlignment(last_event_label, Qt.AlignCenter)
-        layout.addWidget(get_frame_separator())
+        # layout.addWidget(get_frame_separator())
         layout.addWidget(get_events_widget())
 
         # Spieds hosts
         spy_title = QLabel(_('Spied Hosts'))
-        spy_title.setObjectName('title')
+        spy_title.setObjectName('itemtitle')
         layout.addWidget(spy_title)
         layout.setAlignment(spy_title, Qt.AlignCenter)
-        layout.addWidget(get_frame_separator())
+        # layout.addWidget(get_frame_separator())
         self.spy_widget.initialize()
         layout.addWidget(self.spy_widget)
 

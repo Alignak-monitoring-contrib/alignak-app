@@ -105,19 +105,18 @@ class UserQWidget(QWidget):
 
         # Main title
         main_title = QLabel(_('User informations:'))
-        main_title.setObjectName("title")
+        main_title.setObjectName("itemtitle")
         info_layout.addWidget(main_title, 0, 0, 1, 6)
         info_layout.setAlignment(main_title, Qt.AlignCenter)
-        info_layout.addWidget(get_frame_separator(), 1, 0, 1, 6)
 
         # Realm & Is Admin & Notes title and button
         line = 2
-        realm_title = QLabel(_('<h5>Realm:</h5>'))
+        realm_title = QLabel(_('Realm:'))
         realm_title.setObjectName("subtitle")
         info_layout.addWidget(realm_title, line, 0, 1, 1)
         info_layout.addWidget(self.labels['realm'], line, 1, 1, 1)
 
-        admin_title = QLabel(_('<h5>Administrator:</h5>'))
+        admin_title = QLabel(_('Administrator:'))
         admin_title.setObjectName("subtitle")
         admin_title.setMinimumHeight(32)
         info_layout.addWidget(admin_title, line, 2, 1, 1)
@@ -139,12 +138,12 @@ class UserQWidget(QWidget):
         line += 1
 
         # Role & Can submit commands
-        role_title = QLabel(_('<h5>Role:</h5>'))
+        role_title = QLabel(_('Role:'))
         role_title.setObjectName("subtitle")
         info_layout.addWidget(role_title, line, 0, 1, 1)
         info_layout.addWidget(self.labels['role'], line, 1, 1, 1)
 
-        command_title = QLabel(_('<h5>Commands:</h5>'))
+        command_title = QLabel(_('Commands:'))
         command_title.setObjectName("subtitle")
         command_title.setMinimumHeight(32)
         info_layout.addWidget(command_title, line, 2, 1, 1)
@@ -159,12 +158,12 @@ class UserQWidget(QWidget):
         line += 1
 
         # Mail & Password
-        mail_title = QLabel(_('<h5>Email:</h5>'))
+        mail_title = QLabel(_('Email:'))
         mail_title.setObjectName("subtitle")
         info_layout.addWidget(mail_title, line, 0, 1, 1)
         info_layout.addWidget(self.labels['email'], line, 1, 1, 1)
 
-        password_title = QLabel(_('<h5>Password:</h5>'))
+        password_title = QLabel(_('Password:'))
         password_title.setObjectName("subtitle")
         info_layout.addWidget(password_title, line, 2, 1, 1)
 
@@ -177,12 +176,12 @@ class UserQWidget(QWidget):
         line += 1
 
         # Alias & Token (only for administrators)
-        alias_title = QLabel(_('<h5>Alias:</h5>'))
+        alias_title = QLabel(_('Alias:'))
         alias_title.setObjectName("subtitle")
         info_layout.addWidget(alias_title, line, 0, 1, 1)
         info_layout.addWidget(self.labels['alias'], line, 1, 1, 1)
 
-        token_title = QLabel(_('<h5>Token:</h5>'))
+        token_title = QLabel(_('Token:'))
         token_title.setObjectName("subtitle")
         info_layout.addWidget(token_title, line, 2, 1, 2)
 
@@ -311,12 +310,11 @@ class UserQWidget(QWidget):
         host_notif_layout = QGridLayout()
         host_notif_widget.setLayout(host_notif_layout)
 
-        notif_title = QLabel(_("Hosts notifications configurations"))
-        notif_title.setObjectName("title")
+        notif_title = QLabel(_('Hosts notifications configurations'))
+        notif_title.setObjectName('itemtitle')
         host_notif_layout.addWidget(notif_title, 0, 0, 1, 2)
-        host_notif_layout.addWidget(get_frame_separator(), 1, 0, 1, 2)
 
-        state_title = QLabel(_("<h5>Notification enabled:</h5>"))
+        state_title = QLabel(_("Notification enabled:"))
         state_title.setObjectName("subtitle")
         host_notif_layout.addWidget(state_title, 2, 0, 1, 1)
         self.hostnotif_toggle_btn = ToggleQWidgetButton()
@@ -330,8 +328,8 @@ class UserQWidget(QWidget):
         self.hostnotif_toggle_btn.setObjectName('host_notifications_enabled')
         host_notif_layout.addWidget(self.hostnotif_toggle_btn, 2, 1, 1, 1)
 
-        period_title = QLabel(_("<h5>Notification period:</h5>"))
-        period_title.setObjectName("subtitle")
+        period_title = QLabel(_('Notification period:'))
+        period_title.setObjectName('subtitle')
         host_notif_layout.addWidget(period_title, 3, 0, 1, 1)
         self.labels['host_notification_period'].setText(
             data_manager.get_period_name(
@@ -365,12 +363,11 @@ class UserQWidget(QWidget):
         service_notif_layout = QGridLayout()
         service_notif_widget.setLayout(service_notif_layout)
 
-        notif_title = QLabel(_("Services notifications configurations"))
-        notif_title.setObjectName("title")
+        notif_title = QLabel(_('Services notifications configurations'))
+        notif_title.setObjectName('itemtitle')
         service_notif_layout.addWidget(notif_title, 0, 0, 1, 2)
-        service_notif_layout.addWidget(get_frame_separator(), 1, 0, 1, 2)
 
-        state_title = QLabel(_("<h5>Notification enabled:</h5>"))
+        state_title = QLabel(_('Notification enabled:'))
         state_title.setObjectName("subtitle")
         service_notif_layout.addWidget(state_title, 2, 0, 1, 1)
         self.servicenotif_toggle_btn = ToggleQWidgetButton()
@@ -383,8 +380,8 @@ class UserQWidget(QWidget):
         ))
         service_notif_layout.addWidget(self.servicenotif_toggle_btn, 2, 1, 1, 1)
 
-        period_title = QLabel(_("<h5>Notification period:</h5>"))
-        period_title.setObjectName("subtitle")
+        period_title = QLabel(_('Notification period:'))
+        period_title.setObjectName('subtitle')
         service_notif_layout.addWidget(period_title, 3, 0, 1, 1)
         self.labels['service_notification_period'].setText(
             data_manager.get_period_name(

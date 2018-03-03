@@ -49,7 +49,6 @@ class LivestateQWidget(QWidget):
 
     def __init__(self):
         super(LivestateQWidget, self).__init__()
-        self.setObjectName('bordered')
         # Fields
         self.labels = {
             'host': None,
@@ -97,7 +96,6 @@ class LivestateQWidget(QWidget):
         layout = QVBoxLayout()
         widget = QWidget()
         widget.setLayout(layout)
-        widget.setObjectName('bordered')
 
         problem_label = QLabel('%d' % problem_nb)
         problem_label.setObjectName('ok')
@@ -112,7 +110,6 @@ class LivestateQWidget(QWidget):
         icon_label = QLabel()
         icon_label.setFixedSize(64, 64)
         icon_label.setScaledContents(True)
-        icon_label.setObjectName('borderedtitle')
         layout.addWidget(icon_label)
         layout.setAlignment(icon_label, Qt.AlignCenter)
 

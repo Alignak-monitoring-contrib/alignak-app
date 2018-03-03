@@ -2,7 +2,7 @@
 QLabel {
     color: black;
     font-family: Roboto,Helvetica,Arial,sans-serif;
-    font-size: 16px;
+    font-size: 10.5pt;
 }
 
 QLabel#error {
@@ -15,6 +15,7 @@ QLabel#title {
 
 QLabel#subtitle {
     color: #607d8b;
+    font: 10.5pt;
 }
 
 QToolTip {
@@ -72,7 +73,7 @@ QPushButton#True {
     color: white;
     font-weight: bold;
     background-color:  qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #27ae60, stop: 0.495 #27ae60, stop: 0.496 black, stop: 0.5 white);
-    border: 1px solid #607d8b;
+    border: 1px solid #ccc;
     border-radius: 2px;
     text-align: left;
     padding-left: 5px;
@@ -121,7 +122,7 @@ QPushButton#valid {
     background-color: #4caf50;
     color: white;
     border: none;
-    border-radius: 3px;
+    /*border-radius: 3px;*/
     outline: none;
 }
 
@@ -243,23 +244,44 @@ QHeaderView::section {
 
 /****** PANEL ******/
 QPushButton#search {
-    background-color: #3884c3;
-    color: white;
-    border: none;
-    border-radius: 3px;
+    color: #3884c3;
+    background-color: white;
+    outline: none;
+    border-radius: 0px;
+    border: 1px solid #3884c3;
     padding-left: 5px;
     padding-right: 5px;
-}
-QPushButton#search:disabled {
-    background-color: #ccc;
+    font: 10pt;
 }
 
 QPushButton#search:hover {
-    background-color: #03a9f4;
+    background-color: #39aa56;
+    color: white;
+    border: 1px solid #39aa56;
 }
 
-QLabel#dashboard {
+QPushButton#search:disabled {
+    background-color: #39aa56;
+    color: white;
+    border: 1px solid #39aa56;
+}
+
+QLabel#search {
+    color: #3884c3;
+    background-color: white;
+    border: 1px solid #3884c3;
+    padding-left: 5px;
+    padding-right: 5px;
     font: 10pt;
+}
+
+QLineEdit {
+    border: none;
+    padding: 0 8px;
+    color: white;
+    background-color: #3884c3;
+    selection-background-color: white;
+    selection-color: #3884c3;
 }
 
 QLabel#services_ok, QLabel#hosts_up {
@@ -314,10 +336,12 @@ QLabel#request {
 
 /****** ITEMS (HOSTS and SERVICES) ******/
 QLabel#itemtitle {
-    background-color: #607d8b; 
-    color: white;
-    margin-left: 0.5em;
-    border-radius: 3px;
+    color: #3884c3; 
+    background-color: white;
+    border-width: 0px 0px 1px 0px;
+    border-color: #3884c3;
+    border-style: solid;
+    font: 12pt;
 }
 
 QScrollArea#output {
@@ -399,4 +423,9 @@ QLabel#userTrue {
 
 QLabel#userFalse {
     color: #f44336;
+}
+
+QLabel#notes {
+    color: #2581c7;
+    background-color: #e6f4ff;
 }

@@ -70,6 +70,7 @@ class PasswordQDialog(QDialog):
         main_layout.addWidget(get_logo_widget(self, _('Edit Password')))
 
         pass_title = QLabel(_("Please type a new PASSWORD:"))
+        pass_title.setObjectName('itemtitle')
         main_layout.addWidget(pass_title)
         main_layout.setAlignment(pass_title, Qt.AlignCenter)
 
@@ -80,10 +81,12 @@ class PasswordQDialog(QDialog):
 
         self.pass_edit.setPlaceholderText(_('type new password'))
         self.pass_edit.setEchoMode(QLineEdit.Password)
+        self.pass_edit.setFixedHeight(25)
         pass_layout.addWidget(self.pass_edit)
 
         self.confirm_edit.setPlaceholderText(_('confirm new password'))
         self.confirm_edit.setEchoMode(QLineEdit.Password)
+        self.confirm_edit.setFixedHeight(25)
         pass_layout.addWidget(self.confirm_edit)
 
         self.help_label.setText(_("Your password must contain at least 5 characters."))
@@ -93,7 +96,7 @@ class PasswordQDialog(QDialog):
         # Accept button
         accept_btn = QPushButton('Confirm', self)
         accept_btn.clicked.connect(self.handle_confirm)
-        accept_btn.setObjectName('valid')
+        accept_btn.setObjectName('search')
         accept_btn.setMinimumHeight(30)
         pass_layout.addWidget(accept_btn)
 

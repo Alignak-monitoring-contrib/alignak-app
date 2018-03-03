@@ -88,13 +88,13 @@ class HostQWidget(QWidget):
         # Add Qwidgets
         layout.addWidget(self.get_host_icon_widget(), 0, 0, 2, 1)
 
-        layout.addWidget(self.get_actions_widget(), 0, 1, 2, 1)
+        layout.addWidget(self.get_last_check_widget(), 0, 1, 1, 1)
 
-        layout.addWidget(self.get_last_check_widget(), 0, 2, 1, 1)
+        layout.addWidget(self.get_variables_widget(), 0, 2, 1, 1)
 
-        layout.addWidget(self.get_variables_widget(), 0, 3, 1, 1)
+        layout.addWidget(self.get_notes_output_widget(), 1, 1, 1, 2)
 
-        layout.addWidget(self.get_notes_output_widget(), 1, 2, 1, 2)
+        layout.addWidget(self.get_actions_widget(), 0, 3, 2, 1)
 
         update_host = int(settings.get_config('Alignak-app', 'update_host')) * 1000
         self.refresh_timer.setInterval(update_host)
@@ -151,7 +151,7 @@ class HostQWidget(QWidget):
 
         action_title = QLabel(_('Host actions'))
         action_title.setObjectName('itemtitle')
-        action_title.setFixedHeight(30)
+        action_title.setFixedHeight(25)
         layout.addWidget(action_title)
 
         ack_down_lbl = QLabel(_('Acknowledge / Downtime:'))
@@ -249,7 +249,7 @@ class HostQWidget(QWidget):
         # Title
         check_title = QLabel(_('My last check'))
         check_title.setObjectName('itemtitle')
-        check_title.setFixedHeight(30)
+        check_title.setFixedHeight(25)
         layout.addWidget(check_title, 0, 0, 1, 2)
 
         # State
@@ -283,7 +283,7 @@ class HostQWidget(QWidget):
         # Title
         check_title = QLabel(_('My variables'))
         check_title.setObjectName('itemtitle')
-        check_title.setFixedHeight(30)
+        check_title.setFixedHeight(25)
         layout.addWidget(check_title, 0, 0, 1, 2)
 
         # Realm

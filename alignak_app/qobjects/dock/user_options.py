@@ -132,7 +132,7 @@ class UserOptionsQDialog(QDialog):
         options_layout = QGridLayout(options_widget)
 
         options_title = QLabel(_("Options:"))
-        options_title.setObjectName("subtitle")
+        options_title.setObjectName("itemtitle")
         options_layout.addWidget(options_title, 0, 0, 1, 2)
         options_layout.setAlignment(options_title, Qt.AlignCenter)
 
@@ -155,7 +155,7 @@ class UserOptionsQDialog(QDialog):
         # Login button
         accept_btn = QPushButton(_('OK'), self)
         accept_btn.clicked.connect(self.accept)
-        accept_btn.setObjectName('valid')
+        accept_btn.setObjectName('search')
         accept_btn.setMinimumHeight(30)
         options_layout.addWidget(accept_btn, line, 0, 1, 2)
 

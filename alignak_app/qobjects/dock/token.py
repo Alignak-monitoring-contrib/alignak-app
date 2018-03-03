@@ -81,11 +81,12 @@ class TokenQDialog(QDialog):
         token_widget.setLayout(token_layout)
 
         token_title = QLabel("<b>Token:</b> %s" % data_manager.database['user'].name.capitalize())
+        token_title.setObjectName('itemtitle')
         token_layout.addWidget(token_title)
         token_layout.setAlignment(token_title, Qt.AlignCenter)
 
         token_label = QLabel(data_manager.database['user'].data['token'])
-        token_label.setObjectName('output')
+        token_label.setObjectName('notes')
         token_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
         token_label.setWordWrap(True)
         token_layout.addWidget(token_label)
@@ -93,7 +94,7 @@ class TokenQDialog(QDialog):
         # Login button
         accept_btn = QPushButton('OK', self)
         accept_btn.clicked.connect(self.accept)
-        accept_btn.setObjectName('valid')
+        accept_btn.setObjectName('search')
         accept_btn.setMinimumHeight(30)
         token_layout.addWidget(accept_btn)
 

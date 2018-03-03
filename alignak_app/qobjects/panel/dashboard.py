@@ -121,8 +121,8 @@ class DashboardQWidget(QWidget):
 
         """
 
-        self.layout.addWidget(QLabel('<b>Hosts:</b>'), 0, 0, 1, 1)
-        self.items_nb['hosts_nb'].setObjectName('dashboard')
+        self.layout.addWidget(QLabel(_('<b>Hosts:</b>')), 0, 0, 1, 1)
+        self.items_nb['hosts_nb'].setObjectName('subtitle')
         self.layout.addWidget(self.items_nb['hosts_nb'], 1, 0, 1, 1)
         row = 1
         for icon in Host.get_available_icons():
@@ -149,7 +149,7 @@ class DashboardQWidget(QWidget):
         """
 
         self.layout.addWidget(QLabel('<b>Services:</b>'), 2, 0, 1, 1)
-        self.items_nb['services_nb'].setObjectName('dashboard')
+        self.items_nb['services_nb'].setObjectName('subtitle')
         self.layout.addWidget(self.items_nb['services_nb'], 3, 0, 1, 1)
         row = 1
         for icon in Service.get_available_icons():

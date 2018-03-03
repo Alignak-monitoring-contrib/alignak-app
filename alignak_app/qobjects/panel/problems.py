@@ -74,6 +74,8 @@ class ProblemsQWidget(QWidget):
         self.problem_widget.setColumnCount(len(self.headers_list))
         self.problem_widget.setColumnWidth(1, 150)
         self.problem_widget.setColumnWidth(2, 150)
+        self.problem_widget.setColumnWidth(3, 150)
+        self.problem_widget.setColumnWidth(4, 180)
         self.problem_widget.setColumnWidth(5, 600)
         self.problem_widget.setSortingEnabled(True)
         self.problem_widget.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)
@@ -97,7 +99,7 @@ class ProblemsQWidget(QWidget):
         layout_title = QHBoxLayout()
         widget_title.setLayout(layout_title)
 
-        self.problems_title.setObjectName('title')
+        self.problems_title.setObjectName('itemtitle')
         layout_title.addWidget(self.problems_title)
 
         refresh_btn = QPushButton(_('Refresh'))

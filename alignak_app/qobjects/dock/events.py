@@ -232,13 +232,13 @@ class EventsQWidget(QWidget):
         :type item: EventItem
         """
 
-        logger.debug('Remove Event: %s', item.text())
-
         if isinstance(item, EventItem):
             row = self.events_list.row(item)
             self.events_list.takeItem(row)
         else:
-            self.events_list.takeItem(self.events_list.currentRow())
+            item = self.events_list.takeItem(self.events_list.currentRow())
+
+        logger.debug('Remove Event: %s', item.text())
 
 
 events_widget = None

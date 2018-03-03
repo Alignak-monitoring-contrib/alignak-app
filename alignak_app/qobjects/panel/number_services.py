@@ -65,7 +65,7 @@ class NumberServicesQWidget(QWidget):
         layout = QHBoxLayout()
         self.setLayout(layout)
 
-        self.services_title.setObjectName('title')
+        self.services_title.setObjectName('itemtitle')
         layout.addWidget(self.services_title)
         layout.setAlignment(self.services_title, Qt.AlignLeft)
 

@@ -50,7 +50,7 @@ class ServerQDialog(QDialog):
         self.setStyleSheet(settings.css_style)
         self.setWindowIcon(QIcon(settings.get_image('icon')))
         self.setObjectName('dialog')
-        self.setFixedSize(300, 330)
+        self.setFixedSize(300, 360)
         # Fields
         self.server_proc = QLineEdit()
         self.server_url = QLineEdit()
@@ -70,49 +70,64 @@ class ServerQDialog(QDialog):
 
         server_widget = QWidget(self)
         server_widget.setObjectName('dialog')
-        server_layout = QGridLayout(server_widget)
+        server_layout = QVBoxLayout(server_widget)
+
+        # Title
+        title_lbl = QLabel(_('Alignak Backend'))
+        title_lbl.setObjectName('itemtitle')
+        server_layout.addWidget(title_lbl)
+        server_layout.setAlignment(title_lbl, Qt.AlignTop)
 
         # Description
         desc_label = QLabel(
             _(
-                '<h3>Alignak Backend</h3><p>Here you can define alignak settings.</p>'
+                '<p>Here you can define alignak settings.</p>'
                 '<b>Be sure to enter a valid address</b>'
             )
         )
         desc_label.setWordWrap(True)
-        server_layout.addWidget(desc_label, 0, 0, 1, 3)
+        server_layout.addWidget(desc_label)
 
         # Server URL
-        server_layout.addWidget(QLabel(_('Server')), 1, 0, 1, 1)
+        server_lbl = QLabel(_('Server'))
+        server_lbl.setObjectName('subtitle')
+        server_layout.addWidget(server_lbl)
 
-        self.server_url.setPlaceholderText(_('alignak backend url'))
         self.server_url.setText(settings.get_config('Alignak', 'url'))
-        server_layout.addWidget(self.server_url, 1, 1, 1, 2)
+        self.server_url.setPlaceholderText(_('alignak backend url'))
+        self.server_url.setFixedHeight(25)
+        server_layout.addWidget(self.server_url)
 
         # Server Port
-        server_layout.addWidget(QLabel(_('Port')), 2, 0, 1, 1)
+        port_lbl = QLabel(_('Port'))
+        port_lbl.setObjectName('subtitle')
+        server_layout.addWidget(port_lbl)
 
-        self.server_port.setPlaceholderText(_('alignak backend port'))
         cur_port = settings.get_config('Alignak', 'backend').split(':')[2]
         self.server_port.setText(cur_port)
-        server_layout.addWidget(self.server_port, 2, 1, 1, 2)
+        self.server_port.setPlaceholderText(_('alignak backend port'))
+        self.server_port.setFixedHeight(25)
+        server_layout.addWidget(self.server_port)
 
         # Server Processes
-        server_layout.addWidget(QLabel(_('Processes')), 3, 0, 1, 1)
+        process_lbl = QLabel(_('Processes'))
+        process_lbl.setObjectName('subtitle')
+        server_layout.addWidget(process_lbl)
 
         if 'win32' in sys.platform:
             self.server_proc.setEnabled(False)
-        self.server_proc.setPlaceholderText(_('alignak backend processes'))
         cur_proc = settings.get_config('Alignak', 'processes')
         self.server_proc.setText(cur_proc)
-        server_layout.addWidget(self.server_proc, 3, 1, 1, 2)
+        self.server_proc.setPlaceholderText(_('alignak backend processes'))
+        self.server_proc.setFixedHeight(25)
+        server_layout.addWidget(self.server_proc)
 
         # Valid Button
         valid_btn = QPushButton(_('Valid'))
-        valid_btn.setObjectName('valid')
+        valid_btn.setObjectName('search')
         valid_btn.setMinimumHeight(30)
         valid_btn.clicked.connect(self.accept)
-        server_layout.addWidget(valid_btn, 4, 0, 1, 3)
+        server_layout.addWidget(valid_btn)
 
         main_layout.addWidget(server_widget)
 
