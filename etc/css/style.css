@@ -307,8 +307,8 @@ QLabel#edit {
     font: 10pt;
 }
 
-QLabel#checked {
-    color: #2581c7;
+QLabel#request {
+    color: #9b59b6;
     font: 10pt;
 }
 

@@ -80,7 +80,7 @@ class History(Item):
         elif 'comment' in event_type:
             icon_name = 'edit'
         elif 'request' in event_type:
-            icon_name = 'checked'
+            icon_name = 'request'
         else:
             if 'UP' in message:
                 icon_name = 'hosts_up'
