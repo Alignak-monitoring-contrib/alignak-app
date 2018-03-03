@@ -53,7 +53,7 @@ class ActionsQWidget(QWidget):
         self.acknowledge_btn = QPushButton()
         self.item = None
 
-    def initialize(self, item, horizontal=False):
+    def initialize(self, item):
         """
         Initialize Actions QWidget
 
@@ -61,10 +61,7 @@ class ActionsQWidget(QWidget):
 
         self.item = item
 
-        if horizontal:
-            layout = QHBoxLayout()
-        else:
-            layout = QVBoxLayout()
+        layout = QHBoxLayout()
 
         self.setLayout(layout)
 

@@ -144,7 +144,7 @@ class ProblemsQWidget(QWidget):
 
         # Actions
         actions_widget = ActionsQWidget()
-        actions_widget.initialize(item, horizontal=True)
+        actions_widget.initialize(item)
         table_items.append(actions_widget)
 
         # Output

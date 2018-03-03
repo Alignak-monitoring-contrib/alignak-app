@@ -154,19 +154,12 @@ class HostQWidget(QWidget):
         action_title.setFixedHeight(30)
         layout.addWidget(action_title)
 
-        ack_down_lbl = QLabel(_('Actions:'))
+        ack_down_lbl = QLabel(_('Acknowledge / Downtime:'))
         ack_down_lbl.setObjectName('subtitle')
         layout.addWidget(ack_down_lbl)
 
         self.actions_widget.initialize(self.host_item)
         layout.addWidget(self.actions_widget)
-
-        hist_lbl = QLabel(_('Timeline:'))
-        hist_lbl.setObjectName('subtitle')
-        layout.addWidget(hist_lbl)
-        self.history_btn.setIcon(QIcon(settings.get_image('time')))
-        self.history_btn.clicked.connect(self.show_history)
-        layout.addWidget(self.history_btn)
 
         activecheck_lbl = QLabel(_('Active checks:'))
         activecheck_lbl.setObjectName('subtitle')
@@ -185,6 +178,15 @@ class HostQWidget(QWidget):
             'passive_checks_enabled', self.passivecheck_btn.get_btn_state()
         ))
         layout.addWidget(self.passivecheck_btn)
+
+        hist_lbl = QLabel(_('Timeline:'))
+        hist_lbl.setObjectName('subtitle')
+        layout.addWidget(hist_lbl)
+        self.history_btn.setIcon(QIcon(settings.get_image('time')))
+        self.history_btn.setFixedSize(80, 20)
+        self.history_btn.clicked.connect(self.show_history)
+        layout.addWidget(self.history_btn)
+        layout.setAlignment(self.history_btn, Qt.AlignCenter)
 
         layout.setAlignment(Qt.AlignCenter)
 
