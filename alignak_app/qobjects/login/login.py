@@ -92,7 +92,6 @@ class LoginQDialog(QDialog):
 
         # Welcome text
         login_label = QLabel(_('Configure Alignak server'))
-        login_label.setObjectName('subtitle')
         login_layout.addWidget(login_label, 2, 0, 1, 1)
         login_layout.setAlignment(login_label, Qt.AlignRight)
 

@@ -90,7 +90,6 @@ class ServerQDialog(QDialog):
 
         # Server URL
         server_lbl = QLabel(_('Server'))
-        server_lbl.setObjectName('subtitle')
         server_layout.addWidget(server_lbl)
 
         self.server_url.setText(settings.get_config('Alignak', 'url'))
@@ -100,7 +99,6 @@ class ServerQDialog(QDialog):
 
         # Server Port
         port_lbl = QLabel(_('Port'))
-        port_lbl.setObjectName('subtitle')
         server_layout.addWidget(port_lbl)
 
         cur_port = settings.get_config('Alignak', 'backend').split(':')[2]
@@ -111,7 +109,6 @@ class ServerQDialog(QDialog):
 
         # Server Processes
         process_lbl = QLabel(_('Processes'))
-        process_lbl.setObjectName('subtitle')
         server_layout.addWidget(process_lbl)
 
         if 'win32' in sys.platform:
