@@ -182,6 +182,15 @@ class PanelQWidget(QWidget):
                 QIcon(settings.get_image(self.spy_icons[False]))
             )
             self.spy_button.setText(self.spy_text[False])
+        else:
+            self.spy_button.setEnabled(True)
+            self.spy_button.setIcon(
+                QIcon(settings.get_image(self.spy_icons[True]))
+            )
+            self.spy_button.setText(self.spy_text[True])
+
+        self.spy_button.style().unpolish(self.spy_button)
+        self.spy_button.style().polish(self.spy_button)
 
     def create_line_search(self, hostnames_list=None):
         """
@@ -227,17 +236,15 @@ class PanelQWidget(QWidget):
                 self.create_line_search(hostnames_list)
 
             # Set spy button enable or not
-            is_spied = bool(
+            not_spied = bool(
                 data_manager.get_item('host', 'name', self.line_search.text()).item_id not in
                 self.spy_widget.spy_list_widget.spied_hosts
             )
-            self.spy_button.setEnabled(is_spied)
+            self.spy_button.setEnabled(not_spied)
             self.spy_button.setIcon(
-                QIcon(settings.get_image(self.spy_icons[is_spied]))
+                QIcon(settings.get_image(self.spy_icons[not_spied]))
             )
-            self.spy_button.setText(self.spy_text[is_spied])
-            self.spy_button.style().unpolish(self.spy_button)
-            self.spy_button.style().polish(self.spy_button)
+            self.spy_button.setText(self.spy_text[not_spied])
 
             # Update QWidgets
             self.dashboard_widget.update_dashboard()
@@ -256,8 +263,9 @@ class PanelQWidget(QWidget):
                 QIcon(settings.get_image(self.spy_icons[True]))
             )
             self.spy_button.setText(self.spy_text[True])
-            self.spy_button.style().unpolish(self.spy_button)
-            self.spy_button.style().polish(self.spy_button)
+
+        self.spy_button.style().unpolish(self.spy_button)
+        self.spy_button.style().polish(self.spy_button)
 
     def dragMoveEvent(self, event):  # pragma: no cover
         """

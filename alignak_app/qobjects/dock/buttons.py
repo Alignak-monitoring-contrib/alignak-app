@@ -80,6 +80,7 @@ class ButtonsQWidget(QWidget):
         self.profile_btn.setIcon(QIcon(settings.get_image('user')))
         self.profile_btn.setFixedSize(40, 40)
         self.profile_btn.clicked.connect(self.open_user_widget)
+        self.profile_btn.setToolTip(_('User'))
         layout.addWidget(self.profile_btn)
 
         self.webui_btn.setIcon(QIcon(settings.get_image('web')))
