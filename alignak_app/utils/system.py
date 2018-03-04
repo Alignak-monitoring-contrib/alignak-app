@@ -48,9 +48,12 @@ def mkdir(folder):
     try:
         os.makedirs(folder)
         return True
-    except (PermissionError, FileExistsError) as e:
+    except PermissionError as e:
         print('Can\'t create App directory for user in [%s] !\n%s' % (folder, e))
         return False
+    except FileExistsError as e:
+        print('App directory for user [%s] already exists.\n%s' % (folder, e))
+        return True
 
 
 def install_file(origin_dir, dest_dir, filename):
@@ -89,7 +92,7 @@ def install_file(origin_dir, dest_dir, filename):
     print(output_msg)
 
 
-def write_file(origin_dir, dest_dir, filename, formatted_var=None):
+def write_file(origin_dir, dest_dir, filename, formatted_var=None):  # pragma: no cover
     """
     Write a file from an origiin to a destination, with formatted variables if needed
 
@@ -130,7 +133,7 @@ fi\n
 """
 
 
-def write_rc_file(filename):
+def write_rc_file(filename):  # pragma: no cover
     """
     Write RC file to add autocompletion for Alignak-app
 

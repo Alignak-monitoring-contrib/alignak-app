@@ -90,10 +90,10 @@ class Settings(object):
 
         """
 
-        settings_cfgs = '%s/settings.cfg' % os.environ['ALIGNAKAPP_USR_DIR']
+        settings_cfg = '%s/settings.cfg' % os.environ['ALIGNAKAPP_USR_DIR']
         images_ini = '%s/images.ini' % os.environ['ALIGNAKAPP_APP_DIR']
 
-        self.settings['settings'] = read_config_file(self.app_config, settings_cfgs)
+        self.settings['settings'] = read_config_file(self.app_config, settings_cfg)
         self.settings['images'] = read_config_file(self.img_config, images_ini)
 
     def get_config(self, section, option, boolean=False):
