@@ -57,47 +57,47 @@ class AboutQDialog(QDialog):
 
         # Version
         version_title = QLabel(_('Application version:'))
-        version_title.setObjectName('title')
+        version_title.setObjectName('itemtitle')
         layout.addWidget(version_title)
         version_data = QLabel(_('%s, version %s') % (__application__, __version__))
         layout.addWidget(version_data)
 
         # Copyright
         copyright_title = QLabel(_('Copyright:'))
-        copyright_title.setObjectName('title')
+        copyright_title.setObjectName('itemtitle')
         layout.addWidget(copyright_title)
         copyright_data = QLabel(__copyright__)
         layout.addWidget(copyright_data)
 
         # Homepage
         home_title = QLabel(_('Home page:'))
-        home_title.setObjectName('title')
+        home_title.setObjectName('itemtitle')
         layout.addWidget(home_title)
         layout.addWidget(self.get_external_link_label(__project_url__))
 
         # User Doc
         doc_title = QLabel(_('User documentation'))
-        doc_title.setObjectName('title')
+        doc_title.setObjectName('itemtitle')
         layout.addWidget(doc_title)
         layout.addWidget(self.get_external_link_label(__doc_url__))
 
         # Release notes
         release_title = QLabel(_('Release notes:'))
-        release_title.setObjectName('title')
+        release_title.setObjectName('itemtitle')
         layout.addWidget(release_title)
         release_data = QLabel(__releasenotes__)
         layout.addWidget(release_data)
 
         # Alignak
         alignak_title = QLabel(_('About Alignak solution:'))
-        alignak_title.setObjectName('title')
+        alignak_title.setObjectName('itemtitle')
         layout.addWidget(alignak_title)
         layout.addWidget(self.get_external_link_label(__alignak_url__))
 
         # Add to AppQWidget
         self.app_frame_model.initialize(_('About %s') % __application__)
         self.app_frame_model.add_widget(self)
-        self.app_frame_model.setMinimumSize(400, 400)
+        self.app_frame_model.setMinimumSize(560, 500)
 
     @staticmethod
     def get_external_link_label(link):
@@ -110,7 +110,7 @@ class AboutQDialog(QDialog):
         :rtype: QLabel
         """
 
-        link_label = QLabel('<a href="%s">%s</a>' % (link, link))
+        link_label = QLabel('Web URL: <a href="%s">%s</a>' % (link, link))
         link_label.setTextInteractionFlags(Qt.TextBrowserInteraction)
         link_label.setOpenExternalLinks(True)
 
