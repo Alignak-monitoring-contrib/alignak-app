@@ -80,14 +80,19 @@ class AppProgressQWidget(QWidget):
 
         """
 
+        layout = QVBoxLayout(self)
+        layout.setSpacing(0)
+
         title_lbl = QLabel('%s - %s' % (__application__, __version__))
         title_lbl.setAlignment(Qt.AlignCenter)
         title_lbl.setObjectName('start')
-        layout = QVBoxLayout(self)
+        title_lbl.setFixedHeight(30)
+        layout.addWidget(title_lbl)
+
+        self.progress_bar.setFixedHeight(30)
+        layout.addWidget(self.progress_bar)
 
         layout.setAlignment(Qt.AlignCenter)
-        layout.addWidget(title_lbl)
-        layout.addWidget(self.progress_bar)
 
 
 class AppProgressBar(QProgressBar):

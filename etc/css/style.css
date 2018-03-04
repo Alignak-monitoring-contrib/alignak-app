@@ -24,19 +24,24 @@ QToolTip {
 }
 
 QLabel#start {
-    color: #fff;
+    border: none;
+    padding: 0 8px;
+    color: white;
     background-color: #3884c3;
-    border-radius: 5px;
+    font: 12pt;
+}
+
+QProgressBar {
+    color: #3884c3;
 }
 
 QProgressBar:horizontal {
-    border: 1px solid transparent;
-    border-radius: 3px;
+    border: 1px solid #3884c3;
     padding: 1px;
 }
 
 QProgressBar::chunk:horizontal {
-    background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 #1fb4e4, stop: 1 white);
+    background: qlineargradient(x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 #3884c3, stop: 1 white);
 }
 
 QWidget {

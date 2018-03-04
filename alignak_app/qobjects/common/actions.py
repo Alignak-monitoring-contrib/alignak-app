@@ -256,7 +256,7 @@ class AckQDialog(QDialog):
         ack_layout = QGridLayout(ack_widget)
 
         ack_title = QLabel(_('Request an acknowledge'))
-        ack_title.setObjectName('title')
+        ack_title.setObjectName('itemtitle')
         ack_layout.addWidget(ack_title, 0, 0, 1, 2)
 
         host_label = QLabel('<b>%s:</b> %s' % (item_type.capitalize(), item_name))
@@ -304,7 +304,7 @@ class AckQDialog(QDialog):
 
         request_btn = QPushButton(_('REQUEST ACKNOWLEDGE'), self)
         request_btn.clicked.connect(self.accept)
-        request_btn.setObjectName('valid')
+        request_btn.setObjectName('search')
         request_btn.setMinimumHeight(30)
         request_btn.setDefault(True)
         ack_layout.addWidget(request_btn, 8, 0, 1, 2)
@@ -377,7 +377,7 @@ class DownQDialog(QDialog):
         downtime_layout = QGridLayout(downtime_widget)
 
         downtime_title = QLabel(_('Request a downtime'))
-        downtime_title.setObjectName('title')
+        downtime_title.setObjectName('itemtitle')
         downtime_layout.addWidget(downtime_title, 0, 0, 1, 3)
 
         host_label = QLabel('<b>%s:</b> %s' % (item_type.capitalize(), item_name))
@@ -455,7 +455,7 @@ class DownQDialog(QDialog):
 
         request_btn = QPushButton(_('REQUEST DOWNTIME'), self)
         request_btn.clicked.connect(self.handle_accept)
-        request_btn.setObjectName('valid')
+        request_btn.setObjectName('search')
         request_btn.setMinimumHeight(30)
         request_btn.setDefault(True)
         downtime_layout.addWidget(request_btn, 10, 0, 1, 3)
