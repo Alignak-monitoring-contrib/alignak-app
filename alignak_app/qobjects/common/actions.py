@@ -85,9 +85,8 @@ class ActionsQWidget(QWidget):
 
         user = data_manager.database['user']
 
-        comment = _('Service %s acknowledged by %s, from Alignak-app') % (
-            self.item.get_display_name(),
-            user.name
+        comment = _('%s %s acknowledged by %s, from Alignak-app') % (
+            self.item.item_type.capitalize(), self.item.get_display_name(), user.name
         )
 
         ack_dialog = AckQDialog()
@@ -138,8 +137,8 @@ class ActionsQWidget(QWidget):
 
         user = data_manager.database['user']
 
-        comment = _('Schedule downtime on %s by %s, from Alignak-app') % (
-            self.item.get_display_name(), user.name
+        comment = _('Schedule downtime on %s %s by %s, from Alignak-app') % (
+            self.item.item_type.capitalize(), self.item.get_display_name(), user.name
         )
 
         downtime_dialog = DownQDialog()
