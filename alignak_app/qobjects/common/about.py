@@ -61,31 +61,27 @@ class AboutQDialog(QDialog):
         about_widget.setObjectName('about')
         about_layout = QVBoxLayout(about_widget)
 
-        # Title
-        about_title = QLabel(_('About %s') % __application__)
+        # QDialog Title
+        about_title = QLabel(_('About'))
         about_title.setFixedHeight(40)
         about_title.setObjectName('aboutheader')
         main_layout.addWidget(about_title)
 
-        # Version
-        version_title = QLabel(_('Application version:'))
-        version_title.setObjectName('abouttitle')
-        version_title.setToolTip(_('Application version'))
-        about_layout.addWidget(version_title)
-        version_data = QLabel(_('%s, version %s') % (__application__, __version__))
-        version_data.setObjectName('about')
-        version_data.setToolTip(_('Application version'))
-        about_layout.addWidget(version_data)
+        # Main About
+        about_text = "%s\nVersion %s\nCopyright: %s" % \
+            (__application__, __version__, __copyright__)
+        main_about = QLabel(about_text)
+        main_about.setObjectName('aboutmain')
+        main_about.setToolTip(__application__)
+        about_layout.addWidget(main_about)
+        about_layout.setAlignment(main_about, Qt.AlignCenter)
 
-        # Copyright
-        copyright_title = QLabel(_('Copyright:'))
-        copyright_title.setObjectName('abouttitle')
-        copyright_title.setToolTip(_('Copyright'))
-        about_layout.addWidget(copyright_title)
-        copyright_data = QLabel(__copyright__)
-        copyright_data.setObjectName('about')
-        copyright_data.setToolTip(_('Copyright'))
-        about_layout.addWidget(copyright_data)
+        # Release notes
+        release_data = QLabel(__releasenotes__)
+        release_data.setObjectName('about')
+        release_data.setToolTip(_('Release notes'))
+        release_data.setWordWrap(True)
+        about_layout.addWidget(release_data)
 
         # Homepage
         home_title = QLabel(_('Home page:'))
@@ -101,15 +97,7 @@ class AboutQDialog(QDialog):
         about_layout.addWidget(doc_title)
         about_layout.addWidget(self.get_external_link_label(__doc_url__))
 
-        # Release notes
-        release_title = QLabel(_('Release notes:'))
-        release_title.setObjectName('abouttitle')
-        release_title.setToolTip(_('Release notes'))
-        about_layout.addWidget(release_title)
-        release_data = QLabel(__releasenotes__)
-        release_data.setObjectName('about')
-        release_data.setToolTip(_('Release notes'))
-        about_layout.addWidget(release_data)
+
 
         # Alignak
         alignak_title = QLabel(_('About Alignak solution:'))
@@ -118,20 +106,33 @@ class AboutQDialog(QDialog):
         about_layout.addWidget(alignak_title)
         about_layout.addWidget(self.get_external_link_label(__alignak_url__))
 
+        # Powered
+        powered_title = QLabel(_('Powered by:'))
+        powered_title.setObjectName('abouttitle')
+        powered_title.setToolTip(_('PyQt5'))
+        about_layout.addWidget(powered_title)
+        powered_data = self.get_external_link_label('https://www.riverbankcomputing.com/', 'PyQt5')
+        about_layout.addWidget(powered_data)
+
         main_layout.addWidget(about_widget)
 
     @staticmethod
-    def get_external_link_label(link):
+    def get_external_link_label(link, title=''):
         """
         Return QLabel with clickable text
 
         :param link: link to make clickable
         :type link: str
+        :param title: title of link
+        :type title: str
         :return: QLabel with clickable link
         :rtype: QLabel
         """
 
-        link_label = QLabel('<a href="%s" style="color: white;">%s</a>' % (link, link))
+        if not title:
+            title = link
+
+        link_label = QLabel('<a href="%s" style="color: white;">%s</a>' % (link, title))
         link_label.setTextInteractionFlags(Qt.TextBrowserInteraction)
         link_label.setOpenExternalLinks(True)
         link_label.setObjectName('about')

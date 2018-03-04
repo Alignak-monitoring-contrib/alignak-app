@@ -214,6 +214,7 @@ QFrame#vseparator {
     border-width: 0px 1px 0px 0px;
     border-color: #6c9cb3;
     border-style: solid;
+    margin-bottom: 5px;
 }
 
 QListWidget {
@@ -248,6 +249,30 @@ QHeaderView::section {
 }
 
 /****** PANEL ******/
+QTabWidget::pane {
+    border: 1px solid #3884c3;
+}
+
+QTabBar::tab {
+    color: #3884c3;
+    background-color: white;
+    padding-left: 5px;
+    padding-right: 5px;
+    font: 11pt;
+    height: 24px;
+}
+
+QTabBar::tab::selected {
+    background-color: #3884c3;
+    color: white;
+    padding-left: 5px;
+    padding-right: 5px;
+    font: 11pt;
+    border-width: 1px 1px 0px 1px;
+    border-color: #3884c3;
+    border-style: solid;
+}
+
 QPushButton#search {
     color: #3884c3;
     background-color: white;
@@ -430,6 +455,13 @@ QLabel#aboutheader {
     background-color: #3884c3;
     font: 13pt;
     font-weight: bold;
+}
+
+QLabel#aboutmain {
+    background-color: #3b4155;
+    color: white;
+    font: 11pt;
+    qproperty-alignment: AlignCenter;
 }
 
 QLabel#abouttitle {
