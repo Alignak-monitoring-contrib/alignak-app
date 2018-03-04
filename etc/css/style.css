@@ -400,23 +400,6 @@ QLabel#actions {
     font-size: 14px;
 }
 
-QCheckBox#host_notifications_enabled::indicator, QCheckBox#service_notifications_enabled::indicator, QCheckBox#actions::indicator {
-    width: 10px;
-    height: 8px;
-    border: 4px solid #607d8b;
-    border-radius: 1px;
-    background-color: white;
-}
-
-
-QCheckBox#host_notifications_enabled::indicator::checked, QCheckBox#service_notifications_enabled::indicator::checked, QCheckBox#actions::indicator::checked {
-    background-color: #58c75c;
-}
-
-QCheckBox#host_notifications_enabled::indicator::unchecked, QCheckBox#service_notifications_enbaled::indicator::unchecked, QCheckBox#actions::indicator::unchecked {
-    background-color: white;
-}
-
 QTimeEdit, QDateTimeEdit {
     background-color: #f0f9fd;
 }
@@ -433,4 +416,29 @@ QLabel#userFalse {
 QLabel#notes {
     color: #2581c7;
     background-color: #e6f4ff;
+}
+
+/****** ABOUT *******/
+QDialog#about, QWidget#about{
+    background-color: #3b4155;
+}
+
+QLabel#aboutheader {
+    border: none;
+    padding: 0 8px;
+    color: white;
+    background-color: #3884c3;
+    font: 13pt;
+    font-weight: bold;
+}
+
+QLabel#abouttitle {
+    background-color: #3b4155;
+    color: #1fb3e3;
+    font: 10.5pt;
+}
+
+QLabel#about {
+    color: white;
+    background-color: #3b4155;
 }

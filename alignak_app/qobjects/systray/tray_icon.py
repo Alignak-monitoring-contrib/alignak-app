@@ -34,7 +34,7 @@ from alignak_app.utils.config import settings
 from alignak_app.backend.backend import app_backend
 
 from alignak_app.qobjects.app_main import AppQMainWindow
-from alignak_app.qobjects.systray.about import AboutQDialog
+from alignak_app.qobjects.common.about import AboutQDialog
 from alignak_app.qobjects.systray.qactions_factory import QActionFactory
 from alignak_app.qobjects.dock.events import send_event
 
@@ -151,7 +151,7 @@ class TrayIcon(QSystemTrayIcon):
             self
         )
 
-        self.qaction_factory.get_action('about').triggered.connect(self.app_about.show_about)
+        self.qaction_factory.get_action('about').triggered.connect(self.app_about.show)
 
         self.menu.addAction(self.qaction_factory.get_action('about'))
 
