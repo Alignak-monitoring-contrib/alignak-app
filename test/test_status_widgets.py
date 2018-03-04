@@ -22,9 +22,10 @@
 import sys
 
 import unittest2
-from PyQt5.Qt import QApplication, QWidget
+from PyQt5.Qt import QApplication, QWidget, QSize
 
 from alignak_app.backend.backend import app_backend
+from alignak_app.items.daemon import Daemon
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
@@ -67,6 +68,52 @@ class TestStatus(unittest2.TestCase):
         under_test = status_dialog_test.get_buttons_widget()
 
         self.assertIsInstance(under_test, QWidget)
+
+    def test_set_daemons_labels(self):
+        """Set Daemons QLabels"""
+
+        under_test = StatusQDialog()
+        labels_test = [
+            'alive', 'name', 'reachable', 'spare', 'address', 'port', 'passive', 'last_check'
+        ]
+
+        daemon_test = Daemon()
+        daemon_test.create(
+            '_id1',
+            {
+                'alive': True
+            },
+            'daemon-name'
+        )
+
+        under_test.set_daemons_labels([daemon_test])
+
+        self.assertTrue('daemon-name' in under_test.labels)
+
+        for lbl_test in labels_test:
+            self.assertTrue(lbl_test in under_test.labels['daemon-name'])
+
+    def test_add_daemon_titles_labels(self):
+        """TODO"""
+
+        under_test = StatusQDialog()
+
+        daemon_test = Daemon()
+        daemon_test.create(
+            '_id1',
+            {
+                'alive': True
+            },
+            'daemon-name'
+        )
+
+        under_test.set_daemons_labels([daemon_test])
+        under_test.add_daemon_labels(daemon_test, 2)
+
+        self.assertEqual(QSize(18, 18), under_test.labels['daemon-name']['alive'].size())
+        self.assertEqual(QSize(14, 14), under_test.labels['daemon-name']['reachable'].size())
+        self.assertEqual(QSize(14, 14), under_test.labels['daemon-name']['spare'].size())
+        self.assertEqual(QSize(14, 14), under_test.labels['daemon-name']['passive'].size())
 
     def test_initialize_status_qwidget(self):
         """Initialize StatusQWidget"""

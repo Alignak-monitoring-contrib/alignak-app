@@ -313,7 +313,7 @@ class StatusQWidget(QWidget):
         """
 
         self.status_dialog.update_dialog()
-        self.status_dialog.app_widget.show()
+        self.status_dialog.app_widget.show_widget()
 
     def update_status(self):
         """
