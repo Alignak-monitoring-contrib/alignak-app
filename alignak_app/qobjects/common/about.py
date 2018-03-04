@@ -97,8 +97,6 @@ class AboutQDialog(QDialog):
         about_layout.addWidget(doc_title)
         about_layout.addWidget(self.get_external_link_label(__doc_url__))
 
-
-
         # Alignak
         alignak_title = QLabel(_('About Alignak solution:'))
         alignak_title.setObjectName('abouttitle')
