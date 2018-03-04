@@ -51,6 +51,7 @@ class UserNotesQDialog(QDialog):
         self.setFixedSize(300, 300)
         # Fields
         self.notes_edit = QTextEdit()
+        self.old_notes = ''
 
     def initialize(self, notes):
         """
@@ -58,6 +59,7 @@ class UserNotesQDialog(QDialog):
 
         """
 
+        self.old_notes = notes
         center_widget(self)
 
         # Main layout
@@ -72,9 +74,9 @@ class UserNotesQDialog(QDialog):
         main_layout.addWidget(notes_title)
         main_layout.setAlignment(notes_title, Qt.AlignCenter)
 
-        main_layout.addWidget(self.get_user_notes_widget(notes))
+        main_layout.addWidget(self.get_user_notes_widget())
 
-    def get_user_notes_widget(self, notes):
+    def get_user_notes_widget(self):
         """
         Return notes QWidget
 
@@ -90,14 +92,30 @@ class UserNotesQDialog(QDialog):
         notes_widget.setLayout(notes_layout)
 
         self.notes_edit.setPlaceholderText(_('type your notes'))
-        self.notes_edit.setText(notes)
+        self.notes_edit.setText(self.old_notes)
         notes_layout.addWidget(self.notes_edit)
 
         # Accept button
         accept_btn = QPushButton(_('Confirm'), self)
-        accept_btn.clicked.connect(self.accept)
+        accept_btn.clicked.connect(self.accept_notes)
         accept_btn.setObjectName('search')
         accept_btn.setMinimumHeight(30)
         notes_layout.addWidget(accept_btn)
 
         return notes_widget
+
+    def accept_notes(self):  # pragma: no cover
+        """
+        Set QDialog notes to Rejected or Accepted (prevent to patch for nothing)
+
+        """
+
+        if self.old_notes == self.notes_edit.toPlainText():
+            self.reject()
+        elif not self.old_notes or self.old_notes.isspace():
+            if not self.notes_edit.toPlainText() or self.notes_edit.toPlainText().isspace():
+                self.reject()
+            else:
+                self.accept()
+        else:
+            self.accept()

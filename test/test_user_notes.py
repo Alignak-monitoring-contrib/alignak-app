@@ -68,8 +68,8 @@ class TestUserNotesQDialog(unittest2.TestCase):
 
         user_notes_test = UserNotesQDialog()
 
-        under_test = user_notes_test.get_user_notes_widget('notes')
+        under_test = user_notes_test.get_user_notes_widget()
 
         self.assertIsNotNone(under_test)
         self.assertIsInstance(under_test, QWidget)
-        self.assertEqual('notes', user_notes_test.notes_edit.toPlainText())
+        self.assertEqual('', user_notes_test.notes_edit.toPlainText())
