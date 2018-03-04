@@ -155,7 +155,7 @@ class UserOptionsQDialog(QDialog):
         # Login button
         accept_btn = QPushButton(_('OK'), self)
         accept_btn.clicked.connect(self.accept)
-        accept_btn.setObjectName('search')
+        accept_btn.setObjectName('ok')
         accept_btn.setMinimumHeight(30)
         options_layout.addWidget(accept_btn, line, 0, 1, 2)
 

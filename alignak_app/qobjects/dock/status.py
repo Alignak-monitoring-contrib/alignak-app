@@ -103,13 +103,13 @@ class StatusQDialog(QDialog):
         widget.setLayout(layout)
 
         ok_btn = QPushButton(_('OK'))
-        ok_btn.setObjectName('valid')
+        ok_btn.setObjectName('search')
         ok_btn.setFixedSize(120, 30)
         ok_btn.clicked.connect(self.app_widget.close)
         layout.addWidget(ok_btn)
 
         refresh_btn = QPushButton(_('Refresh'))
-        refresh_btn.setObjectName('search')
+        refresh_btn.setObjectName('ok')
         refresh_btn.setFixedSize(120, 30)
         refresh_btn.clicked.connect(self.update_dialog)
         layout.addWidget(refresh_btn)

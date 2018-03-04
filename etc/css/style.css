@@ -272,6 +272,23 @@ QTabBar::tab::selected {
     border-style: solid;
 }
 
+QPushButton#ok {
+    color: #3884c3;
+    background-color: white;
+    outline: none;
+    border-radius: 0px;
+    border: 1px solid #3884c3;
+    padding-left: 5px;
+    padding-right: 5px;
+    font: 10pt;
+}
+
+QPushButton#ok:hover {
+    background-color: #3884c3;
+    color: white;
+    border: 1px solid #3884c3;
+}
+
 QPushButton#search {
     color: #3884c3;
     background-color: white;

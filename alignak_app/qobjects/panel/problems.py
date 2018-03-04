@@ -103,7 +103,7 @@ class ProblemsQWidget(QWidget):
         layout_title.addWidget(self.problems_title)
 
         refresh_btn = QPushButton(_('Refresh'))
-        refresh_btn.setObjectName('search')
+        refresh_btn.setObjectName('ok')
         refresh_btn.setFixedSize(120, 30)
         refresh_btn.clicked.connect(self.update_problems_data)
         layout_title.addWidget(refresh_btn)
