@@ -92,7 +92,6 @@ class TestLivestateQWidget(unittest2.TestCase):
         under_test = LivestateQWidget()
 
         self.assertIsInstance(under_test.timer, QTimer)
-        self.assertEqual('bordered', under_test.objectName())
 
         self.assertTrue('host' in under_test.labels)
         self.assertTrue('problem' in under_test.labels)

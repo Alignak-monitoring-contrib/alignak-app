@@ -74,10 +74,8 @@ class TestStatus(unittest2.TestCase):
         under_test = StatusQWidget()
 
         self.assertIsNotNone(under_test.backend_connected)
-        self.assertFalse('borderedtitle' in under_test.backend_connected.objectName())
 
         self.assertIsNotNone(under_test.daemons_status)
-        self.assertFalse('borderedtitle' in under_test.daemons_status.objectName())
 
         self.assertIsNotNone(under_test.refresh_timer)
         self.assertFalse(under_test.refresh_timer.isActive())
@@ -87,6 +85,4 @@ class TestStatus(unittest2.TestCase):
 
         under_test.initialize()
 
-        self.assertTrue('borderedtitle' in under_test.backend_connected.objectName())
-        self.assertTrue('borderedtitle' in under_test.daemons_status.objectName())
         self.assertTrue(under_test.refresh_timer.isActive())

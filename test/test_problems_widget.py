@@ -111,7 +111,7 @@ class TestDataManager(unittest2.TestCase):
             ['Item Type', 'Host', 'Service', 'State', 'Actions', 'Output'],
             under_test.headers_list
         )
-        self.assertEqual('title', under_test.problems_title.objectName())
+        self.assertEqual('itemtitle', under_test.problems_title.objectName())
 
     def test_get_problems_widget_title(self):
         """Get problems Widget Title"""
