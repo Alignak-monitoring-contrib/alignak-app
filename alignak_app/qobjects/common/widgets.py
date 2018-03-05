@@ -25,6 +25,8 @@
     Widgets manage global QWidgets
 """
 
+import sys
+
 from PyQt5.Qt import QPushButton, QHBoxLayout, QApplication, QWidget, QIcon, QLabel
 from PyQt5.Qt import QStyleOption, QStyle, QPainter, Qt
 
@@ -44,7 +46,7 @@ class LogoQWidget(QWidget):
         self.child_widget = None
         self.old_state = None
 
-    def initialize(self, child_widget, title):
+    def initialize(self, child_widget, title, exitapp):
         """
         Initialize QWidget
 
@@ -52,6 +54,8 @@ class LogoQWidget(QWidget):
         :type child_widget: QWidget
         :param title: title of widget
         :type title: str
+        :param exitapp: define if close button close application or just child QWidget
+        :type exitapp: bool
         """
 
         self.child_widget = child_widget
@@ -83,7 +87,10 @@ class LogoQWidget(QWidget):
         close_btn.setIcon(QIcon(settings.get_image('exit')))
         close_btn.setObjectName('app_widget')
         close_btn.setFixedSize(24, 24)
-        close_btn.clicked.connect(child_widget.close)
+        if exitapp:
+            close_btn.clicked.connect(sys.exit)
+        else:
+            close_btn.clicked.connect(child_widget.close)
         logo_layout.addWidget(close_btn, 3)
 
     def paintEvent(self, _):  # pragma: no cover
@@ -122,7 +129,7 @@ class LogoQWidget(QWidget):
             self.child_widget.setWindowState(Qt.WindowMaximized)
 
 
-def get_logo_widget(child_widget, title):
+def get_logo_widget(child_widget, title, exitapp=False):
     """
     Return LogoQWidget with alignak logo
 
@@ -130,12 +137,14 @@ def get_logo_widget(child_widget, title):
     :type child_widget: QWidget
     :param title: title of widget
     :type title: str
+    :param exitapp: define if close button close application or just child QWidget
+    :type exitapp: bool
     :return: Logo QWidget with buttons and child QWidget
     :rtype: QWidget
     """
 
     logo_widget = LogoQWidget()
-    logo_widget.initialize(child_widget, title)
+    logo_widget.initialize(child_widget, title, exitapp)
 
     return logo_widget
 

@@ -174,13 +174,8 @@ class AlignakApp(QObject):  # pragma: no cover
             login = LoginQDialog()
             login.create_widget()
 
-            if login.exec_() == login.Accepted:
-                username = str(login.username_line.text())
-                password = str(login.password_line.text())
-                self.start(username, password)
-            else:
-                logger.info('The application is closed.')
-                sys.exit(0)
+            while not app_backend.connected:
+                login.exec_()
 
         # Launch start threads
         thread_to_launch = thread_manager.get_threads_to_launch()

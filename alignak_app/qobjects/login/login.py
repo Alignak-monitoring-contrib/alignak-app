@@ -31,6 +31,7 @@ from PyQt5.Qt import QLabel, QVBoxLayout, QGridLayout, QLineEdit
 from PyQt5.Qt import QWidget, QDialog, QPushButton, Qt, QIcon
 
 from alignak_app import __version__
+from alignak_app.backend.backend import app_backend
 from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.widgets import get_logo_widget, center_widget
@@ -68,7 +69,7 @@ class LoginQDialog(QDialog):
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
 
-        main_layout.addWidget(get_logo_widget(self, _('Login')))
+        main_layout.addWidget(get_logo_widget(self, _('Login'), exitapp=True))
 
         # Login QWidget
         login_widget = QWidget(self)
@@ -124,7 +125,7 @@ class LoginQDialog(QDialog):
 
         # Login button
         login_button = QPushButton(_('LOGIN'), self)
-        login_button.clicked.connect(self.accept)
+        login_button.clicked.connect(self.accept_login)
         login_button.setObjectName('valid')
         login_button.setMinimumHeight(30)
         login_button.setDefault(True)
@@ -134,6 +135,20 @@ class LoginQDialog(QDialog):
         self.setLayout(main_layout)
 
         center_widget(self)
+
+    def accept_login(self):
+        """
+        Accept Login or not if backend is connected
+
+        """
+
+        username = str(self.username_line.text())
+        password = str(self.password_line.text())
+
+        if app_backend.login(username, password):
+            self.accept()
+        else:
+            self.reject()
 
     @staticmethod
     def handle_server():

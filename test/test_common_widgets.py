@@ -57,7 +57,7 @@ class TestCommonQWidget(unittest2.TestCase):
         self.assertEqual('app_widget', under_test.objectName())
         self.assertIsNone(under_test.child_widget)
 
-        under_test.initialize(test_widget, '')
+        under_test.initialize(test_widget, '', False)
 
         self.assertIsNotNone(under_test.layout())
         self.assertEqual('app_widget', under_test.objectName())
@@ -85,4 +85,3 @@ class TestCommonQWidget(unittest2.TestCase):
         new_pos = under_test.pos()
 
         self.assertNotEqual(old_pos, new_pos)
-
