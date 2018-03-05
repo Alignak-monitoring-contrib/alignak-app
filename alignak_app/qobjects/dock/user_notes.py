@@ -98,7 +98,7 @@ class UserNotesQDialog(QDialog):
         # Accept button
         accept_btn = QPushButton(_('Confirm'), self)
         accept_btn.clicked.connect(self.accept_notes)
-        accept_btn.setObjectName('search')
+        accept_btn.setObjectName('valid')
         accept_btn.setMinimumHeight(30)
         notes_layout.addWidget(accept_btn)
 

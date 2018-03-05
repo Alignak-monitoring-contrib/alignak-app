@@ -125,7 +125,7 @@ class LoginQDialog(QDialog):
         # Login button
         login_button = QPushButton(_('LOGIN'), self)
         login_button.clicked.connect(self.accept)
-        login_button.setObjectName('search')
+        login_button.setObjectName('valid')
         login_button.setMinimumHeight(30)
         login_button.setDefault(True)
         login_layout.addWidget(login_button, 6, 0, 1, 2)

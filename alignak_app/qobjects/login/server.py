@@ -121,7 +121,7 @@ class ServerQDialog(QDialog):
 
         # Valid Button
         valid_btn = QPushButton(_('Valid'))
-        valid_btn.setObjectName('search')
+        valid_btn.setObjectName('valid')
         valid_btn.setMinimumHeight(30)
         valid_btn.clicked.connect(self.accept)
         server_layout.addWidget(valid_btn)

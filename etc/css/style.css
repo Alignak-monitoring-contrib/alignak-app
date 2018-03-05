@@ -95,7 +95,7 @@ QLabel#total {
     border-radius: 3px;
 }
 
-QLabel#search {
+QLabel#bordertitle {
     color: #3884c3;
     background-color: white;
     border: 1px solid #3884c3;
@@ -263,7 +263,7 @@ QPushButton#ok:hover {
     border: 1px solid #3884c3;
 }
 
-QPushButton#search {
+QPushButton#valid {
     color: #3884c3;
     background-color: white;
     outline: none;
@@ -274,13 +274,13 @@ QPushButton#search {
     font: 10pt;
 }
 
-QPushButton#search:hover {
+QPushButton#valid:hover {
     background-color: #39aa56;
     color: white;
     border: 1px solid #39aa56;
 }
 
-QPushButton#search:disabled {
+QPushButton#valid:disabled {
     background-color: #39aa56;
     color: white;
     border: 1px solid #39aa56;

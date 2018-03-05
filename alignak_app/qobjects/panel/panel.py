@@ -146,7 +146,7 @@ class PanelQWidget(QWidget):
 
         # Search label
         search_lbl = QLabel(_('Search Host'))
-        search_lbl.setObjectName('search')
+        search_lbl.setObjectName('bordertitle')
         search_lbl.setFixedHeight(25)
         search_lbl.setToolTip(_('Search Host'))
         layout.addWidget(search_lbl)
@@ -158,7 +158,7 @@ class PanelQWidget(QWidget):
         layout.addWidget(self.line_search)
 
         self.spy_button.setIcon(QIcon(settings.get_image('spy')))
-        self.spy_button.setObjectName('search')
+        self.spy_button.setObjectName('valid')
         self.spy_button.setFixedSize(110, 25)
         self.spy_button.clicked.connect(self.spy_host)
         layout.addWidget(self.spy_button)

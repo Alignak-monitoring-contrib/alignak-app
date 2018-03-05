@@ -96,7 +96,7 @@ class PasswordQDialog(QDialog):
         # Accept button
         accept_btn = QPushButton('Confirm', self)
         accept_btn.clicked.connect(self.handle_confirm)
-        accept_btn.setObjectName('search')
+        accept_btn.setObjectName('valid')
         accept_btn.setMinimumHeight(30)
         pass_layout.addWidget(accept_btn)
 

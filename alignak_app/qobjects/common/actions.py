@@ -303,7 +303,7 @@ class AckQDialog(QDialog):
 
         request_btn = QPushButton(_('REQUEST ACKNOWLEDGE'), self)
         request_btn.clicked.connect(self.accept)
-        request_btn.setObjectName('search')
+        request_btn.setObjectName('valid')
         request_btn.setMinimumHeight(30)
         request_btn.setDefault(True)
         ack_layout.addWidget(request_btn, 8, 0, 1, 2)
@@ -453,7 +453,7 @@ class DownQDialog(QDialog):
 
         request_btn = QPushButton(_('REQUEST DOWNTIME'), self)
         request_btn.clicked.connect(self.handle_accept)
-        request_btn.setObjectName('search')
+        request_btn.setObjectName('valid')
         request_btn.setMinimumHeight(30)
         request_btn.setDefault(True)
         downtime_layout.addWidget(request_btn, 10, 0, 1, 3)

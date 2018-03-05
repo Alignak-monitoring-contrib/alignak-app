@@ -103,7 +103,7 @@ class StatusQDialog(QDialog):
         widget.setLayout(layout)
 
         ok_btn = QPushButton(_('OK'))
-        ok_btn.setObjectName('search')
+        ok_btn.setObjectName('valid')
         ok_btn.setFixedSize(120, 30)
         ok_btn.clicked.connect(self.app_widget.close)
         layout.addWidget(ok_btn)
