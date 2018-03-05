@@ -310,7 +310,7 @@ class BackendClient(object):
         )
 
         if request:
-            if len(request['_items']) > 0:
+            if request['_items']:
                 user = User()
 
                 user.create(
