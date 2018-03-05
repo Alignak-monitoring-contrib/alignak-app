@@ -151,7 +151,7 @@ class TrayIcon(QSystemTrayIcon):
             self
         )
 
-        self.qaction_factory.get_action('about').triggered.connect(self.app_about.show)
+        self.qaction_factory.get_action('about').triggered.connect(self.app_about.show_about)
 
         self.menu.addAction(self.qaction_factory.get_action('about'))
 

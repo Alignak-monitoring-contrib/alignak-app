@@ -114,6 +114,14 @@ class AboutQDialog(QDialog):
 
         main_layout.addWidget(about_widget)
 
+    def show_about(self):
+        """
+        TODO
+        """
+
+        self.exec_()
+        self.show()
+
     @staticmethod
     def get_external_link_label(link, title=''):
         """
