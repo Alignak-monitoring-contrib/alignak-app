@@ -116,9 +116,11 @@ class AboutQDialog(QDialog):
 
     def show_about(self):
         """
-        TODO
+        Show about dialog
+
         """
 
+        # Exec_ to make sure that dialog popup is displayed under Win32
         self.exec_()
         self.show()
 
