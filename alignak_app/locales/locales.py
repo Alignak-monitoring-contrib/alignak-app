@@ -44,14 +44,10 @@ def init_localization():  # pragma: no cover
     """
     try:
         # Language message file
-        if 'win32' not in sys.platform:
-            lang_filename = os.path.join(
-                os.path.abspath(os.path.dirname(__file__)),
-                "LC_MESSAGES/%s.mo" % settings.get_config('Alignak-app', 'locale')
-            )
-        else:
-            lang_filename = "%s\\locales\\%s.mo" % (
-                settings.user_cfg_dir, settings.get_config('Alignak-app', 'locale'))
+        lang_filename = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            "LC_MESSAGES/%s.mo" % settings.get_config('Alignak-app', 'locale')
+        )
         logger.info(
             "Opening message file %s for locale %s",
             lang_filename, settings.get_config('Alignak-app', 'locale')
