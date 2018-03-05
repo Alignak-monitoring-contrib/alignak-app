@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -24,17 +24,17 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication, QWidget
 
-from alignak_app.core.utils.config import init_config
+from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-init_config()
+settings.init_config()
 init_localization()
 app = QApplication(sys.argv)
 
-from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.models.user import User
+from alignak_app.backend.datamanager import data_manager
+from alignak_app.items.user import User
 
-from alignak_app.pyqt.dock.widgets.user import UserQWidget
+from alignak_app.qobjects.dock.user import UserQWidget
 
 
 class TestUserQWidget(unittest2.TestCase):

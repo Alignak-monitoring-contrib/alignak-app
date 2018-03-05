@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -24,17 +24,31 @@ import sys
 import unittest2
 from PyQt5.Qt import QApplication
 
-from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.models.host import Host
-from alignak_app.core.models.service import Service
-from alignak_app.core.models.user import User
-from alignak_app.core.utils.config import init_config
+from alignak_app.backend.datamanager import data_manager
+from alignak_app.items.host import Host
+from alignak_app.items.service import Service
+from alignak_app.items.user import User
+from alignak_app.utils.config import settings
+from alignak_app.locales.locales import init_localization
+from alignak_app.qobjects.panel.host import HostQWidget
 
-app = QApplication(sys.argv)
+# app = QApplication(sys.argv)
+init_localization()
 data_manager.database['user'] = User()
 data_manager.database['user'].create('_id', {}, 'name')
 
-from alignak_app.pyqt.panel.widgets.host import HostQWidget
+host = Host()
+host.create(
+    '_id1',
+    {
+        'name': 'localhost',
+        'ls_state': 'DOWN',
+        'ls_acknowledged': False,
+        'ls_downtimed': False,
+     },
+    'localhost'
+)
+data_manager.database['host'] = [host]
 
 
 class TestHostQWidget(unittest2.TestCase):
@@ -43,7 +57,7 @@ class TestHostQWidget(unittest2.TestCase):
     """
 
     # Create config for all methods.
-    init_config()
+    settings.init_config()
 
     @classmethod
     def setUpClass(cls):
@@ -78,6 +92,7 @@ class TestHostQWidget(unittest2.TestCase):
         self.assertIsNone(under_test.host_item)
         self.assertIsNone(under_test.service_items)
 
+        data_manager.database['host'] = [host]
         under_test.set_data('localhost')
 
         self.assertIsNotNone(under_test.host_item)

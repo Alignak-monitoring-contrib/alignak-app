@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -24,13 +24,13 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication
 
-from alignak_app.core.utils.config import init_config
-from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.models.host import Host
-from alignak_app.core.models.service import Service
+from alignak_app.utils.config import settings
+from alignak_app.backend.datamanager import data_manager
+from alignak_app.items.host import Host
+from alignak_app.items.service import Service
 
-from alignak_app.pyqt.panel.widgets.panel import PanelQWidget
-from alignak_app.pyqt.dock.widgets.spy import SpyQWidget
+from alignak_app.qobjects.panel.panel import PanelQWidget
+from alignak_app.qobjects.dock.spy import SpyQWidget
 
 
 class TestLoginQDialog(unittest2.TestCase):
@@ -38,7 +38,7 @@ class TestLoginQDialog(unittest2.TestCase):
         This file test the PanelQWidget class.
     """
 
-    init_config()
+    settings.init_config()
 
     # Host data test
     host_list = []
@@ -107,7 +107,6 @@ class TestLoginQDialog(unittest2.TestCase):
         self.assertIsNotNone(under_test.layout)
         self.assertIsNotNone(under_test.line_search)
         self.assertIsNotNone(under_test.completer)
-        self.assertIsNotNone(under_test.app_widget)
         self.assertIsNotNone(under_test.dashboard_widget)
         self.assertIsNotNone(under_test.host_widget)
         self.assertIsNotNone(under_test.services_widget)
@@ -117,12 +116,11 @@ class TestLoginQDialog(unittest2.TestCase):
         self.assertFalse(under_test.hostnames_list)
 
         spy_widget_test = SpyQWidget()
-        under_test.initialize(800, spy_widget_test)
+        under_test.initialize(spy_widget_test)
 
         self.assertIsNotNone(under_test.layout)
         self.assertIsNotNone(under_test.line_search)
         self.assertIsNotNone(under_test.completer)
-        self.assertIsNotNone(under_test.app_widget)
         self.assertIsNotNone(under_test.dashboard_widget)
         self.assertIsNotNone(under_test.host_widget)
         self.assertIsNotNone(under_test.services_widget)
@@ -140,7 +138,7 @@ class TestLoginQDialog(unittest2.TestCase):
 
         under_test = PanelQWidget()
         spy_widget_test = SpyQWidget()
-        under_test.initialize(800, spy_widget_test)
+        under_test.initialize(spy_widget_test)
 
         # Host is not in hostname_list
         under_test.line_search.setText('no_host')

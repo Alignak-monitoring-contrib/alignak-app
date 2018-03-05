@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -21,12 +21,14 @@
 
 import unittest2
 
-from alignak_app.core.backend.data_manager import DataManager
-from alignak_app.core.models.event import Event
-from alignak_app.core.models.host import Host
-from alignak_app.core.models.livesynthesis import LiveSynthesis
-from alignak_app.core.models.service import Service
-from alignak_app.core.models.user import User
+from alignak_app.backend.datamanager import DataManager
+from alignak_app.items.event import Event
+from alignak_app.items.host import Host
+from alignak_app.items.livesynthesis import LiveSynthesis
+from alignak_app.items.service import Service
+from alignak_app.items.user import User
+from alignak_app.items.realm import Realm
+from alignak_app.items.period import Period
 
 
 class TestDataManager(unittest2.TestCase):
@@ -151,6 +153,54 @@ class TestDataManager(unittest2.TestCase):
         event.create(data['_id'], data)
         event_list.append(event)
 
+    # Realm data test
+    realm_list = []
+    for i in range(0, 10):
+        realm = Realm()
+        realm.create(
+            '_id%d' % i,
+            {
+                'name': 'realm%d' % i,
+                'alias': 'My Realm %d' % i,
+            },
+            'realm%d' % i
+        )
+        realm_list.append(realm)
+
+    realm_noalias = Realm()
+    realm_noalias.create(
+        '_id',
+        {
+            'name': 'realm',
+        },
+        'realm'
+    )
+    realm_list.append(realm_noalias)
+
+    # TimePeriod data test
+    period_list = []
+    for i in range(0, 10):
+        period = Realm()
+        period.create(
+            '_id%d' % i,
+            {
+                'name': 'period%d' % i,
+                'alias': 'My Time Period %d' % i,
+            },
+            'period%d' % i
+        )
+        period_list.append(period)
+
+    period_noalias = Period()
+    period_noalias.create(
+        '_id',
+        {
+            'name': 'period',
+        },
+        'period'
+    )
+    period_list.append(period_noalias)
+
     def test_initialize(self):
         """Initialize DataManager"""
 
@@ -165,7 +215,7 @@ class TestDataManager(unittest2.TestCase):
         self.assertTrue('user' in under_test.database)
 
         self.assertFalse(under_test.old_notifications)
-        self.assertFalse(under_test.is_ready())
+        self.assertNotEqual('READY', under_test.is_ready())
 
     def test_update_item_database(self):
         """Update DataManager Database"""
@@ -210,6 +260,52 @@ class TestDataManager(unittest2.TestCase):
         item3 = under_test.get_item('service', 'service10')
 
         self.assertIsNone(item3)
+
+    def test_get_realm_name(self):
+        """Get Realm in db"""
+
+        under_test = DataManager()
+
+        self.assertFalse(under_test.database['realm'])
+
+        under_test.update_database('realm', self.realm_list)
+
+        self.assertTrue(under_test.database['realm'])
+
+        realm_test = under_test.get_realm_name('_id2')
+
+        self.assertEqual('My Realm 2', realm_test)
+
+        noalias_realm_test = under_test.get_realm_name('_id')
+
+        self.assertEqual('Realm', noalias_realm_test)
+
+        no_realm_test = under_test.get_realm_name('no_realm')
+
+        self.assertEqual('n/a', no_realm_test)
+
+    def test_get_period_name(self):
+        """Get Time Period in db"""
+
+        under_test = DataManager()
+
+        self.assertFalse(under_test.database['timeperiod'])
+
+        under_test.update_database('timeperiod', self.period_list)
+
+        self.assertTrue(under_test.database['timeperiod'])
+
+        period_test = under_test.get_period_name('_id4')
+
+        self.assertEqual('My Time Period 4', period_test)
+
+        noalias_period_test = under_test.get_period_name('_id')
+
+        self.assertEqual('Period', noalias_period_test)
+
+        no_period_test = under_test.get_period_name('no_period')
+
+        self.assertEqual('n/a', no_period_test)
 
     def test_get_livesynthesis(self):
         """Get Livesynthesis in db"""
@@ -317,19 +413,28 @@ class TestDataManager(unittest2.TestCase):
 
         under_test = DataManager()
 
-        self.assertFalse(under_test.is_ready())
+        self.assertTrue('Collecting' in under_test.is_ready())
+        under_test.databases_ready['livesynthesis'] = True
 
-        under_test.update_database('user', {'data': 'test'})
-        self.assertFalse(under_test.is_ready())
-        under_test.update_database('host', {'data': 'test'})
-        self.assertFalse(under_test.is_ready())
-        under_test.update_database('service', {'data': 'test'})
-        self.assertFalse(under_test.is_ready())
-        under_test.update_database('alignakdaemon', {'data': 'test'})
-        self.assertFalse(under_test.is_ready())
-        under_test.update_database('livesynthesis', {'data': 'test'})
+        self.assertTrue('Collecting' in under_test.is_ready())
+        under_test.databases_ready['user'] = True
 
-        self.assertTrue(under_test.is_ready())
+        self.assertTrue('Collecting' in under_test.is_ready())
+        under_test.databases_ready['realm'] = True
+
+        self.assertTrue('Collecting' in under_test.is_ready())
+        under_test.databases_ready['timeperiod'] = True
+
+        self.assertTrue('Collecting' in under_test.is_ready())
+        under_test.databases_ready['host'] = True
+
+        self.assertTrue('Collecting' in under_test.is_ready())
+        under_test.databases_ready['service'] = True
+
+        self.assertTrue('Collecting' in under_test.is_ready())
+        under_test.databases_ready['alignakdaemon'] = True
+
+        self.assertEqual('READY', under_test.is_ready())
 
     def test_get_problems(self):
         """Get Database Problems"""
@@ -385,3 +490,25 @@ class TestDataManager(unittest2.TestCase):
         self.assertEqual(problems_test['hosts_nb'], 0)
         self.assertEqual(problems_test['services_nb'], 0)
         self.assertFalse(problems_test['problems'])
+
+    def test_update_item_data(self):
+        """Update Item Data"""
+
+        under_test = DataManager()
+        under_test.update_database('host', self.host_list)
+
+        self.assertEqual('DOWN', under_test.get_item('host', '_id1').data['ls_state'])
+
+        # Update item data "ls_state"
+        under_test.update_item_data(
+            'host',
+            '_id1',
+            {
+                'name': 'host1',
+                'ls_state': 'UP',
+                'ls_acknowledged': False,
+                'ls_downtimed': False,
+             }
+        )
+
+        self.assertEqual('UP', under_test.get_item('host', '_id1').data['ls_state'])

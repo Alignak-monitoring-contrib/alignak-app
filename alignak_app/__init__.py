@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -20,25 +20,50 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Alignak App
+    This Python module is a desktop application, with a system tray icon, for Alignak solution.
 
-    This module is a desktop application, with a system tray icon, for Alignak solution.
+    Application notify you when you have changes in your monitoring.
+    You can trigger actions inside application, see status of monitored items, problems to solved
+    and many other things.
 
-    Application notify you when you have changes in your monitoring
-    You can trigger actions inside application, see status of monitored items
+    Alignak-app have the following architecture:
+
+    * The :class:`BackendClient <alignak_app.backend.backend.BackendClient>` manage requests with
+      Alignak backend.
+    * The :class:`ThreadManager <alignak_app.qthreads.threadmanager.ThreadManager>` will
+      launch :class:`BackendQThread(s) <alignak_app.qthreads.thread.BackendQThread>` to
+      trigger requests in :class:`BackendClient <alignak_app.backend.backend.BackendClient>`.
+    * The :class:`DataManager <alignak_app.backend.datamanager.DataManager>` will store data
+      provided by :class:`BackendClient <alignak_app.backend.backend.BackendClient>` in
+      :class:`Items <alignak_app.items>`.
+    * The :class:`QObjects <alignak_app.qobjects>` package display/update the data stored in
+      :class:`DataManager <alignak_app.backend.datamanager.DataManager>`.
+    * The :class:`Utils <alignak_app.utils>` package contains settings, logs, installation,...
+    * The :class:`Locales <alignak_app.locales>` package contains translations.
+
+    Alignak-app will use a system of :class:`Installer <alignak_app.utils.installer.Installer>`
+    who use **environment variables** to run:
+
+    * ``ALIGNAKAPP_USR_DIR``: contains settings of user (**write rights**)
+    * ``ALIGNAKAPP_LOG_DIR``: contains log files of App (**write rights**)
+    * ``ALIGNAKAPP_APP_DIR``: contains binaries of App (images, css, languages) (**read rights**)
+
+    The :class:`Login <alignak_app.qobjects.login.login.LoginQDialog>` manage user login if needed.
+
 """
 
 
 # Application version and manifest
-VERSION = (1, 1, 1)
+VERSION = (1, 3, 0)
 __application__ = u"Alignak-App"
+__libname__ = u"alignak_app"
 __short_version__ = '.'.join((str(each) for each in VERSION[:2]))
 __version__ = '.'.join((str(each) for each in VERSION[:4]))
 __author__ = u"Estrada Matthieu"
-__copyright__ = u"2015-2017 - %s" % __author__
+__copyright__ = u"2015-2018 - %s" % __author__
 __license__ = u"GNU Affero General Public License, version 3"
-__description__ = u"Desktop application, in system tray, for Alignak monitoring solution"
-__releasenotes__ = u"Desktop application, in system tray, for Alignak monitoring solution"
+__description__ = u"Desktop application, with system tray, for Alignak monitoring solution"
+__releasenotes__ = u"Desktop application, with system tray, for Alignak monitoring solution"
 __project_url__ = "https://github.com/Alignak-monitoring-contrib/alignak-app"
 __doc_url__ = "http://alignak-app.readthedocs.io/en/develop/"
 __alignak_url__ = "http://www.alignak.net/"

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -25,11 +25,12 @@ import unittest2
 from PyQt5.Qt import QSize, QDialog
 from PyQt5.QtWidgets import QApplication, QWidget
 
-from alignak_app.core.utils.config import init_config
+from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
-from alignak_app.pyqt.dock.dialogs.user_notes import UserNotesQDialog
 
-init_config()
+from alignak_app.qobjects.dock.user_notes import UserNotesQDialog
+
+settings.init_config()
 init_localization()
 
 
@@ -67,8 +68,8 @@ class TestUserNotesQDialog(unittest2.TestCase):
 
         user_notes_test = UserNotesQDialog()
 
-        under_test = user_notes_test.get_user_notes_widget('notes')
+        under_test = user_notes_test.get_user_notes_widget()
 
         self.assertIsNotNone(under_test)
         self.assertIsInstance(under_test, QWidget)
-        self.assertEqual('notes', user_notes_test.notes_edit.toPlainText())
+        self.assertEqual('', user_notes_test.notes_edit.toPlainText())

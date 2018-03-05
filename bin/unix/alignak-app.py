@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- codinf: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -20,36 +20,75 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Launch Alignak-app
+    Alignak App
+    +++++++++++
+    Alignak App launch or install Alignak-app
 """
 
 import sys
 import os
 
-from alignak_app.app import AlignakApp
+import argparse
 
-from PyQt5.QtWidgets import QApplication, QMessageBox
+from alignak_app.utils.installer import Installer
 
-app = QApplication(sys.argv)
-app.setQuitOnLastWindowClosed(False)
+from alignak_app import __application__
 
-if 'win32' not in sys.platform:
-    try:
-        os.environ['DESKTOP_SESSION']
-    except KeyError as e:
-        print(
-            'You must be in [DESKTOP_SESSION] to launch Alignak-App !\n'
-            'Try to launch without ssh connection or set your [DESKTOP_SESSION] variable.'
-        )
-        QMessageBox.critical(
-            None,
-            'No DESKTOP_SESSION found',
-            'You must be in [DESKTOP_SESSION] to launch Alignak-App !\n'
-            'Try to launch without ssh connection or set your [DESKTOP_SESSION] variable.'
-        )
-        sys.exit()
 
-alignak_app = AlignakApp(app)
-alignak_app.start()
+def main():  # pragma: no cover
+    """
+        Launch or install Alignak-app
+    """
 
-sys.exit(app.exec_())
+    usage = u"./alignak-app.py [--start | --install]"
+    if 'win32' not in sys.platform:
+        description = u'Launch %s in shell or install as daemon.' % __application__
+    else:
+        description = u'Launch %s in shell.' % __application__
+
+    # Init parser
+    parser = argparse.ArgumentParser(
+        usage=usage,
+        description=description
+    )
+
+    parser.add_argument(
+        '-i', '--install',
+        help='Check installation and install folders for each user. '
+             'If you installed %s as sudo, run this command first.' % __application__,
+        dest='install', action="store_true", default=False
+    )
+
+    parser.add_argument(
+        '-s', '--start',
+        help='Start %s in your shell.' % __application__,
+        dest='start', action="store_true", default=False
+    )
+
+    args = parser.parse_args()
+    installer = Installer()
+
+    if args.start:
+        # Check installation
+        installer.check_installation()
+
+        from alignak_app.app import AlignakApp
+
+        if 'SSH_CONNECTION' in os.environ:
+            sys.exit(
+                'Alignak-app can not be launched during an SSH connection '
+                'and requires an X server to be displayed.'
+            )
+
+        alignak_app = AlignakApp()
+        alignak_app.start()
+    elif args.install:
+        # Check installation and install
+        installer.check_installation(mode='install')
+        installer.install()
+    else:
+        parser.print_help()
+
+
+if __name__ == '__main__':
+    main()

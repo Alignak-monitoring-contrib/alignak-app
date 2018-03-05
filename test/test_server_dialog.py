@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -24,10 +24,11 @@ import sys
 import unittest2
 from PyQt5.Qt import QApplication, QLineEdit
 
-from alignak_app.core.backend.client import app_backend
-from alignak_app.core.utils.config import init_config
+from alignak_app.backend.backend import app_backend
+from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
-from alignak_app.pyqt.login.dialogs.server import ServerQDialog
+
+from alignak_app.qobjects.login.server import ServerQDialog
 
 
 class TestServerQDialog(unittest2.TestCase):
@@ -35,7 +36,7 @@ class TestServerQDialog(unittest2.TestCase):
         This file test methods of ServerQDialog class object
     """
 
-    init_config()
+    settings.init_config()
     init_localization()
     app_backend.login()
 

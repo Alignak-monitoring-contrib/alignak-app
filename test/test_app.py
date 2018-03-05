@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -24,7 +24,7 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication
 
-from alignak_app.app import AlignakApp
+from alignak_app.app import AppProgressBar, AppProgressQWidget
 
 
 class TestApp(unittest2.TestCase):
@@ -41,16 +41,27 @@ class TestApp(unittest2.TestCase):
         except:
             pass
 
-    def test_app_reconnect_mode(self):
-        """Reconnect App"""
+    def test_app_progressbar(self):
+        """App Progress Bar"""
 
-        under_test = AlignakApp()
+        under_test = AppProgressBar()
 
-        self.assertIsNone(under_test.tray_icon)
-        self.assertFalse(under_test.reconnect_mode)
+        self.assertEqual(under_test.minimum(), 0)
+        self.assertEqual(under_test.maximum(), 0)
 
-        # Build alignak_app
-        under_test.app_reconnecting_mode('ERROR')
+        under_test.set_text('test')
 
-        self.assertIsNone(under_test.tray_icon)
-        self.assertTrue(under_test.reconnect_mode)
+        self.assertEqual('test', under_test.text())
+
+    def test_app_progress_Widget(self):
+        """App Progress QWidget"""
+
+        under_test = AppProgressQWidget()
+
+        self.assertTrue(under_test.progress_bar)
+        self.assertIsInstance(under_test.progress_bar, AppProgressBar)
+
+        under_test.initialize()
+
+        self.assertTrue(under_test.progress_bar)
+        self.assertIsInstance(under_test.progress_bar, AppProgressBar)

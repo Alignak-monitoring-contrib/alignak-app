@@ -12,7 +12,7 @@ Alignak App
    :target: https://landscape.io/github/Alignak-monitoring-contrib/alignak-app/develop
    :alt: Development code static analysis
 
-.. image:: https://coveralls.io/repos/github/Alignak-monitoring-contrib/alignak-app/badge.svg?branch=develop&service=github
+.. image:: https://coveralls.io/repos/github/Alignak-monitoring-contrib/alignak-app/badge.svg?branch=develop
     :target: https://coveralls.io/github/Alignak-monitoring-contrib/alignak-app?branch=develop
     :alt: Development code coverage
 
@@ -43,41 +43,63 @@ Alignak-App is a desktop application, residing in the system tray, for the Align
 
 This application is useful for people with an Alignak installation in their business and who want to keep an eye on their supervision constantly.
 
-It is used to :
+Features:
+^^^^^^^^^
 
-* Get Alignak daemons status, number of hosts and services per state
-* Be notified when problems are raised by Alignak
-* View, in real time, an host synthesis (host and its services state)
-* Acknowledge problems or schedule downtimes on your Hosts / Services
+* *See Alignak daemons status (if activate in backend), number, states, informations of hosts and services*
+* *Be notified for: problems, actions, changes*
+* *View a synthesis view of a host and its services (states, output, checks)*
+* *Acknowledge problems, schedule downtimes on your Hosts / Services*
+* *Spy hosts*
+
+And other features to come...
 
 App use `PyQt5 <https://www.riverbankcomputing.com/software/pyqt/intro>`_, bindings of Qt application framework.
 
 Installation
 ------------
 
-To install Alignak-app::
+To install Alignak-app:
 
-    ##### WINDOWS USERS #####
+* **Windows Users:**
+
+.. code-block:: bash
+
     # An installer for Windows is available on this repository.
     # To keep it free, installer is not signed, so Windows Defender SmartScreen will warn you about that.
     # Just click on "More Informations" and on "Execute anyway" to run installer.
 
-    ##### LINUX USERS #####
+    # You can generate your own setup. Please, follow the documentation link below.
+
+* **Linux Users:**
+
+.. code-block:: bash
+
     # Alignak App
-    pip3 install alignak_app --user -v
+    pip3 install alignak_app
 
     # First run
-    ~/.local/alignak_app/bin/alignak-app
+    # Installed as "user"
+    ~/.local/alignak_app/bin/alignak-app.py --start   # Run application in current shell
+    ~/.local/alignak_app/bin/alignak-app.py --install # Install a daemon file
+    # Installed as "root"
+    /usr/local/aligna_app/alignak-app.py --start   # Run application in current shell
+    /usr/local/aligna_app/alignak-app.py --install # Install a daemon file
 
-    # If you've already run App, just do
+    # If you've installed Alignak-app daemon, then run:
     alignak-app start
 
-    ##### Development #####
-    # If you want development version, run:
+* **Development (Windows or Linux):**
+
+.. code-block:: bash
+
+    # If you want to test development version or a specific version, tags, commit run:
     git clone https://github.com/Alignak-monitoring-contrib/alignak-app
     cd alignak-app
+    # If you're under Windows, use "pip" instead of "pip3"
     pip3 install -r requirements.txt
-    pip3 install . --user -v
+    pip3 install . -v
+    # Then run "alignak-app.py" file
 
 You can find more help in the documentation below.
 
@@ -86,7 +108,15 @@ Documentation
 
 Documentation for Alignak-app is available on `Read The Docs <http://alignak-app.readthedocs.io/en/develop/index.html>`_.
 You will find everything you need to install and configure the application.
-To learn more about Alignak, visit `http://www.alignak.net/ <http://www.alignak.net/>`_ website.
+
+To learn more about **Alignak** project, please visit `http://www.alignak.net/ <http://www.alignak.net/>`_.
+
+Release strategy
+----------------
+
+Alignak-app will *try* to follow the `Alignak-Backend <https://github.com/Alignak-monitoring-contrib/alignak-backend>`_ version.
+As of it, take care to install the same minor version on your system to ensure compatibility between all the packages.
+If your Backend is **1.1.0**, use Alignak-app **1.1.x**.
 
 Bugs / Enhancements
 -------------------

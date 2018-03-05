@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -24,13 +24,14 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication, QWidget
 
-from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.models.history import History
-from alignak_app.core.utils.config import init_config
+from alignak_app.backend.datamanager import data_manager
+from alignak_app.items.history import History
+from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
-from alignak_app.pyqt.panel.widgets.history import HistoryQWidget, AppQFrame
 
-init_config()
+from alignak_app.qobjects.panel.history import HistoryQWidget, AppQFrame
+
+settings.init_config()
 init_localization()
 
 
@@ -85,7 +86,7 @@ class TestHistoryQWidget(unittest2.TestCase):
         self.assertIsInstance(under_test.app_widget, AppQFrame)
 
         data_manager.database['history'].append(self.history_test)
-        under_test.initialize('charnay', 'hostname')
+        under_test.initialize('charnay', self.history_test)
 
         self.assertIsNotNone(under_test.layout())
         self.assertEqual(under_test.app_widget.windowTitle(), "History of Charnay")

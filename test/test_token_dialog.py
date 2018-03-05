@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -24,12 +24,13 @@ import sys
 import unittest2
 from PyQt5.Qt import QApplication, QWidget
 
-from alignak_app.core.backend.client import app_backend
-from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.models.user import User
-from alignak_app.core.utils.config import init_config
+from alignak_app.backend.backend import app_backend
+from alignak_app.backend.datamanager import data_manager
+from alignak_app.items.user import User
+from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
-from alignak_app.pyqt.dock.dialogs.token import TokenQDialog
+
+from alignak_app.qobjects.dock.token import TokenQDialog
 
 
 class TestTokenQDialog(unittest2.TestCase):
@@ -37,7 +38,7 @@ class TestTokenQDialog(unittest2.TestCase):
         This file test methods of TokenQDialog class object
     """
 
-    init_config()
+    settings.init_config()
     init_localization()
     app_backend.login()
 

@@ -1,63 +1,57 @@
 .. _config:
 
-Alignak-app Main Folder
-=======================
+Environment Variables
+=====================
 
-During installation, Alignak-app creates a root folder that contains all the files application need to run.
+During installation, Alignak-app creates some folders that contains all the files application need to run.
+Then she will keep them in **environment variables**.
+
+The application will normally automatically detect the folders used by the application and use environment variables for this purpose.
+
+  * ``ALIGNAKAPP_USR_DIR``: this folder is used by application for read the ``settings.cfg`` file . By default, Alignak-app will log also in this directory.
+  * ``ALIGNAKAPP_APP_DIR``: this folder is used by application for read ``images.ini`` file, ``style.css`` and get images. This variable is normally equal to the ROOT folder described above. **Be careful if you define this variable yourself!**
+  * ``ALIGNAKAPP_LOG_DIR``: this folder is used to create the log file of Alignak-app.
+
+During Windows installation, if you used **Installer**, these variables are automatically filled.
 
 On Linux
 --------
 
-The ROOT folder of the application should be under::
+Alignak-app will try to create ``ALIGNAKAPP_USR_DIR`` for later configurations. By default this folder should be::
 
-    /home/$USER/.local/alignak_app/
+    /$HOME/.local/alignak_app/
+
+The ``ALIGNAKAPP_APP_DIR`` should be under one of the following folders and is create by pip during installation::
+
+    /$HOME/.local/alignak_app/
+    /usr/local/alignak_app/
 
 On Windows
 ----------
 
-1. If you install from **Pip** or with **Sources**:
-
-The ROOT folder of the application should be under::
-
-    C:\Users\user\AppData\Roaming\Python\alignak_app\
-
-
-2. If you use **Installer** (see :ref:`install`):
-
-The ROOT folder will be located under::
+On Windows, use **Installer** is recommended (see :ref:`installer`) to respect Windows conventions.
+``ALIGNAKAPP_USR_DIR`` and ``ALIGNAKAPP_APP_DIR`` variables are by default set to::
 
     C:\Program Files\Alignak-app\
 
-This is to facilitate access to the configuration and respect Windows conventions.
+If you install by ``pip`` under Windows, you may need to **define these variables yourself** !
+And ``ALIGNAKAPP_USR_DIR`` and ``ALIGNAKAPP_APP_DIR`` variables should be by default set to::
 
-Alignak-app Workdir
-===================
+    C:\Users\user\AppData\Roaming\Python\alignak_app\
 
-This folder is defined by the ``app_workdir.ini`` file located in the main application folder cited above.
-
-The goal of this file is to define a directory where Alignak-app can write/read without problems to get settings and create log files.
-So make sure that you have the right to write and read.
-
-You must set an **absolute path** for this settings.
-
-Then only put/copy the ``settings.cfg`` in the folder you have defined.
-
-**Note:** If you have not set this option, application use the same directory than cited above. If you have no rights, application will crash.
-
-Configuration Parameters
-========================
+Configuration
+=============
 
 Before running application, **you must configure it**.
 
-You will find a file named ``settings.cfg`` located in the "ROOT" folder cited above.
-Otherwise, Alignak-app proposes to define your server Alignak and its port via the window login.
+You will find a ``settings.cfg`` file located in the ``ALIGNAKAPP_USR_DIR`` folder cited above.
 
 This file contains Sections who are introduced by a ``[section_name]`` header. Then, it contains ``name = value`` entries.
 All parameters are also explained in file. For the boolean parameters, you can use the following values: on/off, true/false or 1/0.
 
-The most significant Section is **[Backend]**. You need set your backend url, ports and credentials.
+The most significant Section is **[Alignak]**. You'll need set your backend url and ports. Otherwise, Alignak-app proposes to define your server Alignak and its port via the window login.
 
-.. [ToKnow] " Without connection on Backend of Alignak, App won't start ! "
+**To Know:** Without connection on Backend of Alignak, App won't start ! "
 
 Settings file
 -------------
@@ -71,7 +65,7 @@ Connection to Backend
 
 Alignak-app have a login form by default, who let you to connect with the username and password define in backend.
 
-You can also set connection information in settings file:
+You can also set connection information in the ``settings.cfg`` file:
 
   * **Recommended:** leave empty "username" and "password". Alignak-app will display a login Window.
   * **Recommended:** set your token in "username" field and leave "password" empty (See below).
@@ -90,3 +84,4 @@ To obtain a token, open a python terminal and type the following commands::
     )
     print(r.text)
 
+You can also visit: `Alignak-backend : Get Token <http://docs.alignak.net/projects/alignak-backend/en/latest/api.html#get-the-authentication-token>`_

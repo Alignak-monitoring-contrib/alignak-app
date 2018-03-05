@@ -22,6 +22,10 @@ sys.path.insert(0, os.path.abspath('../'))
 from alignak_app import __version__, __short_version__
 from alignak_app import __copyright__, __author__, __application__
 
+os.environ['ALIGNAKAPP_USR_DIR'] = os.path.abspath('../etc')
+os.environ['ALIGNAKAPP_APP_DIR'] = os.path.abspath('../etc')
+os.environ['ALIGNAKAPP_LOG_DIR'] = os.path.abspath('../etc')
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.

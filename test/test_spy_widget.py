@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -25,7 +25,7 @@ import unittest2
 
 from PyQt5.Qt import QApplication
 
-from alignak_app.pyqt.dock.widgets.spy import SpyQWidget, SpyQListWidget, EventItem
+from alignak_app.qobjects.dock.spy import SpyQWidget, SpyQListWidget, EventItem
 
 
 class TestDataManager(unittest2.TestCase):

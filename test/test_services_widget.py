@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -24,21 +24,21 @@ import sys
 import unittest2
 from PyQt5.Qt import QApplication
 
-from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.models.host import Host
-from alignak_app.core.models.service import Service
-from alignak_app.core.models.user import User
-from alignak_app.core.utils.config import init_config
+from alignak_app.backend.datamanager import data_manager
+from alignak_app.items.host import Host
+from alignak_app.items.service import Service
+from alignak_app.items.user import User
+from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-init_config()
+settings.init_config()
 init_localization()
 app = QApplication(sys.argv)
 user = User()
 user.create('_id', {'name': 'name'}, 'name')
 data_manager.database['user'] = user
 
-from alignak_app.pyqt.panel.widgets.services import ServicesQWidget
+from alignak_app.qobjects.panel.services import ServicesQWidget
 
 
 class TestServicesQWidget(unittest2.TestCase):

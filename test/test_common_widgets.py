@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -24,11 +24,12 @@ import sys
 import unittest2
 from PyQt5.Qt import QApplication, QWidget
 
-from alignak_app.core.utils.config import init_config
+from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
-from alignak_app.pyqt.common.widgets import get_logo_widget, center_widget, LogoQWidget
 
-init_config()
+from alignak_app.qobjects.common.widgets import get_logo_widget, center_widget, LogoQWidget
+
+settings.init_config()
 init_localization()
 
 
@@ -52,15 +53,15 @@ class TestCommonQWidget(unittest2.TestCase):
 
         test_widget = QWidget()
 
-        self.assertIsInstance(under_test, LogoQWidget)
         self.assertIsNone(under_test.layout())
         self.assertEqual('app_widget', under_test.objectName())
+        self.assertIsNone(under_test.child_widget)
 
-        under_test.initialize(test_widget, '')
+        under_test.initialize(test_widget, '', False)
 
-        self.assertIsInstance(under_test, LogoQWidget)
         self.assertIsNotNone(under_test.layout())
         self.assertEqual('app_widget', under_test.objectName())
+        self.assertIsNotNone(under_test.child_widget)
 
     def test_get_logo_widget(self):
         """Get LogoQWidget"""
@@ -84,4 +85,3 @@ class TestCommonQWidget(unittest2.TestCase):
         new_pos = under_test.pos()
 
         self.assertNotEqual(old_pos, new_pos)
-

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -56,16 +56,16 @@ if 'linux' in sys.platform or\
         'app': __pkg_name__,
         'images': __pkg_name__ + '/images',
         'css': __pkg_name__ + '/css',
-        'templates': __pkg_name__ + '/templates',
         'bin': __pkg_name__ + '/bin',
+        'binsample': __pkg_name__ + '/bin-samples',
     }
 elif 'win32' in sys.platform:
     paths = {
         'app': __pkg_name__,
         'images': __pkg_name__ + '/images',
         'css': __pkg_name__ + '/css',
-        'templates': __pkg_name__ + '/templates',
         'bin': __pkg_name__ + '/bin',
+        'binsample': __pkg_name__ + '/bin-samples',
     }
 else:
     print("Unsupported platform, sorry!")
@@ -81,43 +81,18 @@ for image in images:
     data_files.append((paths['images'], ['etc/images/' + image]))
 
 # StyleSheet
-stylesheet = os.listdir(dir_path + '/etc/css')
-for style in stylesheet:
-    data_files.append((paths['css'], ['etc/css/' + style]))
+data_files.append((paths['css'], ['etc/css/style.css']))
 
 # Etc
 data_files.append((paths['app'], ['etc/settings.cfg']))
-data_files.append((paths['app'], ['etc/app_workdir.ini']))
 data_files.append((paths['app'], ['etc/images.ini']))
 
 # Bin for Unix
-data_files.append((paths['bin'], ['bin/unix/alignak-app']))
 data_files.append((paths['bin'], ['bin/unix/alignak-app.py']))
 
-
-class PostInstallCommand(install):
-    """Post-installation for installation mode."""
-
-    END = '\x1b[0m'
-    GREEN = '\x1b[32m'
-    CYAN = '\x1b[36m'
-
-    install_info = """\n
-#########################################################################
-
-        %s Alignak-App has been installed successfully :) %s
-        
-Please RUN %s ~/.local/alignak_app/bin/alignak-app %s to check installation.
-
-    Usage: %s alignak-app {start|stop|status|restart} %s
-
-#########################################################################\n
-    """ % (GREEN, END, CYAN, END, GREEN, END)
-
-    def run(self):
-        install.run(self)
-        os.system("echo '%s'" % self.install_info)
-
+# Conigurations examples
+data_files.append((paths['binsample'], ['bin/unix/alignak-app.sample.sh']))
+data_files.append((paths['binsample'], ['bin/unix/alignak-app-auto.sample.sh']))
 
 setup(
     name=__pkg_name__,
@@ -128,14 +103,11 @@ setup(
     # metadata for upload to PyPI
     author=__author__,
     author_email="ttamalfor@gmail.com",
-    keywords="alignak applet notifier",
+    keywords="alignak application monitoring",
     url=__project_url__,
     description=__description__,
     long_description=open('README.rst').read(),
 
-    cmdclass={
-        'install': PostInstallCommand,
-    },
     zip_safe=False,
 
     packages=find_packages(),

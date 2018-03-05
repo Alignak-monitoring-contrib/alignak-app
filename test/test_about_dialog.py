@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -24,11 +24,14 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication, QLabel
 
-from alignak_app.core.utils.config import init_config
+from alignak_app.utils.installer import Installer
+from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
-from alignak_app.pyqt.systray.dialogs.about import AboutQDialog
+from alignak_app.qobjects.common.about import AboutQDialog
 
-init_config()
+installer = Installer()
+installer.check_installation()
+settings.init_config()
 init_localization()
 
 
@@ -50,11 +53,12 @@ class TestAboutQDialog(unittest2.TestCase):
 
         under_test = AboutQDialog()
 
-        self.assertIsNotNone(under_test.app_frame_model)
+        self.assertEqual('about', under_test.objectName())
+        self.assertIsNone(under_test.layout())
 
         under_test.initialize()
 
-        self.assertIsNotNone(under_test.app_frame_model)
+        self.assertEqual('about', under_test.objectName())
         self.assertIsNotNone(under_test.layout())
 
     def test_get_external_link_label(self):
@@ -67,3 +71,4 @@ class TestAboutQDialog(unittest2.TestCase):
         under_test = about_test.get_external_link_label(link)
 
         self.assertIsInstance(under_test, QLabel)
+        self.assertEqual(link, under_test.toolTip())

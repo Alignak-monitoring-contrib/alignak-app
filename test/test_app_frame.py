@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -24,8 +24,9 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication
 
-from alignak_app.core.utils.config import init_config
-from alignak_app.pyqt.common.frames import AppQFrame
+from alignak_app.utils.config import settings
+
+from alignak_app.qobjects.common.frames import AppQFrame
 
 
 class TestAppQFrame(unittest2.TestCase):
@@ -33,7 +34,7 @@ class TestAppQFrame(unittest2.TestCase):
         This file test the AppQFrame class.
     """
 
-    init_config()
+    settings.init_config()
 
     @classmethod
     def setUpClass(cls):

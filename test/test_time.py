@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -22,7 +22,7 @@
 
 import unittest2
 
-from alignak_app.core.utils.time import get_time_diff_since_last_timestamp
+from alignak_app.utils.time import get_time_diff_since_last_timestamp
 
 
 class TestTime(unittest2.TestCase):

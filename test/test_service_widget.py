@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -24,20 +24,21 @@ import sys
 import unittest2
 from PyQt5.Qt import QApplication, QLabel, QPushButton, QWidget
 
-from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.core.models.host import Host
-from alignak_app.core.models.service import Service
-from alignak_app.core.models.user import User
-from alignak_app.core.utils.config import init_config
+from alignak_app.backend.datamanager import data_manager
+from alignak_app.items.host import Host
+from alignak_app.items.service import Service
+from alignak_app.items.user import User
+from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-init_config()
+from alignak_app.qobjects.panel.service import ServiceDataQWidget
+
+settings.init_config()
 init_localization()
 app = QApplication(sys.argv)
 user = User()
 user.create('_id', {'name': 'name'}, 'name')
 data_manager.database['user'] = user
-from alignak_app.pyqt.panel.widgets.service import ServiceDataQWidget
 
 
 class TestServiceDataQWidget(unittest2.TestCase):
@@ -117,8 +118,8 @@ class TestServiceDataQWidget(unittest2.TestCase):
         under_test = ServiceDataQWidget()
 
         self.assertIsNone(under_test.service_item)
-        self.assertIsNone(under_test.host_id)
         self.assertIsNotNone(under_test.labels)
+
         for label in under_test.labels:
             self.assertIsInstance(under_test.labels[label], QLabel)
         self.assertIsNotNone(under_test.buttons)
@@ -128,14 +129,14 @@ class TestServiceDataQWidget(unittest2.TestCase):
         under_test.initialize()
 
         self.assertIsNone(under_test.service_item)
-        self.assertIsNone(under_test.host_id)
         self.assertIsNotNone(under_test.labels)
-        self.assertIsNotNone(under_test.buttons)
+
         for label in under_test.labels:
             self.assertIsInstance(under_test.labels[label], QLabel)
         self.assertIsNotNone(under_test.buttons)
         for button in under_test.buttons:
             self.assertIsInstance(under_test.buttons[button], QPushButton)
+
         # Assert QWidget is Hidden for first display
         self.assertTrue(under_test.isHidden())
 
@@ -163,7 +164,7 @@ class TestServiceDataQWidget(unittest2.TestCase):
         data_manager.database['user'].data['can_submit_commands'] = True
         data_manager.update_database('service', self.service_list)
 
-        under_test.update_widget(self.service_list[0], '_id1')
+        under_test.update_widget(self.service_list[0])
 
         new_labels = under_test.labels
 

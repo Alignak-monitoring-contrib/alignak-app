@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -25,10 +25,11 @@ import unittest2
 
 from PyQt5.Qt import QApplication
 
-from alignak_app.core.models.host import Host
-from alignak_app.core.models.service import Service
-from alignak_app.core.backend.data_manager import data_manager
-from alignak_app.pyqt.panel.widgets.problems import ProblemsQWidget, QWidget
+from alignak_app.items.host import Host
+from alignak_app.items.service import Service
+from alignak_app.backend.datamanager import data_manager
+
+from alignak_app.qobjects.panel.problems import ProblemsQWidget, QWidget
 
 
 class TestDataManager(unittest2.TestCase):
@@ -110,7 +111,7 @@ class TestDataManager(unittest2.TestCase):
             ['Item Type', 'Host', 'Service', 'State', 'Actions', 'Output'],
             under_test.headers_list
         )
-        self.assertEqual('title', under_test.problems_title.objectName())
+        self.assertEqual('itemtitle', under_test.problems_title.objectName())
 
     def test_get_problems_widget_title(self):
         """Get problems Widget Title"""

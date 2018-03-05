@@ -1,5 +1,5 @@
 ; INNO SETUP FILE
-; Copyright (c) 2015-2017:
+; Copyright (c) 2015-2018:
 ;   Matthieu Estrada, ttamalfor@gmail.com
 ;
 ; This file is part of (AlignakApp).
@@ -18,9 +18,10 @@
 ; along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 #define MyAppName "Alignak-app"
-#define ShortVersion "1.1"
-#define MinorVersion ".1"
-#define MyAppVersion ShortVersion + MinorVersion
+#define public MajorVersion ReadIni(SourcePath + "version.ini", "Version", "major")
+#define public MinorVersion ReadIni(SourcePath + "version.ini", "Version", "minor")
+#define public PatchVersion ReadIni(SourcePath + "version.ini", "Version", "patch")
+#define MyAppVersion MajorVersion + "." + MinorVersion + "." + PatchVersion
 #define MyAppPublisher "Alignak (Estrada Matthieu)"
 #define MyAppURL "https://github.com/Alignak-monitoring-contrib/alignak-app"
 #define MyAppExeName "alignak-app.exe"
@@ -37,6 +38,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
+ChangesEnvironment=yes
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableDirPage=yes
@@ -65,19 +67,22 @@ Source: "{#RootApp}\alignak-app\dist\alignak-app.exe"; DestDir: "{app}"; Flags: 
 Source: "{#RootApp}\alignak-app\etc\css\*"; DestDir: "{app}\css"; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
 Source: "{#RootApp}\alignak-app\etc\images\*"; DestDir: "{app}\images"; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
 Source: "{app}\settings.cfg"; DestDir: "{app}"; DestName: "settings.cfg.save"; Flags: external skipifsourcedoesntexist uninsneveruninstall
-Source: "{#RootApp}\alignak-app\etc\settings.cfg"; DestDir: "{app}"; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
-Source: "{#RootApp}\alignak-app\etc\images.ini"; DestDir: "{app}"; Flags: ignoreversion isreadme; Permissions: users-full admins-full everyone-modify;
-Source: "{#RootApp}\alignak-app\etc\app_workdir.ini"; DestDir: "{app}"; Flags: ignoreversion isreadme; Permissions: users-full admins-full everyone-modify;
+Source: "{#RootApp}\alignak-app\etc\settings.cfg"; DestDir: "{app}"; Flags: ignoreversion isreadme; Permissions: users-full admins-full everyone-modify;
+Source: "{#RootApp}\alignak-app\etc\images.ini"; DestDir: "{app}"; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
 Source: "{#RootApp}\alignak-app\bin\win\vc_redist.x64.exe"; DestDir: {tmp}; Flags: deleteafterinstall;
 Source: "{#RootApp}\alignak-app\bin\win\icon_64.ico"; DestDir: {app}; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
-Source: "{#RootApp}\alignak-app\alignak_app\locales\*"; DestDir: {app}\locales; Flags: ignoreversion; Permissions: users-full admins-full everyone-modify;
+
+[Registry]
+Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName: "ALIGNAKAPP_USR_DIR"; ValueData: "{app}"; Flags: uninsdeletekey preservestringtype
+Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName: "ALIGNAKAPP_APP_DIR"; ValueData: "{app}"; Flags: uninsdeletekey preservestringtype
+Root: HKCU; Subkey: "Environment"; ValueType:string; ValueName: "ALIGNAKAPP_LOG_DIR"; ValueData: "{app}"; Flags: uninsdeletekey preservestringtype
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon_64.ico";
-Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon_64.ico"; Tasks: desktopicon
+Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Parameters: "--start"; IconFilename: "{app}\icon_64.ico";
+Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Parameters: "--start"; IconFilename: "{app}\icon_64.ico"; Tasks: desktopicon
 
 [Run]
 Filename: "{cmd}"; Parameters: "/c icacls ""{app}"" /grant Everyone:(OI)(CI)F /T"; StatusMsg: Grant permissions; Languages: english;
 Filename: "{cmd}"; Parameters: "/c icacls ""{app}"" /grant ""Tout le monde"":(OI)(CI)F /T"; StatusMsg: Grant permissions; Languages: french;
 Filename: {tmp}\vc_redist.x64.exe; Parameters: "/q /passive /Q:a /c:""msiexec /q /i vcredist.msi"" "; Check: IsWin64; StatusMsg: Installing VC++ 64bits Redistributables...
-Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent unchecked
+Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Parameters: "--start"; Flags: nowait postinstall skipifsilent unchecked

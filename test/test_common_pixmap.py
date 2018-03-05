@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015-2017:
+# Copyright (c) 2015-2018:
 #   Matthieu Estrada, ttamalfor@gmail.com
 #
 # This file is part of (AlignakApp).
@@ -24,10 +24,11 @@ import sys
 import unittest2
 from PyQt5.Qt import QApplication, QPixmap
 
-from alignak_app.core.utils.config import init_config
-from alignak_app.pyqt.common.labels import get_icon_pixmap, get_icon_item
+from alignak_app.utils.config import settings
 
-init_config()
+from alignak_app.qobjects.common.labels import get_icon_pixmap, get_icon_item
+
+settings.init_config()
 
 
 class TestCommonQPixmap(unittest2.TestCase):
