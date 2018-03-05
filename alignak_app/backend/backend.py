@@ -310,15 +310,16 @@ class BackendClient(object):
         )
 
         if request:
-            user = User()
+            if len(request['_items']) > 0:
+                user = User()
 
-            user.create(
-                request['_items'][0]['_id'],
-                request['_items'][0],
-                request['_items'][0]['name']
-            )
+                user.create(
+                    request['_items'][0]['_id'],
+                    request['_items'][0],
+                    request['_items'][0]['name']
+                )
 
-            data_manager.update_database('user', user)
+                data_manager.update_database('user', user)
 
             if 'OK' in request['_status']:
                 data_manager.databases_ready[request_data['endpoint']] = True
