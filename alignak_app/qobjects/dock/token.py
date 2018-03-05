@@ -80,7 +80,7 @@ class TokenQDialog(QDialog):
         token_layout = QVBoxLayout()
         token_widget.setLayout(token_layout)
 
-        token_title = QLabel("<b>Token:</b> %s" % data_manager.database['user'].name.capitalize())
+        token_title = QLabel(_("<b>Token:</b> %s") % data_manager.database['user'].name.capitalize())
         token_title.setObjectName('itemtitle')
         token_layout.addWidget(token_title)
         token_layout.setAlignment(token_title, Qt.AlignCenter)

@@ -140,7 +140,7 @@ class UserOptionsQDialog(QDialog):
         selected_options = self.get_selected_options(item_type, options)
         for opt in selected_options:
             # Title
-            object_name = 'user' + str(selected_options[opt])
+            object_name = 'option' + str(selected_options[opt])
             self.titles_labels[item_type][opt].setObjectName(object_name)
             options_layout.addWidget(self.titles_labels[item_type][opt], line, 0, 1, 1)
             # Icon

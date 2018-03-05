@@ -391,7 +391,6 @@ class DownQDialog(QDialog):
         downtime_layout.addWidget(self.fixed_toggle_btn, 2, 1, 1, 1)
 
         fixed_label = QLabel(_('Fixed'))
-        fixed_label.setObjectName('actions')
         downtime_layout.addWidget(fixed_label, 2, 2, 1, 1)
 
         fixed_info = QLabel(
