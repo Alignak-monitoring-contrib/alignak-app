@@ -51,7 +51,7 @@ from alignak_app.qthreads.threadmanager import thread_manager, BackendQThread
 from alignak_app.qobjects.common.widgets import center_widget
 from alignak_app.qobjects.login.login import LoginQDialog
 from alignak_app.qobjects.dock.events import init_event_widget
-from alignak_app.qobjects.systray.tray_icon import TrayIcon
+from alignak_app.qobjects.systray.tray_icon import AppTrayIcon
 
 settings.init_config()
 settings.init_css()
@@ -213,7 +213,7 @@ class AlignakApp(QObject):  # pragma: no cover
         self.threadmanager_timer.start()
         self.threadmanager_timer.timeout.connect(self.check_threads)
 
-        self.tray_icon = TrayIcon(QIcon(settings.get_image('icon')))
+        self.tray_icon = AppTrayIcon(QIcon(settings.get_image('icon')))
         self.tray_icon.build_menu()
         self.tray_icon.show()
 
