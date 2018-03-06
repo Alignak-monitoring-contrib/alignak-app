@@ -22,14 +22,14 @@
 """
     Thread Manager
     ++++++++++++++
-    Thread Manager manage creation of QObject for launched threads
+    Thread Manager manage BackendQThreads creations and their priority
 """
 
 from logging import getLogger
 
 from PyQt5.Qt import QObject
 
-from alignak_app.qthreads.thread import BackendQThread
+from alignak_app.qobjects.threads.thread import BackendQThread
 
 logger = getLogger(__name__)
 
@@ -128,13 +128,11 @@ class ThreadManager(QObject):
 
         """
 
-        if self.priority_threads or self.current_thread:
-            logger.debug("Finished backend threads have been stopped !")
-        else:
+        if not self.priority_threads and not self.current_thread:
             logger.debug('No thread to stop.')
 
         if self.current_thread:
-            logger.debug('Try to quit current thread: %s', self.current_thread.thread_name)
+            logger.debug('Quit main thread: %s', self.current_thread.thread_name)
             self.current_thread.quit()
             self.current_thread = None
 
@@ -148,7 +146,7 @@ class ThreadManager(QObject):
         """
 
         for thread in self.priority_threads:
-            logger.debug('Try to quit current priority thread: %s', thread.thread_name)
+            logger.debug('Quit priority thread: %s', thread.thread_name)
             thread.quit()
 
             self.priority_threads.remove(thread)

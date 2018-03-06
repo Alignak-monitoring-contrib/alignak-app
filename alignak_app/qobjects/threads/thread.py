@@ -22,7 +22,7 @@
 """
     Backend Thread
     ++++++++++++++
-    Backend Thread manage creation of QThread for backend requests
+    Backend Thread manage creation of QThreads for backend requests
 """
 
 from logging import getLogger

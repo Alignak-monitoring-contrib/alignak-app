@@ -27,7 +27,7 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QLabel, QWidget, QGridLayout, Qt, QPixmap, QVBoxLayout, QHBoxLayout
+from PyQt5.Qt import QLabel, QWidget, QGridLayout, Qt, QPixmap, QVBoxLayout
 from PyQt5.Qt import QPushButton, QIcon, QTimer, QScrollArea
 
 from alignak_app.backend.backend import app_backend
@@ -42,7 +42,7 @@ from alignak_app.qobjects.common.buttons import ToggleQWidgetButton
 from alignak_app.qobjects.dock.events import send_event
 from alignak_app.qobjects.panel.history import HistoryQWidget
 
-from alignak_app.qthreads.threadmanager import thread_manager
+from alignak_app.qobjects.threads.threadmanager import thread_manager
 
 logger = getLogger(__name__)
 

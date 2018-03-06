@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The QThreads package contains classes who manage application threads
+    The Threads package contains classes who manage application threads
 """
