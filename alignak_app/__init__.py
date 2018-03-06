@@ -54,11 +54,11 @@
 
 
 # Application version and manifest
-VERSION = (1, 3, 0)
+VERSION = (1, 4, 0)
 __application__ = u"Alignak-App"
 __libname__ = u"alignak_app"
 __short_version__ = '.'.join((str(each) for each in VERSION[:2]))
-__version__ = '.'.join((str(each) for each in VERSION[:4]))
+__version__ = '.'.join((str(each) for each in VERSION[:4])) + '-dev'
 __author__ = u"Estrada Matthieu"
 __copyright__ = u"2015-2018 - %s" % __author__
 __license__ = u"GNU Affero General Public License, version 3"
