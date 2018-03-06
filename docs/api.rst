@@ -284,15 +284,15 @@ Systray
     :members:
     :show-inheritance:
 
-QThreads
-~~~~~~~~
+Threads
+*******
 
-.. automodule:: alignak_app.qthreads
+.. automodule:: alignak_app.qobjects.threads
 
-.. automodule:: alignak_app.qthreads.thread
+.. automodule:: alignak_app.qobjects.threads.thread
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qthreads.threadmanager
+.. automodule:: alignak_app.qobjects.threads.threadmanager
     :members:
     :show-inheritance:
