@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The Systray package contains classes who create QSystemTrayIcon UI.
+    The Service package contains QObjects to display system tray icon (taskbar)
 """

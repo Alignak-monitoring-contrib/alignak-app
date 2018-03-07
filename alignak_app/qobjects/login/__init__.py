@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The Login package contains QObjects to display connection windows
+    The Login package contains QObjects to display connection windows, for login and server settings
 """
