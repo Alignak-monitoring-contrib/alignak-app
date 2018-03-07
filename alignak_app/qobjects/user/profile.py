@@ -33,14 +33,14 @@ from alignak_app.backend.backend import app_backend
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
 
-from alignak_app.qobjects.common.frames import AppQFrame, get_frame_separator
+from alignak_app.qobjects.common.frames import AppQFrame
 from alignak_app.qobjects.common.labels import get_icon_pixmap
 from alignak_app.qobjects.common.buttons import ToggleQWidgetButton
 from alignak_app.qobjects.dock.events import send_event
-from alignak_app.qobjects.dock.password import PasswordQDialog
-from alignak_app.qobjects.dock.token import TokenQDialog
-from alignak_app.qobjects.dock.user_notes import UserNotesQDialog
-from alignak_app.qobjects.dock.user_options import show_options_dialog
+from alignak_app.qobjects.user.password import PasswordQDialog
+from alignak_app.qobjects.user.token import TokenQDialog
+from alignak_app.qobjects.user.notes import UserNotesQDialog
+from alignak_app.qobjects.user.options import show_options_dialog
 
 logger = getLogger(__name__)
 
