@@ -29,7 +29,7 @@ from alignak_app.items.daemon import Daemon
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.qobjects.dock.status import StatusQDialog, StatusQWidget
+from alignak_app.qobjects.alignak.status import StatusQDialog, StatusQWidget
 
 
 class TestStatus(unittest2.TestCase):

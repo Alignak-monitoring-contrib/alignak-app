@@ -35,9 +35,9 @@ from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.frames import get_frame_separator
 from alignak_app.qobjects.events.item import EventItem
-from alignak_app.qobjects.panel.dashboard import DashboardQWidget
+from alignak_app.qobjects.alignak.dashboard import DashboardQWidget
 from alignak_app.qobjects.host.host import HostQWidget
-from alignak_app.qobjects.panel.problems import ProblemsQWidget
+from alignak_app.qobjects.alignak.problems import ProblemsQWidget
 from alignak_app.qobjects.service.services import ServicesQWidget
 
 logger = getLogger(__name__)

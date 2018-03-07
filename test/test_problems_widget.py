@@ -29,7 +29,7 @@ from alignak_app.items.host import Host
 from alignak_app.items.service import Service
 from alignak_app.backend.datamanager import data_manager
 
-from alignak_app.qobjects.panel.problems import ProblemsQWidget, QWidget
+from alignak_app.qobjects.alignak.problems import ProblemsQWidget, QWidget
 
 
 class TestDataManager(unittest2.TestCase):
