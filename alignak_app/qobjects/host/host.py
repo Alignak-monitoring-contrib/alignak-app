@@ -40,7 +40,7 @@ from alignak_app.utils.time import get_time_diff_since_last_timestamp
 from alignak_app.qobjects.common.actions import ActionsQWidget
 from alignak_app.qobjects.common.buttons import ToggleQWidgetButton
 from alignak_app.qobjects.dock.events import send_event
-from alignak_app.qobjects.panel.history import HistoryQWidget
+from alignak_app.qobjects.host.history import HistoryQWidget
 
 from alignak_app.qobjects.threads.threadmanager import thread_manager
 

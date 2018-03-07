@@ -30,7 +30,7 @@ from alignak_app.items.service import Service
 from alignak_app.items.user import User
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
-from alignak_app.qobjects.panel.host import HostQWidget
+from alignak_app.qobjects.host.host import HostQWidget
 
 # app = QApplication(sys.argv)
 init_localization()
