@@ -36,7 +36,7 @@ from alignak_app.backend.backend import app_backend
 
 from alignak_app.qobjects.app_main import AppQMainWindow
 from alignak_app.qobjects.common.about import AboutQDialog
-from alignak_app.qobjects.dock.events import send_event
+from alignak_app.qobjects.events.events import send_event
 
 from alignak_app.qobjects.threads.threadmanager import thread_manager
 

@@ -50,7 +50,7 @@ from alignak_app.backend.datamanager import data_manager
 from alignak_app.qobjects.threads.threadmanager import thread_manager, BackendQThread
 from alignak_app.qobjects.common.widgets import center_widget
 from alignak_app.qobjects.login.login import LoginQDialog
-from alignak_app.qobjects.dock.events import init_event_widget
+from alignak_app.qobjects.events.events import init_event_widget
 from alignak_app.qobjects.systray.tray_icon import AppTrayIcon
 
 settings.init_config()

@@ -22,106 +22,20 @@
 """
     Events
     ++++++
-    Events manage creation QWidget for events
+    Events manage creation of QWidget for events
 """
-
-import time
 
 from logging import getLogger
 
-from PyQt5.Qt import QVBoxLayout, QColor, QIcon
-from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget, QListWidgetItem, QSize, QTimer
+from PyQt5.Qt import QVBoxLayout
+from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget, QTimer
 
 from alignak_app.backend.datamanager import data_manager
+from alignak_app.qobjects.events.item import EventItem
 
 from alignak_app.utils.config import settings
 
 logger = getLogger(__name__)
-
-
-class EventItem(QListWidgetItem):
-    """
-        Class who create an event QListWidgetItem
-    """
-
-    def __init__(self):
-        super(EventItem, self).__init__()
-        self.timer = None
-        self.spied_on = False
-        self.host = None
-
-    # pylint: disable=too-many-arguments
-    def initialize(self, event_type, msg, timer=False, spied_on=False, host=None):
-        """
-        Initialize QListWidgetItem
-
-        :param event_type: the type of event: OK, DOWN, ACK, ...
-        :type event_type: str
-        :param msg: message of event
-        :type msg: str
-        :param timer: timer to hide event at end of time
-        :param spied_on: make event spy able
-        :type spied_on: bool
-        :param host: _id of host. Only necessary if "be_spied" is True
-        :type host: str
-        """
-
-        self.spied_on = spied_on
-        self.host = host
-
-        if timer:
-            self.timer = QTimer()
-
-        self.setText("%s" % msg)
-        send_at = time.strftime("%a, %d %b %Y %H:%M:%S")
-        msg_to_send = '%s. (Send at %s)' % (msg, send_at)
-        self.setToolTip(msg_to_send)
-        self.setBackground(QColor(self.get_color_event(event_type)))
-        self.setForeground(QColor("#000"))
-
-        self.setSizeHint(QSize(self.sizeHint().width(), 50))
-
-        if 'TODO' in event_type:
-            self.setIcon(QIcon(settings.get_image('todo')))
-        elif self.host:
-            self.setIcon(QIcon(settings.get_image('event')))
-        else:
-            pass
-
-    def close_item(self):
-        """
-        Hide items when timer is finished
-
-        """
-
-        self.setHidden(True)
-
-    @staticmethod
-    def get_color_event(event_type):
-        """
-        Return corresponding color of event type
-
-        :param event_type: the type of event
-        :type event_type: str
-        :return: the associated color with the event
-        :rtype: str
-        """
-
-        available_colors = {
-            '#27ae60': ['OK', 'UP'],
-            '#2980b9': ['UNKNOWN', 'INFO'],
-            '#e67e22': ['WARNING', 'UNREACHABLE', 'WARN'],
-            '#e74c3c': ['DOWN', 'CRITICAL', 'ALERT'],
-            '#f39c12': ['ACK'],
-            '#f1c40f': ['DOWNTIME', 'DOWNTIMESTART (DOWN)'],
-            '#fd9205': ['TODO']
-        }
-
-        for key, _ in available_colors.items():
-            if event_type in available_colors[key]:
-                return key
-
-        return '#e74c3c'
 
 
 class EventsQWidget(QWidget):

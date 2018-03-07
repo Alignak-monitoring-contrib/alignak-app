@@ -36,7 +36,7 @@ from alignak_app.utils.config import settings
 from alignak_app.qobjects.common.frames import AppQFrame
 from alignak_app.qobjects.common.labels import get_icon_pixmap
 from alignak_app.qobjects.common.buttons import ToggleQWidgetButton
-from alignak_app.qobjects.dock.events import send_event
+from alignak_app.qobjects.events.events import send_event
 from alignak_app.qobjects.user.password import PasswordQDialog
 from alignak_app.qobjects.user.token import TokenQDialog
 from alignak_app.qobjects.user.notes import UserNotesQDialog

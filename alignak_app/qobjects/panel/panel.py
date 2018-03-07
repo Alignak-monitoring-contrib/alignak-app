@@ -34,7 +34,7 @@ from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.frames import get_frame_separator
-from alignak_app.qobjects.dock.events import EventItem
+from alignak_app.qobjects.events.item import EventItem
 from alignak_app.qobjects.panel.dashboard import DashboardQWidget
 from alignak_app.qobjects.host.host import HostQWidget
 from alignak_app.qobjects.panel.problems import ProblemsQWidget
