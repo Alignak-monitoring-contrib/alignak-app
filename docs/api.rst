@@ -1,24 +1,27 @@
 .. _api:
 
-Alignak-app Architecture
-========================
+Alignak-App
+###########
+
+Architecture
+============
 
 .. automodule:: alignak_app
     :members:
     :show-inheritance:
 
-Alignak-App
-===========
+API
+===
 
 Main Class
-~~~~~~~~~~
+----------
 
 .. automodule:: alignak_app.app
     :members:
     :show-inheritance:
 
 Backend
-~~~~~~~
+-------
 
 .. automodule:: alignak_app.backend
 
@@ -33,7 +36,7 @@ Backend
     :show-inheritance:
 
 Items
-~~~~~
+-----
 
 .. automodule:: alignak_app.items
 
@@ -88,7 +91,7 @@ Items
     :show-inheritance:
 
 Utils
-~~~~~
+-----
 
 .. automodule:: alignak_app.utils
 
@@ -121,7 +124,7 @@ Utils
     :show-inheritance:
 
 Locales
-~~~~~~~
+-------
 
 .. automodule:: alignak_app.locales
 
@@ -131,7 +134,7 @@ Locales
     :show-inheritance:
 
 QObjects
-~~~~~~~~
+--------
 
 .. automodule:: alignak_app.qobjects
 
@@ -139,8 +142,37 @@ QObjects
     :members:
     :show-inheritance:
 
+.. automodule:: alignak_app.qobjects.dock
+    :members:
+    :show-inheritance:
+
+.. automodule:: alignak_app.qobjects.panel
+    :members:
+    :show-inheritance:
+
+Alignak
+^^^^^^^
+
+.. automodule:: alignak_app.qobjects.alignak
+
+.. automodule:: alignak_app.qobjects.alignak.dashboard
+    :members:
+    :show-inheritance:
+
+.. automodule:: alignak_app.qobjects.alignak.livestate
+    :members:
+    :show-inheritance:
+
+.. automodule:: alignak_app.qobjects.alignak.problems
+    :members:
+    :show-inheritance:
+
+.. automodule:: alignak_app.qobjects.alignak.status
+    :members:
+    :show-inheritance:
+
 Common
-******
+^^^^^^
 
 .. automodule:: alignak_app.qobjects.common
 
@@ -164,57 +196,39 @@ Common
     :members:
     :show-inheritance:
 
-Dock (Rigt part)
-****************
 
-.. automodule:: alignak_app.qobjects.dock
+Events
+^^^^^^
 
-.. automodule:: alignak_app.qobjects.dock.password
+.. automodule:: alignak_app.qobjects.events
+
+.. automodule:: alignak_app.qobjects.events.events
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.dock.status
+.. automodule:: alignak_app.qobjects.events.item
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.dock.token
+.. automodule:: alignak_app.qobjects.events.spy
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.dock.user_notes
+Host
+^^^^
+
+.. automodule:: alignak_app.qobjects.host
+
+.. automodule:: alignak_app.qobjects.host.history
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.dock.user_options
-    :members:
-    :show-inheritance:
-
-.. automodule:: alignak_app.qobjects.dock.buttons
-    :members:
-    :show-inheritance:
-
-.. automodule:: alignak_app.qobjects.dock.dock
-    :members:
-    :show-inheritance:
-
-.. automodule:: alignak_app.qobjects.dock.events
-    :members:
-    :show-inheritance:
-
-.. automodule:: alignak_app.qobjects.dock.livestate
-    :members:
-    :show-inheritance:
-
-.. automodule:: alignak_app.qobjects.dock.spy
-    :members:
-    :show-inheritance:
-
-.. automodule:: alignak_app.qobjects.dock.user
+.. automodule:: alignak_app.qobjects.host.host
     :members:
     :show-inheritance:
 
 Login
-*****
+^^^^^
 
 .. automodule:: alignak_app.qobjects.login
 
@@ -226,66 +240,38 @@ Login
     :members:
     :show-inheritance:
 
-Panel (Left part)
-*****************
+Service
+^^^^^^^
 
-.. automodule:: alignak_app.qobjects.panel
+.. automodule:: alignak_app.qobjects.service
 
-.. automodule:: alignak_app.qobjects.panel.panel
+.. automodule:: alignak_app.qobjects.service.service
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.panel.dashboard
+.. automodule:: alignak_app.qobjects.service.services
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.panel.history
+.. automodule:: alignak_app.qobjects.service.services_dashboard
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.panel.host
-    :members:
-    :show-inheritance:
-
-.. automodule:: alignak_app.qobjects.panel.number_services
-    :members:
-    :show-inheritance:
-
-.. automodule:: alignak_app.qobjects.panel.problems
-    :members:
-    :show-inheritance:
-
-.. automodule:: alignak_app.qobjects.panel.service
-    :members:
-    :show-inheritance:
-
-.. automodule:: alignak_app.qobjects.panel.service_tree_item
-    :members:
-    :show-inheritance:
-
-.. automodule:: alignak_app.qobjects.panel.services
+.. automodule:: alignak_app.qobjects.service.tree_item
     :members:
     :show-inheritance:
 
 Systray
-*******
+^^^^^^^
 
 .. automodule:: alignak_app.qobjects.systray
-
-.. automodule:: alignak_app.qobjects.systray.qactions_factory
-    :members:
-    :show-inheritance:
 
 .. automodule:: alignak_app.qobjects.systray.tray_icon
     :members:
     :show-inheritance:
 
-.. automodule:: alignak_app.qobjects.systray.about
-    :members:
-    :show-inheritance:
-
 Threads
-*******
+^^^^^^^
 
 .. automodule:: alignak_app.qobjects.threads
 
@@ -294,5 +280,37 @@ Threads
     :show-inheritance:
 
 .. automodule:: alignak_app.qobjects.threads.threadmanager
+    :members:
+    :show-inheritance:
+
+User
+^^^^
+
+.. automodule:: alignak_app.qobjects.user
+
+.. automodule:: alignak_app.qobjects.user.notes
+    :members:
+    :show-inheritance:
+
+.. automodule:: alignak_app.qobjects.user.options
+    :members:
+    :show-inheritance:
+
+.. automodule:: alignak_app.qobjects.user.password
+    :members:
+    :show-inheritance:
+
+.. automodule:: alignak_app.qobjects.user.profile
+    :members:
+    :show-inheritance:
+
+.. automodule:: alignak_app.qobjects.user.token
+    :members:
+    :show-inheritance:
+
+About
+-----
+
+.. automodule:: alignak_app.qobjects.about
     :members:
     :show-inheritance:

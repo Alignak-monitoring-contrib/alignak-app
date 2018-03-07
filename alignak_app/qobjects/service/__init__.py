@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The Service package contains QObjects to display data of the backend ``service``s
+    The Service package contains QObjects to display data of the backend ``service``
 """
