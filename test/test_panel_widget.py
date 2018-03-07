@@ -29,7 +29,7 @@ from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.host import Host
 from alignak_app.items.service import Service
 
-from alignak_app.qobjects.panel.panel import PanelQWidget
+from alignak_app.qobjects.panel import PanelQWidget
 from alignak_app.qobjects.events.spy import SpyQWidget
 
 
