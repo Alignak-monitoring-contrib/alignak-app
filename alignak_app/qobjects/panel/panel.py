@@ -38,7 +38,7 @@ from alignak_app.qobjects.dock.events import EventItem
 from alignak_app.qobjects.panel.dashboard import DashboardQWidget
 from alignak_app.qobjects.panel.host import HostQWidget
 from alignak_app.qobjects.panel.problems import ProblemsQWidget
-from alignak_app.qobjects.panel.services import ServicesQWidget
+from alignak_app.qobjects.service.services import ServicesQWidget
 
 logger = getLogger(__name__)
 

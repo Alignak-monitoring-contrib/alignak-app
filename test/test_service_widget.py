@@ -31,7 +31,7 @@ from alignak_app.items.user import User
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.qobjects.panel.service import ServiceDataQWidget
+from alignak_app.qobjects.service.service import ServiceDataQWidget
 
 settings.init_config()
 init_localization()

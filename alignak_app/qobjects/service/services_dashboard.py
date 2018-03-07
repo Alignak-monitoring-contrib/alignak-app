@@ -36,13 +36,13 @@ from alignak_app.utils.config import settings
 logger = getLogger(__name__)
 
 
-class NumberServicesQWidget(QWidget):
+class ServicesDashboardQWidget(QWidget):
     """
         Class who create QWidget number of services of a host
     """
 
     def __init__(self, parent=None):
-        super(NumberServicesQWidget, self).__init__(parent)
+        super(ServicesDashboardQWidget, self).__init__(parent)
         # Fields
         self.services_title = QLabel()
         self.nb_labels = {

@@ -34,9 +34,9 @@ from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.frames import get_frame_separator
-from alignak_app.qobjects.panel.service_tree_item import ServiceTreeItem
-from alignak_app.qobjects.panel.number_services import NumberServicesQWidget
-from alignak_app.qobjects.panel.service import ServiceDataQWidget
+from alignak_app.qobjects.service.tree_item import ServiceTreeItem
+from alignak_app.qobjects.service.services_dashboard import ServicesDashboardQWidget
+from alignak_app.qobjects.service.service import ServiceDataQWidget
 
 logger = getLogger(__name__)
 
@@ -53,7 +53,7 @@ class ServicesQWidget(QWidget):
         self.service_items = None
         self.services_tree_widget = QTreeWidget()
         self.service_data_widget = ServiceDataQWidget()
-        self.nb_services_widget = NumberServicesQWidget()
+        self.services_dashboard = ServicesDashboardQWidget()
 
     def initialize(self):
         """
@@ -64,8 +64,8 @@ class ServicesQWidget(QWidget):
         layout = QGridLayout()
         self.setLayout(layout)
 
-        self.nb_services_widget.initialize()
-        layout.addWidget(self.nb_services_widget, 0, 0, 1, 2)
+        self.services_dashboard.initialize()
+        layout.addWidget(self.services_dashboard, 0, 0, 1, 2)
         layout.addWidget(get_frame_separator(), 1, 0, 1, 2)
 
         self.services_tree_widget.setIconSize(QSize(32, 32))
@@ -93,11 +93,11 @@ class ServicesQWidget(QWidget):
         """
 
         if self.services_tree_widget:
-            self.nb_services_widget.setParent(None)
-            self.nb_services_widget = NumberServicesQWidget()
-            self.nb_services_widget.initialize()
-            self.nb_services_widget.update_widget(self.service_items, self.host_item.name)
-            self.layout().addWidget(self.nb_services_widget, 0, 0, 1, 2)
+            self.services_dashboard.setParent(None)
+            self.services_dashboard = ServicesDashboardQWidget()
+            self.services_dashboard.initialize()
+            self.services_dashboard.update_widget(self.service_items, self.host_item.name)
+            self.layout().addWidget(self.services_dashboard, 0, 0, 1, 2)
             self.services_tree_widget.setParent(None)
             self.services_tree_widget = QTreeWidget()
             self.services_tree_widget.setAlternatingRowColors(True)

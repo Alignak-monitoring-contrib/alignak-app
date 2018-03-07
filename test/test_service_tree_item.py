@@ -28,7 +28,7 @@ from alignak_app.utils.config import settings
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.service import Service
 
-from alignak_app.qobjects.panel.service_tree_item import ServiceTreeItem
+from alignak_app.qobjects.service.tree_item import ServiceTreeItem
 
 
 class TestServiceTreeItem(unittest2.TestCase):
