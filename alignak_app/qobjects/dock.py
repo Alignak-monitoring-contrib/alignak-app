@@ -32,7 +32,7 @@ from alignak_app.utils.config import settings
 from alignak_app.items.item import get_host_msg_and_event_type
 
 from alignak_app.qobjects.alignak.status import StatusQWidget
-from alignak_app.qobjects.dock.buttons import ButtonsQWidget
+from alignak_app.qobjects.alignak.buttons import ButtonsQWidget
 from alignak_app.qobjects.events.events import get_events_widget
 from alignak_app.qobjects.alignak.livestate import LivestateQWidget
 from alignak_app.qobjects.events.spy import SpyQWidget
