@@ -374,14 +374,23 @@ QFrame#vseparator {
 /****** QListWidget ******/
 QListWidget {
     border: none;
-    background-color: transparent;
+    background-color: white;
+}
+
+QListWidget::item {
+    height: 34px;
+}
+
+QListWidget::item:hover {
+    background-color: white;
+    border: 1px solid #1fb4e4;
+    color: #3884c3;
 }
 
 QListWidget::item:selected {
-    color: black;
     background-color: white;
-    border: 1px solid #1fb4e4;
-    border-radius: 3px;
+    color: #3884c3;
+    border: 1px solid #3884c3;
 }
 
 /****** QTableWidget ******/

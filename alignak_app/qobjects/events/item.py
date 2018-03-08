@@ -27,11 +27,7 @@
 
 import time
 
-from PyQt5.QtCore import QTimer, QSize
-from PyQt5.QtGui import QColor, QIcon
-from PyQt5.QtWidgets import QListWidgetItem
-
-from alignak_app.utils.config import settings
+from PyQt5.Qt import QTimer, QColor, QListWidgetItem
 
 
 class EventItem(QListWidgetItem):
@@ -71,17 +67,8 @@ class EventItem(QListWidgetItem):
         send_at = time.strftime("%a, %d %b %Y %H:%M:%S")
         msg_to_send = '%s. (Send at %s)' % (msg, send_at)
         self.setToolTip(msg_to_send)
-        self.setBackground(QColor(self.get_color_event(event_type)))
-        self.setForeground(QColor("#000"))
 
-        self.setSizeHint(QSize(self.sizeHint().width(), 50))
-
-        if 'TODO' in event_type:
-            self.setIcon(QIcon(settings.get_image('todo')))
-        elif self.host:
-            self.setIcon(QIcon(settings.get_image('event')))
-        else:
-            pass
+        self.setForeground(QColor(self.get_foreground_color(event_type)))
 
     def close_item(self):
         """
@@ -92,7 +79,7 @@ class EventItem(QListWidgetItem):
         self.setHidden(True)
 
     @staticmethod
-    def get_color_event(event_type):
+    def get_foreground_color(event_type):
         """
         Return corresponding color of event type
 
