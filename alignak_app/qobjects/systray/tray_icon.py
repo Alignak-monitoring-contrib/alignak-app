@@ -175,7 +175,7 @@ class AppTrayIcon(QSystemTrayIcon):
         self.app_about.initialize()
 
         self.tray_actions['about'].setIcon(QIcon(settings.get_image('about')))
-        self.tray_actions['about'].setText(_('About'))
+        self.tray_actions['about'].setText(_('About...'))
         self.tray_actions['about'].setToolTip(_('About Alignak-app'))
         self.tray_actions['about'].triggered.connect(self.app_about.show_about)
 
