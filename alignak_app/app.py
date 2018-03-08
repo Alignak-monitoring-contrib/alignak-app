@@ -171,23 +171,7 @@ class AlignakApp(QObject):  # pragma: no cover
             password = settings.get_config('Alignak', 'password')
 
         if not app_backend.login(username, password):
-            login = LoginQDialog()
-            login.create_widget()
-
-            while not app_backend.connected:
-                connect_dialog = MessageQDialog()
-                connect_dialog.initialize(
-                    'Connection',
-                    'error',
-                    'Warning!',
-                    'Access denied! Check your username and password.'
-                )
-                if login.exec_() == login.Accepted:
-                    connect_dialog.close()
-                    connect_dialog.deleteLater()
-                    break
-                else:
-                    connect_dialog.exec_()
+            self.show_login_window()
 
         # Launch start threads
         thread_to_launch = thread_manager.get_threads_to_launch()
@@ -233,6 +217,31 @@ class AlignakApp(QObject):  # pragma: no cover
             pass
 
         sys.exit(app.exec_())
+
+    @staticmethod
+    def show_login_window():
+        """
+        Show LoginQDialog window for user to login to backend
+
+        """
+
+        login = LoginQDialog()
+        login.create_widget()
+
+        while not app_backend.connected:
+            connect_dialog = MessageQDialog()
+            connect_dialog.initialize(
+                'Connection',
+                'error',
+                'Warning!',
+                'Access denied! Check your username and password.'
+            )
+            if login.exec_() == login.Accepted:
+                connect_dialog.close()
+                connect_dialog.deleteLater()
+                break
+            else:
+                connect_dialog.exec_()
 
     @staticmethod
     def quit_launched_threads(launched_threads):
