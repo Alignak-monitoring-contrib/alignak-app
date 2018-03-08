@@ -15,6 +15,7 @@ Documentation content:
     installer
     config
     use
+    archi
     api
 
 

@@ -1,15 +1,5 @@
 .. _api:
 
-Alignak-App
-###########
-
-Architecture
-============
-
-.. automodule:: alignak_app
-    :members:
-    :show-inheritance:
-
 API
 ===
 

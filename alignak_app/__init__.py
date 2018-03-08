@@ -20,18 +20,24 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
+    Resume
+    ++++++
+
     This Python module is a desktop application, with a system tray icon, for Alignak solution.
 
     Application notify you when you have changes in your monitoring.
     You can trigger actions inside application, see status of monitored items, problems to solved
     and many other things.
 
-    Alignak-app have the following architecture:
+    Architecture
+    ++++++++++++
+
+    Alignak-app works as follows:
 
     * The :class:`BackendClient <alignak_app.backend.backend.BackendClient>` manage requests with
       Alignak backend.
-    * The :class:`ThreadManager <alignak_app.qthreads.threadmanager.ThreadManager>` will
-      launch :class:`BackendQThread(s) <alignak_app.qthreads.thread.BackendQThread>` to
+    * The :class:`ThreadManager <alignak_app.qobjects.threads.threadmanager.ThreadManager>` will
+      launch :class:`BackendQThread(s) <alignak_app.qobjects.threads.thread.BackendQThread>` to
       trigger requests in :class:`BackendClient <alignak_app.backend.backend.BackendClient>`.
     * The :class:`DataManager <alignak_app.backend.datamanager.DataManager>` will store data
       provided by :class:`BackendClient <alignak_app.backend.backend.BackendClient>` in
@@ -40,6 +46,7 @@
       :class:`DataManager <alignak_app.backend.datamanager.DataManager>`.
     * The :class:`Utils <alignak_app.utils>` package contains settings, logs, installation,...
     * The :class:`Locales <alignak_app.locales>` package contains translations.
+    * The :class:`Login <alignak_app.qobjects.login.login>` package manage user login if needed.
 
     Alignak-app will use a system of :class:`Installer <alignak_app.utils.installer.Installer>`
     who use **environment variables** to run:
@@ -48,7 +55,6 @@
     * ``ALIGNAKAPP_LOG_DIR``: contains log files of App (**write rights**)
     * ``ALIGNAKAPP_APP_DIR``: contains binaries of App (images, css, languages) (**read rights**)
 
-    The :class:`Login <alignak_app.qobjects.login.login.LoginQDialog>` manage user login if needed.
 
 """
 
