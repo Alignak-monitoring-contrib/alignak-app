@@ -231,10 +231,10 @@ class AlignakApp(QObject):  # pragma: no cover
         while not app_backend.connected:
             connect_dialog = MessageQDialog()
             connect_dialog.initialize(
-                'Connection',
+                _('Connection'),
                 'error',
-                'Warning!',
-                'Access denied! Check your username and password.'
+                _('Warning!'),
+                _('Access denied! Check your username and password.')
             )
             if login.exec_() == login.Accepted:
                 connect_dialog.close()
