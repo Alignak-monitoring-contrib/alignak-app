@@ -29,10 +29,10 @@ from alignak_app.items.daemon import Daemon
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.qobjects.alignak.status import StatusQDialog, StatusQWidget
+from alignak_app.qobjects.alignak.status import StatusQDialog
 
 
-class TestStatus(unittest2.TestCase):
+class TestStatusQDialog(unittest2.TestCase):
     """
         This file test methods of StatusQDialog class object
     """
@@ -94,7 +94,7 @@ class TestStatus(unittest2.TestCase):
             self.assertTrue(lbl_test in under_test.labels['daemon-name'])
 
     def test_add_daemon_titles_labels(self):
-        """TODO"""
+        """Add Daemon QLabels"""
 
         under_test = StatusQDialog()
 
@@ -114,22 +114,3 @@ class TestStatus(unittest2.TestCase):
         self.assertEqual(QSize(14, 14), under_test.labels['daemon-name']['reachable'].size())
         self.assertEqual(QSize(14, 14), under_test.labels['daemon-name']['spare'].size())
         self.assertEqual(QSize(14, 14), under_test.labels['daemon-name']['passive'].size())
-
-    def test_initialize_status_qwidget(self):
-        """Initialize StatusQWidget"""
-
-        under_test = StatusQWidget()
-
-        self.assertIsNotNone(under_test.backend_connected)
-
-        self.assertIsNotNone(under_test.daemons_status)
-
-        self.assertIsNotNone(under_test.refresh_timer)
-        self.assertFalse(under_test.refresh_timer.isActive())
-        self.assertIsNotNone(under_test.status_dialog)
-
-        self.assertIsInstance(under_test.status_dialog, StatusQDialog)
-
-        under_test.initialize()
-
-        self.assertTrue(under_test.refresh_timer.isActive())

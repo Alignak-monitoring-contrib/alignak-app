@@ -20,9 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    User
-    ++++
-    User manage creation of QWidget who display user profile who use Alignak-app
+    Profile
+    +++++++
+    Profile manage creation of QWidget who display user profile who use Alignak-app
 """
 
 from logging import getLogger
@@ -45,13 +45,13 @@ from alignak_app.qobjects.user.options import show_options_dialog
 logger = getLogger(__name__)
 
 
-class UserQWidget(QWidget):
+class ProfileQWidget(QWidget):
     """
         Class who create QWidget for User profile.
     """
 
     def __init__(self, parent=None):
-        super(UserQWidget, self).__init__(parent)
+        super(ProfileQWidget, self).__init__(parent)
         # Fields
         self.labels = {
             'realm': QLabel(),

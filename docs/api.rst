@@ -145,6 +145,10 @@ Alignak
 
 .. automodule:: alignak_app.qobjects.alignak
 
+.. automodule:: alignak_app.qobjects.alignak.alignak
+    :members:
+    :show-inheritance:
+
 .. automodule:: alignak_app.qobjects.alignak.dashboard
     :members:
     :show-inheritance:

@@ -79,8 +79,6 @@ class AppQMainWindow(QMainWindow):
         app_layout.addWidget(get_frame_separator(True), 1, 1, 1, 1)
         app_layout.addWidget(self.dock, 1, 2, 1, 1)
 
-        self.connect_dock_buttons()
-
         self.setCentralWidget(app_widget)
         self.setMinimumSize(1440, 900)
         center_widget(self)
@@ -92,15 +90,6 @@ class AppQMainWindow(QMainWindow):
             self.showMaximized()
         else:
             pass
-
-    def connect_dock_buttons(self):
-        """
-        Connect dock QWidget buttons to host and problems tab
-
-        """
-
-        self.dock.buttons_widget.host_btn.clicked.connect(self.open_host_widget)
-        self.dock.buttons_widget.problems_btn.clicked.connect(self.open_problems_widget)
 
     def open_host_widget(self):
         """

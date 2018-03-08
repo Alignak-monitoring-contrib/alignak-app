@@ -31,8 +31,7 @@ from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
 from alignak_app.items.item import get_host_msg_and_event_type
 
-from alignak_app.qobjects.alignak.status import StatusQWidget
-from alignak_app.qobjects.alignak.buttons import ButtonsQWidget
+from alignak_app.qobjects.alignak.alignak import AlignakQWidget
 from alignak_app.qobjects.events.events import get_events_widget
 from alignak_app.qobjects.alignak.livestate import LivestateQWidget
 from alignak_app.qobjects.events.spy import SpyQWidget
@@ -46,8 +45,7 @@ class DockQWidget(QWidget):
     def __init__(self, parent=None):
         super(DockQWidget, self).__init__(parent)
         # Fields
-        self.status_widget = StatusQWidget()
-        self.buttons_widget = ButtonsQWidget()
+        self.status_widget = AlignakQWidget()
         self.livestate_widget = LivestateQWidget()
         self.spy_widget = SpyQWidget()
         self.spy_timer = QTimer()
@@ -72,19 +70,14 @@ class DockQWidget(QWidget):
         status.setObjectName('itemtitle')
         layout.addWidget(status)
         layout.setAlignment(status, Qt.AlignCenter)
-        # layout.addWidget(get_frame_separator())
         self.status_widget.initialize()
         layout.addWidget(self.status_widget)
-
-        self.buttons_widget.initialize()
-        layout.addWidget(self.buttons_widget)
 
         # Livestate
         livestate = QLabel(_('Livestate'))
         livestate.setObjectName('itemtitle')
         layout.addWidget(livestate)
         layout.setAlignment(livestate, Qt.AlignCenter)
-        # layout.addWidget(get_frame_separator())
         self.livestate_widget.initialize()
         layout.addWidget(self.livestate_widget)
 
@@ -93,7 +86,6 @@ class DockQWidget(QWidget):
         last_event_label.setObjectName('itemtitle')
         layout.addWidget(last_event_label)
         layout.setAlignment(last_event_label, Qt.AlignCenter)
-        # layout.addWidget(get_frame_separator())
         layout.addWidget(get_events_widget())
 
         # Spieds hosts
@@ -101,7 +93,6 @@ class DockQWidget(QWidget):
         spy_title.setObjectName('itemtitle')
         layout.addWidget(spy_title)
         layout.setAlignment(spy_title, Qt.AlignCenter)
-        # layout.addWidget(get_frame_separator())
         self.spy_widget.initialize()
         layout.addWidget(self.spy_widget)
 
