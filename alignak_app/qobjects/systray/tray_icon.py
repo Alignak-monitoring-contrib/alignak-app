@@ -31,7 +31,7 @@ from logging import getLogger
 
 from PyQt5.Qt import QMenu, QSystemTrayIcon, QTimer, QAction, QIcon
 
-from alignak_app.utils.config import settings
+from alignak_app.utils.config import settings, open_url
 from alignak_app.backend.backend import app_backend
 
 from alignak_app.qobjects.app_main import AppQMainWindow
@@ -59,6 +59,7 @@ class AppTrayIcon(QSystemTrayIcon):
         self.connection_nb = 3
         self.tray_actions = {
             'app': QAction(),
+            'webui': QAction(),
             'reload': QAction(),
             'about': QAction(),
             'exit': QAction(),
@@ -78,6 +79,7 @@ class AppTrayIcon(QSystemTrayIcon):
 
         # Create actions
         self.add_alignak_menu()
+        self.add_webui_menu()
         self.menu.addSeparator()
         self.add_reload_menu()
         self.add_about_menu()
@@ -85,6 +87,7 @@ class AppTrayIcon(QSystemTrayIcon):
         self.add_quit_menu()
 
         self.setContextMenu(self.menu)
+        self.refresh_menus()
 
     def check_connection(self):
         """
@@ -107,6 +110,7 @@ class AppTrayIcon(QSystemTrayIcon):
             pass
 
         self.app_main.dock.status_widget.update_status()
+        self.refresh_menus()
 
     def add_alignak_menu(self):
         """
@@ -122,6 +126,32 @@ class AppTrayIcon(QSystemTrayIcon):
         self.tray_actions['app'].triggered.connect(self.app_main.show)
 
         self.menu.addAction(self.tray_actions['app'])
+
+    def add_webui_menu(self):
+        """
+        Create and add to menu "webui" QAction
+
+        """
+
+        self.tray_actions['webui'].setIcon(QIcon(settings.get_image('web')))
+        self.tray_actions['webui'].setText(_('Go to WebUI'))
+        self.tray_actions['webui'].setToolTip(_('Go to Alignak WebUI'))
+        self.tray_actions['webui'].triggered.connect(
+            lambda: open_url('livestate')
+        )
+
+        self.menu.addAction(self.tray_actions['webui'])
+
+    def refresh_menus(self):
+        """
+        Refresh menu if needed
+
+        """
+
+        if settings.get_config('Alignak', 'webui'):
+            self.tray_actions['webui'].setEnabled(True)
+        else:
+            self.tray_actions['webui'].setEnabled(False)
 
     def add_reload_menu(self):
         """
