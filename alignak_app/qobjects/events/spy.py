@@ -46,6 +46,7 @@ class SpyQListWidget(QListWidget):
 
     def __init__(self):
         super(SpyQListWidget, self).__init__()
+        self.initialized = False
         self.spied_hosts = []
         self.host_spied.connect(self.add_spy_host)
 
@@ -57,6 +58,11 @@ class SpyQListWidget(QListWidget):
         :type host_id: str
         """
 
+        if not self.initialized:
+            # Remove Hint item
+            self.takeItem(0)
+            self.initialized = True
+
         if host_id not in self.spied_hosts:
             self.spied_hosts.append(host_id)
             host = data_manager.get_item('host', '_id', host_id)
@@ -66,7 +72,7 @@ class SpyQListWidget(QListWidget):
                 _('Host %s is spied by Alignak-app !') % host.name.capitalize()
             )
             item.host = host.item_id
-            self.addItem(item)
+            self.insertItem(0, item)
 
             logger.info('Spy a new host: %s', host.name)
             logger.debug('... with id: %s', host_id)

@@ -119,7 +119,7 @@ class EventsQWidget(QWidget):
         event = EventItem()
         event.initialize(event_type, msg, timer=timer, spied_on=spied_on, host=host)
 
-        self.events_list.addItem(event)
+        self.events_list.insertItem(0, event)
         if timer:
             event_duration = int(settings.get_config('Alignak-app', 'notification_duration')) * 1000
             QTimer.singleShot(
