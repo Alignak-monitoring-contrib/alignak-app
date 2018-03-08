@@ -192,3 +192,27 @@ class TestTrayIcon(unittest2.TestCase):
         # If App backend is connected, "connection_nb stay" at 3
         under_test.check_connection()
         self.assertEqual(3, under_test.connection_nb)
+
+    def test_refresh_menus(self):
+        """Refresh TrayIcon Menus"""
+
+        under_test = AppTrayIcon(self.icon)
+
+        # Webui is True
+        self.assertTrue(under_test.tray_actions['webui'].isEnabled())
+
+        old_webui = settings.get_config('Alignak', 'webui')
+        settings.edit_setting_value('Alignak', 'webui', '')
+
+        under_test.refresh_menus()
+
+        # When refresh menu and WebUI is "False", QAction is not Enabled
+        self.assertFalse(under_test.tray_actions['webui'].isEnabled())
+
+        # Change settings does not update QAction
+        settings.edit_setting_value('Alignak', 'webui', old_webui)
+        self.assertFalse(under_test.tray_actions['webui'].isEnabled())
+
+        under_test.refresh_menus()
+
+        self.assertTrue(under_test.tray_actions['webui'].isEnabled())
