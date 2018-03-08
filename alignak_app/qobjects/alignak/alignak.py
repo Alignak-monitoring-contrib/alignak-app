@@ -22,11 +22,13 @@
 """
     Alignak
     +++++++
-    Alignak manage creation of QWidgets for Alignak data:
+    Alignak manage creation of QWidgets for general Alignak data, like:
 
-    * Alignak daemons status: status of each daemons
-    * Alignak backend connection: status of backend connection
-    * Alignak user: data of user
+    * **Daemons status:** status of each daemons (
+      see :class:`StatusQDialog <alignak_app.qobjects.alignak.status.StatusQDialog>` class)
+    * **Backend connection:** status of backend connection (
+      see :class:`TrayIcon <alignak_app.qobjects.systray.tray_icon.AppTrayIcon>` class)
+    * **User:** data of current user (see :class:`User <alignak_app.qobjects.user>` package)
 
 """
 
