@@ -24,26 +24,19 @@ import sys
 import unittest2
 from PyQt5.Qt import QApplication, QWidget
 
-from alignak_app.backend.backend import app_backend
-from alignak_app.backend.datamanager import data_manager
-from alignak_app.items.user import User
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.qobjects.user.token import TokenQDialog
+from alignak_app.qobjects.common.widgets import MessageQDialog
 
 
-class TestTokenQDialog(unittest2.TestCase):
+class TestMessageQDialog(unittest2.TestCase):
     """
-        This file test methods of TokenQDialog class object
+        This file test methods of MessageQDialog class object
     """
 
     settings.init_config()
     init_localization()
-    app_backend.login()
-
-    user = User()
-    user.create('_id', {'token': 'long_token'}, 'name')
 
     @classmethod
     def setUpClass(cls):
@@ -54,27 +47,34 @@ class TestTokenQDialog(unittest2.TestCase):
             pass
 
     def test_initialize(self):
-        """Iniatialize TokenQDialog"""
+        """Initialize MessageQDialog"""
 
-        under_test = TokenQDialog()
+        under_test = MessageQDialog()
 
         self.assertIsNone(under_test.layout())
         self.assertEqual('dialog', under_test.objectName())
 
-        data_manager.database['user'] = self.user
-        under_test.initialize()
+        under_test.initialize(
+            'widgettitle',
+            'notes',
+            'title',
+            'Text to display'
+        )
 
         self.assertIsNotNone(under_test.layout())
         self.assertEqual('dialog', under_test.objectName())
 
     def test_get_token_widget(self):
-        """Get Token Qwidget"""
+        """Get Message Qwidget"""
 
-        token_dialog_test = TokenQDialog()
+        token_dialog_test = MessageQDialog()
         self.assertEqual('dialog', token_dialog_test.objectName())
-        data_manager.database['user'] = self.user
 
-        under_test = token_dialog_test.get_token_widget()
+        under_test = token_dialog_test.get_message_widget(
+            'notes',
+            'title',
+            'Text to display'
+        )
 
         self.assertIsNotNone(under_test.layout())
         self.assertEqual('dialog', under_test.objectName())

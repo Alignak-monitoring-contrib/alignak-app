@@ -36,9 +36,9 @@ from alignak_app.utils.config import settings
 from alignak_app.qobjects.common.frames import AppQFrame
 from alignak_app.qobjects.common.labels import get_icon_pixmap
 from alignak_app.qobjects.common.buttons import ToggleQWidgetButton
+from alignak_app.qobjects.common.widgets import MessageQDialog
 from alignak_app.qobjects.events.events import send_event
 from alignak_app.qobjects.user.password import PasswordQDialog
-from alignak_app.qobjects.user.token import TokenQDialog
 from alignak_app.qobjects.user.notes import UserNotesQDialog
 from alignak_app.qobjects.user.options import show_options_dialog
 
@@ -218,8 +218,13 @@ class ProfileQWidget(QWidget):
 
         """
 
-        token_dialog = TokenQDialog()
-        token_dialog.initialize()
+        token_dialog = MessageQDialog()
+        token_dialog.initialize(
+            _('See Token'),
+            'notes',
+            _("<b>Token:</b> %s") % data_manager.database['user'].name.capitalize(),
+            data_manager.database['user'].data['token']
+        )
 
         token_dialog.exec_()
 
