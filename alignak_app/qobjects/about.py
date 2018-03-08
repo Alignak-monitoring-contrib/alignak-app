@@ -25,6 +25,7 @@
     About manage creation of QDialog to display data about Alignak-app
 """
 
+import sys
 
 from PyQt5.Qt import Qt, QVBoxLayout, QLabel, QDialog, QWidget
 
@@ -120,8 +121,10 @@ class AboutQDialog(QDialog):
 
         """
 
-        # Exec_ to make sure that dialog popup is displayed under Win32
-        self.exec_()
+        if 'win32' in sys.platform:
+            # Exec_ to make sure that dialog popup is displayed under Win32
+            self.exec_()
+
         self.show()
 
     @staticmethod
