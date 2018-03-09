@@ -22,7 +22,7 @@
 import sys
 
 import unittest2
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.Qt import QApplication, QWidget, QLabel, QSize
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.history import History
@@ -52,10 +52,10 @@ class TestHistoryQWidget(unittest2.TestCase):
             'service_name': 'Load',
             'type': 'downtime.add',
             'message': 'Service Load acknowledged by admin, from Alignak-app',
-         },
+        },
         {
             '_updated': 'Tue, 19 Sep 2017 13:05:26 GMT',
-            'service_name': 'Memory',
+            'service_name': '',
             'type': 'check.result',
             'message': 'UNREACHABLE[HARD] (False/False): ERROR: netsnmp : No response from ...',
         },
@@ -84,9 +84,59 @@ class TestHistoryQWidget(unittest2.TestCase):
 
         self.assertIsNone(under_test.layout())
         self.assertIsInstance(under_test.app_widget, AppQFrame)
+        self.assertIsNotNone(under_test.table_headers)
+        self.assertIsNotNone(under_test.history_title)
 
         data_manager.database['history'].append(self.history_test)
         under_test.initialize()
 
         self.assertIsNotNone(under_test.layout())
         self.assertEqual(under_test.app_widget.windowTitle(), "History")
+        self.assertIsInstance(under_test.app_widget, AppQFrame)
+        self.assertIsNotNone(under_test.table_headers)
+        self.assertIsNotNone(under_test.history_title)
+
+    def test_update_history_data(self):
+        """Update History QTableWidget Data"""
+
+        under_test = HistoryQWidget()
+        under_test.initialize()
+
+        for i in range(0, len(self.history_test.data)):
+            self.assertIsNone(under_test.history_table.cellWidget(i, 0))
+
+        under_test.update_history_data('hostname', self.history_test)
+
+        for i in range(0, len(self.history_test.data)):
+            self.assertIsNotNone(under_test.history_table.cellWidget(i, 0))
+
+    def test_get_event_widget(self):
+        """Get Event History QWidget"""
+
+        under_test = HistoryQWidget()
+
+        event_test = self.history_data_test[0]
+
+        event_widget_test = under_test.get_event_widget('hostname', event_test)
+
+        self.assertIsInstance(event_widget_test, QWidget)
+        self.assertEqual('history', event_widget_test.objectName())
+
+    def test_get_icon_label(self):
+        """Get History Icon QLabel"""
+
+        under_test = HistoryQWidget.get_icon_label(self.history_data_test[0])
+
+        self.assertEqual(QSize(32, 32), under_test.size())
+        self.assertIsInstance(under_test, QLabel)
+
+    def test_get_event_type(self):
+        """Get Event History Type """
+
+        under_test = HistoryQWidget.get_event_type(self.history_data_test[0], 'hostname')
+
+        self.assertEqual('Service: Load', under_test)
+
+        under_test = HistoryQWidget.get_event_type(self.history_data_test[2], 'hostname')
+
+        self.assertEqual('Host: Hostname', under_test)

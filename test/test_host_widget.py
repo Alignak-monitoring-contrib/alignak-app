@@ -32,7 +32,6 @@ from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 from alignak_app.qobjects.host.host import HostQWidget
 
-# app = QApplication(sys.argv)
 init_localization()
 data_manager.database['user'] = User()
 data_manager.database['user'].create('_id', {}, 'name')

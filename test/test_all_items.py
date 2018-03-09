@@ -222,34 +222,34 @@ class TestAllItems(unittest2.TestCase):
     def test_get_history_icon_name_from_message(self):
         """Get History Icon from State"""
 
-        under_test = History.get_history_icon_name_from_message('UNKNOWN', 'downtime')
+        under_test = History.get_history_icon_name('UNKNOWN', 'downtime')
         self.assertEqual('downtime', under_test)
 
-        under_test = History.get_history_icon_name_from_message('UP', 'ack')
+        under_test = History.get_history_icon_name('UP', 'ack')
         self.assertEqual('acknowledge', under_test)
 
-        under_test = History.get_history_icon_name_from_message('UP', 'event_type')
+        under_test = History.get_history_icon_name('UP', 'event_type')
         self.assertEqual('hosts_up', under_test)
 
-        under_test = History.get_history_icon_name_from_message('DOWN', 'event_type')
+        under_test = History.get_history_icon_name('DOWN', 'event_type')
         self.assertEqual('hosts_down', under_test)
 
-        under_test = History.get_history_icon_name_from_message('UNREACHABLE', 'event_type')
+        under_test = History.get_history_icon_name('UNREACHABLE', 'event_type')
         self.assertEqual('services_unreachable', under_test)
 
-        under_test = History.get_history_icon_name_from_message('OK', 'event_type')
+        under_test = History.get_history_icon_name('OK', 'event_type')
         self.assertEqual('services_ok', under_test)
 
-        under_test = History.get_history_icon_name_from_message('WARNING', 'event_type')
+        under_test = History.get_history_icon_name('WARNING', 'event_type')
         self.assertEqual('services_warning', under_test)
 
-        under_test = History.get_history_icon_name_from_message('CRITICAL', 'event_type')
+        under_test = History.get_history_icon_name('CRITICAL', 'event_type')
         self.assertEqual('services_critical', under_test)
 
-        under_test = History.get_history_icon_name_from_message('UNKNOWN', 'event_type')
+        under_test = History.get_history_icon_name('UNKNOWN', 'event_type')
         self.assertEqual('services_unknown', under_test)
 
-        under_test = History.get_history_icon_name_from_message('error', 'event_type')
+        under_test = History.get_history_icon_name('error', 'event_type')
         self.assertEqual('error', under_test)
 
     def test_get_request_user_model(self):

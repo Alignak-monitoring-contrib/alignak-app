@@ -127,12 +127,14 @@ class HistoryQWidget(QWidget):
         event_layout = QGridLayout(event_widget)
 
         # Event icon
-        icon_pixmap = self.get_icon_widget(event)
+        icon_pixmap = self.get_icon_label(event)
         event_layout.addWidget(icon_pixmap, 0, 0, 2, 1)
 
         # Event type (with date)
         event_title = QLabel()
-        event_title.setObjectName(History.get_history_icon_name_from_message(event['message'], event['type']))
+        event_title.setObjectName(
+            History.get_history_icon_name(event['message'], event['type'])
+        )
         local_timestamp = get_local_datetime_from_date(event['_updated'])
         created_since = get_time_diff_since_last_timestamp(local_timestamp.timestamp())
 
@@ -149,7 +151,7 @@ class HistoryQWidget(QWidget):
         return event_widget
 
     @staticmethod
-    def get_icon_widget(event):
+    def get_icon_label(event):
         """
         Return QWidget with corresponding icon to item state
 
@@ -162,7 +164,7 @@ class HistoryQWidget(QWidget):
         icon_label = QLabel()
         icon = QPixmap(
             settings.get_image(
-                History.get_history_icon_name_from_message(event['message'], event['type'])
+                History.get_history_icon_name(event['message'], event['type'])
             )
         )
         icon_label.setPixmap(icon)
@@ -184,13 +186,9 @@ class HistoryQWidget(QWidget):
         :rtype: str
         """
 
-        event_type = ''
-        if 'service_name' in event:
-            if event['service_name']:
-                event_type = _('Service: %s') % event['service_name'].capitalize()
+        if event['service_name']:
+            event_type = _('Service: %s') % event['service_name'].capitalize()
         else:
             event_type = _('Host: %s') % hostname.capitalize()
-        if not event_type:
-            event_type = event['type']
 
         return event_type

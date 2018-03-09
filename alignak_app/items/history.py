@@ -61,7 +61,7 @@ class History(Item):
         return request_model
 
     @staticmethod
-    def get_history_icon_name_from_message(message, event_type):
+    def get_history_icon_name(message, event_type):
         """
         Return icon name related to message or event type
 
