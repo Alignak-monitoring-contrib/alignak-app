@@ -52,7 +52,7 @@ class ProblemsQWidget(QWidget):
         super(ProblemsQWidget, self).__init__(parent)
         self.setWindowIcon(QIcon(settings.get_image('icon')))
         # Fields
-        self.problem_widget = QTableWidget()
+        self.problem_table = QTableWidget()
         self.headers_list = [
             _('Item Type'), _('Host'), _('Service'), _('State'), _('Actions'), _('Output')
         ]
@@ -69,21 +69,22 @@ class ProblemsQWidget(QWidget):
 
         self.layout.addWidget(self.get_problems_widget_title())
 
-        self.problem_widget.verticalHeader().hide()
-        self.problem_widget.verticalHeader().setDefaultSectionSize(40)
-        self.problem_widget.setColumnCount(len(self.headers_list))
-        self.problem_widget.setColumnWidth(1, 150)
-        self.problem_widget.setColumnWidth(2, 150)
-        self.problem_widget.setColumnWidth(3, 150)
-        self.problem_widget.setColumnWidth(4, 180)
-        self.problem_widget.setColumnWidth(5, 600)
-        self.problem_widget.setSortingEnabled(True)
-        self.problem_widget.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)
-        self.problem_widget.setHorizontalHeaderLabels(self.headers_list)
-        self.problem_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.problem_widget.horizontalHeader().setStretchLastSection(True)
-        self.problem_widget.horizontalHeader().setHighlightSections(False)
-        self.layout.addWidget(self.problem_widget)
+        self.problem_table.setObjectName('problems')
+        self.problem_table.verticalHeader().hide()
+        self.problem_table.verticalHeader().setDefaultSectionSize(40)
+        self.problem_table.setColumnCount(len(self.headers_list))
+        self.problem_table.setColumnWidth(1, 150)
+        self.problem_table.setColumnWidth(2, 150)
+        self.problem_table.setColumnWidth(3, 150)
+        self.problem_table.setColumnWidth(4, 180)
+        self.problem_table.setColumnWidth(5, 600)
+        self.problem_table.setSortingEnabled(True)
+        self.problem_table.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)
+        self.problem_table.setHorizontalHeaderLabels(self.headers_list)
+        self.problem_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.problem_table.horizontalHeader().setStretchLastSection(True)
+        self.problem_table.horizontalHeader().setHighlightSections(False)
+        self.layout.addWidget(self.problem_table)
 
         self.update_problems_data()
 
@@ -199,15 +200,15 @@ class ProblemsQWidget(QWidget):
                 problems_data['services_nb']
             )
         )
-        self.problem_widget.setRowCount(len(problems_data['problems']))
+        self.problem_table.setRowCount(len(problems_data['problems']))
 
         row = 0
         for item in problems_data['problems']:
             table_items = self.get_table_items_problem(item)
-            self.problem_widget.setCellWidget(row, 0, table_items[0])
-            self.problem_widget.setItem(row, 1, table_items[1])
-            self.problem_widget.setItem(row, 2, table_items[2])
-            self.problem_widget.setItem(row, 3, table_items[3])
-            self.problem_widget.setCellWidget(row, 4, table_items[4])
-            self.problem_widget.setItem(row, 5, table_items[5])
+            self.problem_table.setCellWidget(row, 0, table_items[0])
+            self.problem_table.setItem(row, 1, table_items[1])
+            self.problem_table.setItem(row, 2, table_items[2])
+            self.problem_table.setItem(row, 3, table_items[3])
+            self.problem_table.setCellWidget(row, 4, table_items[4])
+            self.problem_table.setItem(row, 5, table_items[5])
             row += 1

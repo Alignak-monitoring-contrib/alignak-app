@@ -21,6 +21,12 @@ QWidget#logo {
     background-color: #607d8b;
 }
 
+QWidget#history {
+    border-width: 0px 0px 1px 0px;
+    border-color: #6c9cb3;
+    border-style: solid;
+}
+
 QDialog#about, QWidget#about{
     background-color: #3b4155;
 }
@@ -401,7 +407,7 @@ QTableWidget {
     gridline-color: white;
 }
 
-QTableWidget::item {
+QTableWidget#problems::item {
     border-width: 0px 0px 1px 0px;
     border-color: #6c9cb3;
     border-style: solid;
@@ -411,9 +417,13 @@ QTableWidget::item:selected {
     color: black;
 }
 
+QTableWidget#history::item {
+/*    background-color: yellow;*/
+}
+
 /****** QHeaderView ******/
 QHeaderView::section {
-    background-color: #607d8b;
+    background-color: #3884c3;
     color: white;
 }
 

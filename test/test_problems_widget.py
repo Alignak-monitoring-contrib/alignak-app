@@ -91,7 +91,7 @@ class TestDataManager(unittest2.TestCase):
         under_test = ProblemsQWidget()
 
         self.assertIsNotNone(under_test.layout)
-        self.assertTrue(under_test.problem_widget)
+        self.assertTrue(under_test.problem_table)
         self.assertTrue(under_test.problems_title)
         self.assertTrue(under_test.headers_list)
         self.assertEqual(
@@ -104,7 +104,7 @@ class TestDataManager(unittest2.TestCase):
         under_test.initialize()
 
         self.assertIsNotNone(under_test.layout)
-        self.assertTrue(under_test.problem_widget)
+        self.assertTrue(under_test.problem_table)
         self.assertTrue(under_test.problems_title)
         self.assertTrue(under_test.headers_list)
         self.assertEqual(

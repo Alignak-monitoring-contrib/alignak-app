@@ -28,8 +28,7 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QWidget, QVBoxLayout, QLabel, QPixmap, Qt, QGridLayout
-from PyQt5.Qt import QTableWidget, QTableWidgetItem, QColor, QAbstractItemView
+from PyQt5.Qt import QWidget, QLabel, QPixmap, Qt, QGridLayout, QTableWidget, QAbstractItemView
 
 from alignak_app.items.history import History
 from alignak_app.utils.config import settings
@@ -52,7 +51,7 @@ class HistoryQWidget(QWidget):
         # Fields
         self.app_widget = AppQFrame()
         self.history_table = QTableWidget()
-        self.table_headers = [_('Event Type'), _('Message')]
+        self.table_headers = [_('Events')]
         self.history_title = QLabel()
 
     def initialize(self):
@@ -62,62 +61,33 @@ class HistoryQWidget(QWidget):
         """
 
         self.app_widget.initialize(_('History'))
-        self.setMinimumSize(700, 500)
+        self.setMinimumSize(800, 650)
         self.app_widget.add_widget(self)
 
         layout = QGridLayout()
         self.setLayout(layout)
 
         # History Description
-        self.history_title.setObjectName("title")
+        self.history_title.setObjectName('itemtitle')
         layout.addWidget(self.history_title, 0, 0, 1, 1)
         layout.setAlignment(self.history_title, Qt.AlignCenter)
 
         # History Table
         layout.addWidget(self.history_table, 1, 0, 1, 1)
+        self.history_table.setObjectName('history')
         self.history_table.verticalHeader().hide()
-        self.history_table.verticalHeader().setDefaultSectionSize(40)
+        self.history_table.verticalHeader().setDefaultSectionSize(100)
         self.history_table.setColumnCount(len(self.table_headers))
 
-        self.history_table.setColumnWidth(1, 500)
+        self.history_table.setColumnWidth(0, 600)
         self.history_table.setSortingEnabled(True)
-        self.history_table.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)
+        self.history_table.setHorizontalScrollMode(QAbstractItemView.ScrollPerItem)
         self.history_table.setHorizontalHeaderLabels(self.table_headers)
         self.history_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.history_table.horizontalHeader().setStretchLastSection(True)
         self.history_table.horizontalHeader().setHighlightSections(False)
 
         center_widget(self.app_widget)
-
-    @staticmethod
-    def get_icon_widget(event):
-        """
-        Return QWidget with corresponding icon to item state
-
-        :param event: data of an event
-        :type event: dict
-        :return: icon QWidget
-        :rtype: QWidget
-        """
-
-        widget_icon = QWidget()
-        layout_icon = QVBoxLayout()
-        widget_icon.setLayout(layout_icon)
-
-        icon_label = QLabel()
-        icon = QPixmap(
-            settings.get_image(
-                History.get_history_icon_name_from_message(event['message'], event['type'])
-            )
-        )
-        icon_label.setPixmap(icon)
-        icon_label.setFixedSize(18, 18)
-        icon_label.setScaledContents(True)
-
-        layout_icon.addWidget(icon_label)
-        layout_icon.setAlignment(icon_label, Qt.AlignCenter)
-
-        return widget_icon
 
     def update_history_data(self, hostname, host_history):
         """
@@ -131,35 +101,75 @@ class HistoryQWidget(QWidget):
 
         logger.debug('Open History for %s', hostname)
 
-        self.history_table.setRowCount(len(host_history.data) * 2)
+        self.history_table.setRowCount(len(host_history.data))
         self.history_title.setText(_("The last 25 events for %s") % hostname.capitalize())
 
         row = 0
         for event in host_history.data:
-            # Set Span
-            self.history_table.setSpan(row, 0, 2, 1)
+            event_widget = self.get_event_widget(hostname, event)
+            self.history_table.setCellWidget(row, 0, event_widget)
+            row += 1
 
-            # Icon event
-            icon_item = self.get_icon_widget(event)
-            self.history_table.setCellWidget(row, 0, icon_item)
+    def get_event_widget(self, hostname, event):
+        """
+        Return event QWidget with icon, event text and event message
 
-            # Event Type (with date)
-            local_timestamp = get_local_datetime_from_date(event['_updated'])
-            created_since = get_time_diff_since_last_timestamp(local_timestamp.timestamp())
+        :param hostname: name of host attached to event
+        :type hostname: str
+        :param event: data of an event
+        :type event: dict
+        :return: widget of event
+        :rtype: QWidget
+        """
 
-            event_type = self.get_event_type(event, hostname)
-            event_type_dated = '%s      (Updated at: %s)' % (event_type, created_since)
-            type_item = QTableWidgetItem(event_type_dated)
-            type_item.setForeground(
-                QColor(History.get_event_color(event['message'], event['type']))
+        event_widget = QWidget()
+        event_widget.setObjectName('history')
+        event_layout = QGridLayout(event_widget)
+
+        # Event icon
+        icon_pixmap = self.get_icon_widget(event)
+        event_layout.addWidget(icon_pixmap, 0, 0, 2, 1)
+
+        # Event type (with date)
+        event_title = QLabel()
+        event_title.setObjectName(History.get_history_icon_name_from_message(event['message'], event['type']))
+        local_timestamp = get_local_datetime_from_date(event['_updated'])
+        created_since = get_time_diff_since_last_timestamp(local_timestamp.timestamp())
+
+        event_type = self.get_event_type(event, hostname)
+        event_type_dated = '%s      (%s)' % (event_type, created_since)
+        event_title.setText(event_type_dated)
+        event_layout.addWidget(event_title, 0, 1, 1, 1)
+
+        # Event message
+        event_msg = QLabel()
+        event_msg.setText(event['message'])
+        event_layout.addWidget(event_msg, 1, 1, 1, 1)
+
+        return event_widget
+
+    @staticmethod
+    def get_icon_widget(event):
+        """
+        Return QWidget with corresponding icon to item state
+
+        :param event: data of an event
+        :type event: dict
+        :return: icon QWidget
+        :rtype: QWidget
+        """
+
+        icon_label = QLabel()
+        icon = QPixmap(
+            settings.get_image(
+                History.get_history_icon_name_from_message(event['message'], event['type'])
             )
-            self.history_table.setItem(row, 1, type_item)
+        )
+        icon_label.setPixmap(icon)
+        icon_label.setFixedSize(32, 32)
+        icon_label.setScaledContents(True)
 
-            # Message event
-            message_item = QTableWidgetItem(event['message'])
-            self.history_table.setItem(row + 1, 1, message_item)
-
-            row += 2
+        return icon_label
 
     @staticmethod
     def get_event_type(event, hostname):
