@@ -83,7 +83,7 @@ class ProblemsQWidget(QWidget):
         self.problem_table.setHorizontalHeaderLabels(self.headers_list)
         self.problem_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.problem_table.horizontalHeader().setStretchLastSection(True)
-        self.problem_table.horizontalHeader().setHighlightSections(False)
+        self.problem_table.horizontalHeader().setMinimumHeight(30)
         self.layout.addWidget(self.problem_table)
 
         self.update_problems_data()

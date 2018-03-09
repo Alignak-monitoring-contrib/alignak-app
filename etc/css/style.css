@@ -417,12 +417,9 @@ QTableWidget::item:selected {
     color: black;
 }
 
-QTableWidget#history::item {
-/*    background-color: yellow;*/
-}
-
 /****** QHeaderView ******/
 QHeaderView::section {
+    border: none;
     background-color: #3884c3;
     color: white;
 }

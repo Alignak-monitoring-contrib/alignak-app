@@ -61,7 +61,7 @@ class HistoryQWidget(QWidget):
         """
 
         self.app_widget.initialize(_('History'))
-        self.setMinimumSize(800, 650)
+        self.setMinimumSize(800, 670)
         self.app_widget.add_widget(self)
 
         layout = QGridLayout()
@@ -78,14 +78,13 @@ class HistoryQWidget(QWidget):
         self.history_table.verticalHeader().hide()
         self.history_table.verticalHeader().setDefaultSectionSize(100)
         self.history_table.setColumnCount(len(self.table_headers))
-
         self.history_table.setColumnWidth(0, 600)
         self.history_table.setSortingEnabled(True)
         self.history_table.setHorizontalScrollMode(QAbstractItemView.ScrollPerItem)
         self.history_table.setHorizontalHeaderLabels(self.table_headers)
         self.history_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.history_table.horizontalHeader().setStretchLastSection(True)
-        self.history_table.horizontalHeader().setHighlightSections(False)
+        self.history_table.horizontalHeader().setMinimumHeight(30)
 
         center_widget(self.app_widget)
 
