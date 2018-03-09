@@ -72,7 +72,7 @@ class HostQWidget(QWidget):
         self.activecheck_btn = ToggleQWidgetButton()
         self.passivecheck_btn = ToggleQWidgetButton()
         self.history_btn = QPushButton()
-        self.history_widget = None
+        self.history_widget = HistoryQWidget(self)
         self.host_history = None
         self.refresh_timer = QTimer()
 
@@ -149,6 +149,7 @@ class HostQWidget(QWidget):
         layout = QVBoxLayout()
         widget.setLayout(layout)
 
+        # Actions
         action_title = QLabel(_('Host actions'))
         action_title.setObjectName('itemtitle')
         action_title.setFixedHeight(25)
@@ -161,6 +162,7 @@ class HostQWidget(QWidget):
         self.actions_widget.initialize(self.host_item)
         layout.addWidget(self.actions_widget)
 
+        # Active Checks
         activecheck_lbl = QLabel(_('Active checks:'))
         activecheck_lbl.setObjectName('subtitle')
         layout.addWidget(activecheck_lbl)
@@ -170,6 +172,7 @@ class HostQWidget(QWidget):
         ))
         layout.addWidget(self.activecheck_btn)
 
+        # Passive Checks
         passivecheck_lbl = QLabel(_('Passive checks:'))
         passivecheck_lbl.setObjectName('subtitle')
         layout.addWidget(passivecheck_lbl)
@@ -179,6 +182,7 @@ class HostQWidget(QWidget):
         ))
         layout.addWidget(self.passivecheck_btn)
 
+        # History
         hist_lbl = QLabel(_('Timeline:'))
         hist_lbl.setObjectName('subtitle')
         layout.addWidget(hist_lbl)
@@ -187,6 +191,8 @@ class HostQWidget(QWidget):
         self.history_btn.clicked.connect(self.show_history)
         layout.addWidget(self.history_btn)
         layout.setAlignment(self.history_btn, Qt.AlignCenter)
+
+        self.history_widget.initialize()
 
         layout.setAlignment(Qt.AlignCenter)
 
@@ -198,9 +204,8 @@ class HostQWidget(QWidget):
 
         """
 
-        self.history_widget = HistoryQWidget(self)
-        self.history_widget.initialize(self.host_item.name, self.host_history)
-        self.history_widget.app_widget.show()
+        self.history_widget.update_history_data(self.host_item.name, self.host_history)
+        self.history_widget.app_widget.show_widget()
 
     def patch_host_checks(self, check_type, state):  # pragma: no cover
         """

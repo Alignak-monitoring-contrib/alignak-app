@@ -100,3 +100,40 @@ class History(Item):
                 icon_name = 'error'
 
         return icon_name
+
+    @staticmethod
+    def get_event_color(message, event_type):
+        """
+        Return corresponding color of event type or message
+
+        :param message: message of an history event
+        :type message: str
+        :param event_type: type of history event
+        :type event_type: str
+        :return: the associated color with the event
+        :rtype: str
+        """
+
+        if 'ack' in event_type:
+            event_color = '#f39c10'
+        elif 'downtime' in event_type:
+            event_color = '#f2c40f'
+        elif 'comment' in event_type:
+            event_color = 'edit'
+        elif 'request' in event_type:
+            event_color = '#9b59b6'
+        else:
+            if 'UP' in message or 'OK' in message:
+                event_color = '#27ae60'
+            elif 'DOWN' in message or 'CRITICAL' in message:
+                event_color = '#e74c3c'
+            elif 'UNREACHABLE' in message:
+                event_color = '#9b59b6'
+            elif 'WARNING' in message:
+                event_color = '#e67e22'
+            elif 'UNKNOWN' in message:
+                event_color = '#2980b9'
+            else:
+                event_color = '#e74c3c'
+
+        return event_color

@@ -86,18 +86,7 @@ class TestHistoryQWidget(unittest2.TestCase):
         self.assertIsInstance(under_test.app_widget, AppQFrame)
 
         data_manager.database['history'].append(self.history_test)
-        under_test.initialize('charnay', self.history_test)
+        under_test.initialize()
 
         self.assertIsNotNone(under_test.layout())
-        self.assertEqual(under_test.app_widget.windowTitle(), "History of Charnay")
-
-    def test_get_event_widget(self):
-        """Get Event QWidget"""
-
-        hist_widget_test = HistoryQWidget()
-
-        under_test = hist_widget_test.get_history_widget_model(self.history_test.data[0], 'Load')
-
-        self.assertTrue("ack.processed" in under_test.toolTip())
-        self.assertIsNotNone(under_test.layout())
-        self.assertIsInstance(under_test, QWidget)
+        self.assertEqual(under_test.app_widget.windowTitle(), "History")

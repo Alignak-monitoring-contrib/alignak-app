@@ -25,11 +25,42 @@
     Time manage time and date for Alignak-app
 """
 
+import sys
 import time
+import locale
+import datetime
 
 from logging import getLogger
 
 logger = getLogger(__name__)
+
+
+def convert_date_to_timestamp(date_str):
+    """
+    TODO
+    :param date_str:
+    :type date_str: str
+    :return:
+    """
+
+    # Backend is set in EN, so temp set locale
+    if 'win32' in sys.platform:
+        locale.setlocale(locale.LC_ALL, 'eng')
+    else:
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+
+    date_format = datetime.datetime.strptime(date_str, '%a, %d %b %Y %H:%M:%S GMT')
+
+    # Restore locale
+    locale.setlocale(locale.LC_ALL, '')
+
+    # Convert to local time
+    # TODO see after if this can be move to a function
+    local_time = date_format.replace(
+        tzinfo=datetime.timezone.utc) \
+        .astimezone(tz=None)
+
+    return local_time.timestamp()
 
 
 def get_time_diff_since_last_timestamp(timestamp):  # pragma: no cover - not testable

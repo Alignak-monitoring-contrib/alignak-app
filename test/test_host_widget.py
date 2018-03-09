@@ -74,8 +74,8 @@ class TestHostQWidget(unittest2.TestCase):
 
         self.assertIsNone(under_test.host_item)
         self.assertIsNone(under_test.service_items)
-        self.assertIsNone(under_test.history_widget)
         self.assertIsNone(under_test.layout())
+        self.assertIsNotNone(under_test.history_widget)
         self.assertIsNotNone(under_test.labels)
         self.assertIsNotNone(under_test.history_btn)
 
@@ -100,4 +100,3 @@ class TestHostQWidget(unittest2.TestCase):
         self.assertIsNotNone(under_test.service_items)
         for item in under_test.service_items:
             self.assertIsInstance(item, Service)
-
