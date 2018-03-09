@@ -33,7 +33,7 @@ from PyQt5.Qt import QTableWidget, QTableWidgetItem, QColor, QAbstractItemView
 
 from alignak_app.items.history import History
 from alignak_app.utils.config import settings
-from alignak_app.utils.time import convert_date_to_timestamp, get_time_diff_since_last_timestamp
+from alignak_app.utils.time import get_local_datetime_from_date, get_time_diff_since_last_timestamp
 
 from alignak_app.qobjects.common.frames import AppQFrame
 from alignak_app.qobjects.common.widgets import center_widget
@@ -94,8 +94,10 @@ class HistoryQWidget(QWidget):
         """
         Return QWidget with corresponding icon to item state
 
-        :param event: TODO
-        :type event: History
+        :param event: data of an event
+        :type event: dict
+        :return: icon QWidget
+        :rtype: QWidget
         """
 
         widget_icon = QWidget()
@@ -119,7 +121,7 @@ class HistoryQWidget(QWidget):
 
     def update_history_data(self, hostname, host_history):
         """
-        TODO
+        Update data of history QTableWidget
 
         :param hostname: name of the host
         :type hostname: str
@@ -142,10 +144,11 @@ class HistoryQWidget(QWidget):
             self.history_table.setCellWidget(row, 0, icon_item)
 
             # Event Type (with date)
-            created_timestamp = convert_date_to_timestamp(event['_updated'])
-            created_since = get_time_diff_since_last_timestamp(created_timestamp)
+            local_timestamp = get_local_datetime_from_date(event['_updated'])
+            created_since = get_time_diff_since_last_timestamp(local_timestamp.timestamp())
+
             event_type = self.get_event_type(event, hostname)
-            event_type_dated = '%s (Updated: %s)' % (event_type, created_since)
+            event_type_dated = '%s      (Updated at: %s)' % (event_type, created_since)
             type_item = QTableWidgetItem(event_type_dated)
             type_item.setForeground(
                 QColor(History.get_event_color(event['message'], event['type']))
@@ -161,8 +164,14 @@ class HistoryQWidget(QWidget):
     @staticmethod
     def get_event_type(event, hostname):
         """
-        TODO
-        :return:
+        Return event type for history
+
+        :param event: event of history
+        :type event: dict
+        :param hostname: name of host attached to event
+        :type hostname: str
+        :return: the event type
+        :rtype: str
         """
 
         event_type = ''

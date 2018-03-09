@@ -30,6 +30,7 @@ import datetime
 
 from logging import getLogger
 
+from alignak_app.utils.time import get_local_datetime, get_local_datetime_from_date
 from alignak_app.items.livesynthesis import LiveSynthesis
 
 logger = getLogger(__name__)
@@ -318,13 +319,8 @@ class DataManager(object):
                     output = message_split[4]
 
                 # Convert updated date to user local time
-                gmt_time = datetime.datetime.strptime(
-                    event.data['_updated'], "%a, %d %b %Y %H:%M:%S GMT"
-                )
-                local_time = gmt_time.replace(
-                    tzinfo=datetime.timezone.utc) \
-                    .astimezone(tz=None) \
-                    .strftime("%a, %d %b %Y %H:%M:%S %Z")
+                local_timestamp = get_local_datetime_from_date(event.data['_updated'])
+                local_time = local_timestamp.strftime("%a, %d %b %Y %H:%M:%S %Z")
 
                 # Define message
                 if service:

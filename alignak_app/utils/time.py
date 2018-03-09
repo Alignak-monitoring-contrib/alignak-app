@@ -35,12 +35,14 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 
-def convert_date_to_timestamp(date_str):
+def get_local_datetime_from_date(_date):
     """
-    TODO
-    :param date_str:
-    :type date_str: str
-    :return:
+    Return the local timestamp from date
+
+    :param _date: date to convert to datetime
+    :type _date: str
+    :return: corresponding local datetime of date
+    :rtype: datetime.datetime
     """
 
     # Backend is set in EN, so temp set locale
@@ -49,21 +51,33 @@ def convert_date_to_timestamp(date_str):
     else:
         locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
-    date_format = datetime.datetime.strptime(date_str, '%a, %d %b %Y %H:%M:%S GMT')
+    date_format = datetime.datetime.strptime(_date, '%a, %d %b %Y %H:%M:%S GMT')
 
     # Restore locale
     locale.setlocale(locale.LC_ALL, '')
 
     # Convert to local time
-    # TODO see after if this can be move to a function
-    local_time = date_format.replace(
-        tzinfo=datetime.timezone.utc) \
-        .astimezone(tz=None)
+    local_time = get_local_datetime(date_format)
 
-    return local_time.timestamp()
+    return local_time
 
 
-def get_time_diff_since_last_timestamp(timestamp):  # pragma: no cover - not testable
+def get_local_datetime(_date):
+    """
+    Return the local time from a datetime
+
+    :param _date: datetime to set to local time
+    :type _date: datetime.datetime
+    :return: local date time
+    :rtype: datetime.datetime
+    """
+
+    tz_time = _date.replace(tzinfo=datetime.timezone.utc).astimezone(tz=None)
+
+    return tz_time
+
+
+def get_time_diff_since_last_timestamp(timestamp):
     """
     Return the diff between the last time stamp
 
