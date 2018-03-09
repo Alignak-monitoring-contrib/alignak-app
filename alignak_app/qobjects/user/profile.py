@@ -425,6 +425,7 @@ class ProfileQWidget(QWidget):
         if patched:
             data_manager.database['user'].update_data(notification_type, notification_enabled)
             enabled = 'enabled' if notification_enabled else 'disabled'
+            event_type = 'OK' if notification_enabled else 'WARN'
             message = _("Notifications for %ss are %s") % (
                 notification_type.replace('_notifications_enabled', ''),
                 enabled
@@ -433,7 +434,7 @@ class ProfileQWidget(QWidget):
                 self.hostnotif_toggle_btn.update_btn_state(btn_state)
             else:
                 self.servicenotif_toggle_btn.update_btn_state(btn_state)
-            send_event('INFO', message, timer=True)
+            send_event(event_type, message, timer=True)
         else:
             send_event(
                 'ERROR',

@@ -102,6 +102,21 @@ class Item(object):
 
         return _('%s is %s') % (self.name.capitalize(), self.data['ls_state'])
 
+    @staticmethod
+    def get_text(text):
+        """
+        TODO
+        :param text:
+        :return:
+        """
+
+        texts = {
+            _('active_checks_enabled'): 'Active checks',
+            _('passive_checks_enabled'): 'Active checks',
+        }
+
+        return texts[text]
+
 
 def get_icon_name(item_type, state, acknowledge, downtime, monitored):
     """

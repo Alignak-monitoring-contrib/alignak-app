@@ -32,7 +32,7 @@ from PyQt5.Qt import QPushButton, QIcon, QTimer, QScrollArea
 
 from alignak_app.backend.backend import app_backend
 from alignak_app.backend.datamanager import data_manager
-from alignak_app.items.item import get_host_msg_and_event_type
+from alignak_app.items.item import get_host_msg_and_event_type, Item
 from alignak_app.items.item import get_icon_name, get_real_host_state_icon
 from alignak_app.utils.config import settings
 from alignak_app.utils.time import get_time_diff_since_last_timestamp
@@ -229,10 +229,12 @@ class HostQWidget(QWidget):
                 self.host_item.item_type, self.host_item.item_id, self.host_item.data
             )
             enabled = _('enabled') if state else _('disabled')
+            event_type = 'OK' if state else 'WARN'
             message = _(
-                _("[%s] %s for %s" % (check_type, enabled, self.host_item.get_display_name()))
+                _('%s %s for %s' %
+                  (Item.get_text(check_type), enabled, self.host_item.get_display_name()))
             )
-            send_event('INFO', message, timer=True)
+            send_event(event_type, message, timer=True)
         else:
             send_event(
                 'ERROR',
