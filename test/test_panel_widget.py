@@ -30,10 +30,9 @@ from alignak_app.items.host import Host
 from alignak_app.items.service import Service
 
 from alignak_app.qobjects.panel import PanelQWidget
-from alignak_app.qobjects.events.spy import SpyQWidget
 
 
-class TestLoginQDialog(unittest2.TestCase):
+class TestPanelQWidget(unittest2.TestCase):
     """
         This file test the PanelQWidget class.
     """
@@ -111,12 +110,11 @@ class TestLoginQDialog(unittest2.TestCase):
         self.assertIsNotNone(under_test.host_widget)
         self.assertIsNotNone(under_test.services_widget)
         self.assertIsNotNone(under_test.spy_button)
+        self.assertIsNotNone(under_test.spy_widget)
 
-        self.assertIsNone(under_test.spy_widget)
         self.assertFalse(under_test.hostnames_list)
 
-        spy_widget_test = SpyQWidget()
-        under_test.initialize(spy_widget_test)
+        under_test.initialize()
 
         self.assertIsNotNone(under_test.layout)
         self.assertIsNotNone(under_test.line_search)
@@ -125,9 +123,8 @@ class TestLoginQDialog(unittest2.TestCase):
         self.assertIsNotNone(under_test.host_widget)
         self.assertIsNotNone(under_test.services_widget)
         self.assertIsNotNone(under_test.spy_button)
-
         self.assertIsNotNone(under_test.spy_widget)
-        self.assertTrue(under_test.hostnames_list)
+
         self.assertEqual(
             ['host0', 'host1', 'host2', 'host3', 'host4', 'host5', 'host6', 'host7', 'host8', 'host9'],
             under_test.hostnames_list
@@ -137,8 +134,7 @@ class TestLoginQDialog(unittest2.TestCase):
         """Panel Add Spy Host"""
 
         under_test = PanelQWidget()
-        spy_widget_test = SpyQWidget()
-        under_test.initialize(spy_widget_test)
+        under_test.initialize()
 
         # Host is not in hostname_list
         under_test.line_search.setText('no_host')

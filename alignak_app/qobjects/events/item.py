@@ -25,8 +25,6 @@
     Event item manage creation of ``QListWidgetItem`` for events
 """
 
-import time
-
 from PyQt5.Qt import QTimer, QColor, QListWidgetItem, QIcon
 
 from alignak_app.utils.config import settings

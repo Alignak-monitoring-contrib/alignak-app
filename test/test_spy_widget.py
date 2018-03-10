@@ -27,6 +27,9 @@ from PyQt5.Qt import QApplication
 
 from alignak_app.qobjects.events.spy import SpyQWidget, SpyQListWidget
 from alignak_app.qobjects.events.item import EventItem
+from alignak_app.qobjects.events.events import init_event_widget
+
+init_event_widget()
 
 
 class TestDataManager(unittest2.TestCase):

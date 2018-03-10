@@ -45,7 +45,7 @@ def get_local_datetime_from_date(_date):
     :rtype: datetime.datetime
     """
 
-    # Backend is set in EN, so temp set locale
+    # Backend is set in EN, so temporary setlocale to assert format success
     if 'win32' in sys.platform:
         locale.setlocale(locale.LC_ALL, 'eng')
     else:
@@ -62,7 +62,7 @@ def get_local_datetime_from_date(_date):
     return local_time
 
 
-def get_local_datetime(_date):
+def get_local_datetime(_date):  # pragma: no cover
     """
     Return the local time from a datetime
 
@@ -131,7 +131,7 @@ def get_time_diff_since_last_timestamp(timestamp):
     return _('%s ago') % time_diff
 
 
-def get_current_time():
+def get_current_time():  # pragma: no cover
     """
     Return current formatted time
 
