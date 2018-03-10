@@ -52,6 +52,7 @@ class AppQMainWindow(QMainWindow):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(settings.css_style)
         self.setWindowIcon(QIcon(settings.get_image('icon')))
+        # Fields
         self.dock = DockQWidget()
         self.panel_widget = PanelQWidget()
         self.offset = None
@@ -70,13 +71,17 @@ class AppQMainWindow(QMainWindow):
         app_layout.setContentsMargins(0, 0, 0, 0)
         app_widget.setLayout(app_layout)
 
-        self.dock.initialize()
-        self.dock.setFixedWidth(330)
-        self.panel_widget.initialize(self.dock.spy_widget)
-
+        # Logo widget
         app_layout.addWidget(get_logo_widget(self, 'Alignak-App'), 0, 0, 1, 3)
+
+        # Panel
+        self.panel_widget.initialize()
         app_layout.addWidget(self.panel_widget, 1, 0, 1, 1)
         app_layout.addWidget(get_frame_separator(True), 1, 1, 1, 1)
+
+        # Dock
+        self.dock.initialize()
+        self.dock.setFixedWidth(330)
         app_layout.addWidget(self.dock, 1, 2, 1, 1)
 
         self.setCentralWidget(app_widget)
@@ -90,24 +95,6 @@ class AppQMainWindow(QMainWindow):
             self.showMaximized()
         else:
             pass
-
-    def open_host_widget(self):
-        """
-        Show HostQWidget
-
-        """
-
-        self.panel_widget.show()
-        self.panel_widget.tab_widget.setCurrentIndex(0)
-
-    def open_problems_widget(self):
-        """
-        Show ProblemsQWidget
-
-        """
-
-        self.panel_widget.show()
-        self.panel_widget.tab_widget.setCurrentIndex(1)
 
     def mousePressEvent(self, event):  # pragma: no cover - not testable
         """ QWidget.mousePressEvent(QMouseEvent) """

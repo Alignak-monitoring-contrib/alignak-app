@@ -30,6 +30,7 @@ import time
 from PyQt5.Qt import QTimer, QColor, QListWidgetItem, QIcon
 
 from alignak_app.utils.config import settings
+from alignak_app.utils.time import get_current_time
 
 
 class EventItem(QListWidgetItem):
@@ -66,8 +67,7 @@ class EventItem(QListWidgetItem):
             self.timer = QTimer()
 
         self.setText("%s" % msg)
-        send_at = time.strftime("%a, %d %b %Y %H:%M:%S")
-        msg_to_send = '%s. (Send at %s)' % (msg, send_at)
+        msg_to_send = '%s. (Send at %s)' % (msg, get_current_time())
         self.setToolTip(msg_to_send)
 
         self.setIcon(
@@ -100,12 +100,11 @@ class EventItem(QListWidgetItem):
 
         available_colors = {
             '#27ae60': ['OK', 'UP'],
-            '#2980b9': ['UNKNOWN', 'INFO'],
+            '#2980b9': ['UNKNOWN', 'INFO', 'SPY'],
             '#e67e22': ['WARNING', 'UNREACHABLE', 'WARN'],
             '#e74c3c': ['DOWN', 'CRITICAL', 'ALERT'],
             '#f39c12': ['ACK'],
             '#f1c40f': ['DOWNTIME', 'DOWNTIMESTART (DOWN)'],
-            '#fd9205': ['TODO']
         }
 
         for key, _ in available_colors.items():
@@ -132,6 +131,7 @@ class EventItem(QListWidgetItem):
             'event_alert': ['DOWN', 'CRITICAL', 'ALERT'],
             'acknowledge': ['ACK'],
             'downtime': ['DOWNTIME', 'DOWNTIMESTART (DOWN)'],
+            'spy': ['SPY']
         }
 
         for key, _ in available_icons.items():

@@ -28,10 +28,14 @@
 from logging import getLogger
 
 from PyQt5.Qt import QVBoxLayout, Qt, QWidget, QAbstractItemView, QListWidget, pyqtSignal, QSize
+from PyQt5.Qt import QTimer
 
 from alignak_app.backend.datamanager import data_manager
+from alignak_app.items.item import get_host_msg_and_event_type
+from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.events.item import EventItem
+from alignak_app.qobjects.events.events import get_events_widget
 
 logger = getLogger(__name__)
 
@@ -69,7 +73,7 @@ class SpyQListWidget(QListWidget):
             host = data_manager.get_item('host', '_id', host_id)
             item = EventItem()
             item.initialize(
-                'OK',
+                'SPY',
                 _('Host %s is spied by Alignak-app !') % host.name.capitalize()
             )
             item.host = host.item_id
@@ -119,6 +123,9 @@ class SpyQWidget(QWidget):
     def __init__(self):
         super(SpyQWidget, self).__init__()
         self.spy_list_widget = SpyQListWidget()
+        self.spy_timer = QTimer()
+        self.spied_to_send = []
+        self.send_spied = []
 
     def initialize(self):
         """
@@ -139,8 +146,38 @@ class SpyQWidget(QWidget):
         drop_hint_item.setText(_('Drop Events here to spy host...'))
         drop_hint_item.setFlags(Qt.ItemIsDropEnabled)
         self.spy_list_widget.insertItem(0, drop_hint_item)
+        self.spy_list_widget.item_dropped.connect(get_events_widget().remove_event)
 
         layout.addWidget(self.spy_list_widget)
+
+        spy_interval = int(settings.get_config('Alignak-app', 'spy_interval')) * 1000
+        self.spy_timer.setInterval(spy_interval)
+        self.spy_timer.start()
+        self.spy_timer.timeout.connect(self.send_spy_events)
+
+    def send_spy_events(self):
+        """
+        Send event for one host spied
+
+        """
+
+        if not self.spied_to_send:
+            # Reversed the list to have the host first spied on
+            self.spied_to_send = list(reversed(self.spy_list_widget.spied_hosts))
+
+        if self.spied_to_send:
+            host_id = self.spied_to_send.pop()
+            host_and_services = data_manager.get_host_with_services(host_id)
+
+            msg_and_event_type = get_host_msg_and_event_type(host_and_services)
+
+            get_events_widget().add_event(
+                msg_and_event_type['event_type'],
+                msg_and_event_type['message'],
+                timer=False,
+                spied_on=True,
+                host=host_and_services['host'].item_id
+            )
 
     def remove_event(self):
         """

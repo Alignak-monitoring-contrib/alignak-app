@@ -27,12 +27,13 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget, QTimer, QSize, QVBoxLayout
+from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget, QTimer, QSize, QVBoxLayout, Qt
 
 from alignak_app.backend.datamanager import data_manager
-from alignak_app.qobjects.events.item import EventItem
-
 from alignak_app.utils.config import settings
+from alignak_app.utils.time import get_current_time
+
+from alignak_app.qobjects.events.item import EventItem
 
 logger = getLogger(__name__)
 
@@ -113,19 +114,48 @@ class EventsQWidget(QWidget):
         :type host: str
         """
 
-        logger.debug(
-            'Add Event: msg: %s, timer: %s, spied_on: %s, host: %s', msg, timer, spied_on, host
-        )
-        event = EventItem()
-        event.initialize(event_type, msg, timer=timer, spied_on=spied_on, host=host)
-
-        self.events_list.insertItem(0, event)
-        if timer:
-            event_duration = int(settings.get_config('Alignak-app', 'notification_duration')) * 1000
-            QTimer.singleShot(
-                event_duration,
-                lambda: self.remove_timer_event(event)
+        if not self.event_exist(msg):
+            logger.debug(
+                'Add Event: msg: %s, timer: %s, spied_on: %s, host: %s', msg, timer, spied_on, host
             )
+            event = EventItem()
+            event.initialize(event_type, msg, timer=timer, spied_on=spied_on, host=host)
+
+            self.events_list.insertItem(0, event)
+            if timer:
+                event_duration = int(
+                    settings.get_config('Alignak-app', 'notification_duration')
+                ) * 1000
+                QTimer.singleShot(
+                    event_duration,
+                    lambda: self.remove_timer_event(event)
+                )
+        else:
+            logger.debug(
+                'Event with msg: %s already exist.', msg
+            )
+
+    def event_exist(self, msg):
+        """
+        Check if event already displayed, move it to top and update tooltip.
+        Only for EventItem who are spied on.
+
+        :param msg: message of event
+        :type msg: str
+        :return: if message exist or not in events QWidgetList
+        :rtype: bool
+        """
+
+        for i in range(0, self.events_list.count()):
+            if self.events_list.item(i).data(Qt.DisplayRole) == msg:
+                if self.events_list.item(i).spied_on:
+                    item = self.events_list.takeItem(i)
+                    msg_to_send = '%s. (Send at %s)' % (msg, get_current_time())
+                    item.setToolTip(msg_to_send)
+                    self.events_list.insertItem(0, item)
+                    return True
+
+        return False
 
     def remove_timer_event(self, event):
         """
@@ -183,18 +213,17 @@ def get_events_widget():
 
 def send_event(event_type, msg, timer=False, spied_on=False, host=None):
     """
-    Access function to simplify code in rest of application
-
-    :param event_type: type of event, define color of EventItem()
+    Add event to Events QWidget (access function to make event sendable in whole application. Event
+    type define icon and color of :class:`EventItem <alignak_app.qobjects.events.item.EventItem>`.
 
     * **green**: [``OK``, ``UP``]
-    * **blue**: [``UNKNOWN``, ``INFO``]
+    * **blue**: [``UNKNOWN``, ``INFO``, ``SPY``]
     * **orange**: [``WARNING``, ``UNREACHABLE``, ``WARN``]
     * **red'**: [``DOWN``, ``CRITICAL``, ``ALERT``]
     * **yellow**: [``ACK``]
     * **yellow**: [``DOWNTIME``]
-    * **yellow**: [``TODO``]
 
+    :param event_type: type of event to send
     :type event_type: str
     :param msg: message of event
     :type msg: str

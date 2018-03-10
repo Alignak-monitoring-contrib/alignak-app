@@ -129,3 +129,14 @@ def get_time_diff_since_last_timestamp(timestamp):
     time_diff = ' ' + ' '.join(duration)
 
     return _('%s ago') % time_diff
+
+
+def get_current_time():
+    """
+    Return current formatted time
+
+    :return: current time
+    :rtype: str
+    """
+
+    return time.strftime("%H:%M:%S, %a %d %b ")

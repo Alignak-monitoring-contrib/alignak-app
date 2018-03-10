@@ -35,6 +35,7 @@ from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.frames import get_frame_separator
 from alignak_app.qobjects.events.item import EventItem
+from alignak_app.qobjects.events.spy import SpyQWidget
 from alignak_app.qobjects.alignak.dashboard import DashboardQWidget
 from alignak_app.qobjects.host.host import HostQWidget
 from alignak_app.qobjects.alignak.problems import ProblemsQWidget
@@ -65,19 +66,15 @@ class PanelQWidget(QWidget):
         self.dashboard_widget = DashboardQWidget()
         self.host_widget = HostQWidget()
         self.services_widget = ServicesQWidget()
-        self.spy_widget = None
-        self.spy_text = {
-            True: _("Spy Host"),
-            False: _("Host spied!")
-        }
+        self.spy_text = {True: _("Spy Host"), False: _("Host spied!")}
+        self.spy_widget = SpyQWidget()
         self.spy_button = QPushButton(self.spy_text[True])
+        self.spied_hosts = []
 
-    def initialize(self, spy_widget):
+    def initialize(self):
         """
         Create the QWidget with its items and layout.
 
-        :param spy_widget: SpyQWidget to allow HostQWidget add spied host
-        :type spy_widget: alignak_app.pyqt.dock.widgets.spy.SpyQWidget
         """
 
         logger.info('Create Panel View...')
@@ -89,18 +86,21 @@ class PanelQWidget(QWidget):
         self.layout.addWidget(get_frame_separator())
         self.layout.addWidget(self.tab_widget)
 
+        # Synthesis
         self.tab_widget.addTab(self.get_synthesis_widget(), _("Host Synthesis"))
 
+        # Problems
         problems_widget = ProblemsQWidget()
         problems_widget.initialize()
-
         self.tab_widget.addTab(problems_widget, _("Problems"))
+
+        # Spied hosts
+        self.spy_widget.initialize()
+        self.tab_widget.addTab(self.spy_widget, _('Spied Hosts'))
 
         # Hide widget for first display
         self.host_widget.hide()
         self.services_widget.hide()
-
-        self.spy_widget = spy_widget
 
     def get_synthesis_widget(self):
         """

@@ -25,11 +25,7 @@
     Dock manage creation of QWidget for **Dock** (Right part)
 """
 
-from PyQt5.Qt import QWidget, QGridLayout, QLabel, Qt, QTimer
-
-from alignak_app.backend.datamanager import data_manager
-from alignak_app.utils.config import settings
-from alignak_app.items.item import get_host_msg_and_event_type
+from PyQt5.Qt import QWidget, QGridLayout, QLabel, Qt
 
 from alignak_app.qobjects.alignak.alignak import AlignakQWidget
 from alignak_app.qobjects.events.events import get_events_widget
@@ -48,8 +44,6 @@ class DockQWidget(QWidget):
         self.status_widget = AlignakQWidget()
         self.livestate_widget = LivestateQWidget()
         self.spy_widget = SpyQWidget()
-        self.spy_timer = QTimer()
-        self.spied_hosts = []
 
     def initialize(self):
         """
@@ -59,11 +53,6 @@ class DockQWidget(QWidget):
 
         layout = QGridLayout()
         self.setLayout(layout)
-
-        spy_interval = int(settings.get_config('Alignak-app', 'spy_interval')) * 1000
-        self.spy_timer.setInterval(spy_interval)
-        self.spy_timer.start()
-        self.spy_timer.timeout.connect(self.send_spy_events)
 
         # Add Alignak status
         status = QLabel(_('Alignak'))
@@ -87,37 +76,3 @@ class DockQWidget(QWidget):
         layout.addWidget(last_event_label)
         layout.setAlignment(last_event_label, Qt.AlignCenter)
         layout.addWidget(get_events_widget())
-
-        # Spieds hosts
-        spy_title = QLabel(_('Spied Hosts'))
-        spy_title.setObjectName('itemtitle')
-        layout.addWidget(spy_title)
-        layout.setAlignment(spy_title, Qt.AlignCenter)
-        self.spy_widget.initialize()
-        layout.addWidget(self.spy_widget)
-
-        self.spy_widget.spy_list_widget.item_dropped.connect(get_events_widget().remove_event)
-
-    def send_spy_events(self):
-        """
-        Send event for one host spied
-
-        """
-
-        if not self.spied_hosts:
-            # Reversed the list to have the host first spied on
-            self.spied_hosts = list(reversed(self.spy_widget.spy_list_widget.spied_hosts))
-
-        if self.spied_hosts:
-            host_id = self.spied_hosts.pop()
-            host_and_services = data_manager.get_host_with_services(host_id)
-
-            msg_and_event_type = get_host_msg_and_event_type(host_and_services)
-
-            get_events_widget().add_event(
-                msg_and_event_type['event_type'],
-                msg_and_event_type['message'],
-                timer=False,
-                spied_on=True,
-                host=host_and_services['host'].item_id
-            )
