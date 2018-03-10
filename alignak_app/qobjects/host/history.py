@@ -28,7 +28,8 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QWidget, QLabel, QPixmap, Qt, QGridLayout, QTableWidget, QAbstractItemView
+from PyQt5.Qt import QWidget, QLabel, QPixmap, QTableWidget, QAbstractItemView, QGridLayout
+from PyQt5.Qt import QVBoxLayout
 
 from alignak_app.items.history import History
 from alignak_app.utils.config import settings
@@ -51,7 +52,7 @@ class HistoryQWidget(QWidget):
         # Fields
         self.app_widget = AppQFrame()
         self.history_table = QTableWidget()
-        self.table_headers = [_('Events')]
+        self.table_headers = ['Events']
         self.history_title = QLabel()
 
     def initialize(self):
@@ -64,16 +65,11 @@ class HistoryQWidget(QWidget):
         self.setMinimumSize(800, 670)
         self.app_widget.add_widget(self)
 
-        layout = QGridLayout()
+        layout = QVBoxLayout()
         self.setLayout(layout)
 
-        # History Description
-        self.history_title.setObjectName('itemtitle')
-        layout.addWidget(self.history_title, 0, 0, 1, 1)
-        layout.setAlignment(self.history_title, Qt.AlignCenter)
-
         # History Table
-        layout.addWidget(self.history_table, 1, 0, 1, 1)
+        layout.addWidget(self.history_table)
         self.history_table.setObjectName('history')
         self.history_table.verticalHeader().hide()
         self.history_table.verticalHeader().setDefaultSectionSize(100)
@@ -101,7 +97,9 @@ class HistoryQWidget(QWidget):
         logger.debug('Open History for %s', hostname)
 
         self.history_table.setRowCount(len(host_history.data))
-        self.history_title.setText(_("The last 25 events for %s") % hostname.capitalize())
+        self.history_table.setHorizontalHeaderLabels(
+            [_("The last 25 events for %s") % hostname.capitalize()]
+        )
 
         row = 0
         for event in host_history.data:
@@ -123,6 +121,7 @@ class HistoryQWidget(QWidget):
 
         event_widget = QWidget()
         event_widget.setObjectName('history')
+        event_widget.setToolTip(event['type'])
         event_layout = QGridLayout(event_widget)
 
         # Event icon
@@ -185,9 +184,12 @@ class HistoryQWidget(QWidget):
         :rtype: str
         """
 
-        if event['service_name']:
-            event_type = _('Service: %s') % event['service_name'].capitalize()
-        else:
+        event_type = ''
+
+        if 'service_name' in event:
+            if event['service_name']:
+                event_type = _('Service: %s') % event['service_name'].capitalize()
+        if not event_type:
             event_type = _('Host: %s') % hostname.capitalize()
 
         return event_type

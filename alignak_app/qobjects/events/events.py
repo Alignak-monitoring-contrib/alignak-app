@@ -27,8 +27,7 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QVBoxLayout
-from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget, QTimer
+from PyQt5.Qt import QWidget, QAbstractItemView, QListWidget, QTimer, QSize, QVBoxLayout
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.qobjects.events.item import EventItem
@@ -69,6 +68,7 @@ class EventsQWidget(QWidget):
         self.events_list.setDropIndicatorShown(True)
         self.events_list.doubleClicked.connect(self.remove_event)
         self.events_list.setWordWrap(True)
+        self.events_list.setIconSize(QSize(16, 16))
 
         self.add_event(
             'OK',

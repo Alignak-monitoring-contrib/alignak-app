@@ -78,7 +78,7 @@ class History(Item):
         elif 'downtime' in event_type:
             icon_name = 'downtime'
         elif 'comment' in event_type:
-            icon_name = 'edit'
+            icon_name = 'event_info'
         elif 'request' in event_type:
             icon_name = 'request'
         else:

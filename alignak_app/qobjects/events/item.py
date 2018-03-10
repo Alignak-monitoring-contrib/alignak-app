@@ -27,7 +27,9 @@
 
 import time
 
-from PyQt5.Qt import QTimer, QColor, QListWidgetItem
+from PyQt5.Qt import QTimer, QColor, QListWidgetItem, QIcon
+
+from alignak_app.utils.config import settings
 
 
 class EventItem(QListWidgetItem):
@@ -68,6 +70,13 @@ class EventItem(QListWidgetItem):
         msg_to_send = '%s. (Send at %s)' % (msg, send_at)
         self.setToolTip(msg_to_send)
 
+        self.setIcon(
+            QIcon(
+                settings.get_image(self.get_icon(event_type))
+            )
+        )
+
+        # self.setForeground(QColor('#064c79'))
         self.setForeground(QColor(self.get_foreground_color(event_type)))
 
     def close_item(self):
@@ -104,3 +113,29 @@ class EventItem(QListWidgetItem):
                 return key
 
         return '#e74c3c'
+
+    @staticmethod
+    def get_icon(event_type):
+        """
+        Return name of icon event
+
+        :param event_type: type of event
+        :type event_type: str
+        :return: name of icon
+        :rtype: str
+        """
+
+        available_icons = {
+            'event_ok': ['OK', 'UP'],
+            'event_info': ['UNKNOWN', 'INFO', 'TODO'],
+            'event_warn': ['WARNING', 'UNREACHABLE', 'WARN'],
+            'event_alert': ['DOWN', 'CRITICAL', 'ALERT'],
+            'acknowledge': ['ACK'],
+            'downtime': ['DOWNTIME', 'DOWNTIMESTART (DOWN)'],
+        }
+
+        for key, _ in available_icons.items():
+            if event_type in available_icons[key]:
+                return key
+
+        return 'error'

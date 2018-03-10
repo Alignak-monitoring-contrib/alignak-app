@@ -27,7 +27,7 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QVBoxLayout, Qt, QWidget, QAbstractItemView, QListWidget, pyqtSignal
+from PyQt5.Qt import QVBoxLayout, Qt, QWidget, QAbstractItemView, QListWidget, pyqtSignal, QSize
 
 from alignak_app.backend.datamanager import data_manager
 
@@ -46,6 +46,7 @@ class SpyQListWidget(QListWidget):
 
     def __init__(self):
         super(SpyQListWidget, self).__init__()
+        self.setIconSize(QSize(16, 16))
         self.initialized = False
         self.spied_hosts = []
         self.host_spied.connect(self.add_spy_host)
@@ -68,7 +69,7 @@ class SpyQListWidget(QListWidget):
             host = data_manager.get_item('host', '_id', host_id)
             item = EventItem()
             item.initialize(
-                'INFO',
+                'OK',
                 _('Host %s is spied by Alignak-app !') % host.name.capitalize()
             )
             item.host = host.item_id
