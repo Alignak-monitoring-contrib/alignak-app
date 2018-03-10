@@ -182,6 +182,7 @@ class PanelQWidget(QWidget):
                 QIcon(settings.get_image(self.spy_icons[False]))
             )
             self.spy_button.setText(self.spy_text[False])
+            self.update_panel_spytab()
         else:
             self.spy_button.setEnabled(True)
             self.spy_button.setIcon(
@@ -191,6 +192,14 @@ class PanelQWidget(QWidget):
 
         self.spy_button.style().unpolish(self.spy_button)
         self.spy_button.style().polish(self.spy_button)
+
+    def update_panel_spytab(self):
+        """
+        Update text of the psy panel tab
+
+        """
+
+        self.tab_widget.setTabText(2, "Spied Hosts (%d)" % self.spy_widget.spy_list_widget.count())
 
     def create_line_search(self, hostnames_list=None):
         """

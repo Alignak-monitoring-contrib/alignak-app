@@ -114,6 +114,8 @@ class SpyQListWidget(QListWidget):
         self.takeItem(row)
         self.item_dropped.emit(event.source().currentItem())
 
+        self.parent().update_parent_spytab()
+
 
 class SpyQWidget(QWidget):
     """
@@ -181,10 +183,23 @@ class SpyQWidget(QWidget):
 
     def remove_event(self):
         """
-        Remove item when user double click on an item
+        Remove item when user double click on an item, update parent tab text
 
         """
 
         item = self.spy_list_widget.currentItem()
         self.spy_list_widget.spied_hosts.remove(item.host)
         self.spy_list_widget.takeItem(self.spy_list_widget.currentRow())
+
+        self.update_parent_spytab()
+
+    def update_parent_spytab(self):
+        """
+        Update the parent spy tab text
+
+        """
+
+        if self.parent():
+            self.parent().parent().setTabText(
+                2, "Spied Hosts (%d)" % self.spy_list_widget.count()
+            )
