@@ -25,7 +25,7 @@
     Event item manage creation of ``QListWidgetItem`` for events
 """
 
-from PyQt5.Qt import QTimer, QColor, QListWidgetItem, QIcon
+from PyQt5.Qt import QTimer, QListWidgetItem, QIcon
 
 from alignak_app.utils.config import settings
 from alignak_app.utils.time import get_current_time
@@ -74,9 +74,6 @@ class EventItem(QListWidgetItem):
             )
         )
 
-        # self.setForeground(QColor('#064c79'))
-        self.setForeground(QColor(self.get_foreground_color(event_type)))
-
     def close_item(self):
         """
         Hide items when timer is finished
@@ -84,32 +81,6 @@ class EventItem(QListWidgetItem):
         """
 
         self.setHidden(True)
-
-    @staticmethod
-    def get_foreground_color(event_type):
-        """
-        Return corresponding color of event type
-
-        :param event_type: the type of event
-        :type event_type: str
-        :return: the associated color with the event
-        :rtype: str
-        """
-
-        available_colors = {
-            '#27ae60': ['OK', 'UP'],
-            '#2980b9': ['UNKNOWN', 'INFO', 'SPY'],
-            '#e67e22': ['WARNING', 'UNREACHABLE', 'WARN'],
-            '#e74c3c': ['DOWN', 'CRITICAL', 'ALERT'],
-            '#f39c12': ['ACK'],
-            '#f1c40f': ['DOWNTIME', 'DOWNTIMESTART (DOWN)'],
-        }
-
-        for key, _ in available_colors.items():
-            if event_type in available_colors[key]:
-                return key
-
-        return '#e74c3c'
 
     @staticmethod
     def get_icon(event_type):

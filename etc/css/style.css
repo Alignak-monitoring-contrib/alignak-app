@@ -387,7 +387,8 @@ QListWidget {
 }
 
 QListWidget::item {
-    height: 34px;
+    height: 35px;
+    color: #3b4155;
 }
 
 QListWidget::item:hover {

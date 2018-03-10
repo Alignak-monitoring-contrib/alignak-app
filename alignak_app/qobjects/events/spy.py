@@ -28,7 +28,7 @@
 from logging import getLogger
 
 from PyQt5.Qt import QVBoxLayout, Qt, QWidget, QAbstractItemView, QListWidget, pyqtSignal, QSize
-from PyQt5.Qt import QTimer
+from PyQt5.Qt import QTimer, QLabel
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.item import get_host_msg_and_event_type
@@ -131,12 +131,17 @@ class SpyQWidget(QWidget):
 
     def initialize(self):
         """
-        Intialize QWidget
+        Intialize Spy QWidget
 
         """
 
         layout = QVBoxLayout()
         self.setLayout(layout)
+
+        spy_title = QLabel(_('Spy Hosts (double click to stop spying)'))
+        spy_title.setObjectName('itemtitle')
+        spy_title.setMinimumHeight(40)
+        layout.addWidget(spy_title)
 
         self.spy_list_widget.setDragDropMode(QAbstractItemView.DragDrop)
         self.spy_list_widget.setSelectionMode(QAbstractItemView.ExtendedSelection)
