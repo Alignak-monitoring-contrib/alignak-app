@@ -91,7 +91,7 @@ class PanelQWidget(QWidget):
 
         # Problems
         problems_widget = ProblemsQWidget()
-        problems_widget.initialize()
+        problems_widget.initialize(self.spy_widget)
         self.tab_widget.addTab(problems_widget, _("Problems"))
 
         # Spied hosts
