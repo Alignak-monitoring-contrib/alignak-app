@@ -30,8 +30,7 @@ from alignak_app.items.host import Host
 from alignak_app.items.service import Service
 from alignak_app.backend.datamanager import data_manager
 
-from alignak_app.qobjects.common.actions import ActionsQWidget
-from alignak_app.qobjects.alignak.problems import ProblemsQWidget
+from alignak_app.qobjects.alignak.problems import ProblemsQWidget, AppQTableWidgetItem
 from alignak_app.qobjects.events.spy import SpyQWidget
 
 
@@ -98,7 +97,7 @@ class TestDataManager(unittest2.TestCase):
         self.assertTrue(under_test.problems_title)
         self.assertTrue(under_test.headers_list)
         self.assertEqual(
-            ['Item Type', '', 'Host', 'Service', 'State', 'Actions', 'Output'],
+            ['Items in problem', 'Output'],
             under_test.headers_list
         )
 
@@ -111,7 +110,7 @@ class TestDataManager(unittest2.TestCase):
         self.assertTrue(under_test.problems_title)
         self.assertTrue(under_test.headers_list)
         self.assertEqual(
-            ['Item Type', '', 'Host', 'Service', 'State', 'Actions', 'Output'],
+            ['Items in problem', 'Output'],
             under_test.headers_list
         )
         self.assertEqual('itemtitle', under_test.problems_title.objectName())
@@ -125,53 +124,19 @@ class TestDataManager(unittest2.TestCase):
 
         self.assertIsInstance(under_test, QWidget)
 
-    def test_get_icon_widget(self):
-        """Get Problems Icon QWidget"""
-
-        under_test = ProblemsQWidget.get_icon_widget(self.host_list[0])
-
-        self.assertIsInstance(under_test, QWidget)
-
-    def test_get_btn_widget(self):
-        """Get Problems SPy Button QWidget"""
-
-        under_test = ProblemsQWidget()
-
-        spy_btn_test = under_test.get_btn_widget(self.service_list[0])
-
-        self.assertIsInstance(spy_btn_test, QWidget)
-
     def test_get_tableitem(self):
         """Get Problems Table Item"""
 
-        under_test = ProblemsQWidget.get_tableitem('test')
+        under_test = ProblemsQWidget()
+        tableitem_test = under_test.get_tableitem(self.host_list[0])
 
-        self.assertIsInstance(under_test, QTableWidgetItem)
-        self.assertEqual('test', under_test.text())
+        self.assertIsInstance(tableitem_test, AppQTableWidgetItem)
+        self.assertEqual('Host 0 is UNKNOWN', tableitem_test.text())
 
-    def test_get_host_tableitem(self):
-        """Get Host Table Item"""
+        tableitem_test = under_test.get_tableitem(self.service_list[0])
 
-        under_test = ProblemsQWidget.get_host_tableitem(self.host_list[0])
-
-        self.assertIsInstance(under_test, QTableWidgetItem)
-        self.assertEqual('Host 0', under_test.text())
-
-    def test_get_service_tableitem(self):
-        """Get Service Table Item"""
-
-        under_test = ProblemsQWidget.get_service_tableitem(self.service_list[0])
-
-        self.assertIsInstance(under_test, QTableWidgetItem)
-        self.assertEqual('Service 0', under_test.text())
-
-    def test_get_action_widget(self):
-        """Get Problems Actions QWidget"""
-
-        under_test = ProblemsQWidget.get_action_widget(self.host_list[0])
-
-        self.assertIsInstance(under_test, ActionsQWidget)
-        self.assertIsNotNone(under_test.item)
+        self.assertIsInstance(tableitem_test, AppQTableWidgetItem)
+        self.assertEqual('Service 0 is CRITICAL (Attached to Host 0)', tableitem_test.text())
 
     def test_add_spy_host(self):
         """Add Psy Host from Problems QWidget"""
@@ -181,11 +146,21 @@ class TestDataManager(unittest2.TestCase):
         spy_widget_test.initialize()
         under_test.initialize(spy_widget_test)
 
+        # Set a current item
+        tableitem_test = AppQTableWidgetItem()
+        tableitem_test.add_backend_item(self.host_list[0])
+        under_test.problem_table.setItem(0, 0, tableitem_test)
+        under_test.problem_table.setCurrentItem(tableitem_test)
+
         self.assertFalse(under_test.spy_widget.spy_list_widget.spied_hosts)
 
-        under_test.add_spied_host(self.host_list[0].item_id)
+        under_test.add_spied_host()
 
+        # Assert host has been spied
         self.assertTrue(under_test.spy_widget.spy_list_widget.spied_hosts)
+        self.assertTrue(
+            self.host_list[0].item_id in under_test.spy_widget.spy_list_widget.spied_hosts
+        )
 
     def test_update_problems_data(self):
         """Update Problems Data"""
@@ -195,21 +170,11 @@ class TestDataManager(unittest2.TestCase):
         spy_widget_test.initialize()
         under_test.initialize(spy_widget_test)
 
-        icon_widget_test = under_test.problem_table.cellWidget(0, 0)
-        btn_widget_test = under_test.problem_table.cellWidget(0, 1)
-        host_tableitem_test = under_test.problem_table.takeItem(0, 2)
-        service_tableitem_test = under_test.problem_table.takeItem(0, 3)
-        state_tableitem_test = under_test.problem_table.takeItem(0, 4)
-        action_widget_test = under_test.problem_table.cellWidget(0, 5)
-        output_tableitem_test = under_test.problem_table.takeItem(0, 6)
+        host_tableitem_test = under_test.problem_table.takeItem(0, 0)
+        output_tableitem_test = under_test.problem_table.takeItem(0, 1)
 
         under_test.update_problems_data()
 
         # Assert Table items and QWidgets have changed
-        self.assertNotEqual(icon_widget_test, under_test.problem_table.cellWidget(0, 0))
-        self.assertNotEqual(btn_widget_test, under_test.problem_table.cellWidget(0, 1))
-        self.assertNotEqual(host_tableitem_test, under_test.problem_table.takeItem(0, 2))
-        self.assertNotEqual(service_tableitem_test, under_test.problem_table.takeItem(0, 3))
-        self.assertNotEqual(state_tableitem_test, under_test.problem_table.takeItem(0, 4))
-        self.assertNotEqual(action_widget_test, under_test.problem_table.cellWidget(0, 5))
-        self.assertNotEqual(output_tableitem_test, under_test.problem_table.takeItem(0, 6))
+        self.assertNotEqual(host_tableitem_test, under_test.problem_table.takeItem(0, 0))
+        self.assertNotEqual(output_tableitem_test, under_test.problem_table.takeItem(0, 1))

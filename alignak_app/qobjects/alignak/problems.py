@@ -32,7 +32,7 @@
 from logging import getLogger
 
 from PyQt5.Qt import QWidget, QIcon, QTableWidget, QTableWidgetItem, QVBoxLayout, QPushButton, Qt
-from PyQt5.Qt import QAbstractItemView, QPixmap, QLabel, QHBoxLayout
+from PyQt5.Qt import QAbstractItemView, QLabel, QHBoxLayout, QSize
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
@@ -54,10 +54,11 @@ class ProblemsQWidget(QWidget):
         # Fields
         self.problem_table = QTableWidget()
         self.headers_list = [
-            _('Item Type'), '', _('Host'), _('Service'), _('State'), _('Actions'), _('Output')
+            _('Items in problem'), _('Output')
         ]
         self.problems_title = QLabel()
-        self.layout = QVBoxLayout()
+        self.actions_widget = ActionsQWidget()
+        self.spy_btn = QPushButton()
         self.spy_widget = None
 
     def initialize(self, spy_listwidget):
@@ -68,31 +69,60 @@ class ProblemsQWidget(QWidget):
         :type spy_listwidget: alignak_app.qobjects.events.spy.SpyQWidget
         """
 
-        self.setLayout(self.layout)
-        self.spy_widget = spy_listwidget
+        problem_layout = QVBoxLayout()
+        self.setLayout(problem_layout)
 
-        self.layout.addWidget(self.get_problems_widget_title())
+        self.spy_widget = spy_listwidget
+        self.spy_btn.setEnabled(False)
+
+        self.actions_widget.initialize(None)
+        self.actions_widget.acknowledge_btn.setEnabled(False)
+        self.actions_widget.downtime_btn.setEnabled(False)
+
+        problem_layout.addWidget(self.get_problems_widget_title())
 
         self.problem_table.setObjectName('problems')
         self.problem_table.verticalHeader().hide()
         self.problem_table.verticalHeader().setDefaultSectionSize(40)
         self.problem_table.setColumnCount(len(self.headers_list))
-        self.problem_table.setColumnWidth(1, 32)
-        self.problem_table.setColumnWidth(2, 150)
-        self.problem_table.setColumnWidth(3, 150)
-        self.problem_table.setColumnWidth(4, 150)
-        self.problem_table.setColumnWidth(5, 180)
-        self.problem_table.setColumnWidth(6, 600)
+        self.problem_table.setColumnWidth(0, 500)
+        self.problem_table.setColumnWidth(1, 300)
         self.problem_table.setSortingEnabled(True)
+        self.problem_table.setIconSize(QSize(24, 24))
         self.problem_table.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)
         self.problem_table.setHorizontalHeaderLabels(self.headers_list)
         self.problem_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.problem_table.horizontalHeader().setStretchLastSection(True)
-        self.problem_table.horizontalHeader().setMinimumHeight(30)
+        self.problem_table.horizontalHeader().setMinimumHeight(40)
         self.problem_table.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
-        self.layout.addWidget(self.problem_table)
+        self.problem_table.currentItemChanged.connect(self.update_action_buttons)
+        self.problem_table.setDragEnabled(True)
+        problem_layout.addWidget(self.problem_table)
 
         self.update_problems_data()
+
+    def update_action_buttons(self):
+        """
+        Update status of action buttons and set current item for ActionsQWidget
+
+        """
+
+        if self.problem_table.currentItem():
+            # Get item
+            item = self.problem_table.currentItem().item
+
+            # If the elements had been ack or downtimed, they would not be present
+            self.actions_widget.acknowledge_btn.setEnabled(True)
+            self.actions_widget.downtime_btn.setEnabled(True)
+            self.actions_widget.item = item
+
+            if 'service' in item.item_type:
+                host_id = item.data['host']
+            else:
+                host_id = item.item_id
+            self.spy_btn.setEnabled(
+                bool(host_id not in self.spy_widget.spy_list_widget.spied_hosts)
+            )
 
     def get_problems_widget_title(self):
         """
@@ -109,6 +139,9 @@ class ProblemsQWidget(QWidget):
         self.problems_title.setObjectName('itemtitle')
         layout_title.addWidget(self.problems_title)
 
+        layout_title.addWidget(self.get_spy_widget())
+        layout_title.addWidget(self.actions_widget)
+
         refresh_btn = QPushButton(_('Refresh'))
         refresh_btn.setObjectName('ok')
         refresh_btn.setFixedSize(120, 30)
@@ -117,40 +150,74 @@ class ProblemsQWidget(QWidget):
 
         return widget_title
 
-    @staticmethod
-    def get_icon_widget(item):
+    def get_tableitem(self, item):
         """
-        Return QWidget with corresponding icon to item state
+        Return centered QTableWidgetItem with problem
 
         :param item: host or service item
-        :type item: alignak_app.items.item.Item
-        :return: QWidget with corresponding icon
-        :rtype: QWidget
+        :type item: alignak_app.items.host.Host | alignak_app.items.service.Service
+        :return: table item with text
+        :rtype: QTableWidgetItem
         """
 
-        widget_icon = QWidget()
-        layout_icon = QVBoxLayout()
-        widget_icon.setLayout(layout_icon)
+        tableitem = AppQTableWidgetItem(self.get_item_text(item))
+        tableitem.add_backend_item(item)
 
-        icon_label = QLabel()
-        icon = QPixmap(settings.get_image(
+        icon = QIcon(settings.get_image(
             get_icon_name_from_state(item.item_type, item.data['ls_state'])
         ))
-        icon_label.setPixmap(icon)
-        icon_label.setFixedSize(18, 18)
-        icon_label.setScaledContents(True)
+        tableitem.setIcon(icon)
+        tableitem.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
-        layout_icon.addWidget(icon_label)
-        layout_icon.setAlignment(icon_label, Qt.AlignCenter)
+        return tableitem
 
-        return widget_icon
+    @staticmethod
+    def get_output_tableitem(item):
+        """
+        Return centered QTableWidgetItem with output
 
-    def get_btn_widget(self, item):
+        :param item: host or service item
+        :type item: alignak_app.items.host.Host | alignak_app.items.service.Service
+        :return: table item with text
+        :rtype: QTableWidgetItem
+        """
+
+        tableitem = AppQTableWidgetItem(item.data['ls_output'])
+        tableitem.add_backend_item(item)
+
+        tableitem.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+        return tableitem
+
+    @staticmethod
+    def get_item_text(item):
+        """
+        Return item text depends if it's a host or service
+
+        :param item: host or service item
+        :type item: alignak_app.items.host.Host | alignak_app.items.service.Service
+        :return: text of item
+        :rtype: str
+        """
+
+        if 'host' in item.data:
+            hostname = data_manager.get_item('host', '_id', item.data['host']).get_display_name()
+            service_name = item.get_display_name()
+        else:
+            hostname = item.get_display_name()
+            service_name = ''
+
+        if service_name:
+            text = '%s is %s (Attached to %s)' % (service_name, item.data['ls_state'], hostname)
+        else:
+            text = '%s is %s' % (hostname, item.data['ls_state'])
+
+        return text
+
+    def get_spy_widget(self):
         """
         Return QWidget with spy QPushButton
 
-        :param item: host or service item
-        :type item: alignak_app.items.item.Item
         :return: widget with spy button
         :rtype: QWidget
         """
@@ -159,103 +226,33 @@ class ProblemsQWidget(QWidget):
         layout_btn = QVBoxLayout()
         widget_btn.setLayout(layout_btn)
 
-        spy_btn = QPushButton()
-        spy_btn.setIcon(QIcon(settings.get_image('spy')))
-        spy_btn.setObjectName('ok')
-        spy_btn.setFixedSize(20, 20)
-        item_id = item.data['host'] if item.item_type == 'service' else item.item_id
-        spy_btn.clicked.connect(
-            lambda: self.add_spied_host(item_id)
-        )
+        self.spy_btn.setIcon(QIcon(settings.get_image('spy')))
+        self.spy_btn.setObjectName('ok')
+        self.spy_btn.setFixedSize(80, 20)
+        self.spy_btn.clicked.connect(self.add_spied_host)
 
-        layout_btn.addWidget(spy_btn)
-        layout_btn.setAlignment(spy_btn, Qt.AlignCenter)
+        layout_btn.addWidget(self.spy_btn)
+        layout_btn.setAlignment(self.spy_btn, Qt.AlignCenter)
 
         return widget_btn
 
-    @staticmethod
-    def get_tableitem(text):
-        """
-        Return centered QTableWidgetItem
-
-        :param text: text to display in table item
-        :type text: str
-        :return: table item with text
-        :rtype: QTableWidgetItem
-        """
-
-        tableitem = QTableWidgetItem(text)
-        tableitem.setTextAlignment(Qt.AlignCenter)
-
-        return tableitem
-
-    @staticmethod
-    def get_host_tableitem(item):
-        """
-        Return host QTableWidgetItem
-
-        :param item: host or service item
-        :type item: alignak_app.items.host.Host | alignak_app.items.service.Service
-        :return: the table item with item name
-        :rtype: QTableWidgetItem
-        """
-
-        if 'host' in item.data:
-            hostname = data_manager.get_item('host', '_id', item.data['host']).get_display_name()
-            host_tableitem = QTableWidgetItem(hostname)
-        else:
-            host_tableitem = QTableWidgetItem(item.get_display_name())
-
-        host_tableitem.setTextAlignment(Qt.AlignCenter)
-
-        return host_tableitem
-
-    @staticmethod
-    def get_service_tableitem(item):
-        """
-        Return service QTableWidgetItem
-
-        :param item: host or service item
-        :type item: alignak_app.items.host.Host | alignak_app.items.service.Service
-        :return: the table item with item name
-        :rtype: QTableWidgetItem
-        """
-
-        if 'host' in item.data:
-            service_tableitem = QTableWidgetItem(item.get_display_name())
-        else:
-            service_tableitem = QTableWidgetItem('')
-
-        service_tableitem.setTextAlignment(Qt.AlignCenter)
-
-        return service_tableitem
-
-    @staticmethod
-    def get_action_widget(item):
-        """
-        Return Actions QWidget
-
-        :param item: host or service item
-        :type item: alignak_app.items.item.Item
-        :return: actions QWidget
-        :rtype: ActionsQWidget
-        """
-
-        actions_widget = ActionsQWidget()
-        actions_widget.initialize(item)
-
-        return actions_widget
-
-    def add_spied_host(self, item_id):
+    def add_spied_host(self):
         """
         Add a host to spied hosts
 
-        :param item_id: id of host to spy
-        :type item_id: str
         """
 
-        self.spy_widget.spy_list_widget.add_spy_host(item_id)
-        self.spy_widget.update_parent_spytab()
+        if self.problem_table.currentItem():
+            item = self.problem_table.currentItem().item
+            if 'service' in item.item_type:
+                item_id = self.problem_table.currentItem().item.data['host']
+            else:
+                item_id = self.problem_table.currentItem().item.item_id
+
+            self.spy_widget.spy_list_widget.add_spy_host(item_id)
+            self.spy_widget.update_parent_spytab()
+
+        self.update_action_buttons()
 
     def update_problems_data(self):
         """
@@ -276,11 +273,26 @@ class ProblemsQWidget(QWidget):
 
         row = 0
         for item in problems_data['problems']:
-            self.problem_table.setCellWidget(row, 0, self.get_icon_widget(item))
-            self.problem_table.setCellWidget(row, 1, self.get_btn_widget(item))
-            self.problem_table.setItem(row, 2, self.get_host_tableitem(item))
-            self.problem_table.setItem(row, 3, self.get_service_tableitem(item))
-            self.problem_table.setItem(row, 4, self.get_tableitem(item.data['ls_state']))
-            self.problem_table.setCellWidget(row, 5, self.get_action_widget(item))
-            self.problem_table.setItem(row, 6, self.get_tableitem(item.data['ls_output']))
+            self.problem_table.setItem(row, 0, self.get_tableitem(item))
+            self.problem_table.setItem(row, 1, self.get_output_tableitem(item))
             row += 1
+
+
+class AppQTableWidgetItem(QTableWidgetItem):  # pylint: disable=too-few-public-methods
+    """
+        Class who create QTableWidgetItem for App, with an item field
+    """
+
+    def __init__(self, parent=None):
+        super(AppQTableWidgetItem, self).__init__(parent)
+        self.item = None
+
+    def add_backend_item(self, item):
+        """
+        Add backend item
+
+        :param item: host or service item
+        :type item: alignak_app.items.host.Host | alignak_app.items.service.Service
+        """
+
+        self.item = item
