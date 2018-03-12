@@ -408,14 +408,17 @@ QTableWidget {
     gridline-color: white;
 }
 
-QTableWidget#problems::item {
-    border-width: 0px 0px 1px 0px;
-    border-color: #6c9cb3;
-    border-style: solid;
+QTableWidget#history::item:selected {
+    background-color: #f0f9fd;
 }
 
-QTableWidget::item:selected {
-    color: black;
+QTableWidget#problems::item {
+    color: #6c9cb3;
+}
+
+QTableWidget#problems::item:selected {
+    color: #3884c3;
+    background-color: white;
 }
 
 /****** QHeaderView ******/
