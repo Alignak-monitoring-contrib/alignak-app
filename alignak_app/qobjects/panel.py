@@ -88,6 +88,7 @@ class PanelQWidget(QWidget):
 
         # Synthesis
         self.tab_widget.addTab(self.get_synthesis_widget(), _("Host Synthesis"))
+        self.tab_widget.setTabToolTip(0, _('See a synthesis view of a host'))
 
         # Problems
         problems_widget = ProblemsQWidget()
@@ -96,10 +97,12 @@ class PanelQWidget(QWidget):
             problems_widget,
             _('Problems (%d)') % len(data_manager.get_problems()['problems'])
         )
+        self.tab_widget.setTabToolTip(1, _('See the problems found in the backend'))
 
         # Spied hosts
         self.spy_widget.initialize()
         self.tab_widget.addTab(self.spy_widget, _('Spied Hosts'))
+        self.tab_widget.setTabToolTip(2, 'See the hosts spied by Alignak-app')
 
         # Hide widget for first display
         self.host_widget.hide()
@@ -192,9 +195,6 @@ class PanelQWidget(QWidget):
                 QIcon(settings.get_image(self.spy_icons[True]))
             )
             self.spy_button.setText(self.spy_text[True])
-
-        self.spy_button.style().unpolish(self.spy_button)
-        self.spy_button.style().polish(self.spy_button)
 
     def update_panel_spytab(self):
         """

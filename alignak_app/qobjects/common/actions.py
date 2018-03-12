@@ -68,11 +68,13 @@ class ActionsQWidget(QWidget):
         self.acknowledge_btn.setIcon(QIcon(settings.get_image('acknowledge')))
         self.acknowledge_btn.setFixedSize(80, 20)
         self.acknowledge_btn.clicked.connect(self.add_acknowledge)
+        self.acknowledge_btn.setToolTip(_('Acknowledge the current item ?'))
         layout.addWidget(self.acknowledge_btn)
 
         self.downtime_btn.setIcon(QIcon(settings.get_image('downtime')))
         self.downtime_btn.setFixedSize(80, 20)
         self.downtime_btn.clicked.connect(self.add_downtime)
+        self.downtime_btn.setToolTip(_('Schedule a Downtime on current item ?'))
         layout.addWidget(self.downtime_btn)
 
         layout.setAlignment(Qt.AlignCenter)

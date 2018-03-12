@@ -130,6 +130,9 @@ class TestPanelQWidget(unittest2.TestCase):
             under_test.hostnames_list
         )
 
+        # 10 problems for CRITICAL services
+        self.assertEqual('Problems (10)', under_test.tab_widget.tabText(1))
+
     def test_spy_host(self):
         """Panel Add Spy Host"""
 
@@ -140,6 +143,7 @@ class TestPanelQWidget(unittest2.TestCase):
         under_test.line_search.setText('no_host')
         under_test.spy_host()
         self.assertTrue(under_test.spy_button.isEnabled())
+        self.assertEqual('Spied Hosts', under_test.tab_widget.tabText(2))
         # Host Id is not added in spied_hosts of SpyQWidget.SpyQListWidget
         self.assertFalse('_id0' in under_test.spy_widget.spy_list_widget.spied_hosts)
 
@@ -147,5 +151,23 @@ class TestPanelQWidget(unittest2.TestCase):
         under_test.line_search.setText('host0')
         under_test.spy_host()
         self.assertFalse(under_test.spy_button.isEnabled())
+        self.assertEqual('Spied Hosts (1)', under_test.tab_widget.tabText(2))
         # Host Id is added in spied_hosts of SpyQWidget.SpyQListWidget
         self.assertTrue('_id0' in under_test.spy_widget.spy_list_widget.spied_hosts)
+
+    def test_update_panels(self):
+        """Update QTabPanel Problems"""
+
+        under_test = PanelQWidget()
+        under_test.initialize()
+
+        # 10 problems for CRITICAL services
+        self.assertEqual('Problems (10)', under_test.tab_widget.tabText(1))
+
+        # Make a service Acknowledged (True)
+        data_manager.update_item_data('service', '_id0', {'ls_acknowledged': True})
+
+        under_test.tab_widget.widget(1).update_problems_data()
+
+        # There are only 9 services in CRITICAL condition
+        self.assertEqual('Problems (9)', under_test.tab_widget.tabText(1))
