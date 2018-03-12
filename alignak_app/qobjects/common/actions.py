@@ -55,14 +55,13 @@ class ActionsQWidget(QWidget):
 
     def initialize(self, item):
         """
-        Initialize Actions QWidget
+        Initialize Actions QWidget, with ack and downtime buttons
 
         """
 
         self.item = item
 
         layout = QHBoxLayout()
-
         self.setLayout(layout)
 
         self.acknowledge_btn.setIcon(QIcon(settings.get_image('acknowledge')))
