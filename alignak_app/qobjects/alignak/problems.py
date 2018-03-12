@@ -227,7 +227,6 @@ class ProblemsQWidget(QWidget):
         widget_btn.setLayout(layout_btn)
 
         self.spy_btn.setIcon(QIcon(settings.get_image('spy')))
-        self.spy_btn.setObjectName('ok')
         self.spy_btn.setFixedSize(80, 20)
         self.spy_btn.clicked.connect(self.add_spied_host)
 

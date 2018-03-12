@@ -40,7 +40,7 @@ class EventItem(QListWidgetItem):
         super(EventItem, self).__init__()
         self.timer = None
         self.spied_on = False
-        self.host = None
+        self.host = ''
 
     # pylint: disable=too-many-arguments
     def initialize(self, event_type, msg, timer=False, spied_on=False, host=None):
@@ -55,7 +55,7 @@ class EventItem(QListWidgetItem):
         :param spied_on: make event spy able
         :type spied_on: bool
         :param host: _id of host. Only necessary if "be_spied" is True
-        :type host: str
+        :type host: None | str
         """
 
         self.spied_on = spied_on

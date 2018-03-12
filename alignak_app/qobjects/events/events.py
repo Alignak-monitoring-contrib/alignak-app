@@ -111,7 +111,7 @@ class EventsQWidget(QWidget):
         :param spied_on: make event spy able
         :type spied_on: bool
         :param host: data of host. Only necessary if "be_spied" is True
-        :type host: str
+        :type host: None | str
         """
 
         if not self.event_exist(msg):
@@ -205,7 +205,7 @@ def get_events_widget():
     Return EventsQWidget instance
 
     :return: EventsQWidget instance
-    :rtype: EventsQWidget
+    :rtype: alignak_app.qobjects.events.events.EventsQWidget
     """
 
     return events_widget
@@ -231,7 +231,7 @@ def send_event(event_type, msg, timer=False, spied_on=False, host=None):
     :param spied_on: make event spy able
     :type spied_on: bool
     :param host: _id of host. Only necessary if "spied_on" is True
-    :type host: str
+    :type host: None | str
     """
 
     events_widget.add_event(event_type, msg, timer=timer, spied_on=spied_on, host=host)

@@ -1,8 +1,4 @@
 /****** QWidget / QDialog ******/
-QWidget {
-    background-color: white;
-}
-
 QWidget#dialog {
     border-width: 0px 2px 2px 2px;
     border-color: #475c67;
@@ -33,7 +29,7 @@ QDialog#about, QWidget#about{
 
 /****** QLabel ******/
 QLabel {
-    color: black;
+    color: #3b4155;
     font-family: Roboto,Helvetica,Arial,sans-serif;
     font-size: 10.5pt;
 }
@@ -211,7 +207,7 @@ QLabel#about {
 
 /****** QToolTip ******/
 QToolTip {
-    background-color: black;
+    background-color: #3b4155;
     color: #1fb3e3;
 }
 
@@ -412,20 +408,25 @@ QTableWidget#history::item:selected {
     background-color: #f0f9fd;
 }
 
-QTableWidget#problems::item {
-    color: #6c9cb3;
+QTableWidget::item {
+    color: #3b4155;
 }
 
 QTableWidget#problems::item:selected {
-    color: #3884c3;
+    color: #e67e22;
     background-color: white;
 }
 
 /****** QHeaderView ******/
 QHeaderView::section {
-    border: none;
+    border-style: none;
     background-color: #3884c3;
     color: white;
+    border-right: 1px solid white;
+}
+
+QHeaderView::section:vertical {
+    border-right: 1px solid white;
 }
 
 /****** QTabWidget / QTabBar ******/
@@ -469,7 +470,7 @@ QTreeWidget {
     alternate-background-color: #f0f9fd;
     background: white;
     selection-background-color: white;
-    selection-color: black;
+    selection-color: #3b4155;
     show-decoration-selected: 1;
     border: none;
 }
@@ -481,7 +482,7 @@ QTreeWidget::item {
 
 QTreeWidget::item::selected::active {
     background-color: white;
-    color: black;
+    color: #3b4155;
     border: 1px solid #1fb4e4;
     border-radius: 3px;
 }
