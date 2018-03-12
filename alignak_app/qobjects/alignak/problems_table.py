@@ -107,6 +107,8 @@ class ProblemsQTableWidget(QTableWidget):
         :rtype: QTableWidgetItem
         """
 
+        if not item.data['ls_output']:
+            item.data['ls_output'] = 'n\\a'
         tableitem = AppQTableWidgetItem(item.data['ls_output'])
         tableitem.add_backend_item(item)
 

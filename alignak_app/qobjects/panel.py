@@ -66,6 +66,7 @@ class PanelQWidget(QWidget):
         self.dashboard_widget = DashboardQWidget()
         self.host_widget = HostQWidget()
         self.services_widget = ServicesQWidget()
+        self.problems_widget = ProblemsQWidget()
         self.spy_text = {True: _("Spy Host"), False: _("Host spied!")}
         self.spy_widget = SpyQWidget()
         self.spy_button = QPushButton(self.spy_text[True])
@@ -91,10 +92,10 @@ class PanelQWidget(QWidget):
         self.tab_widget.setTabToolTip(0, _('See a synthesis view of a host'))
 
         # Problems
-        problems_widget = ProblemsQWidget()
-        problems_widget.initialize(self.spy_widget)
+        self.problems_widget.initialize(self.spy_widget)
+        self.problems_widget.host_btn.clicked.connect(self.display_host)
         self.tab_widget.addTab(
-            problems_widget,
+            self.problems_widget,
             _('Problems (%d)') % len(data_manager.get_problems()['problems'])
         )
         self.tab_widget.setTabToolTip(1, _('See the problems found in the backend'))
@@ -241,7 +242,9 @@ class PanelQWidget(QWidget):
 
         """
 
-        if self.line_search.text() in self.hostnames_list:
+        hostname = self.define_hostname()
+
+        if hostname in self.hostnames_list:
             # Update linesearch if needed
             hostnames_list = data_manager.get_all_hostnames()
             if hostnames_list != self.hostnames_list:
@@ -249,7 +252,7 @@ class PanelQWidget(QWidget):
 
             # Set spy button enable or not
             not_spied = bool(
-                data_manager.get_item('host', 'name', self.line_search.text()).item_id not in
+                data_manager.get_item('host', 'name', hostname).item_id not in
                 self.spy_widget.spy_list_widget.spied_hosts
             )
             self.spy_button.setEnabled(not_spied)
@@ -261,9 +264,9 @@ class PanelQWidget(QWidget):
             # Update QWidgets
             self.dashboard_widget.update_dashboard()
             self.dashboard_widget.show()
-            self.host_widget.update_host(self.line_search.text())
+            self.host_widget.update_host(hostname)
             self.host_widget.show()
-            self.services_widget.set_data(self.line_search.text())
+            self.services_widget.set_data(hostname)
             self.services_widget.update_widget()
             self.services_widget.show()
         else:
@@ -278,6 +281,34 @@ class PanelQWidget(QWidget):
 
         self.spy_button.style().unpolish(self.spy_button)
         self.spy_button.style().polish(self.spy_button)
+
+    def define_hostname(self):
+        """
+        Define hostname to display, depends of sender object
+
+        :return: the hostname to display
+        :rtype: str
+        """
+
+        if isinstance(self.sender(), QPushButton):
+            # From Problems QWidget
+            item = self.problems_widget.problem_table.currentItem().item
+            if 'service' in item.item_type:
+                hostname = data_manager.get_item('host', item.data['host']).name
+            else:
+                hostname = item.name
+
+            if hostname in self.hostnames_list:
+                self.line_search.setText(hostname)
+                self.tab_widget.setCurrentIndex(0)
+        elif isinstance(self.sender(), QLineEdit):
+            # From QLineEdit
+            hostname = self.line_search.text()
+        else:
+            # From Drag & Drop
+            hostname = self.line_search.text()
+
+        return hostname
 
     def dragMoveEvent(self, event):  # pragma: no cover
         """
@@ -309,6 +340,7 @@ class PanelQWidget(QWidget):
         logger.debug('... with current item: %s', event.source().currentItem())
 
         self.line_search.setText(host.name)
+        self.tab_widget.setCurrentIndex(0)
         self.display_host()
 
     def dragEnterEvent(self, event):

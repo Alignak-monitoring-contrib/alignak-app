@@ -54,6 +54,7 @@ class ProblemsQWidget(QWidget):
         self.problem_table = ProblemsQTableWidget()
         self.problems_title = QLabel()
         self.actions_widget = ActionsQWidget()
+        self.host_btn = QPushButton()
         self.spy_btn = QPushButton()
         self.spy_widget = None
 
@@ -100,6 +101,7 @@ class ProblemsQWidget(QWidget):
             self.spy_btn.setEnabled(
                 bool(host_id not in self.spy_widget.spy_list_widget.spied_hosts)
             )
+            self.host_btn.setEnabled(True)
 
     def get_problems_widget_title(self):
         """
@@ -116,7 +118,7 @@ class ProblemsQWidget(QWidget):
         self.problems_title.setObjectName('itemtitle')
         layout_title.addWidget(self.problems_title)
 
-        layout_title.addWidget(self.get_spy_widget())
+        layout_title.addWidget(self.get_btn_widget())
 
         self.actions_widget.initialize(None)
         self.actions_widget.acknowledge_btn.setEnabled(False)
@@ -131,25 +133,33 @@ class ProblemsQWidget(QWidget):
 
         return widget_title
 
-    def get_spy_widget(self):
+    def get_btn_widget(self):
         """
-        Return QWidget with spy QPushButton
+        Return QWidget with spy and host synthesis QPushButtons
 
-        :return: widget with spy button
+        :return: widget with spy and host button
         :rtype: QWidget
         """
 
         widget_btn = QWidget()
-        layout_btn = QVBoxLayout()
+        layout_btn = QHBoxLayout()
         widget_btn.setLayout(layout_btn)
+
+        self.host_btn.setIcon(QIcon(settings.get_image('host')))
+        self.host_btn.setFixedSize(80, 20)
+        self.host_btn.setEnabled(False)
+        self.host_btn.setToolTip(_('See current item in synthesis view ?'))
+        layout_btn.addWidget(self.host_btn)
 
         self.spy_btn.setIcon(QIcon(settings.get_image('spy')))
         self.spy_btn.setFixedSize(80, 20)
         self.spy_btn.setEnabled(False)
+        self.spy_btn.setToolTip(_('Spy current host ?'))
         self.spy_btn.clicked.connect(self.add_spied_host)
 
         layout_btn.addWidget(self.spy_btn)
-        layout_btn.setAlignment(self.spy_btn, Qt.AlignCenter)
+
+        layout_btn.setAlignment(Qt.AlignCenter)
 
         return widget_btn
 
