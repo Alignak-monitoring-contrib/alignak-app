@@ -92,7 +92,10 @@ class PanelQWidget(QWidget):
         # Problems
         problems_widget = ProblemsQWidget()
         problems_widget.initialize(self.spy_widget)
-        self.tab_widget.addTab(problems_widget, _("Problems"))
+        self.tab_widget.addTab(
+            problems_widget,
+            _('Problems (%d)') % len(data_manager.get_problems()['problems'])
+        )
 
         # Spied hosts
         self.spy_widget.initialize()

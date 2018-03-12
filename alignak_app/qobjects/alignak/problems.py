@@ -178,6 +178,10 @@ class ProblemsQWidget(QWidget):
         """
 
         problems_data = data_manager.get_problems()
+        if self.parent():
+            self.parent().parent().setTabText(
+                1, _("Problems (%d)") % len(problems_data['problems'])
+            )
 
         self.problems_title.setText(
             _('There are %d problems to manage (hosts: %d, services: %d)') % (

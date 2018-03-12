@@ -206,5 +206,5 @@ class SpyQWidget(QWidget):
 
         if self.parent():
             self.parent().parent().setTabText(
-                2, "Spied Hosts (%d)" % self.spy_list_widget.count()
+                2, _('Spied Hosts (%d)') % self.spy_list_widget.count()
             )
