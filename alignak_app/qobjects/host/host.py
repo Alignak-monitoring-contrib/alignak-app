@@ -232,7 +232,7 @@ class HostQWidget(QWidget):
             event_type = 'OK' if state else 'WARN'
             message = _(
                 _('%s %s for %s' %
-                  (Item.get_text(check_type), enabled, self.host_item.get_display_name()))
+                  (Item.get_check_text(check_type), enabled, self.host_item.get_display_name()))
             )
             send_event(event_type, message, timer=True)
         else:
