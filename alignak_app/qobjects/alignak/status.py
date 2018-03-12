@@ -25,8 +25,7 @@
     Status manage creation of QDialog for daemons status
 """
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog, QGridLayout, QLabel, QWidget, QHBoxLayout, QPushButton
+from PyQt5.Qt import Qt, QDialog, QGridLayout, QLabel, QPushButton
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.qobjects.common.frames import AppQFrame
@@ -70,40 +69,17 @@ class StatusQDialog(QDialog):
             self.add_daemon_labels(daemon_item, line)
 
         line += 1
-        buttons_widget = self.get_buttons_widget()
-        self.layout.addWidget(buttons_widget, line, 0, 1, 7)
-        self.layout.setAlignment(buttons_widget, Qt.AlignCenter)
+        ok_btn = QPushButton(_('OK'))
+        ok_btn.setObjectName('ok')
+        ok_btn.setFixedSize(120, 30)
+        ok_btn.clicked.connect(self.app_widget.close)
+        self.layout.addWidget(ok_btn, line, 0, 1, 7)
+        self.layout.setAlignment(ok_btn, Qt.AlignCenter)
 
         # Use AppQWidget
         self.app_widget.initialize(_('Alignak Status'))
         self.app_widget.add_widget(self)
         center_widget(self.app_widget)
-
-    def get_buttons_widget(self):
-        """
-        Return QWidget with buttons
-
-        :return: widget with ok and refresh buttons
-        :rtype: QWidget
-        """
-
-        widget = QWidget()
-        layout = QHBoxLayout()
-        widget.setLayout(layout)
-
-        ok_btn = QPushButton(_('OK'))
-        ok_btn.setObjectName('valid')
-        ok_btn.setFixedSize(120, 30)
-        ok_btn.clicked.connect(self.app_widget.close)
-        layout.addWidget(ok_btn)
-
-        refresh_btn = QPushButton(_('Refresh'))
-        refresh_btn.setObjectName('ok')
-        refresh_btn.setFixedSize(120, 30)
-        refresh_btn.clicked.connect(self.update_dialog)
-        layout.addWidget(refresh_btn)
-
-        return widget
 
     def set_daemons_labels(self, daemons):
         """
@@ -114,7 +90,7 @@ class StatusQDialog(QDialog):
         """
 
         daemons_attributes = [
-            'alive', 'name', 'reachable', 'spare', 'address', 'port', 'passive', 'last_check'
+            'alive', 'name', 'reachable', 'spare', 'address', 'passive', 'last_check'
         ]
 
         for daemon in daemons:

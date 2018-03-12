@@ -141,3 +141,6 @@ class AlignakQWidget(QWidget):
             QPixmap(settings.get_image(app_backend.get_backend_status_icon()))
         )
         self.status_btn.setEnabled(bool(data_manager.database['alignakdaemon']))
+
+        if self.status_dialog.labels:
+            self.status_dialog.update_dialog()
