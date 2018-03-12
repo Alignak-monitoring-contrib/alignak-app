@@ -20,21 +20,19 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
-import os
 
 import unittest2
 
-from PyQt5.Qt import QApplication, QWidget, QTableWidgetItem
+from PyQt5.Qt import QApplication, QWidget
 
 from alignak_app.items.host import Host
-from alignak_app.items.service import Service
-from alignak_app.backend.datamanager import data_manager
 
-from alignak_app.qobjects.alignak.problems import ProblemsQWidget, AppQTableWidgetItem
+from alignak_app.qobjects.alignak.problems import ProblemsQWidget
+from alignak_app.qobjects.alignak.problems_table import AppQTableWidgetItem
 from alignak_app.qobjects.events.spy import SpyQWidget
 
 
-class TestDataManager(unittest2.TestCase):
+class TestProblemsQWidget(unittest2.TestCase):
     """
         This file test the ProblemsQWidget class.
     """
@@ -58,27 +56,6 @@ class TestDataManager(unittest2.TestCase):
         )
         host_list.append(host)
 
-    # Service data test
-    service_list = []
-    for i in range(0, 10):
-        service = Service()
-        service.create(
-            '_id%d' % i,
-            {
-                'name': 'service%d' % i,
-                'alias': 'Service %d' % i,
-                'host': '_id%d' % i,
-                'ls_acknowledged': False,
-                'ls_downtimed': False,
-                'ls_state': 'CRITICAL',
-                'ls_output': 'output host %d' % i,
-                'aggregation': 'disk',
-                '_overall_state_id': 4
-            },
-            'service%d' % i
-        )
-        service_list.append(service)
-
     @classmethod
     def setUpClass(cls):
         """Create QApplication"""
@@ -95,24 +72,13 @@ class TestDataManager(unittest2.TestCase):
         self.assertIsNotNone(under_test.layout)
         self.assertTrue(under_test.problem_table)
         self.assertTrue(under_test.problems_title)
-        self.assertTrue(under_test.headers_list)
-        self.assertEqual(
-            ['Items in problem', 'Output'],
-            under_test.headers_list
-        )
 
-        data_manager.update_database('host', self.host_list)
-        data_manager.update_database('service', self.service_list)
         under_test.initialize(None)
 
         self.assertIsNotNone(under_test.layout)
         self.assertTrue(under_test.problem_table)
         self.assertTrue(under_test.problems_title)
-        self.assertTrue(under_test.headers_list)
-        self.assertEqual(
-            ['Items in problem', 'Output'],
-            under_test.headers_list
-        )
+
         self.assertEqual('itemtitle', under_test.problems_title.objectName())
 
     def test_get_problems_widget_title(self):
@@ -123,20 +89,6 @@ class TestDataManager(unittest2.TestCase):
         under_test = problems_widget_test.get_problems_widget_title()
 
         self.assertIsInstance(under_test, QWidget)
-
-    def test_get_tableitem(self):
-        """Get Problems Table Item"""
-
-        under_test = ProblemsQWidget()
-        tableitem_test = under_test.get_tableitem(self.host_list[0])
-
-        self.assertIsInstance(tableitem_test, AppQTableWidgetItem)
-        self.assertEqual('Host 0 is UNKNOWN', tableitem_test.text())
-
-        tableitem_test = under_test.get_tableitem(self.service_list[0])
-
-        self.assertIsInstance(tableitem_test, AppQTableWidgetItem)
-        self.assertEqual('Service 0 is CRITICAL (Attached to Host 0)', tableitem_test.text())
 
     def test_add_spy_host(self):
         """Add Psy Host from Problems QWidget"""
