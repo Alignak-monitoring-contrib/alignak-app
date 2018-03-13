@@ -96,6 +96,7 @@ class DashboardQWidget(QWidget):
             'downtime': QPushButton()
         }
         self.refresh_timer = QTimer()
+        self.setFixedHeight(105)
 
     def initialize(self):
         """

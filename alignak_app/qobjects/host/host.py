@@ -132,6 +132,7 @@ class HostQWidget(QWidget):
 
         # Host Name
         self.labels['host_name'].setObjectName('itemname')
+        self.labels['host_name'].setWordWrap(True)
         layout.addWidget(self.labels['host_name'])
         layout.setAlignment(self.labels['host_name'], Qt.AlignCenter)
 

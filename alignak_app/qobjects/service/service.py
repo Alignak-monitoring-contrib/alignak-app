@@ -102,6 +102,7 @@ class ServiceDataQWidget(QWidget):
 
         # Host Name
         self.labels['service_name'].setObjectName('itemname')
+        self.labels['service_name'].setWordWrap(True)
         layout.addWidget(self.labels['service_name'])
         layout.setAlignment(self.labels['service_name'], Qt.AlignCenter)
 
