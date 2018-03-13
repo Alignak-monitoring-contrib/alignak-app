@@ -23,12 +23,12 @@ import sys
 
 import unittest2
 
-from PyQt5.Qt import QApplication, QWidget
+from PyQt5.Qt import QApplication, QWidget, QItemSelectionModel
 
 from alignak_app.items.host import Host
 
 from alignak_app.qobjects.alignak.problems import ProblemsQWidget
-from alignak_app.qobjects.alignak.problems_table import AppQTableWidgetItem
+from alignak_app.qobjects.alignak.problems_table import AppQStandardItem
 from alignak_app.qobjects.events.spy import SpyQWidget
 
 
@@ -98,11 +98,14 @@ class TestProblemsQWidget(unittest2.TestCase):
         spy_widget_test.initialize()
         under_test.initialize(spy_widget_test)
 
-        # Set a current item
-        tableitem_test = AppQTableWidgetItem()
+        # Set a current QStandardItem
+        tableitem_test = AppQStandardItem()
         tableitem_test.add_backend_item(self.host_list[0])
-        under_test.problem_table.setItem(0, 0, tableitem_test)
-        under_test.problem_table.setCurrentItem(tableitem_test)
+        under_test.problems_model.setItem(0, 0, tableitem_test)
+        # Make this QStandardItem as current index
+        index_test = under_test.problem_table.model().index(0, 0)
+        under_test.problem_table.selectionModel().select(index_test, QItemSelectionModel.Select)
+        under_test.problem_table.setCurrentIndex(index_test)
 
         self.assertFalse(under_test.spy_widget.spy_list_widget.spied_hosts)
 
@@ -122,11 +125,11 @@ class TestProblemsQWidget(unittest2.TestCase):
         spy_widget_test.initialize()
         under_test.initialize(spy_widget_test)
 
-        host_tableitem_test = under_test.problem_table.takeItem(0, 0)
-        output_tableitem_test = under_test.problem_table.takeItem(0, 1)
+        host_tableitem_test = under_test.problems_model.item(0, 0)
+        output_tableitem_test = under_test.problems_model.item(0, 1)
 
         under_test.update_problems_data()
 
         # Assert Table items and QWidgets have changed
-        self.assertNotEqual(host_tableitem_test, under_test.problem_table.takeItem(0, 0))
-        self.assertNotEqual(output_tableitem_test, under_test.problem_table.takeItem(0, 1))
+        self.assertNotEqual(host_tableitem_test, under_test.problems_model.item(0, 0))
+        self.assertNotEqual(output_tableitem_test, under_test.problems_model.item(0, 1))

@@ -23,21 +23,18 @@
     Problems
     ++++++++
     Problems manage creation of QWidgets to display problems found in Alignak backend:
-
-    * **Hosts**: ``DOWN``, ``UNREACHABLE``
-    * **Services**: ``WARNING``, ``CRITICAL``, ``UNKNOWN``
-
 """
 
 from logging import getLogger
 
-from PyQt5.Qt import QWidget, QIcon, QVBoxLayout, QPushButton, Qt, QLabel, QHBoxLayout
+from PyQt5.Qt import QWidget, QIcon, QVBoxLayout, QPushButton, Qt, QLabel, QHBoxLayout, QLineEdit
+from PyQt5.Qt import QStandardItemModel, QSortFilterProxyModel
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.actions import ActionsQWidget
-from alignak_app.qobjects.alignak.problems_table import ProblemsQTableWidget
+from alignak_app.qobjects.alignak.problems_table import ProblemsQTableView
 
 logger = getLogger(__name__)
 
@@ -51,12 +48,14 @@ class ProblemsQWidget(QWidget):
         super(ProblemsQWidget, self).__init__(parent)
         self.setWindowIcon(QIcon(settings.get_image('icon')))
         # Fields
-        self.problem_table = ProblemsQTableWidget()
+        self.problem_table = ProblemsQTableView()
         self.problems_title = QLabel()
+        self.problems_model = QStandardItemModel()
         self.actions_widget = ActionsQWidget()
         self.host_btn = QPushButton()
         self.spy_btn = QPushButton()
         self.spy_widget = None
+        self.line_search = QLineEdit()
 
     def initialize(self, spy_widget):
         """
@@ -73,8 +72,9 @@ class ProblemsQWidget(QWidget):
 
         problem_layout.addWidget(self.get_problems_widget_title())
 
-        self.problem_table.initialize()
-        self.problem_table.currentItemChanged.connect(self.update_action_buttons)
+        problem_layout.addWidget(self.get_search_widget())
+
+        # self.problem_table.initialize()
         problem_layout.addWidget(self.problem_table)
 
         self.update_problems_data()
@@ -85,9 +85,14 @@ class ProblemsQWidget(QWidget):
 
         """
 
-        if self.problem_table.currentItem():
-            # Get item
-            item = self.problem_table.currentItem().item
+        # Get QStandardItem
+        standard_item = self.problems_model.item(
+            self.problem_table.selectionModel().currentIndex().row(),
+            self.problem_table.selectionModel().currentIndex().column()
+        )
+
+        if standard_item:
+            item = standard_item.item
 
             # If the elements had been ack or downtimed, they would not be present
             self.actions_widget.acknowledge_btn.setEnabled(True)
@@ -102,6 +107,32 @@ class ProblemsQWidget(QWidget):
                 bool(host_id not in self.spy_widget.spy_list_widget.spied_hosts)
             )
             self.host_btn.setEnabled(True)
+
+    def get_search_widget(self):
+        """
+        Create and return the search QWidget
+
+        :return: search QWidget
+        :rtype: QWidget
+        """
+
+        widget = QWidget()
+        layout = QHBoxLayout()
+        layout.setSpacing(0)
+        widget.setLayout(layout)
+
+        # Search label
+        search_lbl = QLabel(_('Search Problems'))
+        search_lbl.setObjectName('bordertitle')
+        search_lbl.setFixedHeight(25)
+        search_lbl.setToolTip(_('Search Problems'))
+        layout.addWidget(search_lbl)
+
+        # QLineEdit
+        self.line_search.setFixedHeight(search_lbl.height())
+        layout.addWidget(self.line_search)
+
+        return widget
 
     def get_problems_widget_title(self):
         """
@@ -169,12 +200,18 @@ class ProblemsQWidget(QWidget):
 
         """
 
-        if self.problem_table.currentItem():
-            item = self.problem_table.currentItem().item
+        # Get QStandardItem
+        standard_item = self.problems_model.item(
+            self.problem_table.selectionModel().currentIndex().row(),
+            self.problem_table.selectionModel().currentIndex().column()
+        )
+
+        if standard_item:
+            item = standard_item.item
             if 'service' in item.item_type:
-                item_id = self.problem_table.currentItem().item.data['host']
+                item_id = item.data['host']
             else:
-                item_id = self.problem_table.currentItem().item.item_id
+                item_id = item.item_id
 
             self.spy_widget.spy_list_widget.add_spy_host(item_id)
             self.spy_widget.update_parent_spytab()
@@ -188,6 +225,7 @@ class ProblemsQWidget(QWidget):
         """
 
         problems_data = data_manager.get_problems()
+
         if self.parent():
             self.parent().parent().setTabText(
                 1, _("Problems (%d)") % len(problems_data['problems'])
@@ -200,10 +238,19 @@ class ProblemsQWidget(QWidget):
                 problems_data['services_nb']
             )
         )
-        self.problem_table.setRowCount(len(problems_data['problems']))
+        self.problems_model.setRowCount(len(problems_data['problems']))
+        self.problems_model.setColumnCount(len(self.problem_table.headers_list))
+        self.problems_model.setSortRole(1)
 
-        row = 0
-        for item in problems_data['problems']:
-            self.problem_table.setItem(row, 0, self.problem_table.get_tableitem(item))
-            self.problem_table.setItem(row, 1, self.problem_table.get_output_tableitem(item))
-            row += 1
+        for row, item in enumerate(problems_data['problems']):
+            self.problems_model.setItem(row, 0, self.problem_table.get_tableitem(item))
+            self.problems_model.setItem(row, 1, self.problem_table.get_output_tableitem(item))
+
+        proxy_filter = QSortFilterProxyModel()
+        proxy_filter.setFilterCaseSensitivity(Qt.CaseInsensitive)
+        proxy_filter.setSourceModel(self.problems_model)
+        self.line_search.textChanged.connect(proxy_filter.setFilterRegExp)
+
+        self.problem_table.initialize(proxy_filter)
+        self.problems_model.setHorizontalHeaderLabels(self.problem_table.headers_list)
+        self.problem_table.selectionModel().selectionChanged.connect(self.update_action_buttons)
