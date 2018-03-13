@@ -150,7 +150,7 @@ class SpyQWidget(QWidget):
         self.spy_list_widget.setWordWrap(True)
 
         drop_hint_item = EventItem()
-        drop_hint_item.setText(_('Drop Events here to spy host...'))
+        drop_hint_item.setText(_('Drop host-related events here to spy on it...'))
         drop_hint_item.setFlags(Qt.ItemIsDropEnabled)
         self.spy_list_widget.insertItem(0, drop_hint_item)
         self.spy_list_widget.item_dropped.connect(get_events_widget().remove_event)

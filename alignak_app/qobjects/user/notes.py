@@ -91,7 +91,7 @@ class UserNotesQDialog(QDialog):
         notes_layout = QVBoxLayout()
         notes_widget.setLayout(notes_layout)
 
-        self.notes_edit.setPlaceholderText(_('type your notes'))
+        self.notes_edit.setPlaceholderText(_('type your notes...'))
         self.notes_edit.setText(self.old_notes)
         notes_layout.addWidget(self.notes_edit)
 

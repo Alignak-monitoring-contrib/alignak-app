@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-12 16:52+0100\n"
+"POT-Creation-Date: 2018-03-13 08:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,19 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../backend/datamanager.py:79
+msgid "READY"
+msgstr ""
+
+#: ../backend/datamanager.py:81
+#, python-format
+msgid "Collecting %s..."
+msgstr ""
+
+#: ../backend/datamanager.py:85
+msgid "Please wait..."
+msgstr ""
 
 #: ../items/item.py:94
 msgid "downtimed"
@@ -34,7 +47,7 @@ msgstr ""
 msgid "%s is %s and %s"
 msgstr ""
 
-#: ../items/item.py:103
+#: ../items/item.py:103 ../qobjects/alignak/problems_table.py:140
 #, python-format
 msgid "%s is %s"
 msgstr ""
@@ -256,11 +269,11 @@ msgid "Refresh"
 msgstr ""
 
 #: ../qobjects/alignak/problems.py:151
-msgid "See current item in synthesis view ?"
+msgid "See current item in synthesis view"
 msgstr ""
 
 #: ../qobjects/alignak/problems.py:157
-msgid "Spy current host ?"
+msgid "Spy current host"
 msgstr ""
 
 #: ../qobjects/alignak/problems.py:197
@@ -275,6 +288,11 @@ msgstr ""
 #: ../qobjects/alignak/problems_table.py:53 ../qobjects/host/host.py:332
 #: ../qobjects/service/service.py:136
 msgid "Output"
+msgstr ""
+
+#: ../qobjects/alignak/problems_table.py:138
+#, python-format
+msgid "%s is %s (Attached to %s)"
 msgstr ""
 
 #: ../qobjects/alignak/status.py:72 ../qobjects/user/options.py:156
@@ -314,11 +332,11 @@ msgid "Last check"
 msgstr ""
 
 #: ../qobjects/common/actions.py:70
-msgid "Acknowledge the current item ?"
+msgid "Acknowledge the current item"
 msgstr ""
 
 #: ../qobjects/common/actions.py:76
-msgid "Schedule a Downtime on current item ?"
+msgid "Schedule a Downtime on current item"
 msgstr ""
 
 #: ../qobjects/common/actions.py:89
@@ -429,6 +447,10 @@ msgstr ""
 msgid "REQUEST DOWNTIME"
 msgstr ""
 
+#: ../qobjects/common/buttons.py:51
+msgid "ON"
+msgstr ""
+
 #: ../qobjects/events/events.py:76
 #, python-format
 msgid "Welcome %s, you are connected to Alignak Backend"
@@ -444,7 +466,7 @@ msgid "Spy Hosts (double click to stop spying)"
 msgstr ""
 
 #: ../qobjects/events/spy.py:153
-msgid "Drop Events here to spy host..."
+msgid "Drop host-related events here to spy on it..."
 msgstr ""
 
 #: ../qobjects/events/spy.py:209
@@ -472,11 +494,11 @@ msgstr ""
 msgid "Timeline:"
 msgstr ""
 
-#: ../qobjects/host/host.py:231
+#: ../qobjects/host/host.py:231 ../qobjects/user/profile.py:427
 msgid "enabled"
 msgstr ""
 
-#: ../qobjects/host/host.py:231
+#: ../qobjects/host/host.py:231 ../qobjects/user/profile.py:427
 msgid "disabled"
 msgstr ""
 
@@ -575,11 +597,11 @@ msgid "<b>Log-in</b> to use the application"
 msgstr ""
 
 #: ../qobjects/login/login.py:116
-msgid "Username"
+msgid "username..."
 msgstr ""
 
 #: ../qobjects/login/login.py:122
-msgid "Password"
+msgid "password..."
 msgstr ""
 
 #: ../qobjects/login/login.py:127
@@ -598,37 +620,35 @@ msgstr ""
 msgid "Alignak Backend"
 msgstr ""
 
-#: ../qobjects/login/server.py:84
-msgid ""
-"<p>Here you can define alignak settings.</p><b>Be sure to enter a valid "
-"address</b>"
+#: ../qobjects/login/server.py:83
+msgid "Here you can define alignak settings. Be sure to enter a valid address."
 msgstr ""
 
-#: ../qobjects/login/server.py:92
+#: ../qobjects/login/server.py:89
 msgid "Server"
 msgstr ""
 
-#: ../qobjects/login/server.py:96
-msgid "alignak backend url"
+#: ../qobjects/login/server.py:93
+msgid "alignak backend url..."
 msgstr ""
 
-#: ../qobjects/login/server.py:101
+#: ../qobjects/login/server.py:98
 msgid "Port"
 msgstr ""
 
-#: ../qobjects/login/server.py:106
-msgid "alignak backend port"
+#: ../qobjects/login/server.py:103
+msgid "alignak backend port..."
 msgstr ""
 
-#: ../qobjects/login/server.py:111
+#: ../qobjects/login/server.py:108
 msgid "Processes"
 msgstr ""
 
-#: ../qobjects/login/server.py:118
-msgid "alignak backend processes"
+#: ../qobjects/login/server.py:115
+msgid "alignak backend processes..."
 msgstr ""
 
-#: ../qobjects/login/server.py:123
+#: ../qobjects/login/server.py:120
 msgid "Valid"
 msgstr ""
 
@@ -690,7 +710,7 @@ msgid "Please modify your notes:"
 msgstr ""
 
 #: ../qobjects/user/notes.py:94
-msgid "type your notes"
+msgid "type your notes..."
 msgstr ""
 
 #: ../qobjects/user/notes.py:99
@@ -718,11 +738,11 @@ msgid "Please type a new PASSWORD:"
 msgstr ""
 
 #: ../qobjects/user/password.py:82
-msgid "type new password"
+msgid "type password..."
 msgstr ""
 
 #: ../qobjects/user/password.py:87
-msgid "confirm new password"
+msgid "confirm password..."
 msgstr ""
 
 #: ../qobjects/user/password.py:92 ../qobjects/user/password.py:119

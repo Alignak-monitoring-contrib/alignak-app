@@ -424,7 +424,7 @@ class ProfileQWidget(QWidget):
 
         if patched:
             data_manager.database['user'].update_data(notification_type, notification_enabled)
-            enabled = 'enabled' if notification_enabled else 'disabled'
+            enabled = _('enabled') if notification_enabled else _('disabled')
             event_type = 'OK' if notification_enabled else 'WARN'
             message = _("Notifications for %ss are %s") % (
                 notification_type.replace('_notifications_enabled', ''),

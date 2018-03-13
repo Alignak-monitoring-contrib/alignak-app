@@ -148,13 +148,13 @@ class ProblemsQWidget(QWidget):
         self.host_btn.setIcon(QIcon(settings.get_image('host')))
         self.host_btn.setFixedSize(80, 20)
         self.host_btn.setEnabled(False)
-        self.host_btn.setToolTip(_('See current item in synthesis view ?'))
+        self.host_btn.setToolTip(_('See current item in synthesis view'))
         layout_btn.addWidget(self.host_btn)
 
         self.spy_btn.setIcon(QIcon(settings.get_image('spy')))
         self.spy_btn.setFixedSize(80, 20)
         self.spy_btn.setEnabled(False)
-        self.spy_btn.setToolTip(_('Spy current host ?'))
+        self.spy_btn.setToolTip(_('Spy current host'))
         self.spy_btn.clicked.connect(self.add_spied_host)
 
         layout_btn.addWidget(self.spy_btn)

@@ -135,9 +135,9 @@ class ProblemsQTableWidget(QTableWidget):
             service_name = ''
 
         if service_name:
-            text = '%s is %s (Attached to %s)' % (service_name, item.data['ls_state'], hostname)
+            text = _('%s is %s (Attached to %s)') % (service_name, item.data['ls_state'], hostname)
         else:
-            text = '%s is %s' % (hostname, item.data['ls_state'])
+            text = _('%s is %s') % (hostname, item.data['ls_state'])
 
         return text
 

@@ -79,12 +79,12 @@ class PasswordQDialog(QDialog):
         pass_layout = QVBoxLayout()
         pass_widget.setLayout(pass_layout)
 
-        self.pass_edit.setPlaceholderText(_('type new password'))
+        self.pass_edit.setPlaceholderText(_('type password...'))
         self.pass_edit.setEchoMode(QLineEdit.Password)
         self.pass_edit.setFixedHeight(25)
         pass_layout.addWidget(self.pass_edit)
 
-        self.confirm_edit.setPlaceholderText(_('confirm new password'))
+        self.confirm_edit.setPlaceholderText(_('confirm password...'))
         self.confirm_edit.setEchoMode(QLineEdit.Password)
         self.confirm_edit.setFixedHeight(25)
         pass_layout.addWidget(self.confirm_edit)

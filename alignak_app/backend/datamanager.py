@@ -76,13 +76,13 @@ class DataManager(object):
         for db_name in self.databases_ready:
             try:
                 assert self.databases_ready[db_name]
-                cur_collected = 'READY'
+                cur_collected = _('READY')
             except AssertionError:
-                cur_collected = 'Collecting %s...' % db_name
+                cur_collected = _('Collecting %s...') % db_name
                 break
 
         if not cur_collected:
-            cur_collected = 'Please wait'
+            cur_collected = _('Please wait...')
 
         return cur_collected
 

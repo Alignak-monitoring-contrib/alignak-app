@@ -80,10 +80,7 @@ class ServerQDialog(QDialog):
 
         # Description
         desc_label = QLabel(
-            _(
-                '<p>Here you can define alignak settings.</p>'
-                '<b>Be sure to enter a valid address</b>'
-            )
+            _('Here you can define alignak settings. Be sure to enter a valid address.')
         )
         desc_label.setWordWrap(True)
         server_layout.addWidget(desc_label)
@@ -93,7 +90,7 @@ class ServerQDialog(QDialog):
         server_layout.addWidget(server_lbl)
 
         self.server_url.setText(settings.get_config('Alignak', 'url'))
-        self.server_url.setPlaceholderText(_('alignak backend url'))
+        self.server_url.setPlaceholderText(_('alignak backend url...'))
         self.server_url.setFixedHeight(25)
         server_layout.addWidget(self.server_url)
 
@@ -103,7 +100,7 @@ class ServerQDialog(QDialog):
 
         cur_port = settings.get_config('Alignak', 'backend').split(':')[2]
         self.server_port.setText(cur_port)
-        self.server_port.setPlaceholderText(_('alignak backend port'))
+        self.server_port.setPlaceholderText(_('alignak backend port...'))
         self.server_port.setFixedHeight(25)
         server_layout.addWidget(self.server_port)
 
@@ -115,7 +112,7 @@ class ServerQDialog(QDialog):
             self.server_proc.setEnabled(False)
         cur_proc = settings.get_config('Alignak', 'processes')
         self.server_proc.setText(cur_proc)
-        self.server_proc.setPlaceholderText(_('alignak backend processes'))
+        self.server_proc.setPlaceholderText(_('alignak backend processes...'))
         self.server_proc.setFixedHeight(25)
         server_layout.addWidget(self.server_proc)
 
