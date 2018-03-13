@@ -56,7 +56,6 @@ class ServiceDataQWidget(QWidget):
             'service_name': QLabel(),
             'ls_last_check': QLabel(),
             'ls_output': QLabel(),
-            'business_impact': QLabel(),
         }
         self.buttons = {
             'acknowledge': QPushButton(),
@@ -204,8 +203,6 @@ class ServiceDataQWidget(QWidget):
         )
         self.labels['ls_last_check'].setText(since_last_check)
         self.labels['ls_output'].setText(self.service_item.data['ls_output'])
-
-        self.labels['business_impact'].setText(str(self.service_item.data['business_impact']))
 
         self.actions_widget.item = self.service_item
         self.actions_widget.update_widget()

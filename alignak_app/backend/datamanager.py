@@ -255,20 +255,19 @@ class DataManager(object):
 
     def get_host_services(self, host_id):
         """
-        Return services of wanted host
+        Return services corresponding to host ID
 
         :param host_id: '_id' of host
         :type host_id: str
-        :return: services of host
+        :return: services corresponding to host ID
         :rtype: list
         """
 
-        services_of_host = []
-        for service in self.database['service']:
-            if service.data['host'] == host_id:
-                services_of_host.append(service)
+        host_services = list(
+            service for service in self.database['service'] if service.data['host'] == host_id
+        )
 
-        return services_of_host
+        return host_services
 
     def get_host_with_services(self, host_field):
         """
