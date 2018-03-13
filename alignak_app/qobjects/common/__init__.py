@@ -20,5 +20,5 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    The Common package contains common QObjects for Alignak-app
+    The Common package contains common QObjects for Alignak-app, used by several other QWidgets
 """

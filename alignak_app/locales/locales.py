@@ -26,7 +26,7 @@
 """
 
 import os
-import sys
+
 from gettext import GNUTranslations, NullTranslations
 from logging import getLogger
 

@@ -22,23 +22,20 @@
 import sys
 
 import unittest2
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QAction
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QMenu
+from PyQt5.Qt import QApplication, QIcon, QMenu
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.user import User
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.qobjects.dock.events import init_event_widget
-from alignak_app.qobjects.systray.tray_icon import TrayIcon
+from alignak_app.qobjects.events.events import init_event_widget
+from alignak_app.qobjects.systray.tray_icon import AppTrayIcon
 
 
 class TestTrayIcon(unittest2.TestCase):
     """
-        This file test the TrayIcon class.
+        This file test the AppTrayIcon class.
     """
 
     settings.init_config()
@@ -55,11 +52,6 @@ class TestTrayIcon(unittest2.TestCase):
         'service_notification_period', 'host_notification_options',
         'service_notification_options',
     ]
-    for key in user_key:
-        if key == 'host_notifications_enabled' or key == 'service_notifications_enabled':
-            data_manager.database['user'].data[key] = True
-        else:
-            data_manager.database['user'].data[key] = 'nothing'
 
     @classmethod
     def setUpClass(cls):
@@ -72,63 +64,105 @@ class TestTrayIcon(unittest2.TestCase):
     def test_tray_icon(self):
         """Init TrayIcon and QMenu"""
 
-        under_test = TrayIcon(self.icon)
+        under_test = AppTrayIcon(self.icon)
 
         self.assertIsInstance(under_test.menu, QMenu)
 
-    def test_about_action(self):
-        """About QAction is created"""
-        under_test = TrayIcon(self.icon)
+    def test_app_action(self):
+        """Add App QAction"""
 
-        self.assertFalse(under_test.qaction_factory.actions)
-
-        under_test.add_about_menu()
-
-        self.assertIsNotNone(under_test.qaction_factory)
-        self.assertIsInstance(under_test.qaction_factory.get_action('about'), QAction)
-
-    def test_quit_action(self):
-        """Quit QAction is created"""
-        under_test = TrayIcon(self.icon)
-
-        self.assertFalse(under_test.qaction_factory.actions)
-
-        under_test.create_quit_action()
-
-        self.assertIsNotNone(under_test.qaction_factory.get_action('exit'))
-        self.assertIsInstance(under_test.qaction_factory.get_action('exit'), QAction)
-
-    def test_build_menu(self):
-        """Build Menu add QActions"""
-
+        # Init Event QWidget and fill DataManager for AppQMainWindow
         init_event_widget()
         data_manager.database['host'] = []
         data_manager.database['service'] = []
-
         for key in self.user_key:
             if key == 'host_notifications_enabled' or key == 'service_notifications_enabled':
                 data_manager.database['user'].data[key] = True
             else:
                 data_manager.database['user'].data[key] = 'nothing'
 
-        under_test = TrayIcon(self.icon)
+        under_test = AppTrayIcon(self.icon)
+
+        self.assertFalse(under_test.tray_actions['app'].text())
+        self.assertFalse(under_test.tray_actions['app'].toolTip())
+
+        under_test.add_alignak_menu()
+
+        self.assertTrue(under_test.tray_actions['app'].text())
+        self.assertTrue(under_test.tray_actions['app'].toolTip())
+
+    def test_reload_action(self):
+        """Add Reload QAction"""
+
+        under_test = AppTrayIcon(self.icon)
+
+        self.assertFalse(under_test.tray_actions['reload'].text())
+        self.assertFalse(under_test.tray_actions['reload'].toolTip())
+
+        under_test.add_reload_menu()
+
+        self.assertTrue(under_test.tray_actions['reload'].text())
+        self.assertTrue(under_test.tray_actions['reload'].toolTip())
+
+    def test_about_action(self):
+        """Add About QAction"""
+
+        under_test = AppTrayIcon(self.icon)
+
+        self.assertFalse(under_test.tray_actions['about'].text())
+        self.assertFalse(under_test.tray_actions['about'].toolTip())
+
+        under_test.add_about_menu()
+
+        self.assertTrue(under_test.tray_actions['about'].text())
+        self.assertTrue(under_test.tray_actions['about'].toolTip())
+
+    def test_quit_action(self):
+        """Add Quit QAction"""
+
+        under_test = AppTrayIcon(self.icon)
+
+        self.assertFalse(under_test.tray_actions['exit'].text())
+        self.assertFalse(under_test.tray_actions['exit'].toolTip())
+
+        under_test.add_quit_menu()
+
+        self.assertTrue(under_test.tray_actions['exit'].text())
+        self.assertTrue(under_test.tray_actions['exit'].toolTip())
+
+    def test_build_menu(self):
+        """Build Menu add QActions"""
+
+        # Init Event QWidget and fill DataManager for AppQMainWindow
+        init_event_widget()
+        data_manager.database['host'] = []
+        data_manager.database['service'] = []
+        for key in self.user_key:
+            if key == 'host_notifications_enabled' or key == 'service_notifications_enabled':
+                data_manager.database['user'].data[key] = True
+            else:
+                data_manager.database['user'].data[key] = 'nothing'
+
+        under_test = AppTrayIcon(self.icon)
 
         # Assert no actions in Menu
         self.assertFalse(under_test.menu.actions())
-        self.assertIsNone(under_test.app_about)
-        self.assertIsNotNone(under_test.qaction_factory)
+        self.assertIsNotNone(under_test.app_about)
+        self.assertIsNotNone(under_test.tray_actions)
+        self.assertEqual(under_test.connection_nb, 3)
 
         under_test.build_menu()
 
         # Assert actions are added in Menu
         self.assertTrue(under_test.menu.actions())
         self.assertIsNotNone(under_test.app_about)
-        self.assertIsNotNone(under_test.qaction_factory)
+        self.assertIsNotNone(under_test.tray_actions)
+        self.assertEqual(under_test.connection_nb, 3)
 
     def test_check_connection(self):
         """Tray Icon Check Connection"""
 
-        under_test = TrayIcon(self.icon)
+        under_test = AppTrayIcon(self.icon)
         from alignak_app.backend.backend import app_backend
 
         self.assertEqual(3, under_test.connection_nb)
@@ -158,3 +192,27 @@ class TestTrayIcon(unittest2.TestCase):
         # If App backend is connected, "connection_nb stay" at 3
         under_test.check_connection()
         self.assertEqual(3, under_test.connection_nb)
+
+    def test_refresh_menus(self):
+        """Refresh TrayIcon Menus"""
+
+        under_test = AppTrayIcon(self.icon)
+
+        # Webui is True
+        self.assertTrue(under_test.tray_actions['webui'].isEnabled())
+
+        old_webui = settings.get_config('Alignak', 'webui')
+        settings.edit_setting_value('Alignak', 'webui', '')
+
+        under_test.refresh_menus()
+
+        # When refresh menu and WebUI is "False", QAction is not Enabled
+        self.assertFalse(under_test.tray_actions['webui'].isEnabled())
+
+        # Change settings does not update QAction
+        settings.edit_setting_value('Alignak', 'webui', old_webui)
+        self.assertFalse(under_test.tray_actions['webui'].isEnabled())
+
+        under_test.refresh_menus()
+
+        self.assertTrue(under_test.tray_actions['webui'].isEnabled())

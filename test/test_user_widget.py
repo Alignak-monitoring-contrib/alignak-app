@@ -34,7 +34,7 @@ app = QApplication(sys.argv)
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.user import User
 
-from alignak_app.qobjects.dock.user import UserQWidget
+from alignak_app.qobjects.user.profile import ProfileQWidget
 
 
 class TestUserQWidget(unittest2.TestCase):
@@ -57,7 +57,7 @@ class TestUserQWidget(unittest2.TestCase):
     def test_initialize(self):
         """Initialize UserProfile"""
 
-        under_test = UserQWidget()
+        under_test = ProfileQWidget()
 
         data_manager.database['user'].data['email'] = 'mail@test'
         data_manager.database['user'].data['alias'] = 'alias'
@@ -83,7 +83,7 @@ class TestUserQWidget(unittest2.TestCase):
     def test_user_qwidgets(self):
         """User QWidgets Creation"""
 
-        under_test = UserQWidget()
+        under_test = ProfileQWidget()
 
         main_widget_test = under_test.get_informations_widget()
         notif_widget_test = under_test.get_notifications_widget()

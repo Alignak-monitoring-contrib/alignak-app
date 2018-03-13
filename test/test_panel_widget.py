@@ -29,11 +29,10 @@ from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.host import Host
 from alignak_app.items.service import Service
 
-from alignak_app.qobjects.panel.panel import PanelQWidget
-from alignak_app.qobjects.dock.spy import SpyQWidget
+from alignak_app.qobjects.panel import PanelQWidget
 
 
-class TestLoginQDialog(unittest2.TestCase):
+class TestPanelQWidget(unittest2.TestCase):
     """
         This file test the PanelQWidget class.
     """
@@ -111,12 +110,11 @@ class TestLoginQDialog(unittest2.TestCase):
         self.assertIsNotNone(under_test.host_widget)
         self.assertIsNotNone(under_test.services_widget)
         self.assertIsNotNone(under_test.spy_button)
+        self.assertIsNotNone(under_test.spy_widget)
 
-        self.assertIsNone(under_test.spy_widget)
         self.assertFalse(under_test.hostnames_list)
 
-        spy_widget_test = SpyQWidget()
-        under_test.initialize(spy_widget_test)
+        under_test.initialize()
 
         self.assertIsNotNone(under_test.layout)
         self.assertIsNotNone(under_test.line_search)
@@ -125,25 +123,27 @@ class TestLoginQDialog(unittest2.TestCase):
         self.assertIsNotNone(under_test.host_widget)
         self.assertIsNotNone(under_test.services_widget)
         self.assertIsNotNone(under_test.spy_button)
-
         self.assertIsNotNone(under_test.spy_widget)
-        self.assertTrue(under_test.hostnames_list)
+
         self.assertEqual(
             ['host0', 'host1', 'host2', 'host3', 'host4', 'host5', 'host6', 'host7', 'host8', 'host9'],
             under_test.hostnames_list
         )
 
+        # 10 problems for CRITICAL services
+        self.assertEqual('Problems (10)', under_test.tab_widget.tabText(1))
+
     def test_spy_host(self):
         """Panel Add Spy Host"""
 
         under_test = PanelQWidget()
-        spy_widget_test = SpyQWidget()
-        under_test.initialize(spy_widget_test)
+        under_test.initialize()
 
         # Host is not in hostname_list
         under_test.line_search.setText('no_host')
         under_test.spy_host()
         self.assertTrue(under_test.spy_button.isEnabled())
+        self.assertEqual('Spied Hosts', under_test.tab_widget.tabText(2))
         # Host Id is not added in spied_hosts of SpyQWidget.SpyQListWidget
         self.assertFalse('_id0' in under_test.spy_widget.spy_list_widget.spied_hosts)
 
@@ -151,5 +151,23 @@ class TestLoginQDialog(unittest2.TestCase):
         under_test.line_search.setText('host0')
         under_test.spy_host()
         self.assertFalse(under_test.spy_button.isEnabled())
+        self.assertEqual('Spied Hosts (1)', under_test.tab_widget.tabText(2))
         # Host Id is added in spied_hosts of SpyQWidget.SpyQListWidget
         self.assertTrue('_id0' in under_test.spy_widget.spy_list_widget.spied_hosts)
+
+    def test_update_panels(self):
+        """Update QTabPanel Problems"""
+
+        under_test = PanelQWidget()
+        under_test.initialize()
+
+        # 10 problems for CRITICAL services
+        self.assertEqual('Problems (10)', under_test.tab_widget.tabText(1))
+
+        # Make a service Acknowledged (True)
+        data_manager.update_item_data('service', '_id0', {'ls_acknowledged': True})
+
+        under_test.tab_widget.widget(1).update_problems_data()
+
+        # There are only 9 services in CRITICAL condition
+        self.assertEqual('Problems (9)', under_test.tab_widget.tabText(1))

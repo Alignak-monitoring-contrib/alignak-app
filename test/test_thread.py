@@ -24,7 +24,8 @@ import unittest2
 from alignak_app.backend.backend import app_backend
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
-from alignak_app.qthreads.thread import BackendQThread
+
+from alignak_app.qobjects.threads.thread import BackendQThread
 
 settings.init_config()
 init_localization()
@@ -42,3 +43,4 @@ class TestBackendQThread(unittest2.TestCase):
         under_test = BackendQThread('user')
 
         self.assertEqual('user', under_test.thread_name)
+        self.assertIsNone(under_test.data)

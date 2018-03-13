@@ -48,7 +48,7 @@ class ToggleQWidgetButton(QWidget):
         layout = QHBoxLayout()
         self.setLayout(layout)
 
-        self.toggle_btn.setText('ON')
+        self.toggle_btn.setText(_('ON'))
         self.toggle_btn.setFixedSize(80, 20)
         self.toggle_btn.setCheckable(True)
         self.toggle_btn.setChecked(True)

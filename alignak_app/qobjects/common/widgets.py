@@ -27,8 +27,8 @@
 
 import sys
 
-from PyQt5.Qt import QPushButton, QHBoxLayout, QApplication, QWidget, QIcon, QLabel
-from PyQt5.Qt import QStyleOption, QStyle, QPainter, Qt
+from PyQt5.Qt import QPushButton, QHBoxLayout, QVBoxLayout, QWidget, QIcon, QLabel, QDialog
+from PyQt5.Qt import QStyleOption, QStyle, QPainter, Qt, QApplication
 
 from alignak_app.utils.config import settings
 
@@ -147,6 +147,84 @@ def get_logo_widget(child_widget, title, exitapp=False):
     logo_widget.initialize(child_widget, title, exitapp)
 
     return logo_widget
+
+
+class MessageQDialog(QDialog):
+    """
+        Class who create a Message QDialog to display texts in Alignak-app
+    """
+
+    def __init__(self, parent=None):
+        super(MessageQDialog, self).__init__(parent)
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setStyleSheet(settings.css_style)
+        self.setWindowIcon(QIcon(settings.get_image('icon')))
+        self.setFixedSize(500, 200)
+        self.setObjectName('dialog')
+
+    def initialize(self, widgettitle, dialog, title, text):
+        """
+        Initialize QDialog for PasswordDialog
+
+        :param widgettitle: title of the QDialog
+        :type widgettitle: str
+        :param dialog: type of dialog ('notes' or 'error')
+        :type dialog: str
+        :param title: title of text to display
+        :type title: str
+        :param text: text to display
+        :type text: str
+        """
+
+        center_widget(self)
+
+        # Main layout
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(main_layout)
+
+        main_layout.addWidget(get_logo_widget(self, widgettitle))
+        main_layout.addWidget(self.get_message_widget(dialog, title, text))
+
+    def get_message_widget(self, dialog, title, text):
+        """
+        Return colored message QWidget
+
+        :param dialog: type of dialog ('notes' or 'error')
+        :type dialog: str
+        :param title: title of text to display
+        :type title: str
+        :param text: text to display
+        :type text: str
+        :return: message QWidget
+        :rtype: QWidget
+        """
+
+        # Token QWidget
+        token_widget = QWidget()
+        token_widget.setObjectName('dialog')
+        token_layout = QVBoxLayout()
+        token_widget.setLayout(token_layout)
+
+        token_title = QLabel(title)
+        token_title.setObjectName('itemtitle')
+        token_layout.addWidget(token_title)
+        token_layout.setAlignment(token_title, Qt.AlignCenter)
+
+        token_label = QLabel(text)
+        token_label.setObjectName(dialog)
+        token_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        token_label.setWordWrap(True)
+        token_layout.addWidget(token_label)
+
+        # Login button
+        accept_btn = QPushButton('OK', self)
+        accept_btn.clicked.connect(self.accept)
+        accept_btn.setObjectName('ok')
+        accept_btn.setMinimumHeight(30)
+        token_layout.addWidget(accept_btn)
+
+        return token_widget
 
 
 def center_widget(widget):

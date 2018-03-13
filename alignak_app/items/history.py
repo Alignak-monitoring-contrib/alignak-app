@@ -61,7 +61,7 @@ class History(Item):
         return request_model
 
     @staticmethod
-    def get_history_icon_name_from_message(message, event_type):
+    def get_history_icon_name(message, event_type):
         """
         Return icon name related to message or event type
 
@@ -78,7 +78,7 @@ class History(Item):
         elif 'downtime' in event_type:
             icon_name = 'downtime'
         elif 'comment' in event_type:
-            icon_name = 'edit'
+            icon_name = 'event_info'
         elif 'request' in event_type:
             icon_name = 'request'
         else:

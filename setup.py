@@ -43,8 +43,10 @@ from alignak_app import __name__ as __pkg_name__
 
 # Requirements
 install_requires = [
-    'alignak_backend_client',
-    'configParser',
+    'alignak-backend-client',
+    'configparser',
+    'pyqt5<5.10',
+    'python-gettext',
 ]
 
 # Define paths

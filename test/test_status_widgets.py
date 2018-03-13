@@ -22,24 +22,42 @@
 import sys
 
 import unittest2
-from PyQt5.Qt import QApplication, QWidget, QSize
+from PyQt5.Qt import QApplication, QLabel, QSize
 
-from alignak_app.backend.backend import app_backend
+from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.daemon import Daemon
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.qobjects.dock.status import StatusQDialog, StatusQWidget
+from alignak_app.qobjects.alignak.status import StatusQDialog
 
 
-class TestStatus(unittest2.TestCase):
+class TestStatusQDialog(unittest2.TestCase):
     """
         This file test methods of StatusQDialog class object
     """
 
     settings.init_config()
     init_localization()
-    app_backend.login()
+
+    daemons_list = []
+    for i in range(0, 10):
+        daemon = Daemon()
+        daemon.create(
+            '_id%d' % i,
+            {
+                'name': 'daemon%d' % i,
+                'alive': True,
+                'address': '127.0.0.%d' % i,
+                'port': '700%d' % i,
+                'reachable': True,
+                'spare': True,
+                'passive': True,
+                'last_check': 100000
+            },
+            'daemon%d' % i
+        )
+        daemons_list.append(daemon)
 
     @classmethod
     def setUpClass(cls):
@@ -60,21 +78,12 @@ class TestStatus(unittest2.TestCase):
 
         under_test.initialize()
 
-    def test_get_buttons_widget(self):
-        """Get Buttons Status from StatusQDialog"""
-
-        status_dialog_test = StatusQDialog()
-
-        under_test = status_dialog_test.get_buttons_widget()
-
-        self.assertIsInstance(under_test, QWidget)
-
     def test_set_daemons_labels(self):
         """Set Daemons QLabels"""
 
         under_test = StatusQDialog()
         labels_test = [
-            'alive', 'name', 'reachable', 'spare', 'address', 'port', 'passive', 'last_check'
+            'alive', 'name', 'reachable', 'spare', 'address', 'passive', 'last_check'
         ]
 
         daemon_test = Daemon()
@@ -94,7 +103,7 @@ class TestStatus(unittest2.TestCase):
             self.assertTrue(lbl_test in under_test.labels['daemon-name'])
 
     def test_add_daemon_titles_labels(self):
-        """TODO"""
+        """Add Daemon QLabels"""
 
         under_test = StatusQDialog()
 
@@ -115,21 +124,28 @@ class TestStatus(unittest2.TestCase):
         self.assertEqual(QSize(14, 14), under_test.labels['daemon-name']['spare'].size())
         self.assertEqual(QSize(14, 14), under_test.labels['daemon-name']['passive'].size())
 
-    def test_initialize_status_qwidget(self):
-        """Initialize StatusQWidget"""
+    def test_update_dialog(self):
+        """Update Status QDialog"""
 
-        under_test = StatusQWidget()
+        # Fill databse with sample daemons
+        data_manager.update_database('alignakdaemon', self.daemons_list)
 
-        self.assertIsNotNone(under_test.backend_connected)
+        # Init widget
+        under_test = StatusQDialog()
 
-        self.assertIsNotNone(under_test.daemons_status)
-
-        self.assertIsNotNone(under_test.refresh_timer)
-        self.assertFalse(under_test.refresh_timer.isActive())
-        self.assertIsNotNone(under_test.status_dialog)
-
-        self.assertIsInstance(under_test.status_dialog, StatusQDialog)
+        # Labels are empty
+        self.assertFalse(under_test.labels)
 
         under_test.initialize()
+        under_test.update_dialog()
 
-        self.assertTrue(under_test.refresh_timer.isActive())
+        # Labels are filled
+        i = 0
+        for daemon_labels in under_test.labels:
+            self.assertTrue('daemon%d' % i in under_test.labels)
+            i += 1
+            for label in under_test.labels[daemon_labels]:
+                self.assertIsInstance(under_test.labels[daemon_labels][label], QLabel)
+
+        daemon_labels = under_test.labels['daemon0']
+        self.assertEqual('127.0.0.0:7000', daemon_labels['address'].text())

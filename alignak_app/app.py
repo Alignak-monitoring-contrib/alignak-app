@@ -47,11 +47,11 @@ from alignak_app.locales.locales import init_localization
 from alignak_app.backend.backend import app_backend
 from alignak_app.backend.datamanager import data_manager
 
-from alignak_app.qthreads.threadmanager import thread_manager, BackendQThread
-from alignak_app.qobjects.common.widgets import center_widget
+from alignak_app.qobjects.threads.threadmanager import thread_manager, BackendQThread
+from alignak_app.qobjects.common.widgets import MessageQDialog, center_widget
 from alignak_app.qobjects.login.login import LoginQDialog
-from alignak_app.qobjects.dock.events import init_event_widget
-from alignak_app.qobjects.systray.tray_icon import TrayIcon
+from alignak_app.qobjects.events.events import init_event_widget
+from alignak_app.qobjects.systray.tray_icon import AppTrayIcon
 
 settings.init_config()
 settings.init_css()
@@ -171,11 +171,7 @@ class AlignakApp(QObject):  # pragma: no cover
             password = settings.get_config('Alignak', 'password')
 
         if not app_backend.login(username, password):
-            login = LoginQDialog()
-            login.create_widget()
-
-            while not app_backend.connected:
-                login.exec_()
+            self.show_login_window()
 
         # Launch start threads
         thread_to_launch = thread_manager.get_threads_to_launch()
@@ -213,7 +209,7 @@ class AlignakApp(QObject):  # pragma: no cover
         self.threadmanager_timer.start()
         self.threadmanager_timer.timeout.connect(self.check_threads)
 
-        self.tray_icon = TrayIcon(QIcon(settings.get_image('icon')))
+        self.tray_icon = AppTrayIcon(QIcon(settings.get_image('icon')))
         self.tray_icon.build_menu()
         self.tray_icon.show()
 
@@ -221,6 +217,31 @@ class AlignakApp(QObject):  # pragma: no cover
             pass
 
         sys.exit(app.exec_())
+
+    @staticmethod
+    def show_login_window():
+        """
+        Show LoginQDialog window for user to login to backend
+
+        """
+
+        login = LoginQDialog()
+        login.create_widget()
+
+        while not app_backend.connected:
+            connect_dialog = MessageQDialog()
+            connect_dialog.initialize(
+                _('Connection'),
+                'error',
+                _('Warning!'),
+                _('Access denied! Check your username and password.')
+            )
+            if login.exec_() == login.Accepted:
+                connect_dialog.close()
+                connect_dialog.deleteLater()
+                break
+            else:
+                connect_dialog.exec_()
 
     @staticmethod
     def quit_launched_threads(launched_threads):

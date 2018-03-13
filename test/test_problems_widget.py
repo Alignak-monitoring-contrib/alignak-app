@@ -23,16 +23,16 @@ import sys
 
 import unittest2
 
-from PyQt5.Qt import QApplication
+from PyQt5.Qt import QApplication, QWidget
 
 from alignak_app.items.host import Host
-from alignak_app.items.service import Service
-from alignak_app.backend.datamanager import data_manager
 
-from alignak_app.qobjects.panel.problems import ProblemsQWidget, QWidget
+from alignak_app.qobjects.alignak.problems import ProblemsQWidget
+from alignak_app.qobjects.alignak.problems_table import AppQTableWidgetItem
+from alignak_app.qobjects.events.spy import SpyQWidget
 
 
-class TestDataManager(unittest2.TestCase):
+class TestProblemsQWidget(unittest2.TestCase):
     """
         This file test the ProblemsQWidget class.
     """
@@ -56,27 +56,6 @@ class TestDataManager(unittest2.TestCase):
         )
         host_list.append(host)
 
-    # Service data test
-    service_list = []
-    for i in range(0, 10):
-        service = Service()
-        service.create(
-            '_id%d' % i,
-            {
-                'name': 'service%d' % i,
-                'alias': 'Service %d' % i,
-                'host': '_id%d' % i,
-                'ls_acknowledged': False,
-                'ls_downtimed': False,
-                'ls_state': 'CRITICAL',
-                'ls_output': 'output host %d' % i,
-                'aggregation': 'disk',
-                '_overall_state_id': 4
-            },
-            'service%d' % i
-        )
-        service_list.append(service)
-
     @classmethod
     def setUpClass(cls):
         """Create QApplication"""
@@ -91,26 +70,15 @@ class TestDataManager(unittest2.TestCase):
         under_test = ProblemsQWidget()
 
         self.assertIsNotNone(under_test.layout)
-        self.assertTrue(under_test.problem_widget)
+        self.assertTrue(under_test.problem_table)
         self.assertTrue(under_test.problems_title)
-        self.assertTrue(under_test.headers_list)
-        self.assertEqual(
-            ['Item Type', 'Host', 'Service', 'State', 'Actions', 'Output'],
-            under_test.headers_list
-        )
 
-        data_manager.update_database('host', self.host_list)
-        data_manager.update_database('service', self.service_list)
-        under_test.initialize()
+        under_test.initialize(None)
 
         self.assertIsNotNone(under_test.layout)
-        self.assertTrue(under_test.problem_widget)
+        self.assertTrue(under_test.problem_table)
         self.assertTrue(under_test.problems_title)
-        self.assertTrue(under_test.headers_list)
-        self.assertEqual(
-            ['Item Type', 'Host', 'Service', 'State', 'Actions', 'Output'],
-            under_test.headers_list
-        )
+
         self.assertEqual('itemtitle', under_test.problems_title.objectName())
 
     def test_get_problems_widget_title(self):
@@ -122,3 +90,43 @@ class TestDataManager(unittest2.TestCase):
 
         self.assertIsInstance(under_test, QWidget)
 
+    def test_add_spy_host(self):
+        """Add Psy Host from Problems QWidget"""
+
+        under_test = ProblemsQWidget()
+        spy_widget_test = SpyQWidget()
+        spy_widget_test.initialize()
+        under_test.initialize(spy_widget_test)
+
+        # Set a current item
+        tableitem_test = AppQTableWidgetItem()
+        tableitem_test.add_backend_item(self.host_list[0])
+        under_test.problem_table.setItem(0, 0, tableitem_test)
+        under_test.problem_table.setCurrentItem(tableitem_test)
+
+        self.assertFalse(under_test.spy_widget.spy_list_widget.spied_hosts)
+
+        under_test.add_spied_host()
+
+        # Assert host has been spied
+        self.assertTrue(under_test.spy_widget.spy_list_widget.spied_hosts)
+        self.assertTrue(
+            self.host_list[0].item_id in under_test.spy_widget.spy_list_widget.spied_hosts
+        )
+
+    def test_update_problems_data(self):
+        """Update Problems Data"""
+
+        under_test = ProblemsQWidget()
+        spy_widget_test = SpyQWidget()
+        spy_widget_test.initialize()
+        under_test.initialize(spy_widget_test)
+
+        host_tableitem_test = under_test.problem_table.takeItem(0, 0)
+        output_tableitem_test = under_test.problem_table.takeItem(0, 1)
+
+        under_test.update_problems_data()
+
+        # Assert Table items and QWidgets have changed
+        self.assertNotEqual(host_tableitem_test, under_test.problem_table.takeItem(0, 0))
+        self.assertNotEqual(output_tableitem_test, under_test.problem_table.takeItem(0, 1))

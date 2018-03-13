@@ -28,7 +28,7 @@ from PyQt5.QtWidgets import QApplication, QWidget
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.qobjects.dock.user_options import UserOptionsQDialog
+from alignak_app.qobjects.user.options import UserOptionsQDialog
 
 settings.init_config()
 init_localization()

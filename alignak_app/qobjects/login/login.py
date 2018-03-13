@@ -113,13 +113,13 @@ class LoginQDialog(QDialog):
         # Username field
         self.username_line = QLineEdit(self)
         self.username_line.setFixedHeight(25)
-        self.username_line.setPlaceholderText(_('Username'))
+        self.username_line.setPlaceholderText(_('username...'))
         login_layout.addWidget(self.username_line, 4, 0, 1, 2)
 
         # Password field
         self.password_line = QLineEdit(self)
         self.password_line.setFixedHeight(25)
-        self.password_line.setPlaceholderText(_('Password'))
+        self.password_line.setPlaceholderText(_('password...'))
         self.password_line.setEchoMode(QLineEdit.Password)
         login_layout.addWidget(self.password_line, 5, 0, 1, 2)
 

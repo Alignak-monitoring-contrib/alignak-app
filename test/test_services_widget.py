@@ -38,7 +38,7 @@ user = User()
 user.create('_id', {'name': 'name'}, 'name')
 data_manager.database['user'] = user
 
-from alignak_app.qobjects.panel.services import ServicesQWidget
+from alignak_app.qobjects.service.services import ServicesQWidget
 
 
 class TestServicesQWidget(unittest2.TestCase):
@@ -116,7 +116,7 @@ class TestServicesQWidget(unittest2.TestCase):
         self.assertIsNone(under_test.service_items)
         self.assertIsNotNone(under_test.services_tree_widget)
         self.assertIsNotNone(under_test.service_data_widget)
-        self.assertIsNotNone(under_test.nb_services_widget)
+        self.assertIsNotNone(under_test.services_dashboard)
 
         under_test.initialize()
 
@@ -124,7 +124,7 @@ class TestServicesQWidget(unittest2.TestCase):
         self.assertIsNone(under_test.service_items)
         self.assertIsNotNone(under_test.services_tree_widget)
         self.assertIsNotNone(under_test.service_data_widget)
-        self.assertIsNotNone(under_test.nb_services_widget)
+        self.assertIsNotNone(under_test.services_dashboard)
 
     def test_set_data(self):
         """Set Data Services QWidget"""
@@ -160,13 +160,13 @@ class TestServicesQWidget(unittest2.TestCase):
 
         old_tree_widget = under_test.services_tree_widget
         old_service_data_widget = under_test.service_data_widget
-        old_nb_services_widget = under_test.nb_services_widget
+        old_nb_services_widget = under_test.services_dashboard
         old_service_items = under_test.service_items
 
         under_test.update_widget()
 
         self.assertNotEqual(old_tree_widget, under_test.services_tree_widget)
         self.assertNotEqual(old_service_data_widget, under_test.service_data_widget)
-        self.assertNotEqual(old_nb_services_widget, under_test.nb_services_widget)
+        self.assertNotEqual(old_nb_services_widget, under_test.services_dashboard)
         # Assert Services Items had been sorted
         self.assertNotEqual(old_service_items, under_test.service_items)

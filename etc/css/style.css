@@ -1,8 +1,4 @@
 /****** QWidget / QDialog ******/
-QWidget {
-    background-color: white;
-}
-
 QWidget#dialog {
     border-width: 0px 2px 2px 2px;
     border-color: #475c67;
@@ -21,19 +17,33 @@ QWidget#logo {
     background-color: #607d8b;
 }
 
+QWidget#history {
+    border-width: 0px 0px 1px 0px;
+    border-color: #6c9cb3;
+    border-style: solid;
+}
+
 QDialog#about, QWidget#about{
     background-color: #3b4155;
 }
 
 /****** QLabel ******/
 QLabel {
-    color: black;
+    color: #3b4155;
     font-family: Roboto,Helvetica,Arial,sans-serif;
     font-size: 10.5pt;
 }
 
 QLabel#error {
-    color: red;
+    padding-left: 10px;
+    color: #c7254e;
+    background-color: #f9f2f4;
+}
+
+QLabel#notes {
+    padding-left: 10px;
+    color: #2581c7;
+    background-color: #e6f4ff;
 }
 
 QLabel#title {
@@ -110,11 +120,6 @@ QLabel#optionTrue {
 
 QLabel#optionFalse {
     color: #f44336;
-}
-
-QLabel#notes {
-    color: #2581c7;
-    background-color: #e6f4ff;
 }
 
 QLabel#services_ok, QLabel#hosts_up {
@@ -202,7 +207,7 @@ QLabel#about {
 
 /****** QToolTip ******/
 QToolTip {
-    background-color: black;
+    background-color: #3b4155;
     color: #1fb3e3;
 }
 
@@ -374,14 +379,24 @@ QFrame#vseparator {
 /****** QListWidget ******/
 QListWidget {
     border: none;
-    background-color: transparent;
+    background-color: white;
+}
+
+QListWidget::item {
+    height: 35px;
+    color: #3b4155;
+}
+
+QListWidget::item:hover {
+    background-color: white;
+    border: 1px solid #1fb4e4;
+    color: #3884c3;
 }
 
 QListWidget::item:selected {
-    color: black;
     background-color: white;
-    border: 1px solid #1fb4e4;
-    border-radius: 3px;
+    color: #3884c3;
+    border: 1px solid #3884c3;
 }
 
 /****** QTableWidget ******/
@@ -389,20 +404,29 @@ QTableWidget {
     gridline-color: white;
 }
 
-QTableWidget::item {
-    border-width: 0px 0px 1px 0px;
-    border-color: #6c9cb3;
-    border-style: solid;
+QTableWidget#history::item:selected {
+    background-color: #f0f9fd;
 }
 
-QTableWidget::item:selected {
-    color: black;
+QTableWidget::item {
+    color: #3b4155;
+}
+
+QTableWidget#problems::item:selected {
+    color: #e67e22;
+    background-color: white;
 }
 
 /****** QHeaderView ******/
 QHeaderView::section {
-    background-color: #607d8b;
+    border-style: none;
+    background-color: #3884c3;
     color: white;
+    border-right: 1px solid white;
+}
+
+QHeaderView::section:vertical {
+    border-right: 1px solid white;
 }
 
 /****** QTabWidget / QTabBar ******/
@@ -446,7 +470,7 @@ QTreeWidget {
     alternate-background-color: #f0f9fd;
     background: white;
     selection-background-color: white;
-    selection-color: black;
+    selection-color: #3b4155;
     show-decoration-selected: 1;
     border: none;
 }
@@ -458,7 +482,7 @@ QTreeWidget::item {
 
 QTreeWidget::item::selected::active {
     background-color: white;
-    color: black;
+    color: #3b4155;
     border: 1px solid #1fb4e4;
     border-radius: 3px;
 }

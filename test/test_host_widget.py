@@ -30,9 +30,8 @@ from alignak_app.items.service import Service
 from alignak_app.items.user import User
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
-from alignak_app.qobjects.panel.host import HostQWidget
+from alignak_app.qobjects.host.host import HostQWidget
 
-# app = QApplication(sys.argv)
 init_localization()
 data_manager.database['user'] = User()
 data_manager.database['user'].create('_id', {}, 'name')
@@ -74,8 +73,8 @@ class TestHostQWidget(unittest2.TestCase):
 
         self.assertIsNone(under_test.host_item)
         self.assertIsNone(under_test.service_items)
-        self.assertIsNone(under_test.history_widget)
         self.assertIsNone(under_test.layout())
+        self.assertIsNotNone(under_test.history_widget)
         self.assertIsNotNone(under_test.labels)
         self.assertIsNotNone(under_test.history_btn)
 
@@ -100,4 +99,3 @@ class TestHostQWidget(unittest2.TestCase):
         self.assertIsNotNone(under_test.service_items)
         for item in under_test.service_items:
             self.assertIsInstance(item, Service)
-

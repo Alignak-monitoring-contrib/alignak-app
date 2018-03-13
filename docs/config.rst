@@ -1,7 +1,10 @@
 .. _config:
 
+Configuration
+#############
+
 Environment Variables
-=====================
+*********************
 
 During installation, Alignak-app creates some folders that contains all the files application need to run.
 Then she will keep them in **environment variables**.
@@ -15,7 +18,7 @@ The application will normally automatically detect the folders used by the appli
 During Windows installation, if you used **Installer**, these variables are automatically filled.
 
 On Linux
---------
+========
 
 Alignak-app will try to create ``ALIGNAKAPP_USR_DIR`` for later configurations. By default this folder should be::
 
@@ -27,7 +30,7 @@ The ``ALIGNAKAPP_APP_DIR`` should be under one of the following folders and is c
     /usr/local/alignak_app/
 
 On Windows
-----------
+==========
 
 On Windows, use **Installer** is recommended (see :ref:`installer`) to respect Windows conventions.
 ``ALIGNAKAPP_USR_DIR`` and ``ALIGNAKAPP_APP_DIR`` variables are by default set to::
@@ -39,8 +42,8 @@ And ``ALIGNAKAPP_USR_DIR`` and ``ALIGNAKAPP_APP_DIR`` variables should be by def
 
     C:\Users\user\AppData\Roaming\Python\alignak_app\
 
-Configuration
-=============
+Settings File
+*************
 
 Before running application, **you must configure it**.
 
@@ -53,15 +56,8 @@ The most significant Section is **[Alignak]**. You'll need set your backend url 
 
 **To Know:** Without connection on Backend of Alignak, App won't start ! "
 
-Settings file
--------------
-
-Here is the full ``settings.cfg`` file. This file contains comments for each setting.
-
-    .. literalinclude:: ../etc/settings.cfg
-
 Connection to Backend
----------------------
+=====================
 
 Alignak-app have a login form by default, who let you to connect with the username and password define in backend.
 
@@ -85,3 +81,10 @@ To obtain a token, open a python terminal and type the following commands::
     print(r.text)
 
 You can also visit: `Alignak-backend : Get Token <http://docs.alignak.net/projects/alignak-backend/en/latest/api.html#get-the-authentication-token>`_
+
+File Example
+============
+
+Here is the full ``settings.cfg`` file. This file contains comments for each setting.
+
+    .. literalinclude:: ../etc/settings.cfg

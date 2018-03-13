@@ -20,48 +20,54 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Tray Icon
-    +++++++++
-    Tray Icon manage the creation of QSystemTrayIcon for Alignak-app menus
+    App TrayIcon
+    ++++++++++++
+    App TrayIcon manage the creation of QSystemTrayIcon for Alignak-app menus
 """
 
 import sys
+
 from logging import getLogger
 
-from PyQt5.Qt import QMenu, QSystemTrayIcon, QTimer
+from PyQt5.Qt import QMenu, QSystemTrayIcon, QTimer, QAction, QIcon
 
-from alignak_app.utils.config import settings
+from alignak_app.utils.config import settings, open_url
 from alignak_app.backend.backend import app_backend
 
 from alignak_app.qobjects.app_main import AppQMainWindow
-from alignak_app.qobjects.common.about import AboutQDialog
-from alignak_app.qobjects.systray.qactions_factory import QActionFactory
-from alignak_app.qobjects.dock.events import send_event
+from alignak_app.qobjects.about import AboutQDialog
+from alignak_app.qobjects.events.events import send_event
 
-from alignak_app.qthreads.threadmanager import thread_manager
+from alignak_app.qobjects.threads.threadmanager import thread_manager
 
 
 logger = getLogger(__name__)
 
 
-class TrayIcon(QSystemTrayIcon):
+class AppTrayIcon(QSystemTrayIcon):
     """
-        Class who create QMenu and QAction.
+        Class who create `QMenu` and `QActions` for `QSystemTrayIcon` (displayed in task bar)
     """
 
     def __init__(self, icon, parent=None):
         QSystemTrayIcon.__init__(self, icon, parent)
         # Fields
         self.menu = QMenu(parent)
-        self.qaction_factory = QActionFactory()
-        self.app_about = None
+        self.app_about = AboutQDialog()
         self.app_main = AppQMainWindow()
         self.connection_timer = QTimer()
         self.connection_nb = 3
+        self.tray_actions = {
+            'app': QAction(),
+            'webui': QAction(),
+            'reload': QAction(),
+            'about': QAction(),
+            'exit': QAction(),
+        }
 
     def build_menu(self):
         """
-        Initialize and create each action of menu.
+        Initialize and create each QAction of QMenu
 
         """
 
@@ -73,17 +79,19 @@ class TrayIcon(QSystemTrayIcon):
 
         # Create actions
         self.add_alignak_menu()
+        self.add_webui_menu()
         self.menu.addSeparator()
         self.add_reload_menu()
         self.add_about_menu()
         self.menu.addSeparator()
-        self.create_quit_action()
+        self.add_quit_menu()
 
         self.setContextMenu(self.menu)
+        self.refresh_menus()
 
     def check_connection(self):
         """
-        Check periodically connection for App
+        Check periodically connection to Alignak backend
 
         """
 
@@ -102,74 +110,89 @@ class TrayIcon(QSystemTrayIcon):
             pass
 
         self.app_main.dock.status_widget.update_status()
+        self.refresh_menus()
 
     def add_alignak_menu(self):
         """
-        Create "dock" action
+        Create and add to menu "app" QAction
 
         """
 
-        self.qaction_factory.create(
-            'icon',
-            _('Alignak-App'),
-            self
+        self.app_main.initialize()
+
+        self.tray_actions['app'].setIcon(QIcon(settings.get_image('icon')))
+        self.tray_actions['app'].setText(_('Alignak-App'))
+        self.tray_actions['app'].setToolTip(_('Display Alignak-App'))
+        self.tray_actions['app'].triggered.connect(self.app_main.show)
+
+        self.menu.addAction(self.tray_actions['app'])
+
+    def add_webui_menu(self):
+        """
+        Create and add to menu "webui" QAction
+
+        """
+
+        self.tray_actions['webui'].setIcon(QIcon(settings.get_image('web')))
+        self.tray_actions['webui'].setText(_('Go to WebUI'))
+        self.tray_actions['webui'].setToolTip(_('Go to Alignak WebUI'))
+        self.tray_actions['webui'].triggered.connect(
+            lambda: open_url('livestate')
         )
 
-        self.app_main.initialize()
-        self.qaction_factory.get_action('icon').triggered.connect(self.app_main.show)
+        self.menu.addAction(self.tray_actions['webui'])
 
-        self.menu.addAction(self.qaction_factory.get_action('icon'))
+    def refresh_menus(self):
+        """
+        Refresh menu if needed
+
+        """
+
+        if settings.get_config('Alignak', 'webui'):
+            self.tray_actions['webui'].setEnabled(True)
+        else:
+            self.tray_actions['webui'].setEnabled(False)
 
     def add_reload_menu(self):
         """
-        Create "reload" action
+        Create and add to menu "reload" QAction
 
         """
 
-        self.qaction_factory.create(
-            'refresh',
-            _('Reload Configuration'),
-            self
-        )
+        self.tray_actions['reload'].setIcon(QIcon(settings.get_image('refresh')))
+        self.tray_actions['reload'].setText(_('Reload configuration'))
+        self.tray_actions['reload'].setToolTip(_('Reload configuration'))
+        self.tray_actions['reload'].triggered.connect(self.reload_configuration)
 
-        self.qaction_factory.get_action('refresh').triggered.connect(self.reload_configuration)
-
-        self.menu.addAction(self.qaction_factory.get_action('refresh'))
+        self.menu.addAction(self.tray_actions['reload'])
 
     def add_about_menu(self):
         """
-        Create AppAbout QWidget and "about" action.
+        Create and add to menu "about" QAction
 
         """
 
-        self.app_about = AboutQDialog()
         self.app_about.initialize()
 
-        self.qaction_factory.create(
-            'about',
-            _('About'),
-            self
-        )
+        self.tray_actions['about'].setIcon(QIcon(settings.get_image('about')))
+        self.tray_actions['about'].setText(_('About...'))
+        self.tray_actions['about'].setToolTip(_('About Alignak-app'))
+        self.tray_actions['about'].triggered.connect(self.app_about.show_about)
 
-        self.qaction_factory.get_action('about').triggered.connect(self.app_about.show_about)
+        self.menu.addAction(self.tray_actions['about'])
 
-        self.menu.addAction(self.qaction_factory.get_action('about'))
-
-    def create_quit_action(self):
+    def add_quit_menu(self):
         """
-        Create quit action.
+        Create and add to menu "exit" QAction
 
         """
 
-        self.qaction_factory.create(
-            'exit',
-            'Quit',
-            self
-        )
+        self.tray_actions['exit'].setIcon(QIcon(settings.get_image('exit')))
+        self.tray_actions['exit'].setText(_('Quit'))
+        self.tray_actions['exit'].setToolTip(_('Quit Alignak-app'))
+        self.tray_actions['exit'].triggered.connect(self.quit_app)
 
-        self.qaction_factory.get_action('exit').triggered.connect(self.quit_app)
-
-        self.menu.addAction(self.qaction_factory.get_action('exit'))
+        self.menu.addAction(self.tray_actions['exit'])
 
     @staticmethod
     def quit_app():  # pragma: no cover

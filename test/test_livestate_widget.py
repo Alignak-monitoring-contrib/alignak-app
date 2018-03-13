@@ -29,7 +29,7 @@ from alignak_app.items.livesynthesis import LiveSynthesis
 
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.qobjects.dock.livestate import LivestateQWidget
+from alignak_app.qobjects.alignak.livestate import LivestateQWidget
 
 
 class TestLivestateQWidget(unittest2.TestCase):
