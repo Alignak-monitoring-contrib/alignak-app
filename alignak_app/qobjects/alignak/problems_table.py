@@ -20,9 +20,9 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Problems
-    ++++++++
-    Problems manage creation of QTableView to display problems found in Alignak backend:
+    Problems Table
+    ++++++++++++++
+    Problems Table manage creation of QTableView to display problems found in Alignak backend:
 
     * **Hosts**: ``DOWN``, ``UNREACHABLE``
     * **Services**: ``WARNING``, ``CRITICAL``, ``UNKNOWN``
@@ -32,6 +32,7 @@
 from logging import getLogger
 
 from PyQt5.Qt import QIcon, QStandardItem, Qt, QAbstractItemView, QSize, QTableView
+from PyQt5.Qt import QSortFilterProxyModel, QStandardItemModel
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
@@ -48,32 +49,19 @@ class ProblemsQTableView(QTableView):
     def __init__(self, parent=None):
         super(ProblemsQTableView, self).__init__(parent)
         self.setWindowIcon(QIcon(settings.get_image('icon')))
-        # Fields
-        self.headers_list = [
-            _('Items in problem'), _('Output')
-        ]
-
-    def initialize(self, proxy_filter):
-        """
-        Initialize Problems QTableWidget cells, rows
-
-        :param proxy_filter: filter model with QStandardItemModel
-        :type proxy_filter: PyQt5.Qt.QSortFilterProxyModel
-        """
-
-        self.setModel(proxy_filter)
-
         self.setObjectName('problems')
         self.verticalHeader().hide()
         self.verticalHeader().setDefaultSectionSize(40)
-        self.setColumnWidth(0, 500)
-        self.setColumnWidth(1, 300)
         self.setIconSize(QSize(24, 24))
         self.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.horizontalHeader().setStretchLastSection(True)
         self.horizontalHeader().setMinimumHeight(40)
         self.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
+        # Fields
+        self.headers_list = [
+            _('Items in problem'), _('Output')
+        ]
 
     def get_tableitem(self, item):
         """
@@ -140,3 +128,34 @@ class ProblemsQTableView(QTableView):
             text = _('%s is %s') % (hostname, item.data['ls_state'])
 
         return text
+
+    def update_view(self, problems_data):
+        """
+        Update QTableView model and proxy filter
+
+        :param problems_data: problems found in database
+        :type problems_data: dict
+        :return: proxy filter to connect with line edit
+        :rtype: QSortFilterProxyModel
+        """
+
+        problems_model = QStandardItemModel()
+        problems_model.setRowCount(len(problems_data['problems']))
+        problems_model.setColumnCount(len(self.headers_list))
+
+        for row, item in enumerate(problems_data['problems']):
+            problems_model.setItem(row, 0, self.get_tableitem(item))
+            problems_model.setItem(row, 1, self.get_output_tableitem(item))
+
+        proxy_filter = QSortFilterProxyModel()
+        proxy_filter.setFilterCaseSensitivity(Qt.CaseInsensitive)
+        proxy_filter.setSourceModel(problems_model)
+
+        problems_model.setHorizontalHeaderLabels(self.headers_list)
+
+        self.setModel(proxy_filter)
+
+        self.setColumnWidth(0, 500)
+        self.setColumnWidth(1, 300)
+
+        return proxy_filter

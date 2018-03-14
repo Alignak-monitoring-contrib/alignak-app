@@ -28,7 +28,6 @@
 from logging import getLogger
 
 from PyQt5.Qt import QWidget, QIcon, QVBoxLayout, QPushButton, Qt, QLabel, QHBoxLayout, QLineEdit
-from PyQt5.Qt import QStandardItemModel, QSortFilterProxyModel
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
@@ -48,15 +47,13 @@ class ProblemsQWidget(QWidget):
         super(ProblemsQWidget, self).__init__(parent)
         self.setWindowIcon(QIcon(settings.get_image('icon')))
         # Fields
-        self.problem_table = ProblemsQTableView()
-        self.problems_title = QLabel()
-        self.problems_model = QStandardItemModel()
-        self.actions_widget = ActionsQWidget()
-        self.host_btn = QPushButton()
-        self.spy_btn = QPushButton()
-        self.spy_widget = None
         self.line_search = QLineEdit()
-        self.original_model = None
+        self.problems_table = ProblemsQTableView()
+        self.problems_title = QLabel()
+        self.actions_widget = ActionsQWidget()
+        self.spy_widget = None
+        self.spy_btn = QPushButton()
+        self.host_btn = QPushButton()
 
     def initialize(self, spy_widget):
         """
@@ -75,8 +72,7 @@ class ProblemsQWidget(QWidget):
 
         problem_layout.addWidget(self.get_search_widget())
 
-        # self.problem_table.initialize()
-        problem_layout.addWidget(self.problem_table)
+        problem_layout.addWidget(self.problems_table)
 
         self.update_problems_data()
 
@@ -87,8 +83,8 @@ class ProblemsQWidget(QWidget):
         """
 
         # Get item by UserRole
-        item = self.problem_table.model().data(
-            self.problem_table.selectionModel().currentIndex(),
+        item = self.problems_table.model().data(
+            self.problems_table.selectionModel().currentIndex(),
             Qt.UserRole
         )
 
@@ -200,8 +196,8 @@ class ProblemsQWidget(QWidget):
         """
 
         # Get item by UserRole
-        item = self.problem_table.model().data(
-            self.problem_table.selectionModel().currentIndex(),
+        item = self.problems_table.model().data(
+            self.problems_table.selectionModel().currentIndex(),
             Qt.UserRole
         )
 
@@ -236,18 +232,8 @@ class ProblemsQWidget(QWidget):
                 problems_data['services_nb']
             )
         )
-        self.problems_model.setRowCount(len(problems_data['problems']))
-        self.problems_model.setColumnCount(len(self.problem_table.headers_list))
 
-        for row, item in enumerate(problems_data['problems']):
-            self.problems_model.setItem(row, 0, self.problem_table.get_tableitem(item))
-            self.problems_model.setItem(row, 1, self.problem_table.get_output_tableitem(item))
-
-        proxy_filter = QSortFilterProxyModel()
-        proxy_filter.setFilterCaseSensitivity(Qt.CaseInsensitive)
-        proxy_filter.setSourceModel(self.problems_model)
+        proxy_filter = self.problems_table.update_view(problems_data)
         self.line_search.textChanged.connect(proxy_filter.setFilterRegExp)
 
-        self.problem_table.initialize(proxy_filter)
-        self.problems_model.setHorizontalHeaderLabels(self.problem_table.headers_list)
-        self.problem_table.selectionModel().selectionChanged.connect(self.update_action_buttons)
+        self.problems_table.selectionModel().selectionChanged.connect(self.update_action_buttons)

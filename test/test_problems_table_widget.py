@@ -21,17 +21,18 @@
 
 import unittest2
 
-from PyQt5.Qt import QSortFilterProxyModel, QStandardItem
+from PyQt5.Qt import QStandardItem
 
+from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.host import Host
 from alignak_app.items.service import Service
 
 from alignak_app.qobjects.alignak.problems_table import ProblemsQTableView
 
 
-class TestProblemsQTableWidget(unittest2.TestCase):
+class TestProblemsQTableView(unittest2.TestCase):
     """
-        This file test the ProblemsQTableWidget class.
+        This file test the ProblemsQTableView class.
     """
 
     # Host data test
@@ -77,16 +78,18 @@ class TestProblemsQTableWidget(unittest2.TestCase):
     def test_initialize_tables_problems(self):
         """Initialize ProblemsQTableWidget"""
 
+        problems = data_manager.get_problems()
         under_test = ProblemsQTableView()
+        self.assertIsNone(under_test.model())
+        self.assertIsNone(under_test.selectionModel())
 
-        proxy_model_test = QSortFilterProxyModel()
-        under_test.initialize(proxy_model_test)
+        under_test.update_view(problems)
 
-        self.assertEqual(
-            ['Items in problem', 'Output'],
-            under_test.headers_list
-        )
-        self.assertEqual(0, under_test.model().columnCount())
+        self.assertIsNotNone(under_test.model())
+        self.assertIsNotNone(under_test.selectionModel())
+
+        self.assertEqual(['Items in problem', 'Output'], under_test.headers_list)
+        self.assertEqual(2, under_test.model().columnCount())
 
     def test_get_tableitem(self):
         """Get Problems Table Item"""

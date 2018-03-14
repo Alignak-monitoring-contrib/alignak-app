@@ -127,6 +127,11 @@ class DataManager(object):
         if not wanted_item:
             wanted_item = next((item for item in items if item.name == key), None)
 
+            if not wanted_item:
+                logger.error(
+                    'Item not found in database[%s]: key=%s, value=%s' % (item_type, key, value)
+                )
+
         return wanted_item
 
     def update_item_data(self, item_type, item_id, data):

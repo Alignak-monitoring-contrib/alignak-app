@@ -293,8 +293,8 @@ class PanelQWidget(QWidget):
         if isinstance(self.sender(), QPushButton):
             # From Problems QWidget
             item = self.problems_widget.problems_model.item(
-                self.problems_widget.problem_table.selectionModel().currentIndex().row(),
-                self.problems_widget.problem_table.selectionModel().currentIndex().column()
+                self.problems_widget.problems_table.selectionModel().currentIndex().row(),
+                self.problems_widget.problems_table.selectionModel().currentIndex().column()
             ).item
             if 'service' in item.item_type:
                 hostname = data_manager.get_item('host', item.data['host']).name

@@ -23,8 +23,9 @@ import sys
 
 import unittest2
 
-from PyQt5.Qt import QApplication, QWidget, QItemSelectionModel, QStandardItem, Qt
+from PyQt5.Qt import QApplication, QWidget, QItemSelectionModel, Qt
 
+from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.host import Host
 
 from alignak_app.qobjects.alignak.problems import ProblemsQWidget
@@ -55,6 +56,9 @@ class TestProblemsQWidget(unittest2.TestCase):
         )
         host_list.append(host)
 
+    data_manager.update_database('host', [])
+    data_manager.update_database('service', [])
+
     @classmethod
     def setUpClass(cls):
         """Create QApplication"""
@@ -69,13 +73,13 @@ class TestProblemsQWidget(unittest2.TestCase):
         under_test = ProblemsQWidget()
 
         self.assertIsNotNone(under_test.layout)
-        self.assertTrue(under_test.problem_table)
+        self.assertTrue(under_test.problems_table)
         self.assertTrue(under_test.problems_title)
 
         under_test.initialize(None)
 
         self.assertIsNotNone(under_test.layout)
-        self.assertTrue(under_test.problem_table)
+        self.assertTrue(under_test.problems_table)
         self.assertTrue(under_test.problems_title)
 
         self.assertEqual('itemtitle', under_test.problems_title.objectName())
@@ -90,30 +94,40 @@ class TestProblemsQWidget(unittest2.TestCase):
         self.assertIsInstance(under_test, QWidget)
 
     def test_add_spy_host(self):
-        """Add Psy Host from Problems QWidget"""
+        """Add Spy Host from Problems QWidget"""
+
+        data_manager.update_database('host', [])
+        data_manager.update_database('service', [])
 
         under_test = ProblemsQWidget()
         spy_widget_test = SpyQWidget()
         spy_widget_test.initialize()
         under_test.initialize(spy_widget_test)
 
-        # Set a current QStandardItem
-        tableitem_test = QStandardItem()
-        tableitem_test.setData(self.host_list[0], Qt.UserRole)
-        under_test.problems_model.setItem(0, 0, tableitem_test)
+        # Update view with problems
+        under_test.problems_table.update_view({'problems': [self.host_list[8]]})
+
         # Make this QStandardItem as current index
-        index_test = under_test.problem_table.model().index(0, 0)
-        under_test.problem_table.selectionModel().select(index_test, QItemSelectionModel.Select)
-        under_test.problem_table.setCurrentIndex(index_test)
+        index_test = under_test.problems_table.model().index(0, 0)
+        under_test.problems_table.selectionModel().setCurrentIndex(
+            index_test,
+            QItemSelectionModel.SelectCurrent
+        )
 
         self.assertFalse(under_test.spy_widget.spy_list_widget.spied_hosts)
+
+        item = under_test.problems_table.model().data(
+            under_test.problems_table.selectionModel().currentIndex(),
+            Qt.UserRole
+        )
 
         under_test.add_spied_host()
 
         # Assert host has been spied
         self.assertTrue(under_test.spy_widget.spy_list_widget.spied_hosts)
+        # "_id8" is inside "spied_hosts"
         self.assertTrue(
-            self.host_list[0].item_id in under_test.spy_widget.spy_list_widget.spied_hosts
+            self.host_list[8].item_id in under_test.spy_widget.spy_list_widget.spied_hosts
         )
 
     def test_update_problems_data(self):
@@ -124,11 +138,11 @@ class TestProblemsQWidget(unittest2.TestCase):
         spy_widget_test.initialize()
         under_test.initialize(spy_widget_test)
 
-        host_tableitem_test = under_test.problems_model.item(0, 0)
-        output_tableitem_test = under_test.problems_model.item(0, 1)
+        model_test = under_test.problems_table.model()
+        select_model_test = under_test.problems_table.selectionModel()
 
         under_test.update_problems_data()
 
-        # Assert Table items and QWidgets have changed
-        self.assertNotEqual(host_tableitem_test, under_test.problems_model.item(0, 0))
-        self.assertNotEqual(output_tableitem_test, under_test.problems_model.item(0, 1))
+        # Assert Table models have changed
+        self.assertNotEqual(model_test, under_test.problems_table.model())
+        self.assertNotEqual(select_model_test, under_test.problems_table.selectionModel())
