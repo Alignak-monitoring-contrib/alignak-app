@@ -21,12 +21,12 @@
 
 import unittest2
 
-from PyQt5.Qt import QSortFilterProxyModel
+from PyQt5.Qt import QSortFilterProxyModel, QStandardItem
 
 from alignak_app.items.host import Host
 from alignak_app.items.service import Service
 
-from alignak_app.qobjects.alignak.problems_table import AppQStandardItem, ProblemsQTableView
+from alignak_app.qobjects.alignak.problems_table import ProblemsQTableView
 
 
 class TestProblemsQTableWidget(unittest2.TestCase):
@@ -94,10 +94,10 @@ class TestProblemsQTableWidget(unittest2.TestCase):
         under_test = ProblemsQTableView()
         tableitem_test = under_test.get_tableitem(self.host_list[0])
 
-        self.assertIsInstance(tableitem_test, AppQStandardItem)
+        self.assertIsInstance(tableitem_test, QStandardItem)
         self.assertEqual('Host 0 is UNKNOWN', tableitem_test.text())
 
         tableitem_test = under_test.get_tableitem(self.service_list[0])
 
-        self.assertIsInstance(tableitem_test, AppQStandardItem)
+        self.assertIsInstance(tableitem_test, QStandardItem)
         self.assertEqual('Service 0 is CRITICAL (Attached to Host 0)', tableitem_test.text())

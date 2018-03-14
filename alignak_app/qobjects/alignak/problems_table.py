@@ -85,8 +85,8 @@ class ProblemsQTableView(QTableView):
         :rtype: QStandardItem
         """
 
-        tableitem = AppQStandardItem(self.get_item_text(item))
-        tableitem.add_backend_item(item)
+        tableitem = QStandardItem(self.get_item_text(item))
+        tableitem.setData(item, Qt.UserRole)
 
         icon = QIcon(settings.get_image(
             get_icon_name_from_state(item.item_type, item.data['ls_state'])
@@ -109,8 +109,8 @@ class ProblemsQTableView(QTableView):
 
         if not item.data['ls_output']:
             item.data['ls_output'] = 'n\\a'
-        tableitem = AppQStandardItem(item.data['ls_output'])
-        tableitem.add_backend_item(item)
+        tableitem = QStandardItem(item.data['ls_output'])
+        tableitem.setData(item, Qt.UserRole)
 
         tableitem.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
@@ -140,23 +140,3 @@ class ProblemsQTableView(QTableView):
             text = _('%s is %s') % (hostname, item.data['ls_state'])
 
         return text
-
-
-class AppQStandardItem(QStandardItem):  # pylint: disable=too-few-public-methods
-    """
-        Class who create QStandardItem for App, with an item field, to allow actions later
-    """
-
-    def __init__(self, parent=None):
-        super(AppQStandardItem, self).__init__(parent)
-        self.item = None
-
-    def add_backend_item(self, item):
-        """
-        Add backend item
-
-        :param item: host or service item
-        :type item: alignak_app.items.host.Host | alignak_app.items.service.Service
-        """
-
-        self.item = item

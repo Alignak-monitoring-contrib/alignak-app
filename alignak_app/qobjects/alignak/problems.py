@@ -56,6 +56,7 @@ class ProblemsQWidget(QWidget):
         self.spy_btn = QPushButton()
         self.spy_widget = None
         self.line_search = QLineEdit()
+        self.original_model = None
 
     def initialize(self, spy_widget):
         """
@@ -92,7 +93,7 @@ class ProblemsQWidget(QWidget):
         )
 
         if standard_item:
-            item = standard_item.item
+            item = standard_item.data(Qt.UserRole)
 
             # If the elements had been ack or downtimed, they would not be present
             self.actions_widget.acknowledge_btn.setEnabled(True)
@@ -207,7 +208,7 @@ class ProblemsQWidget(QWidget):
         )
 
         if standard_item:
-            item = standard_item.item
+            item = standard_item.data(Qt.UserRole)
             if 'service' in item.item_type:
                 item_id = item.data['host']
             else:
@@ -240,7 +241,6 @@ class ProblemsQWidget(QWidget):
         )
         self.problems_model.setRowCount(len(problems_data['problems']))
         self.problems_model.setColumnCount(len(self.problem_table.headers_list))
-        self.problems_model.setSortRole(1)
 
         for row, item in enumerate(problems_data['problems']):
             self.problems_model.setItem(row, 0, self.problem_table.get_tableitem(item))

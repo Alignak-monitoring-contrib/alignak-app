@@ -23,12 +23,11 @@ import sys
 
 import unittest2
 
-from PyQt5.Qt import QApplication, QWidget, QItemSelectionModel
+from PyQt5.Qt import QApplication, QWidget, QItemSelectionModel, QStandardItem, Qt
 
 from alignak_app.items.host import Host
 
 from alignak_app.qobjects.alignak.problems import ProblemsQWidget
-from alignak_app.qobjects.alignak.problems_table import AppQStandardItem
 from alignak_app.qobjects.events.spy import SpyQWidget
 
 
@@ -99,8 +98,8 @@ class TestProblemsQWidget(unittest2.TestCase):
         under_test.initialize(spy_widget_test)
 
         # Set a current QStandardItem
-        tableitem_test = AppQStandardItem()
-        tableitem_test.add_backend_item(self.host_list[0])
+        tableitem_test = QStandardItem()
+        tableitem_test.setData(self.host_list[0], Qt.UserRole)
         under_test.problems_model.setItem(0, 0, tableitem_test)
         # Make this QStandardItem as current index
         index_test = under_test.problem_table.model().index(0, 0)
