@@ -86,15 +86,13 @@ class ProblemsQWidget(QWidget):
 
         """
 
-        # Get QStandardItem
-        standard_item = self.problems_model.item(
-            self.problem_table.selectionModel().currentIndex().row(),
-            self.problem_table.selectionModel().currentIndex().column()
+        # Get item by UserRole
+        item = self.problem_table.model().data(
+            self.problem_table.selectionModel().currentIndex(),
+            Qt.UserRole
         )
 
-        if standard_item:
-            item = standard_item.data(Qt.UserRole)
-
+        if item:
             # If the elements had been ack or downtimed, they would not be present
             self.actions_widget.acknowledge_btn.setEnabled(True)
             self.actions_widget.downtime_btn.setEnabled(True)
@@ -201,14 +199,13 @@ class ProblemsQWidget(QWidget):
 
         """
 
-        # Get QStandardItem
-        standard_item = self.problems_model.item(
-            self.problem_table.selectionModel().currentIndex().row(),
-            self.problem_table.selectionModel().currentIndex().column()
+        # Get item by UserRole
+        item = self.problem_table.model().data(
+            self.problem_table.selectionModel().currentIndex(),
+            Qt.UserRole
         )
 
-        if standard_item:
-            item = standard_item.data(Qt.UserRole)
+        if item:
             if 'service' in item.item_type:
                 item_id = item.data['host']
             else:
