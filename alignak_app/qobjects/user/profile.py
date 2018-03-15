@@ -101,92 +101,85 @@ class ProfileQWidget(QWidget):
         info_layout = QGridLayout()
         information_widget.setLayout(info_layout)
 
+        title_labels = {
+            'main': QLabel(_('User informations:')),
+            'realm': QLabel(_('Realm:')),
+            'is_admin': QLabel(_('Administrator:')),
+            'notes': QLabel(_('Notes:')),
+            'role': QLabel(_('Role:')),
+            'command': QLabel(_('Commands:')),
+            'email': QLabel(_('Email:')),
+            'password': QLabel(_('Password')),
+            'alias': QLabel(_('Alias:')),
+            'token': QLabel(_('Token:')),
+        }
+
+        for label in title_labels:
+            if 'main' not in label:
+                title_labels[label].setObjectName('subtitle')
+            else:
+                title_labels[label].setObjectName('itemtitle')
+
         # Main title
-        main_title = QLabel(_('User informations:'))
-        main_title.setObjectName("itemtitle")
-        info_layout.addWidget(main_title, 0, 0, 1, 6)
-        info_layout.setAlignment(main_title, Qt.AlignCenter)
+        info_layout.addWidget(title_labels['main'], 0, 0, 1, 6)
+        info_layout.setAlignment(title_labels['main'], Qt.AlignCenter)
 
         # Realm & Is Admin & Notes title and button
-        line = 2
-        realm_title = QLabel(_('Realm:'))
-        realm_title.setObjectName("subtitle")
-        info_layout.addWidget(realm_title, line, 0, 1, 1)
-        info_layout.addWidget(self.labels['realm'], line, 1, 1, 1)
+        info_layout.addWidget(title_labels['realm'], 1, 0, 1, 1)
+        info_layout.addWidget(self.labels['realm'], 1, 1, 1, 1)
 
-        admin_title = QLabel(_('Administrator:'))
-        admin_title.setObjectName("subtitle")
-        admin_title.setMinimumHeight(32)
-        info_layout.addWidget(admin_title, line, 2, 1, 1)
+        title_labels['is_admin'].setMinimumHeight(32)
+        info_layout.addWidget(title_labels['is_admin'], 1, 2, 1, 1)
         self.labels['is_admin'].setFixedSize(14, 14)
         self.labels['is_admin'].setScaledContents(True)
-        info_layout.addWidget(self.labels['is_admin'], line, 3, 1, 1)
+        info_layout.addWidget(self.labels['is_admin'], 1, 3, 1, 1)
         info_layout.setAlignment(self.labels['is_admin'], Qt.AlignCenter)
 
-        notes_title = QLabel(_('Notes:'))
-        notes_title.setObjectName("title")
-        info_layout.addWidget(notes_title, line, 4, 1, 1)
-
+        # Notes title and button
+        info_layout.addWidget(title_labels['notes'], 1, 4, 1, 1)
         notes_btn = QPushButton()
         notes_btn.setIcon(QIcon(settings.get_image('edit')))
         notes_btn.setToolTip(_("Edit your notes."))
         notes_btn.setFixedSize(32, 32)
         notes_btn.clicked.connect(lambda: self.patch_data('notes'))
-        info_layout.addWidget(notes_btn, line, 5, 1, 1)
-        line += 1
+        info_layout.addWidget(notes_btn, 1, 5, 1, 1)
 
         # Role & Can submit commands
-        role_title = QLabel(_('Role:'))
-        role_title.setObjectName("subtitle")
-        info_layout.addWidget(role_title, line, 0, 1, 1)
-        info_layout.addWidget(self.labels['role'], line, 1, 1, 1)
+        info_layout.addWidget(title_labels['role'], 2, 0, 1, 1)
+        info_layout.addWidget(self.labels['role'], 2, 1, 1, 1)
 
-        command_title = QLabel(_('Commands:'))
-        command_title.setObjectName("subtitle")
-        command_title.setMinimumHeight(32)
-        info_layout.addWidget(command_title, line, 2, 1, 1)
+        title_labels['command'].setMinimumHeight(32)
+        info_layout.addWidget(title_labels['command'], 2, 2, 1, 1)
         self.labels['can_submit_commands'].setFixedSize(14, 14)
         self.labels['can_submit_commands'].setScaledContents(True)
-        info_layout.addWidget(self.labels['can_submit_commands'], line, 3, 1, 1)
+        info_layout.addWidget(self.labels['can_submit_commands'], 2, 3, 1, 1)
         info_layout.setAlignment(self.labels['can_submit_commands'], Qt.AlignCenter)
 
         # Create QLabel for notes
-        info_layout.addWidget(self.get_notes_scrollarea(), line, 4, 3, 2)
+        info_layout.addWidget(self.get_notes_scrollarea(), 2, 4, 3, 2)
         info_layout.setAlignment(Qt.AlignTop)
-        line += 1
 
         # Mail & Password
-        mail_title = QLabel(_('Email:'))
-        mail_title.setObjectName("subtitle")
-        info_layout.addWidget(mail_title, line, 0, 1, 1)
-        info_layout.addWidget(self.labels['email'], line, 1, 1, 1)
+        info_layout.addWidget(title_labels['email'], 3, 0, 1, 1)
+        info_layout.addWidget(self.labels['email'], 3, 1, 1, 1)
 
-        password_title = QLabel(_('Password:'))
-        password_title.setObjectName("subtitle")
-        info_layout.addWidget(password_title, line, 2, 1, 1)
-
+        info_layout.addWidget(title_labels['password'], 3, 2, 1, 1)
         password_btn = QPushButton()
         password_btn.setIcon(QIcon(settings.get_image('password')))
         password_btn.setToolTip(_('Change my password'))
         password_btn.setFixedSize(32, 32)
         password_btn.clicked.connect(lambda: self.patch_data('password'))
-        info_layout.addWidget(password_btn, line, 3, 1, 1)
-        line += 1
+        info_layout.addWidget(password_btn, 3, 3, 1, 1)
 
         # Alias & Token (only for administrators)
-        alias_title = QLabel(_('Alias:'))
-        alias_title.setObjectName("subtitle")
-        info_layout.addWidget(alias_title, line, 0, 1, 1)
-        info_layout.addWidget(self.labels['alias'], line, 1, 1, 1)
+        info_layout.addWidget(title_labels['alias'], 4, 0, 1, 1)
+        info_layout.addWidget(self.labels['alias'], 4, 1, 1, 1)
 
-        token_title = QLabel(_('Token:'))
-        token_title.setObjectName("subtitle")
-        info_layout.addWidget(token_title, line, 2, 1, 2)
-
+        info_layout.addWidget(title_labels['token'], 4, 2, 1, 2)
         self.token_btn.setIcon(QIcon(settings.get_image('token')))
         self.token_btn.setFixedSize(32, 32)
         self.token_btn.clicked.connect(self.show_token_dialog)
-        info_layout.addWidget(self.token_btn, line, 3, 1, 1)
+        info_layout.addWidget(self.token_btn, 4, 3, 1, 1)
 
         return information_widget
 
