@@ -39,6 +39,7 @@ from alignak_app.utils.time import get_time_diff_since_last_timestamp
 
 from alignak_app.qobjects.common.actions import ActionsQWidget
 from alignak_app.qobjects.common.buttons import ToggleQWidgetButton
+from alignak_app.qobjects.common.dialogs import EditQDialog
 from alignak_app.qobjects.events.events import send_event
 from alignak_app.qobjects.host.history import HistoryQWidget
 
@@ -340,12 +341,19 @@ class HostQWidget(QWidget):
         output_scrollarea.setWidget(self.labels['ls_output'])
         output_scrollarea.setWidgetResizable(True)
         output_scrollarea.setObjectName('output')
-        layout.addWidget(output_scrollarea, 1, 0, 1, 1)
+        layout.addWidget(output_scrollarea, 1, 0, 1, 2)
 
         # Notes
         notes_title = QLabel(_("Notes:"))
         notes_title.setObjectName('title')
-        layout.addWidget(notes_title, 0, 1, 1, 1)
+        layout.addWidget(notes_title, 0, 2, 1, 1)
+
+        notes_btn = QPushButton()
+        notes_btn.setIcon(QIcon(settings.get_image('edit')))
+        notes_btn.setToolTip(_("Edit host notes."))
+        notes_btn.setFixedSize(32, 32)
+        notes_btn.clicked.connect(self.patch_data)
+        layout.addWidget(notes_btn, 0, 3, 1, 1)
 
         self.labels['notes'].setWordWrap(True)
         self.labels['notes'].setTextInteractionFlags(Qt.TextSelectableByMouse)
@@ -353,9 +361,45 @@ class HostQWidget(QWidget):
         notes_scrollarea.setWidget(self.labels['notes'])
         notes_scrollarea.setWidgetResizable(True)
         notes_scrollarea.setObjectName('notes')
-        layout.addWidget(notes_scrollarea, 1, 1, 1, 1)
+        layout.addWidget(notes_scrollarea, 1, 2, 1, 2)
 
         return widget
+
+    def patch_data(self):  # pragma: no cover
+        """
+        Display QDialog for patch
+
+        """
+
+        notes_dialog = EditQDialog()
+        notes_dialog.initialize(
+            _('Edit Host Notes'),
+            self.host_item.data['notes']
+        )
+
+        if notes_dialog.exec_() == EditQDialog.Accepted:
+            data = {'notes': str(notes_dialog.text_edit.toPlainText())}
+            headers = {'If-Match': self.host_item.data['_etag']}
+            endpoint = '/'.join(['host', self.host_item.item_id])
+
+            patched = app_backend.patch(endpoint, data, headers)
+
+            if patched:
+                data_manager.update_item_data(
+                    self.host_item.item_type,
+                    self.host_item.item_id,
+                    {'notes': notes_dialog.text_edit.toPlainText()}
+                )
+                self.labels['notes'].setText(notes_dialog.text_edit.toPlainText())
+                message = _(
+                    _("Host notes have been edited.")
+                )
+                send_event('INFO', message)
+            else:
+                send_event(
+                    'ERROR',
+                    _("Backend PATCH failed, please check your logs !")
+                )
 
     def update_host(self, hostname=None):
         """
