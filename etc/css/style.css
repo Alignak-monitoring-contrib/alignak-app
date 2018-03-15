@@ -224,7 +224,7 @@ QPushButton:hover {
 QPushButton#True {
     color: white;
     font-weight: bold;
-    background-color:  qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #27ae60, stop: 0.495 #27ae60, stop: 0.496 black, stop: 0.5 white);
+    background-color:  qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #1fb4e4, stop: 0.495 #1fb4e4, stop: 0.496 black, stop: 0.5 white);
     border: 1px solid #ccc;
     border-radius: 2px;
     text-align: left;
@@ -234,7 +234,7 @@ QPushButton#True {
 QPushButton#False {
     color: white;
     font-weight: bold;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0, stop:0 white, stop: 0.495 white, stop: 0.496 black, stop: 0.497 #f44336);
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0, stop:0 white, stop: 0.495 white, stop: 0.496 black, stop: 0.497 #607d8b);
     border: 1px solid #607d8b;
     border-radius: 2px;
     text-align: right;
