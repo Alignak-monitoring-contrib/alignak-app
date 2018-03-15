@@ -166,7 +166,7 @@ class TestProblemsQWidget(unittest2.TestCase):
 
         # Even if a filter is given,
         # the view does not filter by item type if filter buttons are False
-        under_test.update_problems_data('host')
+        under_test.update_problems_data('service')
 
         # Collect items
         items_test = [
@@ -177,6 +177,24 @@ class TestProblemsQWidget(unittest2.TestCase):
         ]
 
         self.assertEqual(20, len(items_test))
+
+    def test_update_problems_data_keep_linesearch_text(self):
+        """Update Problems Data Keep LineSearch Text"""
+
+        under_test = ProblemsQWidget()
+        spy_widget_test = SpyQWidget()
+        spy_widget_test.initialize()
+        under_test.initialize(None)
+
+        self.assertFalse(under_test.line_search.text())
+
+        # Set text of QLineEdit
+        under_test.line_search.setText('research')
+
+        under_test.update_problems_data()
+
+        # After update, text is keeped
+        self.assertEqual('research', under_test.line_search.text())
 
     def test_filter_hosts(self):
         """Filter Hosts in Problems View"""
