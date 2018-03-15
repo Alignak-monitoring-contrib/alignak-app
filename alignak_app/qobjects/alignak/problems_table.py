@@ -58,6 +58,7 @@ class ProblemsQTableView(QTableView):
         self.horizontalHeader().setStretchLastSection(True)
         self.horizontalHeader().setMinimumHeight(40)
         self.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
+        self.setSelectionMode(QAbstractItemView.SingleSelection)
         # Fields
         self.headers_list = [
             _('Items in problem'), _('Output')
@@ -115,8 +116,11 @@ class ProblemsQTableView(QTableView):
         :rtype: str
         """
 
+        hostname = ''
         if 'host' in item.data:
-            hostname = data_manager.get_item('host', '_id', item.data['host']).get_display_name()
+            host = data_manager.get_item('host', '_id', item.data['host'])
+            if host:
+                hostname = host.get_display_name()
             service_name = item.get_display_name()
         else:
             hostname = item.get_display_name()

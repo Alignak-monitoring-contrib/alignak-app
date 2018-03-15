@@ -290,20 +290,20 @@ class PanelQWidget(QWidget):
         :rtype: str
         """
 
+        hostname = ''
+
         if isinstance(self.sender(), QPushButton):
             # From Problems QWidget
-            item = self.problems_widget.problems_model.item(
-                self.problems_widget.problems_table.selectionModel().currentIndex().row(),
-                self.problems_widget.problems_table.selectionModel().currentIndex().column()
-            ).item
-            if 'service' in item.item_type:
-                hostname = data_manager.get_item('host', item.data['host']).name
-            else:
-                hostname = item.name
+            item = self.problems_widget.get_curent_user_role_item()
+            if item:
+                if 'service' in item.item_type:
+                    hostname = data_manager.get_item('host', item.data['host']).name
+                else:
+                    hostname = item.name
 
-            if hostname in self.hostnames_list:
-                self.line_search.setText(hostname)
-                self.tab_widget.setCurrentIndex(0)
+                if hostname in self.hostnames_list:
+                    self.line_search.setText(hostname)
+                    self.tab_widget.setCurrentIndex(0)
         elif isinstance(self.sender(), QLineEdit):
             # From QLineEdit
             hostname = self.line_search.text()

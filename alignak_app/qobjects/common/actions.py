@@ -62,6 +62,7 @@ class ActionsQWidget(QWidget):
         self.item = item
 
         layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
 
         self.acknowledge_btn.setIcon(QIcon(settings.get_image('acknowledge')))
@@ -94,8 +95,8 @@ class ActionsQWidget(QWidget):
         ack_dialog.initialize(self.item.item_type, self.item.get_display_name(), comment)
 
         if ack_dialog.exec_() == AckQDialog.Accepted:
-            sticky = ack_dialog.sticky_toggle_btn.get_btn_state()
-            notify = ack_dialog.notify_toggle_btn.get_btn_state()
+            sticky = ack_dialog.sticky_toggle_btn.is_checked()
+            notify = ack_dialog.notify_toggle_btn.is_checked()
             comment = str(ack_dialog.ack_comment_edit.toPlainText())
 
             data = {
@@ -146,7 +147,7 @@ class ActionsQWidget(QWidget):
         downtime_dialog.initialize(self.item.item_type, self.item.get_display_name(), comment)
 
         if downtime_dialog.exec_() == DownQDialog.Accepted:
-            fixed = downtime_dialog.fixed_toggle_btn.get_btn_state()
+            fixed = downtime_dialog.fixed_toggle_btn.is_checked()
             duration = downtime_dialog.duration_to_seconds()
             start_stamp = downtime_dialog.start_time.dateTime().toTime_t()
             end_stamp = downtime_dialog.end_time.dateTime().toTime_t()

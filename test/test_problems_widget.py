@@ -27,6 +27,7 @@ from PyQt5.Qt import QApplication, QWidget, QItemSelectionModel, Qt
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.host import Host
+from alignak_app.items.service import Service
 
 from alignak_app.qobjects.alignak.problems import ProblemsQWidget
 from alignak_app.qobjects.events.spy import SpyQWidget
@@ -47,14 +48,32 @@ class TestProblemsQWidget(unittest2.TestCase):
                 'name': 'host%d' % i,
                 'alias': 'Host %d' % i,
                 '_id': '_id%d' % i,
-                'ls_downtimed': True,
-                'ls_acknowledged': True,
-                'ls_state': 'UNKNOWN',
+                'ls_downtimed': False,
+                'ls_acknowledged': False,
+                'ls_state': 'DOWN',
                 'ls_output': 'output host %d' % i
             },
             'host%d' % i
         )
         host_list.append(host)
+
+    # Service data test
+    service_list = []
+    for i in range(0, 10):
+        service = Service()
+        service.create(
+            '_id%d' % i,
+            {
+                'name': 'service%d' % i,
+                'host': '_id%d' % i,
+                'ls_state': 'CRITICAL',
+                'ls_acknowledged': False,
+                'ls_downtimed': False,
+                'ls_output': 'output service %d' % i
+            },
+            'service%d' % i
+        )
+        service_list.append(service)
 
     data_manager.update_database('host', [])
     data_manager.update_database('service', [])
@@ -75,23 +94,18 @@ class TestProblemsQWidget(unittest2.TestCase):
         self.assertIsNotNone(under_test.layout)
         self.assertTrue(under_test.problems_table)
         self.assertTrue(under_test.problems_title)
+        self.assertFalse(under_test.filter_hosts_btn.is_checked())
+        self.assertFalse(under_test.filter_services_btn.is_checked())
 
         under_test.initialize(None)
 
         self.assertIsNotNone(under_test.layout)
         self.assertTrue(under_test.problems_table)
         self.assertTrue(under_test.problems_title)
+        self.assertFalse(under_test.filter_hosts_btn.is_checked())
+        self.assertFalse(under_test.filter_services_btn.is_checked())
 
         self.assertEqual('itemtitle', under_test.problems_title.objectName())
-
-    def test_get_problems_widget_title(self):
-        """Get problems Widget Title"""
-
-        problems_widget_test = ProblemsQWidget()
-
-        under_test = problems_widget_test.get_problems_widget_title()
-
-        self.assertIsInstance(under_test, QWidget)
 
     def test_add_spy_host(self):
         """Add Spy Host from Problems QWidget"""
@@ -115,11 +129,6 @@ class TestProblemsQWidget(unittest2.TestCase):
         )
 
         self.assertFalse(under_test.spy_widget.spy_list_widget.spied_hosts)
-
-        item = under_test.problems_table.model().data(
-            under_test.problems_table.selectionModel().currentIndex(),
-            Qt.UserRole
-        )
 
         under_test.add_spied_host()
 
@@ -146,3 +155,80 @@ class TestProblemsQWidget(unittest2.TestCase):
         # Assert Table models have changed
         self.assertNotEqual(model_test, under_test.problems_table.model())
         self.assertNotEqual(select_model_test, under_test.problems_table.selectionModel())
+
+        # Fill database to add problems
+        data_manager.update_database('host', self.host_list)
+        data_manager.update_database('service', self.service_list)
+
+        # Assert filter buttons are False
+        self.assertFalse(under_test.filter_hosts_btn.is_checked())
+        self.assertFalse(under_test.filter_services_btn.is_checked())
+
+        # Even if a filter is given,
+        # the view does not filter by item type if filter buttons are False
+        under_test.update_problems_data('host')
+
+        # Collect items
+        items_test = [
+            under_test.problems_table.model().data(
+                under_test.problems_table.model().index(row, 0), Qt.UserRole
+            )
+            for row in range(under_test.problems_table.model().rowCount())
+        ]
+
+        self.assertEqual(20, len(items_test))
+
+    def test_filter_hosts(self):
+        """Filter Hosts in Problems View"""
+
+        under_test = ProblemsQWidget()
+        spy_widget_test = SpyQWidget()
+        spy_widget_test.initialize()
+        under_test.initialize(spy_widget_test)
+
+        # Fill database to add problems
+        data_manager.update_database('host', self.host_list)
+        data_manager.update_database('service', self.service_list)
+
+        # Update and filter Hosts
+        under_test.filter_hosts_btn.update_btn_state(True)
+        under_test.update_problems_data('host')
+
+        # Assert service filter button is False
+        self.assertFalse(under_test.filter_services_btn.is_checked())
+        # Collect items
+        items_test = [
+            under_test.problems_table.model().data(
+                under_test.problems_table.model().index(row, 0), Qt.UserRole
+            )
+            for row in range(under_test.problems_table.model().rowCount())
+        ]
+
+        self.assertEqual(10, len(items_test))
+        for item in items_test:
+            self.assertIsInstance(item, Host)
+
+    def test_filter_services(self):
+        """Filter Services in Problems View"""
+
+        under_test = ProblemsQWidget()
+        spy_widget_test = SpyQWidget()
+        spy_widget_test.initialize()
+        under_test.initialize(spy_widget_test)
+        # Update and filter Services
+        under_test.filter_services_btn.update_btn_state(True)
+        under_test.update_problems_data('service')
+
+        # Assert host filter button is False
+        self.assertFalse(under_test.filter_hosts_btn.is_checked())
+        # Collect items
+        items_test = [
+            under_test.problems_table.model().data(
+                under_test.problems_table.model().index(row, 0), Qt.UserRole
+            )
+            for row in range(under_test.problems_table.model().rowCount())
+        ]
+
+        self.assertEqual(10, len(items_test))
+        for item in items_test:
+            self.assertIsInstance(item, Service)

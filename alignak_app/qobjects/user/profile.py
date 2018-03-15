@@ -328,7 +328,7 @@ class ProfileQWidget(QWidget):
             data_manager.database['user'].data['host_notifications_enabled']
         )
         self.hostnotif_toggle_btn.toggle_btn.clicked.connect(lambda: self.enable_notifications(
-            'host_notifications_enabled', self.hostnotif_toggle_btn.get_btn_state()
+            'host_notifications_enabled', self.hostnotif_toggle_btn.is_checked()
         ))
         self.hostnotif_toggle_btn.setObjectName('host_notifications_enabled')
         host_notif_layout.addWidget(self.hostnotif_toggle_btn, 2, 1, 1, 1)
@@ -381,7 +381,7 @@ class ProfileQWidget(QWidget):
             data_manager.database['user'].data['service_notifications_enabled']
         )
         self.servicenotif_toggle_btn.toggle_btn.clicked.connect(lambda: self.enable_notifications(
-            'service_notifications_enabled', self.servicenotif_toggle_btn.get_btn_state()
+            'service_notifications_enabled', self.servicenotif_toggle_btn.is_checked()
         ))
         service_notif_layout.addWidget(self.servicenotif_toggle_btn, 2, 1, 1, 1)
 

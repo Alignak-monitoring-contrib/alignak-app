@@ -169,7 +169,7 @@ class HostQWidget(QWidget):
         layout.addWidget(activecheck_lbl)
         self.activecheck_btn.initialize()
         self.activecheck_btn.toggle_btn.clicked.connect(lambda: self.patch_host_checks(
-            'active_checks_enabled', self.activecheck_btn.get_btn_state()
+            'active_checks_enabled', self.activecheck_btn.is_checked()
         ))
         layout.addWidget(self.activecheck_btn)
 
@@ -179,7 +179,7 @@ class HostQWidget(QWidget):
         layout.addWidget(passivecheck_lbl)
         self.passivecheck_btn.initialize()
         self.passivecheck_btn.toggle_btn.clicked.connect(lambda: self.patch_host_checks(
-            'passive_checks_enabled', self.passivecheck_btn.get_btn_state()
+            'passive_checks_enabled', self.passivecheck_btn.is_checked()
         ))
         layout.addWidget(self.passivecheck_btn)
 
