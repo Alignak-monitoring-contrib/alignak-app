@@ -25,7 +25,7 @@ rm -R dist
  --name alignak-app ^
  --onefile ^
  --windowed ^
- --icon bin\win\icon.ico ^
+ --icon bin\win\icon_64.ico ^
  --paths C:\%HOMEPATH%\AppData\Roaming\Python\Python35\site-packages\PyQt5\Qt\bin ^
  --paths C:\%HOMEPATH%\AppData\Roaming\Python\Python35\site-packages\PyQt5\Qt\plugins ^
  --paths D:\Repos\alignak-app\alignak_app ^
