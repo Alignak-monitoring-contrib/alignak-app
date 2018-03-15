@@ -36,10 +36,10 @@ from alignak_app.utils.config import settings
 from alignak_app.qobjects.common.frames import AppQFrame
 from alignak_app.qobjects.common.labels import get_icon_pixmap
 from alignak_app.qobjects.common.buttons import ToggleQWidgetButton
-from alignak_app.qobjects.common.dialogs import MessageQDialog
+from alignak_app.qobjects.common.dialogs import MessageQDialog, EditQDialog
+
 from alignak_app.qobjects.events.events import send_event
 from alignak_app.qobjects.user.password import PasswordQDialog
-from alignak_app.qobjects.user.notes import UserNotesQDialog
 from alignak_app.qobjects.user.options import show_options_dialog
 
 logger = getLogger(__name__)
@@ -237,9 +237,12 @@ class ProfileQWidget(QWidget):
         btn = self.sender()
 
         if "notes" in btn.objectName():
-            notes_dialog = UserNotesQDialog()
-            notes_dialog.initialize(data_manager.database['user'].data['notes'])
-            if notes_dialog.exec_() == UserNotesQDialog.Accepted:
+            notes_dialog = EditQDialog()
+            notes_dialog.initialize(
+                _('Edit User Notes'),
+                data_manager.database['user'].data['notes']
+            )
+            if notes_dialog.exec_() == EditQDialog.Accepted:
                 data = {'notes': str(notes_dialog.notes_edit.toPlainText())}
                 headers = {'If-Match': data_manager.database['user'].data['_etag']}
                 endpoint = '/'.join(['user', data_manager.database['user'].item_id])

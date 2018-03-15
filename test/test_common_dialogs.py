@@ -22,12 +22,12 @@
 import sys
 
 import unittest2
-from PyQt5.Qt import QApplication, QWidget
+from PyQt5.Qt import QApplication, QWidget, QTimer
 
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.qobjects.common.dialogs import MessageQDialog
+from alignak_app.qobjects.common.dialogs import MessageQDialog, EditQDialog
 
 
 class TestMessageQDialog(unittest2.TestCase):
@@ -46,7 +46,7 @@ class TestMessageQDialog(unittest2.TestCase):
         except:
             pass
 
-    def test_initialize(self):
+    def test_initialize_msg_dialog(self):
         """Initialize MessageQDialog"""
 
         under_test = MessageQDialog()
@@ -79,3 +79,66 @@ class TestMessageQDialog(unittest2.TestCase):
         self.assertIsNotNone(under_test.layout())
         self.assertEqual('dialog', under_test.objectName())
         self.assertIsInstance(under_test, QWidget)
+
+    def test_initialize_edit_dialog(self):
+        """Initialize EditQDialog"""
+
+        under_test = EditQDialog()
+
+        self.assertFalse(under_test.old_text)
+        self.assertIsNotNone(under_test.text_edit)
+
+        under_test.initialize('title', 'text to edit')
+
+        self.assertEqual('text to edit', under_test.old_text)
+        self.assertEqual('text to edit', under_test.text_edit.toPlainText())
+
+    def test_get_text_widget(self):
+        """Get Text QWidget"""
+
+        under_test = EditQDialog()
+
+        under_test.old_text = 'old text'
+
+        text_widget_test = under_test.get_text_widget()
+
+        self.assertIsInstance(text_widget_test, QWidget)
+        self.assertEqual('old text', under_test.text_edit.toPlainText())
+
+    def test_accept_text(self):
+        """EditQDialog Accept Text"""
+
+        under_test = EditQDialog()
+        under_test.initialize('title', 'text to edit')
+
+        under_test.text_edit.setText('text to edit')
+
+        timer = QTimer()
+        timer.timeout.connect(under_test.accept_text)
+        timer.start(1)
+
+        # Text is same so refused
+        self.assertEqual(EditQDialog.Rejected, under_test.exec())
+
+        under_test.text_edit.setText('text have been edited')
+        timer.start(1)
+
+        # Accepted because text have changed
+        self.assertEqual(EditQDialog.Accepted, under_test.exec())
+
+        # Reset text to empty and spaces
+        under_test.old_text = ''
+        under_test.text_edit.setText('    ')
+
+        timer.start(1)
+
+        # Rejected because there is nothing to change
+        self.assertEqual(EditQDialog.Rejected, under_test.exec())
+
+        under_test.old_text = ''
+        under_test.text_edit.setText('New text')
+
+        timer.start(1)
+
+        # Accepted even if old text is empty
+        self.assertEqual(EditQDialog.Accepted, under_test.exec())
