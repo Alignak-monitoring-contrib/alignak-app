@@ -69,9 +69,7 @@ class ProfileQWidget(QWidget):
         self.app_widget = None
         self.hostnotif_toggle_btn = None
         self.servicenotif_toggle_btn = None
-        self.password_btn = QPushButton()
         self.token_btn = QPushButton()
-        self.notes_btn = QPushButton()
 
     def initialize(self):
         """
@@ -129,12 +127,12 @@ class ProfileQWidget(QWidget):
         notes_title.setObjectName("title")
         info_layout.addWidget(notes_title, line, 4, 1, 1)
 
-        self.notes_btn.setIcon(QIcon(settings.get_image('edit')))
-        self.notes_btn.setToolTip(_("Edit your notes."))
-        self.notes_btn.setObjectName("notes")
-        self.notes_btn.setFixedSize(32, 32)
-        self.notes_btn.clicked.connect(self.patch_data)
-        info_layout.addWidget(self.notes_btn, line, 5, 1, 1)
+        notes_btn = QPushButton()
+        notes_btn.setIcon(QIcon(settings.get_image('edit')))
+        notes_btn.setToolTip(_("Edit your notes."))
+        notes_btn.setFixedSize(32, 32)
+        notes_btn.clicked.connect(lambda: self.patch_data('notes'))
+        info_layout.addWidget(notes_btn, line, 5, 1, 1)
         line += 1
 
         # Role & Can submit commands
@@ -167,12 +165,12 @@ class ProfileQWidget(QWidget):
         password_title.setObjectName("subtitle")
         info_layout.addWidget(password_title, line, 2, 1, 1)
 
-        self.password_btn.setObjectName("password")
-        self.password_btn.clicked.connect(self.patch_data)
-        self.password_btn.setIcon(QIcon(settings.get_image('password')))
-        self.password_btn.setToolTip(_('Change my password'))
-        self.password_btn.setFixedSize(32, 32)
-        info_layout.addWidget(self.password_btn, line, 3, 1, 1)
+        password_btn = QPushButton()
+        password_btn.setIcon(QIcon(settings.get_image('password')))
+        password_btn.setToolTip(_('Change my password'))
+        password_btn.setFixedSize(32, 32)
+        password_btn.clicked.connect(lambda: self.patch_data('password'))
+        info_layout.addWidget(password_btn, line, 3, 1, 1)
         line += 1
 
         # Alias & Token (only for administrators)
@@ -228,22 +226,22 @@ class ProfileQWidget(QWidget):
 
         token_dialog.exec_()
 
-    def patch_data(self):  # pragma: no cover
+    def patch_data(self, patch_type):  # pragma: no cover
         """
-        Hide and show QLabel for notes or PATCH password
+        Display QDialogs for patches
 
+        :param patch_type: type of patch ("notes" or "password")
+        :type patch_type: str
         """
 
-        btn = self.sender()
-
-        if "notes" in btn.objectName():
+        if "notes" in patch_type:
             notes_dialog = EditQDialog()
             notes_dialog.initialize(
                 _('Edit User Notes'),
                 data_manager.database['user'].data['notes']
             )
             if notes_dialog.exec_() == EditQDialog.Accepted:
-                data = {'notes': str(notes_dialog.notes_edit.toPlainText())}
+                data = {'notes': str(notes_dialog.text_edit.toPlainText())}
                 headers = {'If-Match': data_manager.database['user'].data['_etag']}
                 endpoint = '/'.join(['user', data_manager.database['user'].item_id])
 
@@ -251,9 +249,9 @@ class ProfileQWidget(QWidget):
 
                 if patched:
                     data_manager.database['user'].update_data(
-                        'notes', notes_dialog.notes_edit.toPlainText()
+                        'notes', notes_dialog.text_edit.toPlainText()
                     )
-                    self.labels['notes'].setText(notes_dialog.notes_edit.toPlainText())
+                    self.labels['notes'].setText(notes_dialog.text_edit.toPlainText())
                     message = _(
                         _("Your notes have been edited.")
                     )
@@ -263,7 +261,7 @@ class ProfileQWidget(QWidget):
                         'ERROR',
                         _("Backend PATCH failed, please check your logs !")
                     )
-        elif "password" in btn.objectName():
+        elif "password" in patch_type:
             pass_dialog = PasswordQDialog()
             pass_dialog.initialize()
 
