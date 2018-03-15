@@ -27,7 +27,7 @@ from PyQt5.Qt import QApplication, QWidget
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.qobjects.common.widgets import MessageQDialog
+from alignak_app.qobjects.common.dialogs import MessageQDialog
 
 
 class TestMessageQDialog(unittest2.TestCase):
@@ -56,7 +56,7 @@ class TestMessageQDialog(unittest2.TestCase):
 
         under_test.initialize(
             'widgettitle',
-            'notes',
+            'text',
             'title',
             'Text to display'
         )
@@ -64,14 +64,14 @@ class TestMessageQDialog(unittest2.TestCase):
         self.assertIsNotNone(under_test.layout())
         self.assertEqual('dialog', under_test.objectName())
 
-    def test_get_token_widget(self):
-        """Get Message Qwidget"""
+    def test_get_message_widget(self):
+        """Get Message QWidget"""
 
-        token_dialog_test = MessageQDialog()
-        self.assertEqual('dialog', token_dialog_test.objectName())
+        msg_dialog_test = MessageQDialog()
+        self.assertEqual('dialog', msg_dialog_test.objectName())
 
-        under_test = token_dialog_test.get_message_widget(
-            'notes',
+        under_test = msg_dialog_test.get_message_widget(
+            'text',
             'title',
             'Text to display'
         )
