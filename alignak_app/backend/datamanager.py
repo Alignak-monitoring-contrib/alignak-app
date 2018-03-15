@@ -129,7 +129,7 @@ class DataManager(object):
 
             if not wanted_item:
                 logger.error(
-                    'Item not found in database[%s]: key=%s, value=%s' % (item_type, key, value)
+                    'Item not found in database[%s]: key=%s, value=%s', item_type, key, value
                 )
 
         return wanted_item
@@ -138,10 +138,12 @@ class DataManager(object):
         """
         Update a single item in database
 
-        :param item_type:
-        :param item_id:
-        :param data:
-        :return:
+        :param item_type: type of item (host, service, ...)
+        :type data: str
+        :param item_id: '_id' of item to update
+        :type item_id: str
+        :param data: the data to be updated
+        :type data: dict
         """
 
         logger.debug('Update item data in database[%s]:', item_type)

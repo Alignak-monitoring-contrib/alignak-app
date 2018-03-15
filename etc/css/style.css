@@ -412,7 +412,8 @@ QTableWidget::item {
     color: #3b4155;
 }
 
-QTableWidget#problems::item:selected {
+/****** QTableView ******/
+QTableView#problems::item:selected {
     color: #e67e22;
     background-color: white;
 }
