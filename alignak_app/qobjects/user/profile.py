@@ -27,7 +27,7 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QGridLayout, QVBoxLayout, QIcon, Qt, QLabel, QWidget, QPushButton, QScrollArea
+from PyQt5.Qt import QGridLayout, QIcon, Qt, QLabel, QWidget, QPushButton, QScrollArea
 
 from alignak_app.backend.backend import app_backend
 from alignak_app.backend.datamanager import data_manager
@@ -36,7 +36,7 @@ from alignak_app.utils.config import settings
 from alignak_app.qobjects.common.frames import AppQFrame
 from alignak_app.qobjects.common.labels import get_icon_pixmap
 from alignak_app.qobjects.common.buttons import ToggleQWidgetButton
-from alignak_app.qobjects.common.dialogs import MessageQDialog, EditQDialog
+from alignak_app.qobjects.common.dialogs import MessageQDialog, EditQDialog, ValidatorQDialog
 
 from alignak_app.qobjects.events.events import send_event
 from alignak_app.qobjects.user.password import PasswordQDialog
@@ -89,6 +89,7 @@ class ProfileQWidget(QWidget):
         user_title = QLabel(_('User informations:'))
         user_title.setObjectName('itemtitle')
         user_layout.addWidget(user_title, 0, 0, 1, 2)
+        user_layout.setAlignment(user_title, Qt.AlignCenter)
 
         user_layout.addWidget(self.get_informations_widget(), 1, 0, 1, 1)
         user_layout.addWidget(self.get_notes_mail_widget(), 1, 1, 1, 1)
@@ -200,10 +201,13 @@ class ProfileQWidget(QWidget):
         mail_label = QLabel(_('Email:'))
         mail_label.setObjectName('subtitle')
         notes_layout.addWidget(mail_label, 2, 0, 1, 1)
+        self.labels['email'].setObjectName('edit')
         notes_layout.addWidget(self.labels['email'], 2, 1, 1, 1)
+
         mail_btn = QPushButton()
         mail_btn.setIcon(QIcon(settings.get_image('edit')))
         mail_btn.setFixedSize(32, 32)
+        mail_btn.clicked.connect(lambda: self.patch_data('email'))
         notes_layout.addWidget(mail_btn, 2, 2, 1, 1)
 
         notes_layout.setAlignment(Qt.AlignTop)
@@ -235,28 +239,36 @@ class ProfileQWidget(QWidget):
         :type patch_type: str
         """
 
-        if "notes" in patch_type:
-            notes_dialog = EditQDialog()
-            notes_dialog.initialize(
-                _('Edit User Notes'),
-                data_manager.database['user'].data['notes']
-            )
-            if notes_dialog.exec_() == EditQDialog.Accepted:
-                data = {'notes': str(notes_dialog.text_edit.toPlainText())}
+        if "notes" in patch_type or 'email' in patch_type:
+            if 'email' in patch_type:
+                edit_dialog = ValidatorQDialog()
+                edit_dialog.initialize(
+                    _('Edit %s') % patch_type,
+                    data_manager.database['user'].data[patch_type],
+                    r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+.+$)"
+                )
+            else:
+                edit_dialog = EditQDialog()
+                edit_dialog.initialize(
+                    _('Edit User %s') % patch_type,
+                    data_manager.database['user'].data[patch_type]
+                )
+            if edit_dialog.exec_() == EditQDialog.Accepted:
+                if 'email' in patch_type:
+                    text = edit_dialog.line_edit.text()
+                else:
+                    text = edit_dialog.text_edit.toPlainText()
+
+                data = {patch_type: text}
                 headers = {'If-Match': data_manager.database['user'].data['_etag']}
                 endpoint = '/'.join(['user', data_manager.database['user'].item_id])
 
                 patched = app_backend.patch(endpoint, data, headers)
 
                 if patched:
-                    data_manager.database['user'].update_data(
-                        'notes', notes_dialog.text_edit.toPlainText()
-                    )
-                    self.labels['notes'].setText(notes_dialog.text_edit.toPlainText())
-                    message = _(
-                        _("Your notes have been edited.")
-                    )
-                    send_event('INFO', message)
+                    data_manager.database['user'].update_data(patch_type, text)
+                    self.labels[patch_type].setText(text)
+                    send_event('INFO', _("Your %s have been edited.") % patch_type)
                 else:
                     send_event(
                         'ERROR',
@@ -417,6 +429,10 @@ class ProfileQWidget(QWidget):
         """
         Enable notification for the wanted type: hosts or services
 
+        :param notification_type: type of notifications (host or service)
+        :type notification_type: str
+        :param btn_state: state of sender button
+        :type btn_state: bool
         """
 
         notification_enabled = btn_state

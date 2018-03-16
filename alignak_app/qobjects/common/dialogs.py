@@ -28,6 +28,7 @@
 from logging import getLogger
 
 from PyQt5.Qt import QTextEdit, Qt, QIcon, QDialog, QVBoxLayout, QWidget, QLabel, QPushButton
+from PyQt5.Qt import QLineEdit, QRegExpValidator, QRegExp
 
 from alignak_app.utils.config import settings
 
@@ -106,7 +107,7 @@ class EditQDialog(QDialog):
 
         return text_widget
 
-    def accept_text(self):  # pragma: no cover
+    def accept_text(self):
         """
         Set Edit QDialog to Rejected or Accepted (prevent to patch for nothing)
 
@@ -199,3 +200,128 @@ class MessageQDialog(QDialog):
         token_layout.addWidget(accept_btn)
 
         return token_widget
+
+
+class ValidatorQDialog(QDialog):
+    """
+        Class who create Validator QDialog to edit text in Alignak-app with regexp to validate
+    """
+
+    def __init__(self, parent=None):
+        super(ValidatorQDialog, self).__init__(parent)
+        self.setWindowTitle('Edit Dialog')
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setStyleSheet(settings.css_style)
+        self.setWindowIcon(QIcon(settings.get_image('icon')))
+        self.setObjectName('dialog')
+        self.setFixedSize(250, 200)
+        # Fields
+        self.line_edit = QLineEdit()
+        self.valid_text = QLabel()
+        self.validator = QRegExpValidator()
+        self.old_text = ''
+
+    def initialize(self, title, text, regexp):
+        """
+        Initialize QDialog for ValidatorQDialog
+
+        :param title: title of the QDialog
+        :type title: str
+        :param text: text to edit
+        :type text: str
+        :param regexp: regular expression to validate
+        :type regexp: str
+        """
+
+        self.old_text = text
+        center_widget(self)
+
+        # Main layout
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(main_layout)
+
+        main_layout.addWidget(get_logo_widget(self, title))
+
+        text_title = QLabel(_("Edit your text:"))
+        text_title.setObjectName('subtitle')
+        main_layout.addWidget(text_title)
+        main_layout.setAlignment(text_title, Qt.AlignCenter)
+
+        main_layout.addWidget(self.get_text_widget(regexp))
+
+    def get_text_widget(self, regexp):
+        """
+        Return text QWidget with QTextEdit
+
+        :return: text QWidget
+        :rtype: QWidget
+        """
+
+        text_widget = QWidget()
+        text_widget.setObjectName('dialog')
+        text_layout = QVBoxLayout()
+        text_widget.setLayout(text_layout)
+
+        text_layout.addWidget(self.valid_text)
+
+        qreg_exp = QRegExp(regexp)
+        self.validator.setRegExp(qreg_exp)
+        self.line_edit.setPlaceholderText(_('type your text...'))
+        self.line_edit.setText(self.old_text)
+        self.line_edit.setValidator(self.validator)
+        self.line_edit.setFixedHeight(25)
+        self.line_edit.textChanged.connect(self.check_text)
+        text_layout.addWidget(self.line_edit)
+
+        # Accept button
+        accept_btn = QPushButton(_('Confirm'), self)
+        accept_btn.clicked.connect(self.accept_text)
+        accept_btn.setObjectName('valid')
+        accept_btn.setMinimumHeight(30)
+        text_layout.addWidget(accept_btn)
+
+        return text_widget
+
+    def check_text(self):
+        """
+        Valid email with ``QRegExpValidator`` and inform user
+
+        """
+
+        state = self.validator.validate(self.line_edit.text(), 0)[0]
+        if state == QRegExpValidator.Acceptable:
+            text = 'Valid email'
+            color = '#27ae60'  # green
+        else:
+            text = 'Invalid email !'
+            color = '#e67e22'  # orange
+
+        self.valid_text.setStyleSheet('QLabel { color: %s; }' % color)
+        self.valid_text.setText(text)
+
+    def accept_text(self):  # pragma: no cover
+        """
+        Set Edit QDialog to Rejected or Accepted (prevent to patch for nothing)
+
+        """
+
+        state = self.validator.validate(self.line_edit.text(), 0)[0]
+        if self.old_text == self.line_edit.text():
+            self.reject()
+        elif not self.old_text or self.old_text.isspace():
+            if not self.line_edit.text() or self.line_edit.text().isspace():
+                self.reject()
+            else:
+                if state == QRegExpValidator.Acceptable:
+                    self.accept()
+                else:
+                    self.reject()
+        elif not self.line_edit.text() or self.line_edit.text().isspace():
+            self.line_edit.setText('')
+            self.accept()
+        else:
+            if state == QRegExpValidator.Acceptable:
+                self.accept()
+            else:
+                self.reject()
