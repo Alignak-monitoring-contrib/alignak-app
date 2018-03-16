@@ -86,3 +86,35 @@ Filename: "{cmd}"; Parameters: "/c icacls ""{app}"" /grant Everyone:(OI)(CI)F /T
 Filename: "{cmd}"; Parameters: "/c icacls ""{app}"" /grant ""Tout le monde"":(OI)(CI)F /T"; StatusMsg: Grant permissions; Languages: french;
 Filename: {tmp}\vc_redist.x64.exe; Parameters: "/q /passive /Q:a /c:""msiexec /q /i vcredist.msi"" "; Check: IsWin64; StatusMsg: Installing VC++ 64bits Redistributables...
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Parameters: "--start"; Flags: nowait postinstall skipifsilent unchecked
+
+[Code]
+var
+  UserPage: TInputQueryWizardPage;
+
+function GetProxy: String;
+begin
+  { Write the proxy value in Registry }
+  if (Length(UserPage.Values[0]) > 0) then
+  begin
+    RegWriteStringValue(HKCU, 'Environment', 'HTTP_PROXY', UserPage.Values[0]);
+  end
+end;
+
+procedure InitializeWizard;
+begin
+  { Create the Proxy page }
+  UserPage := CreateInputQueryPage(wpSelectComponents,
+    'Proxy Settings', '',
+    'Please indicate the address of your proxy if you have one. Otherwise, leave this field blank.');
+  UserPage.Add('Proxy:', False);
+end; 
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if CurStep = ssPostInstall then begin
+    GetProxy()
+  end;
+end;
+
+
+
