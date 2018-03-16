@@ -67,6 +67,7 @@ class ProblemsQWidget(QWidget):
         """
 
         problem_layout = QVBoxLayout()
+        problem_layout.setContentsMargins(5, 20, 5, 5)
         self.setLayout(problem_layout)
 
         self.spy_widget = spy_widget
@@ -137,6 +138,7 @@ class ProblemsQWidget(QWidget):
         widget = QWidget()
         layout = QHBoxLayout()
         layout.setSpacing(0)
+        layout.setContentsMargins(5, 20, 5, 10)
         widget.setLayout(layout)
 
         # Search label

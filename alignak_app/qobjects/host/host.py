@@ -196,7 +196,7 @@ class HostQWidget(QWidget):
 
         self.history_widget.initialize()
 
-        layout.setAlignment(Qt.AlignCenter)
+        layout.setAlignment(Qt.AlignCenter | Qt.AlignTop)
 
         return widget
 
