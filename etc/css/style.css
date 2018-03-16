@@ -40,7 +40,7 @@ QLabel#error {
     background-color: #f9f2f4;
 }
 
-QLabel#notes {
+QLabel#text {
     padding-left: 10px;
     color: #2581c7;
     background-color: #e6f4ff;
