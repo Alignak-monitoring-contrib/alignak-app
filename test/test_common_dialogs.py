@@ -27,7 +27,7 @@ from PyQt5.Qt import QApplication, QWidget, QTimer
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.qobjects.common.dialogs import MessageQDialog, EditQDialog
+from alignak_app.qobjects.common.dialogs import MessageQDialog, EditQDialog, ValidatorQDialog
 
 
 class TestMessageQDialog(unittest2.TestCase):
@@ -105,7 +105,7 @@ class TestMessageQDialog(unittest2.TestCase):
         self.assertIsInstance(text_widget_test, QWidget)
         self.assertEqual('old text', under_test.text_edit.toPlainText())
 
-    def test_accept_text(self):
+    def test_edit_dialog_accept_text(self):
         """EditQDialog Accept Text"""
 
         under_test = EditQDialog()
@@ -142,3 +142,48 @@ class TestMessageQDialog(unittest2.TestCase):
 
         # Accepted even if old text is empty
         self.assertEqual(EditQDialog.Accepted, under_test.exec())
+
+    def test_initialize_validator_dialog(self):
+        """Initialize ValidatorQDialog"""
+
+        under_test = ValidatorQDialog()
+
+        self.assertTrue(under_test.line_edit)
+        self.assertTrue(under_test.valid_text)
+        self.assertTrue(under_test.validator)
+        self.assertFalse(under_test.old_text)
+
+        under_test.initialize('title', 'text', '[a-z]')
+
+        self.assertTrue(under_test.line_edit)
+        self.assertTrue(under_test.valid_text)
+        self.assertTrue(under_test.validator)
+        self.assertTrue(under_test.old_text)
+
+    def testvalidator_dialog_check_state(self):
+        """Check State ValidatorQDialog"""
+
+        under_test = ValidatorQDialog()
+
+        under_test.initialize(
+            'title',
+            '',
+            r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-]+.+$)"
+        )
+
+        self.assertEqual('', under_test.valid_text.text())
+        self.assertEqual('', under_test.line_edit.text())
+        self.assertEqual('', under_test.old_text)
+
+        under_test.check_text()
+
+        self.assertEqual('Invalid email !', under_test.valid_text.text())
+        self.assertEqual('', under_test.line_edit.text())
+        self.assertEqual('', under_test.old_text)
+
+        under_test.line_edit.setText('contact@alignak.net')
+
+        under_test.check_text()
+
+        self.assertEqual('Valid email', under_test.valid_text.text())
+        self.assertEqual('contact@alignak.net', under_test.line_edit.text())
