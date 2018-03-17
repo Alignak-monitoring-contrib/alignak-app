@@ -150,12 +150,14 @@ class ProblemsQWidget(QWidget):
 
         # QLineEdit
         self.line_search.setFixedHeight(search_lbl.height())
+        self.line_search.setPlaceholderText(_('Type text to filter problems...'))
         layout.addWidget(self.line_search)
 
-        # refresh button
+        # Refresh button
         refresh_btn = QPushButton(_('Refresh'))
         refresh_btn.setObjectName('ok')
         refresh_btn.setFixedSize(120, search_lbl.height())
+        refresh_btn.setToolTip(_('Refresh problems'))
         refresh_btn.clicked.connect(self.update_problems_data)
         layout.addWidget(refresh_btn)
 
@@ -240,7 +242,7 @@ class ProblemsQWidget(QWidget):
         """
         Update data of Problems QTableWidget and problems title
 
-        :param item_type: TODO
+        :param item_type: type of item to filter
         :type item_type: str
         """
 
