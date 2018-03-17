@@ -98,6 +98,9 @@ class AppQMainWindow(QMainWindow):
 
         if settings.get_config('Alignak-app', 'problems', boolean=True):
             self.panel_widget.tab_widget.setCurrentIndex(1)
+            self.panel_widget.problems_widget.line_search.setFocus()
+        else:
+            self.panel_widget.line_search.setFocus()
 
     def mousePressEvent(self, event):  # pragma: no cover - not testable
         """ QWidget.mousePressEvent(QMouseEvent) """
