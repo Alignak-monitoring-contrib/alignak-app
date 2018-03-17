@@ -161,6 +161,10 @@ Alignak
     :members:
     :show-inheritance:
 
+.. automodule:: alignak_app.qobjects.alignak.problems_table
+    :members:
+    :show-inheritance:
+
 .. automodule:: alignak_app.qobjects.alignak.status
     :members:
     :show-inheritance:
@@ -175,6 +179,10 @@ Common
     :show-inheritance:
 
 .. automodule:: alignak_app.qobjects.common.buttons
+    :members:
+    :show-inheritance:
+
+.. automodule:: alignak_app.qobjects.common.dialogs
     :members:
     :show-inheritance:
 
@@ -282,9 +290,6 @@ User
 
 .. automodule:: alignak_app.qobjects.user
 
-.. automodule:: alignak_app.qobjects.user.notes
-    :members:
-    :show-inheritance:
 
 .. automodule:: alignak_app.qobjects.user.options
     :members:
@@ -295,10 +300,6 @@ User
     :show-inheritance:
 
 .. automodule:: alignak_app.qobjects.user.profile
-    :members:
-    :show-inheritance:
-
-.. automodule:: alignak_app.qobjects.user.token
     :members:
     :show-inheritance:
 
