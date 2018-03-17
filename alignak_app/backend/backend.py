@@ -115,7 +115,7 @@ class BackendClient(object):
 
             # Make backend connected to test token
             self.connected = True
-            connection_test = self.get('alignak')
+            connection_test = self.get('alignak', {'projection': json.dumps({'name': 1})})
 
             self.connected = bool(connection_test)
             if not check:
