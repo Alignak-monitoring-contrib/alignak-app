@@ -91,6 +91,7 @@ class TestDataManager(unittest2.TestCase):
     def test_send_spy_events(self):
         """Send Spy Events"""
 
+        init_event_widget()
         under_test = SpyQWidget()
         under_test.initialize()
 

@@ -59,6 +59,7 @@ class Settings(object):
 
         },
         'Alignak-app': {
+            'problems': False,
             'requests_interval': 30,
             'notification_duration': 30,
             'spy_interval': 30,

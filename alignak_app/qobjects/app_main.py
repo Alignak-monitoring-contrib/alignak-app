@@ -24,8 +24,8 @@
     ++++++++
     App Main manage creation of QMainWindow for:
 
-    * :class:`Dock <alignak_app.qobjects.dock.dock.DockQWidget>` (Right part)
-    * :class:`Panel <alignak_app.qobjects.panel.panel.PanelQWidget>` (Left part)
+    * :class:`Dock <alignak_app.qobjects.dock.DockQWidget>` (Right part)
+    * :class:`Panel <alignak_app.qobjects.panel.PanelQWidget>` (Left part)
 """
 
 from logging import getLogger
@@ -95,6 +95,9 @@ class AppQMainWindow(QMainWindow):
             self.showMaximized()
         else:
             pass
+
+        if settings.get_config('Alignak-app', 'problems', boolean=True):
+            self.panel_widget.tab_widget.setCurrentIndex(1)
 
     def mousePressEvent(self, event):  # pragma: no cover - not testable
         """ QWidget.mousePressEvent(QMouseEvent) """
