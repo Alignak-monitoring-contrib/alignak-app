@@ -28,8 +28,8 @@
 import sys
 from logging import getLogger
 
-from PyQt5.Qt import QGridLayout
 from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel, QVBoxLayout, QWidget, QDialog, QPushButton
+from PyQt5.Qt import QScrollArea
 
 from alignak_app.utils.config import settings
 
@@ -50,11 +50,14 @@ class ServerQDialog(QDialog):
         self.setStyleSheet(settings.css_style)
         self.setWindowIcon(QIcon(settings.get_image('icon')))
         self.setObjectName('dialog')
-        self.setFixedSize(300, 360)
+        self.setFixedSize(320, 380)
         # Fields
         self.server_proc = QLineEdit()
         self.server_url = QLineEdit()
         self.server_port = QLineEdit()
+        self.proxy_address = QLineEdit()
+        self.proxy_user = QLineEdit()
+        self.proxy_password = QLineEdit()
         self.offset = None
 
     def initialize_dialog(self):
@@ -64,12 +67,43 @@ class ServerQDialog(QDialog):
         """
 
         main_layout = QVBoxLayout()
-        self.setLayout(main_layout)
         main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.addWidget(get_logo_widget(self, _('Alignak server')))
+        self.setLayout(main_layout)
 
-        server_widget = QWidget(self)
+        main_layout.addWidget(get_logo_widget(self, _('Alignak / Network')))
+
+        server_widget = QWidget()
         server_widget.setObjectName('dialog')
+        server_layout = QVBoxLayout(server_widget)
+
+        scroll_server = QScrollArea()
+        scroll_server.setObjectName('server')
+        scroll_server.setWidgetResizable(True)
+        scroll_server.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll_server.setWidget(self.get_settings_widget())
+
+        server_layout.addWidget(scroll_server)
+
+        # Valid Button
+        valid_btn = QPushButton(_('Valid'))
+        valid_btn.setObjectName('valid')
+        valid_btn.setMinimumHeight(30)
+        valid_btn.clicked.connect(self.accept)
+
+        server_layout.addWidget(valid_btn)
+
+        main_layout.addWidget(server_widget)
+
+        center_widget(self)
+
+    def get_settings_widget(self):
+        """
+        TODO
+        :return:
+        """
+
+        server_widget = QWidget()
+        server_widget.setObjectName('app')
         server_layout = QVBoxLayout(server_widget)
 
         # Title
@@ -116,16 +150,39 @@ class ServerQDialog(QDialog):
         self.server_proc.setFixedHeight(25)
         server_layout.addWidget(self.server_proc)
 
-        # Valid Button
-        valid_btn = QPushButton(_('Valid'))
-        valid_btn.setObjectName('valid')
-        valid_btn.setMinimumHeight(30)
-        valid_btn.clicked.connect(self.accept)
-        server_layout.addWidget(valid_btn)
+        # Description
+        proxy_title = QLabel(
+            _('Proxy settings.')
+        )
+        proxy_title.setObjectName('itemtitle')
+        server_layout.addWidget(proxy_title)
 
-        main_layout.addWidget(server_widget)
+        # Proxy Settings
+        proxy_lbl = QLabel(_('Proxy Address with port'))
+        server_layout.addWidget(proxy_lbl)
+        self.proxy_address.setText('')
+        self.proxy_address.setPlaceholderText(_('proxy adress:port...'))
+        self.proxy_address.setFixedHeight(25)
+        server_layout.addWidget(self.proxy_address)
 
-        center_widget(server_widget)
+        # Proxy User
+        proxy_user_lbl = QLabel(_('Proxy User (Optional)'))
+        server_layout.addWidget(proxy_user_lbl)
+        self.proxy_user.setText('')
+        self.proxy_user.setPlaceholderText(_('proxy user...'))
+        self.proxy_user.setFixedHeight(25)
+        server_layout.addWidget(self.proxy_user)
+
+        # Proxy Password
+        proxy_password_lbl = QLabel(_('Proxy Password (Optional)'))
+        server_layout.addWidget(proxy_password_lbl)
+        self.proxy_password.setText('')
+        self.proxy_password.setPlaceholderText(_('proxy password...'))
+        self.proxy_password.setFixedHeight(25)
+        self.proxy_password.setEchoMode(QLineEdit.Password)
+        server_layout.addWidget(self.proxy_password)
+
+        return server_widget
 
     def mousePressEvent(self, event):  # pragma: no cover - not testable
         """ QWidget.mousePressEvent(QMouseEvent) """
