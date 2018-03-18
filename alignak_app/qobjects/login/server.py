@@ -78,8 +78,10 @@ class ServerQDialog(QDialog):
 
     def get_settings_widget(self):
         """
-        TODO
-        :return:
+        Return the alignak settings QWidget
+
+        :return: settings QWidget
+        :rtype: QWidget
         """
 
         server_widget = QWidget()

@@ -180,7 +180,7 @@ class LoginQDialog(QDialog):
         """
 
         if settings.get_config('Alignak', 'proxy_user'):
-            # Model is: {'http': 'http://user:pass@10.10.1.10:3128/'}
+            # Model is: {'http': 'http://user:pass@proxy:port'}
             protocol, address, port = settings.get_config('Alignak', 'proxy').split(':')
             proxy_user = settings.get_config('Alignak', 'proxy_user')
             address = address.replace('//', '')

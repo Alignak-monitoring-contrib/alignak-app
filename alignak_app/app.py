@@ -173,8 +173,11 @@ class AlignakApp(QObject):  # pragma: no cover
             password = settings.get_config('Alignak', 'password')
             if settings.get_config('Alignak', 'proxy'):
                 try:
-                    protocol = settings.get_config('Alignak', 'proxy').split(':')[0]
-                    proxies = {protocol: settings.get_config('Alignak', 'proxy')}
+                    # Model is: {'protocol': 'http://proxy:port'}
+                    proxies = {
+                        settings.get_config('Alignak', 'proxy').split(':')[0]:
+                            settings.get_config('Alignak', 'proxy')
+                    }
                 except ValueError:
                     self.show_login_window()
 
@@ -184,6 +187,7 @@ class AlignakApp(QObject):  # pragma: no cover
             self.show_login_window()
 
         # Try login else display login window
+        logger.info('- Proxy settings  : %s', proxies)
         if not app_backend.login(username, password, proxies=proxies):
             self.show_login_window()
 
