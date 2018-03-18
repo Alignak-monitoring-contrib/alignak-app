@@ -26,10 +26,10 @@
 """
 
 import sys
+
 from logging import getLogger
 
 from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel, QVBoxLayout, QWidget, QDialog, QPushButton
-from PyQt5.Qt import QScrollArea
 
 from alignak_app.utils.config import settings
 
@@ -70,29 +70,9 @@ class ServerQDialog(QDialog):
         main_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(main_layout)
 
-        main_layout.addWidget(get_logo_widget(self, _('Alignak / Network')))
+        main_layout.addWidget(get_logo_widget(self, _('Alignak Server')))
 
-        server_widget = QWidget()
-        server_widget.setObjectName('dialog')
-        server_layout = QVBoxLayout(server_widget)
-
-        scroll_server = QScrollArea()
-        scroll_server.setObjectName('server')
-        scroll_server.setWidgetResizable(True)
-        scroll_server.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll_server.setWidget(self.get_settings_widget())
-
-        server_layout.addWidget(scroll_server)
-
-        # Valid Button
-        valid_btn = QPushButton(_('Valid'))
-        valid_btn.setObjectName('valid')
-        valid_btn.setMinimumHeight(30)
-        valid_btn.clicked.connect(self.accept)
-
-        server_layout.addWidget(valid_btn)
-
-        main_layout.addWidget(server_widget)
+        main_layout.addWidget(self.get_settings_widget())
 
         center_widget(self)
 
@@ -138,49 +118,27 @@ class ServerQDialog(QDialog):
         self.server_port.setFixedHeight(25)
         server_layout.addWidget(self.server_port)
 
-        # Server Processes
-        process_lbl = QLabel(_('Processes'))
-        server_layout.addWidget(process_lbl)
+        # Server Processes (displayed only for Unix platforms)
+        if 'win32' not in sys.platform:
+            process_lbl = QLabel(_('Processes'))
+            server_layout.addWidget(process_lbl)
 
-        if 'win32' in sys.platform:
+            cur_proc = settings.get_config('Alignak', 'processes')
+            self.server_proc.setText(cur_proc)
+            self.server_proc.setPlaceholderText(_('alignak backend processes...'))
+            self.server_proc.setFixedHeight(25)
+            server_layout.addWidget(self.server_proc)
+        else:
+            self.server_proc.setText(settings.get_config('Alignak', 'processes'))
             self.server_proc.setEnabled(False)
-        cur_proc = settings.get_config('Alignak', 'processes')
-        self.server_proc.setText(cur_proc)
-        self.server_proc.setPlaceholderText(_('alignak backend processes...'))
-        self.server_proc.setFixedHeight(25)
-        server_layout.addWidget(self.server_proc)
 
-        # Description
-        proxy_title = QLabel(
-            _('Proxy settings.')
-        )
-        proxy_title.setObjectName('itemtitle')
-        server_layout.addWidget(proxy_title)
+        # Valid Button
+        valid_btn = QPushButton(_('Valid'))
+        valid_btn.setObjectName('valid')
+        valid_btn.setMinimumHeight(30)
+        valid_btn.clicked.connect(self.accept)
 
-        # Proxy Settings
-        proxy_lbl = QLabel(_('Proxy Address with port'))
-        server_layout.addWidget(proxy_lbl)
-        self.proxy_address.setText('')
-        self.proxy_address.setPlaceholderText(_('proxy adress:port...'))
-        self.proxy_address.setFixedHeight(25)
-        server_layout.addWidget(self.proxy_address)
-
-        # Proxy User
-        proxy_user_lbl = QLabel(_('Proxy User (Optional)'))
-        server_layout.addWidget(proxy_user_lbl)
-        self.proxy_user.setText('')
-        self.proxy_user.setPlaceholderText(_('proxy user...'))
-        self.proxy_user.setFixedHeight(25)
-        server_layout.addWidget(self.proxy_user)
-
-        # Proxy Password
-        proxy_password_lbl = QLabel(_('Proxy Password (Optional)'))
-        server_layout.addWidget(proxy_password_lbl)
-        self.proxy_password.setText('')
-        self.proxy_password.setPlaceholderText(_('proxy password...'))
-        self.proxy_password.setFixedHeight(25)
-        self.proxy_password.setEchoMode(QLineEdit.Password)
-        server_layout.addWidget(self.proxy_password)
+        server_layout.addWidget(valid_btn)
 
         return server_widget
 
