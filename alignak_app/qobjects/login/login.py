@@ -35,7 +35,6 @@ from alignak_app.backend.backend import app_backend
 from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.widgets import get_logo_widget, center_widget
-from alignak_app.qobjects.common.dialogs import MessageQDialog
 from alignak_app.qobjects.login.server import ServerQDialog
 from alignak_app.qobjects.login.proxy import ProxyQDialog
 
@@ -56,9 +55,8 @@ class LoginQDialog(QDialog):
         self.setObjectName('dialog')
         self.setFixedSize(310, 360)
         # Fields
-        self.backend_url = None
-        self.username_line = None
-        self.password_line = None
+        self.username_line = QLineEdit()
+        self.password_line = QLineEdit()
         self.proxies = {}
         self.offset = None
 
@@ -125,13 +123,11 @@ class LoginQDialog(QDialog):
         login_layout.addWidget(connection_lbl, 4, 0, 1, 2)
 
         # Username field
-        self.username_line = QLineEdit(self)
         self.username_line.setFixedHeight(25)
         self.username_line.setPlaceholderText(_('username...'))
         login_layout.addWidget(self.username_line, 5, 0, 1, 2)
 
         # Password field
-        self.password_line = QLineEdit(self)
         self.password_line.setFixedHeight(25)
         self.password_line.setPlaceholderText(_('password...'))
         self.password_line.setEchoMode(QLineEdit.Password)
@@ -189,12 +185,13 @@ class LoginQDialog(QDialog):
                           (protocol, proxy_user, proxy_password, address, port)
             }
             self.proxies = proxy
+        elif settings.get_config('Alignak', 'proxy'):
+            protocol = settings.get_config('Alignak', 'proxy').split(':')[0]
+            self.proxies = {protocol: settings.get_config('Alignak', 'proxy')}
         else:
-            if settings.get_config('Alignak', 'proxy'):
-                protocol = settings.get_config('Alignak', 'proxy').split(':')[0]
-                self.proxies = {protocol: settings.get_config('Alignak', 'proxy')}
+            self.proxies = {}
 
-    def handle_proxy(self):
+    def handle_proxy(self):  # pragma: no cover - not testable
         """
         Handle Proxy QDialog display and set proxies for login
 
@@ -217,7 +214,7 @@ class LoginQDialog(QDialog):
             self.set_proxy_settings(proxy_password)
 
     @staticmethod
-    def handle_server():
+    def handle_server():  # pragma: no cover - not testable
         """
         Handle for Server QDialog and set alignak backend server settings
 

@@ -154,7 +154,7 @@ class ProxyQDialog(QDialog):
             self.accept()
 
     @staticmethod
-    def proxy_error():
+    def proxy_error():  # pragma: no cover - not testable
         """
         Display a Message QDialog error
 

@@ -48,8 +48,8 @@ class TestServerQDialog(unittest2.TestCase):
         except:
             pass
 
-    def test_initialize(self):
-        """Iniatialize ServerQDialog"""
+    def test_initialize_server_dialog(self):
+        """Initialize ServerQDialog"""
 
         under_test = ServerQDialog()
 

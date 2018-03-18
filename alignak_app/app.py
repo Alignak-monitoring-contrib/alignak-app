@@ -252,7 +252,7 @@ class AlignakApp(QObject):  # pragma: no cover
                 _('Connection'),
                 'error',
                 _('Warning!'),
-                _('Access denied! Check your username and password.')
+                _('Access denied! Check your configuration and your credentials.')
             )
             if login.exec_() == login.Accepted:
                 connect_dialog.close()
