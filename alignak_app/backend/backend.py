@@ -65,7 +65,7 @@ class BackendClient(object):
         self.connected = False
         self.user = {}
 
-    def login(self, username=None, password=None, check=False):
+    def login(self, username=None, password=None, proxies=None, check=False):
         """
         Connect to alignak backend
 
@@ -73,6 +73,8 @@ class BackendClient(object):
         :type username: str
         :param password: password of user. If token given, this parameter is useless
         :type password: str
+        :param proxies: dictionnary for proxy
+        :type proxies: dict
         :param check: define if login is a check or a first login
         :type check: bool
         :return: True if connected or False if not
@@ -97,7 +99,7 @@ class BackendClient(object):
         if username and password:
             # Username & password : not recommended, without login QDialog
             try:
-                self.connected = self.backend.login(username, password)
+                self.connected = self.backend.login(username, password, proxies=proxies)
                 if self.connected:
                     self.user['username'] = username
                     self.user['token'] = self.backend.token
@@ -111,6 +113,7 @@ class BackendClient(object):
                 self.backend.token = self.user['token']
             else:
                 self.backend.token = username
+                self.backend.proxies = proxies
                 self.user['token'] = username
 
             # Make backend connected to test token

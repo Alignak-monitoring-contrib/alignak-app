@@ -35,6 +35,7 @@ from alignak_app.backend.backend import app_backend
 from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.widgets import get_logo_widget, center_widget
+from alignak_app.qobjects.common.dialogs import MessageQDialog, EditQDialog
 from alignak_app.qobjects.login.server import ServerQDialog
 
 logger = getLogger(__name__)
@@ -57,6 +58,7 @@ class LoginQDialog(QDialog):
         self.backend_url = None
         self.username_line = None
         self.password_line = None
+        self.proxies = {}
         self.offset = None
 
     def create_widget(self):
@@ -145,13 +147,12 @@ class LoginQDialog(QDialog):
         username = str(self.username_line.text())
         password = str(self.password_line.text())
 
-        if app_backend.login(username, password):
+        if app_backend.login(username, password, proxies=self.proxies):
             self.accept()
         else:
             self.reject()
 
-    @staticmethod
-    def handle_server():
+    def handle_server(self):
         """
         Handle for server button
 
@@ -168,6 +169,46 @@ class LoginQDialog(QDialog):
             settings.edit_setting_value(
                 'Alignak', 'processes', str(server_dialog.server_proc.text()).rstrip()
             )
+            if server_dialog.proxy_address.text().rstrip():
+                proxy_address = server_dialog.proxy_address.text().rstrip()
+                proxy_user = server_dialog.proxy_user.text().rstrip()
+                proxy_password = server_dialog.proxy_password.text().rstrip()
+
+                # Save proxy and user proxy for next login
+                settings.edit_setting_value('Alignak', 'proxy', proxy_address)
+                settings.edit_setting_value('Alignak', 'proxy_user', proxy_user)
+                if proxy_user:
+                    # Model is: {'http': 'http://user:pass@10.10.1.10:3128/'}
+                    try:
+                        protocol, address, port = proxy_address.split(':')
+                        address = address.replace('//', '')
+                        proxy = {
+                            protocol: '%s://%s:%s@%s:%s' %
+                                      (protocol, proxy_user, proxy_password, address, port)
+                        }
+                        self.proxies = proxy
+                    except ValueError:
+                        self.proxy_error()
+                else:
+                    try:
+                        protocol = proxy_address.split(':')[0]
+                        self.proxies = {protocol: proxy_address}
+                    except ValueError:
+                        self.proxy_error()
+
+    @staticmethod
+    def proxy_error():
+        """
+        TODO
+        :return:
+        """
+
+        error_dialog = MessageQDialog()
+        error_dialog.initialize(
+            'Proxy Error', 'error', 'Wrong proxy setting !',
+            'You must enter a valid address: "http://proxy:port"'
+        )
+        error_dialog.exec_()
 
     def showEvent(self, _):
         """ QDialog.showEvent(QShowEvent) """
