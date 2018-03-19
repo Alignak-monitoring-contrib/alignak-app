@@ -84,6 +84,7 @@ class TestAppQMainWindow(unittest2.TestCase):
         settings.edit_setting_value('Alignak-app', 'display', 'max')
 
         under_test = AppQMainWindow()
+        init_event_widget()
         under_test.initialize()
 
         # AppQMainWindow is visible and Maximized
@@ -127,6 +128,7 @@ class TestAppQMainWindow(unittest2.TestCase):
         settings.edit_setting_value('Alignak-app', 'problems', 'yes')
 
         under_test = AppQMainWindow()
+        init_event_widget()
         under_test.initialize()
 
         self.assertTrue(settings.get_config('Alignak-app', 'problems', boolean=True))

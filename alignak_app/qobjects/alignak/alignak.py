@@ -51,8 +51,8 @@ class AlignakQWidget(QWidget):
         Class who display daemons status, backend connection and user informations
     """
 
-    def __init__(self):
-        super(AlignakQWidget, self).__init__()
+    def __init__(self, parent=None):
+        super(AlignakQWidget, self).__init__(parent)
         # Fields
         self.backend_connected = QLabel('pending...')
         self.status_dialog = StatusQDialog()
@@ -120,7 +120,7 @@ class AlignakQWidget(QWidget):
         """
 
         self.status_dialog.update_dialog()
-        self.status_dialog.app_widget.show_widget()
+        self.status_dialog.show()
 
     def open_user_widget(self):
         """
@@ -129,7 +129,7 @@ class AlignakQWidget(QWidget):
         """
 
         self.profile_widget.update_widget()
-        self.profile_widget.app_widget.show_widget()
+        self.profile_widget.show()
 
     def update_status(self):
         """

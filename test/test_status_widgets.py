@@ -72,8 +72,7 @@ class TestStatusQDialog(unittest2.TestCase):
 
         under_test = StatusQDialog()
 
-        self.assertIsNotNone(under_test.app_widget)
-        self.assertIsNotNone(under_test.layout)
+        self.assertIsNotNone(under_test.daemons_layout)
         self.assertFalse(under_test.labels)
 
         under_test.initialize()
@@ -95,7 +94,7 @@ class TestStatusQDialog(unittest2.TestCase):
             'daemon-name'
         )
 
-        under_test.set_daemons_labels([daemon_test])
+        under_test.init_daemons_labels([daemon_test])
 
         self.assertTrue('daemon-name' in under_test.labels)
 
@@ -116,7 +115,7 @@ class TestStatusQDialog(unittest2.TestCase):
             'daemon-name'
         )
 
-        under_test.set_daemons_labels([daemon_test])
+        under_test.init_daemons_labels([daemon_test])
         under_test.add_daemon_labels(daemon_test, 2)
 
         self.assertEqual(QSize(18, 18), under_test.labels['daemon-name']['alive'].size())

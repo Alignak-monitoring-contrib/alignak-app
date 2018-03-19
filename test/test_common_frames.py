@@ -22,11 +22,11 @@
 import sys
 
 import unittest2
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QFrame
 
 from alignak_app.utils.config import settings
 
-from alignak_app.qobjects.common.frames import AppQFrame
+from alignak_app.qobjects.common.frames import get_frame_separator
 
 
 class TestAppQFrame(unittest2.TestCase):
@@ -44,17 +44,15 @@ class TestAppQFrame(unittest2.TestCase):
         except:
             pass
 
-    def test_create_widget(self):
-        """Inititalize AppQWidget"""
+    def test_get_frame_separator(self):
+        """Get QFrame Separator"""
 
-        under_test = AppQFrame()
+        under_test = get_frame_separator()
 
-        self.assertIsNone(under_test.offset)
+        self.assertEqual('hseparator', under_test.objectName())
+        self.assertEqual(QFrame.HLine, under_test.frameShape())
 
-        self.assertTrue('app_widget' not in under_test.objectName())
-        self.assertTrue('MyTitle' not in under_test.windowTitle())
+        under_test = get_frame_separator(vertical=True)
 
-        under_test.initialize('MyTitle')
-
-        self.assertTrue('app_widget' in under_test.objectName())
-        self.assertTrue('MyTitle' in under_test.windowTitle())
+        self.assertEqual('vseparator', under_test.objectName())
+        self.assertEqual(QFrame.VLine, under_test.frameShape())

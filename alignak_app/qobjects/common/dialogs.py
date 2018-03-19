@@ -67,7 +67,7 @@ class EditQDialog(QDialog):
         self.old_text = text
         center_widget(self)
 
-        # Main layout
+        # Main status_layout
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(main_layout)
@@ -153,7 +153,7 @@ class MessageQDialog(QDialog):
 
         center_widget(self)
 
-        # Main layout
+        # Main status_layout
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(main_layout)
@@ -236,7 +236,7 @@ class ValidatorQDialog(QDialog):
         self.old_text = text
         center_widget(self)
 
-        # Main layout
+        # Main status_layout
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(main_layout)

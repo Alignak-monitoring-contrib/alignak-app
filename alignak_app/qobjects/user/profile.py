@@ -27,13 +27,14 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QGridLayout, QIcon, Qt, QLabel, QWidget, QPushButton, QScrollArea
+from PyQt5.Qt import QGridLayout, QIcon, Qt, QLabel, QWidget, QPushButton, QScrollArea, QVBoxLayout
+from PyQt5.Qt import QStyleOption, QStyle, QPainter
 
 from alignak_app.backend.backend import app_backend
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
 
-from alignak_app.qobjects.common.frames import AppQFrame
+from alignak_app.qobjects.common.widgets import get_logo_widget, center_widget
 from alignak_app.qobjects.common.labels import get_icon_pixmap
 from alignak_app.qobjects.common.buttons import ToggleQWidgetButton
 from alignak_app.qobjects.common.dialogs import MessageQDialog, EditQDialog, ValidatorQDialog
@@ -52,7 +53,15 @@ class ProfileQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(ProfileQWidget, self).__init__(parent)
+        self.setStyleSheet(settings.css_style)
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setObjectName('dialog')
+        self.setMinimumHeight(450)
         # Fields
+        self.offset = None
+        self.servicenotif_toggle_btn = None
+        self.hostnotif_toggle_btn = None
+        self.token_btn = QPushButton()
         self.labels = {
             'realm': QLabel(),
             'role': QLabel(),
@@ -66,10 +75,6 @@ class ProfileQWidget(QWidget):
             'service_notifications_enabled': QLabel(),
             'service_notification_period': QLabel(),
         }
-        self.app_widget = None
-        self.hostnotif_toggle_btn = None
-        self.servicenotif_toggle_btn = None
-        self.token_btn = QPushButton()
 
     def initialize(self):
         """
@@ -77,23 +82,27 @@ class ProfileQWidget(QWidget):
 
         """
 
-        # Initialize AppQWidget
-        self.app_widget = AppQFrame()
-        self.app_widget.initialize(_('User View'))
-        self.app_widget.add_widget(self)
-        self.app_widget.setMinimumHeight(500)
+        main_layout = QVBoxLayout(self)
+        self.setLayout(main_layout)
+        main_layout.setContentsMargins(0, 0, 0, 0)
 
-        user_layout = QGridLayout()
-        self.setLayout(user_layout)
+        main_layout.addWidget(get_logo_widget(self, _('User View')))
+
+        user_widget = QWidget(self)
+        user_layout = QGridLayout(user_widget)
 
         user_title = QLabel(_('User informations:'))
         user_title.setObjectName('itemtitle')
         user_layout.addWidget(user_title, 0, 0, 1, 2)
         user_layout.setAlignment(user_title, Qt.AlignCenter)
 
+        # User QWidgets
         user_layout.addWidget(self.get_informations_widget(), 1, 0, 1, 1)
         user_layout.addWidget(self.get_notes_mail_widget(), 1, 1, 1, 1)
         user_layout.addWidget(self.get_notifications_widget(), 2, 0, 1, 2)
+
+        main_layout.addWidget(user_widget)
+        center_widget(self)
 
     def get_informations_widget(self):
         """
@@ -468,6 +477,9 @@ class ProfileQWidget(QWidget):
 
         """
 
+        # for lb in self.labels:
+        #     self.labels[lb] = QLabel()
+        # self.token_btn = QPushButton()
         # Realm, Role, Email
         self.labels['realm'].setText(
             data_manager.get_realm_name(data_manager.database['user'].data['_realm'])
@@ -495,3 +507,28 @@ class ProfileQWidget(QWidget):
         else:
             self.token_btn.setEnabled(False)
             self.token_btn.setToolTip(_('Token is only available for Administrators !'))
+
+    def paintEvent(self, _):  # pragma: no cover
+        """Override to apply "background-color" property of QWidget"""
+
+        opt = QStyleOption()
+        opt.initFrom(self)
+        painter = QPainter(self)
+        self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)
+
+    def mousePressEvent(self, event):  # pragma: no cover
+        """ QWidget.mousePressEvent(QMouseEvent) """
+
+        self.offset = event.pos()
+
+    def mouseMoveEvent(self, event):  # pragma: no cover
+        """ QWidget.mousePressEvent(QMouseEvent) """
+
+        try:
+            x = event.globalX()
+            y = event.globalY()
+            x_w = self.offset.x()
+            y_w = self.offset.y()
+            self.move(x - x_w, y - y_w)
+        except AttributeError as e:
+            logger.warning('Move Event %s: %s', self.objectName(), str(e))

@@ -245,7 +245,7 @@ class AckQDialog(QDialog):
 
         logger.debug("Create Acknowledge QDialog...")
 
-        # Main layout
+        # Main status_layout
         center_widget(self)
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
@@ -312,12 +312,12 @@ class AckQDialog(QDialog):
 
         main_layout.addWidget(ack_widget)
 
-    def mousePressEvent(self, event):  # pylint: no cover
+    def mousePressEvent(self, event):  # pragma: no cover
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         self.offset = event.pos()
 
-    def mouseMoveEvent(self, event):  # pylint: no cover
+    def mouseMoveEvent(self, event):  # pragma: no cover
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         try:
@@ -366,7 +366,7 @@ class DownQDialog(QDialog):
 
         logger.debug("Create Downtime QDialog...")
 
-        # Main layout
+        # Main status_layout
         center_widget(self)
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
@@ -483,12 +483,12 @@ class DownQDialog(QDialog):
         else:
             self.accept()
 
-    def mousePressEvent(self, event):  # pylint: no cover
+    def mousePressEvent(self, event):  # pragma: no cover
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         self.offset = event.pos()
 
-    def mouseMoveEvent(self, event):  # pylint: no cover
+    def mouseMoveEvent(self, event):  # pragma: no cover
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         try:

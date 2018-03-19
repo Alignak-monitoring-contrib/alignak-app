@@ -71,9 +71,7 @@ class HistoryQWidget(QWidget):
 
         # History QWidget
         history_widget = QWidget()
-        history_widget.setObjectName('dialog')
         history_layout = QVBoxLayout(history_widget)
-        history_layout.setSpacing(0)
 
         # History QTableWidget
         self.history_table.setObjectName('history')
@@ -211,12 +209,12 @@ class HistoryQWidget(QWidget):
         painter = QPainter(self)
         self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)
 
-    def mousePressEvent(self, event):  # pylint: no cover
+    def mousePressEvent(self, event):  # pragma: no cover
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         self.offset = event.pos()
 
-    def mouseMoveEvent(self, event):  # pylint: no cover
+    def mouseMoveEvent(self, event):  # pragma: no cover
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         try:

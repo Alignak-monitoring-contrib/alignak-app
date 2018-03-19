@@ -65,7 +65,7 @@ class LoginQDialog(QDialog):
 
         """
 
-        # Main layout
+        # Main status_layout
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
 

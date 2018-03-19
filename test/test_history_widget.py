@@ -29,7 +29,7 @@ from alignak_app.items.history import History
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 
-from alignak_app.qobjects.host.history import HistoryQWidget, AppQFrame
+from alignak_app.qobjects.host.history import HistoryQWidget
 
 settings.init_config()
 init_localization()
@@ -83,7 +83,6 @@ class TestHistoryQWidget(unittest2.TestCase):
         under_test = HistoryQWidget()
 
         self.assertIsNone(under_test.layout())
-        self.assertIsInstance(under_test.app_widget, AppQFrame)
         self.assertIsNotNone(under_test.table_headers)
         self.assertIsNotNone(under_test.history_title)
 
@@ -91,8 +90,6 @@ class TestHistoryQWidget(unittest2.TestCase):
         under_test.initialize()
 
         self.assertIsNotNone(under_test.layout())
-        self.assertEqual(under_test.app_widget.windowTitle(), "History")
-        self.assertIsInstance(under_test.app_widget, AppQFrame)
         self.assertIsNotNone(under_test.table_headers)
         self.assertIsNotNone(under_test.history_title)
 

@@ -72,12 +72,10 @@ class TestUserQWidget(unittest2.TestCase):
         data_manager.database['user'].data['is_admin'] = True
         data_manager.database['user'].data['can_submit_commands'] = True
 
-        self.assertIsNone(under_test.app_widget)
         self.assertIsNone(under_test.layout())
 
         under_test.initialize()
 
-        self.assertIsNotNone(under_test.app_widget)
         self.assertIsNotNone(under_test.layout())
 
     def test_user_qwidgets(self):
