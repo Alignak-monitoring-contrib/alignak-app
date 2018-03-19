@@ -221,7 +221,7 @@ class AckQDialog(QDialog):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(settings.css_style)
         self.setWindowIcon(QIcon(settings.get_image('icon')))
-        # self.setMinimumSize(370, 480)
+        self.setMinimumSize(370, 480)
         self.setObjectName('dialog')
         # Fields
         self.sticky = True

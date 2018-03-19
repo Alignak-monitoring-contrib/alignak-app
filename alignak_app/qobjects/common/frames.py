@@ -28,7 +28,7 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import Qt, QIcon, QPixmap, QFrame, QHBoxLayout, QPushButton, QLabel, QWidget
+from PyQt5.Qt import Qt, QIcon, QFrame, QHBoxLayout, QPushButton, QLabel, QWidget
 from PyQt5.Qt import QVBoxLayout
 
 from alignak_app.utils.config import settings
@@ -81,7 +81,7 @@ class AppQFrame(QFrame):
         """
 
         title_widget = QWidget()
-        title_widget.setFixedHeight(45)
+        title_widget.setFixedHeight(40)
         title_widget.setObjectName('logo')
         title_layout = QHBoxLayout()
         title_widget.setLayout(title_layout)
@@ -89,9 +89,12 @@ class AppQFrame(QFrame):
         logo_label = QLabel()
         logo_label.setObjectName('widget_title')
         logo_label.setAttribute(Qt.WA_TransparentForMouseEvents)
-        logo_label.setText('<h3>%s</h3>' % title)
+        logo_label.setText('%s' % title)
         title_layout.addWidget(logo_label)
         title_layout.setAlignment(logo_label, Qt.AlignHCenter)
+
+        title_layout.addStretch(self.width())
+        title_layout.addSpacing(0)
 
         minimize_btn = QPushButton()
         minimize_btn.setIcon(QIcon(settings.get_image('minimize')))

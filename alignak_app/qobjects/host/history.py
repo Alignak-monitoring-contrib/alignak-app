@@ -28,15 +28,14 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QWidget, QLabel, QPixmap, QTableWidget, QAbstractItemView, QGridLayout
-from PyQt5.Qt import QVBoxLayout
+from PyQt5.Qt import QWidget, QLabel, QPixmap, QTableWidget, QAbstractItemView, QGridLayout, Qt
+from PyQt5.Qt import QVBoxLayout, QStyleOption, QStyle, QPainter
 
 from alignak_app.items.history import History
 from alignak_app.utils.config import settings
 from alignak_app.utils.time import get_local_datetime_from_date, get_time_diff_since_last_timestamp
 
-from alignak_app.qobjects.common.frames import AppQFrame
-from alignak_app.qobjects.common.widgets import center_widget
+from alignak_app.qobjects.common.widgets import center_widget, get_logo_widget
 
 logger = getLogger(__name__)
 
@@ -48,12 +47,15 @@ class HistoryQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(HistoryQWidget, self).__init__(parent)
-        self.setObjectName("history")
+        self.setStyleSheet(settings.css_style)
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setObjectName('dialog')
+        self.setMinimumSize(800, 670)
         # Fields
-        self.app_widget = AppQFrame()
         self.history_table = QTableWidget()
         self.table_headers = ['Events']
         self.history_title = QLabel()
+        self.offset = None
 
     def initialize(self):
         """
@@ -61,15 +63,19 @@ class HistoryQWidget(QWidget):
 
         """
 
-        self.app_widget.initialize(_('History'))
-        self.setMinimumSize(800, 670)
-        self.app_widget.add_widget(self)
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(0, 0, 0, 0)
 
-        layout = QVBoxLayout()
-        self.setLayout(layout)
+        # Title Window
+        main_layout.addWidget(get_logo_widget(self, _('History')))
 
-        # History Table
-        layout.addWidget(self.history_table)
+        # History QWidget
+        history_widget = QWidget()
+        history_widget.setObjectName('dialog')
+        history_layout = QVBoxLayout(history_widget)
+        history_layout.setSpacing(0)
+
+        # History QTableWidget
         self.history_table.setObjectName('history')
         self.history_table.verticalHeader().hide()
         self.history_table.verticalHeader().setDefaultSectionSize(100)
@@ -81,8 +87,11 @@ class HistoryQWidget(QWidget):
         self.history_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.history_table.horizontalHeader().setStretchLastSection(True)
         self.history_table.horizontalHeader().setMinimumHeight(30)
+        history_layout.addWidget(self.history_table)
 
-        center_widget(self.app_widget)
+        main_layout.addWidget(history_widget)
+
+        center_widget(self)
 
     def update_history_data(self, hostname, host_history):
         """
@@ -193,3 +202,28 @@ class HistoryQWidget(QWidget):
             event_type = _('Host: %s') % hostname.capitalize()
 
         return event_type
+
+    def paintEvent(self, _):  # pragma: no cover
+        """Override to apply "background-color" property of QWidget"""
+
+        opt = QStyleOption()
+        opt.initFrom(self)
+        painter = QPainter(self)
+        self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)
+
+    def mousePressEvent(self, event):  # pylint: no cover
+        """ QWidget.mousePressEvent(QMouseEvent) """
+
+        self.offset = event.pos()
+
+    def mouseMoveEvent(self, event):  # pylint: no cover
+        """ QWidget.mousePressEvent(QMouseEvent) """
+
+        try:
+            x = event.globalX()
+            y = event.globalY()
+            x_w = self.offset.x()
+            y_w = self.offset.y()
+            self.move(x - x_w, y - y_w)
+        except AttributeError as e:
+            logger.warning('Move Event %s: %s', self.objectName(), str(e))

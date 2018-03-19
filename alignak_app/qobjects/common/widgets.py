@@ -40,7 +40,7 @@ class LogoQWidget(QWidget):
 
     def __init__(self):
         super(LogoQWidget, self).__init__()
-        self.setFixedHeight(45)
+        self.setFixedHeight(40)
         self.setObjectName('app_widget')
         self.setStyleSheet(settings.css_style)
         self.child_widget = None
@@ -65,15 +65,17 @@ class LogoQWidget(QWidget):
 
         logo_label = QLabel()
         logo_label.setObjectName('widget_title')
-        logo_label.setText('<h3>%s</h3>' % title)
+        logo_label.setText('%s' % title)
         logo_layout.addWidget(logo_label, 0)
+
+        logo_layout.addStretch(child_widget.width())
+        logo_layout.setSpacing(0)
 
         minimize_btn = QPushButton()
         minimize_btn.setIcon(QIcon(settings.get_image('minimize')))
         minimize_btn.setFixedSize(24, 24)
         minimize_btn.setObjectName('app_widget')
         minimize_btn.clicked.connect(self.minimize)
-        logo_layout.addStretch(child_widget.width())
         logo_layout.addWidget(minimize_btn, 1)
 
         maximize_btn = QPushButton()

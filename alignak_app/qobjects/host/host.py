@@ -73,7 +73,7 @@ class HostQWidget(QWidget):
         self.activecheck_btn = ToggleQWidgetButton()
         self.passivecheck_btn = ToggleQWidgetButton()
         self.history_btn = QPushButton()
-        self.history_widget = HistoryQWidget(self)
+        self.history_widget = HistoryQWidget()
         self.host_history = None
         self.refresh_timer = QTimer()
 
@@ -207,7 +207,7 @@ class HostQWidget(QWidget):
         """
 
         self.history_widget.update_history_data(self.host_item.name, self.host_history)
-        self.history_widget.app_widget.show_widget()
+        self.history_widget.show()
 
     def patch_host_checks(self, check_type, state):  # pragma: no cover
         """
