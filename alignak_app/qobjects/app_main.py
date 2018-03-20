@@ -36,6 +36,7 @@ from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.widgets import get_logo_widget, center_widget
 from alignak_app.qobjects.common.frames import get_frame_separator
+
 from alignak_app.qobjects.dock import DockQWidget
 from alignak_app.qobjects.panel import PanelQWidget
 
@@ -101,6 +102,18 @@ class AppQMainWindow(QMainWindow):
             self.panel_widget.problems_widget.line_search.setFocus()
         else:
             self.panel_widget.line_search.setFocus()
+
+    def showEvent(self, event):
+        """ showEvent(self, QShowEvent) """
+
+        if isinstance(
+                self.panel_widget.tab_widget.currentWidget(),
+                type(self.panel_widget.problems_widget)):
+            self.panel_widget.problems_widget.line_search.setFocus()
+        else:
+            self.panel_widget.line_search.setFocus()
+
+        self.activateWindow()
 
     def mousePressEvent(self, event):  # pragma: no cover - not testable
         """ QWidget.mousePressEvent(QMouseEvent) """

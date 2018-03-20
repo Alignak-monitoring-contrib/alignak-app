@@ -150,6 +150,7 @@ class HistoryQWidget(QWidget):
 
         # Event message
         event_msg = QLabel()
+        event_msg.setWordWrap(True)
         event_msg.setText(event['message'])
         event_layout.addWidget(event_msg, 1, 1, 1, 1)
 
