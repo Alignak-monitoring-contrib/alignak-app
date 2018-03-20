@@ -103,7 +103,7 @@ class AppQMainWindow(QMainWindow):
         else:
             self.panel_widget.line_search.setFocus()
 
-    def showEvent(self, event):
+    def showEvent(self, _):
         """ showEvent(self, QShowEvent) """
 
         if isinstance(
