@@ -58,10 +58,10 @@ def create_logger():  # pragma: no cover
         stdout_handler = root_logger.handlers[0]
 
     # Define path and file for "file_handler"
-    if ALIGNAKAPP_LOG_DIR:
-        path = ALIGNAKAPP_LOG_DIR
-    elif settings.app_cfg_dir:
-        path = settings.user_cfg_dir
+    if 'ALIGNAKAPP_LOG_DIR' in os.environ:
+        path = os.environ['ALIGNAKAPP_LOG_DIR']
+    elif 'ALIGNAKAPP_USR_DIR' in os.environ:
+        path = os.environ['ALIGNAKAPP_USR_DIR']
     else:
         path = tempfile.gettempdir()
 
