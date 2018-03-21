@@ -196,6 +196,22 @@ class TestAppBackend(unittest2.TestCase):
 
         self.assertTrue(data_manager.databases_ready['service'])
 
+    def test_query_problems(self):
+        """Query Problems Data"""
+
+        under_test = BackendClient()
+        under_test.login(
+            settings.get_config('Alignak', 'username'),
+            settings.get_config('Alignak', 'password')
+        )
+
+        from alignak_app.backend.datamanager import data_manager
+        under_test.query_problems()
+
+        self.assertIsNotNone(data_manager.database['problems'])
+
+        self.assertTrue(data_manager.databases_ready['problems'])
+
     def test_query_daemons_data(self):
         """Query Daemons Data"""
 
