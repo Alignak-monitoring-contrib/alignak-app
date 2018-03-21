@@ -297,7 +297,7 @@ class BackendClient(object):
 
     def query_user(self):
         """
-        Launch request for "user" endpoint. Only for current App user.
+        Launch request on "user" endpoint. Only for current App user.
 
         """
 
@@ -326,7 +326,7 @@ class BackendClient(object):
 
     def query_hosts(self):
         """
-        Launch request for "host" endpoint
+        Launch request on "host" endpoint
 
         """
 
@@ -406,14 +406,14 @@ class BackendClient(object):
         * **Services**: ``WARNING``, ``CRITICAL``, ``UNKNOWN``
         """
 
-        logger.info("Update database[problems]...")
-
         def update_database(item_type, items_request):
             """
+            Update "problems" database for an item type
 
-            :param item_type:
-            :param items_request:
-            :return:
+            :param item_type: define type of item ``Service`` | ``Host``
+            :type item_type: str
+            :param items_request: request with items
+            :type items_request: dict
             """
 
             for item in items_request['_items']:
@@ -512,12 +512,13 @@ class BackendClient(object):
         if request:
             update_database('host', request)
 
+        logger.info("Update database[problems]...")
         if data_manager.database['problems']:
             data_manager.databases_ready['problems'] = True
 
     def query_alignakdaemons(self):
         """
-        Launch request for "alignakdaemon" endpoint
+        Launch request on "alignakdaemon" endpoint
 
         """
 
@@ -550,7 +551,7 @@ class BackendClient(object):
 
     def query_livesynthesis(self):
         """
-        Launch request for "livesynthesis" endpoint
+        Launch request on "livesynthesis" endpoint
 
         """
 
@@ -582,7 +583,7 @@ class BackendClient(object):
 
     def query_history(self, hostname=None, host_id=None):
         """
-        Launch request for "history" endpoint but only for hosts in "data_manager"
+        Launch request on "history" endpoint but only for hosts in "data_manager"
 
         :param hostname: name of host we want history
         :type hostname: str
@@ -641,7 +642,8 @@ class BackendClient(object):
 
     def query_notifications(self):  # pragma: no cover, notifications can be empty
         """
-        Launch request for "history" endpoint but only for notifications of current user
+        Launch request on "history" endpoint.
+        Only for 'type': 'monitoring.notification' and for current App user
 
         """
 
