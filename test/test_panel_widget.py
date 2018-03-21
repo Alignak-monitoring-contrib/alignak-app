@@ -75,6 +75,7 @@ class TestPanelQWidget(unittest2.TestCase):
                 'name': 'service%d' % i,
                 'alias': 'Service %d' % i,
                 'host': '_id%d' % i,
+                '_id': '_id%d' % i,
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
                 'ls_state': 'CRITICAL',
@@ -99,8 +100,17 @@ class TestPanelQWidget(unittest2.TestCase):
     def test_create_widget(self):
         """Inititalize PanelQWidget"""
 
+        # Add problems
         data_manager.update_database('host', self.host_list)
-        data_manager.update_database('service', self.service_list)
+        data_manager.database['problems'] = []
+        for item in self.host_list:
+            data_manager.database['problems'].append(item)
+        for item in self.service_list:
+            data_manager.database['problems'].append(item)
+
+        for item in self.host_list:
+            assert 'host' in item.item_type
+
         under_test = PanelQWidget()
 
         self.assertIsNotNone(under_test.layout)
@@ -126,12 +136,10 @@ class TestPanelQWidget(unittest2.TestCase):
         self.assertIsNotNone(under_test.spy_widget)
 
         self.assertEqual(
-            ['host0', 'host1', 'host2', 'host3', 'host4', 'host5', 'host6', 'host7', 'host8', 'host9'],
+            ['host0', 'host1', 'host2', 'host3', 'host4', 'host5',
+             'host6', 'host7', 'host8', 'host9'],
             under_test.hostnames_list
         )
-
-        # 10 problems for CRITICAL services
-        self.assertEqual('Problems (10)', under_test.tab_widget.tabText(1))
 
     def test_spy_host(self):
         """Panel Add Spy Host"""
@@ -162,12 +170,12 @@ class TestPanelQWidget(unittest2.TestCase):
         under_test.initialize()
 
         # 10 problems for CRITICAL services
-        self.assertEqual('Problems (10)', under_test.tab_widget.tabText(1))
+        self.assertEqual('Problems (20)', under_test.tab_widget.tabText(1))
 
-        # Make a service Acknowledged (True)
-        data_manager.update_item_data('service', '_id0', {'ls_acknowledged': True})
+        # Remove a service from problems
+        data_manager.database['problems'].remove(self.service_list[0])
 
         under_test.tab_widget.widget(1).update_problems_data()
 
         # There are only 9 services in CRITICAL condition
-        self.assertEqual('Problems (9)', under_test.tab_widget.tabText(1))
+        self.assertEqual('Problems (19)', under_test.tab_widget.tabText(1))

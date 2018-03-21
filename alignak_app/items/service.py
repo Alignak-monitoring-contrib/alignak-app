@@ -65,7 +65,9 @@ class Service(Item):
         }
 
         if host_id:
-            request_model['params'] = {'where': json.dumps({'_is_template': False, 'host': host_id})}
+            request_model['params'] = {
+                'where': json.dumps({'_is_template': False, 'host': host_id})
+            }
         else:
             request_model['params'] = {'where': json.dumps({'_is_template': False})}
 

@@ -66,6 +66,7 @@ class TestProblemsQWidget(unittest2.TestCase):
             {
                 'name': 'service%d' % i,
                 'host': '_id%d' % i,
+                '_id': '_id%d' % i,
                 'ls_state': 'CRITICAL',
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
@@ -74,9 +75,6 @@ class TestProblemsQWidget(unittest2.TestCase):
             'service%d' % i
         )
         service_list.append(service)
-
-    data_manager.update_database('host', [])
-    data_manager.update_database('service', [])
 
     @classmethod
     def setUpClass(cls):
@@ -142,6 +140,10 @@ class TestProblemsQWidget(unittest2.TestCase):
     def test_update_problems_data(self):
         """Update Problems Data"""
 
+        # Reset Problems
+        data_manager.database['problems'] = []
+
+        # Initialize QWidget
         under_test = ProblemsQWidget()
         spy_widget_test = SpyQWidget()
         spy_widget_test.initialize()
@@ -156,9 +158,11 @@ class TestProblemsQWidget(unittest2.TestCase):
         self.assertNotEqual(model_test, under_test.problems_table.model())
         self.assertNotEqual(select_model_test, under_test.problems_table.selectionModel())
 
-        # Fill database to add problems
-        data_manager.update_database('host', self.host_list)
-        data_manager.update_database('service', self.service_list)
+        # Add problems
+        for item in self.host_list:
+            data_manager.database['problems'].append(item)
+        for item in self.service_list:
+            data_manager.database['problems'].append(item)
 
         # Assert filter buttons are False
         self.assertFalse(under_test.filter_hosts_btn.is_checked())
@@ -204,9 +208,12 @@ class TestProblemsQWidget(unittest2.TestCase):
         spy_widget_test.initialize()
         under_test.initialize(spy_widget_test)
 
-        # Fill database to add problems
-        data_manager.update_database('host', self.host_list)
-        data_manager.update_database('service', self.service_list)
+        # Add problems
+        data_manager.database['problems'] = []
+        for item in self.host_list:
+            data_manager.database['problems'].append(item)
+        for item in self.service_list:
+            data_manager.database['problems'].append(item)
 
         # Update and filter Hosts
         under_test.filter_hosts_btn.update_btn_state(True)
@@ -233,6 +240,7 @@ class TestProblemsQWidget(unittest2.TestCase):
         spy_widget_test = SpyQWidget()
         spy_widget_test.initialize()
         under_test.initialize(spy_widget_test)
+
         # Update and filter Services
         under_test.filter_services_btn.update_btn_state(True)
         under_test.update_problems_data('service')

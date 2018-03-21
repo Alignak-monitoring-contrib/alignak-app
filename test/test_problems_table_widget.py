@@ -64,6 +64,7 @@ class TestProblemsQTableView(unittest2.TestCase):
                 'name': 'service%d' % i,
                 'alias': 'Service %d' % i,
                 'host': '_id%d' % i,
+                '_id': '_id%d' % i,
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
                 'ls_state': 'CRITICAL',

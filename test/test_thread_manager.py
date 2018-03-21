@@ -43,7 +43,7 @@ class TestThreadManager(unittest2.TestCase):
 
         self.assertFalse(under_test.current_thread)
         self.assertFalse(under_test.priority_threads)
-        for thread in ['livesynthesis', 'host', 'service', 'user',
+        for thread in ['livesynthesis', 'host', 'problems', 'user',
                        'alignakdaemon', 'notifications', 'history']:
             self.assertTrue(thread in under_test.threads_to_launch)
 
@@ -56,7 +56,7 @@ class TestThreadManager(unittest2.TestCase):
 
         # If there is no current thread, all threads are added
         self.assertIsNone(thread_mgr_test.current_thread)
-        for thread in ['livesynthesis', 'host', 'service', 'user', 'alignakdaemon',
+        for thread in ['livesynthesis', 'host', 'problems', 'user', 'alignakdaemon',
                        'notifications', 'history']:
             self.assertTrue(thread in under_test)
 

@@ -411,10 +411,9 @@ class BackendClient(object):
         ]
 
         # CRITICAL services
-        params = {'where': json.dumps({
-                '_is_template': False,
-                'ls_state': 'CRITICAL',
-        })}
+        params = {
+            'where': json.dumps({'_is_template': False, 'ls_state': 'CRITICAL'})
+        }
         request = self.get(
             'service',
             params,
@@ -433,10 +432,9 @@ class BackendClient(object):
                 data_manager.database['problems'].append(service)
 
         # WARNING services
-        params = {'where': json.dumps({
-                '_is_template': False,
-                'ls_state': 'WARNING',
-        })}
+        params = {
+            'where': json.dumps({'_is_template': False, 'ls_state': 'WARNING'})
+        }
         request = self.get(
             'service',
             params,
@@ -445,19 +443,19 @@ class BackendClient(object):
         )
 
         for item in request['_items']:
-            service = Service()
-            service.create(
-                item['_id'],
-                item,
-                item['name']
-            )
-            data_manager.database['problems'].append(service)
+            if not item['ls_acknowledged'] and not item['ls_downtimed']:
+                service = Service()
+                service.create(
+                    item['_id'],
+                    item,
+                    item['name']
+                )
+                data_manager.database['problems'].append(service)
 
         # UNKNOWN services
-        params = {'where': json.dumps({
-            '_is_template': False,
-            'ls_state': 'UNKNOWN',
-        })}
+        params = {
+            'where': json.dumps({'_is_template': False, 'ls_state': 'UNKNOWN'})
+        }
         request = self.get(
             'service',
             params,
@@ -484,10 +482,9 @@ class BackendClient(object):
             generate_proj[field] = 1
 
         # DOWN hosts
-        params = {'where': json.dumps({
-            '_is_template': False,
-            'ls_state': 'DOWN',
-        })}
+        params = {
+            'where': json.dumps({'_is_template': False, 'ls_state': 'DOWN'})
+        }
         request = self.get(
             'host',
             params,
@@ -506,10 +503,9 @@ class BackendClient(object):
                 data_manager.database['problems'].append(host)
 
         # UNREACHABLE hosts
-        params = {'where': json.dumps({
-            '_is_template': False,
-            'ls_state': 'UNREACHABLE',
-        })}
+        params = {
+            'where': json.dumps({'_is_template': False, 'ls_state': 'UNREACHABLE'})
+        }
         request = self.get(
             'host',
             params,
