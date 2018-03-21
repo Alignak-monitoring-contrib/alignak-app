@@ -406,6 +406,30 @@ class BackendClient(object):
         * **Services**: ``WARNING``, ``CRITICAL``, ``UNKNOWN``
         """
 
+        logger.info("Update database[problems]...")
+
+        def update_database(item_type, items_request):
+            """
+
+            :param item_type:
+            :param items_request:
+            :return:
+            """
+
+            for item in items_request['_items']:
+                if not item['ls_acknowledged'] and not item['ls_downtimed']:
+                    if 'service' in item_type:
+                        manager_item = Service()
+                    else:
+                        manager_item = Host()
+
+                    manager_item.create(
+                        item['_id'],
+                        item,
+                        item['name']
+                    )
+                    data_manager.database['problems'].append(manager_item)
+
         services_projection = [
             'name', 'host', 'alias', 'ls_state', 'ls_output', 'ls_acknowledged', 'ls_downtimed'
         ]
@@ -421,15 +445,8 @@ class BackendClient(object):
             all_items=True
         )
 
-        for item in request['_items']:
-            if not item['ls_acknowledged'] and not item['ls_downtimed']:
-                service = Service()
-                service.create(
-                    item['_id'],
-                    item,
-                    item['name']
-                )
-                data_manager.database['problems'].append(service)
+        if request:
+            update_database('service', request)
 
         # WARNING services
         params = {
@@ -442,15 +459,8 @@ class BackendClient(object):
             all_items=True
         )
 
-        for item in request['_items']:
-            if not item['ls_acknowledged'] and not item['ls_downtimed']:
-                service = Service()
-                service.create(
-                    item['_id'],
-                    item,
-                    item['name']
-                )
-                data_manager.database['problems'].append(service)
+        if request:
+            update_database('service', request)
 
         # UNKNOWN services
         params = {
@@ -463,15 +473,8 @@ class BackendClient(object):
             all_items=True
         )
 
-        for item in request['_items']:
-            if not item['ls_acknowledged'] and not item['ls_downtimed']:
-                service = Service()
-                service.create(
-                    item['_id'],
-                    item,
-                    item['name']
-                )
-                data_manager.database['problems'].append(service)
+        if request:
+            update_database('service', request)
 
         # Reset projection
         host_projection = [
@@ -492,15 +495,8 @@ class BackendClient(object):
             all_items=True
         )
 
-        for item in request['_items']:
-            if not item['ls_acknowledged'] and not item['ls_downtimed']:
-                host = Host()
-                host.create(
-                    item['_id'],
-                    item,
-                    item['name']
-                )
-                data_manager.database['problems'].append(host)
+        if request:
+            update_database('host', request)
 
         # UNREACHABLE hosts
         params = {
@@ -513,15 +509,8 @@ class BackendClient(object):
             all_items=True
         )
 
-        for item in request['_items']:
-            if not item['ls_acknowledged'] and not item['ls_downtimed']:
-                host = Host()
-                host.create(
-                    item['_id'],
-                    item,
-                    item['name']
-                )
-                data_manager.database['problems'].append(host)
+        if request:
+            update_database('host', request)
 
         if data_manager.database['problems']:
             data_manager.databases_ready['problems'] = True
