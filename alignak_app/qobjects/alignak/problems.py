@@ -30,6 +30,7 @@ from logging import getLogger
 from PyQt5.Qt import QWidget, QIcon, QVBoxLayout, QPushButton, Qt, QLabel, QLineEdit, QHBoxLayout
 
 from alignak_app.backend.datamanager import data_manager
+from alignak_app.backend.backend import app_backend
 from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.actions import ActionsQWidget
@@ -233,6 +234,7 @@ class ProblemsQWidget(QWidget):
             else:
                 item_id = item.item_id
 
+            app_backend.query_services(item_id)
             self.spy_widget.spy_list_widget.add_spy_host(item_id)
             self.spy_widget.update_parent_spytab()
 
