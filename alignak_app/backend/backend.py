@@ -106,11 +106,10 @@ class BackendClient(object):
                 logger.error('Connection to Backend has failed !')
         elif username and not password:
             # Username as token : recommended
-            self.backend.authenticated = True
             if 'token' in self.user:
-                self.backend.token = self.user['token']
+                self.backend.set_token(self.user['token'])
             else:
-                self.backend.token = username
+                self.backend.set_token(username)
                 self.user['token'] = username
 
             # Make backend connected to test token
