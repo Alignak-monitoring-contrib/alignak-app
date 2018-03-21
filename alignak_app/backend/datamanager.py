@@ -26,11 +26,9 @@
     :class:`Client <alignak_app.backend.backend.BackendClient>`.
 """
 
-import datetime
-
 from logging import getLogger
 
-from alignak_app.utils.time import get_local_datetime, get_local_datetime_from_date
+from alignak_app.utils.time import get_local_datetime_from_date
 from alignak_app.items.livesynthesis import LiveSynthesis
 
 logger = getLogger(__name__)
