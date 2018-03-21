@@ -30,6 +30,7 @@ from operator import itemgetter
 
 from PyQt5.Qt import QTreeWidget, QTreeWidgetItem, QWidget, QIcon, QGridLayout, QSize
 
+from alignak_app.backend.backend import app_backend
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
 
@@ -82,6 +83,11 @@ class ServicesQWidget(QWidget):
         :type hostname: str
         """
 
+        # Query services of host
+        self.host_item = data_manager.get_item('host', hostname)
+        app_backend.query_services(self.host_item.item_id)
+
+        # Get problems
         host_and_services = data_manager.get_host_with_services(hostname)
         self.host_item = host_and_services['host']
         self.service_items = host_and_services['services']

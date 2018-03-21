@@ -53,28 +53,28 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
         if app_backend.connected:
             logger.debug('Launch a new thread request for backend: %s', self.thread_name)
             if 'user' in self.thread_name:
-                app_backend.query_user_data()
+                app_backend.query_user()
             elif 'host' in self.thread_name:
-                app_backend.query_hosts_data()
+                app_backend.query_hosts()
             elif 'service' in self.thread_name:
-                app_backend.query_services_data()
+                app_backend.query_services()
             elif 'problems' in self.thread_name:
                 app_backend.query_problems()
             elif 'alignakdaemon' in self.thread_name:
-                app_backend.query_daemons_data()
+                app_backend.query_alignakdaemons()
             elif 'livesynthesis' in self.thread_name:
-                app_backend.query_livesynthesis_data()
+                app_backend.query_livesynthesis()
             elif 'realm' in self.thread_name:
-                app_backend.query_realms_data()
+                app_backend.query_realms()
             elif 'timeperiod' in self.thread_name:
-                app_backend.query_period_data()
+                app_backend.query_timeperiods()
             elif self.thread_name == 'history':
                 if self.data:
-                    app_backend.query_history_data(self.data['hostname'], self.data['host_id'])
+                    app_backend.query_history(self.data['hostname'], self.data['host_id'])
                 else:
-                    app_backend.query_history_data()
+                    app_backend.query_history()
             elif 'notifications' in self.thread_name:
-                app_backend.query_notifications_data()
+                app_backend.query_notifications()
             else:
                 logger.error("Thread is unknown: %s", self.thread_name)
         else:

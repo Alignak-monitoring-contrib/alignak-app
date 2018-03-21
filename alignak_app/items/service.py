@@ -43,10 +43,12 @@ class Service(Item):
         self.item_type = 'service'
 
     @staticmethod
-    def get_request_model():
+    def get_request_model(host_id=None):
         """
         Return the request model for service requests
 
+        :param host_id: "_id" of host, needed to get only host services
+        :type host_id: str
         :return: request model for service endpoint
         :rtype: dict
         """
@@ -57,13 +59,17 @@ class Service(Item):
             'active_checks_enabled'
         ]
 
-        request = {
+        request_model = {
             'endpoint': 'service',
-            'params': {'where': json.dumps({'_is_template': False})},
             'projection': services_projection
         }
 
-        return request
+        if host_id:
+            request_model['params'] = {'where': json.dumps({'_is_template': False, 'host': host_id})}
+        else:
+            request_model['params'] = {'where': json.dumps({'_is_template': False})}
+
+        return request_model
 
     @staticmethod
     def get_service_states_nb():

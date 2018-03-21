@@ -126,7 +126,7 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_realms_data()
+        under_test.query_realms()
 
         self.assertIsNotNone(data_manager.database['realm'])
 
@@ -142,7 +142,7 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_period_data()
+        under_test.query_timeperiods()
 
         self.assertIsNotNone(data_manager.database['timeperiod'])
 
@@ -158,7 +158,7 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_user_data()
+        under_test.query_user()
 
         self.assertIsNotNone(data_manager.database['user'])
 
@@ -174,7 +174,7 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_hosts_data()
+        under_test.query_hosts()
 
         self.assertIsNotNone(data_manager.database['host'])
 
@@ -190,7 +190,7 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_services_data()
+        under_test.query_services()
 
         self.assertIsNotNone(data_manager.database['service'])
 
@@ -206,7 +206,7 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_daemons_data()
+        under_test.query_alignakdaemons()
 
         self.assertIsNotNone(data_manager.database['alignakdaemon'])
 
@@ -222,7 +222,7 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_livesynthesis_data()
+        under_test.query_livesynthesis()
 
         self.assertIsNotNone(data_manager.database['livesynthesis'])
 
@@ -238,12 +238,12 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_history_data(self.hostname, self.host_id)
+        under_test.query_history(self.hostname, self.host_id)
 
         self.assertIsNotNone(data_manager.database['history'])
         old_database = data_manager.database['history']
 
-        under_test.query_history_data()
+        under_test.query_history()
 
         self.assertIsNotNone(data_manager.database['history'])
 

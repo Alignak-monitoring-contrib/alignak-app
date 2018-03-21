@@ -233,7 +233,7 @@ class BackendClient(object):
 
         return request
 
-    def query_realms_data(self):
+    def query_realms(self):
         """
         Launch a request on ``realm`` endpoint
 
@@ -264,7 +264,7 @@ class BackendClient(object):
             if 'OK' in request['_status']:
                 data_manager.databases_ready[request_data['endpoint']] = True
 
-    def query_period_data(self):
+    def query_timeperiods(self):
         """
         Launch a request on ``timeperiod`` endpoint
 
@@ -295,9 +295,9 @@ class BackendClient(object):
             if 'OK' in request['_status']:
                 data_manager.databases_ready[request_data['endpoint']] = True
 
-    def query_user_data(self):
+    def query_user(self):
         """
-        Launch request for "user" endpoint
+        Launch request for "user" endpoint. Only for current App user.
 
         """
 
@@ -324,7 +324,7 @@ class BackendClient(object):
             if 'OK' in request['_status']:
                 data_manager.databases_ready[request_data['endpoint']] = True
 
-    def query_hosts_data(self):
+    def query_hosts(self):
         """
         Launch request for "host" endpoint
 
@@ -356,13 +356,15 @@ class BackendClient(object):
             if 'OK' in request['_status']:
                 data_manager.databases_ready[request_data['endpoint']] = True
 
-    def query_services_data(self):
+    def query_services(self, host_id=None):
         """
         Launch request for "service" endpoint
 
+        :param host_id: "_id" of host, needed to get only host services
+        :type host_id: str
         """
 
-        request_data = Service.get_request_model()
+        request_data = Service.get_request_model(host_id)
 
         request = self.get(
             request_data['endpoint'],
@@ -382,9 +384,16 @@ class BackendClient(object):
                     item['name'],
                 )
 
-                services_list.append(service)
+                if host_id:
+                    if not data_manager.get_item('service', service.item_id):
+                        # Append service if not in list
+                        data_manager.database['service'].append(service)
+                    else:
+                        # Else we update existing item
+                        data_manager.update_item_data('service', service.item_id, service.data)
 
-            if services_list:
+            if services_list and not host_id:
+                # If not item ID, update all database
                 data_manager.update_database('service', services_list)
             if 'OK' in request['_status']:
                 data_manager.databases_ready[request_data['endpoint']] = True
@@ -521,7 +530,7 @@ class BackendClient(object):
         if data_manager.database['problems']:
             data_manager.databases_ready['problems'] = True
 
-    def query_daemons_data(self):
+    def query_alignakdaemons(self):
         """
         Launch request for "alignakdaemon" endpoint
 
@@ -554,7 +563,7 @@ class BackendClient(object):
             if 'OK' in request['_status']:
                 data_manager.databases_ready[request_data['endpoint']] = True
 
-    def query_livesynthesis_data(self):
+    def query_livesynthesis(self):
         """
         Launch request for "livesynthesis" endpoint
 
@@ -586,7 +595,7 @@ class BackendClient(object):
             if 'OK' in request['_status']:
                 data_manager.databases_ready[request_data['endpoint']] = True
 
-    def query_history_data(self, hostname=None, host_id=None):
+    def query_history(self, hostname=None, host_id=None):
         """
         Launch request for "history" endpoint but only for hosts in "data_manager"
 
@@ -645,7 +654,7 @@ class BackendClient(object):
             if history_list:
                 data_manager.update_database('history', history_list)
 
-    def query_notifications_data(self):  # pragma: no cover, notifications can be empty
+    def query_notifications(self):  # pragma: no cover, notifications can be empty
         """
         Launch request for "history" endpoint but only for notifications of current user
 
