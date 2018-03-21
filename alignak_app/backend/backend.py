@@ -389,6 +389,138 @@ class BackendClient(object):
             if 'OK' in request['_status']:
                 data_manager.databases_ready[request_data['endpoint']] = True
 
+    def query_problems(self):
+        """
+        Launch requests on "host" and "service" endpoints to get items in problems:
+
+        * **Hosts**: ``DOWN``, ``UNREACHABLE``
+        * **Services**: ``WARNING``, ``CRITICAL``, ``UNKNOWN``
+        """
+
+        services_projection = [
+            'name', 'host', 'alias', 'ls_state', 'ls_output', 'ls_acknowledged', 'ls_downtimed'
+        ]
+
+        # CRITICAL services
+        params = {'where': json.dumps({
+                '_is_template': False,
+                'ls_state': 'CRITICAL',
+        })}
+        request = self.get(
+            'service',
+            params,
+            services_projection,
+            all_items=True
+        )
+
+        for item in request['_items']:
+            if not item['ls_acknowledged'] and not item['ls_downtimed']:
+                service = Service()
+                service.create(
+                    item['_id'],
+                    item,
+                    item['name']
+                )
+                data_manager.database['problems'].append(service)
+
+        # WARNING services
+        params = {'where': json.dumps({
+                '_is_template': False,
+                'ls_state': 'WARNING',
+        })}
+        request = self.get(
+            'service',
+            params,
+            services_projection,
+            all_items=True
+        )
+
+        for item in request['_items']:
+            service = Service()
+            service.create(
+                item['_id'],
+                item,
+                item['name']
+            )
+            data_manager.database['problems'].append(service)
+
+        # UNKNOWN services
+        params = {'where': json.dumps({
+            '_is_template': False,
+            'ls_state': 'UNKNOWN',
+        })}
+        request = self.get(
+            'service',
+            params,
+            services_projection,
+            all_items=True
+        )
+
+        for item in request['_items']:
+            if not item['ls_acknowledged'] and not item['ls_downtimed']:
+                service = Service()
+                service.create(
+                    item['_id'],
+                    item,
+                    item['name']
+                )
+                data_manager.database['problems'].append(service)
+
+        # Reset projection
+        host_projection = [
+            'name', 'ls_state', 'alias', 'ls_output', 'ls_acknowledged', 'ls_downtimed'
+        ]
+        generate_proj = {}
+        for field in host_projection:
+            generate_proj[field] = 1
+
+        # DOWN hosts
+        params = {'where': json.dumps({
+            '_is_template': False,
+            'ls_state': 'DOWN',
+        })}
+        request = self.get(
+            'host',
+            params,
+            services_projection,
+            all_items=True
+        )
+
+        for item in request['_items']:
+            if not item['ls_acknowledged'] and not item['ls_downtimed']:
+                host = Host()
+                host.create(
+                    item['_id'],
+                    item,
+                    item['name']
+                )
+                data_manager.database['problems'].append(host)
+
+        # UNREACHABLE hosts
+        params = {'where': json.dumps({
+            '_is_template': False,
+            'ls_state': 'UNREACHABLE',
+        })}
+        request = self.get(
+            'host',
+            params,
+            services_projection,
+            all_items=True
+        )
+
+        for item in request['_items']:
+            if not item['ls_acknowledged'] and not item['ls_downtimed']:
+                host = Host()
+                host.create(
+                    item['_id'],
+                    item,
+                    item['name']
+                )
+                data_manager.database['problems'].append(host)
+
+        if data_manager.database['problems']:
+            data_manager.databases_ready['problems'] = True
+
     def query_daemons_data(self):
         """
         Launch request for "alignakdaemon" endpoint

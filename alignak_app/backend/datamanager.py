@@ -50,15 +50,16 @@ class DataManager(object):
             'user': [],
             'realm': [],
             'timeperiod': [],
+            'problems': [],
         }
         self.databases_ready = {
             'livesynthesis': False,
             'alignakdaemon': False,
             'host': False,
-            'service': False,
             'user': False,
             'realm': False,
             'timeperiod': False,
+            'problems': False,
         }
         self.old_notifications = []
 
@@ -404,42 +405,18 @@ class DataManager(object):
         :rtype: dict
         """
 
-        problems = []
         hosts_nb = 0
         services_nb = 0
+        problems = self.database['problems']
 
-        if self.database['host']:
-            for host in self.database['host']:
-                if host.data['ls_state'] == 'DOWN' and not \
-                        host.data['ls_acknowledged'] and not \
-                        host.data['ls_downtimed']:
-                    problems.append(host)
-                    hosts_nb += 1
-                if host.data['ls_state'] == 'UNREACHABLE' and not \
-                        host.data['ls_acknowledged'] and not \
-                        host.data['ls_downtimed']:
-                    problems.append(host)
-                    hosts_nb += 1
+        # Count problems
+        for item in problems:
+            if 'service' in item.item_type:
+                services_nb += 1
+            else:
+                hosts_nb += 1
 
-        if self.database['service']:
-            for service in self.database['service']:
-                if service.data['ls_state'] == 'WARNING' and not \
-                        service.data['ls_acknowledged'] and not \
-                        service.data['ls_downtimed']:
-                    problems.append(service)
-                    services_nb += 1
-                if service.data['ls_state'] == 'CRITICAL'and not \
-                        service.data['ls_acknowledged'] and not \
-                        service.data['ls_downtimed']:
-                    problems.append(service)
-                    services_nb += 1
-                if service.data['ls_state'] == 'UNKNOWN'and not \
-                        service.data['ls_acknowledged'] and not \
-                        service.data['ls_downtimed']:
-                    problems.append(service)
-                    services_nb += 1
-
-        problems = sorted(problems, key=lambda x: x.data['ls_state'], reverse=True)
+        # problems = sorted(problems, key=lambda x: x.data['ls_state'], reverse=True)
         problems = sorted(problems, key=lambda x: x.item_type)
 
         problems_data = {
