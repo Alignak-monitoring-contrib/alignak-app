@@ -83,7 +83,7 @@ class SpyQListWidget(QListWidget):
                 logger.info('Spy a new host: %s', host.name)
                 logger.debug('... with id: %s', host_id)
 
-    def dragMoveEvent(self, event):
+    def dragMoveEvent(self, event):  # pragma: no cover - not testable
         """
         Override dragMoveEvent.
          Only accept EventItem() objects who are "spied_on" and not already spied
@@ -100,7 +100,7 @@ class SpyQListWidget(QListWidget):
         else:
             event.ignore()
 
-    def dropEvent(self, event):
+    def dropEvent(self, event):  # pragma: no cover - not testable
         """
         Override dropEvent.
          Get dropped item data, create a new one, and delete the one who is in EventsQWidget
