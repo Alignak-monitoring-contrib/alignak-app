@@ -30,7 +30,6 @@ from operator import itemgetter
 
 from PyQt5.Qt import QTreeWidget, QTreeWidgetItem, QWidget, QIcon, QGridLayout, QSize
 
-from alignak_app.backend.backend import app_backend
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
 
@@ -75,20 +74,19 @@ class ServicesQWidget(QWidget):
         self.service_data_widget.initialize()
         layout.addWidget(self.service_data_widget, 2, 1, 1, 1)
 
-    def set_data(self, hostname):
+    def set_data(self, host_item):
         """
-        Set data of host and service
+        Set data of host item and its services
 
-        :param hostname: name of host to display
-        :type hostname: str
+        :param host_item: the Host item
+        :type host_item: alignak_app.items.host.Host
         """
 
         # Query services of host
-        self.host_item = data_manager.get_item('host', hostname)
-        app_backend.query_services(self.host_item.item_id)
+        self.host_item = host_item
 
         # Get problems
-        host_and_services = data_manager.get_host_with_services(hostname)
+        host_and_services = data_manager.get_host_with_services(host_item.item_id)
         self.host_item = host_and_services['host']
         self.service_items = host_and_services['services']
 

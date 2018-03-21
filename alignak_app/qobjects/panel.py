@@ -31,6 +31,7 @@ from PyQt5.Qt import QPushButton, QCompleter, QLineEdit, QIcon, QHBoxLayout, QLa
 from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget, QTabWidget
 
 from alignak_app.backend.datamanager import data_manager
+from alignak_app.backend.backend import app_backend
 from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.frames import get_frame_separator
@@ -245,15 +246,18 @@ class PanelQWidget(QWidget):
         hostname = self.define_hostname()
 
         if hostname in self.hostnames_list:
-            # Update linesearch if needed
+            # Update linesearch in case hosts have been added or deleted
             hostnames_list = data_manager.get_all_hostnames()
             if hostnames_list != self.hostnames_list:
                 self.create_line_search(hostnames_list)
 
+            # Get Host Item and its services
+            host_item = data_manager.get_item('host', hostname)
+            app_backend.query_services(host_item.item_id)
+
             # Set spy button enable or not
             not_spied = bool(
-                data_manager.get_item('host', 'name', hostname).item_id not in
-                self.spy_widget.spy_list_widget.spied_hosts
+                host_item.item_id not in self.spy_widget.spy_list_widget.spied_hosts
             )
             self.spy_button.setEnabled(not_spied)
             self.spy_button.setIcon(
@@ -261,14 +265,14 @@ class PanelQWidget(QWidget):
             )
             self.spy_button.setText(self.spy_text[not_spied])
 
-            # Update QWidgets
-            self.dashboard_widget.update_dashboard()
-            self.dashboard_widget.show()
-            self.host_widget.update_host(hostname)
+            # Update Qwidgets
+            self.host_widget.update_host(host_item)
             self.host_widget.show()
-            self.services_widget.set_data(hostname)
+            self.services_widget.set_data(host_item)
             self.services_widget.update_widget()
             self.services_widget.show()
+            self.dashboard_widget.update_dashboard()
+            self.dashboard_widget.show()
         else:
             self.host_widget.hide()
             self.services_widget.hide()

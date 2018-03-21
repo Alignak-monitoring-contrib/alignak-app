@@ -92,7 +92,7 @@ class TestHostQWidget(unittest2.TestCase):
         self.assertIsNone(under_test.service_items)
 
         data_manager.database['host'] = [host]
-        under_test.set_data('localhost')
+        under_test.set_data(host)
 
         self.assertIsNotNone(under_test.host_item)
         self.assertIsInstance(under_test.host_item, Host)

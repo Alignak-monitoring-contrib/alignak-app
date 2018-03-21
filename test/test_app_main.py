@@ -96,6 +96,7 @@ class TestAppQMainWindow(unittest2.TestCase):
         settings.edit_setting_value('Alignak-app', 'display', 'no')
 
         under_test = AppQMainWindow()
+        init_event_widget()
         under_test.initialize()
 
         # AppQMainWindow is not visible and not maximized

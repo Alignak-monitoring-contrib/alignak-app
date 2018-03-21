@@ -102,16 +102,19 @@ class HostQWidget(QWidget):
         self.refresh_timer.start()
         self.refresh_timer.timeout.connect(self.update_host)
 
-    def set_data(self, hostname):
+    def set_data(self, host_item):
         """
         Set data of host and service
 
-        :param hostname: name of host to display
-        :type hostname: str
+        :param host_item: the Host item
+        :type host_item: alignak_app.items.host.Host
         """
 
-        host_and_services = data_manager.get_host_with_services(hostname)
+        # Query services of host
+        self.host_item = host_item
 
+        # Get problems
+        host_and_services = data_manager.get_host_with_services(host_item.item_id)
         self.host_item = host_and_services['host']
         self.service_items = host_and_services['services']
 
@@ -401,20 +404,20 @@ class HostQWidget(QWidget):
                     _("Backend PATCH failed, please check your logs !")
                 )
 
-    def update_host(self, hostname=None):
+    def update_host(self, host_item=None):
         """
         Update HostQWidget data and QLabels
 
-        :param hostname: name of host who is display
-        :type hostname: str
+        :param host_item: the Host item
+        :type host_item: alignak_app.items.host.Host
         """
 
-        if self.host_item and not hostname:
-            self.set_data(self.host_item.name)
-        if hostname:
-            self.set_data(hostname)
+        if self.host_item and not host_item:
+            self.set_data(self.host_item)
+        if host_item:
+            self.set_data(host_item)
 
-        if self.host_item or hostname:
+        if self.host_item or host_item:
             icon_name = get_real_host_state_icon(self.service_items)
             icon_pixmap = QPixmap(settings.get_image(icon_name))
 

@@ -136,7 +136,7 @@ class TestServicesQWidget(unittest2.TestCase):
         data_manager.update_database('host', self.host_list)
         data_manager.update_database('service', self.service_list)
 
-        under_test.set_data('host1')
+        under_test.set_data(self.host_list[1])
 
         # Assert Data is filled
         self.assertIsNotNone(under_test.host_item)
@@ -155,7 +155,7 @@ class TestServicesQWidget(unittest2.TestCase):
         data_manager.update_database('host', self.host_list)
         data_manager.update_database('service', self.service_list)
 
-        under_test.set_data('host2')
+        under_test.set_data(self.host_list[2])
         under_test.initialize()
 
         old_tree_widget = under_test.services_tree_widget
