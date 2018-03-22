@@ -33,7 +33,7 @@ from PyQt5.Qt import QPushButton, QIcon, QTimer, QScrollArea
 from alignak_app.backend.backend import app_backend
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.item import get_host_msg_and_event_type, Item
-from alignak_app.items.item import get_icon_name, get_real_host_state_icon
+from alignak_app.items.item import get_icon_name, get_overall_state_icon
 from alignak_app.utils.config import settings
 from alignak_app.utils.time import get_time_diff_since_last_timestamp
 
@@ -418,7 +418,10 @@ class HostQWidget(QWidget):
             self.set_data(host_item)
 
         if self.host_item or host_item:
-            icon_name = get_real_host_state_icon(self.service_items)
+            icon_name = get_overall_state_icon(
+                self.service_items,
+                self.host_item.data['_overall_state_id']
+            )
             icon_pixmap = QPixmap(settings.get_image(icon_name))
 
             self.labels['host_icon'].setPixmap(QPixmap(icon_pixmap))

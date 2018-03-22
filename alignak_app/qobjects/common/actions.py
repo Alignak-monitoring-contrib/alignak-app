@@ -115,12 +115,19 @@ class ActionsQWidget(QWidget):
 
             post = app_backend.post('actionacknowledge', data)
 
-            send_event('ACK', _('Acknowledge for %s is done') % self.item.get_display_name())
+            send_event(
+                'ACK',
+                _('Acknowledge for %s is %s') % (self.item.get_display_name(), post['_status'])
+            )
             # Update Item
             data_manager.update_item_data(
                 self.item.item_type,
                 self.item.item_id,
                 {'ls_acknowledged': True}
+            )
+            data_manager.remove_item(
+                'problems',
+                self.item.item_id
             )
             logger.debug('ACK answer for %s: %s', self.item.name, post)
 
@@ -172,11 +179,18 @@ class ActionsQWidget(QWidget):
 
             post = app_backend.post('actiondowntime', data)
 
-            send_event('DOWNTIME', _('Downtime for %s is done') % self.item.get_display_name())
+            send_event(
+                'DOWNTIME',
+                _('Downtime for %s is %s') % (self.item.get_display_name(), post['_status'])
+            )
             data_manager.update_item_data(
                 self.item.item_type,
                 self.item.item_id,
                 {'ls_downtimed': True}
+            )
+            data_manager.remove_item(
+                'problems',
+                self.item.item_id
             )
             logger.debug('DOWNTIME answer for %s: %s', self.item.name, post)
 

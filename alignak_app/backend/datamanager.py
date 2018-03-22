@@ -144,9 +144,8 @@ class DataManager(object):
 
         if value:
             wanted_item = next((item for item in items if item.data[key] == value), None)
-            return wanted_item
-
-        wanted_item = next((item for item in items if item.item_id == key), None)
+        else:
+            wanted_item = next((item for item in items if item.item_id == key), None)
 
         if not wanted_item:
             wanted_item = next((item for item in items if item.name == key), None)

@@ -109,6 +109,7 @@ class TestDataManager(unittest2.TestCase):
                 'ls_acknowledged': False,
                 'active_checks_enabled': True,
                 'passive_checks_enabled': True,
+                '_overall_state_id': 4,
                 'ls_state': 'DOWN'
             },
             'hostname'
@@ -122,6 +123,7 @@ class TestDataManager(unittest2.TestCase):
                 'ls_acknowledged': False,
                 'active_checks_enabled': True,
                 'passive_checks_enabled': True,
+                '_overall_state_id': 4,
                 'ls_state': 'DOWN'
             },
             'hostname'

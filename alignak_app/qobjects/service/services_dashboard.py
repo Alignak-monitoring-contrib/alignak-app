@@ -122,7 +122,8 @@ class ServicesDashboardQWidget(QWidget):
             percent = 0.0
             try:
                 percent = float(services_data[state]) * 100.0 / float(services_total)
-            except ZeroDivisionError as e:
-                logger.error(e)
+            except ZeroDivisionError:
+                # Leave percent at 0.0
+                pass
             item_text = '%d (%.01f%%)' % (services_data[state], percent)
             self.nb_labels[state].setText(item_text)

@@ -58,6 +58,7 @@ class TestAllItems(unittest2.TestCase):
                 'ls_downtimed': True,
                 'ls_acknowledged': True,
                 'ls_state': 'UNKNOWN',
+                '_overall_state_id': 4,
                 'passive_checks_enabled': False,
                 'active_checks_enabled': True
             },
@@ -186,10 +187,11 @@ class TestAllItems(unittest2.TestCase):
             )
             services_test.append(service)
 
-        under_test = get_real_host_state_icon(services_test)
+        under_test = get_overall_state_icon(services_test, 0)
         self.assertEqual('all_services_critical', under_test)
 
-        under_test = get_real_host_state_icon([])
+        # Overall state id of 10 does not exist
+        under_test = get_overall_state_icon([], 10)
         self.assertEqual('all_services_none', under_test)
 
     def test_get_host_msg_and_event_type(self):
