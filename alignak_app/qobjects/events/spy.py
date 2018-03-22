@@ -195,7 +195,7 @@ class SpyQWidget(QWidget):
         """
 
         item = self.spy_list_widget.currentItem()
-        print(item.data(Qt.UserRole))
+
         self.spy_list_widget.spied_hosts.remove(item.data(Qt.UserRole))
         self.spy_list_widget.takeItem(self.spy_list_widget.currentRow())
 

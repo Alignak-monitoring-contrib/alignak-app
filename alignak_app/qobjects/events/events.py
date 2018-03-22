@@ -108,7 +108,7 @@ class EventsQWidget(QWidget):
         :type msg: str
         :param timer: timer to hide event at end of time
         :type timer: bool
-        :param host: data of host. Only necessary if "be_spied" is True
+        :param host: data of a host to set ``Qt.UserRole``
         :type host: None | str
         """
 
@@ -136,7 +136,7 @@ class EventsQWidget(QWidget):
     def event_exist(self, msg):
         """
         Check if event already displayed, move it to top and update tooltip.
-        Only for EventItem who are spied on.
+        Only for EventItem who have a ``Qt.UserRole``
 
         :param msg: message of event
         :type msg: str
@@ -227,7 +227,7 @@ def send_event(event_type, msg, timer=False, host=None):
     :type msg: str
     :param timer: timer to hide event at end of time
     :type timer: bool
-    :param host: _id of host. Only necessary if "spied_on" is True
+    :param host: _id of host
     :type host: None | str
     """
 
