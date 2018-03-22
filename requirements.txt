@@ -1,5 +1,5 @@
 pyqt5<5.10
 configparser
 future
-git+git://github.com/algorys/alignak-backend-client.git@develop
+alignak_backend_client
 python-gettext

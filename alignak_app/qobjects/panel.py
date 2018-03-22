@@ -320,13 +320,12 @@ class PanelQWidget(QWidget):
     def dragMoveEvent(self, event):  # pragma: no cover
         """
         Override dragMoveEvent.
-         Only accept EventItem() objects who are "spied_on" and not already spied
+         Only accept EventItem() objects who have ``Qt.UserRole``
 
         :param event: event triggered when something move
         """
 
         if isinstance(event.source().currentItem(), EventItem):
-            # TODO see if isinstance item Host
             if event.source().currentItem().data(Qt.UserRole):
                 event.accept()
             else:

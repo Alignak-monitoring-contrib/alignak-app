@@ -70,7 +70,7 @@ class TestDataManager(unittest2.TestCase):
         under_test.initialize()
 
         spy_item_test = EventItem()
-        spy_item_test.initialize('OK', 'Message', spied_on=True, host='_id_1')
+        spy_item_test.initialize('OK', 'Message', host='_id_1')
 
         self.assertIsNone(under_test.spy_list_widget.item(1))
 

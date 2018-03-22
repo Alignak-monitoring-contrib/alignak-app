@@ -67,10 +67,8 @@ class EventItem(QListWidgetItem):
         msg_to_send = '%s. (Send at %s)' % (msg, get_current_time())
         self.setToolTip(msg_to_send)
 
-        self.setData(Qt.DecorationRole,
-            QIcon(
-                settings.get_image(self.get_icon(event_type))
-            )
+        self.setData(
+            Qt.DecorationRole, QIcon(settings.get_image(self.get_icon(event_type)))
         )
 
     def close_item(self):
