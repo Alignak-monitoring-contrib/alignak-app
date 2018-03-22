@@ -261,6 +261,45 @@ class TestDataManager(unittest2.TestCase):
 
         self.assertIsNone(item3)
 
+    def test_remove_item(self):
+        """Remove Item from Database"""
+
+        under_test = DataManager()
+
+        service_1 = Service()
+        service_1.create(
+            'id1',
+            {'name': 'service_one'},
+            'name1'
+        )
+        service_2 = Service()
+        service_2.create(
+            'id2',
+            {'name': 'service_two'},
+            'name2'
+        )
+        under_test.update_database('service', [service_1, service_2])
+
+        # Assert first service is returned
+        service = under_test.get_item(
+            'service',
+            service_1.item_id
+        )
+        self.assertTrue(service)
+
+        # Remove item
+        under_test.remove_item(
+            'service',
+            service_1.item_id
+        )
+
+        # Item is removed
+        service = under_test.get_item(
+            'service',
+            service_1.item_id
+        )
+        self.assertFalse(service)
+
     def test_get_realm_name(self):
         """Get Realm in db"""
 

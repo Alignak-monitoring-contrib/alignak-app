@@ -113,7 +113,7 @@ class DataManager(object):
         :rtype: alignak_app.items.item.*
         """
 
-        logger.debug('Get item in database[%s]: %s, %s', item_type, key, value)
+        logger.debug('Get item in database[%s]: key=%s, value=%s', item_type, key, value)
 
         items = self.database[item_type]
 
@@ -127,6 +127,40 @@ class DataManager(object):
             wanted_item = next((item for item in items if item.name == key), None)
 
         return wanted_item
+
+    def remove_item(self, item_type, key, value=None):
+        """
+        Remove the wanted item in "database[item_type]" who contain the "value" or "key"
+
+        :param item_type: type of wanted item
+        :type item_type: str
+        :param key: key contained in item
+        :type key: str
+        :param value: value of the key if needed
+        :type value: str
+        """
+
+        items = self.database[item_type]
+
+        if value:
+            wanted_item = next((item for item in items if item.data[key] == value), None)
+            return wanted_item
+
+        wanted_item = next((item for item in items if item.item_id == key), None)
+
+        if not wanted_item:
+            wanted_item = next((item for item in items if item.name == key), None)
+
+        if not wanted_item:
+            logger.error(
+                'Can\'t delete item in database[%s]: key=%s, value=%s', item_type, key, value
+            )
+        else:
+            try:
+                self.database[item_type].remove(wanted_item)
+                logger.info('Remove item in database[%s]: key=%s, value=%s', item_type, key, value)
+            except ValueError:
+                pass
 
     def update_item_data(self, item_type, item_id, data):
         """
