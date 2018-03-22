@@ -1,4 +1,9 @@
 /****** QWidget / QDialog ******/
+QWidget#app {
+    background-color: white;
+    border: none;
+}
+
 QWidget#dialog {
     border-width: 0px 2px 2px 2px;
     border-color: #475c67;
@@ -335,6 +340,10 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical, QScrollBar::add-li
 }
 
 /****** QScrollArea ******/
+QScrollArea#server {
+    border: none;
+}
+
 QScrollArea#output {
     color: #c7254e;
     background-color: #f9f2f4;

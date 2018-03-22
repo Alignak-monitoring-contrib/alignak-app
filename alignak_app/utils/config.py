@@ -55,7 +55,10 @@ class Settings(object):
             'backend': 'http://127.0.0.1:5000',
             'url': 'http://127.0.0.1',
             'webui': '',
-            'processes': '1'
+            'processes': '1',
+            'proxy': '',
+            'proxy_user': '',
+            'proxy_password': ''
 
         },
         'Alignak-app': {
@@ -154,8 +157,9 @@ class Settings(object):
                 file_to_write = self.settings['settings']
             # Update values
             for d in data:
-                if option in d[0:len(option)]:
+                if option == d[0:len(option)]:
                     data[data.index(d)] = option + ' = ' + new_value + '\n'
+                    break
             # Setting the current configuration
             self.app_config.set(section, option, new_value)
             try:

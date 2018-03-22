@@ -56,8 +56,19 @@ The most significant Section is **[Alignak]**. You'll need set your backend url 
 
 **To Know:** Without connection on Backend of Alignak, App won't start ! "
 
+Proxy Settings
+**************
+
+If you have a proxy on your network, you can set this proxy in environment variables.
+`Alignak backend client <http://alignak-backend-client.readthedocs.io/en/develop>`_ will manage these variables alone when connecting to the backend.
+
+* For HTTP proxies, set ``HTTP_PROXY`` variable.
+* For HTTPS proxies, set ``HTTPS_PROXY`` variable.
+
+For more informations, please read `Requests documentation <http://docs.python-requests.org/en/latest/user/advanced/#proxies>`_.
+
 Connection to Backend
-=====================
+*********************
 
 Alignak-app have a login form by default, who let you to connect with the username and password define in backend.
 

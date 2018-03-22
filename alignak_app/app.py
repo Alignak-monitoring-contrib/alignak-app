@@ -167,11 +167,28 @@ class AlignakApp(QObject):  # pragma: no cover
         app.setQuitOnLastWindowClosed(False)
 
         # Connection to Backend
+        proxies = None
         if settings.get_config('Alignak', 'username') and not username and not password:
             username = settings.get_config('Alignak', 'username')
             password = settings.get_config('Alignak', 'password')
+            if settings.get_config('Alignak', 'proxy'):
+                try:
+                    # Model is: {'protocol': 'http://proxy:port'}
+                    proxies = {
+                        settings.get_config('Alignak', 'proxy').split(':')[0]:
+                            settings.get_config('Alignak', 'proxy')
+                    }
+                except ValueError:
+                    self.show_login_window()
 
-        if not app_backend.login(username, password):
+        # If Proxy user, display login window to let user enter password
+        if settings.get_config('Alignak', 'proxy_user') and \
+                not settings.get_config('Alignak', 'proxy_password'):
+            self.show_login_window()
+
+        # Try login else display login window
+        logger.info('- Proxy settings  : %s', proxies)
+        if not app_backend.login(username, password, proxies=proxies):
             self.show_login_window()
 
         # Launch start threads
@@ -235,7 +252,7 @@ class AlignakApp(QObject):  # pragma: no cover
                 _('Connection'),
                 'error',
                 _('Warning!'),
-                _('Access denied! Check your username and password.')
+                _('Access denied! Check your configuration and your credentials.')
             )
             if login.exec_() == login.Accepted:
                 connect_dialog.close()
