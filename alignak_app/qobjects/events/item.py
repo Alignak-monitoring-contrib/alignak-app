@@ -41,7 +41,6 @@ class EventItem(QListWidgetItem):
         self.timer = None
         self.host = None
 
-    # pylint: disable=too-many-arguments
     def initialize(self, event_type, msg, timer=False, host=None):
         """
         Initialize QListWidgetItem
@@ -71,7 +70,7 @@ class EventItem(QListWidgetItem):
             Qt.DecorationRole, QIcon(settings.get_image(self.get_icon(event_type)))
         )
 
-    def close_item(self):
+    def close_item(self):  # pragma: no cover
         """
         Hide items when timer is finished
 

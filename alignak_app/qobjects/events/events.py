@@ -97,7 +97,6 @@ class EventsQWidget(QWidget):
                     host=event['host']
                 )
 
-    # pylint: disable=too-many-arguments
     def add_event(self, event_type, msg, timer=False, host=None):
         """
         Add event to events list
@@ -186,7 +185,7 @@ class EventsQWidget(QWidget):
 events_widget = None
 
 
-def init_event_widget():
+def init_event_widget():  # pragma: no cover
     """
     Initialize the global EventsQWidget. Used for drag & drop and send events
 
