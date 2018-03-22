@@ -75,9 +75,9 @@ class SpyQListWidget(QListWidget):
                 item = EventItem()
                 item.initialize(
                     'SPY',
-                    _('Host %s is spied by Alignak-app !') % host.name.capitalize()
+                    _('Host %s is spied by Alignak-app !') % host.name.capitalize(),
+                    host=host.item_id
                 )
-                item.host = host.item_id
                 self.insertItem(0, item)
 
                 logger.info('Spy a new host: %s', host.name)
@@ -86,15 +86,17 @@ class SpyQListWidget(QListWidget):
     def dragMoveEvent(self, event):  # pragma: no cover - not testable
         """
         Override dragMoveEvent.
-         Only accept EventItem() objects who are "spied_on" and not already spied
+         Only accept EventItem() objects who have a ``Qt.UserRole`` and not already in "spied_hosts"
 
         :param event: event triggered when something move
         """
 
         if isinstance(event.source().currentItem(), EventItem):
-            if event.source().currentItem().spied_on and \
-                    (event.source().currentItem().host not in self.spied_hosts):
-                event.accept()
+            if event.source().currentItem().data(Qt.UserRole):
+                if event.source().currentItem().data(Qt.UserRole) not in self.spied_hosts:
+                    event.accept()
+                else:
+                    event.ignore()
             else:
                 event.ignore()
         else:
@@ -108,7 +110,7 @@ class SpyQListWidget(QListWidget):
         :param event: event triggered when something is dropped
         """
 
-        self.add_spy_host(event.source().currentItem().host)
+        self.add_spy_host(event.source().currentItem().data(Qt.UserRole))
 
         # Remove the item dropped and original, to let only new one created
         row = self.row(event.source().currentItem())
@@ -183,7 +185,6 @@ class SpyQWidget(QWidget):
                 msg_and_event_type['event_type'],
                 msg_and_event_type['message'],
                 timer=False,
-                spied_on=True,
                 host=host_and_services['host'].item_id
             )
 
@@ -194,7 +195,8 @@ class SpyQWidget(QWidget):
         """
 
         item = self.spy_list_widget.currentItem()
-        self.spy_list_widget.spied_hosts.remove(item.host)
+        print(item.data(Qt.UserRole))
+        self.spy_list_widget.spied_hosts.remove(item.data(Qt.UserRole))
         self.spy_list_widget.takeItem(self.spy_list_widget.currentRow())
 
         self.update_parent_spytab()

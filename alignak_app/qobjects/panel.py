@@ -326,7 +326,8 @@ class PanelQWidget(QWidget):
         """
 
         if isinstance(event.source().currentItem(), EventItem):
-            if event.source().currentItem().spied_on:
+            # TODO see if isinstance item Host
+            if event.source().currentItem().data(Qt.UserRole):
                 event.accept()
             else:
                 event.ignore()
@@ -341,7 +342,7 @@ class PanelQWidget(QWidget):
         :param event: event triggered when something is dropped
         """
 
-        host = data_manager.get_item('host', '_id', event.source().currentItem().host)
+        host = data_manager.get_item('host', '_id', event.source().currentItem().data(Qt.UserRole))
 
         logger.debug('Drag and drop host in Panel: %s', host.name)
         logger.debug('... with current item: %s', event.source().currentItem())

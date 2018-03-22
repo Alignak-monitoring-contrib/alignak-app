@@ -94,12 +94,11 @@ class EventsQWidget(QWidget):
                     event['event_type'],
                     event['message'],
                     timer=False,
-                    spied_on=True,
                     host=event['host']
                 )
 
     # pylint: disable=too-many-arguments
-    def add_event(self, event_type, msg, timer=False, spied_on=False, host=None):
+    def add_event(self, event_type, msg, timer=False, host=None):
         """
         Add event to events list
 
@@ -108,18 +107,17 @@ class EventsQWidget(QWidget):
         :param msg: message of event
         :type msg: str
         :param timer: timer to hide event at end of time
-        :param spied_on: make event spy able
-        :type spied_on: bool
+        :type timer: bool
         :param host: data of host. Only necessary if "be_spied" is True
         :type host: None | str
         """
 
         if not self.event_exist(msg):
             logger.debug(
-                'Add Event: msg: %s, timer: %s, spied_on: %s, host: %s', msg, timer, spied_on, host
+                'Add Event: msg: %s, timer: %s, host: %s', msg, timer, host
             )
             event = EventItem()
-            event.initialize(event_type, msg, timer=timer, spied_on=spied_on, host=host)
+            event.initialize(event_type, msg, timer=timer, host=host)
 
             self.events_list.insertItem(0, event)
             if timer:
@@ -148,7 +146,7 @@ class EventsQWidget(QWidget):
 
         for i in range(0, self.events_list.count()):
             if self.events_list.item(i).data(Qt.DisplayRole) == msg:
-                if self.events_list.item(i).spied_on:
+                if self.events_list.item(i).data(Qt.UserRole):
                     item = self.events_list.takeItem(i)
                     msg_to_send = '%s. (Send at %s)' % (msg, get_current_time())
                     item.setToolTip(msg_to_send)
@@ -211,10 +209,10 @@ def get_events_widget():
     return events_widget
 
 
-def send_event(event_type, msg, timer=False, spied_on=False, host=None):
+def send_event(event_type, msg, timer=False, host=None):
     """
     Add event to Events QWidget (access function to make event sendable in whole application. Event
-    type define icon and color of :class:`EventItem <alignak_app.qobjects.events.item.EventItem>`.
+    type define icon color of :class:`EventItem <alignak_app.qobjects.events.item.EventItem>`.
 
     * **green**: [``OK``, ``UP``]
     * **blue**: [``UNKNOWN``, ``INFO``, ``SPY``]
@@ -228,10 +226,9 @@ def send_event(event_type, msg, timer=False, spied_on=False, host=None):
     :param msg: message of event
     :type msg: str
     :param timer: timer to hide event at end of time
-    :param spied_on: make event spy able
-    :type spied_on: bool
+    :type timer: bool
     :param host: _id of host. Only necessary if "spied_on" is True
     :type host: None | str
     """
 
-    events_widget.add_event(event_type, msg, timer=timer, spied_on=spied_on, host=host)
+    events_widget.add_event(event_type, msg, timer=timer, host=host)
