@@ -35,7 +35,7 @@ from alignak_app.qobjects.events.events import init_event_widget
 init_event_widget()
 
 
-class TestDataManager(unittest2.TestCase):
+class TestSpyQWidgets(unittest2.TestCase):
     """
         This file test the SpyQWidget, SpyQListWidget classes.
     """
@@ -72,21 +72,43 @@ class TestDataManager(unittest2.TestCase):
         spy_item_test = EventItem()
         spy_item_test.initialize('OK', 'Message', host='_id_1')
 
+        # Fill database
+        host_test = Host()
+        host_test.create(
+            '_id_1',
+            {
+                '_id': '_id_1',
+                'ls_downtimed': False,
+                'ls_acknowledged': False,
+                'active_checks_enabled': True,
+                'passive_checks_enabled': True,
+                '_overall_state_id': 4,
+                'ls_state': 'DOWN'
+            },
+            'hostname'
+        )
+        data_manager.update_database('host', [host_test])
+
+        # No item spy, so item is None
         self.assertIsNone(under_test.spy_list_widget.item(1))
+        self.assertFalse(under_test.spy_list_widget.spied_hosts)
 
-        under_test.spy_list_widget.addItem(spy_item_test)
+        # Spy host
+        under_test.spy_list_widget.add_spy_host(host_test.item_id)
 
-        # Assert EventItem is same that the one added
-        self.assertEqual(spy_item_test, under_test.spy_list_widget.item(1))
+        # Assert EventItem have same host "_id" that the one added
+        self.assertEqual(spy_item_test.host, under_test.spy_list_widget.item(0).host)
+        self.assertEqual(['_id_1'], under_test.spy_list_widget.spied_hosts)
 
         # Set this item to current one and add it to spy list
-        under_test.spy_list_widget.setCurrentItem(under_test.spy_list_widget.item(1))
-        under_test.spy_list_widget.spied_hosts.append('_id_1')
+        under_test.spy_list_widget.setCurrentRow(0)
+        under_test.spy_list_widget.setCurrentItem(under_test.spy_list_widget.item(0))
 
         under_test.remove_event()
 
         # Event is no more here
-        self.assertIsNone(under_test.spy_list_widget.item(1))
+        self.assertNotEqual(spy_item_test.host, under_test.spy_list_widget.item(0).host)
+        self.assertFalse(under_test.spy_list_widget.spied_hosts)
 
     def test_send_spy_events(self):
         """Send Spy Events"""
@@ -97,7 +119,6 @@ class TestDataManager(unittest2.TestCase):
 
         # Hint item is here
         self.assertEqual(1, under_test.spy_list_widget.count())
-        self.assertFalse(under_test.spied_to_send)
 
         # Filling database
         host_test = Host()
@@ -135,12 +156,8 @@ class TestDataManager(unittest2.TestCase):
 
         # Item hint have been removed, host spied added
         self.assertEqual(2, under_test.spy_list_widget.count())
-        self.assertFalse(under_test.spied_to_send)
 
         under_test.send_spy_events()
 
-        # Spy event to send has been filled, left only 'spy2'
+        # Sending events does not modify spy list widget count
         self.assertEqual(2, under_test.spy_list_widget.count())
-        self.assertTrue(under_test.spied_to_send)
-        self.assertEqual(1, len(under_test.spied_to_send))
-        self.assertTrue('spy2' in under_test.spied_to_send)

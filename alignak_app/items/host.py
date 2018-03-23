@@ -88,4 +88,4 @@ class Host(Item):
         if 'alias' in self.data:
             return self.data['alias'].title()
 
-        return self.data['name'].title()
+        return self.name.title()

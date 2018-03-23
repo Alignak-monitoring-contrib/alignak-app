@@ -131,10 +131,8 @@ class SpyQWidget(QWidget):
         super(SpyQWidget, self).__init__()
         self.host_services_lbl = QLabel(_('Select spy host to display its problems...'))
         self.spy_list_widget = SpyQListWidget()
-        self.spy_timer = QTimer()
-        self.spied_to_send = []
-        self.send_spied = []
         self.host_list_widget = QListWidget()
+        self.spy_timer = QTimer()
 
     def initialize(self):
         """
