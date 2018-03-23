@@ -39,6 +39,8 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
         Class who create a QThread to trigger requests
     """
 
+    problem_states = ['CRITICAL', 'WARNING', 'UNKNOWN']
+
     def __init__(self, thread, data=None):
         super(BackendQThread, self).__init__()
         self.thread_name = thread
@@ -58,8 +60,10 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
                 app_backend.query_hosts()
             elif 'service' in self.thread_name:
                 app_backend.query_services()
+            elif self.thread_name in self.problem_states:
+                app_backend.query_problems([self.thread_name])
             elif 'problems' in self.thread_name:
-                app_backend.query_problems()
+                app_backend.query_problems(self.problem_states)
             elif 'alignakdaemon' in self.thread_name:
                 app_backend.query_alignakdaemons()
             elif 'livesynthesis' in self.thread_name:

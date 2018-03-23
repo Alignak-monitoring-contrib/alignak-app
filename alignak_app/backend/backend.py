@@ -60,7 +60,6 @@ class BackendClient(object):
     }
 
     def __init__(self):
-        self.start = False
         self.backend = None
         self.connected = False
         self.user = {}
@@ -263,7 +262,7 @@ class BackendClient(object):
             if realms_list:
                 data_manager.update_database('realm', realms_list)
             if 'OK' in request['_status']:
-                data_manager.databases_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_data['endpoint']] = True
 
     def query_timeperiods(self):
         """
@@ -294,7 +293,7 @@ class BackendClient(object):
             if periods_list:
                 data_manager.update_database('timeperiod', periods_list)
             if 'OK' in request['_status']:
-                data_manager.databases_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_data['endpoint']] = True
 
     def query_user(self):
         """
@@ -323,7 +322,7 @@ class BackendClient(object):
                 data_manager.update_database('user', user)
 
             if 'OK' in request['_status']:
-                data_manager.databases_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_data['endpoint']] = True
 
     def query_hosts(self):
         """
@@ -355,7 +354,7 @@ class BackendClient(object):
             if hosts_list:
                 data_manager.update_database('host', hosts_list)
             if 'OK' in request['_status']:
-                data_manager.databases_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_data['endpoint']] = True
 
     def query_services(self, host_id=None):
         """
@@ -397,9 +396,9 @@ class BackendClient(object):
                 # If not item ID, update all database
                 data_manager.update_database('service', services_list)
             if 'OK' in request['_status']:
-                data_manager.databases_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_data['endpoint']] = True
 
-    def query_problems(self):
+    def query_problems(self, states):
         """
         Launch requests on "service" endpoint to get items in problems and add hosts in problems:
 
@@ -407,79 +406,57 @@ class BackendClient(object):
         * **Services**: ``WARNING``, ``CRITICAL``, ``UNKNOWN``
         """
 
-        def update_database(item_type, items_request):
-            """
-            Update "problems" database for an item type
+        # Reset if states is equal to 3 (WARNING, CRITICAL, UNKNOWN)
+        if len(states) == 3:
+            data_manager.new_database['problems'] = []
 
-            :param item_type: define type of item ``Service`` | ``Host``
-            :type item_type: str
-            :param items_request: request with items
-            :type items_request: dict
-            """
-
-            for item in items_request['_items']:
-                if not item['ls_acknowledged'] and not item['ls_downtimed']:
-                    if 'service' in item_type:
-                        manager_item = Service()
-                    else:
-                        manager_item = Host()
-
-                    manager_item.create(
-                        item['_id'],
-                        item,
-                        item['name']
-                    )
-                    data_manager.database['problems'].append(manager_item)
-
+        # Services
         services_projection = [
             'name', 'host', 'alias', 'ls_state', 'ls_output', 'ls_acknowledged', 'ls_downtimed'
         ]
 
-        # CRITICAL services
-        params = {'where': json.dumps({'_is_template': False, 'ls_state': 'CRITICAL'})}
-        request = self.get(
-            'service',
-            params,
-            services_projection,
-            all_items=True
-        )
-        if request:
-            update_database('service', request)
+        for state in states:
+            params = {'where': json.dumps({'_is_template': False, 'ls_state': state})}
+            request = self.get(
+                'service',
+                params,
+                services_projection,
+                all_items=True
+            )
+            if request:
+                for item in request['_items']:
+                    if not item['ls_acknowledged'] and not item['ls_downtimed']:
+                        service = Service()
+                        service.create(
+                            item['_id'],
+                            item,
+                            item['name']
+                        )
+                        data_manager.new_database['problems'].append(service)
 
-        # WARNING services
-        params = {'where': json.dumps({'_is_template': False, 'ls_state': 'WARNING'})}
-        request = self.get(
-            'service',
-            params,
-            services_projection,
-            all_items=True
-        )
-        if request:
-            update_database('service', request)
+        # If new problems
+        if data_manager.new_database['problems']:
+            # Append states
+            data_manager.db_is_ready['problems'].append(states)
 
-        # UNKNOWN services
-        params = {'where': json.dumps({'_is_template': False, 'ls_state': 'UNKNOWN'})}
-        request = self.get(
-            'service',
-            params,
-            services_projection,
-            all_items=True
-        )
-        if request:
-            update_database('service', request)
+            # If problems is the last, add hosts to problems
+            if len(data_manager.db_is_ready['problems']) > 2:
+                for host in data_manager.database['host']:
+                    if host.data['ls_state'] in ['DOWN', 'UNREACHABLE'] and \
+                            not host.data['ls_acknowledged'] and \
+                            not host.data['ls_downtimed'] and \
+                            not data_manager.get_item('problems', host.item_id):
+                        data_manager.new_database['problems'].append(host)
 
-        # Hosts DOWN and UNREACHABLE
-        if data_manager.database['host']:
-            for host in data_manager.database['host']:
-                if host.data['ls_state'] in ['DOWN', 'UNREACHABLE'] and \
-                        not host.data['ls_acknowledged'] and \
-                        not host.data['ls_downtimed'] and \
-                        not data_manager.get_item('problems', host.item_id):
-                    data_manager.database['problems'].append(host)
-
-        logger.info("Update database[problems]...")
-        if data_manager.database['problems']:
-            data_manager.databases_ready['problems'] = True
+                # Update "problems" database
+                data_manager.database['problems'] = []
+                while data_manager.new_database['problems']:
+                    data_manager.database['problems'].append(
+                        data_manager.new_database['problems'].pop()
+                    )
+                logger.info("Update database[problems]...")
+            if len(data_manager.db_is_ready['problems']) > 3:
+                data_manager.db_is_ready['problems'] = []
 
     def query_alignakdaemons(self):
         """
@@ -512,7 +489,7 @@ class BackendClient(object):
             if daemons_list:
                 data_manager.update_database('alignakdaemon', daemons_list)
             if 'OK' in request['_status']:
-                data_manager.databases_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_data['endpoint']] = True
 
     def query_livesynthesis(self):
         """
@@ -544,7 +521,7 @@ class BackendClient(object):
             if livesynthesis:
                 data_manager.update_database('livesynthesis', livesynthesis)
             if 'OK' in request['_status']:
-                data_manager.databases_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_data['endpoint']] = True
 
     def query_history(self, hostname=None, host_id=None):
         """

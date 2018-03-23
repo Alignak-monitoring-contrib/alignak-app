@@ -192,13 +192,15 @@ class AlignakApp(QObject):  # pragma: no cover
             self.show_login_window()
 
         # Launch start threads
-        thread_to_launch = thread_manager.get_threads_to_launch()
-        thread_to_launch.remove('history')
-        thread_to_launch.remove('notifications')
+        thread_to_launch = [
+            'CRITICAL', 'WARNING', 'UNKNOWN', 'livesynthesis', 'realm', 'timeperiod',
+            'alignakdaemon', 'user', 'host'
+        ]
         logger.info("Filling the local database: %s", thread_to_launch)
 
         launched_threads = []
-        for thread in thread_to_launch:
+        while thread_to_launch:
+            thread = thread_to_launch.pop()
             backend_thread = BackendQThread(thread)
             backend_thread.start()
 

@@ -453,25 +453,25 @@ class TestDataManager(unittest2.TestCase):
         under_test = DataManager()
 
         self.assertTrue('Collecting' in under_test.is_ready())
-        under_test.databases_ready['livesynthesis'] = True
+        under_test.db_is_ready['livesynthesis'] = True
 
         self.assertTrue('Collecting' in under_test.is_ready())
-        under_test.databases_ready['user'] = True
+        under_test.db_is_ready['user'] = True
 
         self.assertTrue('Collecting' in under_test.is_ready())
-        under_test.databases_ready['realm'] = True
+        under_test.db_is_ready['realm'] = True
 
         self.assertTrue('Collecting' in under_test.is_ready())
-        under_test.databases_ready['timeperiod'] = True
+        under_test.db_is_ready['timeperiod'] = True
 
         self.assertTrue('Collecting' in under_test.is_ready())
-        under_test.databases_ready['host'] = True
+        under_test.db_is_ready['host'] = True
 
         self.assertTrue('Collecting' in under_test.is_ready())
-        under_test.databases_ready['problems'] = True
+        under_test.db_is_ready['problems'] = [True, True, True]
 
         self.assertTrue('Collecting' in under_test.is_ready())
-        under_test.databases_ready['alignakdaemon'] = True
+        under_test.db_is_ready['alignakdaemon'] = True
 
         self.assertEqual('READY', under_test.is_ready())
 

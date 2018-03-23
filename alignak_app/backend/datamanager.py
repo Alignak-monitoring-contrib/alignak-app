@@ -52,14 +52,17 @@ class DataManager(object):
             'timeperiod': [],
             'problems': [],
         }
-        self.databases_ready = {
+        self.new_database = {
+            'problems': []
+        }
+        self.db_is_ready = {
             'livesynthesis': False,
             'alignakdaemon': False,
             'host': False,
             'user': False,
             'realm': False,
             'timeperiod': False,
-            'problems': False,
+            'problems': [],
         }
         self.old_notifications = []
 
@@ -72,9 +75,12 @@ class DataManager(object):
         """
 
         cur_collected = ''
-        for db_name in self.databases_ready:
+        for db_name in self.db_is_ready:
             try:
-                assert self.databases_ready[db_name]
+                if db_name not in 'problems':
+                    assert self.db_is_ready[db_name]
+                else:
+                    assert len(self.db_is_ready[db_name]) > 2
                 cur_collected = _('READY')
             except AssertionError:
                 cur_collected = _('Collecting %s...') % db_name
