@@ -60,7 +60,8 @@ class TestPanelQWidget(unittest2.TestCase):
                 'business_impact': '2',
                 'notes': 'host notes',
                 'passive_checks_enabled': False,
-                'active_checks_enabled': True
+                'active_checks_enabled': True,
+                '_overall_state_id': 1
             },
             'host%d' % i
         )
@@ -84,7 +85,7 @@ class TestPanelQWidget(unittest2.TestCase):
                 'aggregation': 'disk',
                 '_overall_state_id': 4,
                 'passive_checks_enabled': False,
-                'active_checks_enabled': True
+                'active_checks_enabled': True,
             },
             'service%d' % i
         )
@@ -174,3 +175,24 @@ class TestPanelQWidget(unittest2.TestCase):
 
         # There are only 9 services in CRITICAL condition
         self.assertEqual('Problems (19)', under_test.tab_widget.tabText(1))
+
+    def test_display_host(self):
+        """Display Host in Panel"""
+
+        under_test = PanelQWidget()
+        under_test.initialize()
+
+        self.assertTrue(under_test.spy_button.isEnabled())
+
+        under_test.display_host()
+
+        self.assertTrue(under_test.spy_button.isEnabled())
+        self.assertTrue(under_test.host_widget.isHidden())
+        self.assertTrue(under_test.services_widget.isHidden())
+
+        under_test.line_search.setText(self.host_list[0].name)
+        under_test.display_host()
+
+        self.assertTrue(under_test.spy_button.isEnabled())
+        self.assertFalse(under_test.host_widget.isHidden())
+        self.assertFalse(under_test.services_widget.isHidden())

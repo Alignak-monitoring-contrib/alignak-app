@@ -49,8 +49,8 @@ class ServicesQWidget(QWidget):
     def __init__(self, parent=None):
         super(ServicesQWidget, self).__init__(parent)
         # Fields
-        self.host_item = None
-        self.service_items = None
+        self.host = None
+        self.services = None
         self.services_tree_widget = QTreeWidget()
         self.service_data_widget = ServiceDataQWidget()
         self.services_dashboard = ServicesDashboardQWidget()
@@ -69,84 +69,74 @@ class ServicesQWidget(QWidget):
         layout.addWidget(get_frame_separator(), 1, 0, 1, 2)
 
         self.services_tree_widget.setIconSize(QSize(32, 32))
+        self.services_tree_widget.setAlternatingRowColors(True)
+        self.services_tree_widget.header().close()
         layout.addWidget(self.services_tree_widget, 2, 0, 1, 1)
 
         self.service_data_widget.initialize()
         layout.addWidget(self.service_data_widget, 2, 1, 1, 1)
 
-    def set_data(self, host_item):
+    def update_widget(self, host, services):
         """
-        Set data of host item and its services
+        Update the QTreeWidget and its items
 
-        :param host_item: the Host item
-        :type host_item: alignak_app.items.host.Host
-        """
-
-        # Query services of host
-        self.host_item = host_item
-
-        # Get problems
-        host_and_services = data_manager.get_host_with_services(host_item.item_id)
-        self.host_item = host_and_services['host']
-        self.service_items = host_and_services['services']
-
-    def update_widget(self):
-        """
-        Update the service QWidget
-
+        :param host: the Host item
+        :type host: alignak_app.items.host.Host
+        :param services: list of :class:`Services <alignak_app.items.service.Service>` items
+        :type services: list
         """
 
-        if self.services_tree_widget:
-            self.services_dashboard.setParent(None)
-            self.services_dashboard = ServicesDashboardQWidget()
-            self.services_dashboard.initialize()
-            self.services_dashboard.update_widget(self.service_items, self.host_item.name)
-            self.layout().addWidget(self.services_dashboard, 0, 0, 1, 2)
-            self.services_tree_widget.setParent(None)
-            self.services_tree_widget = QTreeWidget()
-            self.services_tree_widget.setAlternatingRowColors(True)
-            self.services_tree_widget.header().close()
-            self.layout().addWidget(self.services_tree_widget, 2, 0, 1, 1)
-            self.service_data_widget.setParent(None)
-            self.service_data_widget = ServiceDataQWidget()
-            self.service_data_widget.initialize()
-            self.layout().addWidget(self.service_data_widget, 2, 1, 1, 1)
+        self.host = host
+        self.services = services
 
-        # Make Global aggregation who are empty
-        for service in self.service_items:
-            if not service.data['aggregation']:
-                service.data['aggregation'] = 'Global'
+        # Update services dashboard
+        self.services_dashboard.update_widget(self.services, self.host.name)
 
-        # First sort list by state then by aggregation
-        newlist = sorted(
-            self.service_items,
-            key=lambda s: itemgetter('ls_state', 'ls_acknowledged', 'aggregation')(s.data)
-        )
-        self.service_items = newlist
+        # Clear QTreeWidget
+        self.services_tree_widget.clear()
+        self.services_tree_widget.setIconSize(QSize(16, 16))
 
-        # Get list of aggregations
-        aggregations = []
-        for service in self.service_items:
-            if service.data['aggregation'] not in aggregations:
-                aggregations.append(service.data['aggregation'])
+        if self.services:
+            # Make Global aggregation who are empty
+            for service in self.services:
+                if not service.data['aggregation']:
+                    service.data['aggregation'] = 'Global'
 
-        # Add QTreeWidgetItems
-        for aggregation in aggregations:
-            main_tree = QTreeWidgetItem()
-            main_tree.setText(0, aggregation)
-            main_tree.setIcon(0, QIcon(settings.get_image('tree')))
-            main_tree.setToolTip(0, aggregation)
-            for service in self.service_items:
-                if service.data['aggregation'] == aggregation:
-                    service_tree = ServiceTreeItem()
-                    service_tree.initialize(service)
-                    service_tree.setToolTip(0, service.get_tooltip())
-                    self.services_tree_widget.clicked.connect(self.update_service_data)
-                    main_tree.addChild(service_tree)
+            # First sort list by state then by aggregation
+            newlist = sorted(
+                self.services,
+                key=lambda s: itemgetter('ls_state', 'ls_acknowledged', 'aggregation')(s.data)
+            )
+            self.services = newlist
 
-            self.services_tree_widget.addTopLevelItem(main_tree)
+            # Get list of aggregations
+            aggregations = []
+            for service in self.services:
+                if service.data['aggregation'] not in aggregations:
+                    aggregations.append(service.data['aggregation'])
 
-    def update_service_data(self):
+            # Add QTreeWidgetItems
+            for aggregation in aggregations:
+                main_tree = QTreeWidgetItem()
+                main_tree.setText(0, aggregation)
+                main_tree.setIcon(0, QIcon(settings.get_image('tree')))
+                main_tree.setToolTip(0, aggregation)
+                for service in self.services:
+                    if service.data['aggregation'] == aggregation:
+                        service_tree = ServiceTreeItem()
+                        service_tree.initialize(service)
+                        service_tree.setToolTip(0, service.get_tooltip())
+                        self.services_tree_widget.clicked.connect(self.update_service_data)
+                        main_tree.addChild(service_tree)
+
+                self.services_tree_widget.addTopLevelItem(main_tree)
+
+            self.service_data_widget.hide()
+        else:
+            # If no services
+            self.service_data_widget.hide()
+
+    def update_service_data(self):  # pragma: no cover
         """
         Update ServiceDataqWidget
 

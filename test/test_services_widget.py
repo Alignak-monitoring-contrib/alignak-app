@@ -38,6 +38,8 @@ user = User()
 user.create('_id', {'name': 'name'}, 'name')
 data_manager.database['user'] = user
 
+from alignak_app.backend.datamanager import data_manager
+
 from alignak_app.qobjects.service.services import ServicesQWidget
 
 
@@ -112,41 +114,19 @@ class TestServicesQWidget(unittest2.TestCase):
 
         under_test = ServicesQWidget()
 
-        self.assertIsNone(under_test.host_item)
-        self.assertIsNone(under_test.service_items)
+        self.assertIsNone(under_test.host)
+        self.assertIsNone(under_test.services)
         self.assertIsNotNone(under_test.services_tree_widget)
         self.assertIsNotNone(under_test.service_data_widget)
         self.assertIsNotNone(under_test.services_dashboard)
 
         under_test.initialize()
 
-        self.assertIsNone(under_test.host_item)
-        self.assertIsNone(under_test.service_items)
+        self.assertIsNone(under_test.host)
+        self.assertIsNone(under_test.services)
         self.assertIsNotNone(under_test.services_tree_widget)
         self.assertIsNotNone(under_test.service_data_widget)
         self.assertIsNotNone(under_test.services_dashboard)
-
-    def test_set_data(self):
-        """Set Data Services QWidget"""
-
-        under_test = ServicesQWidget()
-        self.assertIsNone(under_test.host_item)
-        self.assertIsNone(under_test.service_items)
-
-        data_manager.update_database('host', self.host_list)
-        data_manager.update_database('service', self.service_list)
-
-        under_test.set_data(self.host_list[1])
-
-        # Assert Data is filled
-        self.assertIsNotNone(under_test.host_item)
-        self.assertIsInstance(under_test.host_item, Host)
-        self.assertEqual('host1', under_test.host_item.name)
-
-        self.assertIsNotNone(under_test.service_items)
-        for service in under_test.service_items:
-            self.assertIsInstance(service, Service)
-            self.assertEqual('_id1', service.data['host'])
 
     def test_update_widget(self):
         """Update Services QWidget"""
@@ -155,18 +135,13 @@ class TestServicesQWidget(unittest2.TestCase):
         data_manager.update_database('host', self.host_list)
         data_manager.update_database('service', self.service_list)
 
-        under_test.set_data(self.host_list[2])
         under_test.initialize()
 
-        old_tree_widget = under_test.services_tree_widget
-        old_service_data_widget = under_test.service_data_widget
-        old_nb_services_widget = under_test.services_dashboard
-        old_service_items = under_test.service_items
+        self.assertIsNone(under_test.host)
+        self.assertIsNone(under_test.services)
 
-        under_test.update_widget()
+        services = data_manager.get_host_services(self.host_list[2].item_id)
+        under_test.update_widget(self.host_list[2], services)
 
-        self.assertNotEqual(old_tree_widget, under_test.services_tree_widget)
-        self.assertNotEqual(old_service_data_widget, under_test.service_data_widget)
-        self.assertNotEqual(old_nb_services_widget, under_test.services_dashboard)
-        # Assert Services Items had been sorted
-        self.assertNotEqual(old_service_items, under_test.service_items)
+        self.assertIsNotNone(under_test.host)
+        self.assertIsNotNone(under_test.services)

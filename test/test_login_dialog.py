@@ -67,7 +67,7 @@ class TestLoginQDialog(unittest2.TestCase):
 
         timer = QTimer()
         timer.timeout.connect(under_test.accept_login)
-        timer.start(1)
+        timer.start(0.5)
 
         # If login failed, Rejected
         self.assertEqual(LoginQDialog.Rejected, under_test.exec())
@@ -76,7 +76,7 @@ class TestLoginQDialog(unittest2.TestCase):
         under_test.username_line.setText('admin')
         under_test.password_line.setText('admin')
 
-        timer.start(1)
+        timer.start(0.5)
         self.assertEqual(LoginQDialog.Accepted, under_test.exec())
 
     def test_set_proxy_settings(self):

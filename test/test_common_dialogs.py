@@ -115,13 +115,13 @@ class TestMessageQDialog(unittest2.TestCase):
 
         timer = QTimer()
         timer.timeout.connect(under_test.accept_text)
-        timer.start(1)
+        timer.start(0.5)
 
         # Text is same so refused
         self.assertEqual(EditQDialog.Rejected, under_test.exec())
 
         under_test.text_edit.setText('text have been edited')
-        timer.start(1)
+        timer.start(0.5)
 
         # Accepted because text have changed
         self.assertEqual(EditQDialog.Accepted, under_test.exec())
@@ -130,7 +130,7 @@ class TestMessageQDialog(unittest2.TestCase):
         under_test.old_text = ''
         under_test.text_edit.setText('    ')
 
-        timer.start(1)
+        timer.start(0.5)
 
         # Rejected because there is nothing to change
         self.assertEqual(EditQDialog.Rejected, under_test.exec())
@@ -138,7 +138,7 @@ class TestMessageQDialog(unittest2.TestCase):
         under_test.old_text = ''
         under_test.text_edit.setText('New text')
 
-        timer.start(1)
+        timer.start(0.5)
 
         # Accepted even if old text is empty
         self.assertEqual(EditQDialog.Accepted, under_test.exec())

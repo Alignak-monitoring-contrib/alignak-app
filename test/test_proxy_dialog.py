@@ -94,13 +94,13 @@ class TestProxyQDialog(unittest2.TestCase):
 
         timer = QTimer()
         timer.timeout.connect(under_test.accept_proxy)
-        timer.start(1)
+        timer.start(0.5)
 
         # When all proxy settings are empties, dialog Accepted
         self.assertTrue(ProxyQDialog.Accepted == under_test.exec())
 
         # Proxy address is set, dialog Accepted
         under_test.proxy_address.setText('http://127.0.0.1:8000')
-        timer.start(1)
+        timer.start(0.5)
 
         self.assertTrue(ProxyQDialog.Accepted == under_test.exec())

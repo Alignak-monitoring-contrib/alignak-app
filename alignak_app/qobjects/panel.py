@@ -253,7 +253,11 @@ class PanelQWidget(QWidget):
 
             # Get Host Item and its services
             host_item = data_manager.get_item('host', hostname)
-            app_backend.query_services(host_item.item_id)
+
+            services = data_manager.get_host_services(host_item.item_id)
+            if not services:
+                app_backend.query_services(host_item.item_id)
+                services = data_manager.get_host_services(host_item.item_id)
 
             # Set spy button enable or not
             not_spied = bool(
@@ -268,8 +272,7 @@ class PanelQWidget(QWidget):
             # Update Qwidgets
             self.host_widget.update_host(host_item)
             self.host_widget.show()
-            self.services_widget.set_data(host_item)
-            self.services_widget.update_widget()
+            self.services_widget.update_widget(host_item, services)
             self.services_widget.show()
             self.dashboard_widget.update_dashboard()
             self.dashboard_widget.show()

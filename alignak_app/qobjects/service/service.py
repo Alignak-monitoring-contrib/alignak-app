@@ -170,7 +170,7 @@ class ServiceDataQWidget(QWidget):
 
         return widget
 
-    def update_widget(self, service=None):
+    def update_widget(self, service):
         """
         Update ServiceDataQWidget
 
@@ -178,8 +178,7 @@ class ServiceDataQWidget(QWidget):
         :type service: alignak_app.core.models.service.Service
         """
 
-        if service:
-            self.service_item = service
+        self.service_item = service
 
         icon_name = get_icon_name(
             'service',
@@ -206,6 +205,7 @@ class ServiceDataQWidget(QWidget):
 
         self.actions_widget.item = self.service_item
         self.actions_widget.update_widget()
+        self.show()
 
     def periodic_refresh(self):
         """
@@ -217,4 +217,4 @@ class ServiceDataQWidget(QWidget):
             updated_service = data_manager.get_item('service', '_id', self.service_item.item_id)
             if updated_service:
                 self.service_item = updated_service
-            self.update_widget()
+            self.update_widget(self.service_item)

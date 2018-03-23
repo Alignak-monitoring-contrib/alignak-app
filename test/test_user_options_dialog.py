@@ -22,8 +22,7 @@
 import sys
 
 import unittest2
-from PyQt5.Qt import QDialog
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.Qt import QApplication, QWidget, QDialog
 
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
