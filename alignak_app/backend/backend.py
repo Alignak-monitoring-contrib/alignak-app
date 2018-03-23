@@ -401,7 +401,7 @@ class BackendClient(object):
 
     def query_problems(self):
         """
-        Launch requests on "host" and "service" endpoints to get items in problems:
+        Launch requests on "service" endpoint to get items in problems and add hosts in problems:
 
         * **Hosts**: ``DOWN``, ``UNREACHABLE``
         * **Services**: ``WARNING``, ``CRITICAL``, ``UNKNOWN``
@@ -436,82 +436,46 @@ class BackendClient(object):
         ]
 
         # CRITICAL services
-        params = {
-            'where': json.dumps({'_is_template': False, 'ls_state': 'CRITICAL'})
-        }
+        params = {'where': json.dumps({'_is_template': False, 'ls_state': 'CRITICAL'})}
         request = self.get(
             'service',
             params,
             services_projection,
             all_items=True
         )
-
         if request:
             update_database('service', request)
 
         # WARNING services
-        params = {
-            'where': json.dumps({'_is_template': False, 'ls_state': 'WARNING'})
-        }
+        params = {'where': json.dumps({'_is_template': False, 'ls_state': 'WARNING'})}
         request = self.get(
             'service',
             params,
             services_projection,
             all_items=True
         )
-
         if request:
             update_database('service', request)
 
         # UNKNOWN services
-        params = {
-            'where': json.dumps({'_is_template': False, 'ls_state': 'UNKNOWN'})
-        }
+        params = {'where': json.dumps({'_is_template': False, 'ls_state': 'UNKNOWN'})}
         request = self.get(
             'service',
             params,
             services_projection,
             all_items=True
         )
-
         if request:
             update_database('service', request)
 
-        # Reset projection
-        host_projection = [
-            'name', 'ls_state', 'alias', 'ls_output', 'ls_acknowledged', 'ls_downtimed'
-        ]
-        generate_proj = {}
-        for field in host_projection:
-            generate_proj[field] = 1
-
-        # DOWN hosts
-        params = {
-            'where': json.dumps({'_is_template': False, 'ls_state': 'DOWN'})
-        }
-        request = self.get(
-            'host',
-            params,
-            services_projection,
-            all_items=True
-        )
-
-        if request:
-            update_database('host', request)
-
-        # UNREACHABLE hosts
-        params = {
-            'where': json.dumps({'_is_template': False, 'ls_state': 'UNREACHABLE'})
-        }
-        request = self.get(
-            'host',
-            params,
-            services_projection,
-            all_items=True
-        )
-
-        if request:
-            update_database('host', request)
+        # Hosts DOWN and UNREACHABLE
+        if data_manager.database['host']:
+            for host in data_manager.database['host']:
+                if host.data['ls_state'] in ['DOWN', 'UNREACHABLE'] and \
+                        not host.data['ls_acknowledged'] and \
+                        not host.data['ls_downtimed'] and \
+                        not data_manager.get_item('problems', host.item_id):
+                    data_manager.database['problems'].append(host)
 
         logger.info("Update database[problems]...")
         if data_manager.database['problems']:
