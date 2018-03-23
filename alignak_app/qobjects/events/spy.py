@@ -108,7 +108,7 @@ class SpyQWidget(QWidget):
 
     def send_spy_events(self):
         """
-        Send event for one host spied
+        Send event messages for all hosts who are spied
 
         """
 
@@ -203,7 +203,7 @@ class SpyQWidget(QWidget):
 
         self.update_parent_spytab()
 
-    def update_parent_spytab(self):
+    def update_parent_spytab(self):  # pragma: no cover - not testable
         """
         Update the parent spy tab text
 

@@ -23,10 +23,11 @@ import sys
 
 import unittest2
 
-from PyQt5.Qt import QApplication
+from PyQt5.Qt import QApplication, Qt
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.host import Host
+from alignak_app.items.service import Service
 
 from alignak_app.qobjects.events.item import EventItem
 from alignak_app.qobjects.events.events import init_event_widget
@@ -162,3 +163,129 @@ class TestSpyQWidgets(unittest2.TestCase):
 
         # Sending events does not modify spy list widget count
         self.assertEqual(2, under_test.spy_list_widget.count())
+
+    def test_manage_host_events_with_wrong_row(self):
+        """Manage Host Events With Wrong Row"""
+
+        under_test = SpyQWidget()
+        under_test.initialize()
+
+        # Hint item in spy list widget, 0 item in host list widget
+        self.assertEqual(1, under_test.spy_list_widget.count())
+        self.assertEqual(0, under_test.host_list_widget.count())
+
+        # Filling database
+        host_test = Host()
+        host_test.create(
+            'spy1',
+            {
+                '_id': 'spy1',
+                'ls_downtimed': False,
+                'ls_acknowledged': False,
+                'active_checks_enabled': True,
+                'passive_checks_enabled': True,
+                '_overall_state_id': 4,
+                'ls_state': 'DOWN'
+            },
+            'hostname'
+        )
+        data_manager.update_database('host', [host_test])
+
+        # Spy this host
+        under_test.spy_list_widget.add_spy_host(host_test.item_id)
+
+        # Host have been added in list widget, 0 item in host list widget
+        self.assertEqual(1, under_test.spy_list_widget.count())
+        self.assertEqual(host_test.item_id, under_test.spy_list_widget.item(0).host)
+        self.assertEqual(0, under_test.host_list_widget.count())
+
+        # Manage problems
+        under_test.manage_host_events(-1)
+
+        # Host list equal to 0 with row equal to -1
+        self.assertEqual(0, under_test.host_list_widget.count())
+
+    def test_manage_host_events_with_valid_rows(self):
+        """Manage Host Events With Valid Rows"""
+
+        under_test = SpyQWidget()
+        under_test.initialize()
+
+        # Filling "host" database
+        host_test = Host()
+        host_test.create(
+            'spy1',
+            {
+                '_id': 'spy1',
+                'ls_downtimed': False,
+                'ls_acknowledged': False,
+                'active_checks_enabled': True,
+                'passive_checks_enabled': True,
+                '_overall_state_id': 4,
+                'ls_state': 'DOWN'
+            },
+            'hostname'
+        )
+        data_manager.update_database('host', [host_test])
+
+        # Spy this host and set current row
+        under_test.spy_list_widget.add_spy_host(host_test.item_id)
+        under_test.spy_list_widget.setCurrentRow(0)
+
+        # Manage problems with a valid row
+        under_test.manage_host_events(under_test.spy_list_widget.currentRow())
+
+        # Host list equal to 1, No services are attached to host
+        self.assertEqual(1, under_test.host_list_widget.count())
+        self.assertEqual(
+            'No services for this host',
+            under_test.host_list_widget.item(0).data(Qt.DisplayRole)
+        )
+
+        # Fill "services" database attached to host
+        service = Service()
+        service.create(
+            '_id1',
+            {
+                'host': 'spy1',
+                'ls_state': 'CRITICAL',
+                'ls_acknowledged': False,
+                'ls_downtimed': False,
+            },
+            'service_name'
+        )
+        service_2 = Service()
+        service_2.create(
+            '_id2',
+            {
+                'host': 'spy1',
+                'ls_state': 'OK',
+                'ls_acknowledged': False,
+                'ls_downtimed': False,
+            },
+            'service2_name'
+        )
+        data_manager.update_database('service', [service, service_2])
+
+        # Manage problems again
+        under_test.manage_host_events(under_test.spy_list_widget.currentRow())
+
+        # Host list equal to 1, cause one service is CRITICAL
+        self.assertEqual(1, under_test.host_list_widget.count())
+        self.assertEqual(
+            'Service Service_Name is CRITICAL',
+            under_test.host_list_widget.item(0).data(Qt.DisplayRole)
+        )
+
+        # If CRITICAL service is removed, text change
+        data_manager.remove_item('service', '_id1')
+
+        # Manage problems again
+        under_test.manage_host_events(under_test.spy_list_widget.currentRow())
+
+        # Host list equal to 1, cause one service is CRITICAL
+        self.assertEqual(1, under_test.host_list_widget.count())
+        self.assertEqual(
+            'Hostname is DOWN but services of host seems managed.',
+            under_test.host_list_widget.item(0).data(Qt.DisplayRole)
+        )
