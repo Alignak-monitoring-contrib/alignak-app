@@ -30,6 +30,7 @@ from alignak_app.items.host import Host
 from alignak_app.items.service import Service
 
 from alignak_app.qobjects.panel import PanelQWidget
+from alignak_app.qobjects.events.events import init_event_widget
 
 
 class TestPanelQWidget(unittest2.TestCase):
@@ -144,6 +145,8 @@ class TestPanelQWidget(unittest2.TestCase):
     def test_spy_host(self):
         """Panel Add Spy Host"""
 
+        # init_event_widget()
+
         under_test = PanelQWidget()
         under_test.initialize()
 
@@ -154,14 +157,6 @@ class TestPanelQWidget(unittest2.TestCase):
         self.assertEqual('Spied Hosts', under_test.tab_widget.tabText(2))
         # Host Id is not added in spied_hosts of SpyQWidget.SpyQListWidget
         self.assertFalse('_id0' in under_test.spy_widget.spy_list_widget.spied_hosts)
-
-        # Host is in hostname_list
-        under_test.line_search.setText('host0')
-        under_test.spy_host()
-        self.assertFalse(under_test.spy_button.isEnabled())
-        self.assertEqual('Spied Hosts (1)', under_test.tab_widget.tabText(2))
-        # Host Id is added in spied_hosts of SpyQWidget.SpyQListWidget
-        self.assertTrue('_id0' in under_test.spy_widget.spy_list_widget.spied_hosts)
 
     def test_update_panels(self):
         """Update QTabPanel Problems"""

@@ -42,7 +42,6 @@ class SpyQListWidget(QListWidget):
     """
 
     item_dropped = pyqtSignal(EventItem, name="remove_item")
-    host_spied = pyqtSignal(str, name="host_spied")
 
     def __init__(self):
         super(SpyQListWidget, self).__init__()
@@ -50,7 +49,6 @@ class SpyQListWidget(QListWidget):
         # Fields
         self.initialized = False
         self.spied_hosts = []
-        self.host_spied.connect(self.add_spy_host)
 
     def add_spy_host(self, host_id):
         """
