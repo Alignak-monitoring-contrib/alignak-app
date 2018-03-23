@@ -22,12 +22,12 @@
 """
     Spy
     +++
-    Spy manage creation of QWidget for host items who are spied
+    Spy manage creation of QWidget to manage spied items
 """
 
 from logging import getLogger
 
-from PyQt5.Qt import QGridLayout, Qt, QWidget, QAbstractItemView, QListWidget, pyqtSignal, QSize
+from PyQt5.Qt import QGridLayout, Qt, QWidget, QAbstractItemView, QListWidget
 from PyQt5.Qt import QTimer, QLabel
 
 from alignak_app.backend.datamanager import data_manager
@@ -36,90 +36,9 @@ from alignak_app.utils.config import settings
 from alignak_app.qobjects.common.frames import get_frame_separator
 from alignak_app.qobjects.events.item import EventItem
 from alignak_app.qobjects.events.events import get_events_widget
+from alignak_app.qobjects.events.spy_list import SpyQListWidget
 
 logger = getLogger(__name__)
-
-
-class SpyQListWidget(QListWidget):
-    """
-        Class who create QListWidget for spied hosts
-    """
-
-    item_dropped = pyqtSignal(EventItem, name="remove_item")
-    host_spied = pyqtSignal(str, name="host_spied")
-
-    def __init__(self):
-        super(SpyQListWidget, self).__init__()
-        self.setIconSize(QSize(16, 16))
-        # Fields
-        self.initialized = False
-        self.spied_hosts = []
-        self.host_spied.connect(self.add_spy_host)
-
-    def add_spy_host(self, host_id):
-        """
-        Add a host to spied list and create corresponding EventItem()
-
-        :param host_id: "_id" of host to spy
-        :type host_id: str
-        """
-
-        if not self.initialized:
-            # Remove Hint item
-            self.takeItem(0)
-            self.initialized = True
-
-        if host_id not in self.spied_hosts:
-            self.spied_hosts.append(host_id)
-            host = data_manager.get_item('host', '_id', host_id)
-            if host:
-                item = EventItem()
-                item.initialize(
-                    host.data['ls_state'],
-                    _('Host %s, current state: %s') % (
-                        host.get_display_name(), host.data['ls_state']),
-                    host=host.item_id
-                )
-                self.insertItem(0, item)
-
-                logger.info('Spy a new host: %s', host.name)
-                logger.debug('... with id: %s', host_id)
-
-    def dragMoveEvent(self, event):  # pragma: no cover - not testable
-        """
-        Override dragMoveEvent.
-         Only accept EventItem() objects who have a ``Qt.UserRole`` and not already in "spied_hosts"
-
-        :param event: event triggered when something move
-        """
-
-        if isinstance(event.source().currentItem(), EventItem):
-            if event.source().currentItem().data(Qt.UserRole):
-                if event.source().currentItem().data(Qt.UserRole) not in self.spied_hosts:
-                    event.accept()
-                else:
-                    event.ignore()
-            else:
-                event.ignore()
-        else:
-            event.ignore()
-
-    def dropEvent(self, event):  # pragma: no cover - not testable
-        """
-        Override dropEvent.
-         Get dropped item data, create a new one, and delete the one who is in EventsQWidget
-
-        :param event: event triggered when something is dropped
-        """
-
-        self.add_spy_host(event.source().currentItem().data(Qt.UserRole))
-
-        # Remove the item dropped and original, to let only new one created
-        row = self.row(event.source().currentItem())
-        self.takeItem(row)
-        self.item_dropped.emit(event.source().currentItem())
-
-        self.parent().update_parent_spytab()
 
 
 class SpyQWidget(QWidget):

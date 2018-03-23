@@ -28,16 +28,17 @@ from PyQt5.Qt import QApplication
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.host import Host
 
-from alignak_app.qobjects.events.spy import SpyQWidget, SpyQListWidget
 from alignak_app.qobjects.events.item import EventItem
 from alignak_app.qobjects.events.events import init_event_widget
+from alignak_app.qobjects.events.spy import SpyQWidget
+from alignak_app.qobjects.events.spy_list import SpyQListWidget
 
 init_event_widget()
 
 
 class TestSpyQWidgets(unittest2.TestCase):
     """
-        This file test the SpyQWidget, SpyQListWidget classes.
+        This file test the SpyQWidget class
     """
 
     @classmethod
