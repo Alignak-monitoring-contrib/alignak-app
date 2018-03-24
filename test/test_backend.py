@@ -179,6 +179,7 @@ class TestAppBackend(unittest2.TestCase):
         self.assertIsNotNone(data_manager.database['host'])
 
         self.assertTrue(data_manager.db_is_ready['host'])
+        self.assertTrue(data_manager.db_is_ready['problems']['host'])
 
     def test_query_services_data(self):
         """Query Services Data"""
@@ -209,8 +210,10 @@ class TestAppBackend(unittest2.TestCase):
         under_test.query_services_problems('WARNING')
 
         self.assertIsNotNone(data_manager.database['problems'])
-
         self.assertTrue(data_manager.db_is_ready['problems']['WARNING'])
+
+        under_test.query_services_problems('UNKNOWN')
+        self.assertTrue(data_manager.db_is_ready['problems']['UNKNOWN'])
 
     def test_query_daemons_data(self):
         """Query Daemons Data"""

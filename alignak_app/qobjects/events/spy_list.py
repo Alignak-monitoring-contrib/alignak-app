@@ -67,14 +67,14 @@ class SpyQListWidget(QListWidget):
             self.spied_hosts.append(host_id)
             host = data_manager.get_item('host', '_id', host_id)
             if host:
-                item = EventItem()
-                item.initialize(
-                    host.data['ls_state'],
+                event_item = EventItem()
+                event_item.initialize(
+                    EventItem.get_event_type(host.data),
                     _('Host %s, current state: %s') % (
                         host.get_display_name(), host.data['ls_state']),
                     host=host.item_id
                 )
-                self.insertItem(0, item)
+                self.insertItem(0, event_item)
 
                 logger.info('Spy a new host: %s', host.name)
                 logger.debug('... with id: %s', host_id)

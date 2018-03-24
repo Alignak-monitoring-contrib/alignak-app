@@ -104,3 +104,25 @@ class EventItem(QListWidgetItem):
                 return key
 
         return 'error'
+
+    @staticmethod
+    def get_event_type(data):
+        """
+        Return event type depending of data content
+
+        :param data: data of backend item
+        :type data: dict
+        :return: event type for item
+        :rtype: str
+        """
+
+        event_type = ''
+        if data['ls_acknowledged']:
+            event_type = 'ACK'
+        if data['ls_downtimed']:
+            event_type = 'DOWNTIME'
+
+        if not event_type:
+            event_type = data['ls_state']
+
+        return event_type

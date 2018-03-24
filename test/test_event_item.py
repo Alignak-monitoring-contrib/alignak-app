@@ -109,3 +109,26 @@ class TestEventItem(unittest2.TestCase):
         # Found not equal to error
         under_test = EventItem.get_icon('UNREACHABLE')
         self.assertNotEqual('error', under_test)
+
+    def test_get_event_type(self):
+        """Get Event Type"""
+
+        data_test = {
+            'ls_state': 'OK',
+            'ls_acknowledged': False,
+            'ls_downtimed': False,
+        }
+
+        # Return state if not ack or downtimed
+        under_test = EventItem.get_event_type(data_test)
+        self.assertEqual('OK', under_test)
+
+        # Return "ACK" if acknowledged
+        data_test['ls_acknowledged'] = True
+        under_test = EventItem.get_event_type(data_test)
+        self.assertEqual('ACK', under_test)
+
+        # Return "DOWNTIME" if downtimed
+        data_test['ls_downtimed'] = True
+        under_test = EventItem.get_event_type(data_test)
+        self.assertEqual('DOWNTIME', under_test)

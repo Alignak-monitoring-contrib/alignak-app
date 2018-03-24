@@ -194,23 +194,6 @@ class TestAllItems(unittest2.TestCase):
         under_test = get_overall_state_icon([], 10)
         self.assertEqual('all_services_none', under_test)
 
-    def test_get_host_msg_and_event_type(self):
-        """Get Host Message and Event Type"""
-
-        data_manager.update_database('host', self.host_list)
-        data_manager.update_database('service', self.service_list)
-
-        host_and_services = data_manager.get_host_with_services('_id1')
-
-        under_test = get_host_msg_and_event_type(host_and_services)
-
-        self.assertEqual(
-            'Host1 is UNKNOWN and acknowledged, '
-            'some services may be in critical condition or unreachable !',
-            under_test['message']
-        )
-        self.assertEqual(under_test['event_type'], 'DOWN')
-
     def test_get_request_history_model(self):
         """Get History Request Model"""
 
@@ -306,6 +289,27 @@ class TestAllItems(unittest2.TestCase):
         self.assertEqual('host', under_test['endpoint'])
         self.assertTrue('params' in under_test)
         self.assertTrue('projection' in under_test)
+
+    def test_get_overall_tooltip(self):
+        """Get Overall Tooltip of Host"""
+
+        under_test = Host()
+        under_test.create(
+            '_id1',
+            {
+                '_overall_state_id': 1,
+                'ls_state': 'DOWN',
+                'ls_downtimed': True,
+                'ls_acknowledged': False,
+                'active_checks_enabled': True,
+                'passive_checks_enabled': False,
+            },
+            'hostname'
+        )
+
+        tooltip_test = under_test.get_overall_tooltip([])
+
+        self.assertEqual('Hostname is DOWN but downtimed, no services...', tooltip_test)
 
     def test_get_request_service_model(self):
         """Get Service Request Model"""

@@ -238,7 +238,7 @@ class TestSpyQWidgets(unittest2.TestCase):
         # Host list equal to 1, No services are attached to host
         self.assertEqual(1, under_test.host_list_widget.count())
         self.assertEqual(
-            'No services for this host',
+            'Hostname is DOWN. No services.',
             under_test.host_list_widget.item(0).data(Qt.DisplayRole)
         )
 
@@ -286,6 +286,6 @@ class TestSpyQWidgets(unittest2.TestCase):
         # Host list equal to 1, cause one service is CRITICAL
         self.assertEqual(1, under_test.host_list_widget.count())
         self.assertEqual(
-            'Hostname is DOWN but services of host seems managed.',
+            'Hostname is DOWN. Services of host seems managed.',
             under_test.host_list_widget.item(0).data(Qt.DisplayRole)
         )

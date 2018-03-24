@@ -115,10 +115,11 @@ class SpyQWidget(QWidget):
         if self.spy_list_widget.spied_hosts:
             for host_id in self.spy_list_widget.spied_hosts:
                 host = data_manager.get_item('host', host_id)
-                msg = '%s still have problems...' % host.get_display_name()
+
                 get_events_widget().add_event(
-                    host.data['ls_state'],
-                    msg,
+                    EventItem.get_event_type(host.data),
+                    _('Host %s, current state: %s') % (
+                        host.get_display_name(), host.data['ls_state']),
                     host=host.item_id
                 )
 
@@ -147,11 +148,9 @@ class SpyQWidget(QWidget):
             if services:
                 problems = False
                 for service in services:
-                    if service.data['ls_state'] in ['WARNING', 'CRITICAL', 'UNKNOWN'] and \
-                            not service.data['ls_acknowledged'] and \
-                            not service.data['ls_downtimed']:
+                    if data_manager.is_problem('service', service.data):
                         problems = True
-                        svc_state = 'Service %s is %s' % (
+                        svc_state = _('Service %s is %s') % (
                             service.get_display_name(), service.data['ls_state']
                         )
 
@@ -167,8 +166,8 @@ class SpyQWidget(QWidget):
                 if not problems:
                     event = EventItem()
                     event.initialize(
-                        'WARNING',
-                        '%s is %s but services of host seems managed.' % (
+                        host.data['ls_state'],
+                        _('%s is %s. Services of host seems managed.') % (
                             host.get_display_name(), host.data['ls_state']),
                         host=host.item_id
                     )
@@ -176,8 +175,8 @@ class SpyQWidget(QWidget):
             else:
                 no_service_event = EventItem()
                 no_service_event.initialize(
-                    'WARNING',
-                    'No services for this host'
+                    host.data['ls_state'],
+                    _('%s is %s. No services.') % (host.get_display_name(), host.data['ls_state'])
                 )
                 self.host_list_widget.insertItem(0, no_service_event)
 

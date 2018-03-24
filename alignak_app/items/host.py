@@ -89,3 +89,44 @@ class Host(Item):
             return self.data['alias'].title()
 
         return self.name.title()
+
+    def get_overall_tooltip(self, services):
+        """
+        Return corresponding overall state tooltip depends of ``_overall_state_id`` of Host and its
+        Services
+
+        :param services: list of Service items
+        :type services: list
+        :return: overall tooltip message
+        :rtype: str
+        """
+
+        host_msg = self.get_tooltip()
+
+        event_messages = [
+            _('%s. You have nothing to do.') % host_msg,
+            _('%s and his services are ok or acknowledged.') % host_msg,
+            _('%s and his services are ok or downtimed.') % host_msg,
+            _('%s, some services may be unknown.') % host_msg,
+            _('%s, some services may be in critical condition or unreachable !') % host_msg,
+            _('%s, some services are not monitored.') % host_msg,
+        ]
+
+        state_lvl = []
+
+        for service in services:
+            state_lvl.append(service.data['_overall_state_id'])
+
+        state_lvl.append(self.data['_overall_state_id'])
+
+        try:
+            max_state_lvl = max(state_lvl)
+            overall_tooltip = event_messages[max_state_lvl]
+
+            if not services:
+                overall_tooltip = '%s, no services...' % host_msg
+        except IndexError as e:
+            logger.error('Can\'t get overall tooltip, %s', e)
+            return host_msg
+
+        return overall_tooltip
