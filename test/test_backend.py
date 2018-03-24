@@ -206,11 +206,11 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_problems(['WARNING', 'UNKNOWN'])
+        under_test.query_services_problems('WARNING')
 
         self.assertIsNotNone(data_manager.database['problems'])
 
-        self.assertTrue(data_manager.db_is_ready['problems'])
+        self.assertTrue(data_manager.db_is_ready['problems']['WARNING'])
 
     def test_query_daemons_data(self):
         """Query Daemons Data"""

@@ -89,3 +89,17 @@ class Host(Item):
             return self.data['alias'].title()
 
         return self.name.title()
+
+    def is_problem(self):
+        """
+        Return True if host is a problem, else return False
+
+        :return: if host in problem or not
+        :rtype: bool
+        """
+
+        if self.data['ls_state'] in ['DOWN', 'UNREACHABLE'] and not self.data['ls_acknowledged'] \
+                and not self.data['ls_downtimed']:
+            return True
+
+        return False

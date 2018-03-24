@@ -326,7 +326,7 @@ class BackendClient(object):
 
     def query_hosts(self):
         """
-        Launch request on "host" endpoint
+        Launch request on "host" endpoint, add hosts in problems if needed
 
         """
 
@@ -350,6 +350,15 @@ class BackendClient(object):
                     item['name'],
                 )
                 hosts_list.append(host)
+
+                # If host is a problem, add / update it
+                if host.is_problem():
+                    if data_manager.get_item('problems', host.item_id):
+                        data_manager.update_item_data('problems', host.item_id, host.data)
+                    else:
+                        data_manager.database['problems'].append(host)
+
+            data_manager.db_is_ready['problems']['host'] = True
 
             if hosts_list:
                 data_manager.update_database('host', hosts_list)
@@ -398,65 +407,46 @@ class BackendClient(object):
             if 'OK' in request['_status']:
                 data_manager.db_is_ready[request_data['endpoint']] = True
 
-    def query_problems(self, states):
+    def query_services_problems(self, state):
         """
-        Launch requests on "service" endpoint to get items in problems and add hosts in problems:
+        Launch requests on "service" endpoint to get items with "ls_state = state"
 
-        * **Hosts**: ``DOWN``, ``UNREACHABLE``
-        * **Services**: ``WARNING``, ``CRITICAL``, ``UNKNOWN``
+        Wanted states are: ``WARNING``, ``CRITICAL`` and ``UNKNOWN``
+
+        :param state: state of service
+        :type state: str
         """
-
-        # Reset if states is equal to 3 (WARNING, CRITICAL, UNKNOWN)
-        if len(states) == 3:
-            data_manager.new_database['problems'] = []
 
         # Services
         services_projection = [
             'name', 'host', 'alias', 'ls_state', 'ls_output', 'ls_acknowledged', 'ls_downtimed'
         ]
 
-        for state in states:
-            params = {'where': json.dumps({'_is_template': False, 'ls_state': state})}
-            request = self.get(
-                'service',
-                params,
-                services_projection,
-                all_items=True
-            )
-            if request:
-                for item in request['_items']:
-                    if not item['ls_acknowledged'] and not item['ls_downtimed']:
-                        service = Service()
-                        service.create(
-                            item['_id'],
-                            item,
-                            item['name']
-                        )
-                        data_manager.new_database['problems'].append(service)
+        params = {'where': json.dumps({'_is_template': False, 'ls_state': state})}
+        request = self.get(
+            'service',
+            params,
+            services_projection,
+            all_items=True
+        )
 
-        # If new problems
-        if data_manager.new_database['problems']:
-            # Append states
-            data_manager.db_is_ready['problems'].append(states)
-
-            # If problems is the last, add hosts to problems
-            if len(data_manager.db_is_ready['problems']) > 2:
-                for host in data_manager.database['host']:
-                    if host.data['ls_state'] in ['DOWN', 'UNREACHABLE'] and \
-                            not host.data['ls_acknowledged'] and \
-                            not host.data['ls_downtimed'] and \
-                            not data_manager.get_item('problems', host.item_id):
-                        data_manager.new_database['problems'].append(host)
-
-                # Update "problems" database
-                data_manager.database['problems'] = []
-                while data_manager.new_database['problems']:
-                    data_manager.database['problems'].append(
-                        data_manager.new_database['problems'].pop()
+        if request:
+            for item in request['_items']:
+                if not item['ls_acknowledged'] and not item['ls_downtimed']:
+                    service = Service()
+                    service.create(
+                        item['_id'],
+                        item,
+                        item['name']
                     )
-                logger.info("Update database[problems]...")
-            if len(data_manager.db_is_ready['problems']) > 3:
-                data_manager.db_is_ready['problems'] = []
+
+                    if data_manager.get_item('problems', service.item_id):
+                        data_manager.update_item_data('problems', service.item_id, service.data)
+                    else:
+                        data_manager.database['problems'].append(service)
+            # Problems state is ready
+            data_manager.db_is_ready['problems'][state] = True
+            logger.info("Update database[problems] for services %s..", state)
 
     def query_alignakdaemons(self):
         """

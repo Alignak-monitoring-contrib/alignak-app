@@ -61,9 +61,7 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
             elif 'service' in self.thread_name:
                 app_backend.query_services()
             elif self.thread_name in self.problem_states:
-                app_backend.query_problems([self.thread_name])
-            elif 'problems' in self.thread_name:
-                app_backend.query_problems(self.problem_states)
+                app_backend.query_services_problems(self.thread_name)
             elif 'alignakdaemon' in self.thread_name:
                 app_backend.query_alignakdaemons()
             elif 'livesynthesis' in self.thread_name:

@@ -24,6 +24,11 @@
     ++++++++++++
     DataManager manage alignak data provided by
     :class:`Client <alignak_app.backend.backend.BackendClient>`.
+
+    * ``database`` fied contains all data collected by App
+    * ``db_is_ready`` fied says to App if database has been filled or not (needed on start)
+    * ``old_notifications`` fied store old notifications from backend to avoid sending them again
+
 """
 
 from logging import getLogger
@@ -52,9 +57,6 @@ class DataManager(object):
             'timeperiod': [],
             'problems': [],
         }
-        self.new_database = {
-            'problems': []
-        }
         self.db_is_ready = {
             'livesynthesis': False,
             'alignakdaemon': False,
@@ -62,7 +64,7 @@ class DataManager(object):
             'user': False,
             'realm': False,
             'timeperiod': False,
-            'problems': [],
+            'problems': {'CRITICAL': False, 'WARNING': False, 'UNKNOWN': False, 'host': False},
         }
         self.old_notifications = []
 
@@ -80,7 +82,8 @@ class DataManager(object):
                 if db_name not in 'problems':
                     assert self.db_is_ready[db_name]
                 else:
-                    assert len(self.db_is_ready[db_name]) > 2
+                    for problem in self.db_is_ready['problems']:
+                        assert self.db_is_ready['problems'][problem]
                 cur_collected = _('READY')
             except AssertionError:
                 cur_collected = _('Collecting %s...') % db_name
