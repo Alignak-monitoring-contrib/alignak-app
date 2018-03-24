@@ -467,6 +467,30 @@ class DataManager(object):
 
         return problems_data
 
+    @staticmethod
+    def is_problem(item_type, backend_item):
+        """
+        Return True if backend_item is a problem, else return false
 
-# Creating "data_manager" variable.
+        :param item_type: type of item: "host" or "service"
+        :type item_type: str
+        :param backend_item: item of backend
+        :type backend_item: dict
+        :return: if item is a problem or not
+        :rtype: bool
+        """
+
+        if 'service' in item_type:
+            if backend_item['ls_state'] in ['CRITICAL', 'WARNING', 'UNKNOWN'] and \
+                    not backend_item['ls_acknowledged'] and not backend_item['ls_downtimed']:
+                return True
+        else:
+            if backend_item['ls_state'] in ['DOWN', 'UNREACHABLE'] and \
+                    not backend_item['ls_acknowledged'] and not backend_item['ls_downtimed']:
+                return True
+
+        return False
+
+
+# Creation of "data_manager" object
 data_manager = DataManager()

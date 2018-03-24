@@ -239,30 +239,30 @@ class BackendClient(object):
 
         """
 
-        request_data = Realm.get_request_model()
+        request_model = Realm.get_request_model()
 
         request = self.get(
-            request_data['endpoint'],
-            request_data['params'],
-            request_data['projection']
+            request_model['endpoint'],
+            request_model['params'],
+            request_model['projection']
         )
 
         if request:
             realms_list = []
-            for item in request['_items']:
+            for backend_item in request['_items']:
                 realm = Realm()
 
                 realm.create(
-                    item['_id'],
-                    item,
-                    item['name'],
+                    backend_item['_id'],
+                    backend_item,
+                    backend_item['name'],
                 )
                 realms_list.append(realm)
 
             if realms_list:
                 data_manager.update_database('realm', realms_list)
             if 'OK' in request['_status']:
-                data_manager.db_is_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_model['endpoint']] = True
 
     def query_timeperiods(self):
         """
@@ -270,30 +270,30 @@ class BackendClient(object):
 
         """
 
-        request_data = Period.get_request_model()
+        request_model = Period.get_request_model()
 
         request = self.get(
-            request_data['endpoint'],
-            request_data['params'],
-            request_data['projection']
+            request_model['endpoint'],
+            request_model['params'],
+            request_model['projection']
         )
 
         if request:
             periods_list = []
-            for item in request['_items']:
+            for backend_item in request['_items']:
                 period = Period()
 
                 period.create(
-                    item['_id'],
-                    item,
-                    item['name'],
+                    backend_item['_id'],
+                    backend_item,
+                    backend_item['name'],
                 )
                 periods_list.append(period)
 
             if periods_list:
                 data_manager.update_database('timeperiod', periods_list)
             if 'OK' in request['_status']:
-                data_manager.db_is_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_model['endpoint']] = True
 
     def query_user(self):
         """
@@ -301,12 +301,12 @@ class BackendClient(object):
 
         """
 
-        request_data = User.get_request_model(self.backend.token)
+        request_model = User.get_request_model(self.backend.token)
 
         request = self.get(
-            request_data['endpoint'],
-            request_data['params'],
-            request_data['projection']
+            request_model['endpoint'],
+            request_model['params'],
+            request_model['projection']
         )
 
         if request:
@@ -322,7 +322,7 @@ class BackendClient(object):
                 data_manager.update_database('user', user)
 
             if 'OK' in request['_status']:
-                data_manager.db_is_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_model['endpoint']] = True
 
     def query_hosts(self):
         """
@@ -330,29 +330,29 @@ class BackendClient(object):
 
         """
 
-        request_data = Host.get_request_model()
+        request_model = Host.get_request_model()
 
         request = self.get(
-            request_data['endpoint'],
-            request_data['params'],
-            request_data['projection'],
+            request_model['endpoint'],
+            request_model['params'],
+            request_model['projection'],
             all_items=True
         )
 
         if request:
             hosts_list = []
-            for item in request['_items']:
+            for backend_item in request['_items']:
                 host = Host()
 
                 host.create(
-                    item['_id'],
-                    item,
-                    item['name'],
+                    backend_item['_id'],
+                    backend_item,
+                    backend_item['name'],
                 )
                 hosts_list.append(host)
 
                 # If host is a problem, add / update it
-                if host.is_problem():
+                if data_manager.is_problem('host', backend_item):
                     if data_manager.get_item('problems', host.item_id):
                         data_manager.update_item_data('problems', host.item_id, host.data)
                     else:
@@ -363,49 +363,49 @@ class BackendClient(object):
             if hosts_list:
                 data_manager.update_database('host', hosts_list)
             if 'OK' in request['_status']:
-                data_manager.db_is_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_model['endpoint']] = True
 
     def query_services(self, host_id=None):
         """
-        Launch request for "service" endpoint
+        Launch request for "service" endpoint. If ``host_id`` is given, only services related to
+        host are added / updated
 
-        :param host_id: "_id" of host, needed to get only host services
+        :param host_id: "_id" of host
         :type host_id: str
         """
 
-        request_data = Service.get_request_model(host_id)
+        request_model = Service.get_request_model(host_id)
 
         request = self.get(
-            request_data['endpoint'],
-            request_data['params'],
-            request_data['projection'],
+            request_model['endpoint'],
+            request_model['params'],
+            request_model['projection'],
             all_items=True
         )
 
         if request:
             services_list = []
-            for item in request['_items']:
+            for backend_item in request['_items']:
                 service = Service()
 
                 service.create(
-                    item['_id'],
-                    item,
-                    item['name'],
+                    backend_item['_id'],
+                    backend_item,
+                    backend_item['name'],
                 )
 
+                # Add / update only services of host "if host_id"
                 if host_id:
                     if not data_manager.get_item('service', service.item_id):
-                        # Append service if not in list
                         data_manager.database['service'].append(service)
                     else:
-                        # Else we update existing item
                         data_manager.update_item_data('service', service.item_id, service.data)
 
+            # If not item ID, update all database
             if services_list and not host_id:
-                # If not item ID, update all database
                 data_manager.update_database('service', services_list)
             if 'OK' in request['_status']:
-                data_manager.db_is_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_model['endpoint']] = True
 
     def query_services_problems(self, state):
         """
@@ -431,13 +431,13 @@ class BackendClient(object):
         )
 
         if request:
-            for item in request['_items']:
-                if not item['ls_acknowledged'] and not item['ls_downtimed']:
+            for backend_item in request['_items']:
+                if data_manager.is_problem('service', backend_item):
                     service = Service()
                     service.create(
-                        item['_id'],
-                        item,
-                        item['name']
+                        backend_item['_id'],
+                        backend_item,
+                        backend_item['name']
                     )
 
                     if data_manager.get_item('problems', service.item_id):
@@ -446,7 +446,7 @@ class BackendClient(object):
                         data_manager.database['problems'].append(service)
             # Problems state is ready
             data_manager.db_is_ready['problems'][state] = True
-            logger.info("Update database[problems] for services %s..", state)
+            logger.info("Update database[problems] for %s services...", state)
 
     def query_alignakdaemons(self):
         """
@@ -454,24 +454,24 @@ class BackendClient(object):
 
         """
 
-        request_data = Daemon.get_request_model()
+        request_model = Daemon.get_request_model()
 
         request = self.get(
-            request_data['endpoint'],
-            request_data['params'],
-            request_data['projection'],
+            request_model['endpoint'],
+            request_model['params'],
+            request_model['projection'],
             all_items=True
         )
 
         if request:
             daemons_list = []
-            for item in request['_items']:
+            for backend_item in request['_items']:
                 daemon = Daemon()
 
                 daemon.create(
-                    item['_id'],
-                    item,
-                    item['name'],
+                    backend_item['_id'],
+                    backend_item,
+                    backend_item['name'],
                 )
 
                 daemons_list.append(daemon)
@@ -479,7 +479,7 @@ class BackendClient(object):
             if daemons_list:
                 data_manager.update_database('alignakdaemon', daemons_list)
             if 'OK' in request['_status']:
-                data_manager.db_is_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_model['endpoint']] = True
 
     def query_livesynthesis(self):
         """
@@ -487,23 +487,23 @@ class BackendClient(object):
 
         """
 
-        request_data = LiveSynthesis.get_request_model()
+        request_model = LiveSynthesis.get_request_model()
 
         request = self.get(
-            request_data['endpoint'],
-            request_data['params'],
-            request_data['projection'],
+            request_model['endpoint'],
+            request_model['params'],
+            request_model['projection'],
             all_items=True
         )
 
         if request:
             livesynthesis = []
-            for item in request['_items']:
+            for backend_item in request['_items']:
                 synthesis = LiveSynthesis()
 
                 synthesis.create(
-                    item['_id'],
-                    item,
+                    backend_item['_id'],
+                    backend_item,
                 )
 
                 livesynthesis.append(synthesis)
@@ -511,7 +511,7 @@ class BackendClient(object):
             if livesynthesis:
                 data_manager.update_database('livesynthesis', livesynthesis)
             if 'OK' in request['_status']:
-                data_manager.db_is_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_model['endpoint']] = True
 
     def query_history(self, hostname=None, host_id=None):
         """
@@ -523,16 +523,16 @@ class BackendClient(object):
         :type host_id: str
         """
 
-        request_data = History.get_request_model()
+        request_model = History.get_request_model()
 
         if hostname and host_id:
-            request_data['params']['where'] = json.dumps({
+            request_model['params']['where'] = json.dumps({
                 'host': host_id})
 
             request = self.get(
-                request_data['endpoint'],
-                request_data['params'],
-                request_data['projection'],
+                request_model['endpoint'],
+                request_model['params'],
+                request_model['projection'],
                 all_items=False
             )
 
@@ -549,13 +549,13 @@ class BackendClient(object):
         else:  # pragma: no cover, too long to test
             history_list = []
             for history in data_manager.database['history']:
-                request_data['params']['where'] = json.dumps({
+                request_model['params']['where'] = json.dumps({
                     'host': history.item_id})
 
                 request = self.get(
-                    request_data['endpoint'],
-                    request_data['params'],
-                    request_data['projection'],
+                    request_model['endpoint'],
+                    request_model['params'],
+                    request_model['projection'],
                     all_items=False
                 )
 
@@ -579,19 +579,19 @@ class BackendClient(object):
 
         """
 
-        request_data = Event.get_request_model()
+        request_model = Event.get_request_model()
 
         request = self.get(
-            request_data['endpoint'],
-            request_data['params'],
-            request_data['projection'],
+            request_model['endpoint'],
+            request_model['params'],
+            request_model['projection'],
             all_items=False
         )
 
         if request:
             notifications = []
-            for item in request['_items']:
-                message_split = item['message'].split(';')
+            for backend_item in request['_items']:
+                message_split = backend_item['message'].split(';')
                 user = message_split[0].split(':')[1].strip()
                 if 'imported_admin' in user:
                     user = 'admin'
@@ -599,8 +599,8 @@ class BackendClient(object):
                     notification = Event()
 
                     notification.create(
-                        item['_id'],
-                        item,
+                        backend_item['_id'],
+                        backend_item,
                     )
 
                     notifications.append(notification)
@@ -622,5 +622,5 @@ class BackendClient(object):
         return Daemon.get_states('ko')
 
 
-# Creating "app_backend" variable.
+# Creation of "app_backend" object
 app_backend = BackendClient()
