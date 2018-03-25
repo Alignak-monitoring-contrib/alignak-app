@@ -538,15 +538,18 @@ class BackendClient(object):
             )
 
             if request:
-                host_history = History()
+                logger.debug('Add / Update history for %s (%s)', hostname, host_id)
+                if data_manager.get_item('history', host_id):
+                    data_manager.update_item_data('history', host_id, request['_items'])
+                else:
+                    host_history = History()
 
-                host_history.create(
-                    host_id,
-                    request['_items'],
-                    hostname,
-                )
-                logger.debug('Add history for %s (%s)', hostname, host_id)
-                data_manager.database['history'].append(host_history)
+                    host_history.create(
+                        host_id,
+                        request['_items'],
+                        hostname,
+                    )
+                    data_manager.database['history'].append(host_history)
         else:  # pragma: no cover, too long to test
             history_list = []
             for history in data_manager.database['history']:
