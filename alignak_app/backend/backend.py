@@ -528,6 +528,7 @@ class BackendClient(object):
         if hostname and host_id:
             request_model['params']['where'] = json.dumps({
                 'host': host_id})
+            request_model['params']['max_results'] = 25
 
             request = self.get(
                 request_model['endpoint'],
@@ -551,6 +552,7 @@ class BackendClient(object):
             for history in data_manager.database['history']:
                 request_model['params']['where'] = json.dumps({
                     'host': history.item_id})
+                request_model['params']['max_results'] = 25
 
                 request = self.get(
                     request_model['endpoint'],
