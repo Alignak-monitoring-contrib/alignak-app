@@ -208,8 +208,8 @@ class LoginQDialog(QDialog):
             proxy_password = proxy_dialog.proxy_password.text().rstrip()
 
             # Save proxy and user proxy for next login
-            settings.edit_setting_value('Alignak', 'proxy', proxy_address)
-            settings.edit_setting_value('Alignak', 'proxy_user', proxy_user)
+            settings.set_config('Alignak', 'proxy', proxy_address)
+            settings.set_config('Alignak', 'proxy_user', proxy_user)
 
             self.set_proxy_settings(proxy_password)
 
@@ -225,10 +225,10 @@ class LoginQDialog(QDialog):
 
         if server_dialog.exec_() == QDialog.Accepted:
             backend_url = '%(url)s:' + str(server_dialog.server_port.text()).rstrip()
-            settings.edit_setting_value('Alignak', 'backend', backend_url)
-            settings.edit_setting_value(
+            settings.set_config('Alignak', 'backend', backend_url)
+            settings.set_config(
                 'Alignak', 'url', str(server_dialog.server_url.text()).rstrip())
-            settings.edit_setting_value(
+            settings.set_config(
                 'Alignak', 'processes', str(server_dialog.server_proc.text()).rstrip()
             )
 

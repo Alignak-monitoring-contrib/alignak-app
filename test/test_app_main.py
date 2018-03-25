@@ -71,7 +71,7 @@ class TestAppQMainWindow(unittest2.TestCase):
         data_manager.update_database('service', [])
 
         self.assertFalse(under_test.isVisible())
-        settings.edit_setting_value('Alignak-app', 'display', 'min')
+        settings.set_config('Alignak-app', 'display', 'min')
 
         under_test.initialize()
 
@@ -81,7 +81,7 @@ class TestAppQMainWindow(unittest2.TestCase):
         self.assertFalse(under_test.isMaximized())
         under_test.close()
 
-        settings.edit_setting_value('Alignak-app', 'display', 'max')
+        settings.set_config('Alignak-app', 'display', 'max')
 
         under_test = AppQMainWindow()
         init_event_widget()
@@ -93,7 +93,7 @@ class TestAppQMainWindow(unittest2.TestCase):
         self.assertTrue(under_test.isMaximized())
         under_test.close()
 
-        settings.edit_setting_value('Alignak-app', 'display', 'no')
+        settings.set_config('Alignak-app', 'display', 'no')
 
         under_test = AppQMainWindow()
         init_event_widget()
@@ -106,12 +106,12 @@ class TestAppQMainWindow(unittest2.TestCase):
         under_test.close()
 
         # Restore default setting
-        settings.edit_setting_value('Alignak-app', 'display', 'min')
+        settings.set_config('Alignak-app', 'display', 'min')
 
     def test_default_view_is_problems(self):
         """Display Problems View by Default"""
 
-        settings.edit_setting_value('Alignak-app', 'problems', 'no')
+        settings.set_config('Alignak-app', 'problems', 'no')
 
         under_test = AppQMainWindow()
         data_manager.update_database('host', [])
@@ -126,7 +126,7 @@ class TestAppQMainWindow(unittest2.TestCase):
         self.assertEqual(0, under_test.panel_widget.tab_widget.currentIndex())
 
         # Make "Problems" as default view
-        settings.edit_setting_value('Alignak-app', 'problems', 'yes')
+        settings.set_config('Alignak-app', 'problems', 'yes')
 
         under_test = AppQMainWindow()
         init_event_widget()
@@ -136,4 +136,4 @@ class TestAppQMainWindow(unittest2.TestCase):
         self.assertEqual(1, under_test.panel_widget.tab_widget.currentIndex())
 
         # Reset settings
-        settings.edit_setting_value('Alignak-app', 'problems', 'no')
+        settings.set_config('Alignak-app', 'problems', 'no')

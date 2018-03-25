@@ -138,7 +138,7 @@ class Settings(object):
                              section, self.default_parameters[section][option])
                 return self.default_parameters[section][option]
 
-    def edit_setting_value(self, section, option, new_value):
+    def set_config(self, section, option, new_value):
         """
         Set an option in configuration file
 

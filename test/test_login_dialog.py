@@ -87,7 +87,7 @@ class TestLoginQDialog(unittest2.TestCase):
 
         # Set Proxy address
         self.assertFalse(under_test.proxies)
-        settings.edit_setting_value('Alignak', 'proxy', 'http://127.0.0.1:5000')
+        settings.set_config('Alignak', 'proxy', 'http://127.0.0.1:5000')
 
         under_test.set_proxy_settings()
 
@@ -95,7 +95,7 @@ class TestLoginQDialog(unittest2.TestCase):
         self.assertEqual({'http': 'http://127.0.0.1:5000'}, under_test.proxies)
 
         # Set user Proxy
-        settings.edit_setting_value('Alignak', 'proxy_user', 'user')
+        settings.set_config('Alignak', 'proxy_user', 'user')
 
         # Give password in parameter
         under_test.set_proxy_settings('password')
@@ -104,9 +104,9 @@ class TestLoginQDialog(unittest2.TestCase):
         self.assertEqual({'http': 'http://user:password@127.0.0.1:5000'}, under_test.proxies)
 
         # Back settings for other tests
-        settings.edit_setting_value('Alignak', 'proxy', '')
-        settings.edit_setting_value('Alignak', 'proxy_user', '')
-        settings.edit_setting_value('Alignak', 'proxy_password', '')
+        settings.set_config('Alignak', 'proxy', '')
+        settings.set_config('Alignak', 'proxy_user', '')
+        settings.set_config('Alignak', 'proxy_password', '')
 
         under_test.set_proxy_settings()
 
