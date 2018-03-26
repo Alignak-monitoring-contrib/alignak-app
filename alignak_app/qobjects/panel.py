@@ -34,7 +34,6 @@ from alignak_app.backend.datamanager import data_manager
 from alignak_app.backend.backend import app_backend
 from alignak_app.utils.config import settings
 
-from alignak_app.qobjects.common.frames import get_frame_separator
 from alignak_app.qobjects.events.item import EventItem
 from alignak_app.qobjects.events.spy import SpyQWidget
 from alignak_app.qobjects.alignak.dashboard import DashboardQWidget
@@ -86,7 +85,6 @@ class PanelQWidget(QWidget):
         # Dashboard widget
         self.dashboard_widget.initialize()
         self.layout.addWidget(self.dashboard_widget)
-        self.layout.addWidget(get_frame_separator())
 
         self.tab_widget.setMovable(True)
         self.layout.addWidget(self.tab_widget)
