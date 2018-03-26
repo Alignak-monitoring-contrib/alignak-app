@@ -38,9 +38,10 @@ from PyQt5.Qt import QLabel, QPushButton, QIcon, QWidget, QTimer, QPixmap, Qt, Q
 
 from alignak_app.backend.backend import app_backend
 from alignak_app.backend.datamanager import data_manager
-from alignak_app.qobjects.alignak.status import StatusQDialog
 from alignak_app.utils.config import settings
 
+from alignak_app.qobjects.common.labels import get_icon_pixmap
+from alignak_app.qobjects.alignak.status import StatusQDialog
 from alignak_app.qobjects.user.profile import ProfileQWidget
 
 logger = getLogger(__name__)
@@ -91,7 +92,7 @@ class AlignakQWidget(QWidget):
 
         # Status button
         self.status_dialog.initialize()
-        self.status_btn.setIcon(QIcon(settings.get_image('icon')))
+        self.update_status_btn(self.status_dialog.update_dialog())
         self.status_btn.setFixedSize(32, 32)
         self.status_btn.clicked.connect(self.show_status_dialog)
         layout.addWidget(self.status_btn, 1, 1, 1, 1)
@@ -104,7 +105,7 @@ class AlignakQWidget(QWidget):
         self.profile_widget.initialize()
         self.profile_btn.setIcon(QIcon(settings.get_image('user')))
         self.profile_btn.setFixedSize(40, 40)
-        self.profile_btn.clicked.connect(self.open_user_widget)
+        self.profile_btn.clicked.connect(self.show_user_widget)
         self.profile_btn.setToolTip(_('User'))
         layout.addWidget(self.profile_btn, 0, 3, 2, 1)
 
@@ -113,23 +114,35 @@ class AlignakQWidget(QWidget):
         self.refresh_timer.start()
         self.refresh_timer.timeout.connect(self.update_status)
 
-    def show_status_dialog(self):
+    def show_status_dialog(self):  # pragma: no cover
         """
         Update and show StatusQDialog
 
         """
 
-        self.status_dialog.update_dialog()
+        self.update_status_btn(self.status_dialog.update_dialog())
         self.status_dialog.show()
 
-    def open_user_widget(self):
+    def show_user_widget(self):  # pragma: no cover
         """
-        Show ProfileQWidget
+        Update and show ProfileQWidget
 
         """
 
         self.profile_widget.update_widget()
         self.profile_widget.show()
+
+    def update_status_btn(self, status):
+        """
+        Update status button, depending if "status_ok" is False or True
+
+        :param status: current status of alignak daemons
+        :type status: bool
+        """
+
+        self.status_btn.setIcon(
+            QIcon(get_icon_pixmap(status, ['connected', 'disconnected']))
+        )
 
     def update_status(self):
         """
@@ -143,4 +156,4 @@ class AlignakQWidget(QWidget):
         self.status_btn.setEnabled(bool(data_manager.database['alignakdaemon']))
 
         if self.status_dialog.labels:
-            self.status_dialog.update_dialog()
+            self.update_status_btn(self.status_dialog.update_dialog())

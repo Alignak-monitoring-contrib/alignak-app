@@ -199,16 +199,21 @@ class StatusQDialog(QDialog):
 
     def update_dialog(self):
         """
-        Update StatusQDialog labels
+        Update StatusQDialog labels and return if all daemons are ok or not
 
+        :return: if status of daemons is ok or not
+        :rtype: bool
         """
 
         daemons = data_manager.database['alignakdaemon']
+        status_ok = True
 
         for daemon_item in daemons:
             self.labels[daemon_item.name]['alive'].setPixmap(
                 get_icon_pixmap(daemon_item.data['alive'], ['connected', 'disconnected'])
             )
+            if not daemon_item.data['alive']:
+                status_ok = False
             self.labels[daemon_item.name]['name'].setText(daemon_item.name)
             self.labels[daemon_item.name]['address'].setText(
                 '%s:%s' % (daemon_item.data['address'], daemon_item.data['port'])
@@ -224,6 +229,8 @@ class StatusQDialog(QDialog):
             )
             last_check = get_time_diff_since_last_timestamp(daemon_item.data['last_check'])
             self.labels[daemon_item.name]['last_check'].setText(last_check)
+
+        return status_ok
 
     def mousePressEvent(self, event):  # pragma: no cover
         """ QWidget.mousePressEvent(QMouseEvent) """
