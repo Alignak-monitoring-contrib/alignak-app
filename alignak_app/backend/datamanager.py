@@ -188,8 +188,11 @@ class DataManager(object):
 
         for item in self.database[item_type]:
             if item.item_id == item_id:
-                for key in data:
-                    item.data[key] = data[key]
+                if 'history' in item_type:
+                    item.data = data
+                else:
+                    for key in data:
+                        item.data[key] = data[key]
 
     def get_realm_name(self, realm):
         """
