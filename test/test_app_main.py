@@ -121,9 +121,13 @@ class TestAppQMainWindow(unittest2.TestCase):
         self.assertEqual(-1, under_test.panel_widget.tab_widget.currentIndex())
 
         under_test.initialize()
+        problems_index = under_test.panel_widget.get_tab_order().index('p')
 
         self.assertFalse(settings.get_config('Alignak-app', 'problems', boolean=True))
-        self.assertEqual(0, under_test.panel_widget.tab_widget.currentIndex())
+        self.assertEqual(
+            problems_index,
+            under_test.panel_widget.tab_widget.indexOf(under_test.panel_widget.problems_widget)
+        )
 
         # Make "Problems" as default view
         settings.set_config('Alignak-app', 'problems', 'yes')
@@ -133,7 +137,10 @@ class TestAppQMainWindow(unittest2.TestCase):
         under_test.initialize()
 
         self.assertTrue(settings.get_config('Alignak-app', 'problems', boolean=True))
-        self.assertEqual(1, under_test.panel_widget.tab_widget.currentIndex())
+        self.assertEqual(
+            problems_index,
+            under_test.panel_widget.tab_widget.indexOf(under_test.panel_widget.problems_widget)
+        )
 
         # Reset settings
         settings.set_config('Alignak-app', 'problems', 'no')

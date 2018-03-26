@@ -90,10 +90,11 @@ class PanelQWidget(QWidget):
 
         self.tab_widget.setMovable(True)
         self.layout.addWidget(self.tab_widget)
+        tab_order = self.get_tab_order()
 
         # Synthesis
         self.init_synthesis_widget()
-        self.tab_widget.addTab(self.synthesis_widget, _("Host Synthesis"))
+        self.tab_widget.insertTab(tab_order.index('h'), self.synthesis_widget, _("Host Synthesis"))
         self.tab_widget.setTabToolTip(
             self.tab_widget.indexOf(self.synthesis_widget), _('See a synthesis view of a host')
         )
@@ -101,7 +102,8 @@ class PanelQWidget(QWidget):
         # Problems
         self.problems_widget.initialize(self.spy_widget)
         self.problems_widget.host_btn.clicked.connect(self.display_host)
-        self.tab_widget.addTab(
+        self.tab_widget.insertTab(
+            tab_order.index('p'),
             self.problems_widget,
             _('Problems (%d)') % len(data_manager.get_problems()['problems'])
         )
@@ -111,7 +113,7 @@ class PanelQWidget(QWidget):
 
         # Spied hosts
         self.spy_widget.initialize()
-        self.tab_widget.addTab(self.spy_widget, _('Spied Hosts'))
+        self.tab_widget.insertTab(tab_order.index('s'), self.spy_widget, _('Spied Hosts'))
         self.tab_widget.setTabToolTip(
             self.tab_widget.indexOf(self.spy_widget), 'See the hosts spied by Alignak-app'
         )
@@ -143,6 +145,28 @@ class PanelQWidget(QWidget):
 
         # Align all widgets to Top
         synthesis_layout.setAlignment(Qt.AlignTop)
+
+    @staticmethod
+    def get_tab_order():
+        """
+        Return tab order defined by user, else default order
+
+        :return: tab order of App
+        :rtype: list
+        """
+
+        default_order = ['h', 'p', 's']
+        tab_order = settings.get_config('Alignak-app', 'tab_order').split(',')
+
+        try:
+            assert len(tab_order) == len(default_order)
+            for nb in default_order:
+                assert nb in tab_order
+        except AssertionError:
+            logger.error('Wrong "tab_order" value in config file %s', tab_order)
+            tab_order = ['h', 'p', 's']
+
+        return tab_order
 
     def get_search_widget(self):
         """

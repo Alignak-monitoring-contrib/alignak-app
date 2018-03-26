@@ -154,8 +154,10 @@ class TestPanelQWidget(unittest2.TestCase):
         # Host is not in hostname_list
         under_test.line_search.setText('no_host')
         under_test.spy_host()
+        spy_index = under_test.get_tab_order().index('s')
+
         self.assertTrue(under_test.spy_button.isEnabled())
-        self.assertEqual('Spied Hosts', under_test.tab_widget.tabText(2))
+        self.assertEqual('Spied Hosts', under_test.tab_widget.tabText(spy_index))
         # Host Id is not added in spied_hosts of SpyQWidget.SpyQListWidget
         self.assertFalse('_id0' in under_test.spy_widget.spy_list_widget.spied_hosts)
 
@@ -166,15 +168,16 @@ class TestPanelQWidget(unittest2.TestCase):
         under_test.initialize()
 
         # 10 problems for CRITICAL services
-        self.assertEqual('Problems (20)', under_test.tab_widget.tabText(1))
+        problems_index = under_test.get_tab_order().index('p')
+        self.assertEqual('Problems (20)', under_test.tab_widget.tabText(problems_index))
 
         # Remove a service from problems
         data_manager.database['problems'].remove(self.service_list[0])
 
-        under_test.tab_widget.widget(1).update_problems_data()
+        under_test.tab_widget.widget(problems_index).update_problems_data()
 
         # There are only 9 services in CRITICAL condition
-        self.assertEqual('Problems (19)', under_test.tab_widget.tabText(1))
+        self.assertEqual('Problems (19)', under_test.tab_widget.tabText(problems_index))
 
     def test_display_host(self):
         """Display Host in Panel"""
