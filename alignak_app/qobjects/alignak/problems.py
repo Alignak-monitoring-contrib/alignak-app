@@ -253,7 +253,8 @@ class ProblemsQWidget(QWidget):
 
         if self.parent():
             self.parent().parent().setTabText(
-                1, _("Problems (%d)") % len(problems_data['problems'])
+                self.parent().parent().indexOf(self),
+                _("Problems (%d)") % len(problems_data['problems'])
             )
 
         self.problems_title.setText(

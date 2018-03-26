@@ -66,6 +66,7 @@ class PanelQWidget(QWidget):
         self.hostnames_list = []
         self.dashboard_widget = DashboardQWidget()
         self.host_widget = HostQWidget()
+        self.synthesis_widget = QWidget()
         self.services_widget = ServicesQWidget()
         self.problems_widget = ProblemsQWidget()
         self.spy_text = {True: _("Spy Host"), False: _("Host spied!")}
@@ -86,11 +87,16 @@ class PanelQWidget(QWidget):
         self.dashboard_widget.initialize()
         self.layout.addWidget(self.dashboard_widget)
         self.layout.addWidget(get_frame_separator())
+
+        self.tab_widget.setMovable(True)
         self.layout.addWidget(self.tab_widget)
 
         # Synthesis
-        self.tab_widget.addTab(self.get_synthesis_widget(), _("Host Synthesis"))
-        self.tab_widget.setTabToolTip(0, _('See a synthesis view of a host'))
+        self.init_synthesis_widget()
+        self.tab_widget.addTab(self.synthesis_widget, _("Host Synthesis"))
+        self.tab_widget.setTabToolTip(
+            self.tab_widget.indexOf(self.synthesis_widget), _('See a synthesis view of a host')
+        )
 
         # Problems
         self.problems_widget.initialize(self.spy_widget)
@@ -99,28 +105,29 @@ class PanelQWidget(QWidget):
             self.problems_widget,
             _('Problems (%d)') % len(data_manager.get_problems()['problems'])
         )
-        self.tab_widget.setTabToolTip(1, _('See the problems found in the backend'))
+        self.tab_widget.setTabToolTip(
+            self.tab_widget.indexOf(self.problems_widget), _('See the problems found in backend')
+        )
 
         # Spied hosts
         self.spy_widget.initialize()
         self.tab_widget.addTab(self.spy_widget, _('Spied Hosts'))
-        self.tab_widget.setTabToolTip(2, 'See the hosts spied by Alignak-app')
+        self.tab_widget.setTabToolTip(
+            self.tab_widget.indexOf(self.spy_widget), 'See the hosts spied by Alignak-app'
+        )
 
         # Hide widget for first display
         self.host_widget.hide()
         self.services_widget.hide()
 
-    def get_synthesis_widget(self):
+    def init_synthesis_widget(self):
         """
-        Return synthesis QWidget()
+        Initialize Synthesis QWidget
 
-        :return: synthesis QWidget()
-        :rtype: QWidget
         """
 
-        synthesis_widget = QWidget()
         synthesis_layout = QVBoxLayout()
-        synthesis_widget.setLayout(synthesis_layout)
+        self.synthesis_widget.setLayout(synthesis_layout)
 
         # Search widget
         search_widget = self.get_search_widget()
@@ -136,8 +143,6 @@ class PanelQWidget(QWidget):
 
         # Align all widgets to Top
         synthesis_layout.setAlignment(Qt.AlignTop)
-
-        return synthesis_widget
 
     def get_search_widget(self):
         """
@@ -204,7 +209,10 @@ class PanelQWidget(QWidget):
 
         """
 
-        self.tab_widget.setTabText(2, "Spied Hosts (%d)" % self.spy_widget.spy_list_widget.count())
+        self.tab_widget.setTabText(
+            self.tab_widget.indexOf(self.spy_widget),
+            "Spied Hosts (%d)" % self.spy_widget.spy_list_widget.count()
+        )
 
     def create_line_search(self, hostnames_list=None):
         """
@@ -310,7 +318,7 @@ class PanelQWidget(QWidget):
 
                 if hostname in self.hostnames_list:
                     self.line_search.setText(hostname)
-                    self.tab_widget.setCurrentIndex(0)
+                    self.tab_widget.setCurrentIndex(self.tab_widget.indexOf(self.synthesis_widget))
         elif isinstance(self.sender(), QLineEdit):
             # From QLineEdit
             hostname = self.line_search.text()
@@ -350,7 +358,7 @@ class PanelQWidget(QWidget):
         logger.debug('... with current item: %s', event.source().currentItem())
 
         self.line_search.setText(host.name)
-        self.tab_widget.setCurrentIndex(0)
+        self.tab_widget.setCurrentIndex(self.tab_widget.indexOf(self.synthesis_widget))
         self.display_host()
 
     def dragEnterEvent(self, event):

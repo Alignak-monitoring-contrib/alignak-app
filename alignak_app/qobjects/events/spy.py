@@ -211,10 +211,12 @@ class SpyQWidget(QWidget):
         if self.parent():
             if self.spy_list_widget.spied_hosts:
                 self.parent().parent().setTabText(
-                    2, _('Spied Hosts (%d)') % self.spy_list_widget.count()
+                    self.parent().parent().indexOf(self),
+                    _('Spied Hosts (%d)') % self.spy_list_widget.count()
                 )
             else:
-                # Remove hint item count
+                # Remove hint item from count
                 self.parent().parent().setTabText(
-                    2, _('Spied Hosts (%d)') % (self.spy_list_widget.count() - 1)
+                    self.parent().parent().indexOf(self),
+                    _('Spied Hosts (%d)') % (self.spy_list_widget.count() - 1)
                 )
