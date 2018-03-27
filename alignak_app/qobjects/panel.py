@@ -273,17 +273,19 @@ class PanelQWidget(QWidget):
 
         """
 
-        hostname = self.define_hostname()
+        # Update and set "line_search" in case hosts have been added or deleted
+        hostnames_list = data_manager.get_all_hostnames()
+        if hostnames_list != self.hostnames_list:
+            self.create_line_search(hostnames_list)
 
-        if hostname in self.hostnames_list:
-            # Update linesearch in case hosts have been added or deleted
-            hostnames_list = data_manager.get_all_hostnames()
-            if hostnames_list != self.hostnames_list:
-                self.create_line_search(hostnames_list)
+        # If sender is QPushButton from problems, set "line_search" text
+        if isinstance(self.sender(), QPushButton):
+            self.set_line_search()
 
+        # Display host if exists
+        if self.line_search.text().rstrip() in self.hostnames_list:
             # Get Host Item and its services
-            host_item = data_manager.get_item('host', hostname)
-
+            host_item = data_manager.get_item('host', self.line_search.text().rstrip())
             services = data_manager.get_host_services(host_item.item_id)
             if not services:
                 app_backend.query_services(host_item.item_id)
@@ -319,36 +321,23 @@ class PanelQWidget(QWidget):
         self.spy_button.style().unpolish(self.spy_button)
         self.spy_button.style().polish(self.spy_button)
 
-    def define_hostname(self):
+    def set_line_search(self):
         """
-        Define hostname to display, depends of sender object
+        Set line search if ``sender()`` is instance of QPushButton from
+        :class:`Problems <alignak_app.qobjects.alignak.problems.ProblemsQWidget>` QWidget
 
-        :return: the hostname to display
-        :rtype: str
         """
 
-        hostname = ''
+        item = self.problems_widget.get_curent_user_role_item()
+        if item:
+            if 'service' in item.item_type:
+                hostname = data_manager.get_item('host', item.data['host']).name
+            else:
+                hostname = item.name
 
-        if isinstance(self.sender(), QPushButton):
-            # From Problems QWidget
-            item = self.problems_widget.get_curent_user_role_item()
-            if item:
-                if 'service' in item.item_type:
-                    hostname = data_manager.get_item('host', item.data['host']).name
-                else:
-                    hostname = item.name
-
-                if hostname in self.hostnames_list:
-                    self.line_search.setText(hostname)
-                    self.tab_widget.setCurrentIndex(self.tab_widget.indexOf(self.synthesis_widget))
-        elif isinstance(self.sender(), QLineEdit):
-            # From QLineEdit
-            hostname = self.line_search.text()
-        else:
-            # From Drag & Drop
-            hostname = self.line_search.text()
-
-        return hostname
+            if hostname in self.hostnames_list:
+                self.line_search.setText(hostname)
+                self.tab_widget.setCurrentIndex(self.tab_widget.indexOf(self.synthesis_widget))
 
     def dragMoveEvent(self, event):  # pragma: no cover
         """

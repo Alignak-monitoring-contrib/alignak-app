@@ -98,7 +98,9 @@ class AppQMainWindow(QMainWindow):
             pass
 
         if settings.get_config('Alignak-app', 'problems', boolean=True):
-            self.panel_widget.tab_widget.setCurrentIndex(1)
+            self.panel_widget.tab_widget.setCurrentIndex(
+                self.panel_widget.tab_widget.indexOf(self.panel_widget.problems_widget)
+            )
             self.panel_widget.problems_widget.line_search.setFocus()
         else:
             self.panel_widget.line_search.setFocus()
