@@ -133,7 +133,8 @@ class ServicesQWidget(QWidget):
 
             self.service_data_widget.hide()
         else:
-            # If no services
+            # If no services, reset service item to None and hide data widget
+            self.service_data_widget.service_item = None
             self.service_data_widget.hide()
 
     def update_service_data(self):  # pragma: no cover

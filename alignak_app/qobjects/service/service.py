@@ -189,7 +189,6 @@ class ServiceDataQWidget(QWidget):
             self.service_item.data['active_checks_enabled']
         )
         icon_pixmap = QPixmap(settings.get_image(icon_name))
-        icon_pixmap.setDevicePixelRatio(1.0)
 
         self.labels['service_icon'].setPixmap(QPixmap(icon_pixmap))
         self.labels['service_icon'].setScaledContents(True)

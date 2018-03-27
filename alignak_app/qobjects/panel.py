@@ -308,6 +308,12 @@ class PanelQWidget(QWidget):
             self.services_widget.show()
             self.dashboard_widget.update_dashboard()
             self.dashboard_widget.show()
+
+            # If the service element does not have the same ID as the host, reset to None
+            if self.services_widget.service_data_widget.service_item:
+                if self.services_widget.service_data_widget.service_item.data['host'] != \
+                        self.services_widget.host.item_id:
+                    self.services_widget.service_data_widget.service_item = None
         else:
             self.host_widget.hide()
             self.services_widget.hide()
