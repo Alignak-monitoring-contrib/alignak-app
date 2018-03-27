@@ -85,7 +85,7 @@ class ServerQDialog(QDialog):
         """
 
         server_widget = QWidget()
-        server_widget.setObjectName('app')
+        server_widget.setObjectName('dialog')
         server_layout = QVBoxLayout(server_widget)
 
         # Title
