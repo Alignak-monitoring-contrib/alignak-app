@@ -215,6 +215,7 @@ class TestDataManager(unittest2.TestCase):
         self.assertTrue('user' in under_test.database)
 
         self.assertFalse(under_test.old_notifications)
+        self.assertFalse(under_test.ready)
         self.assertNotEqual('READY', under_test.is_ready())
 
     def test_update_item_database(self):
@@ -454,26 +455,35 @@ class TestDataManager(unittest2.TestCase):
 
         self.assertTrue('Collecting' in under_test.is_ready())
         under_test.db_is_ready['livesynthesis'] = True
+        self.assertFalse(under_test.ready)
 
         self.assertTrue('Collecting' in under_test.is_ready())
         under_test.db_is_ready['user'] = True
+        print(under_test.db_is_ready)
+        self.assertFalse(under_test.ready)
 
         self.assertTrue('Collecting' in under_test.is_ready())
         under_test.db_is_ready['realm'] = True
+        self.assertFalse(under_test.ready)
 
         self.assertTrue('Collecting' in under_test.is_ready())
         under_test.db_is_ready['timeperiod'] = True
+        self.assertFalse(under_test.ready)
 
         self.assertTrue('Collecting' in under_test.is_ready())
         under_test.db_is_ready['host'] = True
+        self.assertFalse(under_test.ready)
 
         self.assertTrue('Collecting' in under_test.is_ready())
         under_test.db_is_ready['problems'] = [True, True, True]
+        self.assertFalse(under_test.ready)
 
         self.assertTrue('Collecting' in under_test.is_ready())
         under_test.db_is_ready['alignakdaemon'] = True
+        self.assertFalse(under_test.ready)
 
         self.assertEqual('READY', under_test.is_ready())
+        self.assertTrue(under_test.ready)
 
     def test_get_problems(self):
         """Get Database Problems"""

@@ -64,9 +64,10 @@ class DataManager(object):
             'user': False,
             'realm': False,
             'timeperiod': False,
-            'problems': {'CRITICAL': False, 'WARNING': False, 'UNKNOWN': False, 'host': False},
+            'problems': {'CRITICAL': False, 'WARNING': False, 'UNKNOWN': False},
         }
         self.old_notifications = []
+        self.ready = False
 
     def is_ready(self):
         """
@@ -76,23 +77,23 @@ class DataManager(object):
         :rtype: str
         """
 
-        cur_collected = ''
         for db_name in self.db_is_ready:
-            try:
-                if db_name not in 'problems':
-                    assert self.db_is_ready[db_name]
+            if db_name not in 'problems':
+                if self.db_is_ready[db_name]:
+                    pass
                 else:
-                    for problem in self.db_is_ready['problems']:
-                        assert self.db_is_ready['problems'][problem]
-                cur_collected = _('READY')
-            except AssertionError:
-                cur_collected = _('Collecting %s...') % db_name
-                break
+                    return _('Collecting %s...') % db_name
+            else:
+                for problem in self.db_is_ready['problems']:
+                    if self.db_is_ready['problems'][problem]:
+                        pass
+                    else:
+                        return _('Collecting %s...') % db_name
 
-        if not cur_collected:
-            cur_collected = _('Please wait...')
+        self.ready = True
+        return _('READY')
 
-        return cur_collected
+        # return cur_collected
 
     def update_database(self, item_type, items_list):
         """

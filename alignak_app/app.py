@@ -211,7 +211,7 @@ class AlignakApp(QObject):  # pragma: no cover
         app_progress.initialize()
         center_widget(app_progress)
         logger.info("Preparing DataManager...")
-        while data_manager.is_ready() != 'READY':
+        while not data_manager.ready:
             app_progress.show()
 
             for _ in range(0, 100):
