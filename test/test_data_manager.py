@@ -148,7 +148,6 @@ class TestDataManager(unittest2.TestCase):
     ]
     event_list = []
     for data in event_data:
-        print(data['_id'])
         event = Event()
         event.create(data['_id'], data)
         event_list.append(event)
@@ -459,7 +458,6 @@ class TestDataManager(unittest2.TestCase):
 
         self.assertTrue('Collecting' in under_test.is_ready())
         under_test.db_is_ready['user'] = True
-        print(under_test.db_is_ready)
         self.assertFalse(under_test.ready)
 
         self.assertTrue('Collecting' in under_test.is_ready())
@@ -484,6 +482,89 @@ class TestDataManager(unittest2.TestCase):
 
         self.assertEqual('READY', under_test.is_ready())
         self.assertTrue(under_test.ready)
+
+    def test_update_problems(self):
+        """Update Problems in Database"""
+
+        under_test = DataManager()
+
+        host_test = Host()
+        host_test.create(
+            'id_1',
+            {
+                'name': 'host_1',
+                'ls_state': 'UP',
+                'ls_acknowledged': False,
+                'ls_downtimed': False,
+            },
+            'host_1'
+        )
+        service_test = Service()
+        service_test.create(
+            'id_2',
+            {
+                'name': 'service_1',
+                'host': 'id_1',
+                'ls_state': 'OK',
+                'ls_acknowledged': False,
+                'ls_downtimed': False,
+            },
+            'service_1'
+        )
+        under_test.database['host'].append(host_test)
+        under_test.database['service'].append(service_test)
+
+        under_test.update_problems()
+
+        # Items are not problems, so not in problems database
+        self.assertFalse(host_test in under_test.database['problems'])
+        self.assertFalse(service_test in under_test.database['problems'])
+
+        # Update the host to make it a problem
+        under_test.update_item_data('host', 'id_1', {'ls_state': 'DOWN'})
+
+        under_test.update_problems()
+
+        # Host is added but not the service
+        self.assertTrue(host_test in under_test.database['problems'])
+        self.assertFalse(service_test in under_test.database['problems'])
+
+        # Update the service to make it a problem, update host in host database
+        under_test.update_item_data('service', 'id_2', {'ls_state': 'CRITICAL'})
+        under_test.update_item_data('host', 'id_1', {'ls_state': 'OK'})
+
+        under_test.update_problems()
+
+        # Services is added in problems and host have been removed from problems
+        self.assertFalse(host_test in under_test.database['problems'])
+        self.assertTrue(service_test in under_test.database['problems'])
+
+        # Add host with same _id in problems, but DOWN and acknowledged
+        host_test_2 = Host()
+        host_test_2.create(
+            'id_1',
+            {
+                'name': 'host_1',
+                'ls_state': 'DOWN',
+                'ls_acknowledged': True,
+                'ls_downtimed': False,
+            },
+            'host_1'
+        )
+        under_test.database['problems'].append(host_test_2)
+        # New data for host in "host" database, DOWN but NOT acknowledged
+        under_test.update_item_data('host', 'id_1', {'ls_state': 'DOWN'})
+
+        under_test.update_problems()
+
+        # Host should be in "problems" database, and not ACK.
+        self.assertTrue(under_test.get_item('problems', 'id_1'))
+        self.assertEqual(
+            under_test.get_item('host', 'id_1').data['ls_acknowledged'],
+            under_test.get_item('problems', 'id_1').data['ls_acknowledged'],
+        )
+        # Service still in problems
+        self.assertTrue(service_test in under_test.database['problems'])
 
     def test_get_problems(self):
         """Get Database Problems"""
