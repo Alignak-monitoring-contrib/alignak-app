@@ -50,9 +50,9 @@ class TestPanelQWidget(unittest2.TestCase):
                 'name': 'host%d' % i,
                 'alias': 'Host %d' % i,
                 '_id': '_id%d' % i,
-                'ls_downtimed': True,
-                'ls_acknowledged': True,
-                'ls_state': 'UNKNOWN',
+                'ls_downtimed': False,
+                'ls_acknowledged': False,
+                'ls_state': 'UNREACHABLE',
                 'ls_output': 'output host %d' % i,
                 'ls_last_check': '',
                 '_realm': '59c4e38535d17b8dcb0bed42',
@@ -164,10 +164,17 @@ class TestPanelQWidget(unittest2.TestCase):
     def test_update_panels(self):
         """Update QTabPanel Problems"""
 
+        data_manager.database['problems'] = []
+        data_manager.update_database('host', self.host_list)
+        for item in self.host_list:
+            data_manager.database['problems'].append(item)
+        for item in self.service_list:
+            data_manager.database['problems'].append(item)
+
         under_test = PanelQWidget()
         under_test.initialize()
 
-        # 10 problems for CRITICAL services
+        # 20 problems for CRITICAL services and UNREACHABLE hosts
         problems_index = under_test.get_tab_order().index('p')
         self.assertEqual('Problems (20)', under_test.tab_widget.tabText(problems_index))
 

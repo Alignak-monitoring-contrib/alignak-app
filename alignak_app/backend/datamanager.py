@@ -438,6 +438,31 @@ class DataManager(object):
 
         return items_and_problems
 
+    def update_problems(self):
+        """
+        Update "problems" database
+
+        """
+
+        # Cleaning problems database
+        for item in self.database['problems']:
+            updated_item = self.get_item(item.item_type, item.item_id)
+            if updated_item:
+                if not self.is_problem(item.item_type, updated_item.data):
+                    self.database['problems'].remove(item)
+                else:
+                    item.data = updated_item.data
+
+        # Update if new host are in problem.
+        for item in self.database['host']:
+            item_in_problem = self.get_item('problems', item.item_id)
+            if not item_in_problem and self.is_problem(item.item_type, item.data):
+                self.database['problems'].append(item)
+            elif item_in_problem and not self.is_problem(item.item_type, item.data):
+                self.database['problems'].remove(item_in_problem)
+            elif item_in_problem and self.is_problem(item.item_type, item.data):
+                item_in_problem.data = item.data
+
     def get_problems(self):
         """
         Return items who are in problem: hosts and services
@@ -445,6 +470,8 @@ class DataManager(object):
         :return: dict of items in problem, and number for each type of item
         :rtype: dict
         """
+
+        self.update_problems()
 
         hosts_nb = 0
         services_nb = 0
@@ -457,7 +484,7 @@ class DataManager(object):
             else:
                 hosts_nb += 1
 
-        # problems = sorted(problems, key=lambda x: x.data['ls_state'], reverse=True)
+        problems = sorted(problems, key=lambda x: x.data['ls_state'], reverse=True)
         problems = sorted(problems, key=lambda x: x.item_type)
 
         problems_data = {
