@@ -440,32 +440,43 @@ class DataManager(object):
 
     def update_problems(self):
         """
-        Update "problems" database
+        Update hosts and services in "problems" database
 
         """
 
-        # Cleaning problems database
-        for item in self.database['problems']:
-            updated_item = self.get_item(item.item_type, item.item_id)
-            if updated_item:
-                if not self.is_problem(item.item_type, updated_item.data):
-                    self.database['problems'].remove(item)
-                else:
-                    item.data = updated_item.data
-
-        # Update if new host are in problem.
+        # Update if new hosts are in problem.
         for item in self.database['host']:
             item_in_problem = self.get_item('problems', item.item_id)
             if not item_in_problem and self.is_problem(item.item_type, item.data):
+                # Add item to problems
                 self.database['problems'].append(item)
             elif item_in_problem and not self.is_problem(item.item_type, item.data):
+                # Remove item from problems
                 self.database['problems'].remove(item_in_problem)
             elif item_in_problem and self.is_problem(item.item_type, item.data):
+                # Update item in problem
                 item_in_problem.data = item.data
+            else:
+                pass
+
+        # Update if new services are in problem.
+        for item in self.database['service']:
+            item_in_problem = self.get_item('problems', item.item_id)
+            if not item_in_problem and self.is_problem(item.item_type, item.data):
+                # Add item to problems
+                self.database['problems'].append(item)
+            elif item_in_problem and not self.is_problem(item.item_type, item.data):
+                # Remove item from problems
+                self.database['problems'].remove(item_in_problem)
+            elif item_in_problem and self.is_problem(item.item_type, item.data):
+                # Update item in problem
+                item_in_problem.data = item.data
+            else:
+                pass
 
     def get_problems(self):
         """
-        Return items who are in problem: hosts and services
+        Update and return items who are in problem: hosts and services
 
         :return: dict of items in problem, and number for each type of item
         :rtype: dict
