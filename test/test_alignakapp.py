@@ -24,7 +24,7 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication
 
-from alignak_app.app import AppProgressBar, AppProgressQWidget
+from alignak_app.alignakapp import AppProgressBar, AppProgressQWidget
 
 
 class TestApp(unittest2.TestCase):
