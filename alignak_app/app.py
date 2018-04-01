@@ -20,8 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Alignak-App Launcher
-~~~~~~~~~~~~~~~~~~~~
+alignak-app-launcher command line interface::
 
     Usage:
         alignak-app-launcher [-h]
@@ -34,19 +33,18 @@ Alignak-App Launcher
         -i, --install       Check installation folders and files. (All platforms)
                             Install a daemon file and autocompletion. (Linux only)
 
-    Daemon "alignak-app":
-        Option "--install" will create a bin folder in your ``HOME``, with a daemon file based on
+    Daemon [alignak-app]:
+        Option "--install" will create a bin folder in your "$HOME", with a daemon file based on
         the environment variables of your current session.
 
-        Then simply run ``alignak-app``.
+        Then simply run "alignak-app start" to launch application.
 
     Exit codes:
-        0 if required operation succeeded
+        0  if required operation succeeded
 
         22 if application detect an SSH session.
         64 if command line parameters are not used correctly
 
-    For more information, please read the documentation at http://alignak-app.readthedocs.io.
 """
 
 import os

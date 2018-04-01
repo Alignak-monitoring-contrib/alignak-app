@@ -48,7 +48,7 @@ APP_RELEASE_NOTES="%s"
 APP_PROJECT_URL="%s"
 APP_DOC_URL="%s"
 
-# Functions for alignak-app
+# Alignak-app functions
 usage() {
     echo "------------------------------------------"
     echo "Alignak-app, Version $APP_VERSION \n"
@@ -88,7 +88,7 @@ do_stop() {
         echo "--------------------------------------------------"
     else
         echo "--------------------------------------------------"
-        echo " $DAEMON is not running ;) "
+        echo " $DAEMON does not run ;) "
         echo "--------------------------------------------------"
     fi
 }
@@ -101,7 +101,8 @@ do_status() {
         echo "--------------------------------------------------"
     else
         echo "--------------------------------------------------"
-        echo " $DAEMON is not running ! "
+        echo " $DAEMON does not run ;) "
+        echo ""
         echo "Run '$DAEMON start' to launch Alignak-app"
         echo "--------------------------------------------------"
     fi

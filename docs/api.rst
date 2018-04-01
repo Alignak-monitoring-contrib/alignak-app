@@ -6,7 +6,7 @@ API
 Main Class
 ----------
 
-.. automodule:: alignak_app.app
+.. automodule:: alignak_app.alignakapp
     :members:
     :show-inheritance:
 
