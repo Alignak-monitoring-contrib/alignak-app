@@ -142,6 +142,10 @@ class SpyQWidget(QWidget):
 
         if item:
             host = data_manager.get_item('host', item.host)
+
+            if _('(new !)') in item.data(Qt.DisplayRole):
+                item.setData(Qt.DisplayRole, item.data(Qt.DisplayRole).replace(_('(new !)'), ''))
+
             self.host_services_lbl.setText(_('Problems found for %s:') % host.get_display_name())
             services = data_manager.get_host_services(host.item_id)
 

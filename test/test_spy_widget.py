@@ -232,6 +232,12 @@ class TestSpyQWidgets(unittest2.TestCase):
         under_test.spy_list_widget.add_spy_host(host_test.item_id)
         under_test.spy_list_widget.setCurrentRow(0)
 
+        # "(new !)" is added to new spy host
+        self.assertEqual(
+            'Host Hostname, current state: DOWN (new !)',
+            under_test.spy_list_widget.item(0).data(Qt.DisplayRole)
+        )
+
         # Manage problems with a valid row
         under_test.manage_host_events(under_test.spy_list_widget.currentRow())
 
@@ -240,6 +246,11 @@ class TestSpyQWidgets(unittest2.TestCase):
         self.assertEqual(
             'Hostname is DOWN. No services.',
             under_test.host_list_widget.item(0).data(Qt.DisplayRole)
+        )
+        # "(new !)" is removed
+        self.assertEqual(
+            'Host Hostname, current state: DOWN ',
+            under_test.spy_list_widget.item(0).data(Qt.DisplayRole)
         )
 
         # Fill "services" database attached to host

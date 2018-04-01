@@ -398,14 +398,12 @@ QListWidget::item {
 
 QListWidget::item:hover {
     background-color: white;
-    border: 1px solid #1fb4e4;
     color: #3884c3;
 }
 
 QListWidget::item:selected {
     background-color: white;
     color: #3884c3;
-    border: 1px solid #3884c3;
 }
 
 /****** QTableWidget ******/

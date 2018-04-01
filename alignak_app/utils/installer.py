@@ -226,7 +226,7 @@ class Installer(object):
             assert os.path.isfile(usr_cfg_file)
         except AssertionError as e:
             print(e)
-            print('- [!] There is no [settings.cfg] file in [ALIGNAKAPP_USR_DIR] folder !')
+            print('- [!] There is no [settings.cfg] file in [%s] folder !' % os.environ['ALIGNAKAPP_USR_DIR'])
             print('\tPlease launch "%s.py --install before start."' % self.daemon_name)
             sys.exit(1)
 

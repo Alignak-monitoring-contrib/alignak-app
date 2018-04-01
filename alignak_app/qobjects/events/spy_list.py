@@ -27,8 +27,7 @@
 
 from logging import getLogger
 
-from PyQt5.QtCore import pyqtSignal, QSize, Qt
-from PyQt5.QtWidgets import QListWidget
+from PyQt5.Qt import pyqtSignal, QSize, Qt, QListWidget
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.qobjects.events.item import EventItem
@@ -70,7 +69,7 @@ class SpyQListWidget(QListWidget):
                 event_item = EventItem()
                 event_item.initialize(
                     EventItem.get_event_type(host.data),
-                    _('Host %s, current state: %s') % (
+                    _('Host %s, current state: %s (new !)') % (
                         host.get_display_name(), host.data['ls_state']),
                     host=host.item_id
                 )
