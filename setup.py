@@ -47,6 +47,7 @@ install_requires = [
     'configparser',
     'pyqt5<5.10',
     'python-gettext',
+    'docopt',
 ]
 
 # Define paths
