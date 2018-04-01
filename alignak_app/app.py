@@ -33,8 +33,10 @@
 import os
 import sys
 import time
+import argparse
 
-from logging import DEBUG, INFO
+from logging import DEBUG, INFO, getLogger
+
 from PyQt5.Qt import QApplication, QObject, QIcon, Qt, QProgressBar, QWidget, QLabel, QVBoxLayout
 from PyQt5.Qt import QTimer
 
@@ -42,6 +44,7 @@ from alignak_app import __application__, __version__
 
 from alignak_app.utils.config import settings
 from alignak_app.utils.logs import create_logger
+from alignak_app.utils.installer import Installer
 from alignak_app.locales.locales import init_localization
 
 from alignak_app.backend.backend import app_backend
@@ -54,10 +57,9 @@ from alignak_app.qobjects.login.login import LoginQDialog
 from alignak_app.qobjects.events.events import init_event_widget
 from alignak_app.qobjects.systray.tray_icon import AppTrayIcon
 
-settings.init_config()
-settings.init_css()
-init_localization()
-logger = create_logger()
+# Prepare installer and configurations
+installer = Installer()
+logger = getLogger(__name__)
 
 
 class AppProgressQWidget(QWidget):
@@ -144,6 +146,13 @@ class AlignakApp(QObject):  # pragma: no cover
         Start Alignak-app
 
         """
+
+        settings.init_config()
+        settings.init_css()
+        init_localization()
+
+        global logger
+        logger = create_logger()
 
         # Logger
         logger.name = 'alignak_app.app'
@@ -301,3 +310,58 @@ class AlignakApp(QObject):  # pragma: no cover
                 settings.get_config('Alignak', 'backend')
             )
             thread_manager.stop_threads()
+
+
+def main():  # pragma: no cover
+    """
+        Launch or install Alignak-app
+    """
+
+    usage = u"alignak-app-launcher [--start | --install]"
+    if 'win32' not in sys.platform:
+        description = u'Launch %s in shell or install as daemon.' % __application__
+    else:
+        description = u'Launch %s in shell.' % __application__
+
+    # Init parser
+    parser = argparse.ArgumentParser(
+        usage=usage,
+        description=description
+    )
+
+    parser.add_argument(
+        '-i', '--install',
+        help='Check installation and install folders for each user. '
+             'If you installed %s as sudo, run this command first.' % __application__,
+        dest='install', action="store_true", default=False
+    )
+
+    parser.add_argument(
+        '-s', '--start',
+        help='Start %s in your shell.' % __application__,
+        dest='start', action="store_true", default=False
+    )
+
+    args = parser.parse_args()
+
+    if args.start:
+        if 'SSH_CONNECTION' in os.environ:
+            sys.exit(
+                'Alignak-app can not be launched during an SSH connection '
+                'and requires an X server to be displayed.'
+            )
+
+        installer.check_installation()
+
+        alignak_app = AlignakApp()
+        alignak_app.start()
+    elif args.install:
+        # Check installation and install
+        installer.check_installation(mode='install')
+        installer.install()
+    else:
+        parser.print_help()
+
+
+if __name__ == '__main__':
+    main()

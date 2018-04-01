@@ -37,8 +37,7 @@
 
 # Variables
 DAEMON=%s
-BIN_FILE=%s
-PYBIN=python3
+PYBIN=alignak-app-launcher
 
 export ALIGNAKAPP_APP_DIR=%s
 export ALIGNAKAPP_USR_DIR=%s
@@ -54,8 +53,8 @@ usage() {
     echo "------------------------------------------"
     echo "Alignak-app, Version $APP_VERSION \n"
     echo "\t$APP_RELEASE_NOTES"
-    echo "\tFor more help, visit $APP_DOC_URL."
-    echo "\tPlease open any issue on $APP_PROJECT_URL."
+    echo "\tFor more help    : $APP_DOC_URL."
+    echo "\tOpen any issue on: $APP_PROJECT_URL."
     echo "------------------------------------------"
     echo "Alignak-App Environment: \n"
     echo "\tALIGNAKAPP_APP_DIR = $ALIGNAKAPP_APP_DIR"
@@ -66,7 +65,7 @@ usage() {
 
 
 do_start() {
-    PID=`ps aux |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
+    PID=`ps aux |grep "alignak-app-launcher"|grep -v "grep"|awk '{print $2}'`
     if [ ! -z "$PID" ]; then
         echo "--------------------------------------------------"
         echo " $DAEMON is already running ;) "
@@ -75,12 +74,12 @@ do_start() {
         echo "--------------------------------------------------"
         echo " $DAEMON v$APP_VERSION start... "
         echo "--------------------------------------------------"
-        "$PYBIN" "$BIN_FILE" --start &
+        "$PYBIN" --start &
     fi
 }
 
 do_stop() {
-    PID=`ps aux |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
+    PID=`ps aux |grep "alignak-app-launcher"|grep -v "grep"|awk '{print $2}'`
     if [ ! -z "$PID" ]; then
         echo "--------------------------------------------------"
         echo " $DAEMON is stopping... (Kill pid $PID) "
@@ -95,7 +94,7 @@ do_stop() {
 }
 
 do_status() {
-    PID=`ps fu |grep "alignak-app.py"|grep -v "grep"|awk '{print $2}'`
+    PID=`ps fu |grep "alignak-app-launcher"|grep -v "grep"|awk '{print $2}'`
     if [ ! -z "$PID" ]; then
         echo "--------------------------------------------------"
         echo " $DAEMON is running... (pid $PID)"
