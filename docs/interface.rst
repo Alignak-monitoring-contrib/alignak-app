@@ -45,7 +45,7 @@ If you've some connection problems or if backend is restart, you'll be notified 
 
 You can also see each daemon state by clicking on button with Alignak icon, if endpoint is available in backend.
 
-Finally, you can see your profile by clicking on the button
+Finally, you can see your profile by clicking on the button.
 
 Livestate part
 ==============

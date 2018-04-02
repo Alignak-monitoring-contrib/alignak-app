@@ -54,12 +54,16 @@ All parameters are also explained in file. For the boolean parameters, you can u
 
 The most significant Section is **[Alignak]**. You'll need set your backend url and ports. Otherwise, Alignak-app proposes to define your server Alignak and its port via the window login.
 
-**To Know:** Without connection on Backend of Alignak, App won't start ! "
+**To Know:** Without connection on Backend of Alignak, App won't start !
 
 Proxy Settings
 **************
 
-If you have a proxy on your network, you can set this proxy in environment variables.
+If you have a proxy on your network, you can set it in ``settings.cfg`` file, as well as the name and password of the proxy.
+
+In case you use the login window, you will have a button dedicated to the proxy settings.
+
+You can also set proxy in environment variables.
 `Alignak backend client <http://alignak-backend-client.readthedocs.io/en/develop>`_ will manage these variables alone when connecting to the backend.
 
 * For HTTP proxies, set ``HTTP_PROXY`` variable.
