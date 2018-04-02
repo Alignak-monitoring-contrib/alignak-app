@@ -57,6 +57,9 @@ class SpyQListWidget(QListWidget):
         :type host_id: str
         """
 
+        if self.parent():
+            self.parent().host_services_lbl.setText(_('Select spy host to display its problems...'))
+
         if not self.initialized:
             # Remove Hint item
             self.takeItem(0)

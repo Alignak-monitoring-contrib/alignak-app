@@ -48,7 +48,7 @@ class SpyQWidget(QWidget):
 
     def __init__(self):
         super(SpyQWidget, self).__init__()
-        self.host_services_lbl = QLabel(_('Select spy host to display its problems...'))
+        self.host_services_lbl = QLabel(_('You are not spying on any hosts for now...'))
         self.spy_list_widget = SpyQListWidget()
         self.host_list_widget = QListWidget()
         self.spy_timer = QTimer()
