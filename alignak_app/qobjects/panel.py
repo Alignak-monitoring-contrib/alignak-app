@@ -27,8 +27,7 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QPushButton, QCompleter, QLineEdit, QIcon, QHBoxLayout, QLabel
-from PyQt5.Qt import QStringListModel, Qt, QVBoxLayout, QWidget, QTabWidget
+from PyQt5.Qt import QPushButton, QIcon, Qt, QVBoxLayout, QWidget, QTabWidget
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.backend.backend import app_backend
@@ -37,9 +36,8 @@ from alignak_app.utils.config import settings
 from alignak_app.qobjects.events.item import EventItem
 from alignak_app.qobjects.events.spy import SpyQWidget
 from alignak_app.qobjects.alignak.dashboard import DashboardQWidget
-from alignak_app.qobjects.host.host import HostQWidget
 from alignak_app.qobjects.alignak.problems import ProblemsQWidget
-from alignak_app.qobjects.service.services import ServicesQWidget
+from alignak_app.qobjects.host.synthesis import SynthesisQWidget
 
 logger = getLogger(__name__)
 
@@ -49,29 +47,17 @@ class PanelQWidget(QWidget):
         Class who manage Panel with Host and Services QWidgets
     """
 
-    spy_icons = {
-        True: 'spy',
-        False: 'spy_ok',
-    }
-
     def __init__(self, parent=None):
         super(PanelQWidget, self).__init__(parent)
         self.setAcceptDrops(True)
         # Fields
         self.tab_widget = QTabWidget()
         self.layout = QVBoxLayout()
-        self.line_search = QLineEdit()
-        self.completer = QCompleter()
-        self.hostnames_list = []
         self.dashboard_widget = DashboardQWidget()
-        self.host_widget = HostQWidget()
-        self.synthesis_widget = QWidget()
-        self.services_widget = ServicesQWidget()
+        self.synthesis_widget = SynthesisQWidget()
         self.problems_widget = ProblemsQWidget()
-        self.spy_text = {True: _("Spy Host"), False: _("Host spied!")}
         self.spy_widget = SpyQWidget()
-        self.spy_button = QPushButton(self.spy_text[True])
-        self.spied_hosts = []
+        self.hostnames_list = []
 
     def initialize(self):
         """
@@ -90,8 +76,15 @@ class PanelQWidget(QWidget):
         self.layout.addWidget(self.tab_widget)
         tab_order = self.get_tab_order()
 
+        # Set hostnames
+        self.hostnames_list = data_manager.get_all_hostnames()
+
         # Synthesis
-        self.init_synthesis_widget()
+        self.synthesis_widget.initialize_synthesis()
+        self.synthesis_widget.spy_btn.clicked.connect(self.spy_host)
+        self.synthesis_widget.line_search.returnPressed.connect(self.display_host)
+        self.synthesis_widget.line_search.cursorPositionChanged.connect(self.display_host)
+        self.synthesis_widget.create_line_search(self.hostnames_list)
         self.tab_widget.insertTab(tab_order.index('h'), self.synthesis_widget, _("Host Synthesis"))
         self.tab_widget.setTabToolTip(
             self.tab_widget.indexOf(self.synthesis_widget), _('See a synthesis view of a host')
@@ -117,32 +110,8 @@ class PanelQWidget(QWidget):
         )
 
         # Hide widget for first display
-        self.host_widget.hide()
-        self.services_widget.hide()
-
-    def init_synthesis_widget(self):
-        """
-        Initialize Synthesis QWidget
-
-        """
-
-        synthesis_layout = QVBoxLayout()
-        self.synthesis_widget.setLayout(synthesis_layout)
-
-        # Search widget
-        search_widget = self.get_search_widget()
-        synthesis_layout.addWidget(search_widget)
-
-        # Host widget
-        self.host_widget.initialize()
-        synthesis_layout.addWidget(self.host_widget)
-
-        # Services widget
-        self.services_widget.initialize()
-        synthesis_layout.addWidget(self.services_widget)
-
-        # Align all widgets to Top
-        synthesis_layout.setAlignment(Qt.AlignTop)
+        self.synthesis_widget.host_widget.hide()
+        self.synthesis_widget.services_widget.hide()
 
     @staticmethod
     def get_tab_order():
@@ -153,7 +122,7 @@ class PanelQWidget(QWidget):
         :rtype: list
         """
 
-        default_order = ['h', 'p', 's']
+        default_order = ['p', 'h', 's']
         tab_order = settings.get_config('Alignak-app', 'tab_order').split(',')
 
         try:
@@ -162,45 +131,9 @@ class PanelQWidget(QWidget):
                 assert nb in tab_order
         except AssertionError:
             logger.error('Wrong "tab_order" value in config file %s', tab_order)
-            tab_order = ['h', 'p', 's']
+            tab_order = default_order
 
         return tab_order
-
-    def get_search_widget(self):
-        """
-        Create and return the search QWidget
-
-        :return: search QWidget
-        :rtype: QWidget
-        """
-
-        widget = QWidget()
-        layout = QHBoxLayout()
-        layout.setSpacing(0)
-        widget.setLayout(layout)
-
-        # Search label
-        search_lbl = QLabel(_('Search Host'))
-        search_lbl.setObjectName('bordertitle')
-        search_lbl.setFixedHeight(25)
-        search_lbl.setToolTip(_('Search Host'))
-        layout.addWidget(search_lbl)
-
-        # QLineEdit
-        self.line_search.setFixedHeight(search_lbl.height())
-        self.line_search.returnPressed.connect(self.display_host)
-        self.line_search.cursorPositionChanged.connect(self.display_host)
-        layout.addWidget(self.line_search)
-
-        self.spy_button.setIcon(QIcon(settings.get_image('spy')))
-        self.spy_button.setObjectName('valid')
-        self.spy_button.setFixedSize(110, 25)
-        self.spy_button.clicked.connect(self.spy_host)
-        layout.addWidget(self.spy_button)
-
-        self.create_line_search()
-
-        return widget
 
     def spy_host(self):
         """
@@ -208,22 +141,22 @@ class PanelQWidget(QWidget):
 
         """
 
-        if self.line_search.text() in self.hostnames_list:
-            host = data_manager.get_item('host', 'name', self.line_search.text())
+        if self.synthesis_widget.line_search.text() in self.hostnames_list:
+            host = data_manager.get_item('host', 'name', self.synthesis_widget.line_search.text())
             self.spy_widget.spy_list_widget.add_spy_host(host.item_id)
-            self.spy_button.setEnabled(False)
+            self.synthesis_widget.spy_btn.setEnabled(False)
 
-            self.spy_button.setIcon(
-                QIcon(settings.get_image(self.spy_icons[False]))
+            self.synthesis_widget.spy_btn.setIcon(
+                QIcon(settings.get_image(self.synthesis_widget.spy_icons[False]))
             )
-            self.spy_button.setText(self.spy_text[False])
+            self.synthesis_widget.spy_btn.setText(self.synthesis_widget.spy_text[False])
             self.update_panel_spytab()
         else:
-            self.spy_button.setEnabled(True)
-            self.spy_button.setIcon(
-                QIcon(settings.get_image(self.spy_icons[True]))
+            self.synthesis_widget.spy_btn.setEnabled(True)
+            self.synthesis_widget.spy_btn.setIcon(
+                QIcon(settings.get_image(self.synthesis_widget.spy_icons[True]))
             )
-            self.spy_button.setText(self.spy_text[True])
+            self.synthesis_widget.spy_btn.setText(self.synthesis_widget.spy_text[True])
 
     def update_panel_spytab(self):
         """
@@ -236,37 +169,6 @@ class PanelQWidget(QWidget):
             "Spied Hosts (%d)" % self.spy_widget.spy_list_widget.count()
         )
 
-    def create_line_search(self, hostnames_list=None):
-        """
-        Add all hosts to QLineEdit and set QCompleter
-
-        :param hostnames_list: list of host names
-        :type hostnames_list: list
-        """
-
-        # Get QStringListModel
-        model = self.completer.model()
-        if not model:
-            model = QStringListModel()
-
-        if not hostnames_list:
-            self.hostnames_list = data_manager.get_all_hostnames()
-        else:
-            self.hostnames_list = hostnames_list
-
-        model.setStringList(self.hostnames_list)
-
-        # Configure QCompleter from model
-        self.completer.setFilterMode(Qt.MatchContains)
-        self.completer.setCaseSensitivity(Qt.CaseInsensitive)
-        self.completer.setModel(model)
-        self.completer.popup().setObjectName('popup')
-
-        # Add completer to QLineEdit
-        self.line_search.setCompleter(self.completer)
-        self.line_search.setPlaceholderText(_('Type a host name to display its data'))
-        self.line_search.setToolTip(_('Type a host name to display its data'))
-
     def display_host(self):
         """
         Display and update HostQWidget
@@ -276,16 +178,19 @@ class PanelQWidget(QWidget):
         # Update and set "line_search" in case hosts have been added or deleted
         hostnames_list = data_manager.get_all_hostnames()
         if hostnames_list != self.hostnames_list:
-            self.create_line_search(hostnames_list)
+            self.synthesis_widget.create_line_search(hostnames_list)
 
         # If sender is QPushButton from problems, set "line_search" text
         if isinstance(self.sender(), QPushButton):
-            self.set_line_search()
+            self.display_host_from_problems()
 
         # Display host if exists
-        if self.line_search.text().rstrip() in self.hostnames_list:
+        if self.synthesis_widget.line_search.text().rstrip() in self.hostnames_list:
             # Get Host Item and its services
-            host_item = data_manager.get_item('host', self.line_search.text().rstrip())
+            host_item = data_manager.get_item(
+                'host',
+                self.synthesis_widget.line_search.text().rstrip()
+            )
             services = data_manager.get_host_services(host_item.item_id)
             if not services:
                 app_backend.query_services(host_item.item_id)
@@ -295,39 +200,13 @@ class PanelQWidget(QWidget):
             not_spied = bool(
                 host_item.item_id not in self.spy_widget.spy_list_widget.spied_hosts
             )
-            self.spy_button.setEnabled(not_spied)
-            self.spy_button.setIcon(
-                QIcon(settings.get_image(self.spy_icons[not_spied]))
-            )
-            self.spy_button.setText(self.spy_text[not_spied])
-
-            # Update Qwidgets
-            self.host_widget.update_host(host_item)
-            self.host_widget.show()
-            self.services_widget.update_widget(host_item, services)
-            self.services_widget.show()
+            self.synthesis_widget.update_synthesis(host_item, services, not_spied)
             self.dashboard_widget.update_dashboard()
             self.dashboard_widget.show()
-
-            # If the service element does not have the same ID as the host, reset to None
-            if self.services_widget.service_data_widget.service_item:
-                if self.services_widget.service_data_widget.service_item.data['host'] != \
-                        self.services_widget.host.item_id:
-                    self.services_widget.service_data_widget.service_item = None
         else:
-            self.host_widget.hide()
-            self.services_widget.hide()
+            self.synthesis_widget.update_synthesis(None, None, False)
 
-            self.spy_button.setEnabled(True)
-            self.spy_button.setIcon(
-                QIcon(settings.get_image(self.spy_icons[True]))
-            )
-            self.spy_button.setText(self.spy_text[True])
-
-        self.spy_button.style().unpolish(self.spy_button)
-        self.spy_button.style().polish(self.spy_button)
-
-    def set_line_search(self):
+    def display_host_from_problems(self):
         """
         Set line search if ``sender()`` is instance of QPushButton from
         :class:`Problems <alignak_app.qobjects.alignak.problems.ProblemsQWidget>` QWidget
@@ -342,7 +221,7 @@ class PanelQWidget(QWidget):
                 hostname = item.name
 
             if hostname in self.hostnames_list:
-                self.line_search.setText(hostname)
+                self.synthesis_widget.line_search.setText(hostname)
                 self.tab_widget.setCurrentIndex(self.tab_widget.indexOf(self.synthesis_widget))
 
     def dragMoveEvent(self, event):  # pragma: no cover
@@ -374,7 +253,7 @@ class PanelQWidget(QWidget):
         logger.debug('Drag and drop host in Panel: %s', host.name)
         logger.debug('... with current item: %s', event.source().currentItem())
 
-        self.line_search.setText(host.name)
+        self.synthesis_widget.line_search.setText(host.name)
         self.tab_widget.setCurrentIndex(self.tab_widget.indexOf(self.synthesis_widget))
         self.display_host()
 

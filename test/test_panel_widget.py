@@ -30,7 +30,6 @@ from alignak_app.items.host import Host
 from alignak_app.items.service import Service
 
 from alignak_app.qobjects.panel import PanelQWidget
-from alignak_app.qobjects.events.events import init_event_widget
 
 
 class TestPanelQWidget(unittest2.TestCase):
@@ -116,12 +115,8 @@ class TestPanelQWidget(unittest2.TestCase):
         under_test = PanelQWidget()
 
         self.assertIsNotNone(under_test.layout)
-        self.assertIsNotNone(under_test.line_search)
-        self.assertIsNotNone(under_test.completer)
         self.assertIsNotNone(under_test.dashboard_widget)
-        self.assertIsNotNone(under_test.host_widget)
-        self.assertIsNotNone(under_test.services_widget)
-        self.assertIsNotNone(under_test.spy_button)
+        self.assertIsNotNone(under_test.synthesis_widget)
         self.assertIsNotNone(under_test.spy_widget)
 
         self.assertFalse(under_test.hostnames_list)
@@ -129,12 +124,8 @@ class TestPanelQWidget(unittest2.TestCase):
         under_test.initialize()
 
         self.assertIsNotNone(under_test.layout)
-        self.assertIsNotNone(under_test.line_search)
-        self.assertIsNotNone(under_test.completer)
         self.assertIsNotNone(under_test.dashboard_widget)
-        self.assertIsNotNone(under_test.host_widget)
-        self.assertIsNotNone(under_test.services_widget)
-        self.assertIsNotNone(under_test.spy_button)
+        self.assertIsNotNone(under_test.synthesis_widget)
         self.assertIsNotNone(under_test.spy_widget)
 
         self.assertEqual(
@@ -152,11 +143,11 @@ class TestPanelQWidget(unittest2.TestCase):
         under_test.initialize()
 
         # Host is not in hostname_list
-        under_test.line_search.setText('no_host')
+        under_test.synthesis_widget.line_search.setText('no_host')
         under_test.spy_host()
         spy_index = under_test.get_tab_order().index('s')
 
-        self.assertTrue(under_test.spy_button.isEnabled())
+        self.assertTrue(under_test.synthesis_widget.spy_btn.isEnabled())
         self.assertEqual('Spied Hosts', under_test.tab_widget.tabText(spy_index))
         # Host Id is not added in spied_hosts of SpyQWidget.SpyQListWidget
         self.assertFalse('_id0' in under_test.spy_widget.spy_list_widget.spied_hosts)
@@ -192,17 +183,17 @@ class TestPanelQWidget(unittest2.TestCase):
         under_test = PanelQWidget()
         under_test.initialize()
 
-        self.assertTrue(under_test.spy_button.isEnabled())
+        self.assertTrue(under_test.synthesis_widget.spy_btn.isEnabled())
 
         under_test.display_host()
 
-        self.assertTrue(under_test.spy_button.isEnabled())
-        self.assertTrue(under_test.host_widget.isHidden())
-        self.assertTrue(under_test.services_widget.isHidden())
+        self.assertTrue(under_test.synthesis_widget.spy_btn.isEnabled())
+        self.assertTrue(under_test.synthesis_widget.host_widget.isHidden())
+        self.assertTrue(under_test.synthesis_widget.services_widget.isHidden())
 
-        under_test.line_search.setText(self.host_list[0].name)
+        under_test.synthesis_widget.line_search.setText(self.host_list[0].name)
         under_test.display_host()
 
-        self.assertTrue(under_test.spy_button.isEnabled())
-        self.assertFalse(under_test.host_widget.isHidden())
-        self.assertFalse(under_test.services_widget.isHidden())
+        self.assertTrue(under_test.synthesis_widget.spy_btn.isEnabled())
+        self.assertFalse(under_test.synthesis_widget.host_widget.isHidden())
+        self.assertFalse(under_test.synthesis_widget.services_widget.isHidden())

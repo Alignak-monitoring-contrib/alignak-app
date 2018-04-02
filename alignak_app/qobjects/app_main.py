@@ -103,7 +103,7 @@ class AppQMainWindow(QMainWindow):
             )
             self.panel_widget.problems_widget.line_search.setFocus()
         else:
-            self.panel_widget.line_search.setFocus()
+            self.panel_widget.synthesis_widget.line_search.setFocus()
 
     def showEvent(self, _):
         """ showEvent(self, QShowEvent) """
@@ -113,7 +113,7 @@ class AppQMainWindow(QMainWindow):
                 type(self.panel_widget.problems_widget)):
             self.panel_widget.problems_widget.line_search.setFocus()
         else:
-            self.panel_widget.line_search.setFocus()
+            self.panel_widget.synthesis_widget.line_search.setFocus()
 
         self.activateWindow()
 
