@@ -148,7 +148,7 @@ class TestPanelQWidget(unittest2.TestCase):
         spy_index = under_test.get_tab_order().index('s')
 
         self.assertTrue(under_test.synthesis_widget.spy_btn.isEnabled())
-        self.assertEqual('Spied Hosts', under_test.tab_widget.tabText(spy_index))
+        self.assertEqual('Spy Hosts', under_test.tab_widget.tabText(spy_index))
         # Host Id is not added in spied_hosts of SpyQWidget.SpyQListWidget
         self.assertFalse('_id0' in under_test.spy_widget.spy_list_widget.spied_hosts)
 
@@ -190,6 +190,7 @@ class TestPanelQWidget(unittest2.TestCase):
         self.assertTrue(under_test.synthesis_widget.spy_btn.isEnabled())
         self.assertTrue(under_test.synthesis_widget.host_widget.isHidden())
         self.assertTrue(under_test.synthesis_widget.services_widget.isHidden())
+        self.assertFalse(under_test.synthesis_widget.hint_widget.isHidden())
 
         under_test.synthesis_widget.line_search.setText(self.host_list[0].name)
         under_test.display_host()
@@ -197,9 +198,10 @@ class TestPanelQWidget(unittest2.TestCase):
         self.assertTrue(under_test.synthesis_widget.spy_btn.isEnabled())
         self.assertFalse(under_test.synthesis_widget.host_widget.isHidden())
         self.assertFalse(under_test.synthesis_widget.services_widget.isHidden())
+        self.assertTrue(under_test.synthesis_widget.hint_widget.isHidden())
 
-    def test_display_host_from_problems(self):
-        """Display Host in Panel from Problems QWidget"""
+    def test_set_host_from_problems(self):
+        """Set Host in Panel from Problems QWidget"""
 
         under_test = PanelQWidget()
         under_test.initialize()
@@ -218,7 +220,7 @@ class TestPanelQWidget(unittest2.TestCase):
         self.assertIsNotNone(under_test.problems_widget.get_curent_user_role_item())
         self.assertEqual('', under_test.synthesis_widget.line_search.text())
 
-        under_test.display_host_from_problems()
+        under_test.set_host_from_problems()
 
         # Host is set in line search
         self.assertEqual('host8', under_test.synthesis_widget.line_search.text())

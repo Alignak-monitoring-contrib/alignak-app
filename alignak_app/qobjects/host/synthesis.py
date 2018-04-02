@@ -58,6 +58,7 @@ class SynthesisQWidget(QWidget):
         self.completer = QCompleter()
         self.spy_text = {True: _("Spy Host"), False: _("Host spied!")}
         self.spy_btn = QPushButton(self.spy_text[True])
+        self.hint_widget = QWidget()
 
     def initialize_synthesis(self):
         """
@@ -75,6 +76,33 @@ class SynthesisQWidget(QWidget):
         # Host widget
         self.host_widget.initialize()
         synthesis_layout.addWidget(self.host_widget)
+
+        # Hint Widget
+        hint_text = _(
+            '<h4>Dahsboard</h4>'
+            '<ul><li>At the top of App, '
+            'you have a dashboard that summarizes the number of items per state.</li></ul>'
+            '<h4>Tabs</h4>'
+            '<ul><li><h4>Host Synthesis</h4></li>'
+            'Tap in the search bar to view a host and its services.'
+            '<li><h4>Problems</h4></li>'
+            'The "Problems" tab will show you all problems detected in your backend.'
+            '<li><h4>Spy Hosts</h4></li>'
+            'A "Spy Host" will keep you regularly informed of his condition. '
+            'You will also see problems detected for this host, in the "Spy Hosts" panel.</ul>'
+            '<h4>Alignak</h4>'
+            '<ul><li>You can see your backend status and daemons if available, '
+            'as well as your profile.</li></ul>'
+            '<h4>Livestate</h4>'
+            '<ul><li>In the livestate, you can see global state of your monitored items.</li></ul>'
+            '<h4>Events</h4>'
+            '<ul><li>Events will show you informative messages your actions inside App.</li></ul>'
+        )
+        hint_layout = QVBoxLayout(self.hint_widget)
+        hint_label = QLabel(hint_text)
+        hint_label.setObjectName('subtitle')
+        hint_layout.addWidget(hint_label)
+        synthesis_layout.addWidget(self.hint_widget)
 
         # Services widget
         self.services_widget.initialize()
@@ -105,9 +133,9 @@ class SynthesisQWidget(QWidget):
 
         # QLineEdit
         self.line_search.setFixedHeight(search_lbl.height())
-
         layout.addWidget(self.line_search)
 
+        # Spy Button
         self.spy_btn.setIcon(QIcon(settings.get_image('spy')))
         self.spy_btn.setObjectName('valid')
         self.spy_btn.setFixedSize(110, 25)
@@ -151,7 +179,7 @@ class SynthesisQWidget(QWidget):
         :type host: alignak_app.items.host.Host
         :param services: list of services attached to host
         :type services: list
-        :param not_spied: tell if host is spied or not
+        :param not_spied: define if host is spied or not
         :type not_spied: bool
         """
 
@@ -164,6 +192,7 @@ class SynthesisQWidget(QWidget):
             self.spy_btn.setText(self.spy_text[not_spied])
 
             # Update Qwidgets
+            self.hint_widget.hide()
             self.host_widget.update_host(host)
             self.host_widget.show()
             self.services_widget.update_widget(host, services)
@@ -184,6 +213,7 @@ class SynthesisQWidget(QWidget):
                 QIcon(settings.get_image(self.spy_icons[True]))
             )
             self.spy_btn.setText(self.spy_text[True])
+            self.hint_widget.show()
 
         self.spy_btn.style().unpolish(self.spy_btn)
         self.spy_btn.style().polish(self.spy_btn)
