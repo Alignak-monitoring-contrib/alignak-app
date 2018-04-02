@@ -23,7 +23,7 @@ import sys
 
 import unittest2
 
-from PyQt5.Qt import QApplication, QWidget, QItemSelectionModel, Qt
+from PyQt5.Qt import QApplication, QItemSelectionModel, Qt
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.host import Host

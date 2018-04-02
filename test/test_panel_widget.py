@@ -22,7 +22,7 @@
 import sys
 
 import unittest2
-from PyQt5.QtWidgets import QApplication
+from PyQt5.Qt import QApplication, QItemSelectionModel
 
 from alignak_app.utils.config import settings
 from alignak_app.backend.datamanager import data_manager
@@ -197,3 +197,28 @@ class TestPanelQWidget(unittest2.TestCase):
         self.assertTrue(under_test.synthesis_widget.spy_btn.isEnabled())
         self.assertFalse(under_test.synthesis_widget.host_widget.isHidden())
         self.assertFalse(under_test.synthesis_widget.services_widget.isHidden())
+
+    def test_display_host_from_problems(self):
+        """Display Host in Panel from Problems QWidget"""
+
+        under_test = PanelQWidget()
+        under_test.initialize()
+
+        self.assertEqual('', under_test.synthesis_widget.line_search.text())
+        self.assertIsNone(under_test.problems_widget.get_curent_user_role_item())
+
+        # Make an item as current in problems table
+        under_test.problems_widget.problems_table.update_view({'problems': [self.host_list[8]]})
+        index_test = under_test.problems_widget.problems_table.model().index(0, 0)
+        under_test.problems_widget.problems_table.selectionModel().setCurrentIndex(
+            index_test,
+            QItemSelectionModel.SelectCurrent
+        )
+
+        self.assertIsNotNone(under_test.problems_widget.get_curent_user_role_item())
+        self.assertEqual('', under_test.synthesis_widget.line_search.text())
+
+        under_test.display_host_from_problems()
+
+        # Host is set in line search
+        self.assertEqual('host8', under_test.synthesis_widget.line_search.text())
