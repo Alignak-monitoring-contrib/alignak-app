@@ -147,7 +147,7 @@ class TestPanelQWidget(unittest2.TestCase):
         under_test.spy_host()
         spy_index = under_test.get_tab_order().index('s')
 
-        self.assertTrue(under_test.synthesis_widget.spy_btn.isEnabled())
+        self.assertTrue(under_test.synthesis_widget.host_widget.spy_btn.isEnabled())
         self.assertEqual('Spy Hosts', under_test.tab_widget.tabText(spy_index))
         # Host Id is not added in spied_hosts of SpyQWidget.SpyQListWidget
         self.assertFalse('_id0' in under_test.spy_widget.spy_list_widget.spied_hosts)
@@ -183,11 +183,11 @@ class TestPanelQWidget(unittest2.TestCase):
         under_test = PanelQWidget()
         under_test.initialize()
 
-        self.assertTrue(under_test.synthesis_widget.spy_btn.isEnabled())
+        self.assertTrue(under_test.synthesis_widget.host_widget.spy_btn.isEnabled())
 
         under_test.display_host()
 
-        self.assertTrue(under_test.synthesis_widget.spy_btn.isEnabled())
+        self.assertTrue(under_test.synthesis_widget.host_widget.spy_btn.isEnabled())
         self.assertTrue(under_test.synthesis_widget.host_widget.isHidden())
         self.assertTrue(under_test.synthesis_widget.services_widget.isHidden())
         self.assertFalse(under_test.synthesis_widget.hint_widget.isHidden())
@@ -195,7 +195,7 @@ class TestPanelQWidget(unittest2.TestCase):
         under_test.synthesis_widget.line_search.setText(self.host_list[0].name)
         under_test.display_host()
 
-        self.assertTrue(under_test.synthesis_widget.spy_btn.isEnabled())
+        self.assertTrue(under_test.synthesis_widget.host_widget.spy_btn.isEnabled())
         self.assertFalse(under_test.synthesis_widget.host_widget.isHidden())
         self.assertFalse(under_test.synthesis_widget.services_widget.isHidden())
         self.assertTrue(under_test.synthesis_widget.hint_widget.isHidden())

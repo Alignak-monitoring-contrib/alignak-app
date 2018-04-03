@@ -81,7 +81,7 @@ class PanelQWidget(QWidget):
 
         # Synthesis
         self.synthesis_widget.initialize_synthesis()
-        self.synthesis_widget.spy_btn.clicked.connect(self.spy_host)
+        self.synthesis_widget.host_widget.spy_btn.clicked.connect(self.spy_host)
         self.synthesis_widget.line_search.returnPressed.connect(self.display_host)
         self.synthesis_widget.line_search.cursorPositionChanged.connect(self.display_host)
         self.synthesis_widget.create_line_search(self.hostnames_list)
@@ -143,23 +143,17 @@ class PanelQWidget(QWidget):
         """
 
         if self.synthesis_widget.line_search.text() in self.hostnames_list:
-            self.spy_widget.spy_list_widget.add_spy_host(self.get_current_host().item_id)
-            self.synthesis_widget.spy_btn.setEnabled(False)
-
-            self.synthesis_widget.spy_btn.setIcon(
-                QIcon(settings.get_image(self.synthesis_widget.spy_icons[False]))
+            # Spy host
+            self.spy_widget.spy_list_widget.add_spy_host(
+                self.synthesis_widget.host_widget.host_item.item_id
             )
-            self.synthesis_widget.spy_btn.setText(self.synthesis_widget.spy_text[False])
+
+            # Update QWidgets
+            self.synthesis_widget.host_widget.spy_btn.setEnabled(False)
             self.tab_widget.setTabText(
                 self.tab_widget.indexOf(self.spy_widget),
                 "Spied Hosts (%d)" % self.spy_widget.spy_list_widget.count()
             )
-        else:
-            self.synthesis_widget.spy_btn.setEnabled(True)
-            self.synthesis_widget.spy_btn.setIcon(
-                QIcon(settings.get_image(self.synthesis_widget.spy_icons[True]))
-            )
-            self.synthesis_widget.spy_btn.setText(self.synthesis_widget.spy_text[True])
 
     def display_host(self):
         """
@@ -193,7 +187,7 @@ class PanelQWidget(QWidget):
             self.synthesis_widget.update_synthesis(host, services, not_spied)
             self.dashboard_widget.update_dashboard()
         else:
-            self.synthesis_widget.update_synthesis(None, None, False)
+            self.synthesis_widget.update_synthesis(None, None, True)
 
     def set_host_from_problems(self):
         """

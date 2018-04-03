@@ -44,11 +44,6 @@ class SynthesisQWidget(QWidget):
         Class who manage Synthesis view with Host and Services QWidgets
     """
 
-    spy_icons = {
-        True: 'spy',
-        False: 'spy_ok',
-    }
-
     def __init__(self, parent=None):
         super(SynthesisQWidget, self).__init__(parent)
         # Fields
@@ -56,8 +51,6 @@ class SynthesisQWidget(QWidget):
         self.services_widget = ServicesQWidget()
         self.line_search = QLineEdit()
         self.completer = QCompleter()
-        self.spy_text = {True: _("Spy Host"), False: _("Host spied!")}
-        self.spy_btn = QPushButton(self.spy_text[True])
         self.hint_widget = QWidget()
 
     def initialize_synthesis(self):
@@ -134,13 +127,6 @@ class SynthesisQWidget(QWidget):
         # QLineEdit
         self.line_search.setFixedHeight(search_lbl.height())
         layout.addWidget(self.line_search)
-
-        # Spy Button
-        self.spy_btn.setIcon(QIcon(settings.get_image('spy')))
-        self.spy_btn.setObjectName('valid')
-        self.spy_btn.setFixedSize(110, 25)
-        layout.addWidget(self.spy_btn)
-
         self.create_line_search([])
 
         return widget
@@ -183,19 +169,15 @@ class SynthesisQWidget(QWidget):
         :type not_spied: bool
         """
 
+        self.host_widget.spy_btn.setEnabled(not_spied)
+
         if host:
             logger.info('Display %s in synthesis view', host.name)
-            self.spy_btn.setEnabled(not_spied)
-            self.spy_btn.setIcon(
-                QIcon(settings.get_image(self.spy_icons[not_spied]))
-            )
-            self.spy_btn.setText(self.spy_text[not_spied])
-
             # Update Qwidgets
-            self.hint_widget.hide()
             self.host_widget.update_host(host)
-            self.host_widget.show()
             self.services_widget.update_widget(host, services)
+            self.hint_widget.hide()
+            self.host_widget.show()
             self.services_widget.show()
 
             # If the service element does not have the same ID as the host, reset to None
@@ -207,13 +189,4 @@ class SynthesisQWidget(QWidget):
         else:
             self.host_widget.hide()
             self.services_widget.hide()
-
-            self.spy_btn.setEnabled(True)
-            self.spy_btn.setIcon(
-                QIcon(settings.get_image(self.spy_icons[True]))
-            )
-            self.spy_btn.setText(self.spy_text[True])
             self.hint_widget.show()
-
-        self.spy_btn.style().unpolish(self.spy_btn)
-        self.spy_btn.style().polish(self.spy_btn)

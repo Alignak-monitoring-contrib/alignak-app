@@ -74,6 +74,7 @@ class HostQWidget(QWidget):
         self.history_btn = QPushButton()
         self.history_widget = HistoryQWidget()
         self.host_history = None
+        self.spy_btn = QPushButton()
         self.refresh_timer = QTimer()
 
     def initialize(self):
@@ -193,10 +194,21 @@ class HostQWidget(QWidget):
         self.history_btn.setIcon(QIcon(settings.get_image('time')))
         self.history_btn.setFixedSize(80, 20)
         self.history_btn.clicked.connect(self.show_history)
+        self.history_btn.setToolTip(_('See history of host'))
         layout.addWidget(self.history_btn)
         layout.setAlignment(self.history_btn, Qt.AlignCenter)
 
         self.history_widget.initialize()
+
+        # Spy Button
+        spy_lbl = QLabel(_('Spy Host:'))
+        spy_lbl.setObjectName('subtitle')
+        layout.addWidget(spy_lbl)
+        self.spy_btn.setIcon(QIcon(settings.get_image('spy')))
+        self.spy_btn.setFixedSize(80, 20)
+        self.spy_btn.setToolTip(_('Spy current host'))
+        layout.addWidget(self.spy_btn)
+        layout.setAlignment(self.spy_btn, Qt.AlignCenter)
 
         layout.setAlignment(Qt.AlignCenter | Qt.AlignTop)
 
