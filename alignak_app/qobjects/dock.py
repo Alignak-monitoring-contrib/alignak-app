@@ -39,6 +39,7 @@ class DockQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(DockQWidget, self).__init__(parent)
+        self.setFixedWidth(355)
         # Fields
         self.status_widget = AlignakQWidget()
         self.livestate_widget = LivestateQWidget()

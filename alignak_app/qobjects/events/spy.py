@@ -27,13 +27,12 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QGridLayout, Qt, QWidget, QAbstractItemView, QListWidget
+from PyQt5.Qt import QGridLayout, Qt, QWidget, QAbstractItemView, QListWidget, QPixmap, QIcon
 from PyQt5.Qt import QTimer, QLabel
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
 
-from alignak_app.qobjects.common.frames import get_frame_separator
 from alignak_app.qobjects.events.item import EventItem
 from alignak_app.qobjects.events.events import get_events_widget
 from alignak_app.qobjects.events.spy_list import SpyQListWidget
@@ -62,20 +61,33 @@ class SpyQWidget(QWidget):
         layout = QGridLayout()
         self.setLayout(layout)
 
-        spy_title = QLabel(_('Spy Hosts (double click to stop spying)'))
-        spy_title.setObjectName('itemtitle')
+        spy_icon = QLabel()
+        spy_pixmap = QPixmap(settings.get_image('spy'))
+        spy_icon.setPixmap(spy_pixmap)
+        spy_icon.setScaledContents(True)
+        spy_icon.setFixedSize(20, 20)
+        layout.addWidget(spy_icon, 0, 0, 1, 1)
+        layout.setAlignment(spy_icon, Qt.AlignRight)
+
+        spy_title = QLabel(_('Spy Hosts'))
+        spy_title.setObjectName('title')
         spy_title.setMinimumHeight(40)
-        layout.addWidget(spy_title, 0, 0, 1, 3)
+        layout.addWidget(spy_title, 0, 1, 1, 1)
+
+        hint_lbl = QLabel('Click to refresh, double-click to stop spying')
+        hint_lbl.setObjectName('subtitle')
+        layout.addWidget(hint_lbl, 1, 0, 1, 1)
+        layout.setAlignment(hint_lbl, Qt.AlignCenter)
 
         self.host_services_lbl.setObjectName('subtitle')
-        layout.addWidget(self.host_services_lbl, 1, 2, 1, 1)
+        layout.addWidget(self.host_services_lbl, 1, 1, 1, 1)
+        layout.setAlignment(self.host_services_lbl, Qt.AlignCenter)
 
         self.spy_list_widget.setDragDropMode(QAbstractItemView.DragDrop)
         self.spy_list_widget.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.spy_list_widget.doubleClicked.connect(self.remove_event)
         self.spy_list_widget.setAcceptDrops(True)
         self.spy_list_widget.setWordWrap(True)
-
         self.spy_list_widget.insertItem(0, self.get_hint_item())
         self.spy_list_widget.item_dropped.connect(get_events_widget().remove_event)
         self.spy_list_widget.clicked.connect(
@@ -83,8 +95,9 @@ class SpyQWidget(QWidget):
         )
         layout.addWidget(self.spy_list_widget, 2, 0, 1, 1)
 
-        layout.addWidget(get_frame_separator(vertical=True), 2, 1, 1, 1)
-        layout.addWidget(self.host_list_widget, 2, 2, 1, 1)
+        self.host_list_widget.setObjectName('spy')
+        # self.host_list_widget.setMinimumWidth(500)
+        layout.addWidget(self.host_list_widget, 2, 1, 1, 1)
 
         spy_interval = int(settings.get_config('Alignak-app', 'spy_interval')) * 1000
         self.spy_timer.setInterval(spy_interval)
@@ -102,6 +115,7 @@ class SpyQWidget(QWidget):
 
         drop_hint_item = EventItem()
         drop_hint_item.setText(_('Drop host-related events here to spy on it...'))
+        drop_hint_item.setIcon(QIcon(settings.get_image('spy')))
         drop_hint_item.setFlags(Qt.ItemIsDropEnabled)
 
         return drop_hint_item

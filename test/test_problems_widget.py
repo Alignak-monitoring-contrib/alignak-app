@@ -103,7 +103,7 @@ class TestProblemsQWidget(unittest2.TestCase):
         self.assertFalse(under_test.filter_hosts_btn.is_checked())
         self.assertFalse(under_test.filter_services_btn.is_checked())
 
-        self.assertEqual('itemtitle', under_test.problems_title.objectName())
+        self.assertEqual('title', under_test.problems_title.objectName())
 
     def test_add_spy_host(self):
         """Add Spy Host from Problems QWidget"""

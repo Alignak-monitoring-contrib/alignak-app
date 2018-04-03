@@ -31,7 +31,6 @@ from PyQt5.Qt import QWidget, QIcon, QVBoxLayout, QPushButton, Qt, QLabel, QLine
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.backend.backend import app_backend
-from alignak_app.items.host import Host
 from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.actions import ActionsQWidget
@@ -74,7 +73,7 @@ class ProblemsQWidget(QWidget):
 
         self.spy_widget = spy_widget
 
-        self.problems_title.setObjectName('itemtitle')
+        self.problems_title.setObjectName('title')
         problem_layout.addWidget(self.problems_title)
 
         problem_layout.addWidget(self.get_search_widget())

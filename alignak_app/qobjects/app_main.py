@@ -82,7 +82,6 @@ class AppQMainWindow(QMainWindow):
 
         # Dock
         self.dock.initialize()
-        self.dock.setFixedWidth(330)
         app_layout.addWidget(self.dock, 1, 2, 1, 1)
 
         self.setCentralWidget(app_widget)
