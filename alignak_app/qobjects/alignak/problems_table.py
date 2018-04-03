@@ -147,9 +147,18 @@ class ProblemsQTableView(QTableView):
         problems_model.setRowCount(len(problems_data['problems']))
         problems_model.setColumnCount(len(self.headers_list))
 
-        for row, item in enumerate(problems_data['problems']):
-            problems_model.setItem(row, 0, self.get_tableitem(item))
-            problems_model.setItem(row, 1, self.get_output_tableitem(item))
+        if problems_data['problems']:
+            for row, item in enumerate(problems_data['problems']):
+                problems_model.setItem(row, 0, self.get_tableitem(item))
+                problems_model.setItem(row, 1, self.get_output_tableitem(item))
+
+        else:
+            tableitem = QStandardItem('No problem to report.')
+
+            icon = QIcon(settings.get_image('checked'))
+            tableitem.setIcon(icon)
+            tableitem.setTextAlignment(Qt.AlignCenter)
+            problems_model.setItem(0, 0, tableitem)
 
         proxy_filter = QSortFilterProxyModel()
         proxy_filter.setFilterCaseSensitivity(Qt.CaseInsensitive)

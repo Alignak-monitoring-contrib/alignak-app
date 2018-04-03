@@ -30,6 +30,7 @@ from logging import getLogger
 from PyQt5.Qt import pyqtSignal, QSize, Qt, QListWidget
 
 from alignak_app.backend.datamanager import data_manager
+
 from alignak_app.qobjects.events.item import EventItem
 
 logger = getLogger(__name__)

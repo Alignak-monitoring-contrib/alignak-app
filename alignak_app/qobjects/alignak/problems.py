@@ -31,6 +31,7 @@ from PyQt5.Qt import QWidget, QIcon, QVBoxLayout, QPushButton, Qt, QLabel, QLine
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.backend.backend import app_backend
+from alignak_app.items.host import Host
 from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.actions import ActionsQWidget
@@ -257,14 +258,6 @@ class ProblemsQWidget(QWidget):
                 _("Problems (%d)") % len(problems_data['problems'])
             )
 
-        self.problems_title.setText(
-            _('There are %d problems to manage (hosts: %d, services: %d)') % (
-                len(problems_data['problems']),
-                problems_data['hosts_nb'],
-                problems_data['services_nb']
-            )
-        )
-
         if self.filter_hosts_btn.is_checked() and not self.filter_services_btn.is_checked():
             item_type = 'host'
         if self.filter_services_btn.is_checked() and not self.filter_hosts_btn.is_checked():
@@ -284,7 +277,17 @@ class ProblemsQWidget(QWidget):
             ]
 
         proxy_filter = self.problems_table.update_view(problems_data)
-        self.line_search.textChanged.connect(proxy_filter.setFilterRegExp)
+        if problems_data['problems']:
+            self.problems_title.setText(
+                _('There are %d problems to manage (hosts: %d, services: %d)') % (
+                    len(problems_data['problems']),
+                    problems_data['hosts_nb'],
+                    problems_data['services_nb']
+                )
+            )
+            self.line_search.textChanged.connect(proxy_filter.setFilterRegExp)
+        else:
+            self.problems_title.setText(_('If problems are found, they will be displayed here.'))
 
         self.problems_table.selectionModel().selectionChanged.connect(self.update_action_buttons)
         self.update_action_buttons()
