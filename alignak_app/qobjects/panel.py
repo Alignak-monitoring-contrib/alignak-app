@@ -230,11 +230,8 @@ class PanelQWidget(QWidget):
         :param event: event triggered when something move
         """
 
-        if isinstance(event.source().currentItem(), EventItem):
-            if event.source().currentItem().data(Qt.UserRole):
-                event.accept()
-            else:
-                event.ignore()
+        if event.source().currentItem().data(Qt.UserRole):
+            event.accept()
         else:
             event.ignore()
 
