@@ -33,6 +33,7 @@ from logging import getLogger
 from alignak_backend_client.client import Backend, BackendException
 
 from alignak_app.backend.datamanager import data_manager
+from alignak_app.backend.alignak_ws_client import WSClient
 
 from alignak_app.items.daemon import Daemon
 from alignak_app.items.event import Event
@@ -63,6 +64,7 @@ class BackendClient(object):
         self.backend = None
         self.connected = False
         self.user = {}
+        self.ws_client = WSClient()
 
     def login(self, username=None, password=None, proxies=None, check=False):
         """
@@ -125,6 +127,9 @@ class BackendClient(object):
                 'Connection to Backend has failed.\n'
                 'Check [Alignak] section in configuration file or use login window of application.'
             )
+
+        if self.connected and check:
+            self.ws_client.login(self.user['token'])
 
         return self.connected
 

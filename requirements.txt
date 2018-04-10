@@ -1,3 +1,4 @@
+requests
 pyqt5<5.10
 configparser
 future
