@@ -35,7 +35,7 @@ import webbrowser
 from logging import getLogger
 
 import configparser
-from configparser import NoOptionError, NoSectionError
+from configparser import NoOptionError, NoSectionError, InterpolationError
 
 from alignak_app.utils.system import read_config_file
 
@@ -55,6 +55,7 @@ class Settings(object):
             'backend': 'http://127.0.0.1:5000',
             'url': 'http://127.0.0.1',
             'webui': '',
+            'webservice': '',
             'processes': '1',
             'proxy': '',
             'proxy_user': '',
@@ -131,8 +132,8 @@ class Settings(object):
                     return self.app_config.get(section, option)
 
                 return self.default_parameters[section][option]
-            except (NoOptionError, NoSectionError) as e:  # pragma: no cover - not testable
-                print("failed section")
+            except (NoOptionError, NoSectionError, InterpolationError) \
+                    as e:  # pragma: no cover - not testable
                 logger.error('%s', str(e))
                 logger.error('Replace by default %s: %s',
                              section, self.default_parameters[section][option])
