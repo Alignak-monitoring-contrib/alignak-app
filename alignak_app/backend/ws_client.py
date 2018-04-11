@@ -67,6 +67,7 @@ class WSClient(object):
             response = requests.post(
                 '/'.join([self.ws_backend, 'login']), json=params, headers=headers
             )
+
             resp = response.json()
 
             if '_result' in resp:
@@ -74,7 +75,10 @@ class WSClient(object):
                 self.token = token
                 self.auth = requests.auth.HTTPBasicAuth(self.token, '')
         except (RequestsConnectionError, AssertionError) as exp:
-            logger.error(exp)
+            msg = 'Connection to Web Service on [%s] has failed' % \
+                  '/'.join([self.ws_backend, 'login'])
+            logger.warning(msg)
+            logger.debug(exp)
 
     def get(self, endpoint, params):
         """

@@ -128,14 +128,14 @@ class BackendClient(object):
                 'Check [Alignak] section in configuration file or use login window of application.'
             )
 
-        if self.connected and check:
+        if self.connected and not check:
             self.ws_client.login(self.user['token'])
 
         return self.connected
 
     def get(self, endpoint, params=None, projection=None, all_items=False):
         """
-        GET on alignak Backend REST API.
+        GET on alignak Backend REST API
 
         :param endpoint: endpoint (API URL)
         :type endpoint: str
@@ -145,7 +145,7 @@ class BackendClient(object):
         :type projection: list|None
         :param all_items: make GET on all items
         :type all_items: bool
-        :return: desired request of app_backend
+        :return: request response
         :rtype: dict
         """
 
