@@ -33,7 +33,7 @@ from logging import getLogger
 from alignak_backend_client.client import Backend, BackendException
 
 from alignak_app.backend.datamanager import data_manager
-from alignak_app.backend.alignak_ws_client import WSClient
+from alignak_app.backend.ws_client import WSClient
 
 from alignak_app.items.daemon import Daemon
 from alignak_app.items.event import Event
@@ -235,6 +235,136 @@ class BackendClient(object):
                 self.connected = False
         else:
             logger.info('App is not connected to backend !')
+
+        return request
+
+    def acknowledge(self, item, sticky, notify, comment):
+        """
+        Prepare data for acknowledge and POST on backend API or WS if available
+
+        :param item: item to acknowledge: host | service
+        :type item: alignak_app.items.host.Host | alignak_app.items.service.Service
+        :param sticky: define if ack is sticky or not
+        :type sticky: bool
+        :param notify: define if ack should notify user or not
+        :type notify: bool
+        :param comment: comment of ack
+        :type comment: str
+        :return: request response
+        :rtype: dict
+        """
+
+        user = data_manager.database['user']
+
+        if self.ws_client.auth:
+            if item.item_type == 'service':
+                command = 'ACKNOWLEDGE_SVC_PROBLEM'
+                host = data_manager.get_item('host', '_id', item.data['host'])
+                element = host.name
+                item_name = item.name
+            else:
+                command = 'ACKNOWLEDGE_HOST_PROBLEM'
+                element = item.name
+                item_name = item.name
+            if sticky:
+                sticky = '2'
+            else:
+                sticky = '1'
+            if notify:
+                notify = '1'
+            else:
+                notify = '0'
+            persistent = '0'
+
+            parameters = ';'.join([item_name, sticky, notify, persistent, user.name, comment])
+            data = {
+                'command': command,
+                'element': element,
+                'parameters': parameters
+            }
+            request = self.ws_client.post('command', params=data)
+        else:
+            data = {
+                'action': 'add',
+                'user': user.item_id,
+                'comment': comment,
+                'notify': notify,
+                'sticky': sticky
+            }
+            if item.item_type == 'service':
+                data['host'] = item.data['host']
+                data['service'] = item.item_id
+            else:
+                data['host'] = item.item_id
+                data['service'] = None
+
+            request = self.post('actionacknowledge', data)
+
+        return request
+
+    # pylint: disable=too-many-arguments
+    def downtime(self, item, fixed, duration, start_stamp, end_stamp, comment):
+        """
+        Prepare data for downtime and POST on backend API or WS if available
+
+        :param item: item to downtime: host | service
+        :type item: alignak_app.items.host.Host | alignak_app.items.service.Service
+        :param fixed: define if donwtime is fixed or not
+        :type fixed: bool
+        :param duration: duration timestamp of downtime
+        :type duration: int
+        :param start_stamp: start timestamp of downtime
+        :type start_stamp: int
+        :param end_stamp: end timestamp of downtime
+        :type end_stamp: int
+        :param comment: comment of downtime
+        :type comment: str
+        :return: request response
+        :rtype: dict
+        """
+
+        if self.ws_client.auth:
+            if item.item_type == 'service':
+                host = data_manager.get_item('host', '_id', item.data['host'])
+                element = host.name
+            else:
+                element = item.name
+            if fixed:
+                fixed = '1'
+            else:
+                fixed = '0'
+            item_name = item.name
+            trigger_id = '0'
+            parameters = ';'.join(
+                [item_name, str(start_stamp), str(end_stamp), fixed, trigger_id, str(duration),
+                 data_manager.database['user'].name, comment]
+            )
+            data = {
+                'command': 'SCHEDULE_SVC_DOWNTIME' if item.item_type == 'service' else
+                           'SCHEDULE_HOST_DOWNTIME',
+                'element': element,
+                'parameters': parameters
+            }
+            request = self.ws_client.post('command', params=data)
+        else:
+            data = {
+                'action': 'add',
+                'user': data_manager.database['user'].item_id,
+                'fixed': fixed,
+                'duration': duration,
+                'start_time': start_stamp,
+                'end_time': end_stamp,
+                'comment': comment,
+            }
+
+            if item.item_type == 'service':
+                data['host'] = item.data['host']
+                data['service'] = item.item_id
+            else:
+                data['host'] = item.item_id
+                data['service'] = None
+
+            request = app_backend.post('actiondowntime', data)
 
         return request
 

@@ -85,12 +85,13 @@ class ActionsQWidget(QWidget):
 
         """
 
+        # Initial comment
         user = data_manager.database['user']
-
         comment = _('%s %s acknowledged by %s, from Alignak-app') % (
             self.item.item_type.capitalize(), self.item.get_display_name(), user.name
         )
 
+        # Acknowledge dialog
         ack_dialog = AckQDialog()
         ack_dialog.initialize(self.item.item_type, self.item.get_display_name(), comment)
 
@@ -99,21 +100,7 @@ class ActionsQWidget(QWidget):
             notify = ack_dialog.notify_toggle_btn.is_checked()
             comment = str(ack_dialog.ack_comment_edit.toPlainText())
 
-            data = {
-                'action': 'add',
-                'user': user.item_id,
-                'comment': comment,
-                'notify': notify,
-                'sticky': sticky
-            }
-            if self.item.item_type == 'service':
-                data['host'] = self.item.data['host']
-                data['service'] = self.item.item_id
-            else:
-                data['host'] = self.item.item_id
-                data['service'] = None
-
-            post = app_backend.post('actionacknowledge', data)
+            post = app_backend.acknowledge(self.item, sticky, notify, comment)
 
             send_event(
                 'ACK',
@@ -160,24 +147,7 @@ class ActionsQWidget(QWidget):
             end_stamp = downtime_dialog.end_time.dateTime().toTime_t()
             comment = downtime_dialog.comment_edit.toPlainText()
 
-            data = {
-                'action': 'add',
-                'user': user.item_id,
-                'fixed': fixed,
-                'duration': duration,
-                'start_time': start_stamp,
-                'end_time': end_stamp,
-                'comment': comment,
-            }
-
-            if self.item.item_type == 'service':
-                data['host'] = self.item.data['host']
-                data['service'] = self.item.item_id
-            else:
-                data['host'] = self.item.item_id
-                data['service'] = None
-
-            post = app_backend.post('actiondowntime', data)
+            post = app_backend.downtime(self.item, fixed, duration, start_stamp, end_stamp, comment)
 
             send_event(
                 'DOWNTIME',

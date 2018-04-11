@@ -27,12 +27,12 @@
 """
 
 import json
+from logging import getLogger
+
 import requests
 
 from requests import HTTPError
 from requests import ConnectionError as RequestsConnectionError
-
-from logging import getLogger
 
 from alignak_app.utils.config import settings
 
@@ -128,7 +128,7 @@ class WSClient(object):
 
             request.raise_for_status()
             logger.info('POST on [%s] backend > %s', endpoint, str(request))
-            logger.debug('\tdata: [%s]', str(data))
+            logger.debug('\tdata: [%s]', str(params))
             logger.debug('\theaders: [%s]', str(headers))
         except (RequestsConnectionError, HTTPError) as exp:
             logger.warning("WS connection error, error: %s", str(exp))
@@ -137,37 +137,3 @@ class WSClient(object):
             logger.exception("WS exception, error: %s", exp)
 
         return request.json()
-
-
-if __name__ == '__main__':
-    import os
-    from alignak_app.backend.backend import app_backend
-    os.environ['ALIGNAKAPP_APP_DIR'] = '/usr/local/alignak_app'
-    os.environ['ALIGNAKAPP_USR_DIR'] = '/home/algorys/.local/alignak_app'
-    settings.init_config()
-    app_backend.login(
-        settings.get_config('Alignak', 'username'),
-        settings.get_config('Alignak', 'password')
-    )
-
-    ws_client = WSClient()
-    ws_client.login(app_backend.user['token'])
-
-    # ACKNOWLEDGE_HOST_PROBLEM;<host_name>;<sticky>;<notify>;<persistent>;<author>;<comment>
-    # data = {
-    #     'command': 'ACKNOWLEDGE_HOST_PROBLEM',
-    #     "element": "pc_matt",
-    #     "parameters": "pc_matt;True;True;%s;Test ACK" % user_id
-    # }
-
-    # CHANGE_HOST_CHECK_COMMAND;<host_name>;<check_command>
-    # ACKNOWLEDGE_SVC_PROBLEM;<service_name>;<sticky>;<notify>;<persistent>;<author>;<comment>
-    data = {
-        'command': 'ACKNOWLEDGE_SVC_PROBLEM',
-        'element': 'pc_matt',
-        'parameters': 'Cpu;2;1;0;%s;Test Ack Service' % 'admin'
-    }
-
-    test = ws_client.post('command', data)
-
-    print(test)
