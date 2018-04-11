@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-27 23:45+0200\n"
+"POT-Creation-Date: 2018-04-11 11:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -172,25 +172,29 @@ msgstr ""
 msgid "See current item in synthesis view"
 msgstr ""
 
-#: ../qobjects/alignak/problems.py:209
+#: ../qobjects/alignak/problems.py:209 ../qobjects/host/host.py:209
 msgid "Spy current host"
 msgstr ""
 
-#: ../qobjects/alignak/problems.py:257 ../qobjects/panel.py:106
+#: ../qobjects/alignak/problems.py:257 ../qobjects/panel.py:99
 #, python-format
 msgid "Problems (%d)"
 msgstr ""
 
-#: ../qobjects/alignak/problems.py:261
+#: ../qobjects/alignak/problems.py:281
 #, python-format
 msgid "There are %d problems to manage (hosts: %d, services: %d)"
+msgstr ""
+
+#: ../qobjects/alignak/problems.py:289
+msgid "If problems are found, they will be displayed here."
 msgstr ""
 
 #: ../qobjects/alignak/problems_table.py:64
 msgid "Items in problem"
 msgstr ""
 
-#: ../qobjects/alignak/problems_table.py:64 ../qobjects/host/host.py:336
+#: ../qobjects/alignak/problems_table.py:64 ../qobjects/host/host.py:348
 #: ../qobjects/service/service.py:136
 msgid "Output"
 msgstr ""
@@ -249,106 +253,106 @@ msgstr ""
 msgid "%s %s acknowledged by %s, from Alignak-app"
 msgstr ""
 
-#: ../qobjects/common/actions.py:120
+#: ../qobjects/common/actions.py:107
 #, python-format
 msgid "Acknowledge for %s is %s"
 msgstr ""
 
-#: ../qobjects/common/actions.py:149
+#: ../qobjects/common/actions.py:136
 #, python-format
 msgid "Schedule downtime on %s %s by %s, from Alignak-app"
 msgstr ""
 
-#: ../qobjects/common/actions.py:184
+#: ../qobjects/common/actions.py:154
 #, python-format
 msgid "Downtime for %s is %s"
 msgstr ""
 
-#: ../qobjects/common/actions.py:234
+#: ../qobjects/common/actions.py:204
 msgid "Request an Acknowledge"
 msgstr ""
 
-#: ../qobjects/common/actions.py:267
+#: ../qobjects/common/actions.py:237
 msgid "Request Acknowledge"
 msgstr ""
 
-#: ../qobjects/common/actions.py:273
+#: ../qobjects/common/actions.py:243
 msgid "Request an acknowledge"
 msgstr ""
 
-#: ../qobjects/common/actions.py:280
+#: ../qobjects/common/actions.py:250
 msgid "Acknowledge is sticky:"
 msgstr ""
 
-#: ../qobjects/common/actions.py:290
+#: ../qobjects/common/actions.py:260
 msgid ""
 "If checked, the acknowledge will remain until the element returns to an \"OK"
 "\" state."
 msgstr ""
 
-#: ../qobjects/common/actions.py:297
+#: ../qobjects/common/actions.py:267
 msgid "Acknowledge notifies:"
 msgstr ""
 
-#: ../qobjects/common/actions.py:306
+#: ../qobjects/common/actions.py:276
 msgid "If checked, a notification will be sent out to the concerned contacts."
 msgstr ""
 
-#: ../qobjects/common/actions.py:311
+#: ../qobjects/common/actions.py:281
 msgid "Acknowledge comment:"
 msgstr ""
 
-#: ../qobjects/common/actions.py:320
+#: ../qobjects/common/actions.py:290
 msgid "REQUEST ACKNOWLEDGE"
 msgstr ""
 
-#: ../qobjects/common/actions.py:354
+#: ../qobjects/common/actions.py:324
 msgid "Request a Downtime"
 msgstr ""
 
-#: ../qobjects/common/actions.py:388
+#: ../qobjects/common/actions.py:358
 msgid "Request Downtime"
 msgstr ""
 
-#: ../qobjects/common/actions.py:394
+#: ../qobjects/common/actions.py:364
 msgid "Request a downtime"
 msgstr ""
 
-#: ../qobjects/common/actions.py:401
+#: ../qobjects/common/actions.py:371
 msgid "Downtime options:"
 msgstr ""
 
-#: ../qobjects/common/actions.py:409
+#: ../qobjects/common/actions.py:379
 msgid "Fixed"
 msgstr ""
 
-#: ../qobjects/common/actions.py:414
+#: ../qobjects/common/actions.py:384
 msgid ""
 "If checked, downtime will start and end at the times specified by the “start "
 "time” and “end time” fields."
 msgstr ""
 
-#: ../qobjects/common/actions.py:421
+#: ../qobjects/common/actions.py:391
 msgid "Duration"
 msgstr ""
 
-#: ../qobjects/common/actions.py:436
+#: ../qobjects/common/actions.py:406
 msgid "Sets the duration if it is a non-fixed downtime."
 msgstr ""
 
-#: ../qobjects/common/actions.py:440
+#: ../qobjects/common/actions.py:410
 msgid "Downtime date range"
 msgstr ""
 
-#: ../qobjects/common/actions.py:450
+#: ../qobjects/common/actions.py:420
 msgid "Start time:"
 msgstr ""
 
-#: ../qobjects/common/actions.py:458
+#: ../qobjects/common/actions.py:428
 msgid "End time:"
 msgstr ""
 
-#: ../qobjects/common/actions.py:470
+#: ../qobjects/common/actions.py:440
 msgid "REQUEST DOWNTIME"
 msgstr ""
 
@@ -373,139 +377,156 @@ msgstr ""
 msgid "Welcome %s, you are connected to Alignak Backend"
 msgstr ""
 
-#: ../qobjects/events/spy.py:51
-msgid "Select spy host to display its problems..."
+#: ../qobjects/events/spy.py:50 ../qobjects/events/spy.py:216
+msgid "You are not spying on any hosts for now..."
 msgstr ""
 
-#: ../qobjects/events/spy.py:65
-msgid "Spy Hosts (double click to stop spying)"
+#: ../qobjects/events/spy.py:72 ../qobjects/panel.py:107
+msgid "Spy Hosts"
 msgstr ""
 
-#: ../qobjects/events/spy.py:104
+#: ../qobjects/events/spy.py:117
 msgid "Drop host-related events here to spy on it..."
 msgstr ""
 
-#: ../qobjects/events/spy.py:121 ../qobjects/events/spy_list.py:73
+#: ../qobjects/events/spy.py:135
 #, python-format
 msgid "Host %s, current state: %s"
 msgstr ""
 
-#: ../qobjects/events/spy.py:145
+#: ../qobjects/events/spy.py:160 ../qobjects/events/spy.py:161
+msgid "(new !)"
+msgstr ""
+
+#: ../qobjects/events/spy.py:163
 #, python-format
 msgid "Problems found for %s:"
 msgstr ""
 
-#: ../qobjects/events/spy.py:153
+#: ../qobjects/events/spy.py:171
 #, python-format
 msgid "Service %s is %s"
 msgstr ""
 
-#: ../qobjects/events/spy.py:170
+#: ../qobjects/events/spy.py:188
 #, python-format
 msgid "%s is %s. Services of host seems managed."
 msgstr ""
 
-#: ../qobjects/events/spy.py:179
+#: ../qobjects/events/spy.py:197
 #, python-format
 msgid "%s is %s. No services."
 msgstr ""
 
-#: ../qobjects/events/spy.py:198
-msgid "You are not spying on any hosts for now..."
-msgstr ""
-
-#: ../qobjects/events/spy.py:215 ../qobjects/events/spy.py:221
+#: ../qobjects/events/spy.py:233 ../qobjects/events/spy.py:239
 #, python-format
 msgid "Spied Hosts (%d)"
 msgstr ""
 
-#: ../qobjects/host/host.py:157
+#: ../qobjects/events/spy_list.py:62
+msgid "Select spy host to display its problems..."
+msgstr ""
+
+#: ../qobjects/events/spy_list.py:76
+#, python-format
+msgid "Host %s, current state: %s (new !)"
+msgstr ""
+
+#: ../qobjects/host/host.py:158
 msgid "Host actions"
 msgstr ""
 
-#: ../qobjects/host/host.py:162
+#: ../qobjects/host/host.py:163
 msgid "Acknowledge / Downtime:"
 msgstr ""
 
-#: ../qobjects/host/host.py:170
+#: ../qobjects/host/host.py:171
 msgid "Active checks:"
 msgstr ""
 
-#: ../qobjects/host/host.py:180
+#: ../qobjects/host/host.py:181
 msgid "Passive checks:"
 msgstr ""
 
-#: ../qobjects/host/host.py:190
+#: ../qobjects/host/host.py:191
 msgid "Timeline:"
 msgstr ""
 
-#: ../qobjects/host/host.py:235 ../qobjects/user/profile.py:457
+#: ../qobjects/host/host.py:197
+msgid "See history of host"
+msgstr ""
+
+#: ../qobjects/host/host.py:204
+msgid "Spy Host:"
+msgstr ""
+
+#: ../qobjects/host/host.py:247 ../qobjects/user/profile.py:457
 msgid "enabled"
 msgstr ""
 
-#: ../qobjects/host/host.py:235 ../qobjects/user/profile.py:457
+#: ../qobjects/host/host.py:247 ../qobjects/user/profile.py:457
 msgid "disabled"
 msgstr ""
 
-#: ../qobjects/host/host.py:238
+#: ../qobjects/host/host.py:250
 #, python-format
 msgid "%s %s for %s"
 msgstr ""
 
-#: ../qobjects/host/host.py:245 ../qobjects/host/host.py:403
+#: ../qobjects/host/host.py:257 ../qobjects/host/host.py:415
 #: ../qobjects/user/profile.py:284 ../qobjects/user/profile.py:304
 msgid "Backend PATCH failed, please check your logs !"
 msgstr ""
 
-#: ../qobjects/host/host.py:261 ../qobjects/service/service.py:123
+#: ../qobjects/host/host.py:273 ../qobjects/service/service.py:123
 msgid "My last check"
 msgstr ""
 
-#: ../qobjects/host/host.py:267
+#: ../qobjects/host/host.py:279
 msgid "State:"
 msgstr ""
 
-#: ../qobjects/host/host.py:274 ../qobjects/service/service.py:129
+#: ../qobjects/host/host.py:286 ../qobjects/service/service.py:129
 msgid "When:"
 msgstr ""
 
-#: ../qobjects/host/host.py:295
+#: ../qobjects/host/host.py:307
 msgid "My variables"
 msgstr ""
 
-#: ../qobjects/host/host.py:301 ../qobjects/user/profile.py:120
+#: ../qobjects/host/host.py:313 ../qobjects/user/profile.py:120
 msgid "Realm:"
 msgstr ""
 
-#: ../qobjects/host/host.py:308
+#: ../qobjects/host/host.py:320
 msgid "Host address:"
 msgstr ""
 
-#: ../qobjects/host/host.py:315
+#: ../qobjects/host/host.py:327
 msgid "Business impact:"
 msgstr ""
 
-#: ../qobjects/host/host.py:349 ../qobjects/user/profile.py:188
+#: ../qobjects/host/host.py:361 ../qobjects/user/profile.py:188
 msgid "Notes:"
 msgstr ""
 
-#: ../qobjects/host/host.py:355
+#: ../qobjects/host/host.py:367
 msgid "Edit host notes."
 msgstr ""
 
-#: ../qobjects/host/host.py:378
+#: ../qobjects/host/host.py:390
 msgid "Edit Host Notes"
 msgstr ""
 
-#: ../qobjects/host/host.py:397
+#: ../qobjects/host/host.py:409
 msgid "Host notes have been edited."
 msgstr ""
 
-#: ../qobjects/host/host.py:467
+#: ../qobjects/host/host.py:480
 msgid "History is available"
 msgstr ""
 
-#: ../qobjects/host/host.py:469
+#: ../qobjects/host/host.py:482
 msgid "History is not available, please wait..."
 msgstr ""
 
@@ -880,48 +901,28 @@ msgstr ""
 msgid "PyQt5"
 msgstr ""
 
-#: ../qobjects/dock.py:56
+#: ../qobjects/dock.py:57
 msgid "Alignak"
 msgstr ""
 
-#: ../qobjects/dock.py:64
+#: ../qobjects/dock.py:65
 msgid "Livestate"
 msgstr ""
 
-#: ../qobjects/dock.py:72
+#: ../qobjects/dock.py:73
 msgid "Last Events"
 msgstr ""
 
-#: ../qobjects/panel.py:71
-msgid "Spy Host"
-msgstr ""
-
-#: ../qobjects/panel.py:71
-msgid "Host spied!"
-msgstr ""
-
-#: ../qobjects/panel.py:95
+#: ../qobjects/panel.py:88
 msgid "Host Synthesis"
 msgstr ""
 
-#: ../qobjects/panel.py:97
+#: ../qobjects/panel.py:90
 msgid "See a synthesis view of a host"
 msgstr ""
 
-#: ../qobjects/panel.py:109
+#: ../qobjects/panel.py:102
 msgid "See the problems found in backend"
-msgstr ""
-
-#: ../qobjects/panel.py:114
-msgid "Spied Hosts"
-msgstr ""
-
-#: ../qobjects/panel.py:183 ../qobjects/panel.py:186
-msgid "Search Host"
-msgstr ""
-
-#: ../qobjects/panel.py:267 ../qobjects/panel.py:268
-msgid "Type a host name to display its data"
 msgstr ""
 
 #: ../utils/time.py:91
@@ -939,16 +940,4 @@ msgstr ""
 #: ../utils/time.py:131
 #, python-format
 msgid "%s ago"
-msgstr ""
-
-#: ../app.py:254
-msgid "Connection"
-msgstr ""
-
-#: ../app.py:256
-msgid "Warning!"
-msgstr ""
-
-#: ../app.py:257
-msgid "Access denied! Check your configuration and your credentials."
 msgstr ""
