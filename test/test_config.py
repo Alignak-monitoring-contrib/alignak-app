@@ -62,12 +62,12 @@ class TestUtils(unittest2.TestCase):
 
         # Get current url
         url_test = under_test.get_config('Alignak', 'url')
-        self.assertEqual('http://demo.alignak.net', url_test)
+        self.assertIsNotNone(url_test)
 
         # Change url
-        under_test.set_config('Alignak', 'url', 'http://127.0.0.1')
+        under_test.set_config('Alignak', 'url', 'http://127.9.9.9')
         new_url_test = under_test.get_config('Alignak', 'url')
-        self.assertEqual('http://127.0.0.1', new_url_test)
+        self.assertEqual('http://127.9.9.9', new_url_test)
 
         # Back url to normal
         under_test.set_config('Alignak', 'url', 'http://demo.alignak.net')
