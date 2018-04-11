@@ -441,13 +441,14 @@ class HostQWidget(QWidget):
             )
             self.labels['host_name'].setText('%s' % self.host_item.get_display_name())
 
+            monitored = self.host_item.data[
+                'passive_checks_enabled'] + self.host_item.data['active_checks_enabled']
             icon_name = get_icon_name(
                 'host',
                 self.host_item.data['ls_state'],
                 self.host_item.data['ls_acknowledged'],
                 self.host_item.data['ls_downtimed'],
-                self.host_item.data['passive_checks_enabled'] +
-                self.host_item.data['active_checks_enabled']
+                monitored
             )
             pixmap_icon = QPixmap(settings.get_image(icon_name))
             final_icon = pixmap_icon.scaled(32, 32, Qt.KeepAspectRatio)

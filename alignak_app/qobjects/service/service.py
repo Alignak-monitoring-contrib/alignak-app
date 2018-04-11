@@ -180,13 +180,14 @@ class ServiceDataQWidget(QWidget):
 
         self.service_item = service
 
+        monitored = self.service_item.data[
+            'passive_checks_enabled'] + self.service_item.data['active_checks_enabled']
         icon_name = get_icon_name(
             'service',
             self.service_item.data['ls_state'],
             self.service_item.data['ls_acknowledged'],
             self.service_item.data['ls_downtimed'],
-            self.service_item.data['passive_checks_enabled'] +
-            self.service_item.data['active_checks_enabled']
+            monitored
         )
         icon_pixmap = QPixmap(settings.get_image(icon_name))
 
