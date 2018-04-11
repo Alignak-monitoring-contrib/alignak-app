@@ -29,7 +29,7 @@ rm -R dist
  --paths C:\%HOMEPATH%\AppData\Roaming\Python\Python35\site-packages\PyQt5\Qt\bin ^
  --paths C:\%HOMEPATH%\AppData\Roaming\Python\Python35\site-packages\PyQt5\Qt\plugins ^
  --paths D:\Repos\alignak-app\alignak_app ^
- bin\unix\alignak-app.py
+ alignak_app\app.py
 
 cd bin\win
 pause
