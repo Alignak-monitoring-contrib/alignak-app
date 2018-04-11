@@ -238,7 +238,7 @@ class BackendClient(object):
 
         return request
 
-    def acknowledge(self, item, sticky, notify, comment):
+    def acknowledge(self, item, sticky, notify, comment):  # pragma: no cover
         """
         Prepare data for acknowledge and POST on backend API or WS if available
 
@@ -303,7 +303,7 @@ class BackendClient(object):
         return request
 
     # pylint: disable=too-many-arguments
-    def downtime(self, item, fixed, duration, start_stamp, end_stamp, comment):
+    def downtime(self, item, fixed, duration, start_stamp, end_stamp, comment):  # pragma: no cover
         """
         Prepare data for downtime and POST on backend API or WS if available
 

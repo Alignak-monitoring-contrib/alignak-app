@@ -80,7 +80,7 @@ class WSClient(object):
             logger.warning(msg)
             logger.debug(exp)
 
-    def get(self, endpoint, params):
+    def get(self, endpoint, params):  # pragma: no cover
         """
         GET on alignak Backend Web Service
 
@@ -108,7 +108,7 @@ class WSClient(object):
 
         return request.json()
 
-    def post(self, endpoint, params=None):
+    def post(self, endpoint, params=None):  # pragma: no cover
         """
         Post on alignak Backend Web Service
 

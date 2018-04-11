@@ -32,7 +32,7 @@ class TestAppBackend(unittest2.TestCase):
         This file test methods of AppBackend class
     """
 
-    # Create config for all methods.
+    # Init config for all methods.
     settings.init_config()
     host_id = '59c4e40635d17b8e0c6accae'
     hostname = 'cogny'
