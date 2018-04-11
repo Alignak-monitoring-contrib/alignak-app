@@ -53,7 +53,7 @@ class HistoryQWidget(QWidget):
         self.setMinimumSize(800, 670)
         # Fields
         self.history_table = QTableWidget()
-        self.table_headers = ['Events']
+        self.table_headers = [_('Events')]
         self.history_title = QLabel()
         self.offset = None
 

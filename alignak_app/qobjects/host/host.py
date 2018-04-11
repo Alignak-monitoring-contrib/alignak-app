@@ -41,6 +41,8 @@ from alignak_app.qobjects.common.buttons import ToggleQWidgetButton
 from alignak_app.qobjects.common.dialogs import EditQDialog
 from alignak_app.qobjects.events.events import send_event
 from alignak_app.qobjects.host.history import HistoryQWidget
+from alignak_app.qobjects.host.customs import CustomsQWidget
+
 
 from alignak_app.qobjects.threads.threadmanager import thread_manager
 
@@ -74,6 +76,7 @@ class HostQWidget(QWidget):
         self.history_btn = QPushButton()
         self.history_widget = HistoryQWidget()
         self.host_history = None
+        self.customs_widget = CustomsQWidget()
         self.spy_btn = QPushButton()
         self.refresh_timer = QTimer()
 
@@ -139,6 +142,21 @@ class HostQWidget(QWidget):
         self.labels['host_name'].setWordWrap(True)
         layout.addWidget(self.labels['host_name'])
         layout.setAlignment(self.labels['host_name'], Qt.AlignCenter)
+
+        # Customs button
+        customs_lbl = QLabel(_('Configuration:'))
+        customs_lbl.setObjectName('subtitle')
+        layout.addWidget(customs_lbl)
+        layout.setAlignment(customs_lbl, Qt.AlignBottom)
+        customs_btn = QPushButton()
+        customs_btn.setIcon(QIcon(settings.get_image('settings')))
+        customs_btn.setFixedSize(80, 20)
+        customs_btn.clicked.connect(self.show_customs)
+        layout.addWidget(customs_btn)
+        layout.setAlignment(customs_btn, Qt.AlignCenter)
+
+        # Initialize Customs QWidget
+        self.customs_widget.initialize()
 
         return widget
 
@@ -213,49 +231,6 @@ class HostQWidget(QWidget):
         layout.setAlignment(Qt.AlignCenter | Qt.AlignTop)
 
         return widget
-
-    def show_history(self):
-        """
-        Create and show HistoryQWidget
-
-        """
-
-        self.history_widget.update_history_data(self.host_item.name, self.host_history)
-        self.history_widget.show()
-
-    def patch_host_checks(self, check_type, state):  # pragma: no cover
-        """
-        Patch the host check: 'active_checks_enabled' | 'passive_checks_enabled'
-
-        :param check_type: type of check: 'active_checks_enabled' | 'passive_checks_enabled'
-        :type check_type: str
-        :param state: state of Toggle button
-        :type state: bool
-        """
-
-        data = {check_type: state}
-        headers = {'If-Match': self.host_item.data['_etag']}
-        endpoint = '/'.join([self.host_item.item_type, self.host_item.item_id])
-
-        patched = app_backend.patch(endpoint, data, headers)
-
-        if patched:
-            self.host_item.data[check_type] = state
-            data_manager.update_item_data(
-                self.host_item.item_type, self.host_item.item_id, self.host_item.data
-            )
-            enabled = _('enabled') if state else _('disabled')
-            event_type = 'OK' if state else 'WARN'
-            message = _(
-                _('%s %s for %s' %
-                  (Item.get_check_text(check_type), enabled, self.host_item.get_display_name()))
-            )
-            send_event(event_type, message, timer=True)
-        else:
-            send_event(
-                'ERROR',
-                _("Backend PATCH failed, please check your logs !")
-            )
 
     def get_last_check_widget(self):
         """
@@ -378,6 +353,58 @@ class HostQWidget(QWidget):
         layout.addWidget(notes_scrollarea, 1, 2, 1, 2)
 
         return widget
+
+    def show_history(self):
+        """
+        Update and show HistoryQWidget
+
+        """
+
+        self.history_widget.update_history_data(self.host_item.name, self.host_history)
+        self.history_widget.show()
+
+    def show_customs(self):
+        """
+        Update and show CustomsQWidget
+
+        """
+
+        self.customs_widget.update_customs(self.host_item)
+        self.customs_widget.show()
+
+    def patch_host_checks(self, check_type, state):  # pragma: no cover
+        """
+        Patch the host check: 'active_checks_enabled' | 'passive_checks_enabled'
+
+        :param check_type: type of check: 'active_checks_enabled' | 'passive_checks_enabled'
+        :type check_type: str
+        :param state: state of Toggle button
+        :type state: bool
+        """
+
+        data = {check_type: state}
+        headers = {'If-Match': self.host_item.data['_etag']}
+        endpoint = '/'.join([self.host_item.item_type, self.host_item.item_id])
+
+        patched = app_backend.patch(endpoint, data, headers)
+
+        if patched:
+            self.host_item.data[check_type] = state
+            data_manager.update_item_data(
+                self.host_item.item_type, self.host_item.item_id, self.host_item.data
+            )
+            enabled = _('enabled') if state else _('disabled')
+            event_type = 'OK' if state else 'WARN'
+            message = _(
+                _('%s %s for %s' %
+                  (Item.get_check_text(check_type), enabled, self.host_item.get_display_name()))
+            )
+            send_event(event_type, message, timer=True)
+        else:
+            send_event(
+                'ERROR',
+                _("Backend PATCH failed, please check your logs !")
+            )
 
     def patch_data(self):  # pragma: no cover
         """
