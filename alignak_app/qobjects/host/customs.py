@@ -101,6 +101,7 @@ class CustomsQWidget(QWidget):
         logger.debug('Open Customs for %s', host_item.name)
 
         self.customs_table.clear()
+        self.customs_table.setHorizontalHeaderLabels(self.table_headers)
         self.customs_table.setRowCount(len(host_item.data['customs']))
 
         row = 0
@@ -115,7 +116,7 @@ class CustomsQWidget(QWidget):
             self.customs_table.setItem(row, 0, title_item)
 
             data_item = QTableWidgetItem()
-            data_item.setText(host_item.data['customs'][custom])
+            data_item.setText(str(host_item.data['customs'][custom]))
             self.customs_table.setItem(row, 1, data_item)
 
             row += 1
