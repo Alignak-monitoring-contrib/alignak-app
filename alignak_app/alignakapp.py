@@ -195,27 +195,13 @@ class AlignakApp(QObject):  # pragma: no cover
         if not app_backend.login(username, password, proxies=proxies):
             self.show_login_window()
 
-        # Launch start threads
-        thread_to_launch = [
-            'CRITICAL', 'WARNING', 'UNKNOWN', 'livesynthesis', 'realm', 'timeperiod',
-            'alignakdaemon', 'user', 'host'
-        ]
-        logger.info("Filling the local database: %s", thread_to_launch)
-
-        launched_threads = []
-        while thread_to_launch:
-            thread = thread_to_launch.pop()
-            backend_thread = BackendQThread(thread)
-            backend_thread.start()
-
-            launched_threads.append(backend_thread)
-
         # Create Progress Bar
         app_progress = AppProgressQWidget()
         app_progress.initialize()
         center_widget(app_progress)
         logger.info("Preparing DataManager...")
         while not data_manager.ready:
+            thread_manager.launch_threads()
             app_progress.show()
 
             for _ in range(0, 100):
@@ -236,9 +222,6 @@ class AlignakApp(QObject):  # pragma: no cover
         self.tray_icon = AppTrayIcon(QIcon(settings.get_image('icon')))
         self.tray_icon.build_menu()
         self.tray_icon.show()
-
-        while self.quit_launched_threads(launched_threads):
-            pass
 
         sys.exit(app.exec_())
 
@@ -268,25 +251,6 @@ class AlignakApp(QObject):  # pragma: no cover
                 connect_dialog.exec_()
 
     @staticmethod
-    def quit_launched_threads(launched_threads):
-        """
-        Exit the threads that were started when the application started
-
-        :param launched_threads: list of threads that have been launched
-        :type launched_threads: list
-        :return: empty list if all the threads have been left or current list
-        :rtype: list
-        """
-
-        for old_thread in launched_threads:
-            if old_thread.isFinished():
-                old_thread.quit()
-                old_thread.wait()
-                launched_threads.remove(old_thread)
-
-        return launched_threads
-
-    @staticmethod
     def check_threads():
         """
         Launch periodically threads
@@ -298,7 +262,9 @@ class AlignakApp(QObject):  # pragma: no cover
 
         # Launch or stop threads
         if app_backend.connected:
-            thread_manager.launch_threads()
+            thread_manager.launch_threads('low')
+            thread_manager.launch_threads('normal')
+            thread_manager.launch_threads('normal')
         else:
             logger.debug(
                 'Can\'t launch Request threads, App is not connected to backend [%s] !',

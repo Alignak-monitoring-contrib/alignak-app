@@ -42,5 +42,5 @@ class TestBackendQThread(unittest2.TestCase):
 
         under_test = BackendQThread('user')
 
-        self.assertEqual('user', under_test.thread_name)
+        self.assertEqual('user', under_test.name)
         self.assertIsNone(under_test.data)
