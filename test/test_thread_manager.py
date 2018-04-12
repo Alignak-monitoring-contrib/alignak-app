@@ -43,7 +43,7 @@ class TestThreadManager(unittest2.TestCase):
 
         for t_type in under_test.threads_to_launch:
             self.assertFalse(under_test.threads_to_launch[t_type])
-        self.assertFalse(under_test.priority_threads)
+        self.assertFalse(under_test.high_threads)
 
     def test_fill_threads(self):
         """Add Low / Normal Threads"""
@@ -81,42 +81,42 @@ class TestThreadManager(unittest2.TestCase):
         """Add / Remove Priority Threads"""
 
         under_test = ThreadManager()
-        under_test.priority_threads.append(BackendQThread('user'))
+        under_test.high_threads.append(BackendQThread('user'))
 
-        self.assertTrue(under_test.priority_threads)
+        self.assertTrue(under_test.high_threads)
 
-        under_test.stop_priority_threads()
+        under_test.stop_high_priority_threads()
 
         # Priority thread is removed
-        self.assertFalse(under_test.priority_threads)
+        self.assertFalse(under_test.high_threads)
 
         # Add 3 priority threads
-        under_test.priority_threads.append(BackendQThread('user'))
-        under_test.priority_threads.append(BackendQThread('host'))
-        under_test.priority_threads.append(BackendQThread('history'))
+        under_test.high_threads.append(BackendQThread('user'))
+        under_test.high_threads.append(BackendQThread('host'))
+        under_test.high_threads.append(BackendQThread('history'))
 
-        self.assertTrue(len(under_test.priority_threads) == 3)
+        self.assertTrue(len(under_test.high_threads) == 3)
 
-        under_test.add_priority_thread('user', {})
+        under_test.add_high_priority_thread('user', {})
 
         # When already 3 priority threads, next priority htread is not add
-        self.assertTrue(len(under_test.priority_threads) == 3)
+        self.assertTrue(len(under_test.high_threads) == 3)
 
     def test_stop_threads(self):
         """Stop All Threads"""
 
         under_test = ThreadManager()
 
-        under_test.priority_threads.append(BackendQThread(''))
+        under_test.high_threads.append(BackendQThread(''))
         under_test.launched_threads['low'].append(BackendQThread(''))
         under_test.launched_threads['normal'].append(BackendQThread(''))
 
-        self.assertTrue(under_test.priority_threads)
+        self.assertTrue(under_test.high_threads)
         self.assertTrue(under_test.launched_threads['low'])
         self.assertTrue(under_test.launched_threads['normal'])
 
         under_test.stop_threads()
 
-        self.assertFalse(under_test.priority_threads)
+        self.assertFalse(under_test.high_threads)
         self.assertFalse(under_test.launched_threads['low'])
         self.assertFalse(under_test.launched_threads['normal'])

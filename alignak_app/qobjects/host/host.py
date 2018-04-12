@@ -459,7 +459,7 @@ class HostQWidget(QWidget):
             # Update host services
             self.refresh_counter += 1
             if self.refresh_counter > 10:
-                thread_manager.add_priority_thread('service', self.host_item.item_id)
+                thread_manager.add_high_priority_thread('service', self.host_item.item_id)
                 self.refresh_counter = 0
 
             # Update host
@@ -518,7 +518,7 @@ class HostQWidget(QWidget):
                 self.history_btn.setEnabled(False)
 
                 if app_backend.connected:
-                    thread_manager.add_priority_thread(
+                    thread_manager.add_high_priority_thread(
                         'history',
                         {'hostname': self.host_item.name, 'host_id': self.host_item.item_id}
                     )

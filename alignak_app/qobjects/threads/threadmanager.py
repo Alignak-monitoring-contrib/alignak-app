@@ -22,7 +22,11 @@
 """
     Thread Manager
     ++++++++++++++
-    Thread Manager manage BackendQThreads creations and their priority
+    Thread Manager manage BackendQThreads creations and their priority:
+
+    * low : threads that group the queries about the elements that change little
+    * normal: threads that group the queries on items that change often
+    * high: threads that group the queries made on the fly
 """
 
 from logging import getLogger
@@ -48,7 +52,7 @@ class ThreadManager(QObject):
         super(ThreadManager, self).__init__(parent)
         self.threads_to_launch = {'low': [], 'normal': []}
         self.launched_threads = {'low': [], 'normal': []}
-        self.priority_threads = []
+        self.high_threads = []
 
     def fill_threads(self, thread_type):
         """
@@ -112,7 +116,7 @@ class ThreadManager(QObject):
                         thread
                     )
 
-    def add_priority_thread(self, thread_name, data):
+    def add_high_priority_thread(self, thread_name, data):
         """
         Launch a thread with higher priority (doesn't wait launch_threads() function)
 
@@ -122,11 +126,11 @@ class ThreadManager(QObject):
         :type data: dict
         """
 
-        if len(self.priority_threads) < 3:
+        if len(self.high_threads) < 3:
             backend_thread = BackendQThread(thread_name, data)
             backend_thread.start()
 
-            self.priority_threads.append(backend_thread)
+            self.high_threads.append(backend_thread)
         else:
             logger.debug('Too many priority threads for the moment...')
 
@@ -143,11 +147,11 @@ class ThreadManager(QObject):
                     thread.quit()
                     self.launched_threads[t_thread].remove(thread)
 
-        if self.priority_threads:
-            for thread in self.priority_threads:
+        if self.high_threads:
+            for thread in self.high_threads:
                 if thread.isFinished():
                     thread.quit()
-                    self.priority_threads.remove(thread)
+                    self.high_threads.remove(thread)
                     logger.debug('Remove finished thread: %s', thread.name)
 
     def stop_threads(self):
@@ -156,7 +160,7 @@ class ThreadManager(QObject):
 
         """
 
-        if not self.priority_threads and not self.launched_threads['low'] and \
+        if not self.high_threads and not self.launched_threads['low'] and \
                 not self.launched_threads['normal']:
             logger.debug('No thread to stop.')
 
@@ -166,20 +170,20 @@ class ThreadManager(QObject):
                 thread.quit()
                 self.launched_threads[t_thread].remove(thread)
 
-        if self.priority_threads:
-            self.stop_priority_threads()
+        if self.high_threads:
+            self.stop_high_priority_threads()
 
-    def stop_priority_threads(self):
+    def stop_high_priority_threads(self):
         """
-        Stop priority threads
+        Stop threads with high priority
 
         """
 
-        for thread in self.priority_threads:
+        for thread in self.high_threads:
             logger.debug('Quit priority thread: %s', thread.name)
             thread.quit()
 
-            self.priority_threads.remove(thread)
+            self.high_threads.remove(thread)
 
 
 thread_manager = ThreadManager()
