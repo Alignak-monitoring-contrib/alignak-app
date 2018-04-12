@@ -59,7 +59,7 @@ class BackendQThread(QThread):  # pylint: disable=too-few-public-methods
             elif 'host' in self.name:
                 app_backend.query_hosts()
             elif 'service' in self.name:
-                app_backend.query_services()
+                app_backend.query_services(self.data)
             elif self.name in self.problem_states:
                 app_backend.query_services_problems(self.name)
             elif 'alignakdaemon' in self.name:

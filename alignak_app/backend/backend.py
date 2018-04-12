@@ -261,19 +261,15 @@ class BackendClient(object):
                 command = 'ACKNOWLEDGE_SVC_PROBLEM'
                 host = data_manager.get_item('host', '_id', item.data['host'])
                 element = host.name
-                item_name = item.name
             else:
                 command = 'ACKNOWLEDGE_HOST_PROBLEM'
                 element = item.name
-                item_name = item.name
+            item_name = item.name
             if sticky:
                 sticky = '2'
             else:
                 sticky = '1'
-            if notify:
-                notify = '1'
-            else:
-                notify = '0'
+            notify = str(int(notify))
             persistent = '0'
 
             parameters = ';'.join([item_name, sticky, notify, persistent, user.name, comment])
@@ -329,10 +325,7 @@ class BackendClient(object):
                 element = host.name
             else:
                 element = item.name
-            if fixed:
-                fixed = '1'
-            else:
-                fixed = '0'
+            fixed = str(int(fixed))
             item_name = item.name
             trigger_id = '0'
             parameters = ';'.join(
@@ -532,6 +525,7 @@ class BackendClient(object):
                 # Add / update only services of host "if host_id"
                 if host_id:
                     if not data_manager.get_item('service', service.item_id):
+                        logger.debug('Add item data in database[service]')
                         data_manager.database['service'].append(service)
                     else:
                         data_manager.update_item_data('service', service.item_id, service.data)
@@ -539,6 +533,10 @@ class BackendClient(object):
             # If not item ID, update all database
             if services_list and not host_id:
                 data_manager.update_database('service', services_list)
+            if host_id:
+                host = data_manager.get_item('host', '_id', host_id)
+                if host:
+                    logger.info('Update database[service] for %s', host.name)
             if 'OK' in request['_status']:
                 data_manager.db_is_ready[request_model['endpoint']] = True
 

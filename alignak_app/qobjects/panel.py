@@ -27,13 +27,12 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QPushButton, QIcon, Qt, QVBoxLayout, QWidget, QTabWidget, QLabel
+from PyQt5.Qt import QPushButton, Qt, QVBoxLayout, QWidget, QTabWidget
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.backend.backend import app_backend
 from alignak_app.utils.config import settings
 
-from alignak_app.qobjects.events.item import EventItem
 from alignak_app.qobjects.events.spy import SpyQWidget
 from alignak_app.qobjects.alignak.dashboard import DashboardQWidget
 from alignak_app.qobjects.alignak.problems import ProblemsQWidget

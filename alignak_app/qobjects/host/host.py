@@ -43,7 +43,6 @@ from alignak_app.qobjects.events.events import send_event
 from alignak_app.qobjects.host.history import HistoryQWidget
 from alignak_app.qobjects.host.customs import CustomsQWidget
 
-
 from alignak_app.qobjects.threads.threadmanager import thread_manager
 
 logger = getLogger(__name__)
@@ -79,6 +78,7 @@ class HostQWidget(QWidget):
         self.customs_widget = CustomsQWidget()
         self.spy_btn = QPushButton()
         self.refresh_timer = QTimer()
+        self.refresh_counter = 0
 
     def initialize(self):
         """
@@ -456,6 +456,13 @@ class HostQWidget(QWidget):
             self.set_data(host_item)
 
         if self.host_item or host_item:
+            # Update host services
+            self.refresh_counter += 1
+            if self.refresh_counter > 10:
+                thread_manager.add_priority_thread('service', self.host_item.item_id)
+                self.refresh_counter = 0
+
+            # Update host
             icon_name = get_overall_state_icon(
                 self.service_items,
                 self.host_item.data['_overall_state_id']
@@ -501,6 +508,7 @@ class HostQWidget(QWidget):
             self.activecheck_btn.update_btn_state(self.host_item.data['active_checks_enabled'])
             self.passivecheck_btn.update_btn_state(self.host_item.data['passive_checks_enabled'])
 
+            # Update host history
             self.host_history = data_manager.get_item('history', self.host_item.item_id)
             if self.host_history:
                 self.history_btn.setEnabled(True)
