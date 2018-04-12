@@ -25,6 +25,11 @@ Backend
     :inherited-members:
     :show-inheritance:
 
+.. automodule:: alignak_app.backend.ws_client
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
 Items
 -----
 
@@ -216,16 +221,28 @@ Events
     :members:
     :show-inheritance:
 
+.. automodule:: alignak_app.qobjects.events.spy_list
+    :members:
+    :show-inheritance:
+
 Host
 ^^^^
 
 .. automodule:: alignak_app.qobjects.host
+
+.. automodule:: alignak_app.qobjects.host.customs
+    :members:
+    :show-inheritance:
 
 .. automodule:: alignak_app.qobjects.host.history
     :members:
     :show-inheritance:
 
 .. automodule:: alignak_app.qobjects.host.host
+    :members:
+    :show-inheritance:
+
+.. automodule:: alignak_app.qobjects.host.synthesis
     :members:
     :show-inheritance:
 

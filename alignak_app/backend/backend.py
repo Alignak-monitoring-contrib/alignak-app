@@ -242,7 +242,7 @@ class BackendClient(object):
         """
         Prepare data for acknowledge and POST on backend API or WS if available
 
-        :param item: item to acknowledge: host | service
+        :param item: item to acknowledge: host | service
         :type item: alignak_app.items.host.Host | alignak_app.items.service.Service
         :param sticky: define if ack is sticky or not
         :type sticky: bool
