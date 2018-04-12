@@ -84,7 +84,7 @@ class ProblemsQWidget(QWidget):
 
         self.update_problems_data()
 
-    def get_curent_user_role_item(self):
+    def get_current_user_role_item(self):
         """
         Return current selected item by ``Qt.UserRole``
 
@@ -106,7 +106,7 @@ class ProblemsQWidget(QWidget):
         """
 
         # Get item by UserRole
-        item = self.get_curent_user_role_item()
+        item = self.get_current_user_role_item()
 
         if item:
             # If the elements had been ack or downtimed, they would not be present
@@ -226,7 +226,7 @@ class ProblemsQWidget(QWidget):
         """
 
         # Get item by UserRole
-        item = self.get_curent_user_role_item()
+        item = self.get_current_user_role_item()
 
         if item:
             if 'service' in item.item_type:
@@ -256,6 +256,13 @@ class ProblemsQWidget(QWidget):
                 self.parent().parent().indexOf(self),
                 _("Problems (%d)") % len(problems_data['problems'])
             )
+            self.problems_title.setText(
+                _('There are %d problems to manage (hosts: %d, services: %d)') % (
+                    len(problems_data['problems']),
+                    problems_data['hosts_nb'],
+                    problems_data['services_nb']
+                )
+            )
 
         if self.filter_hosts_btn.is_checked() and not self.filter_services_btn.is_checked():
             item_type = 'host'
@@ -277,13 +284,6 @@ class ProblemsQWidget(QWidget):
 
         proxy_filter = self.problems_table.update_view(problems_data)
         if problems_data['problems']:
-            self.problems_title.setText(
-                _('There are %d problems to manage (hosts: %d, services: %d)') % (
-                    len(problems_data['problems']),
-                    problems_data['hosts_nb'],
-                    problems_data['services_nb']
-                )
-            )
             self.line_search.textChanged.connect(proxy_filter.setFilterRegExp)
         else:
             self.problems_title.setText(_('If problems are found, they will be displayed here.'))

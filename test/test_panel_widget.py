@@ -207,7 +207,7 @@ class TestPanelQWidget(unittest2.TestCase):
         under_test.initialize()
 
         self.assertEqual('', under_test.synthesis_widget.line_search.text())
-        self.assertIsNone(under_test.problems_widget.get_curent_user_role_item())
+        self.assertIsNone(under_test.problems_widget.get_current_user_role_item())
 
         # Make an item as current in problems table
         under_test.problems_widget.problems_table.update_view({'problems': [self.host_list[8]]})
@@ -217,7 +217,7 @@ class TestPanelQWidget(unittest2.TestCase):
             QItemSelectionModel.SelectCurrent
         )
 
-        self.assertIsNotNone(under_test.problems_widget.get_curent_user_role_item())
+        self.assertIsNotNone(under_test.problems_widget.get_current_user_role_item())
         self.assertEqual('', under_test.synthesis_widget.line_search.text())
 
         under_test.set_host_from_problems()

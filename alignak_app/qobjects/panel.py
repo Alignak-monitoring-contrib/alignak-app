@@ -195,7 +195,7 @@ class PanelQWidget(QWidget):
 
         """
 
-        item = self.problems_widget.get_curent_user_role_item()
+        item = self.problems_widget.get_current_user_role_item()
         if item:
             if 'service' in item.item_type:
                 hostname = data_manager.get_item('host', item.data['host']).name
