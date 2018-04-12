@@ -129,7 +129,10 @@ class BackendClient(object):
             )
 
         if self.connected and not check:
-            self.ws_client.login(self.user['token'])
+            if settings.get_config('Alignak', 'webservice'):
+                self.ws_client.login(self.user['token'])
+            else:
+                logger.info('No configured Web Service.')
 
         return self.connected
 

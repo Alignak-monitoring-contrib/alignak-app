@@ -48,7 +48,7 @@ class Settings(object):
     """
 
     # Default configurations
-    default_parameters = {
+    default_settings = {
         'Alignak': {
             'username': '',
             'password': '',
@@ -63,8 +63,11 @@ class Settings(object):
 
         },
         'Alignak-app': {
+            'locale': 'en_US',
+            'display': 'min',
             'problems': False,
-            'requests_interval': 30,
+            'tab_order': 'h,p,s',
+            'requests_interval': 20,
             'notification_duration': 30,
             'spy_interval': 30,
             'update_status': 30,
@@ -120,24 +123,24 @@ class Settings(object):
                 if self.app_config.get(section, option):
                     return self.app_config.getboolean(section, option)
 
-                return self.default_parameters[section][option]
+                return self.default_settings[section][option]
             except (NoOptionError, NoSectionError) as e:  # pragma: no cover - not testable
-                logger.error('%s', str(e))
-                logger.error('Replace by default %s: %s',
-                             section, self.default_parameters[section][option])
-                return self.default_parameters[section][option]
+                logger.warning('%s', str(e))
+                logger.info('Replace by default %s: %s',
+                            section, self.default_settings[section][option])
+                return self.default_settings[section][option]
         else:
             try:
                 if self.app_config.get(section, option):
                     return self.app_config.get(section, option)
 
-                return self.default_parameters[section][option]
-            except (NoOptionError, NoSectionError, InterpolationError) \
-                    as e:  # pragma: no cover - not testable
-                logger.error('%s', str(e))
-                logger.error('Replace by default %s: %s',
-                             section, self.default_parameters[section][option])
-                return self.default_parameters[section][option]
+                return self.default_settings[section][option]
+            # pragma: no cover - not testable
+            except (NoOptionError, NoSectionError, InterpolationError) as e:
+                logger.warning('%s', str(e))
+                logger.info('Replace by default %s: %s',
+                            section, self.default_settings[section][option])
+                return self.default_settings[section][option]
 
     def set_config(self, section, option, new_value):
         """
