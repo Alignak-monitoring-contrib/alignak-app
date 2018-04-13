@@ -224,7 +224,10 @@ class LoginQDialog(QDialog):
         server_dialog.initialize_dialog()
 
         if server_dialog.exec_() == QDialog.Accepted:
-            backend_url = '%(url)s:' + str(server_dialog.server_port.text()).rstrip()
+            if server_dialog.server_port.text().rstrip():
+                backend_url = '%(url)s:' + str(server_dialog.server_port.text()).rstrip()
+            else:
+                backend_url = '%(url)s'
             settings.set_config('Alignak', 'backend', backend_url)
             settings.set_config(
                 'Alignak', 'url', str(server_dialog.server_url.text()).rstrip())

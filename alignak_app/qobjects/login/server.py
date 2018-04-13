@@ -130,9 +130,6 @@ class ServerQDialog(QDialog):
             self.server_proc.setPlaceholderText(_('alignak backend processes...'))
             self.server_proc.setFixedHeight(25)
             server_layout.addWidget(self.server_proc)
-        else:
-            self.server_proc.setText(settings.get_config('Alignak', 'processes'))
-            self.server_proc.setEnabled(False)
 
         # Valid Button
         valid_btn = QPushButton(_('Valid'))
