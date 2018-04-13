@@ -71,7 +71,7 @@ class Settings(object):
             'notification_duration': 30,
             'spy_interval': 30,
             'update_status': 30,
-            'update_buttons': 30,
+            'daemons_freshness': 10,
             'update_livestate': 30,
             'update_dashboard': 30,
             'update_host': 30,
