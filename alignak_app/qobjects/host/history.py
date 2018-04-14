@@ -33,7 +33,7 @@ from PyQt5.Qt import QVBoxLayout, QStyleOption, QStyle, QPainter
 
 from alignak_app.items.history import History
 from alignak_app.utils.config import settings
-from alignak_app.utils.time import get_local_datetime_from_date, get_time_diff_since_last_timestamp
+from alignak_app.utils.time import get_local_datetime_from_date, get_diff_since_last_timestamp
 
 from alignak_app.qobjects.common.widgets import center_widget, get_logo_widget
 
@@ -141,7 +141,7 @@ class HistoryQWidget(QWidget):
             History.get_history_icon_name(event['message'], event['type'])
         )
         local_timestamp = get_local_datetime_from_date(event['_updated'])
-        created_since = get_time_diff_since_last_timestamp(local_timestamp.timestamp())
+        created_since = get_diff_since_last_timestamp(local_timestamp.timestamp())
 
         event_type = self.get_event_type(event, hostname)
         event_type_dated = '%s      (%s)' % (event_type, created_since)

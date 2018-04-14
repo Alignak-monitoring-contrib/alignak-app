@@ -31,10 +31,11 @@ from PyQt5.Qt import Qt, QDialog, QGridLayout, QLabel, QPushButton, QVBoxLayout,
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
-from alignak_app.utils.time import get_time_diff_since_last_timestamp
+from alignak_app.utils.time import get_diff_since_last_timestamp
 
 from alignak_app.qobjects.common.labels import get_icon_pixmap
 from alignak_app.qobjects.common.widgets import center_widget, get_logo_widget
+from alignak_app.qobjects.events.events import send_event
 
 logger = getLogger(__name__)
 
@@ -209,28 +210,70 @@ class StatusQDialog(QDialog):
         status_ok = True
 
         for daemon_item in daemons:
-            self.labels[daemon_item.name]['alive'].setPixmap(
-                get_icon_pixmap(daemon_item.data['alive'], ['connected', 'disconnected'])
-            )
-            if not daemon_item.data['alive']:
-                status_ok = False
-            self.labels[daemon_item.name]['name'].setText(daemon_item.name)
-            self.labels[daemon_item.name]['address'].setText(
-                '%s:%s' % (daemon_item.data['address'], daemon_item.data['port'])
-            )
-            self.labels[daemon_item.name]['reachable'].setPixmap(
-                get_icon_pixmap(daemon_item.data['reachable'], ['checked', 'error'])
-            )
-            self.labels[daemon_item.name]['spare'].setPixmap(
-                get_icon_pixmap(daemon_item.data['spare'], ['checked', 'error'])
-            )
-            self.labels[daemon_item.name]['passive'].setPixmap(
-                get_icon_pixmap(daemon_item.data['passive'], ['checked', 'error'])
-            )
-            last_check = get_time_diff_since_last_timestamp(daemon_item.data['last_check'])
-            self.labels[daemon_item.name]['last_check'].setText(last_check)
+            if daemon_item.name in self.labels:
+                # Connected icon
+                self.labels[daemon_item.name]['alive'].setPixmap(
+                    get_icon_pixmap(daemon_item.data['alive'], ['connected', 'disconnected'])
+                )
+
+                # Labels
+                self.labels[daemon_item.name]['name'].setText(daemon_item.name)
+                self.labels[daemon_item.name]['address'].setText(
+                    '%s:%s' % (daemon_item.data['address'], daemon_item.data['port'])
+                )
+                self.labels[daemon_item.name]['reachable'].setPixmap(
+                    get_icon_pixmap(daemon_item.data['reachable'], ['checked', 'error'])
+                )
+                self.labels[daemon_item.name]['spare'].setPixmap(
+                    get_icon_pixmap(daemon_item.data['spare'], ['checked', 'error'])
+                )
+                self.labels[daemon_item.name]['passive'].setPixmap(
+                    get_icon_pixmap(daemon_item.data['passive'], ['checked', 'error'])
+                )
+                last_check = get_diff_since_last_timestamp(daemon_item.data['last_check'])
+                self.labels[daemon_item.name]['last_check'].setText(last_check)
+
+                # Check if daemon is a problem
+                if self.daemon_is_problem(daemon_item):
+                    status_ok = False
+            else:
+                logger.error('KeyError: %s', daemon_item.name)
+                logger.error('\tLabel keys : %s', self.labels.keys())
 
         return status_ok
+
+    @staticmethod
+    def daemon_is_problem(daemon_item):
+        """
+        Check Daemon Refresh and if daemon is alive. Send a message if needed
+
+        :param daemon_item: Daemon item
+        :type daemon_item: alignak_app.items.daemon.Daemon
+        :return: if daemon is a problem True, else False
+        :rtype: bool
+        """
+
+        is_problem = False
+
+        actual_freshness = get_diff_since_last_timestamp(
+            daemon_item.data['last_check'], 'minutes'
+        )
+        freshness = settings.get_config('Alignak-app', 'daemons_freshness')
+        if int(actual_freshness) > int(freshness):
+            send_event(
+                'CRITICAL' if 'arbiter' in daemon_item.name else 'WARNING',
+                _('Freshness expired for %s (%dm)') % (daemon_item.name, actual_freshness)
+            )
+            is_problem = True
+
+        if not daemon_item.data['alive']:
+            send_event(
+                'CRITICAL' if 'arbiter' in daemon_item.name else 'WARNING',
+                _('Daemon %s is dead...') % daemon_item.name
+            )
+            is_problem = True
+
+        return is_problem
 
     def mousePressEvent(self, event):  # pragma: no cover
         """ QWidget.mousePressEvent(QMouseEvent) """

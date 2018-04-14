@@ -77,14 +77,15 @@ def get_local_datetime(_date):  # pragma: no cover
     return tz_time
 
 
-def get_time_diff_since_last_timestamp(timestamp):
+def get_diff_since_last_timestamp(timestamp, unit=None):
     """
-    Return the diff between the last time stamp
+    Return the difference between given time stamp and current time
 
-    :param timestamp: timestamp of the last check
+    :param timestamp: a time stamp
     :type timestamp: float
+    :param unit: if unit return only corresponding value
     :return: time difference formatted
-    :rtype: str
+    :rtype: str | int
     """
 
     if not timestamp:
@@ -94,13 +95,6 @@ def get_time_diff_since_last_timestamp(timestamp):
 
     time_delta = int(time.time()) - int(timestamp)
 
-    # If it's now, say it :)
-    if time_delta < 3:
-        if 0 > time_delta > -4:
-            return _('Very soon')
-        if time_delta >= 0:
-            return _('Just now')
-
     seconds = int(round(time_delta))
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
@@ -109,26 +103,48 @@ def get_time_diff_since_last_timestamp(timestamp):
     months, weeks = divmod(weeks, 4)
     years, months = divmod(months, 12)
 
-    duration = []
-    if years > 0:
-        duration.append('%dy' % years)
+    if unit:
+        times = {
+            'seconds': seconds,
+            'minutes': minutes,
+            'hours': hours,
+            'days': days,
+            'weeks': weeks,
+            'months': months,
+            'years': years,
+        }
+        if unit in times:
+            return times[unit]
+        else:
+            logger.error('Unit error, [%s] is a wrong value, return -1', unit)
+            return -1
     else:
-        if months > 0:
-            duration.append('%dM' % months)
-        if weeks > 0:
-            duration.append('%dw' % weeks)
-        if days > 0:
-            duration.append('%dd' % days)
-        if hours > 0:
-            duration.append('%dh' % hours)
-        if minutes > 0:
-            duration.append('%dm' % minutes)
-        if seconds > 0:
-            duration.append('%ds' % seconds)
+        # If it's now, say it :)
+        if time_delta < 3:
+            if 0 > time_delta > -4:
+                return _('Very soon')
+            if time_delta >= 0:
+                return _('Just now')
+        duration = []
+        if years > 0:
+            duration.append('%dy' % years)
+        else:
+            if months > 0:
+                duration.append('%dM' % months)
+            if weeks > 0:
+                duration.append('%dw' % weeks)
+            if days > 0:
+                duration.append('%dd' % days)
+            if hours > 0:
+                duration.append('%dh' % hours)
+            if minutes > 0:
+                duration.append('%dm' % minutes)
+            if seconds > 0:
+                duration.append('%ds' % seconds)
 
-    time_diff = ' ' + ' '.join(duration)
+        time_diff = ' ' + ' '.join(duration)
 
-    return _('%s ago') % time_diff
+        return _('%s ago') % time_diff
 
 
 def get_current_time():  # pragma: no cover
