@@ -20,6 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
+import time
 
 import unittest2
 from PyQt5.Qt import QApplication, QLabel, QSize
@@ -148,3 +149,35 @@ class TestStatusQDialog(unittest2.TestCase):
 
         daemon_labels = under_test.labels['daemon0']
         self.assertEqual('127.0.0.0:7000', daemon_labels['address'].text())
+
+    def test_daemon_is_problem(self):
+        """Daemon Is Problem"""
+
+        test_time = time.time()
+        daemon_test = Daemon()
+        daemon_test.create(
+            '_id',
+            {
+                'last_check': test_time,
+                'alive': True
+            },
+            'name'
+        )
+
+        under_test = StatusQDialog.daemon_is_problem(daemon_test)
+
+        # Daemon is NOT a problem
+        self.assertFalse(under_test)
+
+        # Daemon is NOT alive, so IS a problem
+        daemon_test.data['alive'] = False
+        under_test = StatusQDialog.daemon_is_problem(daemon_test)
+
+        self.assertTrue(under_test)
+
+        # Daemon is alive but freshness expired, so IS a problme
+        daemon_test.data['alive'] = True
+        daemon_test.data['last_check'] = 1.0
+        under_test = StatusQDialog.daemon_is_problem(daemon_test)
+
+        self.assertTrue(under_test)

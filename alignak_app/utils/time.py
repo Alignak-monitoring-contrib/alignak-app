@@ -115,9 +115,9 @@ def get_diff_since_last_timestamp(timestamp, unit=None):
         }
         if unit in times:
             return times[unit]
-        else:
-            logger.error('Unit error, [%s] is a wrong value, return -1', unit)
-            return -1
+
+        logger.error('Wrong value unit: [%s], return -1', unit)
+        return -1
     else:
         # If it's now, say it :)
         if time_delta < 3:

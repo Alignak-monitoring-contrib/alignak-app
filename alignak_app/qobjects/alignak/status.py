@@ -272,7 +272,7 @@ class StatusQDialog(QDialog):
                 'CRITICAL' if 'arbiter' in daemon_item.name else 'WARNING',
                 _('Daemon %s is dead !') % daemon_item.name
             )
-            logger.warning('Daemon %s is dead...' % daemon_item.name)
+            logger.warning('Daemon %s is dead...', daemon_item.name)
             is_problem = True
 
         return is_problem
