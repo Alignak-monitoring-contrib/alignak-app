@@ -69,11 +69,11 @@ class TestUtils(unittest2.TestCase):
         new_url_test = under_test.get_config('Alignak', 'url')
         self.assertEqual('http://127.9.9.9', new_url_test)
 
-        # Back url to normal
-        under_test.set_config('Alignak', 'url', 'http://demo.alignak.net')
+        # Reset url to origin
+        under_test.set_config('Alignak', 'url', url_test)
         last_url_test = under_test.get_config('Alignak', 'url')
 
-        self.assertEqual('http://demo.alignak.net', last_url_test)
+        self.assertEqual(url_test, last_url_test)
 
         bool_test = under_test.get_config('Log', 'debug', boolean=True)
 

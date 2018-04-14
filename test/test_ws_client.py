@@ -46,9 +46,10 @@ class TestWSClient(unittest2.TestCase):
         """Login to WS with Wrong Token"""
 
         under_test = WSClient()
-        under_test.login('wrong_token')
-
+        under_test.login('')
         self.assertFalse(under_test.token)
-        self.assertEqual('http://demo.alignak.net:8888', under_test.ws_backend)
+
+        config_url = settings.get_config('Alignak', 'webservice')
+        self.assertEqual(config_url, under_test.ws_backend)
         # WS is not auth
         self.assertIsNone(under_test.auth)

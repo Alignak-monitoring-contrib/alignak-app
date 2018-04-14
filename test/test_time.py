@@ -22,7 +22,7 @@
 
 import unittest2
 
-from alignak_app.utils.time import get_time_diff_since_last_timestamp
+from alignak_app.utils.time import get_diff_since_last_timestamp
 
 
 class TestTime(unittest2.TestCase):
@@ -33,12 +33,12 @@ class TestTime(unittest2.TestCase):
     def test_get_time_diff_since_last_timestamp(self):
         """Get Time Diff since Last Timestamp"""
 
-        under_test = get_time_diff_since_last_timestamp(1509134069)
+        under_test = get_diff_since_last_timestamp(1509134069)
 
         self.assertIsInstance(under_test, str)
         self.assertTrue('ago' in under_test)
 
-        under_test = get_time_diff_since_last_timestamp(float())
+        under_test = get_diff_since_last_timestamp(float())
 
         self.assertIsInstance(under_test, str)
         self.assertEqual('<span style="color: red;">Not yet checked!</span>', under_test)
