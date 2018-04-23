@@ -176,8 +176,9 @@ class TestStatusQDialog(unittest2.TestCase):
         self.assertTrue(under_test)
 
         # Daemon is alive but freshness expired, so IS a problme
+        test_time_plus_15 = test_time + 900  # 900sec == 15 min
         daemon_test.data['alive'] = True
-        daemon_test.data['last_check'] = 1.0
+        daemon_test.data['last_check'] = test_time_plus_15
         under_test = StatusQDialog.daemon_is_problem(daemon_test)
 
         self.assertTrue(under_test)
