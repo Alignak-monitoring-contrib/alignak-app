@@ -171,6 +171,27 @@ class ActionsQWidget(QWidget):
         else:
             logger.info('Downtime for %s cancelled...', self.item.name)
 
+    @staticmethod
+    def can_submit_actions():
+        """
+        Return if user can trigger actions from App or not, depending if Web Service is set and
+        reachable:
+
+        * If Web Service: if reachable, make actions are available else they are disabled
+        * If NOT Web Service: App will use backend API
+
+        :return: if user can trigger actions
+        :rtype: bool
+        """
+
+        if not settings.get_config('Alignak', 'webservice') and app_backend.connected:
+            return True
+
+        if settings.get_config('Alignak', 'webservice') and app_backend.ws_client.auth:
+            return True
+
+        return False
+
     def update_widget(self):
         """
         Update QWidget
@@ -181,14 +202,16 @@ class ActionsQWidget(QWidget):
 
         if self.item.data['ls_acknowledged'] or \
                 self.item.data['ls_state'] == 'OK' or \
-                self.item.data['ls_state'] == 'UP' or not \
-                data_manager.database['user'].data['can_submit_commands']:
+                self.item.data['ls_state'] == 'UP' or \
+                not data_manager.database['user'].data['can_submit_commands'] or \
+                not self.can_submit_actions():
             self.acknowledge_btn.setEnabled(False)
         else:
             self.acknowledge_btn.setEnabled(True)
 
-        if self.item.data['ls_downtimed'] or not \
-                data_manager.database['user'].data['can_submit_commands']:
+        if self.item.data['ls_downtimed'] or \
+                not data_manager.database['user'].data['can_submit_commands'] or \
+                not self.can_submit_actions():
             self.downtime_btn.setEnabled(False)
         else:
             self.downtime_btn.setEnabled(True)
