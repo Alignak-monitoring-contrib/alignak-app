@@ -58,6 +58,7 @@ class AlignakQWidget(QWidget):
         self.backend_connected = QLabel('pending...')
         self.status_dialog = StatusQDialog()
         self.status_btn = QPushButton()
+        self.ws_connected = QLabel()
         self.profile_widget = ProfileQWidget()
         self.profile_btn = QPushButton()
         self.refresh_timer = QTimer()
@@ -77,38 +78,50 @@ class AlignakQWidget(QWidget):
         connected_title = QLabel(_('Backend'))
         connected_title.setObjectName('subtitle')
         layout.addWidget(connected_title, 0, 0, 1, 1)
-        layout.setAlignment(connected_title, Qt.AlignCenter)
 
         self.backend_connected.setFixedSize(16, 16)
         self.backend_connected.setScaledContents(True)
+        self.backend_connected.setToolTip(_('Status of the backend API connection'))
         layout.addWidget(self.backend_connected, 0, 1, 1, 1)
         layout.setAlignment(self.backend_connected, Qt.AlignCenter)
 
-        # Daemons Status
+        # WS state
+        ws_title = QLabel(_('Web Service'))
+        ws_title.setObjectName('subtitle')
+        layout.addWidget(ws_title, 0, 2, 1, 1)
+
+        self.ws_connected.setFixedSize(16, 16)
+        self.ws_connected.setScaledContents(True)
+        self.ws_connected.setToolTip(_('Status of the Web Service connection'))
+        layout.addWidget(self.ws_connected, 0, 3, 1, 1)
+        layout.setAlignment(self.ws_connected, Qt.AlignCenter)
+
+        # Daemons state
         daemons_title = QLabel(_('Status'))
         daemons_title.setObjectName('subtitle')
         layout.addWidget(daemons_title, 1, 0, 1, 1)
-        layout.setAlignment(daemons_title, Qt.AlignCenter)
 
-        # Status button
         self.status_dialog.initialize()
         self.update_status_btn(self.status_dialog.update_dialog())
         self.status_btn.setFixedSize(32, 32)
         self.status_btn.clicked.connect(self.show_status_dialog)
+        self.status_btn.setToolTip(_('Status of daemons connection'))
         layout.addWidget(self.status_btn, 1, 1, 1, 1)
         layout.setAlignment(self.status_btn, Qt.AlignCenter)
 
         # User
         user_lbl = QLabel(_('User'))
         user_lbl.setObjectName('subtitle')
-        layout.addWidget(user_lbl, 0, 2, 2, 1)
+        layout.addWidget(user_lbl, 1, 2, 1, 1)
+
         self.profile_widget.initialize()
         self.profile_btn.setIcon(QIcon(settings.get_image('user')))
-        self.profile_btn.setFixedSize(40, 40)
+        self.profile_btn.setFixedSize(32, 32)
         self.profile_btn.clicked.connect(self.show_user_widget)
-        self.profile_btn.setToolTip(_('User'))
-        layout.addWidget(self.profile_btn, 0, 3, 2, 1)
+        self.profile_btn.setToolTip(_('View current user'))
+        layout.addWidget(self.profile_btn, 1, 3, 1, 1)
 
+        # Refresh timer
         update_status = int(settings.get_config('Alignak-app', 'update_status')) * 1000
         self.refresh_timer.setInterval(update_status)
         self.refresh_timer.start()
@@ -152,6 +165,9 @@ class AlignakQWidget(QWidget):
 
         self.backend_connected.setPixmap(
             QPixmap(settings.get_image(app_backend.get_backend_status_icon()))
+        )
+        self.ws_connected.setPixmap(
+            QPixmap(settings.get_image(app_backend.get_ws_status_icon()))
         )
         self.status_btn.setEnabled(bool(data_manager.database['alignakdaemon']))
 

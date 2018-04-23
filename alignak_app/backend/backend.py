@@ -753,11 +753,24 @@ class BackendClient(object):
         """
         Return backend status icon name
 
-        :return: daemon status icon name
+        :return: status icon name
         :rtype: str
         """
 
         if self.connected:
+            return Daemon.get_states('ok')
+
+        return Daemon.get_states('ko')
+
+    def get_ws_status_icon(self):
+        """
+        Return Web Service status icon name
+
+        :return: status icon name
+        :rtype: str
+        """
+
+        if self.ws_client.auth:
             return Daemon.get_states('ok')
 
         return Daemon.get_states('ko')
