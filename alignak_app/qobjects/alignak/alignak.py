@@ -75,7 +75,7 @@ class AlignakQWidget(QWidget):
         self.setLayout(layout)
 
         # Backend state
-        connected_title = QLabel(_('Backend'))
+        connected_title = QLabel(_('Backend API'))
         connected_title.setObjectName('subtitle')
         layout.addWidget(connected_title, 0, 0, 1, 1)
 
@@ -97,7 +97,7 @@ class AlignakQWidget(QWidget):
         layout.setAlignment(self.ws_connected, Qt.AlignCenter)
 
         # Daemons state
-        daemons_title = QLabel(_('Status'))
+        daemons_title = QLabel(_('Alignak'))
         daemons_title.setObjectName('subtitle')
         layout.addWidget(daemons_title, 1, 0, 1, 1)
 
