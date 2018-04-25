@@ -45,16 +45,17 @@ class ServerQDialog(QDialog):
 
     def __init__(self, parent=None):
         super(ServerQDialog, self).__init__(parent)
-        self.setWindowTitle(_('Server Configuration'))
+        self.setWindowTitle(_('Alignak Settings'))
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(settings.css_style)
         self.setWindowIcon(QIcon(settings.get_image('icon')))
         self.setObjectName('dialog')
-        self.setFixedSize(320, 380)
+        self.setFixedSize(340, 420)
         # Fields
         self.server_proc = QLineEdit()
         self.server_url = QLineEdit()
         self.server_port = QLineEdit()
+        self.webservice_url = QLineEdit()
         self.proxy_address = QLineEdit()
         self.proxy_user = QLineEdit()
         self.proxy_password = QLineEdit()
@@ -70,7 +71,7 @@ class ServerQDialog(QDialog):
         main_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(main_layout)
 
-        main_layout.addWidget(get_logo_widget(self, _('Alignak Server')))
+        main_layout.addWidget(get_logo_widget(self, _('Alignak Settings')))
 
         main_layout.addWidget(self.get_settings_widget())
 
@@ -130,6 +131,23 @@ class ServerQDialog(QDialog):
             self.server_proc.setPlaceholderText(_('alignak backend processes...'))
             self.server_proc.setFixedHeight(25)
             server_layout.addWidget(self.server_proc)
+
+        # Web Service description
+        server_layout.addStretch(1)
+        webservice_lbl = QLabel(_('Web Service'))
+        webservice_lbl.setObjectName('itemtitle')
+        server_layout.addWidget(webservice_lbl)
+        ws_desc_lbl = QLabel(
+            _('Here you can define your alignak web service url, with port if needed')
+        )
+        ws_desc_lbl.setWordWrap(True)
+        server_layout.addWidget(ws_desc_lbl)
+
+        # Web Service URL
+        self.webservice_url.setText(settings.get_config('Alignak', 'webservice'))
+        self.webservice_url.setPlaceholderText(_('alignak webservice url...'))
+        self.webservice_url.setFixedHeight(25)
+        server_layout.addWidget(self.webservice_url)
 
         # Valid Button
         valid_btn = QPushButton(_('Valid'))

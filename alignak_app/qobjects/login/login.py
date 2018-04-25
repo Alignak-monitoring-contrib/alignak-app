@@ -234,6 +234,9 @@ class LoginQDialog(QDialog):
             settings.set_config(
                 'Alignak', 'processes', str(server_dialog.server_proc.text()).rstrip()
             )
+            settings.set_config(
+                'Alignak', 'webservice', str(server_dialog.webservice_url.text()).rstrip()
+            )
 
     def showEvent(self, _):
         """ QDialog.showEvent(QShowEvent) """
