@@ -58,9 +58,6 @@ class TestUserOptionsQDialog(unittest2.TestCase):
         self.assertEqual('dialog', under_test.objectName())
         self.assertIsInstance(under_test, QDialog)
 
-        self.assertIsNotNone(under_test.options_labels)
-        self.assertTrue('host' in under_test.options_labels)
-        self.assertTrue('service' in under_test.options_labels)
         self.assertIsNotNone(under_test.titles_labels)
         self.assertTrue('host' in under_test.titles_labels)
         self.assertTrue('service' in under_test.titles_labels)
@@ -81,7 +78,6 @@ class TestUserOptionsQDialog(unittest2.TestCase):
         self.assertIsInstance(under_test, QWidget)
         self.assertIsNotNone(under_test.layout())
 
-        self.assertIsNotNone(user_options_test.options_labels)
         self.assertIsNotNone(user_options_test.titles_labels)
 
     def test_get_selected_options(self):
