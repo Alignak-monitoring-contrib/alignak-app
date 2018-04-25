@@ -53,22 +53,45 @@ class TestServerQDialog(unittest2.TestCase):
 
         under_test = ServerQDialog()
 
-        self.assertIsNotNone(under_test.server_proc)
         self.assertIsInstance(under_test.server_proc, QLineEdit)
-        self.assertIsNotNone(under_test.server_port)
+        self.assertEqual('', under_test.server_proc.text())
+
         self.assertIsInstance(under_test.server_port, QLineEdit)
-        self.assertIsNotNone(under_test.server_url)
+        self.assertEqual('', under_test.server_port.text())
+
         self.assertIsInstance(under_test.server_url, QLineEdit)
+        self.assertEqual('', under_test.server_url.text())
+
+        self.assertIsInstance(under_test.webservice_url, QLineEdit)
+        self.assertEqual('', under_test.webservice_url.text())
+
         self.assertIsNone(under_test.offset)
         self.assertEqual('dialog', under_test.objectName())
 
         under_test.initialize_dialog()
 
-        self.assertIsNotNone(under_test.server_proc)
+        # After initialization,
+        # QLineEdit texts must be equal to what is defined in the configuration file
         self.assertIsInstance(under_test.server_proc, QLineEdit)
-        self.assertIsNotNone(under_test.server_port)
+        self.assertEqual(
+            settings.get_config('Alignak', 'processes'),
+            under_test.server_proc.text()
+        )
+
         self.assertIsInstance(under_test.server_port, QLineEdit)
-        self.assertIsNotNone(under_test.server_url)
+        self.assertEqual(
+            settings.get_config('Alignak', 'backend').split(':')[2],
+            under_test.server_port.text()
+        )
+
         self.assertIsInstance(under_test.server_url, QLineEdit)
-        self.assertIsNone(under_test.offset)
-        self.assertEqual('dialog', under_test.objectName())
+        self.assertEqual(
+            settings.get_config('Alignak', 'url'),
+            under_test.server_url.text()
+        )
+
+        self.assertIsInstance(under_test.webservice_url, QLineEdit)
+        self.assertEqual(
+            settings.get_config('Alignak', 'webservice'),
+            under_test.webservice_url.text()
+        )
