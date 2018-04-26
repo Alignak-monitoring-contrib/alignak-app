@@ -129,19 +129,31 @@ class UserOptionsQDialog(QDialog):
 
         line = 1
         while current_options:
-            opt = current_options.pop(0)
-            # Title
-            object_name = 'option' + str(selected_options[opt])
-            self.titles_labels[item_type][opt].setObjectName(object_name)
-            options_layout.addWidget(self.titles_labels[item_type][opt], line, 0, 1, 1)
-            # Icon
-            options_labels[opt].setPixmap(
-                get_icon_pixmap(selected_options[opt], ['checked', 'error'])
-            )
-            options_labels[opt].setFixedSize(14, 14)
-            options_labels[opt].setScaledContents(True)
-            options_layout.addWidget(options_labels[opt], line, 1, 1, 1)
-            line += 1
+            if line == 2:
+                alert_lbl = QLabel('Alerts:')
+                alert_lbl.setObjectName('subtitle')
+                options_layout.addWidget(alert_lbl, line, 0, 1, 2)
+                line += 1
+            else:
+                # Current option
+                opt = current_options.pop(0)
+
+                # Title
+                object_name = ''
+                if opt not in ['n', 's', 'f']:
+                    object_name = 'offset'
+                object_name += 'option' + str(selected_options[opt])
+                self.titles_labels[item_type][opt].setObjectName(object_name)
+                options_layout.addWidget(self.titles_labels[item_type][opt], line, 0, 1, 1)
+
+                # Icon
+                options_labels[opt].setPixmap(
+                    get_icon_pixmap(selected_options[opt], ['checked', 'error'])
+                )
+                options_labels[opt].setFixedSize(14, 14)
+                options_labels[opt].setScaledContents(True)
+                options_layout.addWidget(options_labels[opt], line, 1, 1, 1)
+                line += 1
 
         # Login button
         accept_btn = QPushButton(_('OK'), self)

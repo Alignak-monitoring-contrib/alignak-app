@@ -127,6 +127,16 @@ QLabel#optionFalse {
     color: #f44336;
 }
 
+QLabel#offsetoptionTrue {
+    color: #4caf50;
+    margin-left: 20px;
+}
+
+QLabel#offsetoptionFalse {
+    color: #f44336;
+    margin-left: 20px;
+}
+
 QLabel#services_ok, QLabel#hosts_up {
     color: #27ae60;
     font: 10pt;
