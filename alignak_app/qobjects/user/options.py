@@ -121,14 +121,13 @@ class UserOptionsQDialog(QDialog):
         options_layout.setAlignment(options_title, Qt.AlignCenter)
 
         # Get current options and QLabels
-        selected_options = self.get_selected_options(item_type, options)
-        current_options = list(options_values[item_type])
+        item_options = list(options_values[item_type])
         options_labels = {}
-        for option in current_options:
+        for option in item_options:
             options_labels[option] = QLabel()
 
         line = 1
-        while current_options:
+        while item_options:
             if line == 2:
                 alert_lbl = QLabel('Alerts:')
                 alert_lbl.setObjectName('subtitle')
@@ -136,20 +135,20 @@ class UserOptionsQDialog(QDialog):
                 line += 1
             else:
                 # Current option
-                opt = current_options.pop(0)
+                opt = item_options.pop(0)
 
                 # Title
                 object_name = ''
                 if opt not in ['n', 's', 'f']:
                     object_name = 'offset'
-                object_name += 'option' + str(selected_options[opt])
+                object_name += 'option' + str(self.get_selected_options(item_type, options)[opt])
                 self.titles_labels[item_type][opt].setObjectName(object_name)
                 options_layout.addWidget(self.titles_labels[item_type][opt], line, 0, 1, 1)
 
                 # Icon
-                options_labels[opt].setPixmap(
-                    get_icon_pixmap(selected_options[opt], ['checked', 'error'])
-                )
+                options_labels[opt].setPixmap(get_icon_pixmap(
+                    self.get_selected_options(item_type, options)[opt], ['checked', 'error']
+                ))
                 options_labels[opt].setFixedSize(14, 14)
                 options_labels[opt].setScaledContents(True)
                 options_layout.addWidget(options_labels[opt], line, 1, 1, 1)
@@ -177,12 +176,7 @@ class UserOptionsQDialog(QDialog):
         :rtype: dict
         """
 
-        items_options = {
-            'host': ['d', 'u', 'r', 'f', 's', 'n'],
-            'service': ['w', 'u', 'c', 'r', 'f', 's', 'n']
-        }
-
-        available_options = items_options[item_type]
+        available_options = options_values[item_type]
 
         selected_options = {}
         for opt in available_options:
