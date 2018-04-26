@@ -38,8 +38,8 @@ class TestUserOptionsQDialog(unittest2.TestCase):
         This file test the UserQWidget class.
     """
 
-    host_options_test = ['d', 'u', 'r', 'f', 's']
-    service_options_test = ['w', 'u', 'c', 'r', 'f', 's']
+    host_options_test = ['d', 'u', 'f', 's']
+    service_options_test = ['u', 'c', 'r', 'f', 's']
 
     @classmethod
     def setUpClass(cls):
@@ -83,23 +83,28 @@ class TestUserOptionsQDialog(unittest2.TestCase):
     def test_get_selected_options(self):
         """Get Selected Options"""
 
+        # Host options for test = ['d', 'u', 'f', 's']
         under_test = UserOptionsQDialog.get_selected_options('host', self.host_options_test)
 
         self.assertTrue(under_test['d'])
         self.assertTrue(under_test['u'])
-        self.assertTrue(under_test['r'])
         self.assertTrue(under_test['f'])
         self.assertTrue(under_test['s'])
+
+        self.assertFalse(under_test['r'])
         self.assertFalse(under_test['n'])
+
         self.assertTrue('c' not in under_test)
         self.assertTrue('w' not in under_test)
 
+        # Service options for test = ['u', 'c', 'r', 'f', 's']
         under_test = UserOptionsQDialog.get_selected_options('service', self.service_options_test)
 
-        self.assertTrue(under_test['w'])
         self.assertTrue(under_test['u'])
         self.assertTrue(under_test['c'])
         self.assertTrue(under_test['r'])
         self.assertTrue(under_test['f'])
         self.assertTrue(under_test['s'])
+
+        self.assertFalse(under_test['w'])
         self.assertFalse(under_test['n'])
