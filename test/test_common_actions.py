@@ -109,7 +109,7 @@ class TestActionsQWidgets(unittest2.TestCase):
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
                 '_id': 'id_1',
-                'ls_state': 'UP'
+                'ls_state': 'DOWN'
             },
             'name'
         )
@@ -130,11 +130,16 @@ class TestActionsQWidgets(unittest2.TestCase):
         # Update widget
         under_test.update_widget()
         webservice_test = settings.get_config('Alignak', 'webservice')
-
-        # WS is set but not available, so buttons are disabled
         self.assertTrue(webservice_test)
-        self.assertFalse(under_test.acknowledge_btn.isEnabled())
-        self.assertFalse(under_test.downtime_btn.isEnabled())
+
+        if app_backend.ws_client.auth:
+            # WS is set but not available, so buttons are disabled
+            self.assertTrue(under_test.acknowledge_btn.isEnabled())
+            self.assertTrue(under_test.downtime_btn.isEnabled())
+        else:
+            # WS is set but not available, so buttons are disabled
+            self.assertFalse(under_test.acknowledge_btn.isEnabled())
+            self.assertFalse(under_test.downtime_btn.isEnabled())
 
         # remove WS
         settings.set_config('Alignak', 'webservice', '')
@@ -142,7 +147,7 @@ class TestActionsQWidgets(unittest2.TestCase):
         under_test.update_widget()
 
         # Only downtime button is Enabled, because host is UP
-        self.assertFalse(under_test.acknowledge_btn.isEnabled())
+        self.assertTrue(under_test.acknowledge_btn.isEnabled())
         self.assertTrue(under_test.downtime_btn.isEnabled())
 
         # Restore configurations
