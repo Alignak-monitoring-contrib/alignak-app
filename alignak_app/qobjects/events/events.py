@@ -145,12 +145,12 @@ class EventsQWidget(QWidget):
 
         for i in range(0, self.events_list.count()):
             if self.events_list.item(i).data(Qt.DisplayRole) == msg:
-                if self.events_list.item(i).data(Qt.UserRole):
-                    item = self.events_list.takeItem(i)
-                    msg_to_send = '%s. (Send at %s)' % (msg, get_current_time())
-                    item.setToolTip(msg_to_send)
-                    self.events_list.insertItem(0, item)
-                    return True
+                item = self.events_list.takeItem(i)
+                msg_to_send = '%s. (Send at %s)' % (msg, get_current_time())
+                item.setToolTip(msg_to_send)
+                self.events_list.insertItem(0, item)
+
+                return True
 
         return False
 

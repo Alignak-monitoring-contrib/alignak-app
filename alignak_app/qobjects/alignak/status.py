@@ -262,7 +262,8 @@ class StatusQDialog(QDialog):
         if int(actual_freshness) > int(freshness):
             send_event(
                 'CRITICAL' if 'arbiter' in daemon_item.name else 'WARNING',
-                _('Freshness expired for %s (%dm)') % (daemon_item.name, actual_freshness)
+                _('Freshness expired for %s') % daemon_item.name,
+                timer=True
             )
             is_problem = True
             logger.warning('Daemon freshness expired: %s(%dmn)', daemon_item.name, actual_freshness)
@@ -270,7 +271,8 @@ class StatusQDialog(QDialog):
         if not daemon_item.data['alive']:
             send_event(
                 'CRITICAL' if 'arbiter' in daemon_item.name else 'WARNING',
-                _('Daemon %s is dead !') % daemon_item.name
+                _('Daemon %s is dead !') % daemon_item.name,
+                timer=True
             )
             logger.warning('Daemon %s is dead...', daemon_item.name)
             is_problem = True
