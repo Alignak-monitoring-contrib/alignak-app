@@ -62,6 +62,7 @@ class ServicesQWidget(QWidget):
 
         layout = QGridLayout()
         self.setLayout(layout)
+        layout.setContentsMargins(0, 0, 0, 0)
 
         self.services_dashboard.initialize()
         layout.addWidget(self.services_dashboard, 0, 0, 1, 2)

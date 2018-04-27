@@ -60,6 +60,7 @@ class SynthesisQWidget(QWidget):
         """
 
         synthesis_layout = QVBoxLayout()
+        synthesis_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(synthesis_layout)
 
         # Search widget
@@ -68,6 +69,7 @@ class SynthesisQWidget(QWidget):
 
         # Host widget
         self.host_widget.initialize()
+        self.host_widget.setMaximumHeight(self.width() * 0.5)
         synthesis_layout.addWidget(self.host_widget)
 
         # Hint Widget
