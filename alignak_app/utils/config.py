@@ -76,6 +76,7 @@ class Settings(object):
             'update_dashboard': 30,
             'update_host': 30,
             'update_service': 30,
+            'update_problems': 30,
         },
         'Log': {
             'filename': 'alignakapp',
