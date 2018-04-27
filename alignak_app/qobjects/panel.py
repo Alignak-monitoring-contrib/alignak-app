@@ -105,7 +105,7 @@ class PanelQWidget(QWidget):
         self.spy_widget.initialize()
         self.tab_widget.insertTab(tab_order.index('s'), self.spy_widget, _('Spy Hosts'))
         self.tab_widget.setTabToolTip(
-            self.tab_widget.indexOf(self.spy_widget), 'See spy hosts by Alignak-app'
+            self.tab_widget.indexOf(self.spy_widget), _('See spy hosts by Alignak-app')
         )
 
         # Hide widget for first display
@@ -151,7 +151,7 @@ class PanelQWidget(QWidget):
             self.synthesis_widget.host_widget.spy_btn.setEnabled(False)
             self.tab_widget.setTabText(
                 self.tab_widget.indexOf(self.spy_widget),
-                "Spied Hosts (%d)" % self.spy_widget.spy_list_widget.count()
+                _("Spied Hosts (%d)") % self.spy_widget.spy_list_widget.count()
             )
 
     def display_host(self):
@@ -180,6 +180,10 @@ class PanelQWidget(QWidget):
                 services = data_manager.get_host_services(host.item_id)
 
             # Update QWidgets
+            self.tab_widget.setTabText(
+                self.tab_widget.indexOf(self.synthesis_widget),
+                _("Host %s") % host.get_display_name()
+            )
             not_spied = bool(
                 host.item_id not in self.spy_widget.spy_list_widget.spied_hosts
             )
@@ -187,6 +191,10 @@ class PanelQWidget(QWidget):
             self.dashboard_widget.update_dashboard()
         else:
             self.synthesis_widget.update_synthesis(None, None, True)
+            self.tab_widget.setTabText(
+                self.tab_widget.indexOf(self.synthesis_widget),
+                _("Host Synthesis")
+            )
 
     def set_host_from_problems(self):
         """
