@@ -88,14 +88,12 @@ class ServicesDashboardQWidget(QWidget):
         layout.addWidget(icons_widget)
         layout.setAlignment(icons_widget, Qt.AlignRight)
 
-    def update_widget(self, services_items, host_name):
+    def update_widget(self, services_items):
         """
         Update QWidget
 
         :param services_items: list of Service items
         :type services_items: list
-        :param host_name: name of host attached to services
-        :type host_name: str
         """
 
         services_data = Service.get_service_states_nb()
@@ -115,9 +113,7 @@ class ServicesDashboardQWidget(QWidget):
                 services_data[service.data['ls_state']] += 1
             services_total += 1
 
-        self.services_title.setText(
-            _('<b>Services of %s: </b> %d services') % (host_name, services_total)
-        )
+        self.services_title.setText(_('<b>Services: %d') % services_total)
         for state in services_data:
             percent = 0.0
             try:

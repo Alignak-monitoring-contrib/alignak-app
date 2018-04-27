@@ -114,7 +114,6 @@ class TestServicesQWidget(unittest2.TestCase):
 
         under_test = ServicesQWidget()
 
-        self.assertIsNone(under_test.host)
         self.assertIsNone(under_test.services)
         self.assertIsNotNone(under_test.services_tree_widget)
         self.assertIsNotNone(under_test.service_data_widget)
@@ -122,7 +121,6 @@ class TestServicesQWidget(unittest2.TestCase):
 
         under_test.initialize()
 
-        self.assertIsNone(under_test.host)
         self.assertIsNone(under_test.services)
         self.assertIsNotNone(under_test.services_tree_widget)
         self.assertIsNotNone(under_test.service_data_widget)
@@ -137,11 +135,9 @@ class TestServicesQWidget(unittest2.TestCase):
 
         under_test.initialize()
 
-        self.assertIsNone(under_test.host)
         self.assertIsNone(under_test.services)
 
         services = data_manager.get_host_services(self.host_list[2].item_id)
-        under_test.update_widget(self.host_list[2], services)
+        under_test.update_widget(services)
 
-        self.assertIsNotNone(under_test.host)
         self.assertIsNotNone(under_test.services)

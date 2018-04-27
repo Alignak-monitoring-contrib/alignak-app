@@ -49,7 +49,6 @@ class ServicesQWidget(QWidget):
     def __init__(self, parent=None):
         super(ServicesQWidget, self).__init__(parent)
         # Fields
-        self.host = None
         self.services = None
         self.services_tree_widget = QTreeWidget()
         self.service_data_widget = ServiceDataQWidget()
@@ -76,21 +75,18 @@ class ServicesQWidget(QWidget):
         self.service_data_widget.initialize()
         layout.addWidget(self.service_data_widget, 2, 1, 1, 1)
 
-    def update_widget(self, host, services):
+    def update_widget(self, services):
         """
         Update the QTreeWidget and its items
 
-        :param host: the Host item
-        :type host: alignak_app.items.host.Host
         :param services: list of :class:`Services <alignak_app.items.service.Service>` items
         :type services: list
         """
 
-        self.host = host
         self.services = services
 
         # Update services dashboard
-        self.services_dashboard.update_widget(self.services, self.host.name)
+        self.services_dashboard.update_widget(self.services)
 
         # Clear QTreeWidget
         self.services_tree_widget.clear()

@@ -175,7 +175,7 @@ class SynthesisQWidget(QWidget):
             logger.info('Display %s in synthesis view', host.name)
             # Update Qwidgets
             self.host_widget.update_host(host)
-            self.services_widget.update_widget(host, services)
+            self.services_widget.update_widget(services)
             self.hint_widget.hide()
             self.host_widget.show()
             self.services_widget.show()
@@ -183,7 +183,7 @@ class SynthesisQWidget(QWidget):
             # If the service element does not have the same ID as the host, reset to None
             if self.services_widget.service_data_widget.service_item:
                 if self.services_widget.service_data_widget.service_item.data['host'] != \
-                        self.services_widget.host.item_id:
+                        self.host_widget.host_item.item_id:
                     self.services_widget.service_data_widget.service_item = None
 
         else:
