@@ -212,7 +212,7 @@ class TestPanelQWidget(unittest2.TestCase):
         self.assertTrue(under_test.synthesis_widget.hint_widget.isHidden())
 
         self.assertEqual(
-            'Host Host 0',
+            'Host "Host 0"',
             under_test.tab_widget.tabText(
                 under_test.tab_widget.indexOf(under_test.synthesis_widget))
         )

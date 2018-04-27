@@ -84,7 +84,7 @@ class PanelQWidget(QWidget):
         self.synthesis_widget.line_search.returnPressed.connect(self.display_host)
         self.synthesis_widget.line_search.cursorPositionChanged.connect(self.display_host)
         self.synthesis_widget.create_line_search(self.hostnames_list)
-        self.tab_widget.insertTab(tab_order.index('h'), self.synthesis_widget, _("Host Synthesis"))
+        self.tab_widget.insertTab(tab_order.index('h'), self.synthesis_widget, _('Host Synthesis'))
         self.tab_widget.setTabToolTip(
             self.tab_widget.indexOf(self.synthesis_widget), _('See a synthesis view of a host')
         )
@@ -92,6 +92,7 @@ class PanelQWidget(QWidget):
         # Problems
         self.problems_widget.initialize(self.spy_widget)
         self.problems_widget.host_btn.clicked.connect(self.display_host)
+        self.problems_widget.problems_table.doubleClicked.connect(self.set_host_from_problems)
         self.tab_widget.insertTab(
             tab_order.index('p'),
             self.problems_widget,
@@ -182,7 +183,7 @@ class PanelQWidget(QWidget):
             # Update QWidgets
             self.tab_widget.setTabText(
                 self.tab_widget.indexOf(self.synthesis_widget),
-                _("Host %s") % host.get_display_name()
+                _('Host "%s"') % host.get_display_name()
             )
             not_spied = bool(
                 host.item_id not in self.spy_widget.spy_list_widget.spied_hosts
@@ -193,7 +194,7 @@ class PanelQWidget(QWidget):
             self.synthesis_widget.update_synthesis(None, None, True)
             self.tab_widget.setTabText(
                 self.tab_widget.indexOf(self.synthesis_widget),
-                _("Host Synthesis")
+                _('Host Synthesis')
             )
 
     def set_host_from_problems(self):
