@@ -184,6 +184,11 @@ class TestPanelQWidget(unittest2.TestCase):
         under_test.initialize()
 
         self.assertTrue(under_test.synthesis_widget.host_widget.spy_btn.isEnabled())
+        self.assertEqual(
+            'Host Synthesis',
+            under_test.tab_widget.tabText(
+                under_test.tab_widget.indexOf(under_test.synthesis_widget))
+        )
 
         under_test.display_host()
 
@@ -192,6 +197,12 @@ class TestPanelQWidget(unittest2.TestCase):
         self.assertTrue(under_test.synthesis_widget.services_widget.isHidden())
         self.assertFalse(under_test.synthesis_widget.hint_widget.isHidden())
 
+        self.assertEqual(
+            'Host Synthesis',
+            under_test.tab_widget.tabText(
+                under_test.tab_widget.indexOf(under_test.synthesis_widget))
+        )
+
         under_test.synthesis_widget.line_search.setText(self.host_list[0].name)
         under_test.display_host()
 
@@ -199,6 +210,12 @@ class TestPanelQWidget(unittest2.TestCase):
         self.assertFalse(under_test.synthesis_widget.host_widget.isHidden())
         self.assertFalse(under_test.synthesis_widget.services_widget.isHidden())
         self.assertTrue(under_test.synthesis_widget.hint_widget.isHidden())
+
+        self.assertEqual(
+            'Host Host 0',
+            under_test.tab_widget.tabText(
+                under_test.tab_widget.indexOf(under_test.synthesis_widget))
+        )
 
     def test_set_host_from_problems(self):
         """Set Host in Panel from Problems QWidget"""
