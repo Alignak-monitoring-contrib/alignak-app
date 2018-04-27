@@ -28,6 +28,7 @@
 from logging import getLogger
 
 from PyQt5.Qt import QWidget, QIcon, QVBoxLayout, QPushButton, Qt, QLabel, QLineEdit, QHBoxLayout
+from PyQt5.Qt import QTimer
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.backend.backend import app_backend
@@ -58,6 +59,7 @@ class ProblemsQWidget(QWidget):
         self.filter_services_btn = ToggleQWidgetButton()
         self.spy_btn = QPushButton()
         self.host_btn = QPushButton()
+        self.refresh_timer = QTimer()
 
     def initialize(self, spy_widget):
         """
@@ -83,6 +85,11 @@ class ProblemsQWidget(QWidget):
         problem_layout.addWidget(self.problems_table)
 
         self.update_problems_data()
+
+        update_problems = int(settings.get_config('Alignak-app', 'update_problems')) * 1000
+        self.refresh_timer.setInterval(update_problems)
+        self.refresh_timer.start()
+        self.refresh_timer.timeout.connect(self.update_problems_data)
 
     def get_current_user_role_item(self):
         """
