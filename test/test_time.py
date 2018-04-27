@@ -22,7 +22,7 @@
 
 import unittest2
 
-from alignak_app.utils.time import get_diff_since_last_timestamp
+from alignak_app.utils.time import get_diff_since_last_timestamp, get_date_fromtimestamp
 
 
 class TestTime(unittest2.TestCase):
@@ -42,3 +42,10 @@ class TestTime(unittest2.TestCase):
 
         self.assertIsInstance(under_test, str)
         self.assertEqual('<span style="color: red;">Not yet checked!</span>', under_test)
+
+    def test_get_date_fromtimestamp(self):
+        """Get Date From Timestamp"""
+
+        under_test = get_date_fromtimestamp(0)
+
+        self.assertEqual('Not yet checked!', under_test)

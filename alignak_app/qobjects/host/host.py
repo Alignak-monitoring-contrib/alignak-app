@@ -34,7 +34,7 @@ from alignak_app.backend.backend import app_backend
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.item import Item, get_icon_name, get_overall_state_icon
 from alignak_app.utils.config import settings
-from alignak_app.utils.time import get_diff_since_last_timestamp
+from alignak_app.utils.time import get_diff_since_last_timestamp, get_date_fromtimestamp
 
 from alignak_app.qobjects.common.actions import ActionsQWidget
 from alignak_app.qobjects.common.buttons import ToggleQWidgetButton
@@ -492,7 +492,10 @@ class HostQWidget(QWidget):
             since_last_check = get_diff_since_last_timestamp(
                 self.host_item.data['ls_last_check']
             )
+            last_check_tooltip = get_date_fromtimestamp(self.host_item.data['ls_last_check'])
+
             self.labels['ls_last_check'].setText(since_last_check)
+            self.labels['ls_last_check'].setToolTip(last_check_tooltip)
             self.labels['ls_output'].setText(self.host_item.data['ls_output'])
 
             self.labels['realm'].setText(

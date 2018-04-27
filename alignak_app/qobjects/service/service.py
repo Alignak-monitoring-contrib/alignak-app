@@ -33,7 +33,7 @@ from PyQt5.Qt import QScrollArea
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.item import get_icon_name
 from alignak_app.utils.config import settings
-from alignak_app.utils.time import get_diff_since_last_timestamp
+from alignak_app.utils.time import get_diff_since_last_timestamp, get_date_fromtimestamp
 
 from alignak_app.qobjects.common.actions import ActionsQWidget
 
@@ -200,7 +200,9 @@ class ServiceDataQWidget(QWidget):
         since_last_check = get_diff_since_last_timestamp(
             self.service_item.data['ls_last_check']
         )
+        last_check_tooltip = get_date_fromtimestamp(self.service_item.data['ls_last_check'])
         self.labels['ls_last_check'].setText(since_last_check)
+        self.labels['ls_last_check'].setToolTip(last_check_tooltip)
         self.labels['ls_output'].setText(self.service_item.data['ls_output'])
 
         self.actions_widget.item = self.service_item

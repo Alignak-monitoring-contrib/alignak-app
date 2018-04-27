@@ -147,6 +147,22 @@ def get_diff_since_last_timestamp(timestamp, unit=None):
         return _('%s ago') % time_diff
 
 
+def get_date_fromtimestamp(timestamp):
+    """
+    Return formatted date string correspondig to timestamp
+
+    :param timestamp: time stamp
+    :type timestamp: float
+    :return: formatted date
+    :rtype: str
+    """
+
+    if timestamp:
+        return datetime.datetime.fromtimestamp(timestamp).strftime('%H:%M:%S, %a %d %b')
+
+    return _('Not yet checked!')
+
+
 def get_current_time():  # pragma: no cover
     """
     Return current formatted time
