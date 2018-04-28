@@ -496,6 +496,8 @@ class TestDataManager(unittest2.TestCase):
                 'ls_state': 'UP',
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
+                'passive_checks_enabled': True,
+                'active_checks_enabled': True
             },
             'host_1'
         )
@@ -508,6 +510,8 @@ class TestDataManager(unittest2.TestCase):
                 'ls_state': 'OK',
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
+                'passive_checks_enabled': True,
+                'active_checks_enabled': False
             },
             'service_1'
         )
@@ -548,6 +552,8 @@ class TestDataManager(unittest2.TestCase):
                 'ls_state': 'DOWN',
                 'ls_acknowledged': True,
                 'ls_downtimed': False,
+                'passive_checks_enabled': True,
+                'active_checks_enabled': False
             },
             'host_1'
         )

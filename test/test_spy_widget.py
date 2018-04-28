@@ -262,6 +262,8 @@ class TestSpyQWidgets(unittest2.TestCase):
                 'ls_state': 'CRITICAL',
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
+                'passive_checks_enabled': True,
+                'active_checks_enabled': False
             },
             'service_name'
         )
@@ -273,6 +275,8 @@ class TestSpyQWidgets(unittest2.TestCase):
                 'ls_state': 'OK',
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
+                'passive_checks_enabled': True,
+                'active_checks_enabled': False
             },
             'service2_name'
         )

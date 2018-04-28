@@ -38,6 +38,11 @@ from alignak_app.items.livesynthesis import LiveSynthesis
 
 logger = getLogger(__name__)
 
+problem_states = {
+    'host': ['DOWN', 'UNREACHABLE'],
+    'service': ['CRITICAL', 'WARNING', 'UNKNOWN']
+}
+
 
 class DataManager(object):
     """
@@ -82,7 +87,7 @@ class DataManager(object):
                 if self.db_is_ready[db_name]:
                     pass
                 else:
-                    return _('Collecting %s...') % db_name
+                    return _('Collecting %s(s)...') % db_name
             else:
                 for problem in self.db_is_ready['problems']:
                     if self.db_is_ready['problems'][problem]:
@@ -510,26 +515,26 @@ class DataManager(object):
         return problems_data
 
     @staticmethod
-    def is_problem(item_type, backend_item):
+    def is_problem(item_type, item_data):
         """
-        Return True if backend_item is a problem, else return false
+        Return True if item data is a problem, else return false.
+        Only if item is monitored (checks are enabled).
 
         :param item_type: type of item: "host" or "service"
         :type item_type: str
-        :param backend_item: item of backend
-        :type backend_item: dict
+        :param item_data: item of backend
+        :type item_data: dict
         :return: if item is a problem or not
         :rtype: bool
         """
 
-        if 'service' in item_type:
-            if backend_item['ls_state'] in ['CRITICAL', 'WARNING', 'UNKNOWN'] and \
-                    not backend_item['ls_acknowledged'] and not backend_item['ls_downtimed']:
-                return True
-        else:
-            if backend_item['ls_state'] in ['DOWN', 'UNREACHABLE'] and \
-                    not backend_item['ls_acknowledged'] and not backend_item['ls_downtimed']:
-                return True
+        monitored = bool(item_data['passive_checks_enabled'] + item_data['active_checks_enabled'])
+        if not monitored:
+            return False
+
+        if item_data['ls_state'] in problem_states[item_type] and \
+                not item_data['ls_acknowledged'] and not item_data['ls_downtimed']:
+            return True
 
         return False
 

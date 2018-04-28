@@ -555,7 +555,8 @@ class BackendClient(object):
 
         # Services
         services_projection = [
-            'name', 'host', 'alias', 'ls_state', 'ls_output', 'ls_acknowledged', 'ls_downtimed'
+            'name', 'host', 'alias', 'ls_state', 'ls_output', 'ls_acknowledged', 'ls_downtimed',
+            'passive_checks_enabled', 'active_checks_enabled'
         ]
 
         params = {'where': json.dumps({'_is_template': False, 'ls_state': state})}
