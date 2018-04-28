@@ -47,10 +47,10 @@ Features:
 ^^^^^^^^^
 
 * *See Alignak daemons status (if activate in backend), number, states, informations of hosts and services*
-* *Be notified for: problems, actions, changes*
-* *View a synthesis view of a host and its services (states, output, checks)*
+* *Be notified for: problems, actions, changes, daemon states, ...*
+* *View a synthesis view of a host and its services (states, output, checks, ...)*
 * *Acknowledge problems, schedule downtimes on your Hosts / Services*
-* *Spy hosts*
+* *Spy on hosts to keep an eye on*
 
 And other features to come...
 
@@ -82,7 +82,7 @@ To install Alignak-app:
     alignak-app-launcher --start   # Run application in current shell
     alignak-app-launcher --install # Install a daemon file
 
-    # If you've installed Alignak-app daemon, then run:
+    # Once you've installed Alignak-app daemon, just run:
     alignak-app start
 
 * **Development (Windows or Linux):**
@@ -112,7 +112,7 @@ Release strategy
 
 Alignak-app will *try* to follow the `Alignak-Backend <https://github.com/Alignak-monitoring-contrib/alignak-backend>`_ version.
 As of it, take care to install the same minor version on your system to ensure compatibility between all the packages.
-If your Backend is **1.4.x**, use Alignak-app **1.4.x**.
+e.g.: if your Backend is **1.4.x**, use Alignak-app **1.4.x**.
 
 Bugs / Enhancements
 -------------------
