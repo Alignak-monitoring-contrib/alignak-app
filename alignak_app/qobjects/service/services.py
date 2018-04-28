@@ -28,9 +28,11 @@
 from logging import getLogger
 from operator import itemgetter
 
-from PyQt5.Qt import QTreeWidget, QTreeWidgetItem, QWidget, QIcon, QGridLayout, QSize
+from PyQt5.Qt import QTreeWidget, QTreeWidgetItem, QWidget, QIcon, QGridLayout, QSize, QListWidget
+from PyQt5.Qt import Qt, QListWidgetItem
 
 from alignak_app.backend.datamanager import data_manager
+from alignak_app.items.item import get_icon_name
 from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.frames import get_frame_separator
@@ -51,6 +53,7 @@ class ServicesQWidget(QWidget):
         # Fields
         self.services = None
         self.services_tree_widget = QTreeWidget()
+        self.services_list_widget = QListWidget()
         self.service_data_widget = ServiceDataQWidget()
         self.services_dashboard = ServicesDashboardQWidget()
 
@@ -65,6 +68,10 @@ class ServicesQWidget(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
 
         self.services_dashboard.initialize()
+        for state in self.services_dashboard.states_btns:
+            self.services_dashboard.states_btns[state].clicked.connect(
+                lambda _, s=state: self.filter_services(state=s)
+            )
         layout.addWidget(self.services_dashboard, 0, 0, 1, 2)
         layout.addWidget(get_frame_separator(), 1, 0, 1, 2)
 
@@ -72,9 +79,97 @@ class ServicesQWidget(QWidget):
         self.services_tree_widget.setAlternatingRowColors(True)
         self.services_tree_widget.header().close()
         layout.addWidget(self.services_tree_widget, 2, 0, 1, 1)
+        self.services_list_widget.clicked.connect(self.update_service_data)
+        self.services_list_widget.hide()
+        layout.addWidget(self.services_list_widget, 2, 0, 1, 1)
 
         self.service_data_widget.initialize()
         layout.addWidget(self.service_data_widget, 2, 1, 1, 1)
+
+    def filter_services(self, state):
+        """
+        Filter services with the wanted state
+
+        :param state: state of service: OK, WARNING, NOT_MONITORED, DOWNTIME
+        :return:
+        """
+
+        # Clear QListWidget and update filter buttons of services dashboard
+        self.services_list_widget.clear()
+        for btn_state in self.services_dashboard.states_btns:
+            if btn_state != state:
+                self.services_dashboard.states_btns[btn_state].setChecked(False)
+
+        # Update QWidgets
+        if self.sender().isChecked():
+            self.set_filter_items(state)
+            self.services_tree_widget.hide()
+            self.services_list_widget.show()
+        else:
+            self.services_tree_widget.show()
+            self.services_list_widget.hide()
+
+    def set_filter_items(self, state):
+        """
+        Add filter items to QListWidget corresponding to "state"
+
+        :param state: state of service to filter
+        :type state: str
+        """
+
+        def add_filter_item(filter_item):
+            """
+            Add filter item to QListWidget
+
+            :param filter_item: filter item (service)
+            :type filter_item: alignak_app.items.service.Service
+            """
+
+            item = QListWidgetItem()
+            icon_name = get_icon_name(
+                filter_item.item_type,
+                filter_item.data['ls_state'],
+                filter_item.data['ls_acknowledged'],
+                filter_item.data['ls_downtimed'],
+                filter_item.data['passive_checks_enabled'] +
+                filter_item.data['active_checks_enabled']
+            )
+            item.setData(Qt.DecorationRole, QIcon(settings.get_image(icon_name)))
+            item.setData(Qt.DisplayRole, filter_item.get_display_name())
+            item.setData(Qt.UserRole, filter_item.item_id)
+            item.setToolTip(filter_item.get_tooltip())
+            self.services_list_widget.addItem(item)
+
+        services_added = False
+        if state in 'NOT_MONITORED':
+            for service in self.services:
+                if not service.data['active_checks_enabled'] and \
+                        not service.data['passive_checks_enabled']and \
+                        not service.data['ls_downtimed'] and \
+                        not service.data['ls_acknowledged']:
+                    add_filter_item(service)
+                    services_added = True
+        elif state in 'DOWNTIME':
+            for service in self.services:
+                if service.data['ls_downtimed']:
+                    add_filter_item(service)
+                    services_added = True
+        elif state in 'ACKNOWLEDGE':
+            for service in self.services:
+                if service.data['ls_acknowledged']:
+                    add_filter_item(service)
+                    services_added = True
+        else:
+            for service in self.services:
+                if service.data['ls_state'] in state:
+                    add_filter_item(service)
+                    services_added = True
+
+        if not services_added:
+            not_added_item = QListWidgetItem()
+            not_added_item.setData(Qt.DecorationRole, QIcon(settings.get_image('services_ok')))
+            not_added_item.setData(Qt.DisplayRole, _('No such services to display...'))
+            self.services_list_widget.addItem(not_added_item)
 
     def update_widget(self, services):
         """
@@ -140,18 +235,39 @@ class ServicesQWidget(QWidget):
 
         """
 
-        service_tree_item = self.services_tree_widget.currentItem()
+        # self.services_list_widget.currentItem()
+        service_item = self.sender().currentItem()
 
-        if isinstance(service_tree_item, ServiceTreeItem):
-            service = data_manager.get_item('service', '_id', service_tree_item.service_id)
+        service = None
+        if isinstance(service_item, (ServiceTreeItem, QListWidgetItem)):
+            if isinstance(service_item, ServiceTreeItem):
+                service = data_manager.get_item('service', '_id', service_item.service_id)
+            elif isinstance(service_item, QListWidgetItem):
+                service = data_manager.get_item('service', '_id', service_item.data(Qt.UserRole))
 
             self.services_tree_widget.setMaximumWidth(self.width() * 0.5)
             self.service_data_widget.setMaximumWidth(self.width() * 0.5)
 
-            if service:
-                self.service_data_widget.update_widget(service)
-            else:
-                self.service_data_widget.update_widget(self.service_data_widget.service_item)
+            if not service:
+                service = self.service_data_widget.service_item
 
+            self.service_data_widget.update_widget(service)
+            self.services_dashboard.update_widget(self.services)
             self.service_data_widget.show()
-            service_tree_item.update_item()
+
+            if isinstance(service_item, ServiceTreeItem):
+                service_item.update_item()
+            else:
+                monitored = service.data['passive_checks_enabled'] + \
+                            service.data['active_checks_enabled']
+                icon_name = get_icon_name(
+                    'service',
+                    service.data['ls_state'],
+                    service.data['ls_acknowledged'],
+                    service.data['ls_downtimed'],
+                    monitored
+                )
+
+                service_item.setData(Qt.DecorationRole, QIcon(settings.get_image(icon_name)))
+                service_item.setData(Qt.DisplayRole, service.get_display_name())
+                service_item.setToolTip(service.get_tooltip())

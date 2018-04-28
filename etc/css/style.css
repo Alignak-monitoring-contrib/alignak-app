@@ -306,6 +306,15 @@ QPushButton#valid:disabled {
     border: 1px solid #39aa56;
 }
 
+QPushButton#services:checked {
+    border: 1px solid #27ae60;
+    border-radius: 5px;
+}
+
+QPushButton#services {
+    border: none;
+}
+
 /****** QProgressBar ******/
 QProgressBar {
     color: #3884c3;
