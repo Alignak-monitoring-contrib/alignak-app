@@ -22,7 +22,8 @@
 import sys
 
 import unittest2
-from PyQt5.Qt import QApplication
+
+from PyQt5.Qt import QApplication, Qt
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.host import Host
@@ -106,7 +107,8 @@ class TestServicesQWidget(unittest2.TestCase):
         """Create QApplication"""
         try:
             cls.app = QApplication(sys.argv)
-        except:
+        except Exception as e:
+            print(e)
             pass
 
     def test_initialize(self):
@@ -141,3 +143,50 @@ class TestServicesQWidget(unittest2.TestCase):
         under_test.update_widget(services)
 
         self.assertIsNotNone(under_test.services)
+
+    def test_set_filter_items(self):
+        """Set Filter Services Items"""
+
+        under_test = ServicesQWidget()
+        data_manager.update_database('host', self.host_list)
+        data_manager.update_database('service', self.service_list)
+
+        under_test.initialize()
+        services = data_manager.get_host_services(self.host_list[2].item_id)
+        under_test.update_widget(services)
+
+        self.assertEqual(0, under_test.services_list_widget.count())
+
+        under_test.set_filter_items('OK')
+
+        # Host has only one service OK
+        self.assertEqual(1, under_test.services_list_widget.count())
+
+        under_test.services_list_widget.clear()
+        under_test.set_filter_items('UNKNOWN')
+        under_test.services_list_widget.setCurrentItem(under_test.services_list_widget.item(0))
+
+        # Host has no service UNKNOWN, so item have hint text
+        self.assertEqual(1, under_test.services_list_widget.count())
+        self.assertEqual(
+            'No such services to display...',
+            under_test.services_list_widget.currentItem().data(Qt.DisplayRole)
+        )
+
+    def test_add_filter_item(self):
+        """Add Filter Service Item to QListWidget"""
+
+        under_test = ServicesQWidget()
+        under_test.initialize()
+
+        self.assertEqual(0, under_test.services_list_widget.count())
+
+        under_test.add_filter_item(self.service_list[2])
+        under_test.services_list_widget.setCurrentItem(under_test.services_list_widget.item(0))
+
+        # Service "Service 1" is added to QListWidget
+        self.assertEqual(1, under_test.services_list_widget.count())
+        self.assertEqual(
+            'Service 1',
+            under_test.services_list_widget.currentItem().data(Qt.DisplayRole)
+        )
