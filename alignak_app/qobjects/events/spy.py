@@ -32,6 +32,7 @@ from PyQt5.Qt import QTimer, QLabel
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
+from alignak_app.utils.time import get_date_fromtimestamp
 
 from alignak_app.qobjects.events.item import EventItem
 from alignak_app.qobjects.events.events import get_events_widget
@@ -159,6 +160,7 @@ class SpyQWidget(QWidget):
 
             if _('(new !)') in item.data(Qt.DisplayRole):
                 item.setData(Qt.DisplayRole, item.data(Qt.DisplayRole).replace(_('(new !)'), ''))
+                item.setToolTip(item.toolTip().replace(_('(new !)'), ''))
 
             self.host_services_lbl.setText(_('Problems found for %s:') % host.get_display_name())
             services = data_manager.get_host_services(host.item_id)
@@ -178,6 +180,11 @@ class SpyQWidget(QWidget):
                             svc_state,
                             host=host.item_id
                         )
+                        tooltip = 'Output: %s (%s)' % (
+                            service.data['ls_output'],
+                            get_date_fromtimestamp(service.data['ls_last_check'])
+                        )
+                        event.setToolTip(tooltip)
 
                         self.host_list_widget.insertItem(0, event)
 
