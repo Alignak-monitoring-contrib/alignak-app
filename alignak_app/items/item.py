@@ -98,7 +98,7 @@ class Item(object):
             action = _('not monitored')
 
         if action:
-            return _('%s is %s and %s') % (self.name.capitalize(), self.data['ls_state'], action)
+            return _('%s is %s but %s') % (self.name.capitalize(), self.data['ls_state'], action)
 
         return _('%s is %s') % (self.name.capitalize(), self.data['ls_state'])
 
@@ -188,112 +188,36 @@ def get_icon_name_from_state(item_type, state):
     return '%ss_%s' % (item_type, state.lower())
 
 
-def get_real_host_state_icon(services):
+def get_overall_state_icon(services, host_overall):
     """
-    Return corresponding icon to number of services who are in alert
+    Return corresponding icon to max of "_overall_state_id"
 
     :param services: list of Service() items
     :type services: list
+    :param host_overall: "_overall_state_id" of host
+    :type host_overall: int
     :return: icon corresponding to state
     :rtype: str
     """
 
-    if services:
-        icon_names = [
-            'all_services_ok',
-            'all_services_ok',
-            'all_services_ok',
-            'all_services_warning',
-            'all_services_critical',
-            'all_services_none'
-        ]
-        state_lvl = []
-
-        for service in services:
-            state_lvl.append(service.data['_overall_state_id'])
-
-        max_state_lvl = max(state_lvl)
-
-        try:
-            return icon_names[max_state_lvl]
-        except IndexError as e:  # pragma: no cover
-            logger.error('get_real_host_state_icon: unkown real state, icon not found: %s', e)
-            return icon_names[5]
-
-    logger.error('Empty services in get_real_host_state_icon()')
-
-    return 'all_services_none'
-
-
-def get_host_msg_and_event_type(host_and_services):
-    """
-    Return corresponding event icon to number of services who are in alert
-
-    :param host_and_services: Host() item and its Service() items
-    :type host_and_services: dict
-    :return: event type and message
-    :rtype: dict
-    """
-
-    host_msg = host_and_services['host'].get_tooltip()
-
-    event_messages = [
-        {
-            'message': _('%s. You have nothing to do.') % (
-                host_msg
-            ),
-            'event_type': 'OK'
-        },
-        {
-            'message': _('%s and his services are ok or acknowledged.') % (
-                host_msg
-            ),
-            'event_type': 'INFO'
-        },
-        {
-            'message': _('%s and his services are ok or downtimed.') % (
-                host_msg
-            ),
-            'event_type': 'INFO'
-        },
-        {
-            'message': _('%s, some services may be unknown.') % (
-                host_msg
-            ),
-            'event_type': 'WARNING'
-        },
-        {
-            'message': _('%s, some services may be in critical condition or unreachable !') % (
-                host_msg
-            ),
-            'event_type': 'DOWN'
-        },
-        {
-            'message': _('%s, some services are not monitored.') % (
-                host_msg
-            ),
-            'event_type': 'DOWN'
-        }
+    icon_names = [
+        'all_services_ok',
+        'all_services_ok',
+        'all_services_ok',
+        'all_services_warning',
+        'all_services_critical',
+        'all_services_none'
     ]
     state_lvl = []
 
-    for service in host_and_services['services']:
+    for service in services:
         state_lvl.append(service.data['_overall_state_id'])
+    state_lvl.append(host_overall)
+
+    max_state_lvl = max(state_lvl)
 
     try:
-        max_state_lvl = max(state_lvl)
-        msg_and_event_type = event_messages[max_state_lvl]
-    except IndexError as e:
-        logger.error('get_host_msg_and_event_type(): empty services, %s', e)
-        return {
-            'message': _('Host is %s.') % host_msg,
-            'event_type': host_and_services['host'].data['ls_state']
-        }
-    except ValueError as e:
-        logger.warning('No services found for this host: %s', e)
-        return {
-            'message': _('No services.'),
-            'event_type': 'OK'
-        }
-
-    return msg_and_event_type
+        return icon_names[max_state_lvl]
+    except IndexError:  # pragma: no cover
+        logger.error('Empty services and no host overall state id, can\'t get real host state icon')
+        return 'all_services_none'

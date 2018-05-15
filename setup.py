@@ -45,8 +45,9 @@ from alignak_app import __name__ as __pkg_name__
 install_requires = [
     'alignak-backend-client',
     'configparser',
-    'pyqt5<5.10',
+    'pyqt5',
     'python-gettext',
+    'docopt',
 ]
 
 # Define paths
@@ -58,7 +59,6 @@ if 'linux' in sys.platform or\
         'app': __pkg_name__,
         'images': __pkg_name__ + '/images',
         'css': __pkg_name__ + '/css',
-        'bin': __pkg_name__ + '/bin',
         'binsample': __pkg_name__ + '/bin-samples',
     }
 elif 'win32' in sys.platform:
@@ -66,7 +66,6 @@ elif 'win32' in sys.platform:
         'app': __pkg_name__,
         'images': __pkg_name__ + '/images',
         'css': __pkg_name__ + '/css',
-        'bin': __pkg_name__ + '/bin',
         'binsample': __pkg_name__ + '/bin-samples',
     }
 else:
@@ -88,9 +87,6 @@ data_files.append((paths['css'], ['etc/css/style.css']))
 # Etc
 data_files.append((paths['app'], ['etc/settings.cfg']))
 data_files.append((paths['app'], ['etc/images.ini']))
-
-# Bin for Unix
-data_files.append((paths['bin'], ['bin/unix/alignak-app.py']))
 
 # Conigurations examples
 data_files.append((paths['binsample'], ['bin/unix/alignak-app.sample.sh']))
@@ -132,6 +128,12 @@ setup(
         'Topic :: System :: Monitoring',
         'Topic :: System :: Systems Administration',
         'Topic :: Desktop Environment'
-    ]
+    ],
+
+    entry_points={
+        'console_scripts': [
+            'alignak-app-launcher = alignak_app.app:main'
+        ],
+    }
 
 )

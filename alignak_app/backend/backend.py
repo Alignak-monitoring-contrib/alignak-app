@@ -33,6 +33,7 @@ from logging import getLogger
 from alignak_backend_client.client import Backend, BackendException
 
 from alignak_app.backend.datamanager import data_manager
+from alignak_app.backend.ws_client import WSClient
 
 from alignak_app.items.daemon import Daemon
 from alignak_app.items.event import Event
@@ -60,12 +61,12 @@ class BackendClient(object):
     }
 
     def __init__(self):
-        self.start = False
         self.backend = None
         self.connected = False
         self.user = {}
+        self.ws_client = WSClient()
 
-    def login(self, username=None, password=None, check=False):
+    def login(self, username=None, password=None, proxies=None, check=False):
         """
         Connect to alignak backend
 
@@ -73,6 +74,8 @@ class BackendClient(object):
         :type username: str
         :param password: password of user. If token given, this parameter is useless
         :type password: str
+        :param proxies: dictionnary for proxy
+        :type proxies: dict
         :param check: define if login is a check or a first login
         :type check: bool
         :return: True if connected or False if not
@@ -97,7 +100,7 @@ class BackendClient(object):
         if username and password:
             # Username & password : not recommended, without login QDialog
             try:
-                self.connected = self.backend.login(username, password)
+                self.connected = self.backend.login(username, password, proxies=proxies)
                 if self.connected:
                     self.user['username'] = username
                     self.user['token'] = self.backend.token
@@ -106,16 +109,15 @@ class BackendClient(object):
                 logger.error('Connection to Backend has failed !')
         elif username and not password:
             # Username as token : recommended
-            self.backend.authenticated = True
             if 'token' in self.user:
-                self.backend.token = self.user['token']
+                self.backend.set_token(self.user['token'])
             else:
-                self.backend.token = username
+                self.backend.set_token(username)
                 self.user['token'] = username
 
             # Make backend connected to test token
             self.connected = True
-            connection_test = self.get('alignak')
+            connection_test = self.get('user', {'projection': json.dumps({'name': 1})})
 
             self.connected = bool(connection_test)
             if not check:
@@ -126,11 +128,17 @@ class BackendClient(object):
                 'Check [Alignak] section in configuration file or use login window of application.'
             )
 
+        if self.connected and not check:
+            if settings.get_config('Alignak', 'webservice'):
+                self.ws_client.login(self.user['token'])
+            else:
+                logger.info('No configured Web Service.')
+
         return self.connected
 
     def get(self, endpoint, params=None, projection=None, all_items=False):
         """
-        GET on alignak Backend REST API.
+        GET on alignak Backend REST API
 
         :param endpoint: endpoint (API URL)
         :type endpoint: str
@@ -140,7 +148,7 @@ class BackendClient(object):
         :type projection: list|None
         :param all_items: make GET on all items
         :type all_items: bool
-        :return: desired request of app_backend
+        :return: request response
         :rtype: dict
         """
 
@@ -233,80 +241,203 @@ class BackendClient(object):
 
         return request
 
-    def query_realms_data(self):
+    def acknowledge(self, item, sticky, notify, comment):  # pragma: no cover
+        """
+        Prepare data for acknowledge and POST on backend API or WS if available
+
+        :param item: item to acknowledge: host | service
+        :type item: alignak_app.items.host.Host | alignak_app.items.service.Service
+        :param sticky: define if ack is sticky or not
+        :type sticky: bool
+        :param notify: define if ack should notify user or not
+        :type notify: bool
+        :param comment: comment of ack
+        :type comment: str
+        :return: request response
+        :rtype: dict
+        """
+
+        user = data_manager.database['user']
+
+        if self.ws_client.auth:
+            if item.item_type == 'service':
+                command = 'ACKNOWLEDGE_SVC_PROBLEM'
+                host = data_manager.get_item('host', '_id', item.data['host'])
+                element = host.name
+            else:
+                command = 'ACKNOWLEDGE_HOST_PROBLEM'
+                element = item.name
+            item_name = item.name
+            if sticky:
+                sticky = '2'
+            else:
+                sticky = '1'
+            notify = str(int(notify))
+            persistent = '0'
+
+            parameters = ';'.join([item_name, sticky, notify, persistent, user.name, comment])
+            data = {
+                'command': command,
+                'element': element,
+                'parameters': parameters
+            }
+            request = self.ws_client.post('command', params=data)
+        else:
+            data = {
+                'action': 'add',
+                'user': user.item_id,
+                'comment': comment,
+                'notify': notify,
+                'sticky': sticky
+            }
+            if item.item_type == 'service':
+                data['host'] = item.data['host']
+                data['service'] = item.item_id
+            else:
+                data['host'] = item.item_id
+                data['service'] = None
+
+            request = self.post('actionacknowledge', data)
+
+        return request
+
+    # pylint: disable=too-many-arguments
+    def downtime(self, item, fixed, duration, start_stamp, end_stamp, comment):  # pragma: no cover
+        """
+        Prepare data for downtime and POST on backend API or WS if available
+
+        :param item: item to downtime: host | service
+        :type item: alignak_app.items.host.Host | alignak_app.items.service.Service
+        :param fixed: define if donwtime is fixed or not
+        :type fixed: bool
+        :param duration: duration timestamp of downtime
+        :type duration: int
+        :param start_stamp: start timestamp of downtime
+        :type start_stamp: int
+        :param end_stamp: end timestamp of downtime
+        :type end_stamp: int
+        :param comment: comment of downtime
+        :type comment: str
+        :return: request response
+        :rtype: dict
+        """
+
+        if self.ws_client.auth:
+            if item.item_type == 'service':
+                host = data_manager.get_item('host', '_id', item.data['host'])
+                element = host.name
+            else:
+                element = item.name
+            fixed = str(int(fixed))
+            item_name = item.name
+            trigger_id = '0'
+            parameters = ';'.join(
+                [item_name, str(start_stamp), str(end_stamp), fixed, trigger_id, str(duration),
+                 data_manager.database['user'].name, comment]
+            )
+            data = {
+                'command': 'SCHEDULE_SVC_DOWNTIME' if item.item_type == 'service' else
+                           'SCHEDULE_HOST_DOWNTIME',
+                'element': element,
+                'parameters': parameters
+            }
+            request = self.ws_client.post('command', params=data)
+        else:
+            data = {
+                'action': 'add',
+                'user': data_manager.database['user'].item_id,
+                'fixed': fixed,
+                'duration': duration,
+                'start_time': start_stamp,
+                'end_time': end_stamp,
+                'comment': comment,
+            }
+
+            if item.item_type == 'service':
+                data['host'] = item.data['host']
+                data['service'] = item.item_id
+            else:
+                data['host'] = item.item_id
+                data['service'] = None
+
+            request = app_backend.post('actiondowntime', data)
+
+        return request
+
+    def query_realms(self):
         """
         Launch a request on ``realm`` endpoint
 
         """
 
-        request_data = Realm.get_request_model()
+        request_model = Realm.get_request_model()
 
         request = self.get(
-            request_data['endpoint'],
-            request_data['params'],
-            request_data['projection']
+            request_model['endpoint'],
+            request_model['params'],
+            request_model['projection']
         )
 
         if request:
             realms_list = []
-            for item in request['_items']:
+            for backend_item in request['_items']:
                 realm = Realm()
 
                 realm.create(
-                    item['_id'],
-                    item,
-                    item['name'],
+                    backend_item['_id'],
+                    backend_item,
+                    backend_item['name'],
                 )
                 realms_list.append(realm)
 
             if realms_list:
                 data_manager.update_database('realm', realms_list)
             if 'OK' in request['_status']:
-                data_manager.databases_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_model['endpoint']] = True
 
-    def query_period_data(self):
+    def query_timeperiods(self):
         """
         Launch a request on ``timeperiod`` endpoint
 
         """
 
-        request_data = Period.get_request_model()
+        request_model = Period.get_request_model()
 
         request = self.get(
-            request_data['endpoint'],
-            request_data['params'],
-            request_data['projection']
+            request_model['endpoint'],
+            request_model['params'],
+            request_model['projection']
         )
 
         if request:
             periods_list = []
-            for item in request['_items']:
+            for backend_item in request['_items']:
                 period = Period()
 
                 period.create(
-                    item['_id'],
-                    item,
-                    item['name'],
+                    backend_item['_id'],
+                    backend_item,
+                    backend_item['name'],
                 )
                 periods_list.append(period)
 
             if periods_list:
                 data_manager.update_database('timeperiod', periods_list)
             if 'OK' in request['_status']:
-                data_manager.databases_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_model['endpoint']] = True
 
-    def query_user_data(self):
+    def query_user(self):
         """
-        Launch request for "user" endpoint
+        Launch request on "user" endpoint. Only for current App user.
 
         """
 
-        request_data = User.get_request_model(self.backend.token)
+        request_model = User.get_request_model(self.backend.token)
 
         request = self.get(
-            request_data['endpoint'],
-            request_data['params'],
-            request_data['projection']
+            request_model['endpoint'],
+            request_model['params'],
+            request_model['projection']
         )
 
         if request:
@@ -322,97 +453,162 @@ class BackendClient(object):
                 data_manager.update_database('user', user)
 
             if 'OK' in request['_status']:
-                data_manager.databases_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_model['endpoint']] = True
 
-    def query_hosts_data(self):
+    def query_hosts(self):
         """
-        Launch request for "host" endpoint
+        Launch request on "host" endpoint, add hosts in problems if needed
 
         """
 
-        request_data = Host.get_request_model()
+        request_model = Host.get_request_model()
 
         request = self.get(
-            request_data['endpoint'],
-            request_data['params'],
-            request_data['projection'],
+            request_model['endpoint'],
+            request_model['params'],
+            request_model['projection'],
             all_items=True
         )
 
         if request:
             hosts_list = []
-            for item in request['_items']:
+            for backend_item in request['_items']:
                 host = Host()
 
                 host.create(
-                    item['_id'],
-                    item,
-                    item['name'],
+                    backend_item['_id'],
+                    backend_item,
+                    backend_item['name'],
                 )
                 hosts_list.append(host)
+
+                # If host is a problem, add / update it
+                if data_manager.is_problem('host', backend_item):
+                    if data_manager.get_item('problems', host.item_id):
+                        data_manager.update_item_data('problems', host.item_id, host.data)
+                    else:
+                        data_manager.database['problems'].append(host)
+
+            data_manager.db_is_ready['problems']['host'] = True
 
             if hosts_list:
                 data_manager.update_database('host', hosts_list)
             if 'OK' in request['_status']:
-                data_manager.databases_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_model['endpoint']] = True
 
-    def query_services_data(self):
+    def query_services(self, host_id=None):
         """
-        Launch request for "service" endpoint
+        Launch request for "service" endpoint. If ``host_id`` is given, only services related to
+        host are added / updated
 
+        :param host_id: "_id" of host
+        :type host_id: str
         """
 
-        request_data = Service.get_request_model()
+        request_model = Service.get_request_model(host_id)
 
         request = self.get(
-            request_data['endpoint'],
-            request_data['params'],
-            request_data['projection'],
+            request_model['endpoint'],
+            request_model['params'],
+            request_model['projection'],
             all_items=True
         )
 
         if request:
             services_list = []
-            for item in request['_items']:
+            for backend_item in request['_items']:
                 service = Service()
 
                 service.create(
-                    item['_id'],
-                    item,
-                    item['name'],
+                    backend_item['_id'],
+                    backend_item,
+                    backend_item['name'],
                 )
 
-                services_list.append(service)
+                # Add / update only services of host "if host_id"
+                if host_id:
+                    if not data_manager.get_item('service', service.item_id):
+                        logger.debug('Add item data in database[service]')
+                        data_manager.database['service'].append(service)
+                    else:
+                        data_manager.update_item_data('service', service.item_id, service.data)
 
-            if services_list:
+            # If not item ID, update all database
+            if services_list and not host_id:
                 data_manager.update_database('service', services_list)
+            if host_id:
+                host = data_manager.get_item('host', '_id', host_id)
+                if host:
+                    logger.info('Update database[service] for %s', host.name)
             if 'OK' in request['_status']:
-                data_manager.databases_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_model['endpoint']] = True
 
-    def query_daemons_data(self):
+    def query_services_problems(self, state):
         """
-        Launch request for "alignakdaemon" endpoint
+        Launch requests on "service" endpoint to get items with "ls_state = state"
+
+        Wanted states are: ``WARNING``, ``CRITICAL`` and ``UNKNOWN``
+
+        :param state: state of service
+        :type state: str
+        """
+
+        # Services
+        services_projection = [
+            'name', 'host', 'alias', 'ls_state', 'ls_output', 'ls_acknowledged', 'ls_downtimed',
+            'passive_checks_enabled', 'active_checks_enabled'
+        ]
+
+        params = {'where': json.dumps({'_is_template': False, 'ls_state': state})}
+        request = self.get(
+            'service',
+            params,
+            services_projection,
+            all_items=True
+        )
+
+        if request:
+            for backend_item in request['_items']:
+                if data_manager.is_problem('service', backend_item):
+                    service = Service()
+                    service.create(
+                        backend_item['_id'],
+                        backend_item,
+                        backend_item['name']
+                    )
+
+                    if data_manager.get_item('problems', service.item_id):
+                        data_manager.update_item_data('problems', service.item_id, service.data)
+                    else:
+                        data_manager.database['problems'].append(service)
+            # Problems state is ready
+            data_manager.db_is_ready['problems'][state] = True
+            logger.info("Update database[problems] for %s services...", state)
+
+    def query_alignakdaemons(self):
+        """
+        Launch request on "alignakdaemon" endpoint
 
         """
 
-        request_data = Daemon.get_request_model()
+        request_model = Daemon.get_request_model()
 
         request = self.get(
-            request_data['endpoint'],
-            request_data['params'],
-            request_data['projection'],
+            request_model['endpoint'],
+            request_model['params'],
+            request_model['projection'],
             all_items=True
         )
 
         if request:
             daemons_list = []
-            for item in request['_items']:
+            for backend_item in request['_items']:
                 daemon = Daemon()
 
                 daemon.create(
-                    item['_id'],
-                    item,
-                    item['name'],
+                    backend_item['_id'],
+                    backend_item,
+                    backend_item['name'],
                 )
 
                 daemons_list.append(daemon)
@@ -420,31 +616,31 @@ class BackendClient(object):
             if daemons_list:
                 data_manager.update_database('alignakdaemon', daemons_list)
             if 'OK' in request['_status']:
-                data_manager.databases_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_model['endpoint']] = True
 
-    def query_livesynthesis_data(self):
+    def query_livesynthesis(self):
         """
-        Launch request for "livesynthesis" endpoint
+        Launch request on "livesynthesis" endpoint
 
         """
 
-        request_data = LiveSynthesis.get_request_model()
+        request_model = LiveSynthesis.get_request_model()
 
         request = self.get(
-            request_data['endpoint'],
-            request_data['params'],
-            request_data['projection'],
+            request_model['endpoint'],
+            request_model['params'],
+            request_model['projection'],
             all_items=True
         )
 
         if request:
             livesynthesis = []
-            for item in request['_items']:
+            for backend_item in request['_items']:
                 synthesis = LiveSynthesis()
 
                 synthesis.create(
-                    item['_id'],
-                    item,
+                    backend_item['_id'],
+                    backend_item,
                 )
 
                 livesynthesis.append(synthesis)
@@ -452,11 +648,11 @@ class BackendClient(object):
             if livesynthesis:
                 data_manager.update_database('livesynthesis', livesynthesis)
             if 'OK' in request['_status']:
-                data_manager.databases_ready[request_data['endpoint']] = True
+                data_manager.db_is_ready[request_model['endpoint']] = True
 
-    def query_history_data(self, hostname=None, host_id=None):
+    def query_history(self, hostname=None, host_id=None):
         """
-        Launch request for "history" endpoint but only for hosts in "data_manager"
+        Launch request on "history" endpoint but only for hosts in "data_manager"
 
         :param hostname: name of host we want history
         :type hostname: str
@@ -464,39 +660,44 @@ class BackendClient(object):
         :type host_id: str
         """
 
-        request_data = History.get_request_model()
+        request_model = History.get_request_model()
 
         if hostname and host_id:
-            request_data['params']['where'] = json.dumps({
+            request_model['params']['where'] = json.dumps({
                 'host': host_id})
+            request_model['params']['max_results'] = 25
 
             request = self.get(
-                request_data['endpoint'],
-                request_data['params'],
-                request_data['projection'],
+                request_model['endpoint'],
+                request_model['params'],
+                request_model['projection'],
                 all_items=False
             )
 
             if request:
-                host_history = History()
+                logger.debug('Add / Update history for %s (%s)', hostname, host_id)
+                if data_manager.get_item('history', host_id):
+                    data_manager.update_item_data('history', host_id, request['_items'])
+                else:
+                    host_history = History()
 
-                host_history.create(
-                    host_id,
-                    request['_items'],
-                    hostname,
-                )
-                logger.debug('Add history for %s (%s)', hostname, host_id)
-                data_manager.database['history'].append(host_history)
+                    host_history.create(
+                        host_id,
+                        request['_items'],
+                        hostname,
+                    )
+                    data_manager.database['history'].append(host_history)
         else:  # pragma: no cover, too long to test
             history_list = []
             for history in data_manager.database['history']:
-                request_data['params']['where'] = json.dumps({
+                request_model['params']['where'] = json.dumps({
                     'host': history.item_id})
+                request_model['params']['max_results'] = 25
 
                 request = self.get(
-                    request_data['endpoint'],
-                    request_data['params'],
-                    request_data['projection'],
+                    request_model['endpoint'],
+                    request_model['params'],
+                    request_model['projection'],
                     all_items=False
                 )
 
@@ -513,25 +714,26 @@ class BackendClient(object):
             if history_list:
                 data_manager.update_database('history', history_list)
 
-    def query_notifications_data(self):  # pragma: no cover, notifications can be empty
+    def query_notifications(self):  # pragma: no cover, notifications can be empty
         """
-        Launch request for "history" endpoint but only for notifications of current user
+        Launch request on "history" endpoint.
+        Only for 'type': 'monitoring.notification' and for current App user
 
         """
 
-        request_data = Event.get_request_model()
+        request_model = Event.get_request_model()
 
         request = self.get(
-            request_data['endpoint'],
-            request_data['params'],
-            request_data['projection'],
+            request_model['endpoint'],
+            request_model['params'],
+            request_model['projection'],
             all_items=False
         )
 
         if request:
             notifications = []
-            for item in request['_items']:
-                message_split = item['message'].split(';')
+            for backend_item in request['_items']:
+                message_split = backend_item['message'].split(';')
                 user = message_split[0].split(':')[1].strip()
                 if 'imported_admin' in user:
                     user = 'admin'
@@ -539,8 +741,8 @@ class BackendClient(object):
                     notification = Event()
 
                     notification.create(
-                        item['_id'],
-                        item,
+                        backend_item['_id'],
+                        backend_item,
                     )
 
                     notifications.append(notification)
@@ -552,7 +754,7 @@ class BackendClient(object):
         """
         Return backend status icon name
 
-        :return: daemon status icon name
+        :return: status icon name
         :rtype: str
         """
 
@@ -561,6 +763,19 @@ class BackendClient(object):
 
         return Daemon.get_states('ko')
 
+    def get_ws_status_icon(self):
+        """
+        Return Web Service status icon name
 
-# Creating "app_backend" variable.
+        :return: status icon name
+        :rtype: str
+        """
+
+        if self.ws_client.auth:
+            return Daemon.get_states('ok')
+
+        return Daemon.get_states('ko')
+
+
+# Creation of "app_backend" object
 app_backend = BackendClient()

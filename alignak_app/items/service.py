@@ -43,27 +43,35 @@ class Service(Item):
         self.item_type = 'service'
 
     @staticmethod
-    def get_request_model():
+    def get_request_model(host_id=None):
         """
         Return the request model for service requests
 
+        :param host_id: "_id" of host, needed to get only host services
+        :type host_id: str
         :return: request model for service endpoint
         :rtype: dict
         """
 
         services_projection = [
-            'name', 'alias', 'display_name', 'ls_state', 'ls_acknowledged', 'ls_downtimed',
-            'ls_last_check', 'ls_output', 'business_impact', 'customs', '_overall_state_id',
-            'aggregation', 'host', 'passive_checks_enabled', 'active_checks_enabled'
+            'name', 'alias', 'ls_state', 'ls_acknowledged', 'ls_downtimed', 'ls_last_check',
+            'ls_output', '_overall_state_id', 'aggregation', 'host', 'passive_checks_enabled',
+            'active_checks_enabled'
         ]
 
-        request = {
+        request_model = {
             'endpoint': 'service',
-            'params': {'where': json.dumps({'_is_template': False})},
             'projection': services_projection
         }
 
-        return request
+        if host_id:
+            request_model['params'] = {
+                'where': json.dumps({'_is_template': False, 'host': host_id})
+            }
+        else:
+            request_model['params'] = {'where': json.dumps({'_is_template': False})}
+
+        return request_model
 
     @staticmethod
     def get_service_states_nb():
@@ -110,4 +118,4 @@ class Service(Item):
         if 'alias' in self.data:
             return self.data['alias'].title()
 
-        return self.data['name'].title()
+        return self.name.title()

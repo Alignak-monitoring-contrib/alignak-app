@@ -20,18 +20,19 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 """
-    Problems
-    ++++++++
-    Problems manage creation of QWidget to display problems found in Alignak backend:
+    Problems Table
+    ++++++++++++++
+    Problems Table manage creation of QTableView to display problems found in Alignak backend:
 
-    * **Hosts**: ``DOWN``
+    * **Hosts**: ``DOWN``, ``UNREACHABLE``
     * **Services**: ``WARNING``, ``CRITICAL``, ``UNKNOWN``
 
 """
 
 from logging import getLogger
 
-from PyQt5.Qt import QIcon, QTableWidget, QTableWidgetItem, Qt, QAbstractItemView, QSize
+from PyQt5.Qt import QIcon, QStandardItem, Qt, QAbstractItemView, QSize, QTableView
+from PyQt5.Qt import QSortFilterProxyModel, QStandardItemModel
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
@@ -40,40 +41,28 @@ from alignak_app.items.item import get_icon_name_from_state
 logger = getLogger(__name__)
 
 
-class ProblemsQTableWidget(QTableWidget):
+class ProblemsQTableView(QTableView):
     """
-        Class who create Problems QTableWidget to display each problem
+        Class who create Problems QTableView to display each problem
     """
 
     def __init__(self, parent=None):
-        super(ProblemsQTableWidget, self).__init__(parent)
+        super(ProblemsQTableView, self).__init__(parent)
         self.setWindowIcon(QIcon(settings.get_image('icon')))
-        # Fields
-        self.headers_list = [
-            _('Items in problem'), _('Output')
-        ]
-
-    def initialize(self):
-        """
-        Initialize Problems QTableWidget cells, rows
-
-        """
-
         self.setObjectName('problems')
         self.verticalHeader().hide()
         self.verticalHeader().setDefaultSectionSize(40)
-        self.setColumnCount(len(self.headers_list))
-        self.setColumnWidth(0, 500)
-        self.setColumnWidth(1, 300)
-        self.setSortingEnabled(True)
         self.setIconSize(QSize(24, 24))
         self.setHorizontalScrollMode(QAbstractItemView.ScrollPerPixel)
-        self.setHorizontalHeaderLabels(self.headers_list)
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.horizontalHeader().setStretchLastSection(True)
         self.horizontalHeader().setMinimumHeight(40)
         self.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
-        self.setDragEnabled(True)
+        self.setSelectionMode(QAbstractItemView.SingleSelection)
+        # Fields
+        self.headers_list = [
+            _('Items in problem'), _('Output')
+        ]
 
     def get_tableitem(self, item):
         """
@@ -82,11 +71,11 @@ class ProblemsQTableWidget(QTableWidget):
         :param item: host or service item
         :type item: alignak_app.items.host.Host | alignak_app.items.service.Service
         :return: table item with text
-        :rtype: QTableWidgetItem
+        :rtype: QStandardItem
         """
 
-        tableitem = AppQTableWidgetItem(self.get_item_text(item))
-        tableitem.add_backend_item(item)
+        tableitem = QStandardItem(self.get_item_text(item))
+        tableitem.setData(item, Qt.UserRole)
 
         icon = QIcon(settings.get_image(
             get_icon_name_from_state(item.item_type, item.data['ls_state'])
@@ -104,13 +93,13 @@ class ProblemsQTableWidget(QTableWidget):
         :param item: host or service item
         :type item: alignak_app.items.host.Host | alignak_app.items.service.Service
         :return: table item with text
-        :rtype: QTableWidgetItem
+        :rtype: QStandardItem
         """
 
         if not item.data['ls_output']:
             item.data['ls_output'] = 'n\\a'
-        tableitem = AppQTableWidgetItem(item.data['ls_output'])
-        tableitem.add_backend_item(item)
+        tableitem = QStandardItem(item.data['ls_output'])
+        tableitem.setData(item, Qt.UserRole)
 
         tableitem.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
@@ -127,8 +116,11 @@ class ProblemsQTableWidget(QTableWidget):
         :rtype: str
         """
 
+        hostname = ''
         if 'host' in item.data:
-            hostname = data_manager.get_item('host', '_id', item.data['host']).get_display_name()
+            host = data_manager.get_item('host', '_id', item.data['host'])
+            if host:
+                hostname = host.get_display_name()
             service_name = item.get_display_name()
         else:
             hostname = item.get_display_name()
@@ -141,22 +133,42 @@ class ProblemsQTableWidget(QTableWidget):
 
         return text
 
-
-class AppQTableWidgetItem(QTableWidgetItem):  # pylint: disable=too-few-public-methods
-    """
-        Class who create QTableWidgetItem for App, with an item field
-    """
-
-    def __init__(self, parent=None):
-        super(AppQTableWidgetItem, self).__init__(parent)
-        self.item = None
-
-    def add_backend_item(self, item):
+    def update_view(self, problems_data):
         """
-        Add backend item
+        Update QTableView model and proxy filter
 
-        :param item: host or service item
-        :type item: alignak_app.items.host.Host | alignak_app.items.service.Service
+        :param problems_data: problems found in database
+        :type problems_data: dict
+        :return: proxy filter to connect with line edit
+        :rtype: QSortFilterProxyModel
         """
 
-        self.item = item
+        problems_model = QStandardItemModel()
+        problems_model.setRowCount(len(problems_data['problems']))
+        problems_model.setColumnCount(len(self.headers_list))
+
+        if problems_data['problems']:
+            for row, item in enumerate(problems_data['problems']):
+                problems_model.setItem(row, 0, self.get_tableitem(item))
+                problems_model.setItem(row, 1, self.get_output_tableitem(item))
+
+        else:
+            tableitem = QStandardItem('No problem to report.')
+
+            icon = QIcon(settings.get_image('checked'))
+            tableitem.setIcon(icon)
+            tableitem.setTextAlignment(Qt.AlignCenter)
+            problems_model.setItem(0, 0, tableitem)
+
+        proxy_filter = QSortFilterProxyModel()
+        proxy_filter.setFilterCaseSensitivity(Qt.CaseInsensitive)
+        proxy_filter.setSourceModel(problems_model)
+
+        problems_model.setHorizontalHeaderLabels(self.headers_list)
+
+        self.setModel(proxy_filter)
+
+        self.setColumnWidth(0, 500)
+        self.setColumnWidth(1, 300)
+
+        return proxy_filter

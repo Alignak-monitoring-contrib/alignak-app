@@ -29,6 +29,7 @@ from alignak_app.backend.datamanager import data_manager
 from alignak_app.utils.config import settings
 from alignak_app.locales.locales import init_localization
 from alignak_app.items.user import User
+from alignak_app.items.daemon import Daemon
 
 from alignak_app.qobjects.alignak.alignak import AlignakQWidget
 
@@ -61,8 +62,8 @@ class TestAlignakQWidget(unittest2.TestCase):
         except:
             pass
 
-    def test_initialize_status_qwidget(self):
-        """Initialize StatusQWidget"""
+    def test_initialize_alignak_qwidget(self):
+        """Initialize AlignakQWidget"""
 
         under_test = AlignakQWidget()
 
@@ -80,7 +81,36 @@ class TestAlignakQWidget(unittest2.TestCase):
 
         self.assertIsNotNone(under_test.backend_connected)
         self.assertIsNotNone(under_test.status_btn)
+        self.assertFalse(under_test.status_btn.isEnabled())
         self.assertIsNotNone(under_test.status_dialog)
         self.assertIsNotNone(under_test.profile_btn)
         self.assertIsNotNone(under_test.profile_widget)
         self.assertTrue(under_test.refresh_timer.isActive())
+
+    def test_update_status(self):
+        """Update Alignak QWidget"""
+
+        under_test = AlignakQWidget()
+        under_test.initialize()
+
+        self.assertFalse(under_test.status_btn.isEnabled())
+
+        daemon_test = Daemon()
+        daemon_test.create(
+            '_id1',
+            {
+                'alive': True,
+                'address': '127.0.0.1',
+                'port': '8888',
+                'reachable': True,
+                'spare': True,
+                'passive': True,
+                'last_check': 123456789,
+            },
+            'arbiter'
+        )
+        data_manager.update_database('alignakdaemon', [daemon_test])
+        under_test.update_status()
+
+        # Status button is enabled when alignakdaemon is filled
+        self.assertTrue(under_test.status_btn.isEnabled())

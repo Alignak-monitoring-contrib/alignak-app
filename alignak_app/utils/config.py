@@ -35,7 +35,7 @@ import webbrowser
 from logging import getLogger
 
 import configparser
-from configparser import NoOptionError, NoSectionError
+from configparser import NoOptionError, NoSectionError, InterpolationError
 
 from alignak_app.utils.system import read_config_file
 
@@ -48,26 +48,35 @@ class Settings(object):
     """
 
     # Default configurations
-    default_parameters = {
+    default_settings = {
         'Alignak': {
             'username': '',
             'password': '',
             'backend': 'http://127.0.0.1:5000',
             'url': 'http://127.0.0.1',
             'webui': '',
-            'processes': '1'
+            'webservice': '',
+            'processes': '1',
+            'proxy': '',
+            'proxy_user': '',
+            'proxy_password': ''
 
         },
         'Alignak-app': {
-            'requests_interval': 30,
+            'locale': 'en_US',
+            'display': 'min',
+            'problems': False,
+            'tab_order': 'h,p,s',
+            'requests_interval': 20,
             'notification_duration': 30,
             'spy_interval': 30,
             'update_status': 30,
-            'update_buttons': 30,
+            'daemons_freshness': 10,
             'update_livestate': 30,
             'update_dashboard': 30,
             'update_host': 30,
             'update_service': 30,
+            'update_problems': 30,
         },
         'Log': {
             'filename': 'alignakapp',
@@ -115,26 +124,26 @@ class Settings(object):
                 if self.app_config.get(section, option):
                     return self.app_config.getboolean(section, option)
 
-                return self.default_parameters[section][option]
+                return self.default_settings[section][option]
             except (NoOptionError, NoSectionError) as e:  # pragma: no cover - not testable
-                logger.error('%s', str(e))
-                logger.error('Replace by default %s: %s',
-                             section, self.default_parameters[section][option])
-                return self.default_parameters[section][option]
+                logger.warning('%s', str(e))
+                logger.info('Replace by default %s: %s',
+                            section, self.default_settings[section][option])
+                return self.default_settings[section][option]
         else:
             try:
                 if self.app_config.get(section, option):
                     return self.app_config.get(section, option)
 
-                return self.default_parameters[section][option]
-            except (NoOptionError, NoSectionError) as e:  # pragma: no cover - not testable
-                print("failed section")
-                logger.error('%s', str(e))
-                logger.error('Replace by default %s: %s',
-                             section, self.default_parameters[section][option])
-                return self.default_parameters[section][option]
+                return self.default_settings[section][option]
+            # pragma: no cover - not testable
+            except (NoOptionError, NoSectionError, InterpolationError) as e:
+                logger.warning('%s', str(e))
+                logger.info('Replace by default %s: %s',
+                            section, self.default_settings[section][option])
+                return self.default_settings[section][option]
 
-    def edit_setting_value(self, section, option, new_value):
+    def set_config(self, section, option, new_value):
         """
         Set an option in configuration file
 
@@ -153,8 +162,9 @@ class Settings(object):
                 file_to_write = self.settings['settings']
             # Update values
             for d in data:
-                if option in d[0:len(option)]:
+                if option == d[0:len(option)]:
                     data[data.index(d)] = option + ' = ' + new_value + '\n'
+                    break
             # Setting the current configuration
             self.app_config.set(section, option, new_value)
             try:

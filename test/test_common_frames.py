@@ -22,46 +22,37 @@
 import sys
 
 import unittest2
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QFrame
 
-from alignak_app.app import AppProgressBar, AppProgressQWidget
+from alignak_app.utils.config import settings
+
+from alignak_app.qobjects.common.frames import get_frame_separator
 
 
-class TestApp(unittest2.TestCase):
+class TestAppQFrame(unittest2.TestCase):
     """
-        This file test methods of AlignakApp class.
+        This file test the AppQFrame class.
     """
+
+    settings.init_config()
 
     @classmethod
     def setUpClass(cls):
         """Create QApplication"""
-
         try:
             cls.app = QApplication(sys.argv)
         except:
             pass
 
-    def test_app_progressbar(self):
-        """App Progress Bar"""
+    def test_get_frame_separator(self):
+        """Get QFrame Separator"""
 
-        under_test = AppProgressBar()
+        under_test = get_frame_separator()
 
-        self.assertEqual(under_test.minimum(), 0)
-        self.assertEqual(under_test.maximum(), 0)
+        self.assertEqual('hseparator', under_test.objectName())
+        self.assertEqual(QFrame.HLine, under_test.frameShape())
 
-        under_test.set_text('test')
+        under_test = get_frame_separator(vertical=True)
 
-        self.assertEqual('test', under_test.text())
-
-    def test_app_progress_Widget(self):
-        """App Progress QWidget"""
-
-        under_test = AppProgressQWidget()
-
-        self.assertTrue(under_test.progress_bar)
-        self.assertIsInstance(under_test.progress_bar, AppProgressBar)
-
-        under_test.initialize()
-
-        self.assertTrue(under_test.progress_bar)
-        self.assertIsInstance(under_test.progress_bar, AppProgressBar)
+        self.assertEqual('vseparator', under_test.objectName())
+        self.assertEqual(QFrame.VLine, under_test.frameShape())

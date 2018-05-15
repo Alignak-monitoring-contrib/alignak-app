@@ -26,9 +26,9 @@
 """
 
 import sys
+
 from logging import getLogger
 
-from PyQt5.Qt import QGridLayout
 from PyQt5.Qt import QLineEdit, Qt, QIcon, QLabel, QVBoxLayout, QWidget, QDialog, QPushButton
 
 from alignak_app.utils.config import settings
@@ -45,16 +45,20 @@ class ServerQDialog(QDialog):
 
     def __init__(self, parent=None):
         super(ServerQDialog, self).__init__(parent)
-        self.setWindowTitle(_('Server Configuration'))
+        self.setWindowTitle(_('Alignak Settings'))
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(settings.css_style)
         self.setWindowIcon(QIcon(settings.get_image('icon')))
         self.setObjectName('dialog')
-        self.setFixedSize(300, 360)
+        self.setFixedSize(340, 420)
         # Fields
         self.server_proc = QLineEdit()
         self.server_url = QLineEdit()
         self.server_port = QLineEdit()
+        self.webservice_url = QLineEdit()
+        self.proxy_address = QLineEdit()
+        self.proxy_user = QLineEdit()
+        self.proxy_password = QLineEdit()
         self.offset = None
 
     def initialize_dialog(self):
@@ -64,11 +68,24 @@ class ServerQDialog(QDialog):
         """
 
         main_layout = QVBoxLayout()
-        self.setLayout(main_layout)
         main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.addWidget(get_logo_widget(self, _('Alignak server')))
+        self.setLayout(main_layout)
 
-        server_widget = QWidget(self)
+        main_layout.addWidget(get_logo_widget(self, _('Alignak Settings')))
+
+        main_layout.addWidget(self.get_settings_widget())
+
+        center_widget(self)
+
+    def get_settings_widget(self):
+        """
+        Return the alignak settings QWidget
+
+        :return: settings QWidget
+        :rtype: QWidget
+        """
+
+        server_widget = QWidget()
         server_widget.setObjectName('dialog')
         server_layout = QVBoxLayout(server_widget)
 
@@ -104,28 +121,43 @@ class ServerQDialog(QDialog):
         self.server_port.setFixedHeight(25)
         server_layout.addWidget(self.server_port)
 
-        # Server Processes
-        process_lbl = QLabel(_('Processes'))
-        server_layout.addWidget(process_lbl)
+        # Server Processes (displayed only for Unix platforms)
+        if 'win32' not in sys.platform:
+            process_lbl = QLabel(_('Processes'))
+            server_layout.addWidget(process_lbl)
 
-        if 'win32' in sys.platform:
-            self.server_proc.setEnabled(False)
-        cur_proc = settings.get_config('Alignak', 'processes')
-        self.server_proc.setText(cur_proc)
-        self.server_proc.setPlaceholderText(_('alignak backend processes...'))
-        self.server_proc.setFixedHeight(25)
-        server_layout.addWidget(self.server_proc)
+            cur_proc = settings.get_config('Alignak', 'processes')
+            self.server_proc.setText(cur_proc)
+            self.server_proc.setPlaceholderText(_('alignak backend processes...'))
+            self.server_proc.setFixedHeight(25)
+            server_layout.addWidget(self.server_proc)
+
+        # Web Service description
+        server_layout.addStretch(1)
+        webservice_lbl = QLabel(_('Web Service'))
+        webservice_lbl.setObjectName('itemtitle')
+        server_layout.addWidget(webservice_lbl)
+        ws_desc_lbl = QLabel(
+            _('Here you can define your alignak web service url, with port if needed')
+        )
+        ws_desc_lbl.setWordWrap(True)
+        server_layout.addWidget(ws_desc_lbl)
+
+        # Web Service URL
+        self.webservice_url.setText(settings.get_config('Alignak', 'webservice'))
+        self.webservice_url.setPlaceholderText(_('alignak webservice url...'))
+        self.webservice_url.setFixedHeight(25)
+        server_layout.addWidget(self.webservice_url)
 
         # Valid Button
         valid_btn = QPushButton(_('Valid'))
         valid_btn.setObjectName('valid')
         valid_btn.setMinimumHeight(30)
         valid_btn.clicked.connect(self.accept)
+
         server_layout.addWidget(valid_btn)
 
-        main_layout.addWidget(server_widget)
-
-        center_widget(server_widget)
+        return server_widget
 
     def mousePressEvent(self, event):  # pragma: no cover - not testable
         """ QWidget.mousePressEvent(QMouseEvent) """

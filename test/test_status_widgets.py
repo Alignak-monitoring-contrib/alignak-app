@@ -20,6 +20,7 @@
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
+import time
 
 import unittest2
 from PyQt5.Qt import QApplication, QLabel, QSize
@@ -72,8 +73,7 @@ class TestStatusQDialog(unittest2.TestCase):
 
         under_test = StatusQDialog()
 
-        self.assertIsNotNone(under_test.app_widget)
-        self.assertIsNotNone(under_test.layout)
+        self.assertIsNotNone(under_test.daemons_layout)
         self.assertFalse(under_test.labels)
 
         under_test.initialize()
@@ -95,7 +95,7 @@ class TestStatusQDialog(unittest2.TestCase):
             'daemon-name'
         )
 
-        under_test.set_daemons_labels([daemon_test])
+        under_test.init_daemons_labels([daemon_test])
 
         self.assertTrue('daemon-name' in under_test.labels)
 
@@ -116,7 +116,7 @@ class TestStatusQDialog(unittest2.TestCase):
             'daemon-name'
         )
 
-        under_test.set_daemons_labels([daemon_test])
+        under_test.init_daemons_labels([daemon_test])
         under_test.add_daemon_labels(daemon_test, 2)
 
         self.assertEqual(QSize(18, 18), under_test.labels['daemon-name']['alive'].size())
@@ -149,3 +149,36 @@ class TestStatusQDialog(unittest2.TestCase):
 
         daemon_labels = under_test.labels['daemon0']
         self.assertEqual('127.0.0.0:7000', daemon_labels['address'].text())
+
+    def test_daemon_is_problem(self):
+        """Daemon Is Problem"""
+
+        test_time = time.time()
+        daemon_test = Daemon()
+        daemon_test.create(
+            '_id',
+            {
+                'last_check': test_time,
+                'alive': True
+            },
+            'name'
+        )
+
+        under_test = StatusQDialog.daemon_is_problem(daemon_test)
+
+        # Daemon is NOT a problem
+        self.assertFalse(under_test)
+
+        # Daemon is NOT alive, so IS a problem
+        daemon_test.data['alive'] = False
+        under_test = StatusQDialog.daemon_is_problem(daemon_test)
+
+        self.assertTrue(under_test)
+
+        # Daemon is alive but freshness expired, so IS a problme
+        test_time_plus_15 = test_time + 900  # 900sec == 15 min
+        daemon_test.data['alive'] = True
+        daemon_test.data['last_check'] = test_time_plus_15
+        under_test = StatusQDialog.daemon_is_problem(daemon_test)
+
+        self.assertTrue(under_test)

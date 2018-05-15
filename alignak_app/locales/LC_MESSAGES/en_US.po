@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-09 14:26+0100\n"
-"PO-Revision-Date: 2018-02-09 15:04+0100\n"
+"POT-Creation-Date: 2018-04-11 11:15+0200\n"
+"PO-Revision-Date: 2018-04-11 11:33+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -18,734 +18,1120 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../core/models/item.py:93
-msgid "downtimed"
-msgstr "downtimed"
-
-#: ../core/models/item.py:95
-msgid "acknowledged"
-msgstr "acknowledged"
-
-#: ../core/models/item.py:97
-msgid "not monitored"
-msgstr "not monitored"
-
-#: ../core/models/item.py:100
+#: ../backend/datamanager.py:85 ../backend/datamanager.py:91
 #, python-format
-msgid "%s is %s and %s"
-msgstr "%s is %s and %s"
+msgid "Collecting %s..."
+msgstr "Collecting %s..."
 
-#: ../core/models/item.py:102
-#, python-format
-msgid "%s is %s"
-msgstr "%s is %s"
+#: ../backend/datamanager.py:94
+msgid "READY"
+msgstr "READY"
 
-#: ../core/models/item.py:224
+#: ../items/host.py:107
 #, python-format
 msgid "%s. You have nothing to do."
 msgstr "%s. You have nothing to do."
 
-#: ../core/models/item.py:230
+#: ../items/host.py:108
 #, python-format
 msgid "%s and his services are ok or acknowledged."
 msgstr "%s and his services are ok or acknowledged."
 
-#: ../core/models/item.py:236
+#: ../items/host.py:109
 #, python-format
 msgid "%s and his services are ok or downtimed."
 msgstr "%s and his services are ok or downtimed."
 
-#: ../core/models/item.py:242
+#: ../items/host.py:110
 #, python-format
 msgid "%s, some services may be unknown."
 msgstr "%s, some services may be unknown."
 
-#: ../core/models/item.py:248
+#: ../items/host.py:111
 #, python-format
 msgid "%s, some services may be in critical condition or unreachable !"
 msgstr "%s, some services may be in critical condition or unreachable !"
 
-#: ../core/models/item.py:254
+#: ../items/host.py:112
 #, python-format
 msgid "%s, some services are not monitored."
 msgstr "%s, some services are not monitored."
 
-#: ../core/models/item.py:271
+#: ../items/item.py:94
+msgid "downtimed"
+msgstr "downtimed"
+
+#: ../items/item.py:96
+msgid "acknowledged"
+msgstr "acknowledged"
+
+#: ../items/item.py:98
+msgid "not monitored"
+msgstr "not monitored"
+
+#: ../items/item.py:101
 #, python-format
-msgid "Host is %s."
-msgstr "Host is %s."
+msgid "%s is %s but %s"
+msgstr "%s is %s but %s"
 
-#: ../core/models/item.py:277
-msgid "No services."
-msgstr "No services."
+#: ../items/item.py:103 ../qobjects/alignak/problems_table.py:132
+#, python-format
+msgid "%s is %s"
+msgstr "%s is %s"
 
-#: ../core/models/user.py:78
+#: ../items/item.py:116
+msgid "Active checks"
+msgstr "Active checks"
+
+#: ../items/item.py:117
+msgid "Passive checks"
+msgstr "Passive checks"
+
+#: ../items/user.py:80
 msgid "user"
 msgstr "user"
 
-#: ../core/models/user.py:82
+#: ../items/user.py:84
 msgid "administrator"
 msgstr "administrator"
 
-#: ../core/models/user.py:86
+#: ../items/user.py:88
 msgid "power"
 msgstr "power"
 
-#: ../core/utils/time.py:44
-msgid "Not yet checked!"
-msgstr "Not yet checked!"
-
-#: ../core/utils/time.py:53
-msgid "Very soon"
-msgstr "Very soon"
-
-#: ../core/utils/time.py:55
-msgid "Just now"
-msgstr "Just now"
-
-#: ../core/utils/time.py:84
-#, python-format
-msgid "%s ago"
-msgstr "%s ago"
-
-#: ../pyqt/common/actions.py:88
-#, python-format
-msgid "Service %s acknowledged by %s, from Alignak-app"
-msgstr "Service %s acknowledged by %s, from Alignak-app"
-
-#: ../pyqt/common/actions.py:117
-#, python-format
-msgid "Acknowledge for %s is done"
-msgstr "Acknowledge for %s is done"
-
-#: ../pyqt/common/actions.py:141
-#, python-format
-msgid "Schedule downtime on %s by %s, from Alignak-app"
-msgstr "Schedule downtime on %s by %s, from Alignak-app"
-
-#: ../pyqt/common/actions.py:174
-#, python-format
-msgid "Downtime for %s is done"
-msgstr "Downtime for %s is done"
-
-#: ../pyqt/common/actions.py:219
-msgid "Request an Acknowledge"
-msgstr "Request an Acknowledge"
-
-#: ../pyqt/common/actions.py:250
-msgid "Request Acknowledge"
-msgstr "Request Acknowledge"
-
-#: ../pyqt/common/actions.py:256
-msgid "Request an acknowledge"
-msgstr "Request an acknowledge"
-
-#: ../pyqt/common/actions.py:263
-msgid "Acknowledge is sticky:"
-msgstr "Acknowledge is sticky:"
-
-#: ../pyqt/common/actions.py:275
-msgid ""
-"If checked, the acknowledge will remain until the element returns to an \"OK"
-"\" state."
-msgstr ""
-"If checked, the acknowledge will remain until the element returns to an \"OK"
-"\" state."
-
-#: ../pyqt/common/actions.py:282
-msgid "Acknowledge notifies:"
-msgstr "Acknowledge notifies:"
-
-#: ../pyqt/common/actions.py:293
-msgid "If checked, a notification will be sent out to the concerned contacts."
-msgstr "If checked, a notification will be sent out to the concerned contacts."
-
-#: ../pyqt/common/actions.py:298
-msgid "Acknowledge comment:"
-msgstr "Acknowledge comment:"
-
-#: ../pyqt/common/actions.py:307
-msgid "REQUEST ACKNOWLEDGE"
-msgstr "REQUEST ACKNOWLEDGE"
-
-#: ../pyqt/common/actions.py:341
-msgid "Request a Downtime"
-msgstr "Request a Downtime"
-
-#: ../pyqt/common/actions.py:374
-msgid "Request Downtime"
-msgstr "Request Downtime"
-
-#: ../pyqt/common/actions.py:380
-msgid "Request a downtime"
-msgstr "Request a downtime"
-
-#: ../pyqt/common/actions.py:387
-msgid "Downtime options:"
-msgstr "Downtime options:"
-
-#: ../pyqt/common/actions.py:397
-msgid "Fixed"
-msgstr "Fixed"
-
-#: ../pyqt/common/actions.py:403
-msgid ""
-"If checked, downtime will start and end at the times specified by the “start "
-"time” and “end time” fields."
-msgstr ""
-"If checked, downtime will start and end at the times specified by the “start "
-"time” and “end time” fields."
-
-#: ../pyqt/common/actions.py:410
-msgid "Duration"
-msgstr "Duration"
-
-#: ../pyqt/common/actions.py:425
-msgid "Sets the duration if it is a non-fixed downtime."
-msgstr "Sets the duration if it is a non-fixed downtime."
-
-#: ../pyqt/common/actions.py:429
-msgid "Downtime date range"
-msgstr "Downtime date range"
-
-#: ../pyqt/common/actions.py:439
-msgid "Start time:"
-msgstr "Start time:"
-
-#: ../pyqt/common/actions.py:447
-msgid "End time:"
-msgstr "End time:"
-
-#: ../pyqt/common/actions.py:459
-msgid "REQUEST DOWNTIME"
-msgstr "REQUEST DOWNTIME"
-
-#: ../pyqt/dock/dialogs/password.py:67
-msgid "Edit Password"
-msgstr "Edit Password"
-
-#: ../pyqt/dock/dialogs/password.py:69
-msgid "Please type a new PASSWORD:"
-msgstr "Please type a new PASSWORD:"
-
-#: ../pyqt/dock/dialogs/password.py:78
-msgid "type new password"
-msgstr "type new password"
-
-#: ../pyqt/dock/dialogs/password.py:82
-msgid "confirm new password"
-msgstr "confirm new password"
-
-#: ../pyqt/dock/dialogs/password.py:86 ../pyqt/dock/dialogs/password.py:113
-msgid "Your password must contain at least 5 characters."
-msgstr "Your password must contain at least 5 characters."
-
-#: ../pyqt/dock/dialogs/password.py:110
-msgid "Passwords do not match !"
-msgstr "Passwords do not match !"
-
-#: ../pyqt/dock/dialogs/status.py:79
-msgid "Alignak Status"
-msgstr "Alignak Status"
-
-#: ../pyqt/dock/dialogs/status.py:95 ../pyqt/dock/dialogs/user_options.py:154
-msgid "OK"
-msgstr "OK"
-
-#: ../pyqt/dock/dialogs/status.py:101 ../pyqt/panel/widgets/problems.py:98
-msgid "Refresh"
-msgstr "Refresh"
-
-#: ../pyqt/dock/dialogs/status.py:135 ../pyqt/panel/widgets/problems.py:52
-msgid "State"
-msgstr "State"
-
-#: ../pyqt/dock/dialogs/status.py:140
-msgid "Daemon name"
-msgstr "Daemon name"
-
-#: ../pyqt/dock/dialogs/status.py:144
-msgid "Address"
-msgstr "Address"
-
-#: ../pyqt/dock/dialogs/status.py:148
-msgid "Reachable"
-msgstr "Reachable"
-
-#: ../pyqt/dock/dialogs/status.py:153
-msgid "Spare"
-msgstr "Spare"
-
-#: ../pyqt/dock/dialogs/status.py:158
-msgid "Passive daemon"
-msgstr "Passive daemon"
-
-#: ../pyqt/dock/dialogs/status.py:163
-msgid "Last check"
-msgstr "Last check"
-
-#: ../pyqt/dock/dialogs/token.py:63
-msgid "See Token"
-msgstr "See Token"
-
-#: ../pyqt/dock/dialogs/user_notes.py:65
-msgid "Edit User Notes"
-msgstr "Edit User Notes"
-
-#: ../pyqt/dock/dialogs/user_notes.py:67
-msgid "Please modify your notes:"
-msgstr "Please modify your notes:"
-
-#: ../pyqt/dock/dialogs/user_notes.py:89
-msgid "type your notes"
-msgstr "type your notes"
-
-#: ../pyqt/dock/dialogs/user_notes.py:94
-msgid "Confirm"
-msgstr "Confirm"
-
-#: ../pyqt/dock/dialogs/user_options.py:108
-msgid "Host Notifications"
-msgstr "Host Notifications"
-
-#: ../pyqt/dock/dialogs/user_options.py:110
-msgid "Service Notifications"
-msgstr "Service Notifications"
-
-#: ../pyqt/dock/dialogs/user_options.py:132
-msgid "Options:"
-msgstr "Options:"
-
-#: ../pyqt/dock/widgets/buttons.py:77
-msgid "See current problems"
-msgstr "See current problems"
-
-#: ../pyqt/dock/widgets/buttons.py:111
-msgid "Open WebUI in browser"
-msgstr "Open WebUI in browser"
-
-#: ../pyqt/dock/widgets/buttons.py:114
-msgid "WebUI is not set in configuration file."
-msgstr "WebUI is not set in configuration file."
-
-#: ../pyqt/dock/widgets/dock.py:73
-msgid "Alignak"
-msgstr "Alignak"
-
-#: ../pyqt/dock/widgets/dock.py:84
-msgid "Livestate"
-msgstr "Livestate"
-
-#: ../pyqt/dock/widgets/dock.py:93
-msgid "Last Events"
-msgstr "Last Events"
-
-#: ../pyqt/dock/widgets/dock.py:101
-msgid "Spied Hosts"
-msgstr "Spied Hosts"
-
-#: ../pyqt/dock/widgets/events.py:159
-#, python-format
-msgid "Welcome %s, you are connected to Alignak Backend"
-msgstr "Welcome %s, you are connected to Alignak Backend"
-
-#: ../pyqt/dock/widgets/livestate.py:99
-#, python-format
-msgid "Number of unhandled %s problems"
-msgstr "Number of unhandled %s problems"
-
-#: ../pyqt/dock/widgets/livestate.py:116
-#, python-format
-msgid "Number of monitored %s"
-msgstr "Number of monitored %s"
-
-#: ../pyqt/dock/widgets/spy.py:64
-#, python-format
-msgid "Host %s is spied by Alignak-app !"
-msgstr "Host %s is spied by Alignak-app !"
-
-#: ../pyqt/dock/widgets/spy.py:130
-msgid "Drop Events here to spy host..."
-msgstr "Drop Events here to spy host..."
-
-#: ../pyqt/dock/widgets/status.py:67
-msgid "Status:"
-msgstr "Status:"
-
-#: ../pyqt/dock/widgets/status.py:88
-msgid "Backend:"
-msgstr "Backend:"
-
-#: ../pyqt/dock/widgets/user.py:82
-msgid "User View"
-msgstr "User View"
-
-#: ../pyqt/dock/widgets/user.py:105
-msgid "User informations:"
-msgstr "User informations:"
-
-#: ../pyqt/dock/widgets/user.py:113
-msgid "<h5>Realm:</h5>"
-msgstr "<h5>Realm:</h5>"
-
-#: ../pyqt/dock/widgets/user.py:118
-msgid "<h5>Administrator:</h5>"
-msgstr "<h5>Administrator:</h5>"
-
-#: ../pyqt/dock/widgets/user.py:127 ../pyqt/panel/widgets/host.py:251
-msgid "Notes:"
-msgstr "Notes:"
-
-#: ../pyqt/dock/widgets/user.py:132
-msgid "Edit your notes."
-msgstr "Edit your notes."
-
-#: ../pyqt/dock/widgets/user.py:140
-msgid "<h5>Role:</h5>"
-msgstr "<h5>Role:</h5>"
-
-#: ../pyqt/dock/widgets/user.py:145
-msgid "<h5>Commands:</h5>"
-msgstr "<h5>Commands:</h5>"
-
-#: ../pyqt/dock/widgets/user.py:163
-msgid "<h5>Email:</h5>"
-msgstr "<h5>Email:</h5>"
-
-#: ../pyqt/dock/widgets/user.py:168
-msgid "<h5>Password:</h5>"
-msgstr "<h5>Password:</h5>"
-
-#: ../pyqt/dock/widgets/user.py:175
-msgid "Change my password"
-msgstr "Change my password"
-
-#: ../pyqt/dock/widgets/user.py:181
-msgid "<h5>Alias:</h5>"
-msgstr "<h5>Alias:</h5>"
-
-#: ../pyqt/dock/widgets/user.py:186
-msgid "<h5>Token:</h5>"
-msgstr "<h5>Token:</h5>"
-
-#: ../pyqt/dock/widgets/user.py:233
-msgid "Your notes have been edited."
-msgstr "Your notes have been edited."
-
-#: ../pyqt/dock/widgets/user.py:239 ../pyqt/dock/widgets/user.py:259
-msgid "Backend PATCH failed, please check your logs !"
-msgstr "Backend PATCH failed, please check your logs !"
-
-#: ../pyqt/dock/widgets/user.py:255
-msgid "Your password has been updated !"
-msgstr "Your password has been updated !"
-
-#: ../pyqt/dock/widgets/user.py:296
-msgid "Hosts notifications configurations"
-msgstr "Hosts notifications configurations"
-
-#: ../pyqt/dock/widgets/user.py:301 ../pyqt/dock/widgets/user.py:353
-msgid "<h5>Notification enabled:</h5>"
-msgstr "<h5>Notification enabled:</h5>"
-
-#: ../pyqt/dock/widgets/user.py:313 ../pyqt/dock/widgets/user.py:365
-msgid "<h5>Notification period:</h5>"
-msgstr "<h5>Notification period:</h5>"
-
-#: ../pyqt/dock/widgets/user.py:348
-msgid "Services notifications configurations"
-msgstr "Services notifications configurations"
-
-#: ../pyqt/dock/widgets/user.py:407
-#, python-format
-msgid "Notifications for %ss are %s"
-msgstr "Notifications for %ss are %s"
-
-#: ../pyqt/dock/widgets/user.py:415
-msgid "Backend PATCH failed, if problem persist, please check your logs !"
-msgstr "Backend PATCH failed, if problem persist, please check your logs !"
-
-#: ../pyqt/dock/widgets/user.py:447
-msgid "See my token"
-msgstr "See my token"
-
-#: ../pyqt/dock/widgets/user.py:450
-msgid "Token is only available for Administrators !"
-msgstr "Token is only available for Administrators !"
-
-#: ../pyqt/login/dialogs/login.py:58
-msgid "Type your Alignak username and password."
-msgstr "Type your Alignak username and password."
-
-#: ../pyqt/login/dialogs/login.py:70
-msgid "Login"
-msgstr "Login"
-
-#: ../pyqt/login/dialogs/login.py:80
-msgid "Welcome to Alignak-app"
-msgstr "Welcome to Alignak-app"
-
-#: ../pyqt/login/dialogs/login.py:87
-#, python-format
-msgid "Version %s"
-msgstr "Version %s"
-
-#: ../pyqt/login/dialogs/login.py:92
-msgid "<b>Log-in</b> to use the application"
-msgstr "<b>Log-in</b> to use the application"
-
-#: ../pyqt/login/dialogs/login.py:101
-msgid "Modify Alignak Server"
-msgstr "Modify Alignak Server"
-
-#: ../pyqt/login/dialogs/login.py:110
-msgid "Username"
-msgstr "Username"
-
-#: ../pyqt/login/dialogs/login.py:115
-msgid "Password"
-msgstr "Password"
-
-#: ../pyqt/login/dialogs/login.py:120
-msgid "LOGIN"
-msgstr "LOGIN"
-
-#: ../pyqt/login/dialogs/server.py:46
-msgid "Server Configuration"
-msgstr "Server Configuration"
-
-#: ../pyqt/login/dialogs/server.py:67
-msgid "Alignak server"
-msgstr "Alignak server"
-
-#: ../pyqt/login/dialogs/server.py:76
-msgid ""
-"<h3>Alignak Backend</h3><p>Here you can define alignak settings.</p><b>Be "
-"sure to enter a valid address</b>"
-msgstr ""
-"<h3>Alignak Backend</h3><p>Here you can define alignak settings.</p><b>Be "
-"sure to enter a valid address</b>"
-
-#: ../pyqt/login/dialogs/server.py:84
-msgid "Server"
-msgstr "Server"
-
-#: ../pyqt/login/dialogs/server.py:86
-msgid "alignak backend url"
-msgstr "alignak backend url"
-
-#: ../pyqt/login/dialogs/server.py:91
-msgid "Port"
-msgstr "Port"
-
-#: ../pyqt/login/dialogs/server.py:93
-msgid "alignak backend port"
-msgstr "alignak backend port"
-
-#: ../pyqt/login/dialogs/server.py:99
-msgid "Processes"
-msgstr "Processes"
-
-#: ../pyqt/login/dialogs/server.py:103
-msgid "alignak backend processes"
-msgstr "alignak backend processes"
-
-#: ../pyqt/login/dialogs/server.py:109
-msgid "Valid"
-msgstr "Valid"
-
-#: ../pyqt/panel/widgets/dashboard.py:126
-#: ../pyqt/panel/widgets/dashboard.py:220
+#: ../qobjects/alignak/alignak.py:77
+msgid "Backend"
+msgstr "Backend"
+
+#: ../qobjects/alignak/alignak.py:88
+msgid "Status"
+msgstr "Status"
+
+#: ../qobjects/alignak/alignak.py:102 ../qobjects/alignak/alignak.py:109
+msgid "User"
+msgstr "User"
+
+#: ../qobjects/alignak/dashboard.py:125
+msgid "<b>Hosts:</b>"
+msgstr "<b>Hosts:</b>"
+
+#: ../qobjects/alignak/dashboard.py:134 ../qobjects/alignak/dashboard.py:228
 #, python-format
 msgid "Hosts %s. See in WebUI ?"
 msgstr "Hosts %s. See in WebUI ?"
 
-#: ../pyqt/panel/widgets/dashboard.py:153
-#: ../pyqt/panel/widgets/dashboard.py:232
+#: ../qobjects/alignak/dashboard.py:161 ../qobjects/alignak/dashboard.py:240
 #, python-format
 msgid "Services %s. See in WebUI ?"
 msgstr "Services %s. See in WebUI ?"
 
-#: ../pyqt/panel/widgets/dashboard.py:224
+#: ../qobjects/alignak/dashboard.py:232
 #, python-format
 msgid "Hosts %s. WebUI is not set in configuration file."
 msgstr "Hosts %s. WebUI is not set in configuration file."
 
-#: ../pyqt/panel/widgets/dashboard.py:236
+#: ../qobjects/alignak/dashboard.py:244
 #, python-format
 msgid "Services %s. WebUI is not set in configuration file."
 msgstr "Services %s. WebUI is not set in configuration file."
 
-#: ../pyqt/panel/widgets/history.py:71
+#: ../qobjects/alignak/livestate.py:103
 #, python-format
-msgid "History of %s"
-msgstr "History of %s"
+msgid "Number of unhandled %s problems"
+msgstr "Number of unhandled %s problems"
 
-#: ../pyqt/panel/widgets/history.py:79
+#: ../qobjects/alignak/livestate.py:119
 #, python-format
-msgid "The last 25 events for %s"
-msgstr "The last 25 events for %s"
+msgid "Number of monitored %s"
+msgstr "Number of monitored %s"
 
-#: ../pyqt/panel/widgets/host.py:142 ../pyqt/panel/widgets/service.py:158
-msgid "Actions:"
-msgstr "Actions:"
+#: ../qobjects/alignak/problems.py:146 ../qobjects/alignak/problems.py:149
+msgid "Search Problems"
+msgstr "Search Problems"
 
-#: ../pyqt/panel/widgets/host.py:180 ../pyqt/panel/widgets/service.py:122
-msgid "My last check"
-msgstr "My last check"
+#: ../qobjects/alignak/problems.py:154
+msgid "Type text to filter problems..."
+msgstr "Type text to filter problems..."
 
-#: ../pyqt/panel/widgets/host.py:186
-msgid "State:"
-msgstr "State:"
+#: ../qobjects/alignak/problems.py:158
+msgid "Refresh"
+msgstr "Refresh"
 
-#: ../pyqt/panel/widgets/host.py:193 ../pyqt/panel/widgets/service.py:128
-msgid "When:"
-msgstr "When:"
+#: ../qobjects/alignak/problems.py:161
+msgid "Refresh problems"
+msgstr "Refresh problems"
 
-#: ../pyqt/panel/widgets/host.py:200 ../pyqt/panel/widgets/problems.py:52
-#: ../pyqt/panel/widgets/service.py:135
-msgid "Output"
-msgstr "Output"
+#: ../qobjects/alignak/problems.py:180
+msgid "Filter hosts"
+msgstr "Filter hosts"
 
-#: ../pyqt/panel/widgets/host.py:224
-msgid "My variables"
-msgstr "My variables"
+#: ../qobjects/alignak/problems.py:188
+msgid "Filter services"
+msgstr "Filter services"
 
-#: ../pyqt/panel/widgets/host.py:230
-msgid "Realm:"
-msgstr "Realm:"
+#: ../qobjects/alignak/problems.py:203
+msgid "See current item in synthesis view"
+msgstr "See current item in synthesis view"
 
-#: ../pyqt/panel/widgets/host.py:237
-msgid "Host address:"
-msgstr "Host address:"
+#: ../qobjects/alignak/problems.py:209 ../qobjects/host/host.py:209
+msgid "Spy current host"
+msgstr "Spy current host"
 
-#: ../pyqt/panel/widgets/host.py:244
-msgid "Business impact:"
-msgstr "Business impact:"
-
-#: ../pyqt/panel/widgets/host.py:320
-msgid "History is available"
-msgstr "History is available"
-
-#: ../pyqt/panel/widgets/host.py:322
-msgid "History is not available, please wait..."
-msgstr "History is not available, please wait..."
-
-#: ../pyqt/panel/widgets/number_services.py:120
+#: ../qobjects/alignak/problems.py:257 ../qobjects/panel.py:99
 #, python-format
-msgid "<b>Services of %s: </b> %d services"
-msgstr "<b>Services of %s: </b> %d services"
+msgid "Problems (%d)"
+msgstr "Problems (%d)"
 
-#: ../pyqt/panel/widgets/panel.py:63
-msgid "Spy Host"
-msgstr "Spy Host"
-
-#: ../pyqt/panel/widgets/panel.py:84
-msgid "Host Synthesis"
-msgstr "Host Synthesis"
-
-#: ../pyqt/panel/widgets/panel.py:88
-msgid "Problems"
-msgstr "Problems"
-
-#: ../pyqt/panel/widgets/panel.py:96
-msgid "Hosts Synthesis View"
-msgstr "Hosts Synthesis View"
-
-#: ../pyqt/panel/widgets/panel.py:149 ../pyqt/panel/widgets/panel.py:152
-msgid "Search Host"
-msgstr "Search Host"
-
-#: ../pyqt/panel/widgets/panel.py:209 ../pyqt/panel/widgets/panel.py:210
-msgid "Type a host name to display its data"
-msgstr "Type a host name to display its data"
-
-#: ../pyqt/panel/widgets/problems.py:52
-msgid "Item Type"
-msgstr "Item Type"
-
-#: ../pyqt/panel/widgets/problems.py:52
-msgid "Host"
-msgstr "Host"
-
-#: ../pyqt/panel/widgets/problems.py:52
-msgid "Service"
-msgstr "Service"
-
-#: ../pyqt/panel/widgets/problems.py:52
-msgid "Actions"
-msgstr "Actions"
-
-#: ../pyqt/panel/widgets/problems.py:191
+#: ../qobjects/alignak/problems.py:281
 #, python-format
 msgid "There are %d problems to manage (hosts: %d, services: %d)"
 msgstr "There are %d problems to manage (hosts: %d, services: %d)"
 
-#: ../pyqt/systray/dialogs/about.py:43 ../pyqt/systray/tray_icon.py:128
-msgid "About"
-msgstr "About"
+#: ../qobjects/alignak/problems.py:289
+msgid "If problems are found, they will be displayed here."
+msgstr "If problems are found, they will be displayed here."
 
-#: ../pyqt/systray/dialogs/about.py:58
-msgid "Application version:"
-msgstr "Application version:"
+#: ../qobjects/alignak/problems_table.py:64
+msgid "Items in problem"
+msgstr "Items in problem"
 
-#: ../pyqt/systray/dialogs/about.py:61
+#: ../qobjects/alignak/problems_table.py:64 ../qobjects/host/host.py:348
+#: ../qobjects/service/service.py:136
+msgid "Output"
+msgstr "Output"
+
+#: ../qobjects/alignak/problems_table.py:130
 #, python-format
-msgid "%s, version %s"
-msgstr "%s, version %s"
+msgid "%s is %s (Attached to %s)"
+msgstr "%s is %s (Attached to %s)"
 
-#: ../pyqt/systray/dialogs/about.py:65
-msgid "Copyright:"
-msgstr "Copyright:"
+#: ../qobjects/alignak/status.py:67 ../qobjects/user/profile.py:89
+msgid "User View"
+msgstr "User View"
 
-#: ../pyqt/systray/dialogs/about.py:72
-msgid "Home page:"
-msgstr "Home page:"
+#: ../qobjects/alignak/status.py:89 ../qobjects/user/options.py:156
+msgid "OK"
+msgstr "OK"
 
-#: ../pyqt/systray/dialogs/about.py:78
-msgid "User documentation"
-msgstr "User documentation"
+#: ../qobjects/alignak/status.py:125
+msgid "State"
+msgstr "State"
 
-#: ../pyqt/systray/dialogs/about.py:84
-msgid "Release notes:"
-msgstr "Release notes:"
+#: ../qobjects/alignak/status.py:130
+msgid "Daemon name"
+msgstr "Daemon name"
 
-#: ../pyqt/systray/dialogs/about.py:91
-msgid "About Alignak solution:"
-msgstr "About Alignak solution:"
+#: ../qobjects/alignak/status.py:134
+msgid "Address"
+msgstr "Address"
 
-#: ../pyqt/systray/dialogs/about.py:97
+#: ../qobjects/alignak/status.py:138
+msgid "Reachable"
+msgstr "Reachable"
+
+#: ../qobjects/alignak/status.py:143
+msgid "Spare"
+msgstr "Spare"
+
+#: ../qobjects/alignak/status.py:148
+msgid "Passive daemon"
+msgstr "Passive daemon"
+
+#: ../qobjects/alignak/status.py:153
+msgid "Last check"
+msgstr "Last check"
+
+#: ../qobjects/common/actions.py:71
+msgid "Acknowledge the current item"
+msgstr "Acknowledge the current item"
+
+#: ../qobjects/common/actions.py:77
+msgid "Schedule a Downtime on current item"
+msgstr "Schedule a Downtime on current item"
+
+#: ../qobjects/common/actions.py:90
+#, python-format
+msgid "%s %s acknowledged by %s, from Alignak-app"
+msgstr "%s %s acknowledged by %s, from Alignak-app"
+
+#: ../qobjects/common/actions.py:107
+#, python-format
+msgid "Acknowledge for %s is %s"
+msgstr "Acknowledge for %s is %s"
+
+#: ../qobjects/common/actions.py:136
+#, python-format
+msgid "Schedule downtime on %s %s by %s, from Alignak-app"
+msgstr "Schedule downtime on %s %s by %s, from Alignak-app"
+
+#: ../qobjects/common/actions.py:154
+#, python-format
+msgid "Downtime for %s is %s"
+msgstr "Downtime for %s is %s"
+
+#: ../qobjects/common/actions.py:204
+msgid "Request an Acknowledge"
+msgstr "Request an Acknowledge"
+
+#: ../qobjects/common/actions.py:237
+msgid "Request Acknowledge"
+msgstr "Request Acknowledge"
+
+#: ../qobjects/common/actions.py:243
+msgid "Request an acknowledge"
+msgstr "Request an acknowledge"
+
+#: ../qobjects/common/actions.py:250
+msgid "Acknowledge is sticky:"
+msgstr "Acknowledge is sticky:"
+
+#: ../qobjects/common/actions.py:260
+msgid ""
+"If checked, the acknowledge will remain until the element returns to an \"OK"
+"\" state."
+msgstr ""
+"If checked, the acknowledge will remain until the element returns to an \"OK"
+"\" state."
+
+#: ../qobjects/common/actions.py:267
+msgid "Acknowledge notifies:"
+msgstr "Acknowledge notifies:"
+
+#: ../qobjects/common/actions.py:276
+msgid "If checked, a notification will be sent out to the concerned contacts."
+msgstr "If checked, a notification will be sent out to the concerned contacts."
+
+#: ../qobjects/common/actions.py:281
+msgid "Acknowledge comment:"
+msgstr "Acknowledge comment:"
+
+#: ../qobjects/common/actions.py:290
+msgid "REQUEST ACKNOWLEDGE"
+msgstr "REQUEST ACKNOWLEDGE"
+
+#: ../qobjects/common/actions.py:324
+msgid "Request a Downtime"
+msgstr "Request a Downtime"
+
+#: ../qobjects/common/actions.py:358
+msgid "Request Downtime"
+msgstr "Request Downtime"
+
+#: ../qobjects/common/actions.py:364
+msgid "Request a downtime"
+msgstr "Request a downtime"
+
+#: ../qobjects/common/actions.py:371
+msgid "Downtime options:"
+msgstr "Downtime options:"
+
+#: ../qobjects/common/actions.py:379
+msgid "Fixed"
+msgstr "Fixed"
+
+#: ../qobjects/common/actions.py:384
+msgid ""
+"If checked, downtime will start and end at the times specified by the “start "
+"time” and “end time” fields."
+msgstr ""
+"If checked, downtime will start and end at the times specified by the “start "
+"time” and “end time” fields."
+
+#: ../qobjects/common/actions.py:391
+msgid "Duration"
+msgstr "Duration"
+
+#: ../qobjects/common/actions.py:406
+msgid "Sets the duration if it is a non-fixed downtime."
+msgstr "Sets the duration if it is a non-fixed downtime."
+
+#: ../qobjects/common/actions.py:410
+msgid "Downtime date range"
+msgstr "Downtime date range"
+
+#: ../qobjects/common/actions.py:420
+msgid "Start time:"
+msgstr "Start time:"
+
+#: ../qobjects/common/actions.py:428
+msgid "End time:"
+msgstr "End time:"
+
+#: ../qobjects/common/actions.py:440
+msgid "REQUEST DOWNTIME"
+msgstr "REQUEST DOWNTIME"
+
+#: ../qobjects/common/buttons.py:52
+msgid "ON"
+msgstr "ON"
+
+#: ../qobjects/common/dialogs.py:77 ../qobjects/common/dialogs.py:246
+msgid "Edit your text:"
+msgstr "Edit your text:"
+
+#: ../qobjects/common/dialogs.py:97 ../qobjects/common/dialogs.py:270
+msgid "type your text..."
+msgstr "type your text..."
+
+#: ../qobjects/common/dialogs.py:102 ../qobjects/common/dialogs.py:278
+msgid "Confirm"
+msgstr "Confirm"
+
+#: ../qobjects/events/events.py:76
+#, python-format
+msgid "Welcome %s, you are connected to Alignak Backend"
+msgstr "Welcome %s, you are connected to Alignak Backend"
+
+#: ../qobjects/events/spy.py:50 ../qobjects/events/spy.py:216
+msgid "You are not spying on any hosts for now..."
+msgstr "You are not spying on any hosts for now..."
+
+#: ../qobjects/events/spy.py:72 ../qobjects/panel.py:107
+msgid "Spy Hosts"
+msgstr "Spy Hosts"
+
+#: ../qobjects/events/spy.py:117
+msgid "Drop host-related events here to spy on it..."
+msgstr "Drop host-related events here to spy on it..."
+
+#: ../qobjects/events/spy.py:135
+#, python-format
+msgid "Host %s, current state: %s"
+msgstr "Host %s, current state: %s"
+
+#: ../qobjects/events/spy.py:160 ../qobjects/events/spy.py:161
+msgid "(new !)"
+msgstr "(new !)"
+
+#: ../qobjects/events/spy.py:163
+#, python-format
+msgid "Problems found for %s:"
+msgstr "Problems found for %s:"
+
+#: ../qobjects/events/spy.py:171
+#, python-format
+msgid "Service %s is %s"
+msgstr "Service %s is %s"
+
+#: ../qobjects/events/spy.py:188
+#, python-format
+msgid "%s is %s. Services of host seems managed."
+msgstr "%s is %s. Services of host seems managed."
+
+#: ../qobjects/events/spy.py:197
+#, python-format
+msgid "%s is %s. No services."
+msgstr "%s is %s. No services."
+
+#: ../qobjects/events/spy.py:233 ../qobjects/events/spy.py:239
+#, python-format
+msgid "Spied Hosts (%d)"
+msgstr "Spied Hosts (%d)"
+
+#: ../qobjects/events/spy_list.py:62
+msgid "Select spy host to display its problems..."
+msgstr "Select spy host to display its problems..."
+
+#: ../qobjects/events/spy_list.py:76
+#, python-format
+msgid "Host %s, current state: %s (new !)"
+msgstr "Host %s, current state: %s (new !)"
+
+#: ../qobjects/host/host.py:158
+msgid "Host actions"
+msgstr "Host actions"
+
+#: ../qobjects/host/host.py:163
+msgid "Acknowledge / Downtime:"
+msgstr "Acknowledge / Downtime:"
+
+#: ../qobjects/host/host.py:171
+msgid "Active checks:"
+msgstr "Active checks:"
+
+#: ../qobjects/host/host.py:181
+msgid "Passive checks:"
+msgstr "Passive checks:"
+
+#: ../qobjects/host/host.py:191
+msgid "Timeline:"
+msgstr "Timeline:"
+
+#: ../qobjects/host/host.py:197
+msgid "See history of host"
+msgstr "See history of host"
+
+#: ../qobjects/host/host.py:204
+msgid "Spy Host:"
+msgstr "Spy Host:"
+
+#: ../qobjects/host/host.py:247 ../qobjects/user/profile.py:457
+msgid "enabled"
+msgstr "enabled"
+
+#: ../qobjects/host/host.py:247 ../qobjects/user/profile.py:457
+msgid "disabled"
+msgstr "disabled"
+
+#: ../qobjects/host/host.py:250
+#, python-format
+msgid "%s %s for %s"
+msgstr "%s %s for %s"
+
+#: ../qobjects/host/host.py:257 ../qobjects/host/host.py:415
+#: ../qobjects/user/profile.py:284 ../qobjects/user/profile.py:304
+msgid "Backend PATCH failed, please check your logs !"
+msgstr "Backend PATCH failed, please check your logs !"
+
+#: ../qobjects/host/host.py:273 ../qobjects/service/service.py:123
+msgid "My last check"
+msgstr "My last check"
+
+#: ../qobjects/host/host.py:279
+msgid "State:"
+msgstr "State:"
+
+#: ../qobjects/host/host.py:286 ../qobjects/service/service.py:129
+msgid "When:"
+msgstr "When:"
+
+#: ../qobjects/host/host.py:307
+msgid "My variables"
+msgstr "My variables"
+
+#: ../qobjects/host/host.py:313 ../qobjects/user/profile.py:120
+msgid "Realm:"
+msgstr "Realm:"
+
+#: ../qobjects/host/host.py:320
+msgid "Host address:"
+msgstr "Host address:"
+
+#: ../qobjects/host/host.py:327
+msgid "Business impact:"
+msgstr "Business impact:"
+
+#: ../qobjects/host/host.py:361 ../qobjects/user/profile.py:188
+msgid "Notes:"
+msgstr "Notes:"
+
+#: ../qobjects/host/host.py:367
+msgid "Edit host notes."
+msgstr "Edit host notes."
+
+#: ../qobjects/host/host.py:390
+msgid "Edit Host Notes"
+msgstr "Edit Host Notes"
+
+#: ../qobjects/host/host.py:409
+msgid "Host notes have been edited."
+msgstr "Host notes have been edited."
+
+#: ../qobjects/host/host.py:480
+msgid "History is available"
+msgstr "History is available"
+
+#: ../qobjects/host/host.py:482
+msgid "History is not available, please wait..."
+msgstr "History is not available, please wait..."
+
+#: ../qobjects/host/history.py:70
+msgid "History"
+msgstr "History"
+
+#: ../qobjects/host/history.py:108
+#, python-format
+msgid "The last 25 events for %s"
+msgstr "The last 25 events for %s"
+
+#: ../qobjects/host/history.py:199
+#, python-format
+msgid "Service: %s"
+msgstr "Service: %s"
+
+#: ../qobjects/host/history.py:201
+#, python-format
+msgid "Host: %s"
+msgstr "Host: %s"
+
+#: ../qobjects/login/login.py:73
+msgid "Login"
+msgstr "Login"
+
+#: ../qobjects/login/login.py:83
+msgid "Welcome to Alignak-app"
+msgstr "Welcome to Alignak-app"
+
+#: ../qobjects/login/login.py:90
+#, python-format
+msgid "Version %s"
+msgstr "Version %s"
+
+#: ../qobjects/login/login.py:96
+msgid "Configure Alignak server"
+msgstr "Configure Alignak server"
+
+#: ../qobjects/login/login.py:104
+msgid "Configure Alignak Server"
+msgstr "Configure Alignak Server"
+
+#: ../qobjects/login/login.py:108
+msgid "Configure Proxy"
+msgstr "Configure Proxy"
+
+#: ../qobjects/login/login.py:114
+msgid "Configure your Proxy"
+msgstr "Configure your Proxy"
+
+#: ../qobjects/login/login.py:121
+msgid "<b>Log-in</b> to use the application"
+msgstr "<b>Log-in</b> to use the application"
+
+#: ../qobjects/login/login.py:127
+msgid "username..."
+msgstr "username..."
+
+#: ../qobjects/login/login.py:132
+msgid "password..."
+msgstr "password..."
+
+#: ../qobjects/login/login.py:137
+msgid "LOGIN"
+msgstr "LOGIN"
+
+#: ../qobjects/login/proxy.py:47
+msgid "Proxy Configuration"
+msgstr "Proxy Configuration"
+
+#: ../qobjects/login/proxy.py:69 ../qobjects/login/proxy.py:88
+msgid "Proxy Settings"
+msgstr "Proxy Settings"
+
+#: ../qobjects/login/proxy.py:95
+msgid "Here you can define your proxy. Be sure to enter a valid address."
+msgstr "Here you can define your proxy. Be sure to enter a valid address."
+
+#: ../qobjects/login/proxy.py:101
+msgid "Proxy Address with Port"
+msgstr "Proxy Address with Port"
+
+#: ../qobjects/login/proxy.py:106
+msgid "proxy adress:port..."
+msgstr "proxy adress:port..."
+
+#: ../qobjects/login/proxy.py:111
+msgid "Proxy User (Optional)"
+msgstr "Proxy User (Optional)"
+
+#: ../qobjects/login/proxy.py:116
+msgid "proxy user..."
+msgstr "proxy user..."
+
+#: ../qobjects/login/proxy.py:121
+msgid "Proxy Password (Optional)"
+msgstr "Proxy Password (Optional)"
+
+#: ../qobjects/login/proxy.py:126
+msgid "proxy password..."
+msgstr "proxy password..."
+
+#: ../qobjects/login/proxy.py:132 ../qobjects/login/server.py:138
+msgid "Valid"
+msgstr "Valid"
+
+#: ../qobjects/login/server.py:48
+msgid "Server Configuration"
+msgstr "Server Configuration"
+
+#: ../qobjects/login/server.py:73
+msgid "Alignak Server"
+msgstr "Alignak Server"
+
+#: ../qobjects/login/server.py:92
+msgid "Alignak Backend"
+msgstr "Alignak Backend"
+
+#: ../qobjects/login/server.py:99
+msgid "Here you can define alignak settings. Be sure to enter a valid address."
+msgstr ""
+"Here you can define alignak settings. Be sure to enter a valid address."
+
+#: ../qobjects/login/server.py:105
+msgid "Server"
+msgstr "Server"
+
+#: ../qobjects/login/server.py:109
+msgid "alignak backend url..."
+msgstr "alignak backend url..."
+
+#: ../qobjects/login/server.py:114
+msgid "Port"
+msgstr "Port"
+
+#: ../qobjects/login/server.py:119
+msgid "alignak backend port..."
+msgstr "alignak backend port..."
+
+#: ../qobjects/login/server.py:125
+msgid "Processes"
+msgstr "Processes"
+
+#: ../qobjects/login/server.py:130
+msgid "alignak backend processes..."
+msgstr "alignak backend processes..."
+
+#: ../qobjects/service/service.py:162
+msgid "Actions:"
+msgstr "Actions:"
+
+#: ../qobjects/service/services_dashboard.py:119
+#, python-format
+msgid "<b>Services of %s: </b> %d services"
+msgstr "<b>Services of %s: </b> %d services"
+
+#: ../qobjects/systray/tray_icon.py:124
+msgid "Alignak-App"
+msgstr "Alignak-App"
+
+#: ../qobjects/systray/tray_icon.py:125
+msgid "Display Alignak-App"
+msgstr "Display Alignak-App"
+
+#: ../qobjects/systray/tray_icon.py:137
+msgid "Go to WebUI"
+msgstr "Go to WebUI"
+
+#: ../qobjects/systray/tray_icon.py:138
+msgid "Go to Alignak WebUI"
+msgstr "Go to Alignak WebUI"
+
+#: ../qobjects/systray/tray_icon.py:163 ../qobjects/systray/tray_icon.py:164
+msgid "Reload configuration"
+msgstr "Reload configuration"
+
+#: ../qobjects/systray/tray_icon.py:178
+msgid "About..."
+msgstr "About..."
+
+#: ../qobjects/systray/tray_icon.py:179
+msgid "About Alignak-app"
+msgstr "About Alignak-app"
+
+#: ../qobjects/systray/tray_icon.py:191
+msgid "Quit"
+msgstr "Quit"
+
+#: ../qobjects/systray/tray_icon.py:192
+msgid "Quit Alignak-app"
+msgstr "Quit Alignak-app"
+
+#: ../qobjects/systray/tray_icon.py:219
+msgid "Configuration reloaded"
+msgstr "Configuration reloaded"
+
+#: ../qobjects/user/options.py:110
+msgid "Host Notifications"
+msgstr "Host Notifications"
+
+#: ../qobjects/user/options.py:112
+msgid "Service Notifications"
+msgstr "Service Notifications"
+
+#: ../qobjects/user/options.py:134
+msgid "Options:"
+msgstr "Options:"
+
+#: ../qobjects/user/password.py:70
+msgid "Edit Password"
+msgstr "Edit Password"
+
+#: ../qobjects/user/password.py:72
+msgid "Please type a new PASSWORD:"
+msgstr "Please type a new PASSWORD:"
+
+#: ../qobjects/user/password.py:82
+msgid "type password..."
+msgstr "type password..."
+
+#: ../qobjects/user/password.py:87
+msgid "confirm password..."
+msgstr "confirm password..."
+
+#: ../qobjects/user/password.py:92 ../qobjects/user/password.py:119
+msgid "Your password must contain at least 5 characters."
+msgstr "Your password must contain at least 5 characters."
+
+#: ../qobjects/user/password.py:116
+msgid "Passwords do not match !"
+msgstr "Passwords do not match !"
+
+#: ../qobjects/user/profile.py:94
+msgid "User informations:"
+msgstr "User informations:"
+
+#: ../qobjects/user/profile.py:121
+msgid "Administrator:"
+msgstr "Administrator:"
+
+#: ../qobjects/user/profile.py:122
+msgid "Role:"
+msgstr "Role:"
+
+#: ../qobjects/user/profile.py:123
+msgid "Commands:"
+msgstr "Commands:"
+
+#: ../qobjects/user/profile.py:124
+msgid "Password"
+msgstr "Password"
+
+#: ../qobjects/user/profile.py:125
+msgid "Alias:"
+msgstr "Alias:"
+
+#: ../qobjects/user/profile.py:126
+msgid "Token:"
+msgstr "Token:"
+
+#: ../qobjects/user/profile.py:162
+msgid "Change my password"
+msgstr "Change my password"
+
+#: ../qobjects/user/profile.py:194
+msgid "Edit your notes."
+msgstr "Edit your notes."
+
+#: ../qobjects/user/profile.py:210
+msgid "Email:"
+msgstr "Email:"
+
+#: ../qobjects/user/profile.py:235
+msgid "See Token"
+msgstr "See Token"
+
+#: ../qobjects/user/profile.py:237
+#, python-format
+msgid "<b>Token:</b> %s"
+msgstr "<b>Token:</b> %s"
+
+#: ../qobjects/user/profile.py:255
+#, python-format
+msgid "Edit %s"
+msgstr "Edit %s"
+
+#: ../qobjects/user/profile.py:262
+#, python-format
+msgid "Edit User %s"
+msgstr "Edit User %s"
+
+#: ../qobjects/user/profile.py:280
+#, python-format
+msgid "Your %s have been edited."
+msgstr "Your %s have been edited."
+
+#: ../qobjects/user/profile.py:300
+msgid "Your password has been updated !"
+msgstr "Your password has been updated !"
+
+#: ../qobjects/user/profile.py:342
+msgid "Hosts notifications configurations"
+msgstr "Hosts notifications configurations"
+
+#: ../qobjects/user/profile.py:346 ../qobjects/user/profile.py:400
+msgid "Notification enabled:"
+msgstr "Notification enabled:"
+
+#: ../qobjects/user/profile.py:361 ../qobjects/user/profile.py:414
+msgid "Notification period:"
+msgstr "Notification period:"
+
+#: ../qobjects/user/profile.py:396
+msgid "Services notifications configurations"
+msgstr "Services notifications configurations"
+
+#: ../qobjects/user/profile.py:459
+#, python-format
+msgid "Notifications for %ss are %s"
+msgstr "Notifications for %ss are %s"
+
+#: ../qobjects/user/profile.py:471
+msgid "Backend PATCH failed, if problem persist, please check your logs !"
+msgstr "Backend PATCH failed, if problem persist, please check your logs !"
+
+#: ../qobjects/user/profile.py:506
+msgid "See my token"
+msgstr "See my token"
+
+#: ../qobjects/user/profile.py:509
+msgid "Token is only available for Administrators !"
+msgstr "Token is only available for Administrators !"
+
+#: ../qobjects/about.py:49
 #, python-format
 msgid "About %s"
 msgstr "About %s"
 
-#: ../pyqt/systray/tray_icon.py:87
-msgid "Dock"
-msgstr "Dock"
+#: ../qobjects/about.py:66
+msgid "About"
+msgstr "About"
 
-#: ../pyqt/systray/tray_icon.py:107
-msgid "Reload Configuration"
-msgstr "Reload Configuration"
+#: ../qobjects/about.py:83
+msgid "Release notes"
+msgstr "Release notes"
 
-#: ../pyqt/systray/tray_icon.py:176
-msgid "Configuration reloaded"
-msgstr "Configuration reloaded"
+#: ../qobjects/about.py:88
+msgid "Home page:"
+msgstr "Home page:"
 
-#: ../app.py:202
-msgid "Bad identifiers. Please try again"
-msgstr "Bad identifiers. Please try again"
+#: ../qobjects/about.py:90
+msgid "Home page"
+msgstr "Home page"
 
-#: ../app.py:226
-msgid "Configuration / Connection ERROR"
-msgstr "Configuration / Connection ERROR"
+#: ../qobjects/about.py:95 ../qobjects/about.py:97
+msgid "User documentation"
+msgstr "User documentation"
 
-#: ../app.py:228
-msgid ""
-"Something seems wrong in your configuration. Please configure Alignak-app "
-"before starting it. And make sure the backend is available"
-msgstr ""
-"Something seems wrong in your configuration. Please configure Alignak-app "
-"before starting it. And make sure the backend is available"
+#: ../qobjects/about.py:102
+msgid "About Alignak solution:"
+msgstr "About Alignak solution:"
+
+#: ../qobjects/about.py:104
+msgid "About Alignak solution"
+msgstr "About Alignak solution"
+
+#: ../qobjects/about.py:109
+msgid "Powered by:"
+msgstr "Powered by:"
+
+#: ../qobjects/about.py:111
+msgid "PyQt5"
+msgstr "PyQt5"
+
+#: ../qobjects/dock.py:57
+msgid "Alignak"
+msgstr "Alignak"
+
+#: ../qobjects/dock.py:65
+msgid "Livestate"
+msgstr "Livestate"
+
+#: ../qobjects/dock.py:73
+msgid "Last Events"
+msgstr "Last Events"
+
+#: ../qobjects/panel.py:88
+msgid "Host Synthesis"
+msgstr "Host Synthesis"
+
+#: ../qobjects/panel.py:90
+msgid "See a synthesis view of a host"
+msgstr "See a synthesis view of a host"
+
+#: ../qobjects/panel.py:102
+msgid "See the problems found in backend"
+msgstr "See the problems found in backend"
+
+#: ../utils/time.py:91
+msgid "Not yet checked!"
+msgstr "Not yet checked!"
+
+#: ../utils/time.py:100
+msgid "Very soon"
+msgstr "Very soon"
+
+#: ../utils/time.py:102
+msgid "Just now"
+msgstr "Just now"
+
+#: ../utils/time.py:131
+#, python-format
+msgid "%s ago"
+msgstr "%s ago"
+
+#~ msgid "%s is %s and %s"
+#~ msgstr "%s is %s and %s"
+
+#~ msgid "Host is %s."
+#~ msgstr "Host is %s."
+
+#~ msgid "No services."
+#~ msgstr "No services."
+
+#~ msgid "Service %s acknowledged by %s, from Alignak-app"
+#~ msgstr "Service %s acknowledged by %s, from Alignak-app"
+
+#~ msgid "Acknowledge for %s is done"
+#~ msgstr "Acknowledge for %s is done"
+
+#~ msgid "Schedule downtime on %s by %s, from Alignak-app"
+#~ msgstr "Schedule downtime on %s by %s, from Alignak-app"
+
+#~ msgid "Downtime for %s is done"
+#~ msgstr "Downtime for %s is done"
+
+#~ msgid "type new password"
+#~ msgstr "type new password"
+
+#~ msgid "confirm new password"
+#~ msgstr "confirm new password"
+
+#~ msgid "Alignak Status"
+#~ msgstr "Alignak Status"
+
+#~ msgid "Edit User Notes"
+#~ msgstr "Edit User Notes"
+
+#~ msgid "Please modify your notes:"
+#~ msgstr "Please modify your notes:"
+
+#~ msgid "type your notes"
+#~ msgstr "type your notes"
+
+#~ msgid "See current problems"
+#~ msgstr "See current problems"
+
+#~ msgid "Open WebUI in browser"
+#~ msgstr "Open WebUI in browser"
+
+#~ msgid "WebUI is not set in configuration file."
+#~ msgstr "WebUI is not set in configuration file."
+
+#~ msgid "Spied Hosts"
+#~ msgstr "Spied Hosts"
+
+#~ msgid "Host %s is spied by Alignak-app !"
+#~ msgstr "Host %s is spied by Alignak-app !"
+
+#~ msgid "Drop Events here to spy host..."
+#~ msgstr "Drop Events here to spy host..."
+
+#~ msgid "Status:"
+#~ msgstr "Status:"
+
+#~ msgid "Backend:"
+#~ msgstr "Backend:"
+
+#~ msgid "<h5>Realm:</h5>"
+#~ msgstr "<h5>Realm:</h5>"
+
+#~ msgid "<h5>Administrator:</h5>"
+#~ msgstr "<h5>Administrator:</h5>"
+
+#~ msgid "<h5>Role:</h5>"
+#~ msgstr "<h5>Role:</h5>"
+
+#~ msgid "<h5>Commands:</h5>"
+#~ msgstr "<h5>Commands:</h5>"
+
+#~ msgid "<h5>Email:</h5>"
+#~ msgstr "<h5>Email:</h5>"
+
+#~ msgid "<h5>Password:</h5>"
+#~ msgstr "<h5>Password:</h5>"
+
+#~ msgid "<h5>Alias:</h5>"
+#~ msgstr "<h5>Alias:</h5>"
+
+#~ msgid "<h5>Token:</h5>"
+#~ msgstr "<h5>Token:</h5>"
+
+#~ msgid "Your notes have been edited."
+#~ msgstr "Your notes have been edited."
+
+#~ msgid "<h5>Notification enabled:</h5>"
+#~ msgstr "<h5>Notification enabled:</h5>"
+
+#~ msgid "<h5>Notification period:</h5>"
+#~ msgstr "<h5>Notification period:</h5>"
+
+#~ msgid "Type your Alignak username and password."
+#~ msgstr "Type your Alignak username and password."
+
+#~ msgid "Modify Alignak Server"
+#~ msgstr "Modify Alignak Server"
+
+#~ msgid "Username"
+#~ msgstr "Username"
+
+#~ msgid "Alignak server"
+#~ msgstr "Alignak server"
+
+#~ msgid ""
+#~ "<h3>Alignak Backend</h3><p>Here you can define alignak settings.</p><b>Be "
+#~ "sure to enter a valid address</b>"
+#~ msgstr ""
+#~ "<h3>Alignak Backend</h3><p>Here you can define alignak settings.</p><b>Be "
+#~ "sure to enter a valid address</b>"
+
+#~ msgid "alignak backend url"
+#~ msgstr "alignak backend url"
+
+#~ msgid "alignak backend port"
+#~ msgstr "alignak backend port"
+
+#~ msgid "alignak backend processes"
+#~ msgstr "alignak backend processes"
+
+#~ msgid "History of %s"
+#~ msgstr "History of %s"
+
+#~ msgid "Spy Host"
+#~ msgstr "Spy Host"
+
+#~ msgid "Problems"
+#~ msgstr "Problems"
+
+#~ msgid "Hosts Synthesis View"
+#~ msgstr "Hosts Synthesis View"
+
+#~ msgid "Search Host"
+#~ msgstr "Search Host"
+
+#~ msgid "Type a host name to display its data"
+#~ msgstr "Type a host name to display its data"
+
+#~ msgid "Item Type"
+#~ msgstr "Item Type"
+
+#~ msgid "Host"
+#~ msgstr "Host"
+
+#~ msgid "Service"
+#~ msgstr "Service"
+
+#~ msgid "Actions"
+#~ msgstr "Actions"
+
+#~ msgid "Application version:"
+#~ msgstr "Application version:"
+
+#~ msgid "%s, version %s"
+#~ msgstr "%s, version %s"
+
+#~ msgid "Copyright:"
+#~ msgstr "Copyright:"
+
+#~ msgid "Release notes:"
+#~ msgstr "Release notes:"
+
+#~ msgid "Dock"
+#~ msgstr "Dock"
+
+#~ msgid "Reload Configuration"
+#~ msgstr "Reload Configuration"
+
+#~ msgid "Bad identifiers. Please try again"
+#~ msgstr "Bad identifiers. Please try again"
+
+#~ msgid "Configuration / Connection ERROR"
+#~ msgstr "Configuration / Connection ERROR"
+
+#~ msgid ""
+#~ "Something seems wrong in your configuration. Please configure Alignak-app "
+#~ "before starting it. And make sure the backend is available"
+#~ msgstr ""
+#~ "Something seems wrong in your configuration. Please configure Alignak-app "
+#~ "before starting it. And make sure the backend is available"
 
 #~ msgid "%s, some services may be unknown or unreachable."
 #~ msgstr "%s, some services may be unknown or unreachable."
@@ -755,9 +1141,6 @@ msgstr ""
 
 #~ msgid "Problems View coming soon..."
 #~ msgstr "Problems View coming soon..."
-
-#~ msgid "Reload configuration"
-#~ msgstr "Reload configuration"
 
 #~ msgid "Host %s acknowledged by %s, from Alignak-app"
 #~ msgstr "Host %s acknowledged by %s, from Alignak-app"

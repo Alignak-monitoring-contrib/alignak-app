@@ -22,7 +22,7 @@
 import sys
 
 import unittest2
-from PyQt5.Qt import QApplication
+from PyQt5.Qt import QApplication, QTimer, QLineEdit
 
 from alignak_app.utils.config import settings
 
@@ -44,15 +44,76 @@ class TestLoginQDialog(unittest2.TestCase):
         except:
             pass
 
-    def test_create_widget(self):
-        """Inititalize AppLogin"""
+    def test_initialize_login_dialog(self):
+        """Initialize LoginQDialog"""
 
         under_test = LoginQDialog()
 
-        self.assertIsNone(under_test.username_line)
-        self.assertIsNone(under_test.password_line)
+        self.assertIsInstance(under_test.username_line, QLineEdit)
+        self.assertIsInstance(under_test.password_line, QLineEdit)
+        self.assertFalse(under_test.proxies)
+        self.assertIsNone(under_test.offset)
 
         under_test.create_widget()
 
-        self.assertIsNotNone(under_test.username_line)
-        self.assertIsNotNone(under_test.password_line)
+        self.assertFalse(under_test.proxies)
+        self.assertIsNone(under_test.offset)
+
+    def test_accept_login(self):
+        """QDialog Accept Login"""
+
+        under_test = LoginQDialog()
+        under_test.create_widget()
+
+        timer = QTimer()
+        timer.timeout.connect(under_test.accept_login)
+        timer.start(0.5)
+
+        # If login failed, Rejected
+        self.assertEqual(LoginQDialog.Rejected, under_test.exec())
+
+        # Set username and password for login
+        under_test.username_line.setText('admin')
+        under_test.password_line.setText('admin')
+
+        timer.start(0.5)
+        self.assertEqual(LoginQDialog.Accepted, under_test.exec())
+
+    def test_set_proxy_settings(self):
+        """LoginQDialog Set Proxy Settings"""
+
+        under_test = LoginQDialog()
+        under_test.create_widget()
+
+        # Set Proxy address
+        self.assertFalse(under_test.proxies)
+        settings.set_config('Alignak', 'proxy', 'http://127.0.0.1:5000')
+
+        under_test.set_proxy_settings()
+
+        # Proxy is set in "proxies" QDialog
+        self.assertEqual({'http': 'http://127.0.0.1:5000'}, under_test.proxies)
+
+        # Set user Proxy
+        settings.set_config('Alignak', 'proxy_user', 'user')
+
+        # Give password in parameter
+        under_test.set_proxy_settings('password')
+
+        # Proxy user and password are set in "proxies" QDialog
+        self.assertEqual({'http': 'http://user:password@127.0.0.1:5000'}, under_test.proxies)
+
+        # Back settings for other tests
+        settings.set_config('Alignak', 'proxy', '')
+        settings.set_config('Alignak', 'proxy_user', '')
+        settings.set_config('Alignak', 'proxy_password', '')
+
+        under_test.set_proxy_settings()
+
+        # QDialog "proxies" is empty (False)
+        self.assertFalse(under_test.proxies)
+
+
+
+
+

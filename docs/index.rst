@@ -14,7 +14,8 @@ Documentation content:
     intro
     installer
     config
-    use
+    run
+    interface
     archi
     api
 

@@ -96,6 +96,7 @@ class DashboardQWidget(QWidget):
             'downtime': QPushButton()
         }
         self.refresh_timer = QTimer()
+        self.setFixedHeight(85)
 
     def initialize(self):
         """
@@ -104,6 +105,7 @@ class DashboardQWidget(QWidget):
         """
 
         self.setLayout(self.layout)
+        self.layout.setContentsMargins(0, 0, 0, 0)
 
         self.get_host_resume_widget()
         self.get_services_resume_widget()

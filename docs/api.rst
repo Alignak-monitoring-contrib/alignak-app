@@ -6,7 +6,7 @@ API
 Main Class
 ----------
 
-.. automodule:: alignak_app.app
+.. automodule:: alignak_app.alignakapp
     :members:
     :show-inheritance:
 
@@ -21,6 +21,11 @@ Backend
     :show-inheritance:
 
 .. automodule:: alignak_app.backend.datamanager
+    :members:
+    :inherited-members:
+    :show-inheritance:
+
+.. automodule:: alignak_app.backend.ws_client
     :members:
     :inherited-members:
     :show-inheritance:
@@ -161,6 +166,10 @@ Alignak
     :members:
     :show-inheritance:
 
+.. automodule:: alignak_app.qobjects.alignak.problems_table
+    :members:
+    :show-inheritance:
+
 .. automodule:: alignak_app.qobjects.alignak.status
     :members:
     :show-inheritance:
@@ -175,6 +184,10 @@ Common
     :show-inheritance:
 
 .. automodule:: alignak_app.qobjects.common.buttons
+    :members:
+    :show-inheritance:
+
+.. automodule:: alignak_app.qobjects.common.dialogs
     :members:
     :show-inheritance:
 
@@ -208,16 +221,28 @@ Events
     :members:
     :show-inheritance:
 
+.. automodule:: alignak_app.qobjects.events.spy_list
+    :members:
+    :show-inheritance:
+
 Host
 ^^^^
 
 .. automodule:: alignak_app.qobjects.host
+
+.. automodule:: alignak_app.qobjects.host.customs
+    :members:
+    :show-inheritance:
 
 .. automodule:: alignak_app.qobjects.host.history
     :members:
     :show-inheritance:
 
 .. automodule:: alignak_app.qobjects.host.host
+    :members:
+    :show-inheritance:
+
+.. automodule:: alignak_app.qobjects.host.synthesis
     :members:
     :show-inheritance:
 
@@ -282,9 +307,6 @@ User
 
 .. automodule:: alignak_app.qobjects.user
 
-.. automodule:: alignak_app.qobjects.user.notes
-    :members:
-    :show-inheritance:
 
 .. automodule:: alignak_app.qobjects.user.options
     :members:
@@ -295,10 +317,6 @@ User
     :show-inheritance:
 
 .. automodule:: alignak_app.qobjects.user.profile
-    :members:
-    :show-inheritance:
-
-.. automodule:: alignak_app.qobjects.user.token
     :members:
     :show-inheritance:
 

@@ -22,99 +22,23 @@
 """
     Spy
     +++
-    Spy manage creation of QWidget for host items who are spied
+    Spy manage creation of QWidget to manage spied items
 """
 
 from logging import getLogger
 
-from PyQt5.Qt import QVBoxLayout, Qt, QWidget, QAbstractItemView, QListWidget, pyqtSignal, QSize
+from PyQt5.Qt import QGridLayout, Qt, QWidget, QAbstractItemView, QListWidget, QPixmap, QIcon
 from PyQt5.Qt import QTimer, QLabel
 
 from alignak_app.backend.datamanager import data_manager
-from alignak_app.items.item import get_host_msg_and_event_type
 from alignak_app.utils.config import settings
+from alignak_app.utils.time import get_date_fromtimestamp
 
 from alignak_app.qobjects.events.item import EventItem
 from alignak_app.qobjects.events.events import get_events_widget
+from alignak_app.qobjects.events.spy_list import SpyQListWidget
 
 logger = getLogger(__name__)
-
-
-class SpyQListWidget(QListWidget):
-    """
-        Class who create QListWidget for spied hosts
-    """
-
-    item_dropped = pyqtSignal(EventItem, name="remove_item")
-    host_spied = pyqtSignal(str, name="host_spied")
-
-    def __init__(self):
-        super(SpyQListWidget, self).__init__()
-        self.setIconSize(QSize(16, 16))
-        self.initialized = False
-        self.spied_hosts = []
-        self.host_spied.connect(self.add_spy_host)
-
-    def add_spy_host(self, host_id):
-        """
-        Add a host to spied list and create corresponding EventItem()
-
-        :param host_id: "_id" of host to spy
-        :type host_id: str
-        """
-
-        if not self.initialized:
-            # Remove Hint item
-            self.takeItem(0)
-            self.initialized = True
-
-        if host_id not in self.spied_hosts:
-            self.spied_hosts.append(host_id)
-            host = data_manager.get_item('host', '_id', host_id)
-            item = EventItem()
-            item.initialize(
-                'SPY',
-                _('Host %s is spied by Alignak-app !') % host.name.capitalize()
-            )
-            item.host = host.item_id
-            self.insertItem(0, item)
-
-            logger.info('Spy a new host: %s', host.name)
-            logger.debug('... with id: %s', host_id)
-
-    def dragMoveEvent(self, event):
-        """
-        Override dragMoveEvent.
-         Only accept EventItem() objects who are "spied_on" and not already spied
-
-        :param event: event triggered when something move
-        """
-
-        if isinstance(event.source().currentItem(), EventItem):
-            if event.source().currentItem().spied_on and \
-                    (event.source().currentItem().host not in self.spied_hosts):
-                event.accept()
-            else:
-                event.ignore()
-        else:
-            event.ignore()
-
-    def dropEvent(self, event):
-        """
-        Override dropEvent.
-         Get dropped item data, create a new one, and delete the one who is in EventsQWidget
-
-        :param event: event triggered when something is dropped
-        """
-
-        self.add_spy_host(event.source().currentItem().host)
-
-        # Remove the item dropped and original, to let only new one created
-        row = self.row(event.source().currentItem())
-        self.takeItem(row)
-        self.item_dropped.emit(event.source().currentItem())
-
-        self.parent().update_parent_spytab()
 
 
 class SpyQWidget(QWidget):
@@ -124,10 +48,10 @@ class SpyQWidget(QWidget):
 
     def __init__(self):
         super(SpyQWidget, self).__init__()
+        self.host_services_lbl = QLabel(_('You are not spying on any hosts for now...'))
         self.spy_list_widget = SpyQListWidget()
+        self.host_list_widget = QListWidget()
         self.spy_timer = QTimer()
-        self.spied_to_send = []
-        self.send_spied = []
 
     def initialize(self):
         """
@@ -135,56 +59,151 @@ class SpyQWidget(QWidget):
 
         """
 
-        layout = QVBoxLayout()
+        layout = QGridLayout()
         self.setLayout(layout)
 
-        spy_title = QLabel(_('Spy Hosts (double click to stop spying)'))
-        spy_title.setObjectName('itemtitle')
+        spy_icon = QLabel()
+        spy_pixmap = QPixmap(settings.get_image('spy'))
+        spy_icon.setPixmap(spy_pixmap)
+        spy_icon.setScaledContents(True)
+        spy_icon.setFixedSize(20, 20)
+        layout.addWidget(spy_icon, 0, 0, 1, 1)
+        layout.setAlignment(spy_icon, Qt.AlignRight)
+
+        spy_title = QLabel(_('Spy Hosts'))
+        spy_title.setObjectName('title')
         spy_title.setMinimumHeight(40)
-        layout.addWidget(spy_title)
+        layout.addWidget(spy_title, 0, 1, 1, 1)
+
+        hint_lbl = QLabel('Click to refresh, double-click to stop spying')
+        hint_lbl.setObjectName('subtitle')
+        layout.addWidget(hint_lbl, 1, 0, 1, 1)
+        layout.setAlignment(hint_lbl, Qt.AlignCenter)
+
+        self.host_services_lbl.setObjectName('subtitle')
+        layout.addWidget(self.host_services_lbl, 1, 1, 1, 1)
+        layout.setAlignment(self.host_services_lbl, Qt.AlignCenter)
 
         self.spy_list_widget.setDragDropMode(QAbstractItemView.DragDrop)
         self.spy_list_widget.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.spy_list_widget.doubleClicked.connect(self.remove_event)
         self.spy_list_widget.setAcceptDrops(True)
         self.spy_list_widget.setWordWrap(True)
-
-        drop_hint_item = EventItem()
-        drop_hint_item.setText(_('Drop host-related events here to spy on it...'))
-        drop_hint_item.setFlags(Qt.ItemIsDropEnabled)
-        self.spy_list_widget.insertItem(0, drop_hint_item)
+        self.spy_list_widget.insertItem(0, self.get_hint_item())
         self.spy_list_widget.item_dropped.connect(get_events_widget().remove_event)
+        self.spy_list_widget.clicked.connect(
+            lambda: self.manage_host_events(self.spy_list_widget.currentRow())
+        )
+        layout.addWidget(self.spy_list_widget, 2, 0, 1, 1)
 
-        layout.addWidget(self.spy_list_widget)
+        self.host_list_widget.setObjectName('spy')
+        # self.host_list_widget.setMinimumWidth(500)
+        layout.addWidget(self.host_list_widget, 2, 1, 1, 1)
 
         spy_interval = int(settings.get_config('Alignak-app', 'spy_interval')) * 1000
         self.spy_timer.setInterval(spy_interval)
         self.spy_timer.start()
         self.spy_timer.timeout.connect(self.send_spy_events)
 
+    @staticmethod
+    def get_hint_item():
+        """
+        Return an EventItem with a hint text
+
+        :return: event item with hint text
+        :rtype: EventItem
+        """
+
+        drop_hint_item = EventItem()
+        drop_hint_item.setText(_('Drop host-related events here to spy on it...'))
+        drop_hint_item.setIcon(QIcon(settings.get_image('spy')))
+        drop_hint_item.setFlags(Qt.ItemIsDropEnabled)
+
+        return drop_hint_item
+
     def send_spy_events(self):
         """
-        Send event for one host spied
+        Send event messages for all hosts who are spied
 
         """
 
-        if not self.spied_to_send:
-            # Reversed the list to have the host first spied on
-            self.spied_to_send = list(reversed(self.spy_list_widget.spied_hosts))
+        if self.spy_list_widget.spied_hosts:
+            for host_id in self.spy_list_widget.spied_hosts:
+                host = data_manager.get_item('host', host_id)
 
-        if self.spied_to_send:
-            host_id = self.spied_to_send.pop()
-            host_and_services = data_manager.get_host_with_services(host_id)
+                get_events_widget().add_event(
+                    EventItem.get_event_type(host.data),
+                    _('Host %s, current state: %s') % (
+                        host.get_display_name(), host.data['ls_state']),
+                    host=host.item_id
+                )
 
-            msg_and_event_type = get_host_msg_and_event_type(host_and_services)
+    def manage_host_events(self, row):
+        """
+        Manage spy events for a host, defined by current row of "spy_list_widget"
 
-            get_events_widget().add_event(
-                msg_and_event_type['event_type'],
-                msg_and_event_type['message'],
-                timer=False,
-                spied_on=True,
-                host=host_and_services['host'].item_id
-            )
+        :param row: current row of "spy_list_widget"
+        :type row: int
+        """
+
+        # Clear QListWidget
+        self.host_list_widget.clear()
+
+        # Get Host and its services
+        if row < 0:
+            item = None
+        else:
+            item = self.spy_list_widget.item(row)
+
+        if item:
+            host = data_manager.get_item('host', item.host)
+
+            if _('(new !)') in item.data(Qt.DisplayRole):
+                item.setData(Qt.DisplayRole, item.data(Qt.DisplayRole).replace(_('(new !)'), ''))
+                item.setToolTip(item.toolTip().replace(_('(new !)'), ''))
+
+            self.host_services_lbl.setText(_('Problems found for %s:') % host.get_display_name())
+            services = data_manager.get_host_services(host.item_id)
+
+            if services:
+                problems = False
+                for service in services:
+                    if data_manager.is_problem('service', service.data):
+                        problems = True
+                        svc_state = _('Service %s is %s') % (
+                            service.get_display_name(), service.data['ls_state']
+                        )
+
+                        event = EventItem()
+                        event.initialize(
+                            service.data['ls_state'],
+                            svc_state,
+                            host=host.item_id
+                        )
+                        tooltip = 'Output: %s (%s)' % (
+                            service.data['ls_output'],
+                            get_date_fromtimestamp(service.data['ls_last_check'])
+                        )
+                        event.setToolTip(tooltip)
+
+                        self.host_list_widget.insertItem(0, event)
+
+                if not problems:
+                    event = EventItem()
+                    event.initialize(
+                        host.data['ls_state'],
+                        _('%s is %s. Services of host seems managed.') % (
+                            host.get_display_name(), host.data['ls_state']),
+                        host=host.item_id
+                    )
+                    self.host_list_widget.insertItem(0, event)
+            else:
+                no_service_event = EventItem()
+                no_service_event.initialize(
+                    host.data['ls_state'],
+                    _('%s is %s. No services.') % (host.get_display_name(), host.data['ls_state'])
+                )
+                self.host_list_widget.insertItem(0, no_service_event)
 
     def remove_event(self):
         """
@@ -193,18 +212,36 @@ class SpyQWidget(QWidget):
         """
 
         item = self.spy_list_widget.currentItem()
-        self.spy_list_widget.spied_hosts.remove(item.host)
+
+        self.spy_list_widget.spied_hosts.remove(item.data(Qt.UserRole))
         self.spy_list_widget.takeItem(self.spy_list_widget.currentRow())
+
+        if not self.spy_list_widget.spied_hosts:
+            self.host_list_widget.clear()
+            self.spy_list_widget.insertItem(0, self.get_hint_item())
+            self.spy_list_widget.initialized = False
+            self.host_services_lbl.setText(_('You are not spying on any hosts for now...'))
+
+        if not self.spy_list_widget.selectedItems():
+            self.manage_host_events(self.spy_list_widget.currentRow())
 
         self.update_parent_spytab()
 
-    def update_parent_spytab(self):
+    def update_parent_spytab(self):  # pragma: no cover - not testable
         """
         Update the parent spy tab text
 
         """
 
         if self.parent():
-            self.parent().parent().setTabText(
-                2, _('Spied Hosts (%d)') % self.spy_list_widget.count()
-            )
+            if self.spy_list_widget.spied_hosts:
+                self.parent().parent().setTabText(
+                    self.parent().parent().indexOf(self),
+                    _('Spied Hosts (%d)') % self.spy_list_widget.count()
+                )
+            else:
+                # Remove hint item from count
+                self.parent().parent().setTabText(
+                    self.parent().parent().indexOf(self),
+                    _('Spied Hosts (%d)') % (self.spy_list_widget.count() - 1)
+                )

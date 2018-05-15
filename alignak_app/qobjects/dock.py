@@ -30,7 +30,6 @@ from PyQt5.Qt import QWidget, QGridLayout, QLabel, Qt
 from alignak_app.qobjects.alignak.alignak import AlignakQWidget
 from alignak_app.qobjects.events.events import get_events_widget
 from alignak_app.qobjects.alignak.livestate import LivestateQWidget
-from alignak_app.qobjects.events.spy import SpyQWidget
 
 
 class DockQWidget(QWidget):
@@ -40,10 +39,10 @@ class DockQWidget(QWidget):
 
     def __init__(self, parent=None):
         super(DockQWidget, self).__init__(parent)
+        self.setFixedWidth(355)
         # Fields
         self.status_widget = AlignakQWidget()
         self.livestate_widget = LivestateQWidget()
-        self.spy_widget = SpyQWidget()
 
     def initialize(self):
         """

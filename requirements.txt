@@ -1,5 +1,7 @@
-pyqt5<5.10
+requests
+pyqt5
 configparser
 future
 alignak_backend_client
 python-gettext
+docopt

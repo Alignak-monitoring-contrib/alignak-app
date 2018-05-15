@@ -85,12 +85,12 @@ class TestCommonQPixmap(unittest2.TestCase):
         under_test = ToggleQWidgetButton()
         under_test.initialize()
 
-        self.assertTrue(under_test.get_btn_state())
+        self.assertTrue(under_test.is_checked())
 
         under_test.update_btn_state(True)
 
-        self.assertTrue(under_test.get_btn_state())
+        self.assertTrue(under_test.is_checked())
 
         under_test.update_btn_state(False)
 
-        self.assertFalse(under_test.get_btn_state())
+        self.assertFalse(under_test.is_checked())

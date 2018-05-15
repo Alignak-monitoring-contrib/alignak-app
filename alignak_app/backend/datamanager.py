@@ -24,16 +24,24 @@
     ++++++++++++
     DataManager manage alignak data provided by
     :class:`Client <alignak_app.backend.backend.BackendClient>`.
-"""
 
-import datetime
+    * ``database`` fied contains all data collected by App
+    * ``db_is_ready`` fied says to App if database has been filled or not (needed on start)
+    * ``old_notifications`` fied store old notifications from backend to avoid sending them again
+
+"""
 
 from logging import getLogger
 
-from alignak_app.utils.time import get_local_datetime, get_local_datetime_from_date
+from alignak_app.utils.time import get_local_datetime_from_date
 from alignak_app.items.livesynthesis import LiveSynthesis
 
 logger = getLogger(__name__)
+
+problem_states = {
+    'host': ['DOWN', 'UNREACHABLE'],
+    'service': ['CRITICAL', 'WARNING', 'UNKNOWN']
+}
 
 
 class DataManager(object):
@@ -52,17 +60,19 @@ class DataManager(object):
             'user': [],
             'realm': [],
             'timeperiod': [],
+            'problems': [],
         }
-        self.databases_ready = {
+        self.db_is_ready = {
             'livesynthesis': False,
             'alignakdaemon': False,
             'host': False,
-            'service': False,
             'user': False,
             'realm': False,
             'timeperiod': False,
+            'problems': {'CRITICAL': False, 'WARNING': False, 'UNKNOWN': False},
         }
         self.old_notifications = []
+        self.ready = False
 
     def is_ready(self):
         """
@@ -72,19 +82,23 @@ class DataManager(object):
         :rtype: str
         """
 
-        cur_collected = ''
-        for db_name in self.databases_ready:
-            try:
-                assert self.databases_ready[db_name]
-                cur_collected = _('READY')
-            except AssertionError:
-                cur_collected = _('Collecting %s...') % db_name
-                break
+        for db_name in self.db_is_ready:
+            if db_name not in 'problems':
+                if self.db_is_ready[db_name]:
+                    pass
+                else:
+                    return _('Collecting %s(s)...') % db_name
+            else:
+                for problem in self.db_is_ready['problems']:
+                    if self.db_is_ready['problems'][problem]:
+                        pass
+                    else:
+                        return _('Collecting %s...') % db_name
 
-        if not cur_collected:
-            cur_collected = _('Please wait...')
+        self.ready = True
+        return _('READY')
 
-        return cur_collected
+        # return cur_collected
 
     def update_database(self, item_type, items_list):
         """
@@ -114,7 +128,7 @@ class DataManager(object):
         :rtype: alignak_app.items.item.*
         """
 
-        logger.debug('Get item in database[%s]: %s, %s', item_type, key, value)
+        logger.debug('Get item in database[%s]: key=%s, value=%s', item_type, key, value)
 
         items = self.database[item_type]
 
@@ -129,14 +143,49 @@ class DataManager(object):
 
         return wanted_item
 
+    def remove_item(self, item_type, key, value=None):
+        """
+        Remove the wanted item in "database[item_type]" who contain the "value" or "key"
+
+        :param item_type: type of wanted item
+        :type item_type: str
+        :param key: key contained in item
+        :type key: str
+        :param value: value of the key if needed
+        :type value: str
+        """
+
+        items = self.database[item_type]
+
+        if value:
+            wanted_item = next((item for item in items if item.data[key] == value), None)
+        else:
+            wanted_item = next((item for item in items if item.item_id == key), None)
+
+        if not wanted_item:
+            wanted_item = next((item for item in items if item.name == key), None)
+
+        if not wanted_item:
+            logger.error(
+                'Can\'t delete item in database[%s]: key=%s, value=%s', item_type, key, value
+            )
+        else:
+            try:
+                self.database[item_type].remove(wanted_item)
+                logger.info('Remove item in database[%s]: key=%s, value=%s', item_type, key, value)
+            except ValueError:
+                pass
+
     def update_item_data(self, item_type, item_id, data):
         """
         Update a single item in database
 
-        :param item_type:
-        :param item_id:
-        :param data:
-        :return:
+        :param item_type: type of item (host, service, ...)
+        :type data: str
+        :param item_id: '_id' of item to update
+        :type item_id: str
+        :param data: the data to be updated
+        :type data: dict
         """
 
         logger.debug('Update item data in database[%s]:', item_type)
@@ -145,8 +194,11 @@ class DataManager(object):
 
         for item in self.database[item_type]:
             if item.item_id == item_id:
-                for key in data:
-                    item.data[key] = data[key]
+                if 'history' in item_type:
+                    item.data = data
+                else:
+                    for key in data:
+                        item.data[key] = data[key]
 
     def get_realm_name(self, realm):
         """
@@ -255,20 +307,19 @@ class DataManager(object):
 
     def get_host_services(self, host_id):
         """
-        Return services of wanted host
+        Return services corresponding to host ID
 
         :param host_id: '_id' of host
         :type host_id: str
-        :return: services of host
+        :return: services corresponding to host ID
         :rtype: list
         """
 
-        services_of_host = []
-        for service in self.database['service']:
-            if service.data['host'] == host_id:
-                services_of_host.append(service)
+        host_services = list(
+            service for service in self.database['service'] if service.data['host'] == host_id
+        )
 
-        return services_of_host
+        return host_services
 
     def get_host_with_services(self, host_field):
         """
@@ -392,48 +443,62 @@ class DataManager(object):
 
         return items_and_problems
 
+    def update_problems(self):
+        """
+        Update hosts and services in "problems" database
+
+        """
+
+        # Update if new hosts are in problem.
+        for item in self.database['host']:
+            item_in_problem = self.get_item('problems', item.item_id)
+            if not item_in_problem and self.is_problem(item.item_type, item.data):
+                # Add item to problems
+                self.database['problems'].append(item)
+            elif item_in_problem and not self.is_problem(item.item_type, item.data):
+                # Remove item from problems
+                self.database['problems'].remove(item_in_problem)
+            elif item_in_problem and self.is_problem(item.item_type, item.data):
+                # Update item in problem
+                item_in_problem.data = item.data
+            else:
+                pass
+
+        # Update if new services are in problem.
+        for item in self.database['service']:
+            item_in_problem = self.get_item('problems', item.item_id)
+            if not item_in_problem and self.is_problem(item.item_type, item.data):
+                # Add item to problems
+                self.database['problems'].append(item)
+            elif item_in_problem and not self.is_problem(item.item_type, item.data):
+                # Remove item from problems
+                self.database['problems'].remove(item_in_problem)
+            elif item_in_problem and self.is_problem(item.item_type, item.data):
+                # Update item in problem
+                item_in_problem.data = item.data
+            else:
+                pass
+
     def get_problems(self):
         """
-        Return items who are in problem: hosts and services
+        Update and return items who are in problem: hosts and services
 
         :return: dict of items in problem, and number for each type of item
         :rtype: dict
         """
 
-        problems = []
+        self.update_problems()
+
         hosts_nb = 0
         services_nb = 0
+        problems = self.database['problems']
 
-        if self.database['host']:
-            for host in self.database['host']:
-                if host.data['ls_state'] == 'DOWN' and not \
-                        host.data['ls_acknowledged'] and not \
-                        host.data['ls_downtimed']:
-                    problems.append(host)
-                    hosts_nb += 1
-                if host.data['ls_state'] == 'UNREACHABLE' and not \
-                        host.data['ls_acknowledged'] and not \
-                        host.data['ls_downtimed']:
-                    problems.append(host)
-                    hosts_nb += 1
-
-        if self.database['service']:
-            for service in self.database['service']:
-                if service.data['ls_state'] == 'WARNING' and not \
-                        service.data['ls_acknowledged'] and not \
-                        service.data['ls_downtimed']:
-                    problems.append(service)
-                    services_nb += 1
-                if service.data['ls_state'] == 'CRITICAL'and not \
-                        service.data['ls_acknowledged'] and not \
-                        service.data['ls_downtimed']:
-                    problems.append(service)
-                    services_nb += 1
-                if service.data['ls_state'] == 'UNKNOWN'and not \
-                        service.data['ls_acknowledged'] and not \
-                        service.data['ls_downtimed']:
-                    problems.append(service)
-                    services_nb += 1
+        # Count problems
+        for item in problems:
+            if 'service' in item.item_type:
+                services_nb += 1
+            else:
+                hosts_nb += 1
 
         problems = sorted(problems, key=lambda x: x.data['ls_state'], reverse=True)
         problems = sorted(problems, key=lambda x: x.item_type)
@@ -449,6 +514,30 @@ class DataManager(object):
 
         return problems_data
 
+    @staticmethod
+    def is_problem(item_type, item_data):
+        """
+        Return True if item data is a problem, else return false.
+        Only if item is monitored (checks are enabled).
 
-# Creating "data_manager" variable.
+        :param item_type: type of item: "host" or "service"
+        :type item_type: str
+        :param item_data: item of backend
+        :type item_data: dict
+        :return: if item is a problem or not
+        :rtype: bool
+        """
+
+        monitored = bool(item_data['passive_checks_enabled'] + item_data['active_checks_enabled'])
+        if not monitored:
+            return False
+
+        if item_data['ls_state'] in problem_states[item_type] and \
+                not item_data['ls_acknowledged'] and not item_data['ls_downtimed']:
+            return True
+
+        return False
+
+
+# Creation of "data_manager" object
 data_manager = DataManager()

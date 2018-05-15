@@ -46,13 +46,14 @@ class ToggleQWidgetButton(QWidget):
         """
 
         layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
 
         self.toggle_btn.setText(_('ON'))
         self.toggle_btn.setFixedSize(80, 20)
         self.toggle_btn.setCheckable(True)
         self.toggle_btn.setChecked(True)
-        self.toggle_btn.setObjectName("True")
+        self.toggle_btn.setObjectName('True')
         self.toggle_btn.clicked.connect(self.update_btn_state)
         layout.addWidget(self.toggle_btn)
 
@@ -74,7 +75,7 @@ class ToggleQWidgetButton(QWidget):
         self.toggle_btn.setObjectName(str(state))
         self.toggle_btn.setStyleSheet(settings.css_style)
 
-    def get_btn_state(self):
+    def is_checked(self):
         """
         Return "toggle_btn" state
 

@@ -33,7 +33,7 @@ from PyQt5.Qt import QScrollArea
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.item import get_icon_name
 from alignak_app.utils.config import settings
-from alignak_app.utils.time import get_time_diff_since_last_timestamp
+from alignak_app.utils.time import get_diff_since_last_timestamp, get_date_fromtimestamp
 
 from alignak_app.qobjects.common.actions import ActionsQWidget
 
@@ -56,7 +56,6 @@ class ServiceDataQWidget(QWidget):
             'service_name': QLabel(),
             'ls_last_check': QLabel(),
             'ls_output': QLabel(),
-            'business_impact': QLabel(),
         }
         self.buttons = {
             'acknowledge': QPushButton(),
@@ -102,6 +101,7 @@ class ServiceDataQWidget(QWidget):
 
         # Host Name
         self.labels['service_name'].setObjectName('itemname')
+        self.labels['service_name'].setWordWrap(True)
         layout.addWidget(self.labels['service_name'])
         layout.setAlignment(self.labels['service_name'], Qt.AlignCenter)
 
@@ -170,7 +170,7 @@ class ServiceDataQWidget(QWidget):
 
         return widget
 
-    def update_widget(self, service=None):
+    def update_widget(self, service):
         """
         Update ServiceDataQWidget
 
@@ -178,19 +178,18 @@ class ServiceDataQWidget(QWidget):
         :type service: alignak_app.core.models.service.Service
         """
 
-        if service:
-            self.service_item = service
+        self.service_item = service
 
+        monitored = self.service_item.data[
+            'passive_checks_enabled'] + self.service_item.data['active_checks_enabled']
         icon_name = get_icon_name(
             'service',
             self.service_item.data['ls_state'],
             self.service_item.data['ls_acknowledged'],
             self.service_item.data['ls_downtimed'],
-            self.service_item.data['passive_checks_enabled'] +
-            self.service_item.data['active_checks_enabled']
+            monitored
         )
         icon_pixmap = QPixmap(settings.get_image(icon_name))
-        icon_pixmap.setDevicePixelRatio(1.0)
 
         self.labels['service_icon'].setPixmap(QPixmap(icon_pixmap))
         self.labels['service_icon'].setScaledContents(True)
@@ -198,16 +197,17 @@ class ServiceDataQWidget(QWidget):
         self.labels['service_icon'].setToolTip(self.service_item.get_tooltip())
         self.labels['service_name'].setText(self.service_item.get_display_name())
 
-        since_last_check = get_time_diff_since_last_timestamp(
+        since_last_check = get_diff_since_last_timestamp(
             self.service_item.data['ls_last_check']
         )
+        last_check_tooltip = get_date_fromtimestamp(self.service_item.data['ls_last_check'])
         self.labels['ls_last_check'].setText(since_last_check)
+        self.labels['ls_last_check'].setToolTip(last_check_tooltip)
         self.labels['ls_output'].setText(self.service_item.data['ls_output'])
-
-        self.labels['business_impact'].setText(str(self.service_item.data['business_impact']))
 
         self.actions_widget.item = self.service_item
         self.actions_widget.update_widget()
+        self.show()
 
     def periodic_refresh(self):
         """
@@ -219,4 +219,4 @@ class ServiceDataQWidget(QWidget):
             updated_service = data_manager.get_item('service', '_id', self.service_item.item_id)
             if updated_service:
                 self.service_item = updated_service
-            self.update_widget()
+            self.update_widget(self.service_item)

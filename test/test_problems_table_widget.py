@@ -19,25 +19,20 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with (AlignakApp).  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-import os
-
 import unittest2
 
-from PyQt5.Qt import QApplication, QWidget, QTableWidgetItem
+from PyQt5.Qt import QStandardItem
 
+from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.host import Host
 from alignak_app.items.service import Service
-from alignak_app.backend.datamanager import data_manager
 
-from alignak_app.qobjects.alignak.problems import ProblemsQWidget
-from alignak_app.qobjects.alignak.problems_table import AppQTableWidgetItem, ProblemsQTableWidget
-from alignak_app.qobjects.events.spy import SpyQWidget
+from alignak_app.qobjects.alignak.problems_table import ProblemsQTableView
 
 
-class TestProblemsQTableWidget(unittest2.TestCase):
+class TestProblemsQTableView(unittest2.TestCase):
     """
-        This file test the ProblemsQTableWidget class.
+        This file test the ProblemsQTableView class.
     """
 
     # Host data test
@@ -69,6 +64,7 @@ class TestProblemsQTableWidget(unittest2.TestCase):
                 'name': 'service%d' % i,
                 'alias': 'Service %d' % i,
                 'host': '_id%d' % i,
+                '_id': '_id%d' % i,
                 'ls_acknowledged': False,
                 'ls_downtimed': False,
                 'ls_state': 'CRITICAL',
@@ -83,24 +79,29 @@ class TestProblemsQTableWidget(unittest2.TestCase):
     def test_initialize_tables_problems(self):
         """Initialize ProblemsQTableWidget"""
 
-        under_test = ProblemsQTableWidget()
+        problems = data_manager.get_problems()
+        under_test = ProblemsQTableView()
+        self.assertIsNone(under_test.model())
+        self.assertIsNone(under_test.selectionModel())
 
-        self.assertEqual(
-            ['Items in problem', 'Output'],
-            under_test.headers_list
-        )
-        self.assertEqual(0, under_test.columnCount())
+        under_test.update_view(problems)
+
+        self.assertIsNotNone(under_test.model())
+        self.assertIsNotNone(under_test.selectionModel())
+
+        self.assertEqual(['Items in problem', 'Output'], under_test.headers_list)
+        self.assertEqual(2, under_test.model().columnCount())
 
     def test_get_tableitem(self):
         """Get Problems Table Item"""
 
-        under_test = ProblemsQTableWidget()
+        under_test = ProblemsQTableView()
         tableitem_test = under_test.get_tableitem(self.host_list[0])
 
-        self.assertIsInstance(tableitem_test, AppQTableWidgetItem)
+        self.assertIsInstance(tableitem_test, QStandardItem)
         self.assertEqual('Host 0 is UNKNOWN', tableitem_test.text())
 
         tableitem_test = under_test.get_tableitem(self.service_list[0])
 
-        self.assertIsInstance(tableitem_test, AppQTableWidgetItem)
+        self.assertIsInstance(tableitem_test, QStandardItem)
         self.assertEqual('Service 0 is CRITICAL (Attached to Host 0)', tableitem_test.text())

@@ -62,6 +62,7 @@ class ActionsQWidget(QWidget):
         self.item = item
 
         layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(layout)
 
         self.acknowledge_btn.setIcon(QIcon(settings.get_image('acknowledge')))
@@ -84,42 +85,36 @@ class ActionsQWidget(QWidget):
 
         """
 
+        # Initial comment
         user = data_manager.database['user']
-
         comment = _('%s %s acknowledged by %s, from Alignak-app') % (
             self.item.item_type.capitalize(), self.item.get_display_name(), user.name
         )
 
+        # Acknowledge dialog
         ack_dialog = AckQDialog()
         ack_dialog.initialize(self.item.item_type, self.item.get_display_name(), comment)
 
         if ack_dialog.exec_() == AckQDialog.Accepted:
-            sticky = ack_dialog.sticky_toggle_btn.get_btn_state()
-            notify = ack_dialog.notify_toggle_btn.get_btn_state()
+            sticky = ack_dialog.sticky_toggle_btn.is_checked()
+            notify = ack_dialog.notify_toggle_btn.is_checked()
             comment = str(ack_dialog.ack_comment_edit.toPlainText())
 
-            data = {
-                'action': 'add',
-                'user': user.item_id,
-                'comment': comment,
-                'notify': notify,
-                'sticky': sticky
-            }
-            if self.item.item_type == 'service':
-                data['host'] = self.item.data['host']
-                data['service'] = self.item.item_id
-            else:
-                data['host'] = self.item.item_id
-                data['service'] = None
+            post = app_backend.acknowledge(self.item, sticky, notify, comment)
 
-            post = app_backend.post('actionacknowledge', data)
-
-            send_event('ACK', _('Acknowledge for %s is done') % self.item.get_display_name())
+            send_event(
+                'ACK',
+                _('Acknowledge for %s is %s') % (self.item.get_display_name(), post['_status'])
+            )
             # Update Item
             data_manager.update_item_data(
                 self.item.item_type,
                 self.item.item_id,
                 {'ls_acknowledged': True}
+            )
+            data_manager.remove_item(
+                'problems',
+                self.item.item_id
             )
             logger.debug('ACK answer for %s: %s', self.item.name, post)
 
@@ -146,36 +141,26 @@ class ActionsQWidget(QWidget):
         downtime_dialog.initialize(self.item.item_type, self.item.get_display_name(), comment)
 
         if downtime_dialog.exec_() == DownQDialog.Accepted:
-            fixed = downtime_dialog.fixed_toggle_btn.get_btn_state()
+            fixed = downtime_dialog.fixed_toggle_btn.is_checked()
             duration = downtime_dialog.duration_to_seconds()
             start_stamp = downtime_dialog.start_time.dateTime().toTime_t()
             end_stamp = downtime_dialog.end_time.dateTime().toTime_t()
             comment = downtime_dialog.comment_edit.toPlainText()
 
-            data = {
-                'action': 'add',
-                'user': user.item_id,
-                'fixed': fixed,
-                'duration': duration,
-                'start_time': start_stamp,
-                'end_time': end_stamp,
-                'comment': comment,
-            }
+            post = app_backend.downtime(self.item, fixed, duration, start_stamp, end_stamp, comment)
 
-            if self.item.item_type == 'service':
-                data['host'] = self.item.data['host']
-                data['service'] = self.item.item_id
-            else:
-                data['host'] = self.item.item_id
-                data['service'] = None
-
-            post = app_backend.post('actiondowntime', data)
-
-            send_event('DOWNTIME', _('Downtime for %s is done') % self.item.get_display_name())
+            send_event(
+                'DOWNTIME',
+                _('Downtime for %s is %s') % (self.item.get_display_name(), post['_status'])
+            )
             data_manager.update_item_data(
                 self.item.item_type,
                 self.item.item_id,
                 {'ls_downtimed': True}
+            )
+            data_manager.remove_item(
+                'problems',
+                self.item.item_id
             )
             logger.debug('DOWNTIME answer for %s: %s', self.item.name, post)
 
@@ -185,6 +170,27 @@ class ActionsQWidget(QWidget):
                 logger.warning('Can\'t disable Downtime btn: %s', e)
         else:
             logger.info('Downtime for %s cancelled...', self.item.name)
+
+    @staticmethod
+    def can_submit_actions():
+        """
+        Return if user can trigger actions from App or not, depending if Web Service is set and
+        reachable:
+
+        * If Web Service: if reachable, make actions are available else they are disabled
+        * If NOT Web Service: App will use backend API
+
+        :return: if user can trigger actions
+        :rtype: bool
+        """
+
+        if not settings.get_config('Alignak', 'webservice') and app_backend.connected:
+            return True
+
+        if settings.get_config('Alignak', 'webservice') and app_backend.ws_client.auth:
+            return True
+
+        return False
 
     def update_widget(self):
         """
@@ -196,14 +202,16 @@ class ActionsQWidget(QWidget):
 
         if self.item.data['ls_acknowledged'] or \
                 self.item.data['ls_state'] == 'OK' or \
-                self.item.data['ls_state'] == 'UP' or not \
-                data_manager.database['user'].data['can_submit_commands']:
+                self.item.data['ls_state'] == 'UP' or \
+                not data_manager.database['user'].data['can_submit_commands'] or \
+                not self.can_submit_actions():
             self.acknowledge_btn.setEnabled(False)
         else:
             self.acknowledge_btn.setEnabled(True)
 
-        if self.item.data['ls_downtimed'] or not \
-                data_manager.database['user'].data['can_submit_commands']:
+        if self.item.data['ls_downtimed'] or \
+                not data_manager.database['user'].data['can_submit_commands'] or \
+                not self.can_submit_actions():
             self.downtime_btn.setEnabled(False)
         else:
             self.downtime_btn.setEnabled(True)
@@ -220,7 +228,7 @@ class AckQDialog(QDialog):
         self.setWindowFlags(Qt.FramelessWindowHint)
         self.setStyleSheet(settings.css_style)
         self.setWindowIcon(QIcon(settings.get_image('icon')))
-        # self.setMinimumSize(370, 480)
+        self.setMinimumSize(370, 480)
         self.setObjectName('dialog')
         # Fields
         self.sticky = True
@@ -244,7 +252,7 @@ class AckQDialog(QDialog):
 
         logger.debug("Create Acknowledge QDialog...")
 
-        # Main layout
+        # Main status_layout
         center_widget(self)
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
@@ -311,12 +319,12 @@ class AckQDialog(QDialog):
 
         main_layout.addWidget(ack_widget)
 
-    def mousePressEvent(self, event):  # pylint: no cover
+    def mousePressEvent(self, event):  # pragma: no cover
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         self.offset = event.pos()
 
-    def mouseMoveEvent(self, event):  # pylint: no cover
+    def mouseMoveEvent(self, event):  # pragma: no cover
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         try:
@@ -365,7 +373,7 @@ class DownQDialog(QDialog):
 
         logger.debug("Create Downtime QDialog...")
 
-        # Main layout
+        # Main status_layout
         center_widget(self)
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
@@ -482,12 +490,12 @@ class DownQDialog(QDialog):
         else:
             self.accept()
 
-    def mousePressEvent(self, event):  # pylint: no cover
+    def mousePressEvent(self, event):  # pragma: no cover
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         self.offset = event.pos()
 
-    def mouseMoveEvent(self, event):  # pylint: no cover
+    def mouseMoveEvent(self, event):  # pragma: no cover
         """ QWidget.mousePressEvent(QMouseEvent) """
 
         try:

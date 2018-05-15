@@ -24,37 +24,44 @@ import sys
 import unittest2
 from PyQt5.QtWidgets import QApplication
 
-from alignak_app.utils.config import settings
-
-from alignak_app.qobjects.common.frames import AppQFrame
+from alignak_app.alignakapp import AppProgressBar, AppProgressQWidget
 
 
-class TestAppQFrame(unittest2.TestCase):
+class TestApp(unittest2.TestCase):
     """
-        This file test the AppQFrame class.
+        This file test methods of AlignakApp class.
     """
-
-    settings.init_config()
 
     @classmethod
     def setUpClass(cls):
         """Create QApplication"""
+
         try:
             cls.app = QApplication(sys.argv)
         except:
             pass
 
-    def test_create_widget(self):
-        """Inititalize AppQWidget"""
+    def test_app_progressbar(self):
+        """App Progress Bar"""
 
-        under_test = AppQFrame()
+        under_test = AppProgressBar()
 
-        self.assertIsNone(under_test.offset)
+        self.assertEqual(under_test.minimum(), 0)
+        self.assertEqual(under_test.maximum(), 0)
 
-        self.assertTrue('app_widget' not in under_test.objectName())
-        self.assertTrue('MyTitle' not in under_test.windowTitle())
+        under_test.set_text('test')
 
-        under_test.initialize('MyTitle')
+        self.assertEqual('test', under_test.text())
 
-        self.assertTrue('app_widget' in under_test.objectName())
-        self.assertTrue('MyTitle' in under_test.windowTitle())
+    def test_app_progress_Widget(self):
+        """App Progress QWidget"""
+
+        under_test = AppProgressQWidget()
+
+        self.assertTrue(under_test.progress_bar)
+        self.assertIsInstance(under_test.progress_bar, AppProgressBar)
+
+        under_test.initialize()
+
+        self.assertTrue(under_test.progress_bar)
+        self.assertIsInstance(under_test.progress_bar, AppProgressBar)

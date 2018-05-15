@@ -40,11 +40,9 @@ pip install --upgrade -r test/requirements.txt
 echo '--------- Check and copy folder data to home... --------- '
 mkdir -p ~/.local/alignak_app/images/
 mkdir -p ~/.local/alignak_app/css/
-mkdir -p ~/.local/alignak_app/bin/
 mkdir -p ~/.local/alignak_app/bin-samples/
 cp -R --verbose etc/images/* ~/.local/alignak_app/images/
 cp -R --verbose etc/css/* ~/.local/alignak_app/css/
 cp -R --verbose test/etc/* ~/.local/alignak_app/
-cp --verbose bin/unix/alignak-app.py ~/.local/alignak_app/bin/
 cp --verbose bin/unix/alignak-app.sample.sh ~/.local/alignak_app/bin-samples/
 cp --verbose bin/unix/alignak-app-auto.sample.sh ~/.local/alignak_app/bin-samples/

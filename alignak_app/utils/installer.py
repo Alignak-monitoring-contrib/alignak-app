@@ -52,8 +52,8 @@ class Installer(object):
         ]
     else:
         install_folders = [
-            '%s/.local/%s/bin' % (os.environ['HOME'], app_folder),
-            '/usr/local/%s/bin' % app_folder
+            '%s/.local/%s' % (os.environ['HOME'], app_folder),
+            '/usr/local/%s' % app_folder
         ]
 
     states = {
@@ -140,7 +140,6 @@ class Installer(object):
         ]
 
         if 'win32' not in sys.platform:
-            app_folders.append('bin')
             app_folders.append('bin-samples')
 
             app_files.append('bin-samples/%s-auto.sample.sh' % self.daemon_name)
@@ -226,8 +225,9 @@ class Installer(object):
             assert os.path.isfile(usr_cfg_file)
         except AssertionError as e:
             print(e)
-            print('- [!] There is no [settings.cfg] file in [ALIGNAKAPP_USR_DIR] folder !')
-            print('\tPlease launch "%s.py --install before start."' % self.daemon_name)
+            print('- [!] There is no [settings.cfg] file in [%s] folder !' %
+                  os.environ['ALIGNAKAPP_USR_DIR'])
+            print('\tPlease use the launcher with "--install" before using the application.')
             sys.exit(1)
 
     def install(self):
@@ -244,7 +244,6 @@ class Installer(object):
 
         if 'win32' not in sys.platform:
             bin_folder = '%s/bin' % os.environ['HOME']
-            bin_file = '%s/bin/%s' % (os.environ['ALIGNAKAPP_APP_DIR'], self.daemon_name + '.py')
             if not os.path.exists(bin_folder):
                 mkdir(bin_folder)
 
@@ -253,10 +252,9 @@ class Installer(object):
                 bin_folder,
                 '%s.sample.sh' % self.daemon_name,
                 (
-                    self.daemon_name, os.path.join(os.environ['ALIGNAKAPP_APP_DIR'], bin_file),
-                    os.environ['ALIGNAKAPP_APP_DIR'], os.environ['ALIGNAKAPP_USR_DIR'],
-                    os.environ['ALIGNAKAPP_LOG_DIR'], __version__, __releasenotes__,
-                    __project_url__, __doc_url__,
+                    self.daemon_name, os.environ['ALIGNAKAPP_APP_DIR'],
+                    os.environ['ALIGNAKAPP_USR_DIR'], os.environ['ALIGNAKAPP_LOG_DIR'], __version__,
+                    __releasenotes__, __project_url__, __doc_url__,
                 )
             )
             file_executable(

@@ -22,7 +22,8 @@
 import sys
 
 import unittest2
-from PyQt5.Qt import QApplication
+
+from PyQt5.Qt import QApplication, Qt
 
 from alignak_app.backend.datamanager import data_manager
 from alignak_app.items.host import Host
@@ -37,6 +38,8 @@ app = QApplication(sys.argv)
 user = User()
 user.create('_id', {'name': 'name'}, 'name')
 data_manager.database['user'] = user
+
+from alignak_app.backend.datamanager import data_manager
 
 from alignak_app.qobjects.service.services import ServicesQWidget
 
@@ -104,7 +107,8 @@ class TestServicesQWidget(unittest2.TestCase):
         """Create QApplication"""
         try:
             cls.app = QApplication(sys.argv)
-        except:
+        except Exception as e:
+            print(e)
             pass
 
     def test_initialize(self):
@@ -112,41 +116,17 @@ class TestServicesQWidget(unittest2.TestCase):
 
         under_test = ServicesQWidget()
 
-        self.assertIsNone(under_test.host_item)
-        self.assertIsNone(under_test.service_items)
+        self.assertIsNone(under_test.services)
         self.assertIsNotNone(under_test.services_tree_widget)
         self.assertIsNotNone(under_test.service_data_widget)
         self.assertIsNotNone(under_test.services_dashboard)
 
         under_test.initialize()
 
-        self.assertIsNone(under_test.host_item)
-        self.assertIsNone(under_test.service_items)
+        self.assertIsNone(under_test.services)
         self.assertIsNotNone(under_test.services_tree_widget)
         self.assertIsNotNone(under_test.service_data_widget)
         self.assertIsNotNone(under_test.services_dashboard)
-
-    def test_set_data(self):
-        """Set Data Services QWidget"""
-
-        under_test = ServicesQWidget()
-        self.assertIsNone(under_test.host_item)
-        self.assertIsNone(under_test.service_items)
-
-        data_manager.update_database('host', self.host_list)
-        data_manager.update_database('service', self.service_list)
-
-        under_test.set_data('host1')
-
-        # Assert Data is filled
-        self.assertIsNotNone(under_test.host_item)
-        self.assertIsInstance(under_test.host_item, Host)
-        self.assertEqual('host1', under_test.host_item.name)
-
-        self.assertIsNotNone(under_test.service_items)
-        for service in under_test.service_items:
-            self.assertIsInstance(service, Service)
-            self.assertEqual('_id1', service.data['host'])
 
     def test_update_widget(self):
         """Update Services QWidget"""
@@ -155,18 +135,58 @@ class TestServicesQWidget(unittest2.TestCase):
         data_manager.update_database('host', self.host_list)
         data_manager.update_database('service', self.service_list)
 
-        under_test.set_data('host2')
         under_test.initialize()
 
-        old_tree_widget = under_test.services_tree_widget
-        old_service_data_widget = under_test.service_data_widget
-        old_nb_services_widget = under_test.services_dashboard
-        old_service_items = under_test.service_items
+        self.assertIsNone(under_test.services)
 
-        under_test.update_widget()
+        services = data_manager.get_host_services(self.host_list[2].item_id)
+        under_test.update_widget(services)
 
-        self.assertNotEqual(old_tree_widget, under_test.services_tree_widget)
-        self.assertNotEqual(old_service_data_widget, under_test.service_data_widget)
-        self.assertNotEqual(old_nb_services_widget, under_test.services_dashboard)
-        # Assert Services Items had been sorted
-        self.assertNotEqual(old_service_items, under_test.service_items)
+        self.assertIsNotNone(under_test.services)
+
+    def test_set_filter_items(self):
+        """Set Filter Services Items"""
+
+        under_test = ServicesQWidget()
+        data_manager.update_database('host', self.host_list)
+        data_manager.update_database('service', self.service_list)
+
+        under_test.initialize()
+        services = data_manager.get_host_services(self.host_list[2].item_id)
+        under_test.update_widget(services)
+
+        self.assertEqual(0, under_test.services_list_widget.count())
+
+        under_test.set_filter_items('OK')
+
+        # Host has only one service OK
+        self.assertEqual(1, under_test.services_list_widget.count())
+
+        under_test.services_list_widget.clear()
+        under_test.set_filter_items('UNKNOWN')
+        under_test.services_list_widget.setCurrentItem(under_test.services_list_widget.item(0))
+
+        # Host has no service UNKNOWN, so item have hint text
+        self.assertEqual(1, under_test.services_list_widget.count())
+        self.assertEqual(
+            'No such services to display...',
+            under_test.services_list_widget.currentItem().data(Qt.DisplayRole)
+        )
+
+    def test_add_filter_item(self):
+        """Add Filter Service Item to QListWidget"""
+
+        under_test = ServicesQWidget()
+        under_test.initialize()
+
+        self.assertEqual(0, under_test.services_list_widget.count())
+
+        under_test.add_filter_item(self.service_list[2])
+        under_test.services_list_widget.setCurrentItem(under_test.services_list_widget.item(0))
+
+        # Service "Service 1" is added to QListWidget
+        self.assertEqual(1, under_test.services_list_widget.count())
+        self.assertEqual(
+            'Service 1',
+            under_test.services_list_widget.currentItem().data(Qt.DisplayRole)
+        )

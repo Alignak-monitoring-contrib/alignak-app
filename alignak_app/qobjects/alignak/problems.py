@@ -23,21 +23,20 @@
     Problems
     ++++++++
     Problems manage creation of QWidgets to display problems found in Alignak backend:
-
-    * **Hosts**: ``DOWN``, ``UNREACHABLE``
-    * **Services**: ``WARNING``, ``CRITICAL``, ``UNKNOWN``
-
 """
 
 from logging import getLogger
 
-from PyQt5.Qt import QWidget, QIcon, QVBoxLayout, QPushButton, Qt, QLabel, QHBoxLayout
+from PyQt5.Qt import QWidget, QIcon, QVBoxLayout, QPushButton, Qt, QLabel, QLineEdit, QHBoxLayout
+from PyQt5.Qt import QTimer
 
 from alignak_app.backend.datamanager import data_manager
+from alignak_app.backend.backend import app_backend
 from alignak_app.utils.config import settings
 
 from alignak_app.qobjects.common.actions import ActionsQWidget
-from alignak_app.qobjects.alignak.problems_table import ProblemsQTableWidget
+from alignak_app.qobjects.common.buttons import ToggleQWidgetButton
+from alignak_app.qobjects.alignak.problems_table import ProblemsQTableView
 
 logger = getLogger(__name__)
 
@@ -51,12 +50,16 @@ class ProblemsQWidget(QWidget):
         super(ProblemsQWidget, self).__init__(parent)
         self.setWindowIcon(QIcon(settings.get_image('icon')))
         # Fields
-        self.problem_table = ProblemsQTableWidget()
+        self.line_search = QLineEdit()
+        self.problems_table = ProblemsQTableView()
         self.problems_title = QLabel()
         self.actions_widget = ActionsQWidget()
-        self.host_btn = QPushButton()
-        self.spy_btn = QPushButton()
         self.spy_widget = None
+        self.filter_hosts_btn = ToggleQWidgetButton()
+        self.filter_services_btn = ToggleQWidgetButton()
+        self.spy_btn = QPushButton()
+        self.host_btn = QPushButton()
+        self.refresh_timer = QTimer()
 
     def initialize(self, spy_widget):
         """
@@ -67,17 +70,41 @@ class ProblemsQWidget(QWidget):
         """
 
         problem_layout = QVBoxLayout()
+        problem_layout.setContentsMargins(5, 20, 5, 5)
         self.setLayout(problem_layout)
 
         self.spy_widget = spy_widget
 
-        problem_layout.addWidget(self.get_problems_widget_title())
+        self.problems_title.setObjectName('title')
+        problem_layout.addWidget(self.problems_title)
 
-        self.problem_table.initialize()
-        self.problem_table.currentItemChanged.connect(self.update_action_buttons)
-        problem_layout.addWidget(self.problem_table)
+        problem_layout.addWidget(self.get_search_widget())
+
+        problem_layout.addWidget(self.get_btn_widget())
+
+        problem_layout.addWidget(self.problems_table)
 
         self.update_problems_data()
+
+        update_problems = int(settings.get_config('Alignak-app', 'update_problems')) * 1000
+        self.refresh_timer.setInterval(update_problems)
+        self.refresh_timer.start()
+        self.refresh_timer.timeout.connect(self.update_problems_data)
+
+    def get_current_user_role_item(self):
+        """
+        Return current selected item by ``Qt.UserRole``
+
+        :return: current selected item or None
+        :rtype: alignak_app.items.item.Item
+        """
+
+        item = self.problems_table.model().data(
+            self.problems_table.selectionModel().currentIndex(),
+            Qt.UserRole
+        )
+
+        return item
 
     def update_action_buttons(self):
         """
@@ -85,10 +112,10 @@ class ProblemsQWidget(QWidget):
 
         """
 
-        if self.problem_table.currentItem():
-            # Get item
-            item = self.problem_table.currentItem().item
+        # Get item by UserRole
+        item = self.get_current_user_role_item()
 
+        if item:
             # If the elements had been ack or downtimed, they would not be present
             self.actions_widget.acknowledge_btn.setEnabled(True)
             self.actions_widget.downtime_btn.setEnabled(True)
@@ -102,36 +129,47 @@ class ProblemsQWidget(QWidget):
                 bool(host_id not in self.spy_widget.spy_list_widget.spied_hosts)
             )
             self.host_btn.setEnabled(True)
+        else:
+            self.actions_widget.acknowledge_btn.setEnabled(False)
+            self.actions_widget.downtime_btn.setEnabled(False)
+            self.host_btn.setEnabled(False)
+            self.spy_btn.setEnabled(False)
 
-    def get_problems_widget_title(self):
+    def get_search_widget(self):
         """
-        Return QWidget title with number of problems and refresh QPushButton
+        Create and return the search QWidget
 
-        :return: QWidget with number of problems
+        :return: search QWidget
         :rtype: QWidget
         """
 
-        widget_title = QWidget()
-        layout_title = QHBoxLayout()
-        widget_title.setLayout(layout_title)
+        widget = QWidget()
+        layout = QHBoxLayout()
+        layout.setSpacing(0)
+        layout.setContentsMargins(5, 20, 5, 10)
+        widget.setLayout(layout)
 
-        self.problems_title.setObjectName('itemtitle')
-        layout_title.addWidget(self.problems_title)
+        # Search label
+        search_lbl = QLabel(_('Search Problems'))
+        search_lbl.setObjectName('bordertitle')
+        search_lbl.setFixedHeight(25)
+        search_lbl.setToolTip(_('Search Problems'))
+        layout.addWidget(search_lbl)
 
-        layout_title.addWidget(self.get_btn_widget())
+        # QLineEdit
+        self.line_search.setFixedHeight(search_lbl.height())
+        self.line_search.setPlaceholderText(_('Type text to filter problems...'))
+        layout.addWidget(self.line_search)
 
-        self.actions_widget.initialize(None)
-        self.actions_widget.acknowledge_btn.setEnabled(False)
-        self.actions_widget.downtime_btn.setEnabled(False)
-        layout_title.addWidget(self.actions_widget)
-
+        # Refresh button
         refresh_btn = QPushButton(_('Refresh'))
         refresh_btn.setObjectName('ok')
-        refresh_btn.setFixedSize(120, 30)
+        refresh_btn.setFixedSize(120, search_lbl.height())
+        refresh_btn.setToolTip(_('Refresh problems'))
         refresh_btn.clicked.connect(self.update_problems_data)
-        layout_title.addWidget(refresh_btn)
+        layout.addWidget(refresh_btn)
 
-        return widget_title
+        return widget
 
     def get_btn_widget(self):
         """
@@ -143,7 +181,28 @@ class ProblemsQWidget(QWidget):
 
         widget_btn = QWidget()
         layout_btn = QHBoxLayout()
+        layout_btn.setContentsMargins(0, 0, 0, 5)
         widget_btn.setLayout(layout_btn)
+
+        host_filter = QLabel(_('Filter hosts'))
+        host_filter.setObjectName('subtitle')
+        layout_btn.addWidget(host_filter)
+        self.filter_hosts_btn.initialize()
+        self.filter_hosts_btn.update_btn_state(False)
+        self.filter_hosts_btn.toggle_btn.clicked.connect(lambda: self.update_problems_data('host'))
+        layout_btn.addWidget(self.filter_hosts_btn)
+
+        service_filter = QLabel(_('Filter services'))
+        service_filter.setObjectName('subtitle')
+        layout_btn.addWidget(service_filter)
+        self.filter_services_btn.initialize()
+        self.filter_services_btn.update_btn_state(False)
+        self.filter_services_btn.toggle_btn.clicked.connect(
+            lambda: self.update_problems_data('service')
+        )
+        layout_btn.addWidget(self.filter_services_btn)
+
+        layout_btn.addStretch()
 
         self.host_btn.setIcon(QIcon(settings.get_image('host')))
         self.host_btn.setFixedSize(80, 20)
@@ -156,8 +215,12 @@ class ProblemsQWidget(QWidget):
         self.spy_btn.setEnabled(False)
         self.spy_btn.setToolTip(_('Spy current host'))
         self.spy_btn.clicked.connect(self.add_spied_host)
-
         layout_btn.addWidget(self.spy_btn)
+
+        self.actions_widget.initialize(None)
+        self.actions_widget.acknowledge_btn.setEnabled(False)
+        self.actions_widget.downtime_btn.setEnabled(False)
+        layout_btn.addWidget(self.actions_widget)
 
         layout_btn.setAlignment(Qt.AlignCenter)
 
@@ -169,41 +232,72 @@ class ProblemsQWidget(QWidget):
 
         """
 
-        if self.problem_table.currentItem():
-            item = self.problem_table.currentItem().item
-            if 'service' in item.item_type:
-                item_id = self.problem_table.currentItem().item.data['host']
-            else:
-                item_id = self.problem_table.currentItem().item.item_id
+        # Get item by UserRole
+        item = self.get_current_user_role_item()
 
+        if item:
+            if 'service' in item.item_type:
+                item_id = item.data['host']
+            else:
+                item_id = item.item_id
+
+            app_backend.query_services(item_id)
             self.spy_widget.spy_list_widget.add_spy_host(item_id)
             self.spy_widget.update_parent_spytab()
 
         self.update_action_buttons()
 
-    def update_problems_data(self):
+    def update_problems_data(self, item_type=''):
         """
         Update data of Problems QTableWidget and problems title
 
+        :param item_type: type of item to filter
+        :type item_type: str
         """
 
         problems_data = data_manager.get_problems()
+        old_research = self.line_search.text()
+
         if self.parent():
             self.parent().parent().setTabText(
-                1, _("Problems (%d)") % len(problems_data['problems'])
+                self.parent().parent().indexOf(self),
+                _("Problems (%d)") % len(problems_data['problems'])
+            )
+            self.problems_title.setText(
+                _('There are %d problems to manage (hosts: %d, services: %d)') % (
+                    len(problems_data['problems']),
+                    problems_data['hosts_nb'],
+                    problems_data['services_nb']
+                )
             )
 
-        self.problems_title.setText(
-            _('There are %d problems to manage (hosts: %d, services: %d)') % (
-                len(problems_data['problems']),
-                problems_data['hosts_nb'],
-                problems_data['services_nb']
-            )
-        )
-        self.problem_table.setRowCount(len(problems_data['problems']))
+        if self.filter_hosts_btn.is_checked() and not self.filter_services_btn.is_checked():
+            item_type = 'host'
+        if self.filter_services_btn.is_checked() and not self.filter_hosts_btn.is_checked():
+            item_type = 'service'
+        if not self.filter_services_btn.is_checked() and not self.filter_hosts_btn.is_checked():
+            item_type = ''
 
-        row = 0
-        for item in problems_data['problems']:
-            self.problem_table.setItem(row, 0, self.problem_table.get_tableitem(item))
-            self.problem_table.setItem(row, 1, self.problem_table.get_output_tableitem(item))
-            row += 1
+        if isinstance(item_type, str):
+            if 'host' in item_type and self.filter_hosts_btn.is_checked():
+                if self.filter_services_btn.is_checked():
+                    self.filter_services_btn.update_btn_state(False)
+            if 'service' in item_type and self.filter_services_btn.is_checked():
+                if self.filter_hosts_btn.is_checked():
+                    self.filter_hosts_btn.update_btn_state(False)
+            problems_data['problems'] = [
+                item for item in problems_data['problems'] if item_type in item.item_type
+            ]
+
+        proxy_filter = self.problems_table.update_view(problems_data)
+        if problems_data['problems']:
+            self.line_search.textChanged.connect(proxy_filter.setFilterRegExp)
+        else:
+            self.problems_title.setText(_('If problems are found, they will be displayed here.'))
+
+        self.problems_table.selectionModel().selectionChanged.connect(self.update_action_buttons)
+        self.update_action_buttons()
+
+        if old_research:
+            self.line_search.setText(old_research)
+            self.line_search.textChanged.emit(old_research)

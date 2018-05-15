@@ -32,7 +32,7 @@ class TestAppBackend(unittest2.TestCase):
         This file test methods of AppBackend class
     """
 
-    # Create config for all methods.
+    # Init config for all methods.
     settings.init_config()
     host_id = '59c4e40635d17b8e0c6accae'
     hostname = 'cogny'
@@ -126,11 +126,11 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_realms_data()
+        under_test.query_realms()
 
         self.assertIsNotNone(data_manager.database['realm'])
 
-        self.assertTrue(data_manager.databases_ready['realm'])
+        self.assertTrue(data_manager.db_is_ready['realm'])
 
     def test_query_period_data(self):
         """Query TimePeriod Data"""
@@ -142,11 +142,11 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_period_data()
+        under_test.query_timeperiods()
 
         self.assertIsNotNone(data_manager.database['timeperiod'])
 
-        self.assertTrue(data_manager.databases_ready['timeperiod'])
+        self.assertTrue(data_manager.db_is_ready['timeperiod'])
 
     def test_query_user_data(self):
         """Query User Data"""
@@ -158,11 +158,11 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_user_data()
+        under_test.query_user()
 
         self.assertIsNotNone(data_manager.database['user'])
 
-        self.assertTrue(data_manager.databases_ready['user'])
+        self.assertTrue(data_manager.db_is_ready['user'])
 
     def test_query_hosts_data(self):
         """Query Host Data"""
@@ -174,11 +174,12 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_hosts_data()
+        under_test.query_hosts()
 
         self.assertIsNotNone(data_manager.database['host'])
 
-        self.assertTrue(data_manager.databases_ready['host'])
+        self.assertTrue(data_manager.db_is_ready['host'])
+        self.assertTrue(data_manager.db_is_ready['problems']['host'])
 
     def test_query_services_data(self):
         """Query Services Data"""
@@ -190,11 +191,29 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_services_data()
+        under_test.query_services()
 
         self.assertIsNotNone(data_manager.database['service'])
 
-        self.assertTrue(data_manager.databases_ready['service'])
+        self.assertTrue(data_manager.db_is_ready['service'])
+
+    def test_query_problems(self):
+        """Query Problems Data"""
+
+        under_test = BackendClient()
+        under_test.login(
+            settings.get_config('Alignak', 'username'),
+            settings.get_config('Alignak', 'password')
+        )
+
+        from alignak_app.backend.datamanager import data_manager
+        under_test.query_services_problems('WARNING')
+
+        self.assertIsNotNone(data_manager.database['problems'])
+        self.assertTrue(data_manager.db_is_ready['problems']['WARNING'])
+
+        under_test.query_services_problems('UNKNOWN')
+        self.assertTrue(data_manager.db_is_ready['problems']['UNKNOWN'])
 
     def test_query_daemons_data(self):
         """Query Daemons Data"""
@@ -206,11 +225,11 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_daemons_data()
+        under_test.query_alignakdaemons()
 
         self.assertIsNotNone(data_manager.database['alignakdaemon'])
 
-        self.assertTrue(data_manager.databases_ready['alignakdaemon'])
+        self.assertTrue(data_manager.db_is_ready['alignakdaemon'])
 
     def test_query_livesynthesis_data(self):
         """Query Live Synthesis Data"""
@@ -222,11 +241,11 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_livesynthesis_data()
+        under_test.query_livesynthesis()
 
         self.assertIsNotNone(data_manager.database['livesynthesis'])
 
-        self.assertTrue(data_manager.databases_ready['livesynthesis'])
+        self.assertTrue(data_manager.db_is_ready['livesynthesis'])
 
     def test_query_history_data(self):
         """Query History Data"""
@@ -238,12 +257,12 @@ class TestAppBackend(unittest2.TestCase):
         )
 
         from alignak_app.backend.datamanager import data_manager
-        under_test.query_history_data(self.hostname, self.host_id)
+        under_test.query_history(self.hostname, self.host_id)
 
         self.assertIsNotNone(data_manager.database['history'])
         old_database = data_manager.database['history']
 
-        under_test.query_history_data()
+        under_test.query_history()
 
         self.assertIsNotNone(data_manager.database['history'])
 

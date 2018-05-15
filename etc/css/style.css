@@ -1,4 +1,9 @@
 /****** QWidget / QDialog ******/
+QWidget#app {
+    background-color: white;
+    border: none;
+}
+
 QWidget#dialog {
     border-width: 0px 2px 2px 2px;
     border-color: #475c67;
@@ -40,7 +45,7 @@ QLabel#error {
     background-color: #f9f2f4;
 }
 
-QLabel#notes {
+QLabel#text {
     padding-left: 10px;
     color: #2581c7;
     background-color: #e6f4ff;
@@ -122,6 +127,16 @@ QLabel#optionFalse {
     color: #f44336;
 }
 
+QLabel#offsetoptionTrue {
+    color: #4caf50;
+    margin-left: 20px;
+}
+
+QLabel#offsetoptionFalse {
+    color: #f44336;
+    margin-left: 20px;
+}
+
 QLabel#services_ok, QLabel#hosts_up {
     color: #27ae60;
     font: 10pt;
@@ -174,7 +189,7 @@ QLabel#request {
 
 QLabel#itemname {
     font-weight: bold;
-    font-size: 20pt;
+    font-size: 15pt;
 }
 
 
@@ -224,7 +239,7 @@ QPushButton:hover {
 QPushButton#True {
     color: white;
     font-weight: bold;
-    background-color:  qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #27ae60, stop: 0.495 #27ae60, stop: 0.496 black, stop: 0.5 white);
+    background-color:  qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #1fb4e4, stop: 0.495 #1fb4e4, stop: 0.496 black, stop: 0.5 white);
     border: 1px solid #ccc;
     border-radius: 2px;
     text-align: left;
@@ -234,8 +249,8 @@ QPushButton#True {
 QPushButton#False {
     color: white;
     font-weight: bold;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0, stop:0 white, stop: 0.495 white, stop: 0.496 black, stop: 0.497 #f44336);
-    border: 1px solid #607d8b;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0, stop:0 white, stop: 0.495 white, stop: 0.496 black, stop: 0.497 #607d8b);
+    border: 1px solid #ccc;
     border-radius: 2px;
     text-align: right;
     padding-right: 5px;
@@ -291,6 +306,15 @@ QPushButton#valid:disabled {
     border: 1px solid #39aa56;
 }
 
+QPushButton#services:checked {
+    border: 1px solid #27ae60;
+    border-radius: 5px;
+}
+
+QPushButton#services {
+    border: none;
+}
+
 /****** QProgressBar ******/
 QProgressBar {
     color: #3884c3;
@@ -335,6 +359,10 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical, QScrollBar::add-li
 }
 
 /****** QScrollArea ******/
+QScrollArea#server {
+    border: none;
+}
+
 QScrollArea#output {
     color: #c7254e;
     background-color: #f9f2f4;
@@ -389,14 +417,16 @@ QListWidget::item {
 
 QListWidget::item:hover {
     background-color: white;
-    border: 1px solid #1fb4e4;
     color: #3884c3;
 }
 
 QListWidget::item:selected {
     background-color: white;
     color: #3884c3;
-    border: 1px solid #3884c3;
+}
+
+QListWidget#spy {
+    border: 1px solid #6c9cb3;
 }
 
 /****** QTableWidget ******/
@@ -412,7 +442,8 @@ QTableWidget::item {
     color: #3b4155;
 }
 
-QTableWidget#problems::item:selected {
+/****** QTableView ******/
+QTableView#problems::item:selected {
     color: #e67e22;
     background-color: white;
 }
@@ -431,7 +462,12 @@ QHeaderView::section:vertical {
 
 /****** QTabWidget / QTabBar ******/
 QTabWidget::pane {
-    border: 1px solid #3884c3;
+    border-top: 1px solid #3884c3;
+    background-color: white;
+}
+
+QTabWidget::tab-bar {
+    alignment: center;
 }
 
 QTabBar::tab {

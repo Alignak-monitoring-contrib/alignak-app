@@ -46,8 +46,6 @@ You can install Alignak-app like other python libraries, with ``pip3``::
 
 The required Python modules are automatically installed, if not present on your system.
 
-If you install App as a root user (with ``sudo``), you have to run ``--install`` command before launch Alignak-App ! (see :ref:`use`)
-
 Installation (From Sources)
 ===========================
 

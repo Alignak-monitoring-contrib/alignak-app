@@ -202,7 +202,7 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertTrue(under_test.tray_actions['webui'].isEnabled())
 
         old_webui = settings.get_config('Alignak', 'webui')
-        settings.edit_setting_value('Alignak', 'webui', '')
+        settings.set_config('Alignak', 'webui', '')
 
         under_test.refresh_menus()
 
@@ -210,7 +210,7 @@ class TestTrayIcon(unittest2.TestCase):
         self.assertFalse(under_test.tray_actions['webui'].isEnabled())
 
         # Change settings does not update QAction
-        settings.edit_setting_value('Alignak', 'webui', old_webui)
+        settings.set_config('Alignak', 'webui', old_webui)
         self.assertFalse(under_test.tray_actions['webui'].isEnabled())
 
         under_test.refresh_menus()

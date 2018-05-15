@@ -10,6 +10,8 @@ before_script:
   - sleep 3
   # Export ALIGNAKAPP_APP_DIR, only needed for Travis.
   - export ALIGNAKAPP_APP_DIR=$HOME/.local/alignak_app
+  - export ALIGNAKAPP_USR_DIR=$HOME/.local/alignak_app
+  - export ALIGNAKAPP_LOG_DIR=$HOME/.local/alignak_app
 
 install:
   - ./test/setup_test.sh

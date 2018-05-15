@@ -60,7 +60,7 @@
 
 
 # Application version and manifest
-VERSION = (1, 4, 0)
+VERSION = (1, 4, 4)
 __application__ = u"Alignak-App"
 __libname__ = u"alignak_app"
 __short_version__ = '.'.join((str(each) for each in VERSION[:2]))

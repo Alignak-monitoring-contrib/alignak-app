@@ -36,6 +36,11 @@ from alignak_app.qobjects.common.widgets import get_logo_widget, center_widget
 
 logger = getLogger(__name__)
 
+options_values = {
+    'host': ['n', 'd', 'u', 'r', 's', 'f'],
+    'service': ['n', 'w', 'c', 'u', 'r', 's', 'f']
+}
+
 
 class UserOptionsQDialog(QDialog):
     """
@@ -50,42 +55,23 @@ class UserOptionsQDialog(QDialog):
         self.setFixedSize(350, 300)
         self.setObjectName('dialog')
         # Fields
-        self.options_labels = {
-            'host': {
-                'd': QLabel(),
-                'u': QLabel(),
-                'r': QLabel(),
-                'f': QLabel(),
-                's': QLabel(),
-                'n': QLabel()
-            },
-            'service': {
-                'w': QLabel(),
-                'u': QLabel(),
-                'c': QLabel(),
-                'r': QLabel(),
-                'f': QLabel(),
-                's': QLabel(),
-                'n': QLabel()
-            }
-        }
         self.titles_labels = {
             'host': {
-                'd': QLabel('DOWN'),
-                'u': QLabel('UNREACHABLE'),
-                'r': QLabel('RECOVERY'),
-                'f': QLabel('FLAPPING'),
-                's': QLabel('DOWNTIME'),
-                'n': QLabel('NONE')
+                'd': QLabel('Down'),
+                'u': QLabel('Unreachable'),
+                'r': QLabel('Recovery'),
+                'f': QLabel('Flapping'),
+                's': QLabel('Downtime'),
+                'n': QLabel('None')
             },
             'service': {
-                'w': QLabel('WARNING'),
-                'u': QLabel('UNKNOWN'),
-                'c': QLabel('CRITICAL'),
-                'r': QLabel('RECOVERY'),
-                'f': QLabel('FLAPPING'),
-                's': QLabel('DOWNTIME'),
-                'n': QLabel('NONE')
+                'w': QLabel('Warning'),
+                'u': QLabel('Unknown'),
+                'c': QLabel('Critical'),
+                'r': QLabel('Recovery'),
+                'f': QLabel('Flapping'),
+                's': QLabel('Downtime'),
+                'n': QLabel('None')
             }
         }
 
@@ -101,18 +87,16 @@ class UserOptionsQDialog(QDialog):
 
         center_widget(self)
 
-        # Main layout
+        # Main status_layout
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(main_layout)
 
-        if item_type == 'host':
-            logo_widget_title = _('Host Notifications')
-        else:
-            logo_widget_title = _('Service Notifications')
-        main_layout.addWidget(
-            get_logo_widget(self, logo_widget_title)
-        )
+        # QDialog title
+        titles = {'host': _('Host Notifications'), 'service': _('Service Notifications')}
+        main_layout.addWidget(get_logo_widget(self, titles[item_type]))
+
+        # Notification QWidget
         main_layout.addWidget(self.get_notifications_widget(item_type, options))
 
     def get_notifications_widget(self, item_type, options):
@@ -136,21 +120,39 @@ class UserOptionsQDialog(QDialog):
         options_layout.addWidget(options_title, 0, 0, 1, 2)
         options_layout.setAlignment(options_title, Qt.AlignCenter)
 
+        # Get current options and QLabels
+        item_options = list(options_values[item_type])
+        options_labels = {}
+        for option in item_options:
+            options_labels[option] = QLabel()
+
         line = 1
-        selected_options = self.get_selected_options(item_type, options)
-        for opt in selected_options:
-            # Title
-            object_name = 'option' + str(selected_options[opt])
-            self.titles_labels[item_type][opt].setObjectName(object_name)
-            options_layout.addWidget(self.titles_labels[item_type][opt], line, 0, 1, 1)
-            # Icon
-            self.options_labels[item_type][opt].setPixmap(
-                get_icon_pixmap(selected_options[opt], ['checked', 'error'])
-            )
-            self.options_labels[item_type][opt].setFixedSize(14, 14)
-            self.options_labels[item_type][opt].setScaledContents(True)
-            options_layout.addWidget(self.options_labels[item_type][opt], line, 1, 1, 1)
-            line += 1
+        while item_options:
+            if line == 2:
+                alert_lbl = QLabel('Alerts:')
+                alert_lbl.setObjectName('subtitle')
+                options_layout.addWidget(alert_lbl, line, 0, 1, 2)
+                line += 1
+            else:
+                # Current option
+                opt = item_options.pop(0)
+
+                # Title
+                object_name = ''
+                if opt not in ['n', 's', 'f']:
+                    object_name = 'offset'
+                object_name += 'option' + str(self.get_selected_options(item_type, options)[opt])
+                self.titles_labels[item_type][opt].setObjectName(object_name)
+                options_layout.addWidget(self.titles_labels[item_type][opt], line, 0, 1, 1)
+
+                # Icon
+                options_labels[opt].setPixmap(get_icon_pixmap(
+                    self.get_selected_options(item_type, options)[opt], ['checked', 'error']
+                ))
+                options_labels[opt].setFixedSize(14, 14)
+                options_labels[opt].setScaledContents(True)
+                options_layout.addWidget(options_labels[opt], line, 1, 1, 1)
+                line += 1
 
         # Login button
         accept_btn = QPushButton(_('OK'), self)
@@ -174,12 +176,7 @@ class UserOptionsQDialog(QDialog):
         :rtype: dict
         """
 
-        items_options = {
-            'host': ['d', 'u', 'r', 'f', 's', 'n'],
-            'service': ['w', 'u', 'c', 'r', 'f', 's', 'n']
-        }
-
-        available_options = items_options[item_type]
+        available_options = options_values[item_type]
 
         selected_options = {}
         for opt in available_options:

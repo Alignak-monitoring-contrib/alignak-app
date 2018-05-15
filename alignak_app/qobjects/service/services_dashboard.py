@@ -27,7 +27,7 @@
 
 from logging import getLogger
 
-from PyQt5.Qt import QLabel, QWidget, Qt, QPixmap, QHBoxLayout
+from PyQt5.Qt import QLabel, QWidget, Qt, QPixmap, QHBoxLayout, QPushButton, QIcon
 
 from alignak_app.items.item import get_icon_name_from_state
 from alignak_app.items.service import Service
@@ -55,6 +55,16 @@ class ServicesDashboardQWidget(QWidget):
             'ACKNOWLEDGE': QLabel(),
             'DOWNTIME': QLabel()
         }
+        self.states_btns = {
+            'OK': QPushButton(),
+            'UNKNOWN': QPushButton(),
+            'WARNING': QPushButton(),
+            'UNREACHABLE': QPushButton(),
+            'CRITICAL': QPushButton(),
+            'NOT_MONITORED': QPushButton(),
+            'ACKNOWLEDGE': QPushButton(),
+            'DOWNTIME': QPushButton()
+        }
 
     def initialize(self):
         """
@@ -75,27 +85,25 @@ class ServicesDashboardQWidget(QWidget):
 
         for icon in Service.get_available_icons():
             state = icon.replace('services_', '').upper()
-            icon_pixmap = QPixmap(settings.get_image(icon))
-            item_icon = QLabel()
-            item_icon.setPixmap(icon_pixmap)
-            item_icon.setFixedSize(18, 18)
-            item_icon.setScaledContents(True)
-            item_icon.setToolTip(state)
-            icons_layout.addWidget(item_icon)
+            icon_pixmap = QIcon(settings.get_image(icon))
+            self.states_btns[state].setIcon(icon_pixmap)
+            self.states_btns[state].setFixedSize(20, 20)
+            self.states_btns[state].setToolTip(state)
+            self.states_btns[state].setCheckable(True)
+            self.states_btns[state].setObjectName('services')
+            icons_layout.addWidget(self.states_btns[state])
             self.nb_labels[state].setObjectName(get_icon_name_from_state('service', state))
             icons_layout.addWidget(self.nb_labels[state])
 
         layout.addWidget(icons_widget)
         layout.setAlignment(icons_widget, Qt.AlignRight)
 
-    def update_widget(self, services_items, host_name):
+    def update_widget(self, services_items):
         """
         Update QWidget
 
         :param services_items: list of Service items
         :type services_items: list
-        :param host_name: name of host attached to services
-        :type host_name: str
         """
 
         services_data = Service.get_service_states_nb()
@@ -115,14 +123,13 @@ class ServicesDashboardQWidget(QWidget):
                 services_data[service.data['ls_state']] += 1
             services_total += 1
 
-        self.services_title.setText(
-            _('<b>Services of %s: </b> %d services') % (host_name, services_total)
-        )
+        self.services_title.setText(_('<b>Services: %d') % services_total)
         for state in services_data:
             percent = 0.0
             try:
                 percent = float(services_data[state]) * 100.0 / float(services_total)
-            except ZeroDivisionError as e:
-                logger.error(e)
+            except ZeroDivisionError:
+                # Leave percent at 0.0
+                pass
             item_text = '%d (%.01f%%)' % (services_data[state], percent)
             self.nb_labels[state].setText(item_text)

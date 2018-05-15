@@ -25,7 +25,7 @@
     Event item manage creation of ``QListWidgetItem`` for events
 """
 
-from PyQt5.Qt import QTimer, QListWidgetItem, QIcon
+from PyQt5.Qt import QTimer, QListWidgetItem, QIcon, Qt
 
 from alignak_app.utils.config import settings
 from alignak_app.utils.time import get_current_time
@@ -39,11 +39,9 @@ class EventItem(QListWidgetItem):
     def __init__(self):
         super(EventItem, self).__init__()
         self.timer = None
-        self.spied_on = False
-        self.host = ''
+        self.host = None
 
-    # pylint: disable=too-many-arguments
-    def initialize(self, event_type, msg, timer=False, spied_on=False, host=None):
+    def initialize(self, event_type, msg, timer=False, host=None):
         """
         Initialize QListWidgetItem
 
@@ -52,29 +50,27 @@ class EventItem(QListWidgetItem):
         :param msg: message of event
         :type msg: str
         :param timer: timer to hide event at end of time
-        :param spied_on: make event spy able
-        :type spied_on: bool
+        :type timer: bool
         :param host: _id of host. Only necessary if "be_spied" is True
         :type host: None | str
         """
 
-        self.spied_on = spied_on
         self.host = host
+        if host:
+            self.setData(Qt.UserRole, host)
 
         if timer:
             self.timer = QTimer()
 
-        self.setText("%s" % msg)
+        self.setData(Qt.DisplayRole, "%s" % msg)
         msg_to_send = '%s. (Send at %s)' % (msg, get_current_time())
         self.setToolTip(msg_to_send)
 
-        self.setIcon(
-            QIcon(
-                settings.get_image(self.get_icon(event_type))
-            )
+        self.setData(
+            Qt.DecorationRole, QIcon(settings.get_image(self.get_icon(event_type)))
         )
 
-    def close_item(self):
+    def close_item(self):  # pragma: no cover
         """
         Hide items when timer is finished
 
@@ -108,3 +104,25 @@ class EventItem(QListWidgetItem):
                 return key
 
         return 'error'
+
+    @staticmethod
+    def get_event_type(data):
+        """
+        Return event type depending of data content
+
+        :param data: data of backend item
+        :type data: dict
+        :return: event type for item
+        :rtype: str
+        """
+
+        event_type = ''
+        if data['ls_acknowledged']:
+            event_type = 'ACK'
+        if data['ls_downtimed']:
+            event_type = 'DOWNTIME'
+
+        if not event_type:
+            event_type = data['ls_state']
+
+        return event_type
