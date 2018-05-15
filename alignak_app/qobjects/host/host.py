@@ -76,6 +76,7 @@ class HostQWidget(QWidget):
         self.history_widget = HistoryQWidget()
         self.host_history = None
         self.customs_widget = CustomsQWidget()
+        self.customs_btn = QPushButton()
         self.spy_btn = QPushButton()
         self.refresh_timer = QTimer()
         self.refresh_counter = 0
@@ -148,12 +149,11 @@ class HostQWidget(QWidget):
         customs_lbl.setObjectName('subtitle')
         layout.addWidget(customs_lbl)
         layout.setAlignment(customs_lbl, Qt.AlignBottom)
-        customs_btn = QPushButton()
-        customs_btn.setIcon(QIcon(settings.get_image('settings')))
-        customs_btn.setFixedSize(80, 20)
-        customs_btn.clicked.connect(self.show_customs)
-        layout.addWidget(customs_btn)
-        layout.setAlignment(customs_btn, Qt.AlignCenter)
+        self.customs_btn.setIcon(QIcon(settings.get_image('settings')))
+        self.customs_btn.setFixedSize(80, 20)
+        self.customs_btn.clicked.connect(self.show_customs)
+        layout.addWidget(self.customs_btn)
+        layout.setAlignment(self.customs_btn, Qt.AlignCenter)
 
         # Initialize Customs QWidget
         self.customs_widget.initialize()
@@ -510,6 +510,7 @@ class HostQWidget(QWidget):
 
             self.activecheck_btn.update_btn_state(self.host_item.data['active_checks_enabled'])
             self.passivecheck_btn.update_btn_state(self.host_item.data['passive_checks_enabled'])
+            self.customs_btn.setEnabled(bool(self.host_item.data['customs']))
 
             # Update host history
             self.host_history = data_manager.get_item('history', self.host_item.item_id)

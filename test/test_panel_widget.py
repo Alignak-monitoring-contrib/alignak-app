@@ -60,7 +60,8 @@ class TestPanelQWidget(unittest2.TestCase):
                 'notes': 'host notes',
                 'passive_checks_enabled': False,
                 'active_checks_enabled': True,
-                '_overall_state_id': 1
+                '_overall_state_id': 1,
+                'customs': {}
             },
             'host%d' % i
         )
@@ -192,9 +193,14 @@ class TestPanelQWidget(unittest2.TestCase):
 
         under_test.display_host()
 
+        # Host is not spied, so button is enable
         self.assertTrue(under_test.synthesis_widget.host_widget.spy_btn.isEnabled())
+        # No customs, so button is not enabled
+        self.assertTrue(under_test.synthesis_widget.host_widget.customs_btn.isEnabled())
+        # Host and Services Qwidgets are hidden
         self.assertTrue(under_test.synthesis_widget.host_widget.isHidden())
         self.assertTrue(under_test.synthesis_widget.services_widget.isHidden())
+        # Hint QWidget is shown
         self.assertFalse(under_test.synthesis_widget.hint_widget.isHidden())
 
         self.assertEqual(
@@ -206,9 +212,14 @@ class TestPanelQWidget(unittest2.TestCase):
         under_test.synthesis_widget.line_search.setText(self.host_list[0].name)
         under_test.display_host()
 
+        # Host is not spied, so button is enable
         self.assertTrue(under_test.synthesis_widget.host_widget.spy_btn.isEnabled())
+        # No customs, so button is not enabled
+        self.assertFalse(under_test.synthesis_widget.host_widget.customs_btn.isEnabled())
+        # Host and Services Qwidgets are displayed
         self.assertFalse(under_test.synthesis_widget.host_widget.isHidden())
         self.assertFalse(under_test.synthesis_widget.services_widget.isHidden())
+        # Hint QWidget is hidden
         self.assertTrue(under_test.synthesis_widget.hint_widget.isHidden())
 
         self.assertEqual(
