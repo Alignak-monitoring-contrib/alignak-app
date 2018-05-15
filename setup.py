@@ -45,7 +45,7 @@ from alignak_app import __name__ as __pkg_name__
 install_requires = [
     'alignak-backend-client',
     'configparser',
-    'pyqt5<5.10',
+    'pyqt5',
     'python-gettext',
     'docopt',
 ]
